@@ -1,82 +1,88 @@
+proto: HBCE-MANIFEST-v1
+kind: EU_AUDIT_NODE
+version: 1.0
+
 node:
-  name: Nodo Europeo ΦΩ
-  role: EU_COHERENCE_NODE
-  level: SOVRANATIONAL
-  visibility: PUBLIC
-  entrypoint: SINGLE_LINK
+  id: hermeticum-bce-platform
+  role: public_gateway
+  status: active
+  jurisdiction: EU
+  mode: permissionless
+  data_custody: none
 
-identity:
-  proto: AI_JOKER_C2
-  type: BIOCYBER_EVENT_CHAIN
-  root: IPR-HERMETICUM-B.C.E.-000
-
-time:
-  canonical: 2026-01-19T15:30:00+01:00
-  standard: RFC3339
-  source: UNEBDO_FEDERATED
-
-policy:
-  jurisdiction: UE_FIRST
-  privacy: GDPR_MIN
-  data_model: HASH_ONLY
-  execution_model: FAIL_CLOSED
-  audit_model: APPEND_ONLY
-  silent_updates: FORBIDDEN
-
-sigma_chain:
-  hierarchy:
-    - ΦΩ-PLANET
-    - ΦΩ-EUROPA
-    - ΦΩ-ITALIA
-    - ΦΩ-REGIONE
-    - ΦΩ-PROVINCIA
-    - ΦΩ-ZONA
-    - ΦΩ-PERSONA
-
-events:
-  entry:
-    id: EVT-0012
-    name: REGISTRATION_GATE
-    scope: UE_CITIZEN_REQUEST
-    output:
-      registration_hash: SHA-256
-      status: PENDING
-
-  attestation:
-    id: EVT-EU-0001
-    name: EU_COHERENCE_ATTESTATION
-   scope: FEDERATED_AUDIT
-    output:
-      eu_status: [VALID, WARNING, FAIL]
-      attestation_hash: SHA-256
-      reason_code: REQUIRED
-
-metrology:
-  epsilon_max: "≤1e-9 s"
-  kappa_min: "≥0.997"
-  sigma_min: "≥0.995"
-  chi_tau_max: "≤0.60"
-
-anchors:
-  required: true
-  ledgers:
-    - IPFS
-    - BTC
-    - EVM
-
-interfaces:
-  public:
-    - /
-    - /register/
-    - /verify/
-    - /terms/
+entity:
+  name: HERMETICUM B.C.E. S.r.l.
+  hallmark: "HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA"
 
 principles:
-  - no_identity_promise
-  - no_account_model
-  - territorial_first
-  - verification_over_trust
+  ue_first: true
+  audit_first: true
+  fail_closed: true
+  hash_only: true
+  no_data_custody: true
+  public_auditability: true
+  append_only_trace: true
 
-status:
-  operational: true
-  baseline: IMMUTABLE
+scope:
+  description: >
+    Public audit-first gateway for Identity Primary Record (IPR),
+    responsibility attribution and deterministic verification.
+    Does not store personal data. Produces verifiable conditions only.
+
+capabilities:
+  - identity_anchor_reference
+  - responsibility_attribution_layer
+  - append_only_trace
+  - public_pass_fail_verification
+  - interoperability_b2b_b2g
+  - eu_pilot_ready
+
+ui_entrypoints:
+  home: /
+  nav: /NAV.html
+  system_map: /system.html
+  ipr: /ipr/
+  verify: /verify/
+  architecture: /architecture/
+  eu_pilot: /eu/pilot/
+  use_cases: /use-cases/
+  governance: /governance/
+  privacy: /privacy/
+  security: /security/
+
+verification_model:
+  type: deterministic_public_verification
+  output: PASS | FAIL | INVALID
+  invalid_if:
+    - no_verifiable_reference
+    - inconsistent_hash
+    - broken_trace_chain
+    - policy_not_met
+
+compliance_position:
+  eidas2_mapping: technical_alignment_non_equivalence
+  gdpr: minimization_by_design
+  custody: none
+  authority_claim: none
+
+evidence:
+  append_only_registry: true
+  reproducible_checks: true
+  public_manifest: true
+
+lifecycle:
+  phase: pilot
+  production_ready: false
+  notes: >
+    Pilot-ready infrastructure node for EU-aligned evaluation.
+    Not a legal identity authority. Technical attribution layer only.
+
+disclaimer:
+  text: >
+    This node provides technical verification and attribution tools.
+    It does not create legal identities, store personal data or
+    replace institutional authority. Audit-first and fail-closed.
+
+signature:
+  status: unsigned_public_manifest
+  method: hash_reference_only
