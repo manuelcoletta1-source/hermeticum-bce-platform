@@ -1,129 +1,329 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hermeticum B.C.E. — Accesso Cliente</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <title>Client Access | HERMETICUM B.C.E.</title>
+  <meta name="description" content="Accesso client B2B/B2G: ingresso fail-closed al perimetro infrastrutturale HERMETICUM B.C.E. con IPR verificabile." />
+  <meta name="robots" content="index,follow" />
 
-<style>
-body{
-    margin:0;
-    font-family:Arial, Helvetica, sans-serif;
-    background:#0a0a0a;
-    color:#eaeaea;
-}
-header{
-    padding:100px 20px;
-    text-align:center;
-    background:#050505;
-    border-bottom:1px solid #222;
-}
-h1{
-    font-size:44px;
-    margin:0;
-}
-.subtitle{
-    color:#aaa;
-    margin-top:14px;
-    font-size:17px;
-    line-height:1.5;
-}
-.container{
-    max-width:920px;
-    margin:auto;
-    padding:40px 20px;
-}
-.block{
-    background:#111;
-    padding:32px;
-    margin:24px 0;
-    border:1px solid #222;
-    border-radius:12px;
-}
-h2{margin-top:0;}
-.button{
-    display:inline-block;
-    margin-top:14px;
-    padding:14px 24px;
-    background:#0f62fe;
-    color:white;
-    text-decoration:none;
-    border-radius:8px;
-    font-weight:bold;
-}
-.button:hover{background:#2a7bff;}
-.footer{
-    text-align:center;
-    color:#666;
-    padding:60px;
-    font-size:14px;
-}
-</style>
+  <style>
+    :root{
+      --bg:#0b0f17;
+      --panel:rgba(255,255,255,.06);
+      --panel2:rgba(255,255,255,.09);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.72);
+      --line:rgba(255,255,255,.14);
+      --accent:#86f7c1;
+      --accent2:#8ab4ff;
+      --warn:#ffd38a;
+      --ok:#a7ffdf;
+      --bad:#ff9aa7;
+      --shadow:0 18px 50px rgba(0,0,0,.35);
+      --r1:18px;
+      --r2:14px;
+      --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      --sans:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      --max:1080px;
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg:#f6f7fb;
+        --panel:rgba(0,0,0,.05);
+        --panel2:rgba(0,0,0,.07);
+        --text:rgba(0,0,0,.88);
+        --muted:rgba(0,0,0,.62);
+        --line:rgba(0,0,0,.14);
+        --shadow:0 14px 40px rgba(0,0,0,.10);
+      }
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background:
+        radial-gradient(1200px 600px at 20% -20%, rgba(134,247,193,.18), transparent 55%),
+        radial-gradient(1200px 600px at 80% 0%, rgba(138,180,255,.16), transparent 55%),
+        radial-gradient(1200px 700px at 50% 110%, rgba(255,211,138,.10), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.45;
+      min-height:100vh;
+    }
+    a{color:inherit;text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:var(--max);margin:0 auto;padding:0 18px}
+    .topbar{
+      position:sticky;top:0;z-index:10;
+      background:color-mix(in srgb, var(--bg) 82%, transparent);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0}
+    .brand{display:flex;align-items:baseline;gap:10px;white-space:nowrap;font-weight:900;letter-spacing:.4px}
+    .brand small{font-weight:650;opacity:.75;font-size:12px;letter-spacing:.2px}
+    .navlinks{display:flex;flex-wrap:wrap;gap:10px 14px;justify-content:flex-end;font-weight:750;font-size:14px;opacity:.95}
+    .navlinks a{padding:8px 10px;border-radius:12px;border:1px solid transparent}
+    .navlinks a:focus,.navlinks a:hover{text-decoration:none;border-color:var(--line);background:var(--panel)}
+    main{padding:28px 0 26px}
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--r1);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+    .kicker{
+      display:inline-flex;gap:10px;align-items:center;
+      font-family:var(--mono);font-size:12px;opacity:.85;
+      padding:8px 10px;border:1px solid var(--line);
+      border-radius:999px;background:color-mix(in srgb, var(--panel) 75%, transparent);
+      margin-bottom:14px;
+    }
+    h1{margin:0 0 10px;font-size:30px;line-height:1.12}
+    p{margin:0 0 10px;color:var(--muted)}
+    .grid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+    .box{
+      background:var(--panel2);
+      border:1px solid var(--line);
+      border-radius:var(--r2);
+      padding:14px;
+    }
+    .box h2{margin:0 0 8px;font-size:16px}
+    .mono{font-family:var(--mono)}
+    .list{margin:0;padding-left:18px;color:var(--muted)}
+    .list li{margin:7px 0}
+    .callout{
+      border-left:4px solid color-mix(in srgb, var(--warn) 70%, var(--line));
+      padding:12px 14px;background:color-mix(in srgb, var(--warn) 12%, var(--panel));
+      border-radius:14px;border:1px solid var(--line);
+      color:var(--muted);
+      margin-top:12px;
+    }
+    .callout strong{color:var(--text)}
+    .statusRow{
+      display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+      margin-top:10px;
+    }
+    .badge{
+      display:inline-flex;gap:8px;align-items:center;
+      font-family:var(--mono);font-size:12px;
+      padding:8px 10px;border:1px solid var(--line);
+      border-radius:999px;background:var(--panel);
+      color:var(--muted);
+    }
+    .dot{width:9px;height:9px;border-radius:999px;display:inline-block}
+    .dot.ok{background:var(--ok);box-shadow:0 0 0 4px color-mix(in srgb, var(--ok) 22%, transparent)}
+    .dot.bad{background:var(--bad);box-shadow:0 0 0 4px color-mix(in srgb, var(--bad) 18%, transparent)}
+    .btnRow{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      padding:11px 14px;border-radius:14px;border:1px solid var(--line);
+      background:var(--panel2);font-weight:900;font-size:14px;text-decoration:none !important;
+    }
+    .btn.primary{border-color:color-mix(in srgb, var(--accent) 70%, var(--line));background:color-mix(in srgb, var(--accent) 22%, var(--panel2))}
+    .btn.secondary{border-color:color-mix(in srgb, var(--accent2) 70%, var(--line));background:color-mix(in srgb, var(--accent2) 18%, var(--panel2))}
+    .btn:hover{filter:brightness(1.05)}
+    .field{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:8px;
+    }
+    label{font-weight:800}
+    input[type="text"]{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:color-mix(in srgb, var(--panel2) 85%, transparent);
+      color:var(--text);
+      font-family:var(--mono);
+      font-size:13px;
+      outline:none;
+    }
+    input::placeholder{color:color-mix(in srgb, var(--muted) 70%, transparent)}
+    .hint{font-size:12px;color:var(--muted)}
+    .result{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:var(--panel);
+      font-family:var(--mono);
+      font-size:12px;
+      color:var(--muted);
+      white-space:pre-wrap;
+    }
+    footer{
+      border-top:1px solid var(--line);
+      padding:18px 0 26px;
+      margin-top:18px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .foot{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+    .small{font-size:12px}
+  </style>
 </head>
 
 <body>
+  <div class="topbar">
+    <div class="wrap">
+      <div class="nav" role="navigation" aria-label="Navigazione principale">
+        <div class="brand">
+          <span>HERMETICUM B.C.E.</span>
+          <small>client access</small>
+        </div>
 
-<header>
-<h1>HERMETICUM B.C.E.</h1>
-<div class="subtitle">
-Accesso cliente infrastruttura IPR.<br>
-Identità verificata prima dell’esecuzione.
-</div>
-</header>
+        <div class="navlinks" aria-label="Sezioni">
+          <a href="./">HOME</a>
+          <a href="./ipr/">IPR</a>
+          <a href="./architecture/">ARCHITECTURE</a>
+          <a href="./eu/pilot/">EU PILOT</a>
+          <a href="./use-cases/">USE CASES</a>
+          <a href="./verify/">VERIFY</a>
+          <a href="./about/">ABOUT</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<div class="container">
+  <main class="wrap">
+    <div class="card">
+      <div class="kicker">
+        <span class="mono">B2B / B2G</span>
+        <span class="mono">FAIL-CLOSED ACCESS</span>
+        <span class="mono">NO DATA CUSTODY</span>
+      </div>
 
-<div class="block">
-<h2>Accesso infrastruttura</h2>
-<p>
-Attivazione identità operativa verificabile.<br>
-Integrazione con sistemi digitali e AI.<br>
-Autorizzazione azioni ex-ante.
-</p>
-</div>
+      <h1>Client Access (ingresso controllato)</h1>
+      <p>
+        Questa pagina definisce l’accesso client al perimetro infrastrutturale.
+        In modalità audit-first, l’accesso è <span class="mono">PASS/FAIL</span>:
+        se non esiste una verifica, l’esito è <strong>INVALID</strong>.
+      </p>
 
-<div class="block">
-<h2>Per imprese e organizzazioni</h2>
-<p>
-Protezione operativa.<br>
-Tracciabilità delle azioni.<br>
-Ambienti AI verificati.<br>
-Integrazione con infrastrutture esistenti.
-</p>
-</div>
+      <div class="grid" aria-label="Contenuto principale">
+        <section class="box" aria-label="Precheck di accesso">
+          <h2>Precheck (manuale, pubblico)</h2>
+          <p class="hint">
+            Inserisci un riferimento verificabile (es. digest IPR o receipt). Questo è un precheck UI:
+            non custodisce nulla e non invia dati a server.
+          </p>
 
-<div class="block">
-<h2>Servizi disponibili</h2>
-<p>
-Attivazione IPR base.<br>
-Integrazione tecnica.<br>
-Audit identitario.<br>
-Ambienti AI verificati.
-</p>
-</div>
+          <div class="field">
+            <label for="ref">Riferimento (hash/digest)</label>
+            <input id="ref" type="text" placeholder="es: sha256:... oppure sha512:..." autocomplete="off" />
+            <div class="hint">Formato consigliato: <span class="mono">sha256:&lt;64-hex&gt;</span> oppure <span class="mono">sha512:&lt;128-hex&gt;</span></div>
+          </div>
 
-<div class="block">
-<h2>Documentazione tecnica</h2>
-<a class="button" href="https://github.com/manuelcoletta1-source/hermeticum-system">
-Apri documentazione completa
-</a>
-</div>
+          <div class="btnRow">
+            <button class="btn primary" id="btnCheck" type="button">Esegui precheck</button>
+            <a class="btn secondary" href="./verify/">Apri VERIFY</a>
+            <a class="btn" href="./create/">Crea IPR UE base</a>
+          </div>
 
-<div class="block">
-<h2>Architettura sistema</h2>
-<a class="button" href="system.html">Mappa infrastruttura</a>
-</div>
+          <div class="result" id="out">Risultato: IDLE
+Nota: questo controllo è locale e non sostituisce VERIFY.</div>
 
-<div class="block">
-<h2>Torna alla piattaforma</h2>
-<a class="button" href="index.html">Home centrale</a>
-</div>
+          <div class="callout">
+            <strong>Regola:</strong> l’accesso operativo al perimetro “restricted” avviene solo
+            tramite verifica deterministica e policy applicata (fail-closed).
+          </div>
+        </section>
 
-</div>
+        <aside class="box" aria-label="Regole e percorsi">
+          <h2>Regole di accesso</h2>
 
-<div class="footer">
-Hermeticum B.C.E. · Client Access Node
-</div>
+          <div class="statusRow" aria-label="Stato policy">
+            <span class="badge"><span class="dot ok"></span> <span class="mono">hash-only</span></span>
+            <span class="badge"><span class="dot ok"></span> <span class="mono">no-custody</span></span>
+            <span class="badge"><span class="dot ok"></span> <span class="mono">audit-first</span></span>
+            <span class="badge"><span class="dot ok"></span> <span class="mono">fail-closed</span></span>
+          </div>
 
+          <ul class="list" style="margin-top:10px">
+            <li><span class="mono">PASS</span>: verifica pubblica disponibile e ripetibile.</li>
+            <li><span class="mono">FAIL</span>: verifica eseguita ma non supera policy/consistenza.</li>
+            <li><span class="mono">INVALID</span>: nessuna verifica possibile o riferimento non coerente.</li>
+          </ul>
+
+          <div class="btnRow">
+            <a class="btn" href="./projects/">Vai a PROJECTS (restricted)</a>
+            <a class="btn" href="./audit/">Apri AUDIT HUB</a>
+          </div>
+
+          <p class="hint" style="margin-top:10px">
+            Questo portale è progettato per contesti B2B/B2G. L’identità legale resta esterna:
+            qui si gestisce verificabilità e opponibilità tecnica.
+          </p>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot">
+        <div>
+          <div class="mono" style="font-weight:900">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+          <div class="mono small">HERMETICUM B.C.E. S.r.l.</div>
+        </div>
+        <div class="small mono">UE-first · audit-first · fail-closed · hash-only</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function(){
+      const refEl = document.getElementById('ref');
+      const outEl = document.getElementById('out');
+      const btn = document.getElementById('btnCheck');
+
+      function isHex(s){ return /^[0-9a-f]+$/i.test(s); }
+
+      function classify(input){
+        const v = (input || '').trim();
+        if (!v) return {status:'IDLE', note:'Nessun riferimento inserito.'};
+
+        // allow optional "sha256:" / "sha512:"
+        const parts = v.split(':');
+        let algo = null;
+        let hex = v;
+
+        if (parts.length === 2 && (parts[0].toLowerCase() === 'sha256' || parts[0].toLowerCase() === 'sha512')){
+          algo = parts[0].toLowerCase();
+          hex = parts[1];
+        }
+
+        const h = hex.trim();
+        if (!isHex(h)) return {status:'INVALID', note:'Formato non esadecimale.'};
+
+        if (algo === 'sha256' && h.length !== 64) return {status:'INVALID', note:'sha256 richiede 64 caratteri hex.'};
+        if (algo === 'sha512' && h.length !== 128) return {status:'INVALID', note:'sha512 richiede 128 caratteri hex.'};
+
+        // If algo missing, accept 64 or 128 as plausible.
+        if (!algo && !(h.length === 64 || h.length === 128)) return {status:'INVALID', note:'Lunghezza hash non riconosciuta (atteso 64 o 128 hex).'};
+        return {status:'PRECHECK_OK', note:'Formato plausibile. Ora usa VERIFY per la verifica deterministica.'};
+      }
+
+      btn.addEventListener('click', () => {
+        const res = classify(refEl.value);
+        outEl.textContent =
+          'Risultato: ' + res.status + '\n' +
+          'Dettaglio: ' + res.note + '\n' +
+          'Next: apri /verify/ per PASS/FAIL pubblico.';
+      });
+    })();
+  </script>
 </body>
 </html>
