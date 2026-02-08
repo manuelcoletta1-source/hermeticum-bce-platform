@@ -1,160 +1,232 @@
 <!doctype html>
 <html lang="it" data-base="./">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="color-scheme" content="light dark" />
-  <title>HERMETICUM B.C.E. | Gateway UE audit-first</title>
-  <meta name="description" content="HERMETICUM B.C.E. - Infrastruttura UE-first, audit-first: IPR, verifica pubblica, architettura e pilot europeo. Fail-closed, hash-only, nessuna custodia dati." />
-  <meta name="robots" content="index,follow" />
-  <link rel="stylesheet" href="./assets/hbce.css" />
-  <style>
-    /* micro-layout solo HOME (resto nel CSS canonico) */
-    .hero{padding:14px 0 6px}
-    .heroGrid{display:grid;grid-template-columns:1.35fr .65fr;gap:18px;align-items:start}
-    @media (max-width:900px){.heroGrid{grid-template-columns:1fr}}
-    h1{margin:0 0 10px;font-size:38px;line-height:1.08;letter-spacing:.2px}
-    @media (max-width:520px){h1{font-size:32px}}
-    .sub{font-size:16px;color:var(--muted);margin:0 0 16px;max-width:70ch}
-    .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
-    @media (max-width:900px){.grid3{grid-template-columns:1fr}}
-    .pillRow{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-    .pill{font-family:var(--mono);font-size:12px;padding:8px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted)}
-    .bullets{margin:0;padding-left:18px;color:var(--muted)}
-    .bullets li{margin:8px 0}
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="color-scheme" content="light dark"/>
+<title>HERMETICUM B.C.E. | Gateway UE audit-first</title>
+
+<meta name="description" content="HERMETICUM B.C.E. infrastruttura UE-first per identità verificabile, responsabilità digitale e audit pubblico."/>
+
+<link rel="stylesheet" href="./assets/hbce.css"/>
+
+<style>
+
+/* =========================
+   WATERMARK SIGILLO GLOBALE
+========================= */
+body::before{
+  content:"";
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:520px;
+  height:520px;
+  background:url('./sigillo-hermeticum.svg') no-repeat center;
+  background-size:contain;
+  opacity:0.035;
+  pointer-events:none;
+  z-index:0;
+}
+
+.wrap, header, main, footer{
+  position:relative;
+  z-index:1;
+}
+
+/* HERO */
+.hero{padding:18px 0 6px}
+
+.heroGrid{
+  display:grid;
+  grid-template-columns:1.35fr .65fr;
+  gap:18px;
+  align-items:start;
+}
+@media (max-width:900px){
+  .heroGrid{grid-template-columns:1fr}
+}
+
+/* LOGO + NOME */
+.brand{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:10px;
+}
+
+.brand img{
+  height:42px;
+  width:auto;
+  opacity:.95;
+}
+
+.brand span{
+  font-size:26px;
+  font-weight:700;
+  letter-spacing:.5px;
+}
+
+/* TIMBRO ATTIVO */
+.stamp{
+  font-family:ui-monospace,monospace;
+  font-size:12px;
+  letter-spacing:2px;
+  color:#00ffa6;
+  margin-top:4px;
+}
+
+/* TESTO */
+.sub{
+  font-size:16px;
+  color:var(--muted);
+  margin:0 0 16px;
+  max-width:70ch;
+}
+
+.grid3{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:16px;
+}
+@media (max-width:900px){
+  .grid3{grid-template-columns:1fr}
+}
+
+.pillRow{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:12px;
+}
+
+.pill{
+  font-family:var(--mono);
+  font-size:12px;
+  padding:8px 10px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:var(--panel);
+  color:var(--muted);
+}
+
+.bullets{
+  margin:0;
+  padding-left:18px;
+  color:var(--muted);
+}
+.bullets li{margin:8px 0}
+
+</style>
 </head>
 
 <body>
-  <div id="hbce-header"></div>
 
-  <main class="wrap">
-    <section class="hero" aria-label="Introduzione">
-      <div class="heroGrid">
+<div id="hbce-header"></div>
 
-        <div class="card">
-          <div class="kicker">
-            <span class="mono">UE-first</span>
-            <span class="mono">audit-first</span>
-            <span class="mono">fail-closed</span>
-            <span class="mono">hash-only</span>
-          </div>
+<main class="wrap">
 
-          <h1>European Identity and Infrastructure Prototype</h1>
+<section class="hero">
+<div class="heroGrid">
 
-          <p class="sub">
-            HERMETICUM B.C.E. e IPR (Identity Primary Record) introducono un livello operativo
-            per identità, responsabilità e verificabilità. Il sistema non custodisce dati personali:
-            rende opponibili nel tempo decisione, costo, traccia e verifiche crittografiche.
-          </p>
+<!-- COLONNA SINISTRA -->
+<div class="card">
 
-          <div class="btnRow" aria-label="Azioni principali">
-            <a class="btn primary" href="./ipr/">ENTER IPR</a>
-            <a class="btn secondary" href="./verify/">PUBLIC VERIFY</a>
-            <a class="btn" href="./eu/pilot/">EU PILOT</a>
-            <a class="btn" href="./architecture/">ARCHITECTURE</a>
-          </div>
+<div class="kicker">
+<span class="mono">UE-first</span>
+<span class="mono">audit-first</span>
+<span class="mono">fail-closed</span>
+<span class="mono">hash-only</span>
+</div>
 
-          <div class="grid3" aria-label="Sintesi operativa">
-            <div class="card2">
-              <h2 style="margin:0 0 6px;font-size:16px">1. Identità</h2>
-              <p style="margin:0;color:var(--muted)">
-                IPR come base: identità definita da verifiche e condizioni operative, non da dichiarazioni.
-              </p>
-            </div>
-            <div class="card2">
-              <h2 style="margin:0 0 6px;font-size:16px">2. Opponibilità</h2>
-              <p style="margin:0;color:var(--muted)">
-                Tracciabilità append-only: ciò che esiste lascia traccia e attraversa il tempo.
-              </p>
-            </div>
-            <div class="card2">
-              <h2 style="margin:0 0 6px;font-size:16px">3. Esecuzione</h2>
-              <p style="margin:0;color:var(--muted)">
-                Fail-closed: senza coerenza e verifiche, niente esecuzione. Nessuna scorciatoia.
-              </p>
-            </div>
-          </div>
+<!-- LOGO + AZIENDA -->
+<div class="brand">
+<img src="./sigillo-hermeticum.svg">
+<span>HERMETICUM B.C.E.</span>
+</div>
 
-          <div class="pillRow" aria-label="Tag">
-            <span class="pill">PERMISSIONLESS</span>
-            <span class="pill">GDPR-minimization</span>
-            <span class="pill">EX-ANTE verification</span>
-            <span class="pill">PUBLIC auditable</span>
-          </div>
-        </div>
+<div class="stamp">
+🜏 SIGILLO TECNICO INFRASTRUTTURALE ATTIVO
+</div>
 
-        <aside class="card" aria-label="Pannello stato e percorsi rapidi">
-          <h2 style="margin:0 0 10px;font-size:18px">Stato del gateway</h2>
-          <p style="margin:0 0 10px;color:var(--muted)">
-            Questa home è un ingresso. Le sezioni sono pensate per lettura istituzionale:
-            cosa è, cosa non è, come si verifica, e come si pilota.
-          </p>
+<p class="sub">
+HERMETICUM B.C.E. introduce un layer operativo per identità verificabile,
+attribuzione di responsabilità e audit pubblico.  
+Il sistema non custodisce dati personali e opera in modalità hash-only.
+</p>
 
-          <div class="callout">
-            <strong>Regola operativa:</strong> nessuna custodia dati. Solo prove, hash, verifiche, policy.
-          </div>
+<div class="btnRow">
+<a class="btn primary" href="./ipr/">ENTER IPR</a>
+<a class="btn secondary" href="./verify/">PUBLIC VERIFY</a>
+<a class="btn" href="./eu/pilot/">EU PILOT</a>
+<a class="btn" href="./architecture/">ARCHITECTURE</a>
+</div>
 
-          <div style="padding-top:14px">
-            <h2 style="margin:0 0 10px;font-size:18px">Percorsi rapidi</h2>
-            <ul class="bullets">
-              <li><a href="./verify/">VERIFY</a> per controllare stato pubblico e check.</li>
-              <li><a href="./ipr/">IPR</a> per attivazione e struttura base.</li>
-              <li><a href="./architecture/">ARCHITECTURE</a> per stack e moduli.</li>
-              <li><a href="./eu/pilot/">EU PILOT</a> per scenario di adozione e pilot europei.</li>
-            </ul>
-          </div>
-        </aside>
+<div class="grid3">
 
-      </div>
-    </section>
+<div class="card2">
+<h2 style="margin:0 0 6px;font-size:16px">Identità</h2>
+<p style="margin:0;color:var(--muted)">
+IPR come base verificabile e opponibile nel tempo.
+</p>
+</div>
 
-    <section aria-label="Che cosa rappresenta" style="padding:14px 0 26px">
-      <div class="card">
-        <h2 style="margin:0 0 10px;font-size:18px">Che cosa rappresenta questo sito</h2>
-        <ul class="bullets">
-          <li>Un prototipo di interfaccia UE-first per identità verificabile e auditabile.</li>
-          <li>Un layout di standardizzazione: regole, verifiche, e percorso di pilot.</li>
-          <li>Una base per B2B e B2G: integrazione con sistemi esistenti, senza custodia dati.</li>
-        </ul>
+<div class="card2">
+<h2 style="margin:0 0 6px;font-size:16px">Traccia</h2>
+<p style="margin:0;color:var(--muted)">
+Append-only e audit pubblico deterministico.
+</p>
+</div>
 
-        <div class="callout">
-          <strong>Cosa non è:</strong> non è un identity provider, non è un database utenti,
-          non è un sistema di sorveglianza o scoring. Se una sezione sembra chiedere dati personali,
-          è un errore da correggere.
-        </div>
-      </div>
-    </section>
+<div class="card2">
+<h2 style="margin:0 0 6px;font-size:16px">Esecuzione</h2>
+<p style="margin:0;color:var(--muted)">
+Fail-closed: senza verifica non esiste esecuzione.
+</p>
+</div>
 
-    <section aria-label="Ingressi principali" style="padding:0 0 8px">
-      <div class="grid3">
-        <a class="card" href="./ipr/" aria-label="Vai a IPR">
-          <h2 style="margin:0 0 6px;font-size:18px">IPR</h2>
-          <p style="margin:0;color:var(--muted)">
-            Identity Primary Record: struttura base, regole di attivazione, compatibilità UE-first.
-          </p>
-        </a>
+</div>
 
-        <a class="card" href="./verify/" aria-label="Vai a Verify">
-          <h2 style="margin:0 0 6px;font-size:18px">VERIFY</h2>
-          <p style="margin:0;color:var(--muted)">
-            Verifica pubblica: controlli fail-closed, hash, coerenza e opponibilità.
-          </p>
-        </a>
+<div class="pillRow">
+<span class="pill">PERMISSIONLESS</span>
+<span class="pill">GDPR-MIN</span>
+<span class="pill">PUBLIC AUDIT</span>
+<span class="pill">NO DATA CUSTODY</span>
+</div>
 
-        <a class="card" href="./eu/pilot/" aria-label="Vai a EU Pilot">
-          <h2 style="margin:0 0 6px;font-size:18px">EU PILOT</h2>
-          <p style="margin:0;color:var(--muted)">
-            Percorso di pilot: adozione progressiva, casi d'uso, integrazione istituzionale.
-          </p>
-        </a>
-      </div>
-    </section>
-  </main>
+</div>
 
-  <div id="hbce-footer"></div>
+<!-- COLONNA DESTRA -->
+<aside class="card">
 
-  <script src="./assets/hbce-ui.js"></script>
-  <script>hbceBoot("./");</script>
+<h2 style="margin:0 0 10px;font-size:18px">Stato infrastruttura</h2>
+
+<div class="callout">
+Nodo operativo in modalità pubblica e verificabile.
+</div>
+
+<div style="padding-top:14px">
+<ul class="bullets">
+<li><a href="./verify/">VERIFY</a> stato pubblico</li>
+<li><a href="./ipr/">IPR</a> identità base</li>
+<li><a href="./architecture/">ARCHITECTURE</a> stack</li>
+<li><a href="./eu/pilot/">EU PILOT</a> adozione UE</li>
+</ul>
+</div>
+
+</aside>
+
+</div>
+</section>
+
+</main>
+
+<div id="hbce-footer"></div>
+
+<script src="./assets/hbce-ui.js"></script>
+<script>hbceBoot("./");</script>
+
 </body>
 </html>
