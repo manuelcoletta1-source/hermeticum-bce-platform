@@ -1,115 +1,83 @@
 <!doctype html>
-<html lang="it">
+<html lang="it" data-base="../">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="light dark">
-<title>IPR Gateway | HERMETICUM</title>
-
-<style>
-:root{
- --bg:#0b0f17;
- --panel:rgba(255,255,255,.06);
- --text:#ffffff;
- --muted:#b9c0cc;
- --line:rgba(255,255,255,.14);
- --accent:#86f7c1;
- --r:18px;
- --max:980px;
-}
-
-body{
- margin:0;
- font-family:system-ui,Segoe UI,Roboto;
- background:var(--bg);
- color:var(--text);
-}
-
-.wrap{max-width:var(--max);margin:auto;padding:24px}
-
-.header{
- border-bottom:1px solid var(--line);
- padding-bottom:14px;
- margin-bottom:20px;
-}
-
-.nav a{
- color:white;
- text-decoration:none;
- font-weight:700;
- margin-right:14px;
-}
-
-.card{
- background:var(--panel);
- border:1px solid var(--line);
- border-radius:var(--r);
- padding:24px;
-}
-
-h1{margin:0 0 10px;font-size:30px}
-p{color:var(--muted)}
-
-.badge{
- display:inline-block;
- font-size:12px;
- border:1px solid var(--line);
- padding:6px 10px;
- border-radius:999px;
- margin-right:6px;
-}
-
-.btn{
- display:inline-block;
- margin-top:12px;
- margin-right:10px;
- padding:12px 16px;
- border-radius:12px;
- border:1px solid var(--line);
- background:rgba(255,255,255,.08);
- text-decoration:none;
- color:white;
- font-weight:800;
-}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <title>IPR | Identity Primary Record</title>
+  <meta name="description" content="IPR (Identity Primary Record) — gateway UE-first per identità verificabile. Audit-first, fail-closed, hash-only, nessuna custodia dati." />
+  <meta name="robots" content="index,follow" />
+  <link rel="stylesheet" href="../assets/hbce.css" />
+  <style>
+    /* micro-layout solo IPR */
+    .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:12px;margin-top:12px}
+    @media (max-width:900px){.grid2{grid-template-columns:1fr}}
+    ul{margin:0;padding-left:18px;color:var(--muted)}
+    li{margin:7px 0}
+    h1{margin:0 0 10px;font-size:30px;line-height:1.12}
+  </style>
 </head>
 
 <body>
-<div class="wrap">
+  <div id="hbce-header"></div>
 
-<div class="header">
-<b>HERMETICUM B.C.E.</b> — IPR Gateway
-<div class="nav">
-<a href="../">HOME</a>
-<a href="../verify/">VERIFY</a>
-<a href="../architecture/">ARCHITECTURE</a>
-<a href="../eu/pilot/">EU PILOT</a>
-</div>
-</div>
+  <main class="wrap">
+    <div class="card">
+      <div class="kicker">
+        <span class="mono">IPR</span>
+        <span class="mono">identity anchor</span>
+        <span class="mono">fail-closed</span>
+        <span class="mono">hash-only</span>
+      </div>
 
-<div class="card">
-<h1>Identity Primary Record</h1>
+      <h1>Identity Primary Record</h1>
+      <p style="margin:0;color:var(--muted);max-width:80ch">
+        IPR è la struttura tecnica minima per rappresentare un soggetto (umano, organizzazione o agente)
+        in modo verificabile. Non è un provider di identità e non custodisce dati personali.
+        Serve a rendere opponibili nel tempo condizioni di attribuzione, prova e responsabilità.
+      </p>
 
-<p>
-IPR è il layer base dell’infrastruttura.
-Rende una azione tecnicamente eseguibile solo se attribuibile e verificabile nel tempo.
-</p>
+      <div class="grid2" aria-label="Contenuti principali">
+        <section class="card2" aria-label="Cosa abilita">
+          <h2 style="margin:0 0 8px;font-size:16px">Cosa abilita</h2>
+          <ul>
+            <li>Formato verificabile (hash / receipt / manifest).</li>
+            <li>Attribuzione tecnica (chi / cosa / quando) senza database centrale.</li>
+            <li>Controlli ex-ante: senza verifica → esito <span class="mono">INVALID</span>.</li>
+            <li>Base per contesti B2B/B2G e audit ripetibile.</li>
+          </ul>
 
-<div style="margin:12px 0">
-<span class="badge">UE-first</span>
-<span class="badge">audit-first</span>
-<span class="badge">fail-closed</span>
-<span class="badge">hash-only</span>
-</div>
+          <div class="btnRow" style="margin-top:12px">
+            <a class="btn primary" href="../create/">ATTIVA IPR UE BASE</a>
+            <a class="btn secondary" href="../verify/">VERIFICA IPR</a>
+            <a class="btn" href="../standard/ipr/">STANDARD IPR</a>
+          </div>
+        </section>
 
-<p>
-Se la verifica non è possibile → risultato invalido.
-</p>
+        <aside class="card2" aria-label="Regole di validità">
+          <h2 style="margin:0 0 8px;font-size:16px">Regole di validità</h2>
+          <div class="callout" style="margin-top:0">
+            <strong>Fail-Closed:</strong> se manca una condizione verificabile, l’output non è valido.
+          </div>
 
-<a class="btn" href="../create/">ATTIVA IPR</a>
-<a class="btn" href="../verify/">VERIFICA IPR</a>
+          <ul style="margin-top:10px">
+            <li><span class="mono">PASS</span>: verifiche presenti e coerenti.</li>
+            <li><span class="mono">FAIL</span>: verifiche presenti ma non superano policy.</li>
+            <li><span class="mono">INVALID</span>: verifiche mancanti o non ripetibili.</li>
+          </ul>
 
-</div>
-</div>
+          <p style="margin-top:10px;color:var(--muted)">
+            L’IPR non sostituisce identità legali: fornisce un livello tecnico verificabile
+            che può essere usato per audit e responsabilità digitale.
+          </p>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <div id="hbce-footer"></div>
+
+  <script src="../assets/hbce-ui.js"></script>
+  <script>hbceBoot("../");</script>
 </body>
 </html>
