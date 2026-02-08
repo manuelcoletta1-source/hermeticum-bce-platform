@@ -4,42 +4,40 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="color-scheme" content="light dark" />
-  <title>HERMETICUM B.C.E. | EU Audit-First Identity Infrastructure</title>
-  <meta name="description" content="HERMETICUM B.C.E. - gateway UE-first, audit-first: IPR (Identity Primary Record), verifiche, architettura e pilot europei." />
+  <title>HERMETICUM B.C.E. | Gateway UE audit-first</title>
+  <meta name="description" content="HERMETICUM B.C.E. - Infrastruttura UE-first, audit-first: IPR, verifica pubblica, architettura e pilot europeo. Fail-closed, hash-only, nessuna custodia dati." />
   <meta name="robots" content="index,follow" />
 
   <style>
     :root{
-      --bg: #0b0f17;
-      --panel: rgba(255,255,255,.06);
-      --panel2: rgba(255,255,255,.09);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.72);
-      --line: rgba(255,255,255,.14);
-      --accent: #86f7c1;
-      --accent2: #8ab4ff;
-      --warn: #ffd38a;
-      --ok: #a7ffdf;
-      --shadow: 0 18px 50px rgba(0,0,0,.35);
-      --radius: 18px;
-      --radius2: 14px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      --max: 1080px;
+      --bg:#0b0f17;
+      --panel:rgba(255,255,255,.06);
+      --panel2:rgba(255,255,255,.09);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.72);
+      --line:rgba(255,255,255,.14);
+      --accent:#86f7c1;
+      --accent2:#8ab4ff;
+      --warn:#ffd38a;
+      --ok:#a7ffdf;
+      --shadow:0 18px 50px rgba(0,0,0,.35);
+      --r1:18px;
+      --r2:14px;
+      --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      --sans:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      --max:1080px;
     }
-
     @media (prefers-color-scheme: light){
       :root{
-        --bg: #f6f7fb;
-        --panel: rgba(0,0,0,.05);
-        --panel2: rgba(0,0,0,.07);
-        --text: rgba(0,0,0,.88);
-        --muted: rgba(0,0,0,.62);
-        --line: rgba(0,0,0,.14);
-        --shadow: 0 14px 40px rgba(0,0,0,.10);
+        --bg:#f6f7fb;
+        --panel:rgba(0,0,0,.05);
+        --panel2:rgba(0,0,0,.07);
+        --text:rgba(0,0,0,.88);
+        --muted:rgba(0,0,0,.62);
+        --line:rgba(0,0,0,.14);
+        --shadow:0 14px 40px rgba(0,0,0,.10);
       }
     }
-
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
@@ -53,222 +51,67 @@
       color:var(--text);
       line-height:1.45;
     }
-
-    a{color:inherit; text-decoration:none}
+    a{color:inherit;text-decoration:none}
     a:hover{text-decoration:underline}
-
-    .wrap{max-width:var(--max); margin:0 auto; padding:0 18px}
+    .wrap{max-width:var(--max);margin:0 auto;padding:0 18px}
     .topbar{
-      position:sticky; top:0; z-index:10;
-      background: color-mix(in srgb, var(--bg) 82%, transparent);
-      backdrop-filter: blur(10px);
+      position:sticky;top:0;z-index:10;
+      background:color-mix(in srgb, var(--bg) 82%, transparent);
+      backdrop-filter:blur(10px);
       border-bottom:1px solid var(--line);
     }
-    .nav{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:12px;
-      padding:14px 0;
-    }
-    .brand{
-      display:flex; align-items:baseline; gap:10px; white-space:nowrap;
-      font-weight:800;
-      letter-spacing:.4px;
-    }
-    .brand small{
-      font-weight:600;
-      opacity:.75;
-      font-size:12px;
-      letter-spacing:.2px;
-    }
-    .navlinks{
-      display:flex; flex-wrap:wrap;
-      gap:10px 14px;
-      justify-content:flex-end;
-      font-weight:650;
-      font-size:14px;
-      opacity:.95;
-    }
-    .navlinks a{
-      padding:8px 10px;
-      border-radius:12px;
-      border:1px solid transparent;
-    }
-    .navlinks a:focus,
-    .navlinks a:hover{
-      text-decoration:none;
-      border-color: var(--line);
-      background: var(--panel);
-    }
-
-    .hero{
-      padding:40px 0 20px;
-    }
-    .heroGrid{
-      display:grid;
-      grid-template-columns: 1.35fr .65fr;
-      gap:18px;
-      align-items:start;
-    }
-    @media (max-width: 900px){
-      .heroGrid{grid-template-columns:1fr}
-    }
-
-    .card{
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding:18px;
-    }
-    .card2{
-      background: var(--panel2);
-      border: 1px solid var(--line);
-      border-radius: var(--radius2);
-      padding:14px;
-    }
-
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0}
+    .brand{display:flex;align-items:baseline;gap:10px;white-space:nowrap;font-weight:900;letter-spacing:.4px}
+    .brand small{font-weight:650;opacity:.75;font-size:12px;letter-spacing:.2px}
+    .navlinks{display:flex;flex-wrap:wrap;gap:10px 14px;justify-content:flex-end;font-weight:750;font-size:14px;opacity:.95}
+    .navlinks a{padding:8px 10px;border-radius:12px;border:1px solid transparent}
+    .navlinks a:focus,.navlinks a:hover{text-decoration:none;border-color:var(--line);background:var(--panel)}
+    .hero{padding:40px 0 20px}
+    .heroGrid{display:grid;grid-template-columns:1.35fr .65fr;gap:18px;align-items:start}
+    @media (max-width:900px){.heroGrid{grid-template-columns:1fr}}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r1);box-shadow:var(--shadow);padding:18px}
+    .card2{background:var(--panel2);border:1px solid var(--line);border-radius:var(--r2);padding:14px}
     .kicker{
-      display:inline-flex;
-      gap:10px;
-      align-items:center;
-      font-family:var(--mono);
-      font-size:12px;
-      opacity:.85;
-      padding:8px 10px;
-      border:1px solid var(--line);
-      border-radius:999px;
-      background: color-mix(in srgb, var(--panel) 75%, transparent);
+      display:inline-flex;gap:10px;align-items:center;
+      font-family:var(--mono);font-size:12px;opacity:.85;
+      padding:8px 10px;border:1px solid var(--line);
+      border-radius:999px;background:color-mix(in srgb, var(--panel) 75%, transparent);
       margin-bottom:14px;
     }
-    .dot{
-      width:9px; height:9px; border-radius:999px;
-      background: var(--ok);
-      box-shadow: 0 0 0 4px color-mix(in srgb, var(--ok) 22%, transparent);
-      display:inline-block;
-    }
-    h1{
-      margin:0 0 10px;
-      font-size:38px;
-      line-height:1.08;
-      letter-spacing:.2px;
-    }
-    @media (max-width: 520px){
-      h1{font-size:32px}
-    }
-    .sub{
-      font-size:16px;
-      color: var(--muted);
-      margin:0 0 16px;
-      max-width: 68ch;
-    }
-
-    .ctaRow{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:14px;
-    }
+    .dot{width:9px;height:9px;border-radius:999px;background:var(--ok);box-shadow:0 0 0 4px color-mix(in srgb, var(--ok) 22%, transparent);display:inline-block}
+    h1{margin:0 0 10px;font-size:38px;line-height:1.08;letter-spacing:.2px}
+    @media (max-width:520px){h1{font-size:32px}}
+    .sub{font-size:16px;color:var(--muted);margin:0 0 16px;max-width:70ch}
+    .ctaRow{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
     .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      padding:11px 14px;
-      border-radius: 14px;
-      border: 1px solid var(--line);
-      background: var(--panel2);
-      font-weight:800;
-      font-size:14px;
-      text-decoration:none !important;
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      padding:11px 14px;border-radius:14px;border:1px solid var(--line);
+      background:var(--panel2);font-weight:900;font-size:14px;text-decoration:none !important;
     }
-    .btn.primary{
-      border-color: color-mix(in srgb, var(--accent) 70%, var(--line));
-      background: color-mix(in srgb, var(--accent) 22%, var(--panel2));
-    }
-    .btn.secondary{
-      border-color: color-mix(in srgb, var(--accent2) 70%, var(--line));
-      background: color-mix(in srgb, var(--accent2) 18%, var(--panel2));
-    }
-    .btn:focus, .btn:hover{
-      filter: brightness(1.05);
-    }
-
-    .grid3{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:12px;
-      margin-top:16px;
-    }
-    @media (max-width: 900px){
-      .grid3{grid-template-columns:1fr}
-    }
-    .meta{
-      font-family:var(--mono);
-      font-size:12px;
-      color: var(--muted);
-      line-height:1.35;
-    }
-
-    .section{
-      padding:14px 0 26px;
-    }
-    .section h2{
-      margin:0 0 10px;
-      font-size:18px;
-      letter-spacing:.2px;
-    }
-    .bullets{
-      margin:0;
-      padding-left:18px;
-      color: var(--muted);
-    }
+    .btn.primary{border-color:color-mix(in srgb, var(--accent) 70%, var(--line));background:color-mix(in srgb, var(--accent) 22%, var(--panel2))}
+    .btn.secondary{border-color:color-mix(in srgb, var(--accent2) 70%, var(--line));background:color-mix(in srgb, var(--accent2) 18%, var(--panel2))}
+    .btn:focus,.btn:hover{filter:brightness(1.05)}
+    .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+    @media (max-width:900px){.grid3{grid-template-columns:1fr}}
+    .meta{font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.35}
+    .section{padding:14px 0 26px}
+    .section h2{margin:0 0 10px;font-size:18px;letter-spacing:.2px}
+    .bullets{margin:0;padding-left:18px;color:var(--muted)}
     .bullets li{margin:8px 0}
-
-    .pillRow{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:12px;
-    }
-    .pill{
-      font-family:var(--mono);
-      font-size:12px;
-      padding:8px 10px;
-      border:1px solid var(--line);
-      border-radius:999px;
-      background: var(--panel);
-      color: var(--muted);
-    }
-
+    .pillRow{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .pill{font-family:var(--mono);font-size:12px;padding:8px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted)}
     .callout{
       border-left:4px solid color-mix(in srgb, var(--warn) 70%, var(--line));
-      padding:12px 14px;
-      background: color-mix(in srgb, var(--warn) 12%, var(--panel));
-      border-radius: 14px;
-      border:1px solid var(--line);
-      color: var(--muted);
+      padding:12px 14px;background:color-mix(in srgb, var(--warn) 12%, var(--panel));
+      border-radius:14px;border:1px solid var(--line);color:var(--muted);
     }
     .callout strong{color:var(--text)}
-
-    footer{
-      border-top:1px solid var(--line);
-      padding:22px 0 30px;
-      margin-top:18px;
-      color: var(--muted);
-      font-size:13px;
-    }
-    .footGrid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:14px;
-      align-items:start;
-    }
-    @media (max-width: 900px){
-      .footGrid{grid-template-columns:1fr}
-    }
+    footer{border-top:1px solid var(--line);padding:22px 0 30px;margin-top:18px;color:var(--muted);font-size:13px}
+    .footGrid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;align-items:start}
+    @media (max-width:900px){.footGrid{grid-template-columns:1fr}}
     .mono{font-family:var(--mono)}
     .small{font-size:12px}
-    .links a{display:inline-block; margin-right:12px; opacity:.95}
+    .links a{display:inline-block;margin-right:12px;opacity:.95}
   </style>
 </head>
 
@@ -285,7 +128,7 @@
           <a href="./">HOME</a>
           <a href="./ipr/">IPR</a>
           <a href="./architecture/">ARCHITECTURE</a>
-          <a href="./eu-pilot/">EU PILOT</a>
+          <a href="./eu/pilot/">EU PILOT</a>
           <a href="./use-cases/">USE CASES</a>
           <a href="./verify/">VERIFY</a>
           <a href="./about/">ABOUT</a>
@@ -307,29 +150,29 @@
           <h1>European Identity and Infrastructure Prototype</h1>
 
           <p class="sub">
-            HERMETICUM B.C.E. e IPR (Identity Primary Record) definiscono un livello operativo
-            per identita, responsabilita e verificabilita. Non custodiamo dati personali:
-            rendiamo opponibili nel tempo decisione, costo, traccia e verifiche crittografiche.
+            HERMETICUM B.C.E. e IPR (Identity Primary Record) introducono un livello operativo
+            per identità, responsabilità e verificabilità. Il sistema non custodisce dati personali:
+            rende opponibili nel tempo decisione, costo, traccia e verifiche crittografiche.
           </p>
 
           <div class="ctaRow" aria-label="Azioni principali">
             <a class="btn primary" href="./ipr/">ENTER IPR</a>
             <a class="btn secondary" href="./verify/">PUBLIC VERIFY</a>
-            <a class="btn" href="./eu-pilot/">EU PILOT</a>
+            <a class="btn" href="./eu/pilot/">EU PILOT</a>
             <a class="btn" href="./architecture/">ARCHITECTURE</a>
           </div>
 
           <div class="grid3" aria-label="Sintesi operativa">
             <div class="card2">
-              <h2>1. Identita</h2>
+              <h2>1. Identità</h2>
               <p class="meta">
-                IPR come base: identita definita da verifiche e condizioni operative, non da dichiarazioni.
+                IPR come base: identità definita da verifiche e condizioni operative, non da dichiarazioni.
               </p>
             </div>
             <div class="card2">
-              <h2>2. Opponibilita</h2>
+              <h2>2. Opponibilità</h2>
               <p class="meta">
-                Audit e tracciabilita append-only: cio che esiste lascia traccia e attraversa il tempo.
+                Tracciabilità append-only: ciò che esiste lascia traccia e attraversa il tempo.
               </p>
             </div>
             <div class="card2">
@@ -351,8 +194,8 @@
         <aside class="card" aria-label="Pannello stato e percorsi rapidi">
           <h2>Stato del gateway</h2>
           <p class="meta">
-            Questa home e un ingresso. Le sezioni sotto sono pensate per lettura istituzionale:
-            cosa e, cosa non e, come si verifica, e come si pilota.
+            Questa home è un ingresso. Le sezioni sono pensate per lettura istituzionale:
+            cosa è, cosa non è, come si verifica, e come si pilota.
           </p>
 
           <div class="callout" style="margin-top:12px">
@@ -362,10 +205,10 @@
           <div class="section" style="padding:14px 0 0">
             <h2>Percorsi rapidi</h2>
             <ul class="bullets">
-              <li><a href="./verify/">VERIFY</a> per controllare lo stato pubblico e i check.</li>
-              <li><a href="./ipr/">IPR</a> per il gateway di attivazione e struttura base.</li>
-              <li><a href="./architecture/">ARCHITECTURE</a> per il modello modulare e lo stack.</li>
-              <li><a href="./eu-pilot/">EU PILOT</a> per scenario di adozione e pilot europei.</li>
+              <li><a href="./verify/">VERIFY</a> per controllare stato pubblico e check.</li>
+              <li><a href="./ipr/">IPR</a> per attivazione e struttura base.</li>
+              <li><a href="./architecture/">ARCHITECTURE</a> per stack e moduli.</li>
+              <li><a href="./eu/pilot/">EU PILOT</a> per scenario di adozione e pilot europei.</li>
             </ul>
           </div>
         </aside>
@@ -377,14 +220,15 @@
       <div class="card">
         <h2>Che cosa rappresenta questo sito</h2>
         <ul class="bullets">
-          <li>Un prototipo di interfaccia UE-first per identita verificabile e auditabile.</li>
+          <li>Un prototipo di interfaccia UE-first per identità verificabile e auditabile.</li>
           <li>Un layout di standardizzazione: regole, verifiche, e percorso di pilot.</li>
           <li>Una base per B2B e B2G: integrazione con sistemi esistenti, senza custodia dati.</li>
         </ul>
 
         <div class="callout" style="margin-top:12px">
-          <strong>Cosa non e:</strong> non e un social, non e un database utenti, non e un wallet custodian.
-          Se una sezione sembra chiedere dati personali, e un errore da correggere.
+          <strong>Cosa non è:</strong> non è un identity provider, non è un database utenti,
+          non è un sistema di sorveglianza o scoring. Se una sezione sembra chiedere dati personali,
+          è un errore da correggere.
         </div>
       </div>
     </section>
@@ -394,21 +238,21 @@
         <a class="card" href="./ipr/" aria-label="Vai a IPR">
           <h2>IPR</h2>
           <p class="meta">
-            Identity Primary Record: struttura base, regole di attivazione, compatibilita UE-first.
+            Identity Primary Record: struttura base, regole di attivazione, compatibilità UE-first.
           </p>
         </a>
 
         <a class="card" href="./verify/" aria-label="Vai a Verify">
           <h2>VERIFY</h2>
           <p class="meta">
-            Verifica pubblica: controlli fail-closed, hash, coerenza e opponibilita.
+            Verifica pubblica: controlli fail-closed, hash, coerenza e opponibilità.
           </p>
         </a>
 
-        <a class="card" href="./eu-pilot/" aria-label="Vai a EU Pilot">
+        <a class="card" href="./eu/pilot/" aria-label="Vai a EU Pilot">
           <h2>EU PILOT</h2>
           <p class="meta">
-            Percorso di pilot: adozione progressiva, casi d uso, integrazione istituzionale.
+            Percorso di pilot: adozione progressiva, casi d'uso, integrazione istituzionale.
           </p>
         </a>
       </div>
@@ -419,7 +263,7 @@
     <div class="wrap">
       <div class="footGrid">
         <div>
-          <div class="mono" style="font-weight:900; margin-bottom:6px">
+          <div class="mono" style="font-weight:900;margin-bottom:6px">
             HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA
           </div>
           <div class="mono small">HERMETICUM B.C.E. S.r.l.</div>
@@ -429,12 +273,12 @@
         </div>
 
         <div class="links">
-          <div style="font-weight:850; margin-bottom:8px">Link</div>
+          <div style="font-weight:850;margin-bottom:8px">Link</div>
           <a href="./about/">About</a>
           <a href="./verify/">Verify</a>
           <a href="./ipr/">IPR</a>
           <a href="./architecture/">Architecture</a>
-          <a href="./eu-pilot/">EU Pilot</a>
+          <a href="./eu/pilot/">EU Pilot</a>
         </div>
       </div>
     </div>
