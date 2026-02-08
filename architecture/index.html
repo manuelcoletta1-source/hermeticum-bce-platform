@@ -1,57 +1,121 @@
-<!DOCTYPE html>
-<html lang="it">
+<!doctype html>
+<html lang="it" data-base="../">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Architettura — Hermeticum</title>
-  <link rel="stylesheet" href="../assets/style.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <title>Architecture | HERMETICUM</title>
+  <meta name="description" content="Architettura IPR e infrastruttura di responsabilità digitale. Stack UE-first auditabile e fail-closed." />
+  <link rel="stylesheet" href="../assets/hbce.css" />
+
+  <style>
+    .layers{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:16px}
+    @media(max-width:1000px){.layers{grid-template-columns:1fr}}
+    .layer{padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--panel2)}
+    h1{margin:0 0 10px;font-size:30px}
+    ul{margin:0;padding-left:18px;color:var(--muted)}
+    li{margin:6px 0}
+  </style>
 </head>
+
 <body>
-  <header class="hdr">
-    <div class="sym">🜏</div>
-    <div class="brand">
-      HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br>
-      <strong>HERMETICUM B.C.E. S.r.l.</strong> · UE
+<div id="hbce-header"></div>
+
+<main class="wrap">
+  <div class="card">
+
+    <div class="kicker">
+      <span class="mono">ARCHITECTURE</span>
+      <span class="mono">EU-first</span>
+      <span class="mono">audit-first</span>
+      <span class="mono">fail-closed</span>
     </div>
-    <h1>Architettura</h1>
-    <p class="muted">IPR Europeo (Base) come atto + receipt timbrato: hash-only, auditabile, opponibile.</p>
 
-    <nav class="nav">
-      <a href="../">Home</a>
-      <a href="../activate/">Attiva IPR Europeo</a>
-      <a href="../verify/">Verify</a>
-      <a href="../audit/">Audit</a>
-      <a href="./">Architettura</a>
-      <a href="../eu/pilot/">Pilota UE</a>
-    </nav>
-  </header>
+    <h1>Architettura infrastrutturale</h1>
 
-  <main class="wrap">
-    <section class="card">
-      <h2>Schema</h2>
-      <div class="mono">
-Standard Cliente (HBCE-CLIENT-STD-UE-v1)
-↓
-payload_sha256 = sha256(canonical_json)
-↓
-Receipt timbrato (HBCE-IPR-EU-v1)
-  - Hermeticum hallmark + 🜏
-  - timestamp
-  - stamps UNEBDO + OPC
-  - joker tag opzionale
-↓
-Verify (PASS/FAIL)
-↓
-Audit (prev_hash append-only)
+    <p style="color:var(--muted);max-width:80ch">
+      HERMETICUM introduce un layer di attribuzione e verifica sopra sistemi esistenti.
+      Non sostituisce identità legali o infrastrutture istituzionali:
+      fornisce condizioni tecniche verificabili e opponibili.
+    </p>
+
+    <div class="callout">
+      <strong>Principio:</strong> se una azione non è attribuibile e verificabile,
+      non è eseguibile in modalità infrastrutturale.
+    </div>
+
+    <div class="layers">
+
+      <div class="layer">
+        <h2 style="margin:0 0 6px;font-size:16px">Layer 1 — Identity anchor</h2>
+        <ul>
+          <li>IPR (Identity Primary Record)</li>
+          <li>Identità esterna o sovrana</li>
+          <li>Nessuna custodia dati</li>
+        </ul>
       </div>
-      <p class="small">
-        UNEBDO e OPC qui sono “timbri” di regime: confermano che la logica è audit-first e opponibile.
-      </p>
-    </section>
-  </main>
 
-  <footer class="ftr">
-    🜏 HERMETICUM — Architettura · HERMETICUM B.C.E. S.r.l.
-  </footer>
+      <div class="layer">
+        <h2 style="margin:0 0 6px;font-size:16px">Layer 2 — Attribution</h2>
+        <ul>
+          <li>Chi è responsabile</li>
+          <li>Quando avviene</li>
+          <li>Condizioni operative</li>
+        </ul>
+      </div>
+
+      <div class="layer">
+        <h2 style="margin:0 0 6px;font-size:16px">Layer 3 — Trace</h2>
+        <ul>
+          <li>Append-only timeline</li>
+          <li>Evidence pack</li>
+          <li>Opponibilità nel tempo</li>
+        </ul>
+      </div>
+
+      <div class="layer">
+        <h2 style="margin:0 0 6px;font-size:16px">Layer 4 — Verification</h2>
+        <ul>
+          <li>PASS / FAIL / INVALID</li>
+          <li>Hash-only</li>
+          <li>Verifica pubblica</li>
+        </ul>
+      </div>
+
+      <div class="layer">
+        <h2 style="margin:0 0 6px;font-size:16px">Layer 5 — Execution</h2>
+        <ul>
+          <li>Accesso sistemi</li>
+          <li>AI / robotica</li>
+          <li>Infrastrutture critiche</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div style="margin-top:18px">
+      <h2 style="margin:0 0 8px;font-size:18px">Integrazione</h2>
+      <ul>
+        <li>B2B e supply chain</li>
+        <li>Robotica e AI</li>
+        <li>Energia e infrastrutture</li>
+        <li>Servizi pubblici UE</li>
+      </ul>
+    </div>
+
+    <div class="btnRow" style="margin-top:14px">
+      <a class="btn primary" href="../verify/">VERIFY</a>
+      <a class="btn secondary" href="../ipr/">IPR</a>
+      <a class="btn" href="../use-cases/">USE CASES</a>
+    </div>
+
+  </div>
+</main>
+
+<div id="hbce-footer"></div>
+
+<script src="../assets/hbce-ui.js"></script>
+<script>hbceBoot("../");</script>
+
 </body>
 </html>
