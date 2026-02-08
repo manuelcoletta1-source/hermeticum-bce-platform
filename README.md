@@ -1,150 +1,209 @@
-# HERMETICUM
-## Infrastruttura di Responsabilità Digitale (IPR) — allineata UE
+# HERMETICUM B.C.E.
+## Infrastruttura di responsabilità digitale — UE-first
 
-Audit-first · Fail-closed · Hash-only · Nessuna custodia dati
+**Regime:** audit-first · fail-closed · hash-only · no data custody  
+**Nodo:** hermeticum-bce-platform  
+**Stato:** pilot tecnico pubblico  
+**Società:** HERMETICUM B.C.E. S.r.l.  
 
----
-
-## Sintesi esecutiva
-
-HERMETICUM è un’infrastruttura tecnica progettata per migliorare  
-**attribuzione, responsabilità e tracciabilità** nei processi digitali.
-
-Introduce un meccanismo verificabile per rispondere a una domanda centrale:
-
-> **Chi è responsabile di cosa e quando — in modo verificabile da terzi?**
-
-Il sistema è progettato in ottica **UE-first**, allineato ai principi di:
-- auditabilità  
-- proporzionalità  
-- minimizzazione dei dati  
+**Sigillo:**  
+HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA  
 
 ---
 
-## Cos’è HERMETICUM
+# Sintesi esecutiva
 
-- Un layer di attribuzione di responsabilità sopra sistemi esistenti  
-- Un framework per audit verificabili e ripetibili  
-- Un’infrastruttura pilot-ready per contesti B2B e B2G  
-- Uno strumento per ridurre ambiguità, dispute e costo di audit  
+HERMETICUM è un’infrastruttura tecnica progettata per migliorare:
+
+- attribuzione di responsabilità,
+- tracciabilità opponibile,
+- verificabilità pubblica dei processi digitali.
+
+Introduce un livello operativo chiamato **IPR (Identity Primary Record)**  
+che consente verifica deterministica e auditabile senza custodia di dati personali.
+
+Domanda centrale:
+
+> Chi è responsabile di cosa e quando — in modo verificabile da terzi?
 
 ---
 
-## Cosa NON è HERMETICUM
+# Principi fondamentali
 
-- ❌ Non è un identity provider  
-- ❌ Non custodisce dati personali  
-- ❌ Non è un sistema di sorveglianza o scoring  
-- ❌ Non prende decisioni al posto delle istituzioni  
+## Fail-Closed
+Se la verifica non è possibile, il risultato è invalido.
+
+## Audit-First
+Ogni output è progettato per essere ispezionabile e comparabile.
+
+## Hash-Only Verification
+La verifica usa riferimenti crittografici, non dati personali.
+
+## No Data Custody
+Nessuna custodia dati personali per design.
+
+---
+
+# Che cos’è HERMETICUM
+
+Un layer tecnico sopra sistemi esistenti che permette:
+
+- attribuzione verificabile,
+- riduzione ambiguità,
+- audit ripetibile,
+- integrazione B2B e B2G.
 
 Non richiede database centrali di identità.  
 Non richiede custodia obbligatoria di dati personali.
 
 ---
 
-## Principi fondamentali
+# Cosa NON è
 
-**Fail-Closed**  
-Se la verifica non è possibile, il risultato è invalido.
+❌ Non è un identity provider  
+❌ Non è un social o database utenti  
+❌ Non custodisce dati personali  
+❌ Non è sistema di sorveglianza  
+❌ Non sostituisce istituzioni legali  
 
-**Audit-First**  
-Ogni output è progettato per essere ispezionabile e comparabile.
-
-**Hash-Only Verification**  
-La verifica usa riferimenti crittografici, non dati grezzi.
-
-**No Data Custody**  
-Superficie dati minima per design.
+È un’infrastruttura di verifica tecnica.
 
 ---
 
-## Architettura (alto livello)
+# Architettura (alto livello)
 
-HERMETICUM segue un modello a **5 layer**:
+Modello a 5 layer:
 
 1. Identity anchor (identità esterna o sovrana)
 2. Attribuzione di responsabilità
 3. Traccia append-only
 4. Verifica pubblica pass/fail
-5. Interoperabilità (B2B / B2G / eIDAS-ready)
+5. Interoperabilità B2B/B2G
+
+System map:
+- `/system.html`
+- `/architecture/`
+
+---
+
+# Ingressi principali
+
+Gateway:
+- Home → `/`
+- Directory → `/NAV.html`
+- System map → `/system.html`
+
+Core:
+- IPR → `/ipr/`
+- Verify → `/verify/`
+- Architecture → `/architecture/`
+- EU Pilot → `/eu/pilot/`
+- Use cases → `/use-cases/`
+
+Contesto:
+- Governance → `/governance/`
+- Privacy → `/privacy/`
+- Security → `/security/`
+
+---
+
+# Modello di verifica
+
+La verifica è:
+
+- deterministica,
+- ripetibile pubblicamente,
+- comparabile nel tempo,
+- con esito PASS | FAIL | INVALID.
+
+INVALID se:
+- non esiste riferimento verificabile,
+- hash incoerente,
+- catena rotta,
+- policy non soddisfatta.
 
 Vedi:
-- `/architecture/`
-- `/assets/architecture-diagram.svg`
+`/verify/`
 
 ---
 
-## Stato Pilot UE
+# Stato pilot UE
 
-Il repository include materiale pronto per valutazione:
+Questo repository è progettato come:
 
-- Entry pilot: `/eu/pilot/`
-- Template report valutazione: `/eu/pilot/report-template.md`
-- Report esempio compilato: `/eu/pilot/example-report.md`
-- Policy sicurezza: `/SECURITY.md`
+**EU audit-first infrastructure prototype**
 
-Il pilot è **tecnico**, non normativo.
+Include:
+- manifest firmati,
+- evidence pack,
+- registry append-only,
+- mapping eIDAS2/EUDI,
+- dossier tecnici.
+
+Non stabilisce autorità legale.  
+Non è sistema normativo.
 
 ---
 
-## Casi d’uso principali
+# Casi d’uso principali
 
-- Attribuzione responsabilità supply chain  
+- Supply chain accountability  
 - AI e robotica (responsabilità decisionale)  
 - Infrastrutture critiche  
-- Processi di governance digitale  
+- Governance digitale  
+- Sistemi B2B/B2G  
 
 Vedi: `/use-cases/`
 
 ---
 
-## Modello di verifica
+# Verificabilità pubblica
 
-La verifica è:
-- deterministica  
-- ripetibile pubblicamente  
-- con esito pass/fail  
+Questo nodo supporta:
 
-Vedi: `/verify/`
+- verifica riproducibile,
+- audit comparabile,
+- evidenze append-only,
+- manifest pubblici.
 
----
-
-## Livelli di maturità
-
-**Demo**
-- flussi UI
-- nessun dato personale
-
-**Pilot**
-- manifest firmati
-- evidence pack
-- verifica deterministica
-
-**Produzione (futuro)**
-- sicurezza rafforzata
-- governance definita
-- compliance documentata
+Vedi:
+- `/registry/`
+- `/evidence/`
+- `/network/`
 
 ---
 
-## Governance e responsabilità
+# Governance e limiti
 
-HERMETICUM non sostituisce le strutture legali.  
-Fornisce chiarezza tecnica per supportarle.
+HERMETICUM:
 
-La responsabilità resta agli attori e alle istituzioni coinvolte.
+- non sostituisce sistemi legali,
+- non crea identità legali,
+- non custodisce dati,
+- non esercita autorità.
+
+Fornisce chiarezza tecnica verificabile.
 
 ---
 
-## Disclaimer
+# Disclaimer
 
 Questo repository documenta un’infrastruttura tecnica in fase pilot.
 
 Non stabilisce:
-- identità legali
-- autorità giuridica
-- obblighi di custodia
+- identità legali,
+- autorità giuridica,
+- obblighi di custodia,
+- riconoscimento normativo automatico.
+
+Audit-first.  
+Fail-closed.  
+Hash-only.  
+Nessuna custodia dati.
 
 ---
 
-Audit-first. Fail-closed. Hash-only. Nessuna custodia dati.
+# Sigillo
+
+HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA  
+HERMETICUM B.C.E. S.r.l.
