@@ -1,187 +1,443 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HERMETICUM B.C.E. — Infrastruttura Europea di Responsabilità Digitale</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <title>HERMETICUM B.C.E. | EU Audit-First Identity Infrastructure</title>
+  <meta name="description" content="HERMETICUM B.C.E. - gateway UE-first, audit-first: IPR (Identity Primary Record), verifiche, architettura e pilot europei." />
+  <meta name="robots" content="index,follow" />
 
-<style>
-body{
-    margin:0;
-    background:#0a0a0a;
-    color:white;
-    font-family:Arial, Helvetica, sans-serif;
-    text-align:center;
-}
+  <style>
+    :root{
+      --bg: #0b0f17;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.09);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+      --line: rgba(255,255,255,.14);
+      --accent: #86f7c1;
+      --accent2: #8ab4ff;
+      --warn: #ffd38a;
+      --ok: #a7ffdf;
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --radius: 18px;
+      --radius2: 14px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      --max: 1080px;
+    }
 
-.container{
-    max-width:1100px;
-    margin:auto;
-    padding:60px 20px;
-}
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg: #f6f7fb;
+        --panel: rgba(0,0,0,.05);
+        --panel2: rgba(0,0,0,.07);
+        --text: rgba(0,0,0,.88);
+        --muted: rgba(0,0,0,.62);
+        --line: rgba(0,0,0,.14);
+        --shadow: 0 14px 40px rgba(0,0,0,.10);
+      }
+    }
 
-h1{
-    font-size:42px;
-    margin-bottom:6px;
-}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background:
+        radial-gradient(1200px 600px at 20% -20%, rgba(134,247,193,.18), transparent 55%),
+        radial-gradient(1200px 600px at 80% 0%, rgba(138,180,255,.16), transparent 55%),
+        radial-gradient(1200px 700px at 50% 110%, rgba(255,211,138,.10), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.45;
+    }
 
-.subtitle{
-    font-size:18px;
-    color:#cfcfcf;
-    margin-bottom:40px;
-}
+    a{color:inherit; text-decoration:none}
+    a:hover{text-decoration:underline}
 
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-    gap:20px;
-    margin-top:40px;
-}
+    .wrap{max-width:var(--max); margin:0 auto; padding:0 18px}
+    .topbar{
+      position:sticky; top:0; z-index:10;
+      background: color-mix(in srgb, var(--bg) 82%, transparent);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px;
+      padding:14px 0;
+    }
+    .brand{
+      display:flex; align-items:baseline; gap:10px; white-space:nowrap;
+      font-weight:800;
+      letter-spacing:.4px;
+    }
+    .brand small{
+      font-weight:600;
+      opacity:.75;
+      font-size:12px;
+      letter-spacing:.2px;
+    }
+    .navlinks{
+      display:flex; flex-wrap:wrap;
+      gap:10px 14px;
+      justify-content:flex-end;
+      font-weight:650;
+      font-size:14px;
+      opacity:.95;
+    }
+    .navlinks a{
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid transparent;
+    }
+    .navlinks a:focus,
+    .navlinks a:hover{
+      text-decoration:none;
+      border-color: var(--line);
+      background: var(--panel);
+    }
 
-.card{
-    background:#111;
-    border:1px solid #222;
-    padding:26px;
-    border-radius:12px;
-    transition:0.3s;
-}
+    .hero{
+      padding:40px 0 20px;
+    }
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.35fr .65fr;
+      gap:18px;
+      align-items:start;
+    }
+    @media (max-width: 900px){
+      .heroGrid{grid-template-columns:1fr}
+    }
 
-.card:hover{
-    border:1px solid #00ffd5;
-    transform:scale(1.03);
-}
+    .card{
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:18px;
+    }
+    .card2{
+      background: var(--panel2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius2);
+      padding:14px;
+    }
 
-a{
-    color:#00ffd5;
-    text-decoration:none;
-    font-weight:bold;
-}
+    .kicker{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      font-family:var(--mono);
+      font-size:12px;
+      opacity:.85;
+      padding:8px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background: color-mix(in srgb, var(--panel) 75%, transparent);
+      margin-bottom:14px;
+    }
+    .dot{
+      width:9px; height:9px; border-radius:999px;
+      background: var(--ok);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--ok) 22%, transparent);
+      display:inline-block;
+    }
+    h1{
+      margin:0 0 10px;
+      font-size:38px;
+      line-height:1.08;
+      letter-spacing:.2px;
+    }
+    @media (max-width: 520px){
+      h1{font-size:32px}
+    }
+    .sub{
+      font-size:16px;
+      color: var(--muted);
+      margin:0 0 16px;
+      max-width: 68ch;
+    }
 
-.section{
-    margin-top:60px;
-}
+    .ctaRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding:11px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--panel2);
+      font-weight:800;
+      font-size:14px;
+      text-decoration:none !important;
+    }
+    .btn.primary{
+      border-color: color-mix(in srgb, var(--accent) 70%, var(--line));
+      background: color-mix(in srgb, var(--accent) 22%, var(--panel2));
+    }
+    .btn.secondary{
+      border-color: color-mix(in srgb, var(--accent2) 70%, var(--line));
+      background: color-mix(in srgb, var(--accent2) 18%, var(--panel2));
+    }
+    .btn:focus, .btn:hover{
+      filter: brightness(1.05);
+    }
 
-.footer{
-    margin-top:90px;
-    padding-top:40px;
-    border-top:1px solid #222;
-    font-size:14px;
-    color:#888;
-}
+    .grid3{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+      margin-top:16px;
+    }
+    @media (max-width: 900px){
+      .grid3{grid-template-columns:1fr}
+    }
+    .meta{
+      font-family:var(--mono);
+      font-size:12px;
+      color: var(--muted);
+      line-height:1.35;
+    }
 
-/* sigillo aziendale */
-.company{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:10px;
-    margin-top:25px;
-    font-size:15px;
-}
+    .section{
+      padding:14px 0 26px;
+    }
+    .section h2{
+      margin:0 0 10px;
+      font-size:18px;
+      letter-spacing:.2px;
+    }
+    .bullets{
+      margin:0;
+      padding-left:18px;
+      color: var(--muted);
+    }
+    .bullets li{margin:8px 0}
 
-.company img{
-    width:22px;
-}
-</style>
+    .pillRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:12px;
+    }
+    .pill{
+      font-family:var(--mono);
+      font-size:12px;
+      padding:8px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background: var(--panel);
+      color: var(--muted);
+    }
+
+    .callout{
+      border-left:4px solid color-mix(in srgb, var(--warn) 70%, var(--line));
+      padding:12px 14px;
+      background: color-mix(in srgb, var(--warn) 12%, var(--panel));
+      border-radius: 14px;
+      border:1px solid var(--line);
+      color: var(--muted);
+    }
+    .callout strong{color:var(--text)}
+
+    footer{
+      border-top:1px solid var(--line);
+      padding:22px 0 30px;
+      margin-top:18px;
+      color: var(--muted);
+      font-size:13px;
+    }
+    .footGrid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+      align-items:start;
+    }
+    @media (max-width: 900px){
+      .footGrid{grid-template-columns:1fr}
+    }
+    .mono{font-family:var(--mono)}
+    .small{font-size:12px}
+    .links a{display:inline-block; margin-right:12px; opacity:.95}
+  </style>
 </head>
 
 <body>
+  <div class="topbar">
+    <div class="wrap">
+      <div class="nav" role="navigation" aria-label="Navigazione principale">
+        <div class="brand">
+          <span>HERMETICUM B.C.E.</span>
+          <small>EU audit-first gateway</small>
+        </div>
 
-<div class="container">
+        <div class="navlinks" aria-label="Sezioni">
+          <a href="./">HOME</a>
+          <a href="./ipr/">IPR</a>
+          <a href="./architecture/">ARCHITECTURE</a>
+          <a href="./eu-pilot/">EU PILOT</a>
+          <a href="./use-cases/">USE CASES</a>
+          <a href="./verify/">VERIFY</a>
+          <a href="./about/">ABOUT</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<h1>HERMETICUM B.C.E.</h1>
-<div class="subtitle">
-Infrastruttura europea di identità e responsabilità computabile
-</div>
+  <main class="wrap">
+    <section class="hero" aria-label="Introduzione">
+      <div class="heroGrid">
 
-<div class="section">
-<h2>Accesso sistema</h2>
+        <div class="card">
+          <div class="kicker">
+            <span class="dot" aria-hidden="true"></span>
+            <span>UE-first | audit-first | fail-closed | hash-only</span>
+          </div>
 
-<div class="grid">
+          <h1>European Identity and Infrastructure Prototype</h1>
 
-<div class="card">
-<h3>Attiva IPR</h3>
-<p>Attivazione Identity Primary Record</p>
-<a href="https://manuelcoletta1-source.github.io/hermeticum-bce-ipr/">Apri</a>
-</div>
+          <p class="sub">
+            HERMETICUM B.C.E. e IPR (Identity Primary Record) definiscono un livello operativo
+            per identita, responsabilita e verificabilita. Non custodiamo dati personali:
+            rendiamo opponibili nel tempo decisione, costo, traccia e verifiche crittografiche.
+          </p>
 
-<div class="card">
-<h3>Registro UE</h3>
-<p>Verifica e registry europeo</p>
-<a href="https://manuelcoletta1-source.github.io/ue-ipr-registry/">Apri</a>
-</div>
+          <div class="ctaRow" aria-label="Azioni principali">
+            <a class="btn primary" href="./ipr/">ENTER IPR</a>
+            <a class="btn secondary" href="./verify/">PUBLIC VERIFY</a>
+            <a class="btn" href="./eu-pilot/">EU PILOT</a>
+            <a class="btn" href="./architecture/">ARCHITECTURE</a>
+          </div>
 
-<div class="card">
-<h3>Gateway B2B</h3>
-<p>Imprese verificabili</p>
-<a href="https://manuelcoletta1-source.github.io/hermeticum-bce-b2b/">Apri</a>
-</div>
+          <div class="grid3" aria-label="Sintesi operativa">
+            <div class="card2">
+              <h2>1. Identita</h2>
+              <p class="meta">
+                IPR come base: identita definita da verifiche e condizioni operative, non da dichiarazioni.
+              </p>
+            </div>
+            <div class="card2">
+              <h2>2. Opponibilita</h2>
+              <p class="meta">
+                Audit e tracciabilita append-only: cio che esiste lascia traccia e attraversa il tempo.
+              </p>
+            </div>
+            <div class="card2">
+              <h2>3. Esecuzione</h2>
+              <p class="meta">
+                Fail-closed: senza coerenza e verifiche, niente esecuzione. Nessuna scorciatoia.
+              </p>
+            </div>
+          </div>
 
-<div class="card">
-<h3>Gateway B2G</h3>
-<p>Pubblica amministrazione e UE</p>
-<a href="https://manuelcoletta1-source.github.io/hermeticum-bce-b2g/">Apri</a>
-</div>
+          <div class="pillRow" aria-label="Tag">
+            <span class="pill">PERMISSIONLESS</span>
+            <span class="pill">GDPR-minimization</span>
+            <span class="pill">EX-ANTE verification</span>
+            <span class="pill">PUBLIC auditable</span>
+          </div>
+        </div>
 
-</div>
-</div>
+        <aside class="card" aria-label="Pannello stato e percorsi rapidi">
+          <h2>Stato del gateway</h2>
+          <p class="meta">
+            Questa home e un ingresso. Le sezioni sotto sono pensate per lettura istituzionale:
+            cosa e, cosa non e, come si verifica, e come si pilota.
+          </p>
 
-<div class="section">
-<h2>Architettura tecnologica</h2>
+          <div class="callout" style="margin-top:12px">
+            <strong>Regola operativa:</strong> nessuna custodia dati. Solo prove, hash, verifiche, policy.
+          </div>
 
-<div class="grid">
+          <div class="section" style="padding:14px 0 0">
+            <h2>Percorsi rapidi</h2>
+            <ul class="bullets">
+              <li><a href="./verify/">VERIFY</a> per controllare lo stato pubblico e i check.</li>
+              <li><a href="./ipr/">IPR</a> per il gateway di attivazione e struttura base.</li>
+              <li><a href="./architecture/">ARCHITECTURE</a> per il modello modulare e lo stack.</li>
+              <li><a href="./eu-pilot/">EU PILOT</a> per scenario di adozione e pilot europei.</li>
+            </ul>
+          </div>
+        </aside>
 
-<div class="card">
-<h3>Technology Core</h3>
-<a href="https://manuelcoletta1-source.github.io/Hermeticum-B.C.E.-Technology/">Apri</a>
-</div>
+      </div>
+    </section>
 
-<div class="card">
-<h3>IPR Core</h3>
-<a href="https://manuelcoletta1-source.github.io/ipr-core/">Apri</a>
-</div>
+    <section class="section" aria-label="Che cosa rappresenta">
+      <div class="card">
+        <h2>Che cosa rappresenta questo sito</h2>
+        <ul class="bullets">
+          <li>Un prototipo di interfaccia UE-first per identita verificabile e auditabile.</li>
+          <li>Un layout di standardizzazione: regole, verifiche, e percorso di pilot.</li>
+          <li>Una base per B2B e B2G: integrazione con sistemi esistenti, senza custodia dati.</li>
+        </ul>
 
-<div class="card">
-<h3>IPR Gate</h3>
-<a href="https://manuelcoletta1-source.github.io/ipr-gate/">Apri</a>
-</div>
+        <div class="callout" style="margin-top:12px">
+          <strong>Cosa non e:</strong> non e un social, non e un database utenti, non e un wallet custodian.
+          Se una sezione sembra chiedere dati personali, e un errore da correggere.
+        </div>
+      </div>
+    </section>
 
-<div class="card">
-<h3>IPR Comply</h3>
-<a href="https://manuelcoletta1-source.github.io/ipr-comply/">Apri</a>
-</div>
+    <section class="section" aria-label="Ingressi principali">
+      <div class="grid3">
+        <a class="card" href="./ipr/" aria-label="Vai a IPR">
+          <h2>IPR</h2>
+          <p class="meta">
+            Identity Primary Record: struttura base, regole di attivazione, compatibilita UE-first.
+          </p>
+        </a>
 
-<div class="card">
-<h3>NeuroLoop</h3>
-<a href="https://manuelcoletta1-source.github.io/neuroloop/">Apri</a>
-</div>
+        <a class="card" href="./verify/" aria-label="Vai a Verify">
+          <h2>VERIFY</h2>
+          <p class="meta">
+            Verifica pubblica: controlli fail-closed, hash, coerenza e opponibilita.
+          </p>
+        </a>
 
-<div class="card">
-<h3>IoSpace</h3>
-<a href="https://manuelcoletta1-source.github.io/iospace/">Apri</a>
-</div>
+        <a class="card" href="./eu-pilot/" aria-label="Vai a EU Pilot">
+          <h2>EU PILOT</h2>
+          <p class="meta">
+            Percorso di pilot: adozione progressiva, casi d uso, integrazione istituzionale.
+          </p>
+        </a>
+      </div>
+    </section>
+  </main>
 
-<div class="card">
-<h3>CyberGlobal</h3>
-<a href="https://manuelcoletta1-source.github.io/cyberglobal/">Apri</a>
-</div>
+  <footer>
+    <div class="wrap">
+      <div class="footGrid">
+        <div>
+          <div class="mono" style="font-weight:900; margin-bottom:6px">
+            HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA
+          </div>
+          <div class="mono small">HERMETICUM B.C.E. S.r.l.</div>
+          <div class="small" style="margin-top:10px">
+            Regime: UE-first, audit-first, fail-closed, hash-only. Nessuna custodia dati personali.
+          </div>
+        </div>
 
-</div>
-</div>
-
-<div class="footer">
-
-<div class="company">
-<img src="assets/sigillum-hermeticum.svg">
-<span>HERMETICUM B.C.E. S.r.l.</span>
-</div>
-
-<div style="margin-top:10px;">
-Nodo europeo · Audit by design · Fail closed · Hash only
-</div>
-
-</div>
-
-</div>
+        <div class="links">
+          <div style="font-weight:850; margin-bottom:8px">Link</div>
+          <a href="./about/">About</a>
+          <a href="./verify/">Verify</a>
+          <a href="./ipr/">IPR</a>
+          <a href="./architecture/">Architecture</a>
+          <a href="./eu-pilot/">EU Pilot</a>
+        </div>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
