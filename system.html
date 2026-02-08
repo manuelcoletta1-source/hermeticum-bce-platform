@@ -1,324 +1,132 @@
 <!doctype html>
-<html lang="it">
+<html lang="it" data-base="../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="color-scheme" content="light dark" />
-  <title>System Map | HERMETICUM B.C.E.</title>
-  <meta name="description" content="Mappa globale dell’infrastruttura HERMETICUM B.C.E. (IPR, audit, verify, governance, pilot UE) con ingressi e layer principali." />
-  <meta name="robots" content="index,follow" />
+  <title>System | HERMETICUM Infrastructure</title>
+  <meta name="description" content="Mappa globale infrastruttura HERMETICUM e IPR. Struttura operativa, moduli e flussi di verifica." />
+  <link rel="stylesheet" href="../assets/hbce.css" />
 
   <style>
-    :root{
-      --bg:#0b0f17;
-      --panel:rgba(255,255,255,.06);
-      --panel2:rgba(255,255,255,.09);
-      --text:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.72);
-      --line:rgba(255,255,255,.14);
-      --accent:#86f7c1;
-      --accent2:#8ab4ff;
-      --warn:#ffd38a;
-      --shadow:0 18px 50px rgba(0,0,0,.35);
-      --r1:18px;
-      --r2:14px;
-      --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-      --sans:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
-      --max:1100px;
-    }
-    @media (prefers-color-scheme: light){
-      :root{
-        --bg:#f6f7fb;
-        --panel:rgba(0,0,0,.05);
-        --panel2:rgba(0,0,0,.07);
-        --text:rgba(0,0,0,.88);
-        --muted:rgba(0,0,0,.62);
-        --line:rgba(0,0,0,.14);
-        --shadow:0 14px 40px rgba(0,0,0,.10);
-      }
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:var(--sans);
-      background:
-        radial-gradient(1200px 600px at 20% -20%, rgba(134,247,193,.18), transparent 55%),
-        radial-gradient(1200px 600px at 80% 0%, rgba(138,180,255,.16), transparent 55%),
-        radial-gradient(1200px 700px at 50% 110%, rgba(255,211,138,.10), transparent 60%),
-        var(--bg);
-      color:var(--text);
-      line-height:1.45;
-      min-height:100vh;
-    }
-    a{color:inherit;text-decoration:none}
-    a:hover{text-decoration:underline}
-
-    .wrap{max-width:var(--max);margin:0 auto;padding:0 18px}
-    .topbar{
-      position:sticky;top:0;z-index:10;
-      background:color-mix(in srgb, var(--bg) 82%, transparent);
-      backdrop-filter:blur(10px);
-      border-bottom:1px solid var(--line);
-    }
-    .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0}
-    .brand{display:flex;align-items:baseline;gap:10px;white-space:nowrap;font-weight:900;letter-spacing:.4px}
-    .brand small{font-weight:650;opacity:.75;font-size:12px;letter-spacing:.2px}
-    .navlinks{display:flex;flex-wrap:wrap;gap:10px 14px;justify-content:flex-end;font-weight:750;font-size:14px;opacity:.95}
-    .navlinks a{padding:8px 10px;border-radius:12px;border:1px solid transparent}
-    .navlinks a:focus,.navlinks a:hover{text-decoration:none;border-color:var(--line);background:var(--panel)}
-
-    main{padding:28px 0 26px}
-    .card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:var(--r1);
-      box-shadow:var(--shadow);
-      padding:18px;
-    }
-    .kicker{
-      display:inline-flex;gap:10px;align-items:center;
-      font-family:var(--mono);font-size:12px;opacity:.85;
-      padding:8px 10px;border:1px solid var(--line);
-      border-radius:999px;background:color-mix(in srgb, var(--panel) 75%, transparent);
-      margin-bottom:14px;
-    }
-    h1{margin:0 0 10px;font-size:30px;line-height:1.12}
-    p{margin:0 0 10px;color:var(--muted)}
-    .mono{font-family:var(--mono)}
-
-    .mapGrid{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:12px;
-      margin-top:14px;
-    }
-    @media (max-width: 980px){ .mapGrid{grid-template-columns: 1fr} }
-
-    .node{
-      background:var(--panel2);
-      border:1px solid var(--line);
-      border-radius:var(--r2);
-      padding:14px;
-    }
-    .node h2{
-      margin:0 0 6px;
-      font-size:16px;
-      letter-spacing:.2px;
-    }
-    .tagRow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-    .tag{
-      font-family:var(--mono);
-      font-size:12px;
-      padding:8px 10px;
-      border:1px solid var(--line);
-      border-radius:999px;
-      background:var(--panel);
-      color:var(--muted);
-    }
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}}
+    h1{margin:0 0 10px;font-size:30px}
     ul{margin:0;padding-left:18px;color:var(--muted)}
     li{margin:7px 0}
-
-    .callout{
-      border-left:4px solid color-mix(in srgb, var(--warn) 70%, var(--line));
-      padding:12px 14px;background:color-mix(in srgb, var(--warn) 12%, var(--panel));
-      border-radius:14px;border:1px solid var(--line);
-      color:var(--muted);
-      margin-top:12px;
-    }
-    .callout strong{color:var(--text)}
-
-    .miniGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-      margin-top:12px;
-    }
-    @media (max-width: 980px){ .miniGrid{grid-template-columns:1fr} }
-
-    footer{
-      border-top:1px solid var(--line);
-      padding:18px 0 26px;
-      margin-top:18px;
-      color:var(--muted);
-      font-size:13px;
-    }
-    .foot{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
-    .small{font-size:12px}
+    .node{padding:16px;border-radius:16px;border:1px solid var(--line);background:var(--panel2)}
+    .node h2{margin:0 0 8px;font-size:17px}
   </style>
 </head>
 
 <body>
-  <div class="topbar">
-    <div class="wrap">
-      <div class="nav" role="navigation" aria-label="Navigazione principale">
-        <div class="brand">
-          <span>HERMETICUM B.C.E.</span>
-          <small>system map</small>
-        </div>
+<div id="hbce-header"></div>
 
-        <div class="navlinks" aria-label="Sezioni">
-          <a href="./">HOME</a>
-          <a href="./ipr/">IPR</a>
-          <a href="./architecture/">ARCHITECTURE</a>
-          <a href="./eu/pilot/">EU PILOT</a>
-          <a href="./use-cases/">USE CASES</a>
-          <a href="./verify/">VERIFY</a>
-          <a href="./about/">ABOUT</a>
-        </div>
-      </div>
+<main class="wrap">
+  <div class="card">
+
+    <div class="kicker">
+      <span class="mono">SYSTEM MAP</span>
+      <span class="mono">IPR infrastructure</span>
+      <span class="mono">UE-first</span>
+      <span class="mono">audit-first</span>
     </div>
+
+    <h1>Mappa infrastrutturale</h1>
+
+    <p style="color:var(--muted);max-width:80ch">
+      HERMETICUM è composto da nodi e moduli interconnessi.
+      Ogni sezione del portale rappresenta una funzione operativa.
+      L’insieme forma una infrastruttura verificabile e modulare.
+    </p>
+
+    <div class="callout">
+      <strong>Regola:</strong> nessun nodo custodisce dati personali.
+      Tutti i moduli operano in modalità hash-only e auditabile.
+    </div>
+
+    <div class="grid">
+
+      <div class="node">
+        <h2>IPR Core</h2>
+        <ul>
+          <li>Identity Primary Record</li>
+          <li>Anchor e receipt</li>
+          <li>Struttura base identità</li>
+        </ul>
+      </div>
+
+      <div class="node">
+        <h2>Verify Engine</h2>
+        <ul>
+          <li>PASS / FAIL / INVALID</li>
+          <li>Verifica hash</li>
+          <li>Precheck pubblico</li>
+        </ul>
+      </div>
+
+      <div class="node">
+        <h2>Registry</h2>
+        <ul>
+          <li>Append-only network</li>
+          <li>Nodi verificabili</li>
+          <li>Timeline pubblica</li>
+        </ul>
+      </div>
+
+      <div class="node">
+        <h2>EU Pilot Layer</h2>
+        <ul>
+          <li>Test istituzionali</li>
+          <li>Integrazione UE</li>
+          <li>Sandbox tecniche</li>
+        </ul>
+      </div>
+
+      <div class="node">
+        <h2>Operational Use</h2>
+        <ul>
+          <li>AI e robotica</li>
+          <li>Supply chain</li>
+          <li>Infrastrutture critiche</li>
+        </ul>
+      </div>
+
+      <div class="node">
+        <h2>Governance</h2>
+        <ul>
+          <li>Limiti operativi</li>
+          <li>Nessuna autorità legale</li>
+          <li>Audit pubblico</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div style="margin-top:20px">
+      <h2 style="margin:0 0 8px;font-size:18px">Flusso operativo</h2>
+      <ul>
+        <li>Creazione IPR</li>
+        <li>Generazione receipt</li>
+        <li>Verifica pubblica</li>
+        <li>Uso operativo</li>
+        <li>Audit nel tempo</li>
+      </ul>
+    </div>
+
+    <div class="btnRow" style="margin-top:16px">
+      <a class="btn primary" href="../ipr/">IPR</a>
+      <a class="btn secondary" href="../verify/">VERIFY</a>
+      <a class="btn" href="../eu/pilot/">EU PILOT</a>
+    </div>
+
   </div>
+</main>
 
-  <main class="wrap">
-    <div class="card">
-      <div class="kicker">
-        <span class="mono">SYSTEM MAP</span>
-        <span class="mono">EU-readable</span>
-        <span class="mono">audit-first</span>
-        <span class="mono">no-custody</span>
-      </div>
+<div id="hbce-footer"></div>
 
-      <h1>Mappa globale dell’infrastruttura</h1>
-      <p>
-        Questa pagina descrive gli ingressi principali e i layer del nodo <span class="mono">hermeticum-bce-platform</span>.
-        È una vista “alta” (da dossier): utile per orientamento, revisione e audit.
-      </p>
+<script src="../assets/hbce-ui.js"></script>
+<script>hbceBoot("../");</script>
 
-      <div class="callout">
-        <strong>Regola base:</strong> la piattaforma non custodisce dati personali.
-        L’unità di verifica è la prova (hash/receipt/manifest) e l’esito è deterministico <span class="mono">PASS/FAIL</span>.
-      </div>
-
-      <div class="miniGrid" aria-label="Ingressi rapidi">
-        <section class="node">
-          <h2>Ingressi operativi</h2>
-          <ul>
-            <li><a href="./ipr/">IPR</a> — gateway identità e attivazione</li>
-            <li><a href="./verify/">VERIFY</a> — verifica pubblica deterministica</li>
-            <li><a href="./create/">CREATE</a> — generazione IPR UE base (local + download)</li>
-            <li><a href="./audit/">AUDIT</a> — checklist e revisione (fail-closed)</li>
-          </ul>
-          <div class="tagRow">
-            <span class="tag">EX-ANTE</span>
-            <span class="tag">APPEND-ONLY</span>
-            <span class="tag">PUBLIC AUDIT</span>
-          </div>
-        </section>
-
-        <section class="node">
-          <h2>Contesto istituzionale</h2>
-          <ul>
-            <li><a href="./eu/pilot/">EU PILOT</a> — adozione progressiva</li>
-            <li><a href="./governance/">GOVERNANCE</a> — limiti, responsabilità, UE-first</li>
-            <li><a href="./privacy/">PRIVACY</a> — GDPR-min, hash-only</li>
-            <li><a href="./security/">SECURITY</a> — postura e disclosure</li>
-          </ul>
-          <div class="tagRow">
-            <span class="tag">B2B</span>
-            <span class="tag">B2G</span>
-            <span class="tag">PILOT-READY</span>
-          </div>
-        </section>
-      </div>
-
-      <h2 style="margin:18px 0 8px;font-size:18px">Layer (vista a 5 livelli)</h2>
-      <p class="mono" style="margin:0 0 10px;color:var(--muted)">
-        L1 Identity anchor → L2 Responsibility attribution → L3 Append-only trace → L4 Public verification → L5 Interoperability
-      </p>
-
-      <div class="mapGrid" aria-label="Layer e moduli">
-        <section class="node" aria-label="Layer 1">
-          <h2>L1 — Identity anchor</h2>
-          <p>
-            Identità esterna o sovrana (non custodita). IPR definisce un formato verificabile,
-            non un database centrale di persone.
-          </p>
-          <ul>
-            <li><a href="./ipr/">/ipr/</a> — overview IPR</li>
-            <li><a href="./standard/ipr/">/standard/ipr/</a> — standard tecnico</li>
-            <li><a href="./normative/">/normative/</a> — mapping eIDAS2/EUDI (non-equivalenza)</li>
-          </ul>
-        </section>
-
-        <section class="node" aria-label="Layer 2">
-          <h2>L2 — Responsibility attribution</h2>
-          <p>
-            Strato di attribuzione sopra sistemi esistenti: definisce “chi risponde di cosa e quando” in modo verificabile.
-          </p>
-          <ul>
-            <li><a href="./gate/">/gate/</a> — metrological PASS/FAIL gate</li>
-            <li><a href="./modules/">/modules/</a> — capability modules</li>
-            <li><a href="./corridors/">/corridors/</a> — canali B2G e integrazioni</li>
-          </ul>
-        </section>
-
-        <section class="node" aria-label="Layer 3">
-          <h2>L3 — Append-only trace</h2>
-          <p>
-            Traccia comparabile nel tempo. Evidence pack e registri append-only per dimostrazione ripetibile.
-          </p>
-          <ul>
-            <li><a href="./registry/">/registry/</a> — registry append-only</li>
-            <li><a href="./network/">/network/</a> — rete pubblica IPR</li>
-            <li><a href="./evidence/">/evidence/</a> — esempi riproducibili</li>
-          </ul>
-        </section>
-
-        <section class="node" aria-label="Layer 4">
-          <h2>L4 — Public verification</h2>
-          <p>
-            Verifica deterministica e pubblica. Esito pass/fail. Se non verificabile, invalido.
-          </p>
-          <ul>
-            <li><a href="./verify/">/verify/</a> — engine di verifica</li>
-            <li><a href="./tech/">/tech/</a> — checklist fail-closed</li>
-            <li><a href="./openapi/">/openapi/</a> — interfacce e precheck</li>
-          </ul>
-        </section>
-
-        <section class="node" aria-label="Layer 5">
-          <h2>L5 — Interoperabilità</h2>
-          <p>
-            Integrazione con contesti reali (B2B/B2G). Nessuna sostituzione delle istituzioni: supporto tecnico all’audit.
-          </p>
-          <ul>
-            <li><a href="./use-cases/">/use-cases/</a> — scenari operativi</li>
-            <li><a href="./catalog/">/catalog/</a> — con IPR / senza IPR</li>
-            <li><a href="./projects/">/projects/</a> — perimetro infrastrutturale</li>
-          </ul>
-        </section>
-
-        <section class="node" aria-label="Mappe e riferimenti">
-          <h2>Mappe & riferimenti</h2>
-          <p>
-            Documenti e snapshot per revisione. Vista “da dossier” e baseline congelate.
-          </p>
-          <ul>
-            <li><a href="./map/">/map/</a> — mappa semplificata ecosistema</li>
-            <li><a href="./baseline/">/baseline/</a> — record di stabilizzazione</li>
-            <li><a href="./changelog/">/changelog/</a> — freeze e versioni</li>
-            <li><a href="./NAV.html">NAV.html</a> — directory canonica</li>
-          </ul>
-        </section>
-      </div>
-
-      <div class="callout" style="margin-top:14px">
-        <strong>Interpretazione:</strong> questa mappa è intenzionalmente “sobria”.
-        In un gateway UE-first, l’effetto non nasce dal marketing: nasce dalla coerenza tra policy, link e verificabilità.
-      </div>
-    </div>
-  </main>
-
-  <footer>
-    <div class="wrap">
-      <div class="foot">
-        <div>
-          <div class="mono" style="font-weight:900">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-          <div class="mono small">HERMETICUM B.C.E. S.r.l.</div>
-        </div>
-        <div class="small mono">UE-first · audit-first · fail-closed · hash-only</div>
-      </div>
-    </div>
-  </footer>
 </body>
 </html>
