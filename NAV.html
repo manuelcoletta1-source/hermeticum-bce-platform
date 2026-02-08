@@ -1,60 +1,229 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Navigazione — Hermeticum</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <title>NAV | HERMETICUM B.C.E.</title>
+  <meta name="description" content="Indice di navigazione canonico del portale HERMETICUM B.C.E. (UE-first, audit-first, fail-closed, hash-only)." />
+  <meta name="robots" content="index,follow" />
 
-<style>
-body{font-family:Arial,Helvetica,sans-serif;background:#0a0a0a;color:#eaeaea;margin:0}
-header{text-align:center;padding:30px;border-bottom:1px solid #222}
-.symbol{font-size:40px}
-.brand{letter-spacing:2px;font-size:13px;opacity:.8}
-.section{max-width:900px;margin:auto;padding:40px 20px}
-.block{border:1px solid #222;padding:20px;margin:14px 0;background:#111}
-a{color:white;text-decoration:none;border-bottom:1px solid #444;padding-bottom:2px}
-a:hover{border-bottom:1px solid #fff}
-ul{margin:10px 0 0 18px;line-height:1.9}
-footer{text-align:center;padding:30px;border-top:1px solid #222;opacity:.6}
-</style>
+  <style>
+    :root{
+      --bg:#0b0f17;
+      --panel:rgba(255,255,255,.06);
+      --panel2:rgba(255,255,255,.09);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.72);
+      --line:rgba(255,255,255,.14);
+      --accent:#86f7c1;
+      --accent2:#8ab4ff;
+      --warn:#ffd38a;
+      --shadow:0 18px 50px rgba(0,0,0,.35);
+      --r1:18px;
+      --r2:14px;
+      --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      --sans:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      --max:1080px;
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg:#f6f7fb;
+        --panel:rgba(0,0,0,.05);
+        --panel2:rgba(0,0,0,.07);
+        --text:rgba(0,0,0,.88);
+        --muted:rgba(0,0,0,.62);
+        --line:rgba(0,0,0,.14);
+        --shadow:0 14px 40px rgba(0,0,0,.10);
+      }
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background:
+        radial-gradient(1200px 600px at 20% -20%, rgba(134,247,193,.18), transparent 55%),
+        radial-gradient(1200px 600px at 80% 0%, rgba(138,180,255,.16), transparent 55%),
+        radial-gradient(1200px 700px at 50% 110%, rgba(255,211,138,.10), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.45;
+      min-height:100vh;
+    }
+    a{color:inherit;text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:var(--max);margin:0 auto;padding:0 18px}
+    .topbar{
+      position:sticky;top:0;z-index:10;
+      background:color-mix(in srgb, var(--bg) 82%, transparent);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0}
+    .brand{display:flex;align-items:baseline;gap:10px;white-space:nowrap;font-weight:900;letter-spacing:.4px}
+    .brand small{font-weight:650;opacity:.75;font-size:12px;letter-spacing:.2px}
+    .navlinks{display:flex;flex-wrap:wrap;gap:10px 14px;justify-content:flex-end;font-weight:750;font-size:14px;opacity:.95}
+    .navlinks a{padding:8px 10px;border-radius:12px;border:1px solid transparent}
+    .navlinks a:focus,.navlinks a:hover{text-decoration:none;border-color:var(--line);background:var(--panel)}
+    main{padding:28px 0 26px}
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--r1);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+    .kicker{
+      display:inline-flex;gap:10px;align-items:center;
+      font-family:var(--mono);font-size:12px;opacity:.85;
+      padding:8px 10px;border:1px solid var(--line);
+      border-radius:999px;background:color-mix(in srgb, var(--panel) 75%, transparent);
+      margin-bottom:14px;
+    }
+    h1{margin:0 0 8px;font-size:28px;line-height:1.12}
+    p{margin:0 0 10px;color:var(--muted)}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2, 1fr);
+      gap:12px;
+      margin-top:12px;
+    }
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+    .box{
+      background:var(--panel2);
+      border:1px solid var(--line);
+      border-radius:var(--r2);
+      padding:14px;
+    }
+    .box h2{
+      margin:0 0 8px;
+      font-size:16px;
+      letter-spacing:.2px;
+    }
+    .list{margin:0;padding-left:18px;color:var(--muted)}
+    .list li{margin:7px 0}
+    .mono{font-family:var(--mono)}
+    .callout{
+      border-left:4px solid color-mix(in srgb, var(--warn) 70%, var(--line));
+      padding:12px 14px;background:color-mix(in srgb, var(--warn) 12%, var(--panel));
+      border-radius:14px;border:1px solid var(--line);
+      color:var(--muted);
+      margin-top:12px;
+    }
+    .callout strong{color:var(--text)}
+    footer{
+      border-top:1px solid var(--line);
+      padding:18px 0 26px;
+      margin-top:18px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .foot{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+    .small{font-size:12px}
+  </style>
 </head>
 
 <body>
+  <div class="topbar">
+    <div class="wrap">
+      <div class="nav" role="navigation" aria-label="Navigazione principale">
+        <div class="brand">
+          <span>HERMETICUM B.C.E.</span>
+          <small>directory canonica</small>
+        </div>
 
-<header>
-<div class="symbol">🜏</div>
-<div class="brand">
-HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br>
-HERMETICUM B.C.E. S.r.l. · UE
-</div>
-<h1>Navigazione</h1>
-<p>Indice rapido del nodo centrale</p>
-</header>
+        <div class="navlinks" aria-label="Sezioni">
+          <a href="./">HOME</a>
+          <a href="./ipr/">IPR</a>
+          <a href="./architecture/">ARCHITECTURE</a>
+          <a href="./eu/pilot/">EU PILOT</a>
+          <a href="./use-cases/">USE CASES</a>
+          <a href="./verify/">VERIFY</a>
+          <a href="./about/">ABOUT</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<div class="section">
+  <main class="wrap">
+    <div class="card">
+      <div class="kicker">
+        <span class="mono">NAV</span>
+        <span class="mono">UE-first</span>
+        <span class="mono">audit-first</span>
+        <span class="mono">fail-closed</span>
+      </div>
 
-<div class="block">
-<h2>Pagine del nodo centrale</h2>
-<ul>
-  <li><a href="index.html">Home (Nodo centrale)</a></li>
-  <li><a href="architecture.html">Architettura IPR</a></li>
-  <li><a href="eu-pilot.html">Prospettiva Pilota UE</a></li>
-  <li><a href="verify.html">Verifica e riferimenti</a></li>
-</ul>
-</div>
+      <h1>Indice di navigazione (canonico)</h1>
+      <p>
+        Questa pagina elenca gli ingressi principali del portale. È pensata per lettura istituzionale,
+        audit e revisione tecnica. Nessuna custodia dati: solo percorsi, policy e verifica.
+      </p>
 
-<div class="block">
-<h2>Motore identitario</h2>
-<ul>
-  <li><a href="https://manuelcoletta1-source.github.io/hermeticum-bce-ipr/" target="_blank" rel="noopener">Repository IPR</a></li>
-</ul>
-</div>
+      <div class="grid" aria-label="Sezioni principali">
+        <section class="box" aria-label="Ingressi core">
+          <h2>Ingressi core</h2>
+          <ul class="list">
+            <li><a href="./ipr/">IPR</a> — attivazione e struttura base Identity Primary Record</li>
+            <li><a href="./verify/">VERIFY</a> — verifica pubblica deterministica (PASS/FAIL)</li>
+            <li><a href="./architecture/">ARCHITECTURE</a> — stack, moduli, layer e modello operativo</li>
+            <li><a href="./eu/pilot/">EU PILOT</a> — adozione progressiva e contesto pilot europeo</li>
+          </ul>
+        </section>
 
-</div>
+        <section class="box" aria-label="Contesto e trasparenza">
+          <h2>Contesto e trasparenza</h2>
+          <ul class="list">
+            <li><a href="./about/">ABOUT</a> — cosa è / cosa non è (audit-first)</li>
+            <li><a href="./governance/">GOVERNANCE</a> — limiti, responsabilità, UE-first</li>
+            <li><a href="./privacy/">PRIVACY</a> — GDPR-min, hash-only, no data custody</li>
+            <li><a href="./security/">SECURITY</a> — disclosure e posture di sicurezza (EU-aligned)</li>
+          </ul>
+        </section>
 
-<footer>
-🜏 HERMETICUM — Indice di navigazione
-</footer>
+        <section class="box" aria-label="Adozione e accesso">
+          <h2>Adozione e accesso</h2>
+          <ul class="list">
+            <li><a href="./use-cases/">USE CASES</a> — scenari B2B/B2G (AI, robotica, infrastrutture)</li>
+            <li><a href="./catalog/">CATALOG</a> — con IPR / senza IPR (chiarimento operativo)</li>
+            <li><a href="./projects/">PROJECTS</a> — area infrastruttura (accesso controllato)</li>
+            <li><a href="./corridors/">CORRIDORS</a> — percorsi B2G e integrazioni esterne</li>
+          </ul>
+        </section>
 
+        <section class="box" aria-label="Strumenti e prove">
+          <h2>Strumenti e prove</h2>
+          <ul class="list">
+            <li><a href="./create/">CREATE</a> — generazione/attivazione IPR UE base (local + download)</li>
+            <li><a href="./anchor/">ANCHOR</a> — builder anchor pack (BTC/ETH/IPFS, manuale)</li>
+            <li><a href="./audit/">AUDIT</a> — hub checklist e revisione (fail-closed)</li>
+            <li><a href="./evidence/">EVIDENCE</a> — esempi riproducibili e pack dimostrativi</li>
+          </ul>
+        </section>
+      </div>
+
+      <div class="callout">
+        <strong>Nota operativa:</strong> se un link qui risulta rotto, è un difetto da correggere.
+        In un gateway fail-closed, un percorso inesistente equivale a “non valido”.
+      </div>
+
+      <div class="callout" style="margin-top:12px">
+        <strong>Sigillo:</strong> HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br />
+        <span class="mono">HERMETICUM B.C.E. S.r.l.</span>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot">
+        <div>
+          <div class="mono" style="font-weight:900">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+          <div class="mono small">HERMETICUM B.C.E. S.r.l.</div>
+        </div>
+        <div class="small mono">UE-first · audit-first · fail-closed · hash-only</div>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
