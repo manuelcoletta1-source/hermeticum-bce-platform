@@ -11,32 +11,7 @@
 <link rel="stylesheet" href="./assets/hbce.css"/>
 
 <style>
-
-/* =========================
-   WATERMARK SIGILLO GLOBALE
-========================= */
-body::before{
-  content:"";
-  position:fixed;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  width:520px;
-  height:520px;
-  background:url('./sigillo-hermeticum.svg') no-repeat center;
-  background-size:contain;
-  opacity:0.035;
-  pointer-events:none;
-  z-index:0;
-}
-
-.wrap, header, main, footer{
-  position:relative;
-  z-index:1;
-}
-
-/* HERO */
-.hero{padding:18px 0 6px}
+.hero{padding:18px 0 10px}
 
 .heroGrid{
   display:grid;
@@ -48,40 +23,57 @@ body::before{
   .heroGrid{grid-template-columns:1fr}
 }
 
-/* LOGO + NOME */
-.brand{
+/* INTESTAZIONE ISTITUZIONALE */
+.brandBlock{
+  margin-bottom:14px;
+}
+
+.brandLine{
   display:flex;
   align-items:center;
-  gap:14px;
-  margin-bottom:10px;
+  gap:12px;
+  flex-wrap:wrap;
 }
 
-.brand img{
-  height:42px;
+.brandLine img{
+  height:36px;
   width:auto;
-  opacity:.95;
+  opacity:.9;
 }
 
-.brand span{
+.brandTitle{
   font-size:26px;
   font-weight:700;
-  letter-spacing:.5px;
+  letter-spacing:.4px;
 }
 
-/* TIMBRO ATTIVO */
-.stamp{
-  font-family:ui-monospace,monospace;
-  font-size:12px;
+/* linea tecnica con sigillo */
+.brandRule{
+  margin-top:6px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:var(--muted);
+}
+
+.brandRule .line{
+  flex:1;
+  height:1px;
+  background:var(--line);
+}
+
+.brandRule .seal{
+  font-size:14px;
   letter-spacing:2px;
+  font-family:var(--mono);
   color:#00ffa6;
-  margin-top:4px;
 }
 
-/* TESTO */
+/* testo */
 .sub{
   font-size:16px;
   color:var(--muted);
-  margin:0 0 16px;
+  margin:14px 0 16px;
   max-width:70ch;
 }
 
@@ -118,7 +110,6 @@ body::before{
   color:var(--muted);
 }
 .bullets li{margin:8px 0}
-
 </style>
 </head>
 
@@ -131,7 +122,7 @@ body::before{
 <section class="hero">
 <div class="heroGrid">
 
-<!-- COLONNA SINISTRA -->
+<!-- SINISTRA -->
 <div class="card">
 
 <div class="kicker">
@@ -141,20 +132,26 @@ body::before{
 <span class="mono">hash-only</span>
 </div>
 
-<!-- LOGO + AZIENDA -->
-<div class="brand">
+<!-- BLOCCO AZIENDA ISTITUZIONALE -->
+<div class="brandBlock">
+
+<div class="brandLine">
 <img src="./sigillo-hermeticum.svg">
-<span>HERMETICUM B.C.E.</span>
+<div class="brandTitle">HERMETICUM B.C.E.</div>
 </div>
 
-<div class="stamp">
-🜏 SIGILLO TECNICO INFRASTRUTTURALE ATTIVO
+<div class="brandRule">
+<div class="line"></div>
+<div class="seal">🜏 INFRASTRUCTURE NODE ACTIVE</div>
+<div class="line"></div>
+</div>
+
 </div>
 
 <p class="sub">
 HERMETICUM B.C.E. introduce un layer operativo per identità verificabile,
 attribuzione di responsabilità e audit pubblico.  
-Il sistema non custodisce dati personali e opera in modalità hash-only.
+Il sistema opera in modalità hash-only e non custodisce dati personali.
 </p>
 
 <div class="btnRow">
@@ -198,13 +195,13 @@ Fail-closed: senza verifica non esiste esecuzione.
 
 </div>
 
-<!-- COLONNA DESTRA -->
+<!-- DESTRA -->
 <aside class="card">
 
 <h2 style="margin:0 0 10px;font-size:18px">Stato infrastruttura</h2>
 
 <div class="callout">
-Nodo operativo in modalità pubblica e verificabile.
+Nodo operativo pubblico e verificabile.
 </div>
 
 <div style="padding-top:14px">
