@@ -1,124 +1,140 @@
 <!doctype html>
-<html lang="it">
+<html lang="it" data-base="../">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Motore di Verifica IPR</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <title>VERIFY | Public Verification</title>
+  <meta name="description" content="Verifica pubblica deterministica IPR e manifest. PASS / FAIL / INVALID. Audit-first, fail-closed, hash-only." />
+  <meta name="robots" content="index,follow" />
+  <link rel="stylesheet" href="../assets/hbce.css" />
 
-<link rel="stylesheet" href="../assets/css/main.css"/>
-<link rel="stylesheet" href="../assets/css/brand.css"/>
-<script src="../assets/js/verify.js" defer></script>
+  <style>
+    .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:12px;margin-top:12px}
+    @media (max-width:900px){.grid2{grid-template-columns:1fr}}
+
+    input{
+      width:100%;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:var(--panel2);
+      color:var(--text);
+      font-family:var(--mono);
+      font-size:13px;
+      outline:none;
+    }
+
+    .result{
+      margin-top:12px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:var(--panel);
+      font-family:var(--mono);
+      font-size:12px;
+      color:var(--muted);
+      white-space:pre-wrap;
+    }
+
+    h1{margin:0 0 10px;font-size:30px}
+  </style>
 </head>
 
 <body>
-
-<header class="topbar">
-<div class="wrap">
-<div class="row">
-
-<div class="brandmark">
-<img src="../assets/img/hermeticum-mark-neon.svg"/>
-<span>IPR</span>
-</div>
-
-<nav class="nav">
-<a href="../">Gateway</a>
-<a href="../activate/">Attiva</a>
-<a href="../verify/" class="active">Verifica</a>
-<a href="../registry/">Registro</a>
-<a href="../projects/">Accesso</a>
-<a href="../status/">Stato</a>
-</nav>
-
-<div class="spacer"></div>
-<div class="status active">Motore di verifica</div>
-
-</div>
-</div>
-</header>
+<div id="hbce-header"></div>
 
 <main class="wrap">
+  <div class="card">
 
-<section class="hero">
-<h1>Verifica deterministica IPR</h1>
-<p class="lead">
-Verifica pubblica basata su hash delle ricevute Identity Primary Record
-</p>
-</section>
+    <div class="kicker">
+      <span class="mono">PUBLIC VERIFY</span>
+      <span class="mono">deterministic</span>
+      <span class="mono">fail-closed</span>
+      <span class="mono">hash-only</span>
+    </div>
 
-<section class="section">
-<div class="panel">
+    <h1>Verifica pubblica</h1>
+    <p style="margin:0;color:var(--muted);max-width:80ch">
+      Questa interfaccia esegue un precheck deterministico su hash, receipt o manifest.
+      Non invia dati a server e non custodisce informazioni.
+      Se una verifica non è ripetibile pubblicamente → esito invalido.
+    </p>
 
-<h2>Modello di verifica</h2>
+    <div class="grid2">
 
-<div style="color:var(--muted);line-height:1.8">
+      <section class="card2">
+        <h2 style="margin:0 0 8px;font-size:16px">Precheck</h2>
 
-Questo motore esegue la verifica deterministica delle ricevute IPR.  
-Non richiede dati personali.  
-Non richiede server centrale.  
-Modello basato esclusivamente su hash.
+        <input id="hashInput" type="text" placeholder="Inserisci hash (sha256 o sha512)" />
 
-Se la verifica fallisce → il contesto di esecuzione è considerato non valido.
+        <div class="btnRow">
+          <button class="btn primary" onclick="runCheck()">ESEGUI VERIFICA</button>
+          <a class="btn secondary" href="../ipr/">IPR</a>
+          <a class="btn" href="../registry/">REGISTRY</a>
+        </div>
 
-</div>
+        <div id="output" class="result">Stato: IDLE</div>
+      </section>
 
-</div>
-</section>
+      <aside class="card2">
+        <h2 style="margin:0 0 8px;font-size:16px">Modello di esito</h2>
 
-<section class="section">
-<div class="panel">
+        <ul style="margin:0;padding-left:18px;color:var(--muted)">
+          <li><span class="mono">PASS</span> → formato coerente e verificabile</li>
+          <li><span class="mono">FAIL</span> → incoerenza o errore</li>
+          <li><span class="mono">INVALID</span> → nessuna verifica possibile</li>
+        </ul>
 
-<h2>Verifica ricevuta</h2>
+        <div class="callout">
+          <strong>Fail-closed:</strong> se la verifica non è deterministica,
+          il sistema considera il riferimento non valido.
+        </div>
 
-<textarea id="hbce_input" style="
-width:100%;
-height:220px;
-background:#0b0b0b;
-color:#00ffa6;
-border:1px solid #222;
-padding:14px;
-font-family:monospace;
-"></textarea>
+        <p style="margin-top:10px;color:var(--muted)">
+          Questa pagina non stabilisce identità legali.  
+          Fornisce solo coerenza tecnica verificabile.
+        </p>
+      </aside>
 
-<div class="cta" style="margin-top:18px">
-<button class="btn primary" onclick="HBCE_verify()">Verifica</button>
-</div>
-
-<pre id="hbce_out" class="result" style="margin-top:20px"></pre>
-
-</div>
-</section>
-
-<section class="section">
-<div class="panel">
-
-<h2>Logica di esecuzione</h2>
-
-<div style="color:var(--muted);line-height:1.8">
-
-Il risultato della verifica è binario:
-
-AUTORIZZATO  
-NEGATO  
-
-Nessuno stato intermedio.  
-Logica fail-closed.
-
-Questo motore non concede permessi.  
-Misura la verificabilità dell’attribuzione prima dell’esecuzione.
-
-</div>
-
-</div>
-</section>
-
+    </div>
+  </div>
 </main>
 
-<footer class="footer">
-<div class="wrap">
-<strong>Motore di Verifica IPR — Layer pubblico deterministico</strong>
-</div>
-</footer>
+<div id="hbce-footer"></div>
+
+<script src="../assets/hbce-ui.js"></script>
+<script>hbceBoot("../");</script>
+
+<script>
+function runCheck(){
+  const v = document.getElementById("hashInput").value.trim();
+  const out = document.getElementById("output");
+
+  if(!v){
+    out.textContent="INVALID\nNessun riferimento inserito.";
+    return;
+  }
+
+  const hex=/^[0-9a-fA-F]+$/;
+  if(!hex.test(v)){
+    out.textContent="FAIL\nFormato non esadecimale.";
+    return;
+  }
+
+  if(v.length===64){
+    out.textContent="PASS\nFormato SHA256 valido.\nUsa registry o manifest per verifica completa.";
+    return;
+  }
+
+  if(v.length===128){
+    out.textContent="PASS\nFormato SHA512 valido.\nUsa registry o manifest per verifica completa.";
+    return;
+  }
+
+  out.textContent="INVALID\nLunghezza hash non riconosciuta.";
+}
+</script>
 
 </body>
 </html>
