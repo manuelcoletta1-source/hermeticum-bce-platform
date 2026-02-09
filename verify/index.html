@@ -1,20 +1,131 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verify — Verifica tecnica pubblica</title>
+<meta name="description" content="Gateway di verifica tecnica pubblica. Lookup su registry append-only. Hash-only, fail-closed, audit-first.">
+<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css">
+</head>
+
+<body>
+<div class="wrap">
+
+  <div class="nav">
+    <div class="brand">
+      <strong>HERMETICUM B.C.E.</strong>
+      <span>Public Verification</span>
+    </div>
+
+    <a href="/hermeticum-bce-platform/">HOME</a>
+    <a href="/hermeticum-bce-platform/enterprise/">ENTERPRISE</a>
+    <a href="/hermeticum-bce-platform/infrastructure/">INFRASTRUCTURE</a>
+    <a href="/hermeticum-bce-platform/bruxelles/">BRUXELLES</a>
+    <a href="/hermeticum-bce-platform/ipr/">IPR</a>
+    <a href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+    <a href="/hermeticum-bce-platform/verify/">VERIFY</a>
+    <a href="/hermeticum-bce-platform/repos/">ECOSYSTEM</a>
+  </div>
+
+  <div class="kicker">Fail-closed · Hash-only · Audit-first</div>
+  <h1>VERIFY</h1>
+
+  <p class="lead">
+    Gateway di verifica tecnica pubblica con lookup su registro append-only.
+    Il nodo lavora su impronte e receipt (hash-only). Nessuna custodia dati del soggetto.
+    Se non è verificabile → <b>INVALID</b>.
+  </p>
+
+  <div class="ctaRow">
+    <a class="btn" href="/hermeticum-bce-platform/create/">CREATE</a>
+    <a class="btn" href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
+    <a class="btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+    <a class="btn primary" href="/hermeticum-bce-platform/ipr/">IPR</a>
+  </div>
+
+  <div class="hr"></div>
+
+  <div class="grid">
+
+    <div class="card wide">
+      <h3>Verifica rapida (registry lookup)</h3>
+      <p class="p">
+        Incolla un <b>payload_sha256</b> (64 hex). Il sistema cerca nel registro pubblico append-only e restituisce PASS/INVALID.
+      </p>
+
+      <input class="input" id="q" placeholder="Incolla payload_sha256 (64 hex)..." autocomplete="off">
+
+      <div class="meta" id="out" style="margin-top:10px">Nessun input.</div>
+
+      <div class="ctaRow" style="margin-top:14px">
+        <a class="btn" href="/hermeticum-bce-platform/registry/">Apri Registry</a>
+        <a class="btn" href="/hermeticum-bce-platform/infrastructure/">Apri Infrastructure</a>
+        <a class="btn" href="/hermeticum-bce-platform/repos/">Apri Ecosystem</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Regola fail-closed</h3>
+      <p>
+        Se il registry non è accessibile o non è coerente, l’esito è INVALID.
+        Nessun redirect “furbo”. Nessuna validità presunta.
+      </p>
+      <div class="meta">Fail-closed</div>
+    </div>
+
+    <div class="card">
+      <h3>Classi supportate</h3>
+      <p>
+        • payload_sha256 (64 hex)<br>
+        • (estensioni future: CID IPFS, TX BTC/EVM)
+      </p>
+      <div class="meta">Minimo operativo</div>
+    </div>
+
+    <div class="card wide">
+      <h3>Percorso cliente</h3>
+      <p>
+        1) CREATE (payload+hash) → 2) RECEIPT → 3) append in REGISTRY → 4) VERIFY (PASS/INVALID)
+      </p>
+      <div class="meta">Identity before execution</div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <div>
+      HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br>
+      HERMETICUM B.C.E. S.r.l. · Unione Europea
+    </div>
+    <div class="footlinks">
+      <a href="/hermeticum-bce-platform/create/">CREATE</a>
+      <a href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+      <a href="/hermeticum-bce-platform/repos/">ECOSYSTEM</a>
+    </div>
+  </div>
+
+</div>
+
 <script>
 (function(){
+  const REG_URL = "/hermeticum-bce-platform/registry/registry.json";
   const q = document.getElementById("q");
   const out = document.getElementById("out");
 
-  function isSha256Hex(v){ return /^[a-f0-9]{64}$/i.test(v); }
+  function isSha256Hex(v){ return /^[a-f0-9]{64}$/i.test(v || ""); }
 
   async function loadRegistry(){
-    const r = await fetch("/hermeticum-bce-platform/registry/registry.json", { cache: "no-store" });
+    const r = await fetch(REG_URL, { cache: "no-store" });
     if(!r.ok) throw new Error("REGISTRY_FETCH_FAILED");
-    return await r.json();
+    const reg = await r.json();
+    if(!reg || !Array.isArray(reg.entries)) throw new Error("REGISTRY_SCHEMA_INVALID");
+    return reg.entries;
   }
 
   async function lookup(sha){
-    const reg = await loadRegistry();
-    const entries = Array.isArray(reg.entries) ? reg.entries : [];
-    return entries.find(e => (e.payload_sha256 || "").toLowerCase() === sha.toLowerCase()) || null;
+    const entries = await loadRegistry();
+    const hit = entries.find(e => String(e.payload_sha256 || "").toLowerCase() === sha.toLowerCase());
+    return hit || null;
   }
 
   let timer = null;
@@ -26,24 +137,30 @@
     if(!v){ out.textContent = "Nessun input."; return; }
     if(v.length < 16){ out.textContent = "INPUT_TOO_SHORT → INVALID"; return; }
 
-    // Debounce per non martellare fetch
     timer = setTimeout(async () => {
       if(!isSha256Hex(v)){
-        out.textContent = "FORMATO NON CLASSIFICATO → INVALID (usa payload_sha256 64-hex per lookup)";
+        out.textContent = "FORMATO NON VALIDO → INVALID (serve payload_sha256: 64 hex)";
         return;
       }
+
       out.textContent = "Lookup registry…";
+
       try{
         const hit = await lookup(v);
         if(hit){
-          out.textContent = "PASS → presente nel registry (append-only). Nickname: " + (hit.nickname || "N/A");
+          const nick = hit.nickname ? (" · Nickname: " + hit.nickname) : "";
+          const ts = hit.timestamp ? (" · Timestamp: " + hit.timestamp) : "";
+          out.textContent = "PASS → presente nel registry (append-only)" + nick + ts;
         }else{
           out.textContent = "INVALID → non presente nel registry (append-only).";
         }
       }catch(e){
-        out.textContent = "INVALID → registry non accessibile (fail-closed).";
+        out.textContent = "INVALID → registry non accessibile o non coerente (fail-closed).";
       }
     }, 350);
   });
 })();
 </script>
+
+</body>
+</html>
