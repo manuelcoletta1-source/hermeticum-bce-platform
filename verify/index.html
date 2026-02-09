@@ -15,7 +15,7 @@
       <div class="hbce-hero__kicker">VERIFY · Public verification · Fail-closed</div>
       <h1 class="hbce-hero__title">PASS / INVALID</h1>
       <p class="hbce-hero__lead">
-        Questa pagina effettua lookup nel registry append-only.
+        Lookup deterministico nel registry append-only.
         Se l’hash è presente → <strong>PASS</strong>. Se manca o non è verificabile → <strong>INVALID</strong>.
       </p>
       <div class="hbce-hero__cta">
@@ -57,7 +57,7 @@
           <div class="hbce-meta">Entry matchata (se PASS)</div>
           <textarea id="match" class="hbce-textarea" rows="12" readonly placeholder="—"></textarea>
           <div class="hbce-meta" style="margin-top:10px">
-            Se l’entry non esiste o registry non è leggibile → INVALID (fail-closed).
+            Se entry non esiste o registry non è leggibile → INVALID.
           </div>
         </article>
       </div>
@@ -67,8 +67,8 @@
       <h2>Regola</h2>
       <div class="hbce-card hbce-card--wide">
         <p class="hbce-p">
-          In modalità audit-first, ciò che non è verificabile non può essere considerato valido.
-          Nessun redirect “furbo”. Nessuna interpretazione. Solo lookup deterministico.
+          Audit-first: ciò che non è verificabile non è valido.
+          Nessuna interpretazione. Solo lookup in registry.
         </p>
         <div class="hbce-meta">UE-first · audit-first · fail-closed · hash-only · append-only</div>
       </div>
@@ -103,7 +103,6 @@
       const match = $("match");
 
       let registryEntries = null;
-      let registryLoadedAt = null;
 
       function setStatus(msg){ status.textContent = msg; }
 
@@ -121,7 +120,6 @@
       function isHex64(s){ return /^[a-fA-F0-9]{64}$/.test(s); }
 
       function extractEntries(obj){
-        // Supporta: {entries:[...]} oppure [...] oppure {registry:{entries:[...]}} ecc.
         if(Array.isArray(obj)) return obj;
         if(obj && Array.isArray(obj.entries)) return obj.entries;
         if(obj && obj.registry && Array.isArray(obj.registry.entries)) return obj.registry.entries;
@@ -152,11 +150,8 @@
             return false;
           }
 
-          // Normalizza: solo oggetti con payload hash
           registryEntries = entries.filter(e => e && typeof e === "object");
-          registryLoadedAt = new Date().toISOString();
-
-          setStatus("Registry caricato: " + registryEntries.length + " entries (" + registryLoadedAt + ").");
+          setStatus("Registry caricato: " + registryEntries.length + " entries.");
           return true;
         }catch(e){
           registryEntries = null;
@@ -167,8 +162,6 @@
       }
 
       function getEntryHash(e){
-        // Canonico: payload_sha256
-        // Compat: public_payload_sha256 (se qualcuno l’ha usato)
         return normalize(e.payload_sha256 || e.public_payload_sha256 || "");
       }
 
@@ -182,18 +175,7 @@
         return null;
       }
 
-      btnReload.addEventListener("click", async ()=>{
-        await loadRegistry();
-      });
-
-      btnReset.addEventListener("click", ()=>{
-        inpHash.value = "";
-        match.value = "";
-        setResult("IDLE","—","—");
-        setStatus("Reset.");
-      });
-
-      btnVerify.addEventListener("click", async ()=>{
+      async function doVerify(){
         const h = normalize(inpHash.value);
 
         if(!isHex64(h)){
@@ -203,11 +185,9 @@
           return;
         }
 
-        // Fail-closed: se registry non è caricato, tentiamo load. Se fallisce → INVALID.
         if(!registryEntries){
           const ok = await loadRegistry();
           if(!ok){
-            // loadRegistry ha già impostato INVALID
             match.value = "";
             return;
           }
@@ -224,10 +204,36 @@
         setResult("PASS","PASS","Entry trovata nel registry (verificabile).");
         match.value = JSON.stringify(m, null, 2);
         setStatus("Lookup completato: PASS.");
+      }
+
+      btnReload.addEventListener("click", async ()=>{ await loadRegistry(); });
+
+      btnReset.addEventListener("click", ()=>{
+        inpHash.value = "";
+        match.value = "";
+        setResult("IDLE","—","—");
+        setStatus("Reset.");
+        // Non svuotiamo registryEntries: reset input, non cache.
       });
 
-      // Autoload registry all'apertura (best effort)
+      btnVerify.addEventListener("click", async ()=>{ await doVerify(); });
+
+      // Autoload registry
       loadRegistry();
+
+      // Prefill da querystring: ?h=<sha256>
+      try{
+        const params = new URLSearchParams(window.location.search || "");
+        const h = normalize(params.get("h") || "");
+        if(h){
+          inpHash.value = h;
+          // auto-verify (fail-closed)
+          setStatus("Prefill rilevato (?h=). Verifica automatica…");
+          doVerify();
+        }
+      }catch(e){
+        // ignore
+      }
     })();
   </script>
 </body>
