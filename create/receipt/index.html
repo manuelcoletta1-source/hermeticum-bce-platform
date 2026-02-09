@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Receipt — Registry Append</title>
+<meta name="description" content="Genera una receipt pubblica e il blocco pronto da appendere a registry.json. Hash-only, fail-closed.">
+<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css">
+</head>
+
+<body>
+<div class="wrap">
+
+  <div class="nav">
+    <div class="brand"><strong>HERMETICUM B.C.E.</strong><span>Receipt</span></div>
+    <a href="/hermeticum-bce-platform/">HOME</a>
+    <a href="/hermeticum-bce-platform/create/">CREATE</a>
+    <a href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+    <a href="/hermeticum-bce-platform/verify/">VERIFY</a>
+    <a href="/hermeticum-bce-platform/repos/">ECOSYSTEM</a>
+  </div>
+
+  <div class="kicker">Receipt · Append-only · Hash-only</div>
+  <h1>Registry Receipt</h1>
+
+  <p class="lead">
+    Incolla <b>nickname</b> e <b>payload_sha256</b> generati in CREATE.
+    Il sistema produce una receipt e un blocco pronto da incollare in <code>registry.json</code>.
+    Se i dati non sono validi → <b>INVALID</b>.
+  </p>
+
+  <div class="grid">
+    <div class="card wide">
+      <h3>Input</h3>
+      <input class="input" id="nickname" placeholder="nickname (obbligatorio)">
+      <input class="input" id="sha" placeholder="payload_sha256 (64 hex) (obbligatorio)">
+      <div class="ctaRow" style="margin-top:14px">
+        <button class="btn primary" id="build">Genera receipt</button>
+        <button class="btn" id="copy" disabled>Copia blocco</button>
+      </div>
+
+      <div class="hr"></div>
+
+      <h3>Output</h3>
+      <p class="p" id="status">Nessun output.</p>
+      <input class="input" id="out" readonly placeholder="NODE READY TO REGISTER block">
+      <div class="meta" style="margin-top:12px">
+        Step successivo: apri <a href="/hermeticum-bce-platform/registry/">REGISTRY</a> nel repo e appendi il blocco in <code>entries</code>.
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>
+      HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br>
+      HERMETICUM B.C.E. S.r.l. · Unione Europea
+    </div>
+    <div class="footlinks">
+      <a href="/hermeticum-bce-platform/create/">CREATE</a>
+      <a href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+      <a href="/hermeticum-bce-platform/verify/">VERIFY</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function clean(v){ return (v || "").trim(); }
+function isSha256Hex(v){ return /^[a-f0-9]{64}$/i.test(v); }
+
+async function copyText(text){
+  try{ await navigator.clipboard.writeText(text); return true; }
+  catch(e){ return false; }
+}
+
+document.getElementById("build").addEventListener("click", async () => {
+  const nick = clean(document.getElementById("nickname").value);
+  const sha = clean(document.getElementById("sha").value);
+
+  const status = document.getElementById("status");
+  const out = document.getElementById("out");
+  const copyBtn = document.getElementById("copy");
+
+  // FAIL-CLOSED
+  if(!nick || nick.length < 2){
+    status.innerHTML = "Esito operativo: <b>INVALID</b> (nickname mancante).";
+    out.value = "";
+    copyBtn.disabled = true;
+    return;
+  }
+  if(!isSha256Hex(sha)){
+    status.innerHTML = "Esito operativo: <b>INVALID</b> (payload_sha256 non valido: serve 64 hex).";
+    out.value = "";
+    copyBtn.disabled = true;
+    return;
+  }
+
+  const receipt = {
+    proto: "HBCE-RECEIPT-v1",
+    kind: "IPR_EU_BASE_RECEIPT",
+    policy: ["HASH_ONLY","FAIL_CLOSED","AUDIT_FIRST","NO_DATA_CUSTODY","APPEND_ONLY"],
+    nickname: nick,
+    payload_sha256: sha,
+    timestamp: new Date().toISOString()
+  };
+
+  const block = 'NODE READY TO REGISTER — copy and append to registry.json entries:\n' +
+                JSON.stringify(receipt, null, 2);
+
+  out.value = block;
+  status.innerHTML = "Esito operativo: <b>VALID</b> (blocco pronto).";
+  copyBtn.disabled = false;
+});
+
+document.getElementById("copy").addEventListener("click", async () => {
+  const text = document.getElementById("out").value;
+  if(!text) return;
+  const ok = await copyText(text);
+  document.getElementById("status").innerHTML = ok ? "Blocco copiato." : "Copia manualmente (seleziona e copia).";
+});
+</script>
+
+</body>
+</html>
