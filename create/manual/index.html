@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CREATE (Manuale) — Generatore hash IPR</title>
+  <meta name="description" content="Strumento operatori: genera payload canonico e SHA-256 localmente. Nessuna custodia dati. UE-first, audit-first, fail-closed." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">CREATE · MANUAL · OPERATOR MODE</div>
+      <h1 class="hbce-hero__title">Generatore manuale IPR (hash-only)</h1>
+      <p class="hbce-hero__lead">
+        Strumento tecnico per operatori: costruisci un payload canonico minimale e genera <strong>SHA-256</strong> localmente.
+        Pubblico = solo hash. Il resto resta locale.
+      </p>
+      <div class="hbce-hero__cta">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">Wizard (Enterprise)</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/create/receipt/">Receipt</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Registry</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verify</a>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Input (minimale)</h2>
+      <div class="hbce-card hbce-card--wide">
+        <div class="hbce-grid">
+          <div class="hbce-card" style="margin:0">
+            <label class="hbce-meta" for="nickname">Nickname operativo</label>
+            <input id="nickname" class="hbce-input" placeholder="es. NODE-EU-001" autocomplete="off" />
+
+            <label class="hbce-meta" for="subject" style="margin-top:10px">Tipo soggetto</label>
+            <select id="subject" class="hbce-input">
+              <option value="CITIZEN">Cittadino</option>
+              <option value="COMPANY">Azienda</option>
+              <option value="DEVICE">Dispositivo</option>
+              <option value="AI_AGENT">Agente AI</option>
+            </select>
+
+            <label class="hbce-meta" for="notes" style="margin-top:10px">Note locali (non pubblicate)</label>
+            <textarea id="notes" class="hbce-textarea" rows="4" placeholder="opzionale: non entra nel payload pubblico"></textarea>
+
+            <div class="hbce-actions" style="margin-top:14px">
+              <button class="hbce-btn hbce-btn--primary" id="btn-generate">Genera payload + hash</button>
+              <button class="hbce-btn" id="btn-reset">Reset</button>
+            </div>
+
+            <div class="hbce-meta" style="margin-top:10px" id="status">Pronto.</div>
+          </div>
+
+          <div class="hbce-card" style="margin:0">
+            <div class="hbce-meta">Payload pubblico canonico</div>
+            <textarea id="payload" class="hbce-textarea" rows="16" readonly placeholder="—"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Output (hash pubblico)</h2>
+      <div class="hbce-grid">
+        <div class="hbce-card" style="margin:0">
+          <div class="hbce-meta">payload_sha256</div>
+          <textarea id="hash" class="hbce-textarea" rows="2" readonly placeholder="—"></textarea>
+
+          <div class="hbce-actions">
+            <button class="hbce-btn" id="copy-hash">Copia hash</button>
+            <a class="hbce-btn" id="to-receipt" href="/hermeticum-bce-platform/create/receipt/">Vai a Receipt</a>
+            <a class="hbce-btn" id="to-verify" href="/hermeticum-bce-platform/verify/">Apri Verify (prefill)</a>
+          </div>
+
+          <div class="hbce-meta" style="margin-top:10px">
+            Suggerito: genera receipt → appendi in registry → verifica PASS/INVALID.
+          </div>
+        </div>
+
+        <div class="hbce-card" style="margin:0">
+          <div class="hbce-meta">Download (locale)</div>
+          <div class="hbce-actions">
+            <button class="hbce-btn hbce-btn--primary" id="dl-payload">Scarica IPR_PUBLIC.json</button>
+            <button class="hbce-btn" id="dl-hash">Scarica public_payload_sha256.txt</button>
+          </div>
+          <div class="hbce-meta" style="margin-top:10px">
+            Nessun server. Nessuna custodia. Solo file locali.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Regola</h2>
+      <div class="hbce-card hbce-card--wide">
+        <p class="hbce-p">
+          Fail-closed: senza registry non esiste PASS. Senza verify non esiste validità operativa.
+        </p>
+        <div class="hbce-meta">UE-first · audit-first · fail-closed · hash-only · append-only</div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-card hbce-card--wide">
+        <div class="hbce-hallmark">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+        <div class="hbce-company">HERMETICUM B.C.E. S.r.l.</div>
+        <div class="hbce-meta">UE-first · audit-first · fail-closed · hash-only</div>
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <script>
+    (function(){
+      const $ = (id) => document.getElementById(id);
+
+      const nickname = $("nickname");
+      const subject = $("subject");
+      const notes = $("notes");
+
+      const payload = $("payload");
+      const hash = $("hash");
+      const status = $("status");
+
+      const toVerify = $("to-verify");
+
+      let lastPayload = null;
+      let lastHash = "";
+
+      function setStatus(msg){ status.textContent = msg; }
+      function normalize(s){ return (s||"").toString().trim().replace(/\s+/g," "); }
+      function nowISO(){ return new Date().toISOString(); }
+
+      async function sha256Hex(str){
+        const enc = new TextEncoder().encode(str);
+        const buf = await crypto.subtle.digest("SHA-256", enc);
+        return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+      }
+
+      function download(name, content, type="application/json"){
+        const blob = new Blob([content], {type});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      async function copyText(text){
+        try{ await navigator.clipboard.writeText(text); setStatus("Copiato."); }
+        catch(e){ setStatus("Copia non disponibile: copia manualmente."); }
+      }
+
+      $("btn-generate").addEventListener("click", async () => {
+        const n = normalize(nickname.value);
+        if(!n){
+          setStatus("Inserisci nickname (fail-closed).");
+          return;
+        }
+
+        const pub = {
+          proto: "HBCE-IPR-v1",
+          kind: "IPR_PUBLIC",
+          policy: ["UE_FIRST","HASH_ONLY","NO_DATA_CUSTODY","FAIL_CLOSED","APPEND_ONLY"],
+          subject_type: subject.value,
+          nickname: n,
+          timestamp: nowISO()
+        };
+
+        lastPayload = pub;
+        const pubStr = JSON.stringify(pub);
+        lastHash = await sha256Hex(pubStr);
+
+        payload.value = JSON.stringify(pub, null, 2);
+        hash.value = lastHash;
+        toVerify.href = "/hermeticum-bce-platform/verify/?h=" + encodeURIComponent(lastHash);
+
+        setStatus("Generato. Hash pronto per receipt/registry/verify.");
+      });
+
+      $("btn-reset").addEventListener("click", () => {
+        nickname.value = "";
+        subject.value = "CITIZEN";
+        notes.value = "";
+        payload.value = "";
+        hash.value = "";
+        toVerify.href = "/hermeticum-bce-platform/verify/";
+        lastPayload = null;
+        lastHash = "";
+        setStatus("Reset.");
+      });
+
+      $("copy-hash").addEventListener("click", () => copyText(hash.value || ""));
+
+      $("dl-payload").addEventListener("click", () => {
+        if(!lastPayload){ setStatus("Genera prima il payload."); return; }
+        const name = "IPR_PUBLIC__" + normalize(nickname.value).replace(/[^a-zA-Z0-9_-]/g,"-") + ".json";
+        download(name, JSON.stringify(lastPayload, null, 2));
+        setStatus("Scaricato payload pubblico.");
+      });
+
+      $("dl-hash").addEventListener("click", () => {
+        if(!lastHash){ setStatus("Genera prima l'hash."); return; }
+        const name = "public_payload_sha256__" + normalize(nickname.value).replace(/[^a-zA-Z0-9_-]/g,"-") + ".txt";
+        download(name, lastHash + "\n", "text/plain");
+        setStatus("Scaricato hash.");
+      });
+    })();
+  </script>
+</body>
+</html>
