@@ -1,211 +1,100 @@
 <!doctype html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="color-scheme" content="light dark" />
-  <title>404 | HERMETICUM B.C.E.</title>
-  <meta name="robots" content="noindex,nofollow" />
-
-  <style>
-    :root{
-      --bg:#0b0f17;
-      --panel:rgba(255,255,255,.06);
-      --panel2:rgba(255,255,255,.09);
-      --text:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.72);
-      --line:rgba(255,255,255,.14);
-      --accent:#86f7c1;
-      --accent2:#8ab4ff;
-      --warn:#ffd38a;
-      --shadow:0 18px 50px rgba(0,0,0,.35);
-      --r1:18px;
-      --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-      --sans:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
-      --max:980px;
-    }
-    @media (prefers-color-scheme: light){
-      :root{
-        --bg:#f6f7fb;
-        --panel:rgba(0,0,0,.05);
-        --panel2:rgba(0,0,0,.07);
-        --text:rgba(0,0,0,.88);
-        --muted:rgba(0,0,0,.62);
-        --line:rgba(0,0,0,.14);
-        --shadow:0 14px 40px rgba(0,0,0,.10);
-      }
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:var(--sans);
-      background:
-        radial-gradient(1200px 600px at 20% -20%, rgba(134,247,193,.18), transparent 55%),
-        radial-gradient(1200px 600px at 80% 0%, rgba(138,180,255,.16), transparent 55%),
-        radial-gradient(1200px 700px at 50% 110%, rgba(255,211,138,.10), transparent 60%),
-        var(--bg);
-      color:var(--text);
-      line-height:1.45;
-      min-height:100vh;
-    }
-    a{color:inherit;text-decoration:none}
-    a:hover{text-decoration:underline}
-
-    .wrap{max-width:var(--max);margin:0 auto;padding:0 18px}
-    .topbar{
-      position:sticky;top:0;z-index:10;
-      background:color-mix(in srgb, var(--bg) 82%, transparent);
-      backdrop-filter:blur(10px);
-      border-bottom:1px solid var(--line);
-    }
-    .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0}
-    .brand{display:flex;align-items:baseline;gap:10px;white-space:nowrap;font-weight:900;letter-spacing:.4px}
-    .brand small{font-weight:650;opacity:.75;font-size:12px;letter-spacing:.2px}
-    .navlinks{display:flex;flex-wrap:wrap;gap:10px 14px;justify-content:flex-end;font-weight:750;font-size:14px;opacity:.95}
-    .navlinks a{padding:8px 10px;border-radius:12px;border:1px solid transparent}
-    .navlinks a:focus,.navlinks a:hover{text-decoration:none;border-color:var(--line);background:var(--panel)}
-
-    .main{padding:34px 0 24px}
-    .card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:var(--r1);
-      box-shadow:var(--shadow);
-      padding:18px;
-    }
-    .kicker{
-      display:inline-flex;gap:10px;align-items:center;
-      font-family:var(--mono);font-size:12px;opacity:.85;
-      padding:8px 10px;border:1px solid var(--line);
-      border-radius:999px;background:color-mix(in srgb, var(--panel) 75%, transparent);
-      margin-bottom:14px;
-    }
-    .mono{font-family:var(--mono)}
-    h1{margin:0 0 10px;font-size:34px;line-height:1.12}
-    p{margin:0 0 10px;color:var(--muted)}
-    .grid{
-      display:grid;
-      grid-template-columns:1.1fr .9fr;
-      gap:14px;
-      margin-top:12px;
-    }
-    @media (max-width:900px){.grid{grid-template-columns:1fr}}
-    .panel{
-      background:var(--panel2);
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:14px;
-    }
-    .btnRow{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;gap:10px;
-      padding:11px 14px;border-radius:14px;border:1px solid var(--line);
-      background:var(--panel2);font-weight:900;font-size:14px;text-decoration:none !important;
-    }
-    .btn.primary{border-color:color-mix(in srgb, var(--accent) 70%, var(--line));background:color-mix(in srgb, var(--accent) 22%, var(--panel2))}
-    .btn.secondary{border-color:color-mix(in srgb, var(--accent2) 70%, var(--line));background:color-mix(in srgb, var(--accent2) 18%, var(--panel2))}
-    .btn:hover{filter:brightness(1.05)}
-    ul{margin:0;padding-left:18px;color:var(--muted)}
-    li{margin:7px 0}
-    .callout{
-      border-left:4px solid color-mix(in srgb, var(--warn) 70%, var(--line));
-      padding:12px 14px;background:color-mix(in srgb, var(--warn) 12%, var(--panel));
-      border-radius:14px;border:1px solid var(--line);
-      color:var(--muted);
-      margin-top:12px;
-    }
-    .callout strong{color:var(--text)}
-    footer{
-      border-top:1px solid var(--line);
-      padding:18px 0 26px;
-      margin-top:18px;
-      color:var(--muted);
-      font-size:13px;
-    }
-    .foot{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
-    .small{font-size:12px}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>404 — PATH NOT FOUND (FAIL-CLOSED)</title>
+<meta name="description" content="Fail-closed 404: percorso non valido. In audit-first, ciò che non è verificabile è INVALID.">
+<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css">
 </head>
 
 <body>
-  <div class="topbar">
-    <div class="wrap">
-      <div class="nav" role="navigation" aria-label="Navigazione principale">
-        <div class="brand">
-          <span>HERMETICUM B.C.E.</span>
-          <small>EU audit-first gateway</small>
-        </div>
+<div class="wrap">
 
-        <div class="navlinks" aria-label="Sezioni">
-          <a href="./">HOME</a>
-          <a href="./ipr/">IPR</a>
-          <a href="./architecture/">ARCHITECTURE</a>
-          <a href="./eu/pilot/">EU PILOT</a>
-          <a href="./use-cases/">USE CASES</a>
-          <a href="./verify/">VERIFY</a>
-          <a href="./about/">ABOUT</a>
-        </div>
+  <div class="nav">
+    <div class="brand">
+      <strong>HERMETICUM B.C.E.</strong>
+      <span>Fail-closed Gateway</span>
+    </div>
+
+    <a href="/hermeticum-bce-platform/">HOME</a>
+    <a href="/hermeticum-bce-platform/enterprise/">ENTERPRISE</a>
+    <a href="/hermeticum-bce-platform/infrastructure/">INFRASTRUCTURE</a>
+    <a href="/hermeticum-bce-platform/bruxelles/">BRUXELLES</a>
+    <a href="/hermeticum-bce-platform/ipr/">IPR</a>
+    <a href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+    <a href="/hermeticum-bce-platform/verify/">VERIFY</a>
+    <a href="/hermeticum-bce-platform/repos/">ECOSYSTEM</a>
+  </div>
+
+  <div class="kicker">404 · PATH NOT FOUND · FAIL-CLOSED UI</div>
+  <h1>Pagina non trovata</h1>
+
+  <p class="lead">
+    Risultato operativo: <b>INVALID</b> (nessuna risoluzione possibile per questo percorso).<br>
+    In modalità audit-first, ciò che non è verificabile non può essere considerato valido.
+  </p>
+
+  <div class="hr"></div>
+
+  <div class="grid">
+
+    <div class="card wide">
+      <h3>Azioni rapide</h3>
+      <div class="ctaRow" style="margin-top:12px">
+        <a class="btn primary" href="/hermeticum-bce-platform/">Torna alla HOME</a>
+        <a class="btn" href="/hermeticum-bce-platform/verify/">Apri VERIFY</a>
+        <a class="btn" href="/hermeticum-bce-platform/registry/">Apri REGISTRY</a>
+        <a class="btn" href="/hermeticum-bce-platform/ipr/">Apri IPR</a>
       </div>
+      <div class="meta" style="margin-top:12px">
+        Suggerimento: usa VERIFY per controllare PASS/INVALID via registry append-only.
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Se stavi seguendo un link interno</h3>
+      <p>
+        Un riferimento è incoerente o non aggiornato.
+        Correggi la navigazione: i percorsi validi devono essere espliciti e verificabili.
+      </p>
+      <div class="meta">Audit-first</div>
+    </div>
+
+    <div class="card">
+      <h3>Se hai incollato un URL manualmente</h3>
+      <p>
+        Il nodo non usa redirect “furbi”. Percorso mancante = percorso invalido.
+      </p>
+      <div class="meta">Fail-closed</div>
+    </div>
+
+    <div class="card wide">
+      <h3>Ingressi principali</h3>
+      <p>
+        • <a href="/hermeticum-bce-platform/infrastructure/">INFRASTRUCTURE</a> — stack operativo<br>
+        • <a href="/hermeticum-bce-platform/verify/">VERIFY</a> — verifica pubblica PASS/INVALID<br>
+        • <a href="/hermeticum-bce-platform/registry/">REGISTRY</a> — registro append-only<br>
+        • <a href="/hermeticum-bce-platform/repos/">ECOSYSTEM</a> — directory repository
+      </p>
+      <div class="meta">Percorsi canonici</div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <div>
+      Nessuna custodia dati. Nessun redirect “furbo”. Percorso mancante = percorso invalido.<br>
+      HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br>
+      HERMETICUM B.C.E. S.r.l. · Unione Europea
+    </div>
+    <div class="footlinks">
+      <a href="/hermeticum-bce-platform/">HOME</a>
+      <a href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+      <a href="/hermeticum-bce-platform/verify/">VERIFY</a>
     </div>
   </div>
 
-  <main class="wrap main" role="main">
-    <div class="card">
-      <div class="kicker">
-        <span class="mono">404</span>
-        <span class="mono">PATH NOT FOUND</span>
-        <span class="mono">FAIL-CLOSED UI</span>
-      </div>
-
-      <h1>Pagina non trovata</h1>
-      <p class="mono">Risultato operativo: <strong>INVALID</strong> (nessuna risoluzione possibile per questo percorso).</p>
-
-      <div class="callout">
-        <strong>Regola:</strong> in modalità audit-first, ciò che non è verificabile non può essere considerato valido.
-        Se stavi seguendo un link interno, significa che un riferimento va corretto o aggiornato.
-      </div>
-
-      <div class="grid" aria-label="Azioni e percorsi">
-        <div class="panel">
-          <div class="mono" style="font-weight:900;margin-bottom:8px">Azioni rapide</div>
-          <div class="btnRow">
-            <a class="btn primary" href="./">Torna alla HOME</a>
-            <a class="btn secondary" href="./verify/">Apri VERIFY</a>
-            <a class="btn" href="./ipr/">Apri IPR</a>
-          </div>
-
-          <p class="small" style="margin-top:12px">
-            Suggerimento: usa <span class="mono">VERIFY</span> per controllare lo stato e la coerenza pubblica del nodo.
-          </p>
-        </div>
-
-        <div class="panel">
-          <div class="mono" style="font-weight:900;margin-bottom:8px">Ingressi principali</div>
-          <ul>
-            <li><a href="./architecture/">ARCHITECTURE</a> — modello e stack operativo</li>
-            <li><a href="./eu/pilot/">EU PILOT</a> — scenario di adozione e pilot</li>
-            <li><a href="./use-cases/">USE CASES</a> — contesti B2B/B2G e casi d’uso</li>
-            <li><a href="./about/">ABOUT</a> — cosa è / cosa non è</li>
-          </ul>
-
-          <p class="small" style="margin-top:12px">
-            Nessuna custodia dati. Nessun redirect “furbo”. Percorso mancante = percorso invalido.
-          </p>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <footer>
-    <div class="wrap">
-      <div class="foot">
-        <div>
-          <div class="mono" style="font-weight:900">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-          <div class="mono small">HERMETICUM B.C.E. S.r.l.</div>
-        </div>
-        <div class="small mono">UE-first · audit-first · fail-closed · hash-only</div>
-      </div>
-    </div>
-  </footer>
+</div>
 </body>
 </html>
