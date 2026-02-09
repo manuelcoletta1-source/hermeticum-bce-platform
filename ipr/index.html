@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>IPR — Identity Primary Record</title>
-<meta name="description" content="Hub IPR: attivazione IPR Base e IPR UE Base. Identity before execution per sistemi AI, robotici e critici.">
+<meta name="description" content="Hub IPR: attivazione IPR Base e IPR UE Base. Customer flow: Create → Receipt → Registry → Verify. Hash-only, fail-closed.">
 <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css">
 </head>
 
@@ -22,6 +22,7 @@
     <a href="/hermeticum-bce-platform/infrastructure/">INFRASTRUCTURE</a>
     <a href="/hermeticum-bce-platform/bruxelles/">BRUXELLES</a>
     <a href="/hermeticum-bce-platform/ipr/">IPR</a>
+    <a href="/hermeticum-bce-platform/registry/">REGISTRY</a>
     <a href="/hermeticum-bce-platform/verify/">VERIFY</a>
     <a href="/hermeticum-bce-platform/repos/">ECOSYSTEM</a>
   </div>
@@ -31,39 +32,40 @@
 
   <p class="lead">
     IPR (Identity Primary Record) è il riferimento operativo primario per soggetti, sistemi e agenti artificiali.
-    Permette verificabilità, autorizzazione preventiva e audit continuo: <b>identity before execution</b>.
+    Il regime è hash-only e fail-closed: la validità deriva da prove pubbliche verificabili nel tempo.
   </p>
 
   <div class="ctaRow">
-    <a class="btn primary" href="/hermeticum-bce-platform/ipr/ue-base/">Attiva IPR UE Base</a>
-    <a class="btn" href="/hermeticum-bce-platform/create/">Crea IPR Base</a>
+    <a class="btn primary" href="/hermeticum-bce-platform/create/">Crea IPR</a>
+    <a class="btn" href="/hermeticum-bce-platform/create/receipt/">Genera Receipt</a>
+    <a class="btn" href="/hermeticum-bce-platform/registry/">Registro pubblico</a>
     <a class="btn" href="/hermeticum-bce-platform/verify/">Verifica</a>
   </div>
 
   <div class="hr"></div>
 
-  <h2>Attivazione</h2>
+  <h2>Attivazione (modalità)</h2>
   <div class="grid">
 
     <div class="card">
       <h3>IPR Base</h3>
       <p>
-        Flusso minimo per generare un riferimento operativo e avviare la tracciabilità.
-        Ideale per onboarding tecnico rapido.
+        Onboarding tecnico minimo: payload canonical + hash (locale) e receipt per registry.
+        Adatto a integrazioni rapide.
       </p>
       <div class="meta">
-        <a href="/hermeticum-bce-platform/create/">Avvia →</a>
+        Avvio tramite <a href="/hermeticum-bce-platform/create/">CREATE</a>
       </div>
     </div>
 
     <div class="card">
       <h3>IPR UE Base</h3>
       <p>
-        Flusso UE-ready: struttura dati minima, hash-only, no data custody.
-        Aumenta opponibilità e solidità istituzionale.
+        Profilo UE-ready: struttura minima rafforzata, sempre hash-only e no data custody.
+        Migliora precisione e opponibilità.
       </p>
       <div class="meta">
-        <a href="/hermeticum-bce-platform/ipr/ue-base/">Avvia →</a>
+        <a href="/hermeticum-bce-platform/ipr/ue-base/">Apri UE Base →</a>
       </div>
     </div>
 
@@ -71,9 +73,9 @@
       <h3>Regime operativo</h3>
       <p>
         • UE-first · audit-first · fail-closed · hash-only<br>
-        • Nessuna custodia dati del soggetto nel nodo pubblico<br>
-        • Se non verificabile → INVALID<br>
-        • Coerenza temporale append-only (non retroattivo)
+        • Nessuna custodia dati del soggetto nel nodo pubblico (no data custody)<br>
+        • Registro append-only: la validità è pubblicamente verificabile<br>
+        • Assenza prova o incoerenza → INVALID
       </p>
       <div class="meta">Disciplina infrastrutturale</div>
     </div>
@@ -82,15 +84,21 @@
 
   <div class="hr"></div>
 
-  <h2>Percorso operativo (minimo)</h2>
+  <h2>Percorso cliente (standard)</h2>
   <div class="grid">
     <div class="card wide">
-      <h3>1 → 2 → 3 → 4</h3>
+      <h3>CREATE → RECEIPT → REGISTRY → VERIFY</h3>
       <p>
-        1) Attiva IPR → 2) Genera prove (hash/receipt) → 3) Verifica pubblica (VERIFY/AUDIT) →
-        4) Abilita azioni ex-ante nei sistemi integrati.
+        1) Genera payload + hash in CREATE (locale) · 2) Genera receipt · 3) Append nel registry pubblico (append-only) ·
+        4) Verify restituisce PASS/INVALID.
       </p>
-      <div class="meta">Identity before execution</div>
+      <div class="ctaRow" style="margin-top:12px">
+        <a class="btn" href="/hermeticum-bce-platform/create/">CREATE</a>
+        <a class="btn" href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
+        <a class="btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <a class="btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+      </div>
+      <div class="meta" style="margin-top:10px">Hash-only · append-only · fail-closed</div>
     </div>
   </div>
 
@@ -101,8 +109,8 @@
     </div>
 
     <div class="footlinks">
-      <a href="/hermeticum-bce-platform/enterprise/">ENTERPRISE</a>
-      <a href="/hermeticum-bce-platform/infrastructure/">INFRASTRUCTURE</a>
+      <a href="/hermeticum-bce-platform/create/">CREATE</a>
+      <a href="/hermeticum-bce-platform/registry/">REGISTRY</a>
       <a href="/hermeticum-bce-platform/verify/">VERIFY</a>
       <a href="/hermeticum-bce-platform/repos/">ECOSYSTEM</a>
     </div>
