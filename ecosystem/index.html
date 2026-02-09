@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ecosystem — Manifest Viewer</title>
+  <meta name="description" content="Viewer del manifest ecosistema (core + moduli esterni). Directory enterprise UE-first." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">ECOSYSTEM · Manifest Viewer</div>
+      <h1 class="hbce-hero__title">Ecosystem Manifest</h1>
+      <p class="hbce-hero__lead">
+        Directory macchina-leggibile e human-readable dell’ecosistema: core + moduli esterni.
+        Non certifica validità: è un indice stabile per audit e navigazione.
+      </p>
+      <div class="hbce-hero__cta">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/ecosystem/manifest.json">Apri manifest.json</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/status/ecosystem/">STATUS</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/map/">MAP</a>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Core</h2>
+      <div class="hbce-card hbce-card--wide">
+        <div class="hbce-meta" id="coreMeta">Caricamento…</div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Modules</h2>
+      <div class="hbce-card hbce-card--wide">
+        <input class="hbce-input" id="filter" placeholder="Filtra per nome o ruolo…" />
+        <div style="overflow:auto;margin-top:10px">
+          <table class="hbce-table" style="width:100%">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Ruolo</th>
+                <th>URL</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr><td colspan="3">Caricamento…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="hbce-meta" id="meta">—</div>
+      </div>
+    </section>
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <script>
+    (function(){
+      const URL = "/hermeticum-bce-platform/ecosystem/manifest.json";
+      const tbody = document.getElementById("tbody");
+      const meta = document.getElementById("meta");
+      const coreMeta = document.getElementById("coreMeta");
+      const filter = document.getElementById("filter");
+
+      let modules = [];
+
+      function esc(s){
+        return String(s || "").replace(/[&<>"']/g, m => ({
+          "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+        }[m]));
+      }
+
+      function render(list){
+        if(!list.length){
+          tbody.innerHTML = `<tr><td colspan="3">Nessun risultato.</td></tr>`;
+          meta.textContent = `0/${modules.length}`;
+          return;
+        }
+        tbody.innerHTML = list.map(m => `
+          <tr>
+            <td>${esc(m.name)}</td>
+            <td>${esc(m.role)}</td>
+            <td><a href="${esc(m.public_url)}" target="_blank" rel="noopener">Apri</a></td>
+          </tr>
+        `).join("");
+        meta.textContent = `${list.length}/${modules.length}`;
+      }
+
+      function applyFilter(){
+        const q = (filter.value || "").trim().toLowerCase();
+        if(!q){ render(modules); return; }
+        const f = modules.filter(m =>
+          (m.name || "").toLowerCase().includes(q) ||
+          (m.role || "").toLowerCase().includes(q)
+        );
+        render(f);
+      }
+
+      async function load(){
+        try{
+          const r = await fetch(URL, { cache: "no-store" });
+          if(!r.ok) throw new Error("FETCH_FAILED");
+          const m = await r.json();
+
+          // fail-closed: schema minimo
+          if(!m || !m.core || !Array.isArray(m.modules)) throw new Error("INVALID_SCHEMA");
+
+          coreMeta.innerHTML =
+            `<strong>${esc(m.core.name || "core")}</strong> · ruolo: ${esc(m.core.role)} · ` +
+            `<a href="${esc(m.core.public_url)}" target="_blank" rel="noopener">apri</a>`;
+
+          modules = m.modules.slice();
+          render(modules);
+          meta.textContent = `${modules.length}/${modules.length}`;
+
+          filter.addEventListener("input", applyFilter);
+        }catch(e){
+          coreMeta.innerHTML = `Esito operativo: <strong>INVALID</strong> (manifest non accessibile o schema incoerente).`;
+          tbody.innerHTML = `<tr><td colspan="3">INVALID (fail-closed).</td></tr>`;
+          meta.textContent = "—";
+        }
+      }
+
+      load();
+    })();
+  </script>
+</body>
+</html>
