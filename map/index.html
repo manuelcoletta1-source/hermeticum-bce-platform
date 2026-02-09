@@ -1,137 +1,108 @@
 <!doctype html>
 <html lang="it">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Map — EU Gateway</title>
-  <meta name="description" content="Map: mappa dei moduli Hermeticum B.C.E. Gateway → IPR stack → Policy → Registry → GitJoker-C2. UE-first, fail-closed."/>
-  <link rel="stylesheet" href="../assets/ui.css"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hermeticum System Map</title>
+
+<style>
+:root{
+ --bg:#0b0c0f;
+ --panel:rgba(255,255,255,.06);
+ --text:rgba(255,255,255,.92);
+ --muted:rgba(255,255,255,.65);
+ --line:rgba(255,255,255,.12);
+ --max:1100px;
+}
+
+body{
+ margin:0;
+ font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+ background:var(--bg);
+ color:var(--text);
+}
+
+.wrap{max-width:var(--max);margin:auto;padding:40px 20px}
+
+h1{font-size:38px;margin-bottom:10px}
+p{color:var(--muted)}
+
+.section{
+ margin-top:40px;
+ padding:20px;
+ border:1px solid var(--line);
+ border-radius:14px;
+ background:var(--panel);
+}
+
+.repo{
+ padding:12px 0;
+ border-bottom:1px solid var(--line);
+ font-size:14px;
+}
+.repo:last-child{border-bottom:none}
+
+a{color:#fff;text-decoration:none}
+a:hover{opacity:.8}
+
+.tag{
+ font-size:11px;
+ color:var(--muted);
+ margin-left:8px;
+}
+</style>
 </head>
+
 <body>
-
-<header>
-  <div class="wrap nav">
-    <a class="btn primary" href="../">EU Gateway</a>
-    <a class="btn" href="../create/">Create</a>
-    <a class="btn" href="../verify/">Verify</a>
-    <a class="btn" href="../evidence-pack/">Evidence</a>
-    <a class="btn" href="../catalog/">Catalog</a>
-    <a class="btn" href="../terms/">Terms</a>
-    <a class="btn primary" href="./">Map</a>
-    <span class="spacer"></span>
-    <a class="btn" href="https://manuelcoletta1-source.github.io/hermeticum-bce/">Corporate</a>
-    <a class="btn" href="https://manuelcoletta1-source.github.io/hermeticum-bce-b2b/">B2B</a>
-    <a class="btn" href="https://manuelcoletta1-source.github.io/hermeticum-bce-b2g/">B2G</a>
-    <a class="btn" href="https://manuelcoletta1-source.github.io/Hermeticum-B.C.E.-Technology/">Technology</a>
-  </div>
-</header>
-
 <div class="wrap">
 
-  <section class="box">
-    <h1>Map (ecosistema)</h1>
-    <p>
-      Mappa breve dei moduli. Regola globale: <b>FAIL-CLOSED</b>.
-      Se un controllo fallisce o è indeterminato ⇒ stop.
-    </p>
-    <p>
-      <span class="tag">UE-first</span>
-      <span class="tag">Audit-first</span>
-      <span class="tag">Hash-only</span>
-      <span class="tag">Fail-closed</span>
-    </p>
-  </section>
+<h1>System Infrastructure Map</h1>
+<p>Panoramica completa dell’ecosistema Hermeticum B.C.E.</p>
 
-  <section class="box">
-    <h2>Catena operativa (alto livello)</h2>
-    <p>
-      <b>Create</b> → <b>Verify</b> → <b>Comply</b> → <b>Gate</b> → <b>Exchange</b> → <b>Registry</b> → <b>Publishing</b>
-    </p>
-    <p class="small">
-      Nota: nel gateway mostriamo Create/Verify/Evidence. Gli altri moduli sono referenziati come stack.
-    </p>
-  </section>
+<div class="section">
+<h2>L0 — Central Portal</h2>
 
-  <section class="grid2">
-    <div class="box">
-      <h2>Gateway UE</h2>
-      <p>
-        • Create: genera output verificabile<br/>
-        • Verify: verifica offline indipendente<br/>
-        • Evidence Pack: manifest + receipt + freeze (append-only)
-      </p>
-      <div class="cta">
-        <a class="btn primary" href="../create/">Create</a>
-        <a class="btn" href="../verify/">Verify</a>
-        <a class="btn" href="../evidence-pack/">Evidence</a>
-      </div>
-    </div>
+<div class="repo">
+<a href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/">
+hermeticum-bce-platform
+</a>
+<span class="tag">front door globale</span>
+</div>
+</div>
 
-    <div class="box">
-      <h2>Policy foundation</h2>
-      <p>
-        • UNEBDO: validità tecnica giuridico-computabile<br/>
-        • OPC: policy computabile (valutazione/controllo)
-      </p>
-      <div class="cta">
-        <a class="btn primary" href="https://manuelcoletta1-source.github.io/unebdo/">UNEBDO</a>
-        <a class="btn" href="https://manuelcoletta1-source.github.io/opc/">OPC</a>
-      </div>
-    </div>
-  </section>
+<div class="section">
+<h2>L1 — Core Infrastructure</h2>
 
-  <section class="grid2" style="margin-top:12px">
-    <div class="box">
-      <h2>IPR stack</h2>
-      <p>
-        • IPR-CORE: schema, lifecycle, versioning<br/>
-        • IPR-GATE: enforcement ex-ante (deny-by-default)<br/>
-        • IPR-COMPLY: conformità auditabile<br/>
-        • IPR-EXCHANGE: scambio controllato (allow-by-proof)
-      </p>
-      <div class="cta">
-        <a class="btn primary" href="https://manuelcoletta1-source.github.io/ipr-core/">IPR-CORE</a>
-        <a class="btn" href="https://manuelcoletta1-source.github.io/ipr-gate/">IPR-GATE</a>
-        <a class="btn" href="https://manuelcoletta1-source.github.io/ipr-comply/">IPR-COMPLY</a>
-        <a class="btn" href="https://manuelcoletta1-source.github.io/ipr-exchange/">IPR-EXCHANGE</a>
-      </div>
-    </div>
-
-    <div class="box">
-      <h2>Registry & Publishing</h2>
-      <p>
-        • UE-IPR-REGISTRY: registro sperimentale hash-only<br/>
-        • GITJOKER-C2: publishing & compliance control su GitHub
-      </p>
-      <div class="cta">
-        <a class="btn primary" href="https://manuelcoletta1-source.github.io/ue-ipr-registry/">UE-IPR-REGISTRY</a>
-        <a class="btn" href="https://manuelcoletta1-source.github.io/gitjoker-c2/">GITJOKER-C2</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="box" style="margin-top:12px">
-    <h2>Accesso per profilo</h2>
-    <p>
-      • B2B: imprese (workflow auditabili, evidenza verificabile)<br/>
-      • B2G: enti pubblici (audit, valutazione policy, sperimentazione)
-    </p>
-    <div class="cta">
-      <a class="btn primary" href="https://manuelcoletta1-source.github.io/hermeticum-bce-b2b/">B2B</a>
-      <a class="btn" href="https://manuelcoletta1-source.github.io/hermeticum-bce-b2g/">B2G</a>
-      <a class="btn" href="https://manuelcoletta1-source.github.io/hermeticum-bce/">Corporate</a>
-    </div>
-  </section>
+<div class="repo"><a href="https://manuelcoletta1-source.github.io/ipr-core/">ipr-core</a></div>
+<div class="repo"><a href="https://manuelcoletta1-source.github.io/ue-ipr-registry/">ue-ipr-registry</a></div>
+<div class="repo"><a href="https://manuelcoletta1-source.github.io/unebdo/">unebdo</a></div>
+<div class="repo"><a href="https://manuelcoletta1-source.github.io/opc/">opc</a></div>
+<div class="repo"><a href="https://manuelcoletta1-source.github.io/ipr-gate/">ipr-gate</a></div>
+<div class="repo"><a href="https://manuelcoletta1-source.github.io/ipr-comply/">ipr-comply</a></div>
+<div class="repo"><a href="https://manuelcoletta1-source.github.io/ipr-exchange/">ipr-exchange</a></div>
 
 </div>
 
-<footer>
-  <div class="wrap">
-    <p class="small">
-      HERMETICUM B.C.E. S.r.l. — Map · Ecosistema · UE-first · Fail-closed · Hash-only
-    </p>
-  </div>
-</footer>
+<div class="section">
+<h2>L2 — AI & Execution Layer</h2>
 
+<div class="repo"><a href="https://manuelcoletta1-source.github.io/gitjoker-c2/">gitjoker-c2</a></div>
+<div class="repo"><a href="https://manuelcoletta1-source.github.io/hermeticum-bce-ai-workers/">ai-workers</a></div>
+<div class="repo"><a href="https://manuelcoletta1-source.github.io/neuroloop/">neuroloop</a></div>
+<div class="repo"><a href="https://manuelcoletta1-source.github.io/iospace/">iospace</a></div>
+<div class="repo"><a href="https://manuelcoletta1-source.github.io/cyberglobal/">cyberglobal</a></div>
+
+</div>
+
+<div class="section">
+<h2>L3 — Publishing & Research</h2>
+
+<div class="repo"><a href="https://manuelcoletta1-source.github.io/corpus-esoterologia-ermetica/">corpus-esoterologia-ermetica</a></div>
+<div class="repo"><a href="https://manuelcoletta1-source.github.io/esoterologia-edizioni-ipr5/">esoterologia-edizioni</a></div>
+<div class="repo"><a href="https://manuelcoletta1-source.github.io/apocalipsis/">apocalipsis</a></div>
+
+</div>
+
+</div>
 </body>
 </html>
