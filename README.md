@@ -1,78 +1,47 @@
-# HERMETICUM B.C.E.
+# HERMETICUM B.C.E. — Central Infrastructure
 
-Infrastruttura tecnica per identità verificabile, responsabilità digitale e audit pubblico.
+**Identity-first execution infrastructure.**  
+Principio operativo: **Verify before execute.**
 
-Regime: UE-first · audit-first · fail-closed · hash-only · no data custody  
-Stato: prototipo infrastrutturale pubblico (pilot tecnico)
-
----
-
-## Sintesi
-
-HERMETICUM introduce un livello operativo chiamato IPR (Identity Primary Record)
-per rendere verificabili nel tempo:
-
-- attribuzione di responsabilità  
-- tracciabilità opponibile  
-- verifiche pubbliche deterministiche  
-
-Il sistema non custodisce dati personali e non è un identity provider.
+Questo repository è il **nodo centrale** del portale Hermeticum B.C.E.: orientamento, accesso ai flussi IPR, collegamenti ai moduli e documentazione pubblica.
 
 ---
 
-## Principi
-
-**Fail-closed**  
-Se la verifica non è possibile → l'esecuzione non è valida.
-
-**Audit-first**  
-Ogni output è progettato per essere verificabile e comparabile.
-
-**Hash-only**  
-La verifica usa riferimenti crittografici, non dati personali.
-
-**No data custody**  
-Nessuna custodia dati per design.
+## Live
+- Portale: https://manuelcoletta1-source.github.io/hermeticum-bce-platform/
 
 ---
 
-## Cosa è
-
-Un'infrastruttura tecnica per:
-
-- audit verificabile  
-- responsabilità digitale  
-- integrazione B2B/B2G  
-- interoperabilità UE  
+## Core flows
+- **Create** → generazione di artefatti / receipt / materiali operativi: `/create/`
+- **Verify** → verifica pubblica e controlli ex-ante: `/verify/`
+- **Evidence Pack** → pacchetto prova e manifest: `/evidence-pack/`
 
 ---
 
-## Cosa non è
-
-Non è:
-
-- identity provider  
-- database utenti  
-- sistema di sorveglianza  
-- autorità legale  
-
-È un'infrastruttura di verifica tecnica.
+## Operating regime (non negoziabile)
+- **UE-first**: allineamento e minimizzazione come default
+- **HASH-only**: niente custodia dei dati del soggetto; solo prove verificabili
+- **FAIL-CLOSED**: se non è verificabile, non è eseguibile
+- **AUDIT-first**: la traccia è precondizione
+- **APPEND-only**: si deriva nel tempo, non si riscrive
 
 ---
 
-## Struttura
-
-Ingressi principali:
-
-- `/ipr/`
-- `/verify/`
-- `/architecture/`
-- `/eu/pilot/`
-- `/use-cases/`
+## Navigation (product map)
+- Architecture: `/architecture/`
+- Governance: `/governance/`
+- Standards: `/standards/`
+- Catalog: `/catalog/`
+- System map: `/map/`
 
 ---
 
-## Stato
+## Scope
+Questo repo **non** è un modulo “di esecuzione” in sé.  
+È una **interfaccia infrastrutturale**: accesso, orientamento, documentazione, prototipi, e link canonicali ai moduli operativi.
 
-Prototipo infrastrutturale pubblico.  
-Pronto per audit tecnico e pilot istituzionali.
+---
+
+## Source of truth
+Directory completa: https://github.com/manuelcoletta1-source
