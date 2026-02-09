@@ -1,85 +1,211 @@
 <!doctype html>
-<html lang="en">
+<html lang="it">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>IPR Node Registry</title>
-
-<link rel="stylesheet" href="../assets/css/main.css"/>
-<link rel="stylesheet" href="../assets/css/brand.css"/>
-
-<script src="../assets/js/registry.js" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Registry — Public Append-only Directory</title>
+<meta name="description" content="Registro pubblico append-only (hash-only). Visualizza entries da registry.json. Fail-closed: se non accessibile → INVALID.">
+<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css">
 </head>
 
 <body>
-
-<header class="topbar">
 <div class="wrap">
-<div class="row">
 
-<div class="brandmark">
-<img src="../assets/img/hermeticum-mark-neon.svg"/>
-<span>IPR</span>
+  <div class="nav">
+    <div class="brand">
+      <strong>HERMETICUM B.C.E.</strong>
+      <span>Public Registry</span>
+    </div>
+
+    <a href="/hermeticum-bce-platform/">HOME</a>
+    <a href="/hermeticum-bce-platform/create/">CREATE</a>
+    <a href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
+    <a href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+    <a href="/hermeticum-bce-platform/verify/">VERIFY</a>
+    <a href="/hermeticum-bce-platform/repos/">ECOSYSTEM</a>
+  </div>
+
+  <div class="kicker">Append-only · Hash-only · Audit-first</div>
+  <h1>Public Registry</h1>
+
+  <p class="lead">
+    Registro pubblico append-only. Contiene solo impronte (hash) e receipt: nessuna custodia dati del soggetto.
+    Se il registro non è accessibile o non è coerente, l’esito operativo è <b>INVALID</b>.
+  </p>
+
+  <div class="ctaRow">
+    <a class="btn" href="/hermeticum-bce-platform/create/">Crea IPR</a>
+    <a class="btn" href="/hermeticum-bce-platform/create/receipt/">Genera Receipt</a>
+    <a class="btn primary" href="/hermeticum-bce-platform/verify/">Verifica</a>
+  </div>
+
+  <div class="hr"></div>
+
+  <div class="grid">
+
+    <div class="card wide">
+      <h3>Controllo rapido</h3>
+      <input class="input" id="search" placeholder="Cerca per hash (64 hex) o nickname…">
+      <div class="meta" id="status" style="margin-top:10px">Caricamento registry…</div>
+    </div>
+
+    <div class="card">
+      <h3>Regime</h3>
+      <p>
+        • APPEND-ONLY<br>
+        • HASH-ONLY<br>
+        • FAIL-CLOSED<br>
+        • AUDIT-FIRST<br>
+        • NO DATA CUSTODY
+      </p>
+      <div class="meta">Disciplina enterprise</div>
+    </div>
+
+  </div>
+
+  <div class="hr"></div>
+
+  <h2>Entries</h2>
+
+  <div class="card wide" style="grid-column: 1 / -1">
+    <div style="overflow:auto">
+      <table class="table" id="tbl" style="width:100%">
+        <thead>
+          <tr>
+            <th>Nickname</th>
+            <th>payload_sha256</th>
+            <th>Timestamp</th>
+            <th>Azioni</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="4">Caricamento…</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="meta" style="margin-top:10px">
+      Fonte: <code>/registry/registry.json</code> (cache: no-store)
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>
+      HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br>
+      HERMETICUM B.C.E. S.r.l. · Unione Europea
+    </div>
+    <div class="footlinks">
+      <a href="/hermeticum-bce-platform/create/">CREATE</a>
+      <a href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
+      <a href="/hermeticum-bce-platform/verify/">VERIFY</a>
+    </div>
+  </div>
+
 </div>
 
-<nav class="nav">
-<a href="../">Gateway</a>
-<a href="../activate/">Activate</a>
-<a href="../verify/">Verify</a>
-<a href="../projects/">Projects</a>
-<a class="active" href="./">Registry</a>
-</nav>
+<script>
+(function(){
+  const REG_URL = "/hermeticum-bce-platform/registry/registry.json";
+  const statusEl = document.getElementById("status");
+  const tbody = document.getElementById("tbody");
+  const search = document.getElementById("search");
 
-<div class="spacer"></div>
-<div class="status active">Public Node Network</div>
+  let entries = [];
 
-</div>
-</div>
-</header>
+  function esc(s){
+    return String(s || "").replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[m]));
+  }
 
-<main class="wrap">
+  function isSha256Hex(v){ return /^[a-f0-9]{64}$/i.test(v || ""); }
 
-<section class="hero">
-<h1>IPR Node Network</h1>
-<p class="lead">
-Public append-only registry of verified IPR nodes.  
-No personal data. Hash-only identity.
-</p>
-</section>
+  async function copyText(text){
+    try{ await navigator.clipboard.writeText(text); return true; }
+    catch(e){ return false; }
+  }
 
-<section class="section">
+  function render(list){
+    if(!Array.isArray(list) || list.length === 0){
+      tbody.innerHTML = '<tr><td colspan="4">Nessuna entry.</td></tr>';
+      return;
+    }
 
-<div class="panel">
-<h2>Register node</h2>
+    tbody.innerHTML = list.map((e, idx) => {
+      const nick = esc(e.nickname || "—");
+      const sha  = esc(e.payload_sha256 || "—");
+      const ts   = esc(e.timestamp || "—");
+      const canVerify = isSha256Hex(e.payload_sha256);
 
-<div style="color:var(--muted)">
-You must have verified your IPR locally before registering.
-</div>
+      const verifyLink = canVerify
+        ? `<a href="/hermeticum-bce-platform/verify/" title="Apri VERIFY (incolla hash)">VERIFY</a>`
+        : `<span>—</span>`;
 
-<div class="cta">
-<button class="btn primary" onclick="registerNode()">Register this node</button>
-</div>
+      return `
+        <tr>
+          <td>${nick}</td>
+          <td style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;">
+            ${sha}
+          </td>
+          <td>${ts}</td>
+          <td>
+            <a href="#" data-copy="${esc(e.payload_sha256 || "")}" data-i="${idx}">Copia hash</a>
+            &nbsp;·&nbsp;
+            ${verifyLink}
+          </td>
+        </tr>
+      `;
+    }).join("");
 
-<div id="reg_status" class="result"></div>
+    // bind copy
+    Array.from(tbody.querySelectorAll("a[data-copy]")).forEach(a => {
+      a.addEventListener("click", async (ev) => {
+        ev.preventDefault();
+        const val = a.getAttribute("data-copy") || "";
+        if(!val) return;
+        const ok = await copyText(val);
+        statusEl.textContent = ok ? "Hash copiato." : "Impossibile copiare automaticamente. Copia manualmente.";
+      });
+    });
+  }
 
-</div>
+  function applyFilter(){
+    const q = (search.value || "").trim().toLowerCase();
+    if(!q){
+      render(entries);
+      statusEl.textContent = `OK · entries: ${entries.length}`;
+      return;
+    }
+    const filtered = entries.filter(e => {
+      const nick = (e.nickname || "").toLowerCase();
+      const sha  = (e.payload_sha256 || "").toLowerCase();
+      return nick.includes(q) || sha.includes(q);
+    });
+    render(filtered);
+    statusEl.textContent = `OK · filtrate: ${filtered.length}/${entries.length}`;
+  }
 
-</section>
+  async function load(){
+    statusEl.textContent = "Caricamento registry…";
+    try{
+      const r = await fetch(REG_URL, { cache: "no-store" });
+      if(!r.ok) throw new Error("FETCH_FAILED");
+      const reg = await r.json();
 
-<section class="section">
-<div class="panel">
-<h2>Active nodes</h2>
-<pre id="node_list" class="result">loading...</pre>
-</div>
-</section>
+      const arr = Array.isArray(reg.entries) ? reg.entries : null;
+      if(!arr) throw new Error("INVALID_SCHEMA");
 
-</main>
+      entries = arr.slice().reverse(); // ultime in alto
+      applyFilter();
+    }catch(e){
+      tbody.innerHTML = '<tr><td colspan="4">INVALID → registry non accessibile o non coerente (fail-closed).</td></tr>';
+      statusEl.innerHTML = "Esito operativo: <b>INVALID</b> (fail-closed).";
+    }
+  }
 
-<footer class="footer">
-<div class="wrap">
-<strong>IPR Public Registry</strong>
-</div>
-</footer>
+  search.addEventListener("input", () => applyFilter());
+  load();
+})();
+</script>
 
 </body>
 </html>
