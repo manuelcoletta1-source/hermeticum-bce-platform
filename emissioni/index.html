@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EMISSIONI LIVE — Registro operativo IPR</title>
+  <meta name="description" content="Emissioni IPR live: feed pubblico dal registry append-only con link VERIFY. UE-first, audit-first, fail-closed." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">LIVE · ISSUANCE FEED · REGISTRY-DRIVEN</div>
+      <h1 class="hbce-hero__title">Emissioni live (pubbliche)</h1>
+      <p class="hbce-hero__lead">
+        Feed operativo generato dal registry append-only. Ogni entry è verificabile pubblicamente (PASS/INVALID).
+      </p>
+      <div class="hbce-hero__cta">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">ISSUE IPR</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/">HOME</a>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Stato</h2>
+      <div class="hbce-grid">
+        <div class="hbce-card" style="margin:0">
+          <div class="hbce-meta">Entries totali</div>
+          <div id="count" style="font-size:26px; font-weight:800; margin-top:6px">—</div>
+          <div class="hbce-meta" id="loadedAt" style="margin-top:8px">—</div>
+        </div>
+
+        <div class="hbce-card" style="margin:0">
+          <div class="hbce-meta">Schema</div>
+          <div style="font-size:16px; font-weight:700; margin-top:6px">Append-only · Hash-only</div>
+          <div class="hbce-meta" style="margin-top:8px">pubblico: nickname + payload_sha256 + timestamp</div>
+        </div>
+
+        <div class="hbce-card" style="margin:0">
+          <div class="hbce-meta">Filtro</div>
+          <input id="q" class="hbce-input" placeholder="cerca nickname / hash" autocomplete="off" />
+          <div class="hbce-meta" id="stats" style="margin-top:8px">—</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Ultime emissioni</h2>
+      <div class="hbce-card hbce-card--wide">
+        <div class="hbce-table-wrap">
+          <table class="hbce-table">
+            <thead>
+              <tr>
+                <th style="width:20%">Timestamp</th>
+                <th style="width:20%">Nickname</th>
+                <th>Hash (payload_sha256)</th>
+                <th style="width:20%">Azioni</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr><td colspan="4" class="hbce-meta">Caricamento…</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="hbce-actions" style="margin-top:12px">
+          <button class="hbce-btn" id="reload">Ricarica</button>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/registry.json">Apri registry.json</a>
+        </div>
+
+        <div class="hbce-meta" id="status" style="margin-top:10px">—</div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-card hbce-card--wide">
+        <div class="hbce-hallmark">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+        <div class="hbce-company">HERMETICUM B.C.E. S.r.l.</div>
+        <div class="hbce-meta">UE-first · audit-first · fail-closed · hash-only</div>
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <script>
+    (function(){
+      const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
+      const VERIFY_BASE = "/hermeticum-bce-platform/verify/?h=";
+
+      const $ = (id) => document.getElementById(id);
+      const tbody = $("tbody");
+      const count = $("count");
+      const loadedAt = $("loadedAt");
+      const status = $("status");
+      const q = $("q");
+      const stats = $("stats");
+      const reload = $("reload");
+
+      let entries = [];
+      let filtered = [];
+
+      function setStatus(msg){ status.textContent = msg; }
+      function safe(s){ return (s || "").toString(); }
+      function norm(s){ return safe(s).trim(); }
+
+      function extractEntries(data){
+        if(Array.isArray(data)) return data;
+        if(data && Array.isArray(data.entries)) return data.entries;
+        if(data && data.registry && Array.isArray(data.registry.entries)) return data.registry.entries;
+        return null;
+      }
+
+      function getHash(e){
+        return norm(e.payload_sha256 || e.public_payload_sha256 || "");
+      }
+
+      function render(list){
+        tbody.innerHTML = "";
+        if(!list.length){
+          tbody.innerHTML = '<tr><td colspan="4" class="hbce-meta">Nessun risultato.</td></tr>';
+          return;
+        }
+
+        for(const e of list.slice(0, 20)){ // ultime 20
+          const ts = safe(e.timestamp || "—");
+          const nick = safe(e.nickname || "—");
+          const h = getHash(e) || "—";
+
+          const tr = document.createElement("tr");
+
+          const tdTs = document.createElement("td"); tdTs.textContent = ts;
+          const tdNick = document.createElement("td"); tdNick.textContent = nick;
+
+          const tdHash = document.createElement("td");
+          tdHash.innerHTML = '<code style="word-break:break-all">' + h + '</code>';
+
+          const tdAct = document.createElement("td");
+          const a = document.createElement("a");
+          a.className = "hbce-btn";
+          a.textContent = "Apri VERIFY";
+          a.href = (h && h !== "—") ? (VERIFY_BASE + encodeURIComponent(h)) : "/hermeticum-bce-platform/verify/";
+
+          tdAct.appendChild(a);
+
+          tr.appendChild(tdTs);
+          tr.appendChild(tdNick);
+          tr.appendChild(tdHash);
+          tr.appendChild(tdAct);
+          tbody.appendChild(tr);
+        }
+      }
+
+      function applyFilter(){
+        const term = norm(q.value).toLowerCase();
+        if(!term) filtered = entries.slice();
+        else {
+          filtered = entries.filter(e => {
+            const ts = safe(e.timestamp).toLowerCase();
+            const nick = safe(e.nickname).toLowerCase();
+            const h = getHash(e).toLowerCase();
+            return ts.includes(term) || nick.includes(term) || h.includes(term);
+          });
+        }
+        stats.textContent = "Visibili: " + Math.min(filtered.length, 20) + " · Totali: " + entries.length;
+        render(filtered);
+      }
+
+      async function load(){
+        setStatus("Caricamento registry…");
+        tbody.innerHTML = '<tr><td colspan="4" class="hbce-meta">Caricamento…</td></tr>';
+
+        try{
+          const res = await fetch(REGISTRY_URL, { cache: "no-store" });
+          if(!res.ok){
+            setStatus("INVALID: registry non leggibile (HTTP " + res.status + ").");
+            tbody.innerHTML = '<tr><td colspan="4" class="hbce-meta">INVALID: registry non leggibile.</td></tr>';
+            return;
+          }
+
+          const data = await res.json();
+          const arr = extractEntries(data);
+          if(!arr){
+            setStatus("INVALID: schema registry non riconosciuto.");
+            tbody.innerHTML = '<tr><td colspan="4" class="hbce-meta">INVALID: schema non riconosciuto.</td></tr>';
+            return;
+          }
+
+          entries = arr.filter(x => x && typeof x === "object");
+
+          // newest first (timestamp ISO)
+          entries.sort((a,b) => safe(b.timestamp).localeCompare(safe(a.timestamp)));
+
+          count.textContent = entries.length.toString();
+          loadedAt.textContent = "Caricato: " + new Date().toISOString();
+          setStatus("OK: feed aggiornato.");
+
+          applyFilter();
+        }catch(e){
+          setStatus("INVALID: errore fetch/parse.");
+          tbody.innerHTML = '<tr><td colspan="4" class="hbce-meta">INVALID: errore fetch/parse.</td></tr>';
+        }
+      }
+
+      q.addEventListener("input", applyFilter);
+      reload.addEventListener("click", load);
+
+      load();
+    })();
+  </script>
+</body>
+</html>
