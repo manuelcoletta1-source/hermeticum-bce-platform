@@ -1,201 +1,240 @@
 <!doctype html>
 <html lang="it">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Create — Crea IPR Base</title>
-<meta name="description" content="Crea un IPR Base in locale: payload canonical + hash SHA-256. Nessuna custodia dati. Fail-closed.">
-<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Create — Crea IPR (payload + hash + receipt)</title>
+  <meta name="description" content="Crea IPR in locale: payload canonical, SHA-256 e receipt pronta per registry append-only. Hash-only, fail-closed, no data custody." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
 <body>
-<div class="wrap">
+  <div data-hbce="header"></div>
 
-  <div class="nav">
-    <div class="brand">
-      <strong>HERMETICUM B.C.E.</strong>
-      <span>Create IPR</span>
-    </div>
+  <main class="hbce-container hbce-main">
 
-    <a href="/hermeticum-bce-platform/">HOME</a>
-    <a href="/hermeticum-bce-platform/enterprise/">ENTERPRISE</a>
-    <a href="/hermeticum-bce-platform/infrastructure/">INFRASTRUCTURE</a>
-    <a href="/hermeticum-bce-platform/bruxelles/">BRUXELLES</a>
-    <a href="/hermeticum-bce-platform/ipr/">IPR</a>
-    <a href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-    <a href="/hermeticum-bce-platform/verify/">VERIFY</a>
-    <a href="/hermeticum-bce-platform/repos/">ECOSYSTEM</a>
-  </div>
-
-  <div class="kicker">Create · IPR Base · Hash-only</div>
-  <h1>Crea IPR Base</h1>
-
-  <p class="lead">
-    Generazione locale (no custody): crei un payload canonical e una impronta SHA-256.
-    Il nodo pubblico non conserva dati personali. Se il payload è insufficiente → <b>INVALID</b>.
-  </p>
-
-  <div class="ctaRow">
-    <a class="btn" href="/hermeticum-bce-platform/ipr/">Torna a IPR</a>
-    <a class="btn" href="/hermeticum-bce-platform/create/receipt/">Genera Receipt</a>
-    <a class="btn primary" href="/hermeticum-bce-platform/registry/">Apri Registry</a>
-    <a class="btn" href="/hermeticum-bce-platform/verify/">Verifica</a>
-  </div>
-
-  <div class="hr"></div>
-
-  <h2>Profilo operativo minimo (locale)</h2>
-  <p class="p">
-    Campi minimi: <b>nickname</b> e <b>intent</b>. Il resto è opzionale.
-    L’impronta dipende dal payload canonical generato localmente.
-  </p>
-
-  <div class="grid">
-    <div class="card wide">
-      <h3>Input</h3>
-
-      <input class="input" id="nickname" placeholder="Nickname operativo (obbligatorio)">
-      <input class="input" id="intent" placeholder="Intent / uso previsto (obbligatorio)">
-      <input class="input" id="contact" placeholder="Contatto (email/URL) (opzionale)">
-      <input class="input" id="note" placeholder="Nota tecnica (opzionale)">
-
-      <div class="ctaRow" style="margin-top:14px">
-        <button class="btn primary" id="gen">Genera payload + hash</button>
-        <button class="btn" id="copypayload" disabled>Copia payload</button>
-        <button class="btn" id="copyhash" disabled>Copia hash</button>
-      </div>
-
-      <div class="hr"></div>
-
-      <h3>Output</h3>
-      <p class="p" id="status">Nessun output.</p>
-
-      <input class="input" id="hash" readonly placeholder="payload_sha256 (SHA-256)">
-      <input class="input" id="payload" readonly placeholder="payload canonical (JSON)">
-
-      <div class="ctaRow" style="margin-top:14px">
-        <a class="btn" href="/hermeticum-bce-platform/create/receipt/">Vai a Receipt</a>
-        <a class="btn" href="/hermeticum-bce-platform/registry/">Vai a Registry</a>
-        <a class="btn" href="/hermeticum-bce-platform/verify/">Vai a Verify</a>
-      </div>
-
-      <div class="meta" style="margin-top:12px">
-        Percorso standard: crea hash → genera receipt → append in registry → verify PASS/INVALID.
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Fail-closed</h3>
-      <p>
-        Nickname e intent sono obbligatori. Formati incompleti o ambigui non producono validità operativa.
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">CREATE · Hash-only · Fail-closed</div>
+      <h1 class="hbce-hero__title">Crea un nuovo IPR</h1>
+      <p class="hbce-hero__lead">
+        Generazione locale (no custody): produci <strong>payload canonical</strong>, <strong>hash SHA-256</strong> e una
+        <strong>receipt</strong> pronta per il registro append-only.
+        Se i requisiti minimi non sono soddisfatti → <strong>INVALID</strong>.
       </p>
-      <div class="meta">Assenza prova = INVALID</div>
-    </div>
 
-    <div class="card">
-      <h3>Hash-only</h3>
-      <p>
-        Pubblica solo impronta e receipt. Il payload completo può rimanere privato sul dispositivo del cliente.
-      </p>
-      <div class="meta">No data custody</div>
-    </div>
-  </div>
+      <div class="hbce-hero__cta">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/receipt/">Vai a RECEIPT</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Apri REGISTRY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Apri VERIFY</a>
+      </div>
+    </section>
 
-  <div class="footer">
-    <div>
-      HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br>
-      HERMETICUM B.C.E. S.r.l. · Unione Europea
-    </div>
-    <div class="footlinks">
-      <a href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
-      <a href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-      <a href="/hermeticum-bce-platform/verify/">VERIFY</a>
-    </div>
-  </div>
+    <section class="hbce-section">
+      <h2>Input (minimo operativo)</h2>
 
-</div>
+      <div class="hbce-grid">
+        <article class="hbce-card hbce-card--wide">
+          <h3>Profilo</h3>
 
-<script>
-function clean(v){ return (v || "").trim(); }
+          <label class="hbce-label">Nickname operativo (obbligatorio)</label>
+          <input class="hbce-input" id="nickname" placeholder="es. ACME-OPS-01" />
 
-function canonicalPayload(){
-  const nickname = clean(document.getElementById("nickname").value);
-  const intent = clean(document.getElementById("intent").value);
-  const contact = clean(document.getElementById("contact").value);
-  const note = clean(document.getElementById("note").value);
+          <label class="hbce-label">Intent / uso previsto (obbligatorio)</label>
+          <input class="hbce-input" id="intent" placeholder="es. onboarding sistema AI / robotica / critical ops" />
 
-  const subject = { nickname, intent };
-  if(contact) subject.contact = contact;
-  if(note) subject.note = note;
+          <label class="hbce-label">Contatto (opzionale)</label>
+          <input class="hbce-input" id="contact" placeholder="email o URL" />
 
-  return JSON.stringify({
-    proto: "HBCE-IPR-BASE-v1",
-    kind: "IPR_BASE_PAYLOAD",
-    policy: ["UE_FIRST","HASH_ONLY","FAIL_CLOSED","AUDIT_FIRST","NO_DATA_CUSTODY","APPEND_ONLY"],
-    subject,
-    time: new Date().toISOString()
-  });
-}
+          <label class="hbce-label">Nota tecnica (opzionale)</label>
+          <input class="hbce-input" id="note" placeholder="breve nota per audit interno" />
 
-async function sha256Hex(str){
-  const data = new TextEncoder().encode(str);
-  const buf = await crypto.subtle.digest("SHA-256", data);
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
-}
+          <div class="hbce-actions">
+            <button class="hbce-btn hbce-btn--primary" id="gen">Genera (payload + hash + receipt)</button>
+            <button class="hbce-btn" id="copyHash" disabled>Copia hash</button>
+            <button class="hbce-btn" id="copyReceipt" disabled>Copia receipt</button>
+            <button class="hbce-btn" id="copyPayload" disabled>Copia payload</button>
+          </div>
 
-async function copyText(text){
-  try{ await navigator.clipboard.writeText(text); return true; }
-  catch(e){ return false; }
-}
+          <div class="hbce-meta" id="status">Nessun output.</div>
+        </article>
 
-function setEnabled(id, en){
-  const el = document.getElementById(id);
-  if(el) el.disabled = !en;
-}
+        <article class="hbce-card">
+          <h3>Regime</h3>
+          <p class="hbce-p">
+            • UE-first<br>
+            • audit-first<br>
+            • fail-closed<br>
+            • hash-only<br>
+            • no data custody<br>
+            • append-only
+          </p>
+          <div class="hbce-meta">Disciplina enterprise</div>
+        </article>
 
-document.getElementById("gen").addEventListener("click", async () => {
-  const status = document.getElementById("status");
-  const hashEl = document.getElementById("hash");
-  const payloadEl = document.getElementById("payload");
+        <article class="hbce-card">
+          <h3>Regola minima</h3>
+          <p class="hbce-p">
+            Nickname + intent sono obbligatori.<br>
+            Se mancano → INVALID.<br>
+            Nessuna validità presunta.
+          </p>
+          <div class="hbce-meta">Assenza prova = INVALID</div>
+        </article>
+      </div>
+    </section>
 
-  const payload = canonicalPayload();
-  payloadEl.value = payload;
+    <section class="hbce-section">
+      <h2>Output</h2>
 
-  const parsed = JSON.parse(payload);
-  const n = parsed.subject && parsed.subject.nickname;
-  const i = parsed.subject && parsed.subject.intent;
+      <div class="hbce-grid">
+        <article class="hbce-card hbce-card--wide">
+          <h3>payload_sha256</h3>
+          <input class="hbce-input" id="hash" readonly placeholder="SHA-256 (64 hex)" />
+          <div class="hbce-meta">Usalo in VERIFY (lookup su registry).</div>
+        </article>
 
-  // FAIL-CLOSED: richiede nickname + intent
-  if(!n || n.length < 2 || !i || i.length < 2){
-    status.innerHTML = "Esito operativo: <b>INVALID</b> (nickname e intent sono obbligatori).";
-    hashEl.value = "";
-    setEnabled("copypayload", false);
-    setEnabled("copyhash", false);
-    return;
-  }
+        <article class="hbce-card hbce-card--wide">
+          <h3>Receipt (entry per registry.json → entries)</h3>
+          <textarea class="hbce-input" id="receipt" rows="10" readonly style="height:auto;resize:vertical"
+            placeholder="{ ... receipt entry ... }"></textarea>
+          <div class="hbce-meta">
+            Copia questa entry e appendila in <code>/registry/registry.json</code> → <code>entries</code>.
+          </div>
+        </article>
 
-  const h = await sha256Hex(payload);
-  hashEl.value = h;
+        <article class="hbce-card hbce-card--wide">
+          <h3>Payload canonical (locale)</h3>
+          <textarea class="hbce-input" id="payload" rows="10" readonly style="height:auto;resize:vertical"
+            placeholder="{ ... payload canonical ... }"></textarea>
+          <div class="hbce-meta">Il payload completo può rimanere privato: il nodo pubblico lavora su hash.</div>
+        </article>
+      </div>
 
-  status.innerHTML = "Esito operativo: <b>VALID</b> (payload + hash generati). Prosegui con Receipt → Registry → Verify.";
-  setEnabled("copypayload", true);
-  setEnabled("copyhash", true);
-});
+      <div class="hbce-actions" style="margin-top:14px">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/registry.json">Apri registry.json</a>
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">Vai a VERIFY</a>
+      </div>
+    </section>
 
-document.getElementById("copypayload").addEventListener("click", async () => {
-  const p = document.getElementById("payload").value;
-  if(!p) return;
-  const ok = await copyText(p);
-  document.getElementById("status").innerHTML = ok ? "Payload copiato." : "Copia manualmente (seleziona e copia).";
-});
+    <section class="hbce-section">
+      <h2>Percorso cliente</h2>
+      <div class="hbce-grid hbce-grid--tight">
+        <a class="hbce-tile" href="/hermeticum-bce-platform/create/">1) CREATE</a>
+        <a class="hbce-tile" href="/hermeticum-bce-platform/create/receipt/">2) RECEIPT</a>
+        <a class="hbce-tile" href="/hermeticum-bce-platform/registry/">3) REGISTRY</a>
+        <a class="hbce-tile" href="/hermeticum-bce-platform/verify/">4) VERIFY</a>
+      </div>
+      <div class="hbce-meta">Hash-only · append-only · fail-closed</div>
+    </section>
 
-document.getElementById("copyhash").addEventListener("click", async () => {
-  const h = document.getElementById("hash").value;
-  if(!h) return;
-  const ok = await copyText(h);
-  document.getElementById("status").innerHTML = ok ? "Hash copiato." : "Copia manualmente (seleziona e copia).";
-});
-</script>
+  </main>
 
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <script>
+    function clean(v){ return (v || "").trim(); }
+    function isSha256Hex(v){ return /^[a-f0-9]{64}$/i.test(v || ""); }
+
+    function canonicalPayload(){
+      const nickname = clean(document.getElementById("nickname").value);
+      const intent = clean(document.getElementById("intent").value);
+      const contact = clean(document.getElementById("contact").value);
+      const note = clean(document.getElementById("note").value);
+
+      const subject = { nickname, intent };
+      if(contact) subject.contact = contact;
+      if(note) subject.note = note;
+
+      return JSON.stringify({
+        proto: "HBCE-IPR-BASE-v1",
+        kind: "IPR_BASE_PAYLOAD",
+        policy: ["UE_FIRST","HASH_ONLY","FAIL_CLOSED","AUDIT_FIRST","NO_DATA_CUSTODY","APPEND_ONLY"],
+        subject,
+        time: new Date().toISOString()
+      });
+    }
+
+    async function sha256Hex(str){
+      const data = new TextEncoder().encode(str);
+      const buf = await crypto.subtle.digest("SHA-256", data);
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+    }
+
+    async function copyText(text){
+      try{ await navigator.clipboard.writeText(text); return true; }
+      catch(e){ return false; }
+    }
+
+    function setEnabled(id, en){
+      const el = document.getElementById(id);
+      if(el) el.disabled = !en;
+    }
+
+    document.getElementById("gen").addEventListener("click", async () => {
+      const status = document.getElementById("status");
+      const hashEl = document.getElementById("hash");
+      const payloadEl = document.getElementById("payload");
+      const receiptEl = document.getElementById("receipt");
+
+      const payload = canonicalPayload();
+      payloadEl.value = payload;
+
+      const parsed = JSON.parse(payload);
+      const n = parsed.subject && parsed.subject.nickname;
+      const i = parsed.subject && parsed.subject.intent;
+
+      // FAIL-CLOSED
+      if(!n || n.length < 2 || !i || i.length < 2){
+        status.innerHTML = "Esito operativo: <strong>INVALID</strong> (nickname e intent sono obbligatori).";
+        hashEl.value = "";
+        receiptEl.value = "";
+        setEnabled("copyHash", false);
+        setEnabled("copyPayload", false);
+        setEnabled("copyReceipt", false);
+        return;
+      }
+
+      const h = await sha256Hex(payload);
+      hashEl.value = h;
+
+      const receipt = {
+        proto: "HBCE-RECEIPT-v1",
+        kind: "IPR_PUBLIC_REGISTRY_ENTRY",
+        policy: ["HASH_ONLY","FAIL_CLOSED","AUDIT_FIRST","NO_DATA_CUSTODY","APPEND_ONLY"],
+        nickname: n,
+        payload_sha256: h.toLowerCase(),
+        timestamp: new Date().toISOString()
+      };
+
+      receiptEl.value = JSON.stringify(receipt, null, 2);
+
+      status.innerHTML = "Esito operativo: <strong>VALID</strong> (payload + hash + receipt generati). Prosegui con REGISTRY → VERIFY.";
+      setEnabled("copyHash", true);
+      setEnabled("copyPayload", true);
+      setEnabled("copyReceipt", true);
+    });
+
+    document.getElementById("copyHash").addEventListener("click", async () => {
+      const h = document.getElementById("hash").value;
+      if(!isSha256Hex(h)) return;
+      const ok = await copyText(h);
+      document.getElementById("status").innerHTML = ok ? "Hash copiato." : "Copia manualmente (seleziona e copia).";
+    });
+
+    document.getElementById("copyReceipt").addEventListener("click", async () => {
+      const r = document.getElementById("receipt").value;
+      if(!r) return;
+      const ok = await copyText(r);
+      document.getElementById("status").innerHTML = ok ? "Receipt copiata." : "Copia manualmente (seleziona e copia).";
+    });
+
+    document.getElementById("copyPayload").addEventListener("click", async () => {
+      const p = document.getElementById("payload").value;
+      if(!p) return;
+      const ok = await copyText(p);
+      document.getElementById("status").innerHTML = ok ? "Payload copiato." : "Copia manualmente (seleziona e copia).";
+    });
+  </script>
 </body>
 </html>
