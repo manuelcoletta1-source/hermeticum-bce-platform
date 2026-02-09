@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Attiva IPR — Generazione locale</title>
-<meta name="description" content="Generazione IPR locale con hash SHA-256. Nessuna custodia dati. Fail-closed." />
+<title>Attiva IPR — Generazione locale (UE standard opzionale)</title>
+<meta name="description" content="Generazione IPR locale: payload pubblico hash-only + allegato UE opzionale privato (hash separato). Fail-closed." />
 <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
@@ -14,83 +14,174 @@
 <main class="hbce-container hbce-main">
 
 <section class="hbce-hero">
-<div class="hbce-hero__kicker">IPR ACTIVATION · LOCAL · HASH-ONLY</div>
-<h1 class="hbce-hero__title">Attiva un nuovo IPR</h1>
+  <div class="hbce-hero__kicker">CREATE · IPR · LOCAL · HASH-ONLY + UE ANNEX (OPTIONAL)</div>
+  <h1 class="hbce-hero__title">Crea un nuovo IPR</h1>
 
-<p class="hbce-hero__lead">
-Questo modulo genera un payload canonico e il relativo hash SHA-256 direttamente sul tuo dispositivo.  
-Nessun dato viene inviato o salvato.  
-Se non è verificabile → <strong>INVALID</strong>.
-</p>
+  <p class="hbce-hero__lead">
+    Questo modulo genera <strong>due artefatti</strong> sul tuo dispositivo:
+    (1) un <strong>payload pubblico minimizzato</strong> (hash-only) da registrare nel registry,
+    (2) un <strong>allegato UE opzionale</strong> con dati standard (solo locale) con hash separato.
+    Nessun dato viene inviato o custodito dal nodo.
+  </p>
 
-<div class="hbce-hero__cta">
-<a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/receipt/">Vai a RECEIPT</a>
-<a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-<a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-<a class="hbce-btn" href="/hermeticum-bce-platform/positioning/">POSITIONING</a>
-</div>
+  <div class="hbce-hero__cta">
+    <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/receipt/">Vai a RECEIPT</a>
+    <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+    <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+    <a class="hbce-btn" href="/hermeticum-bce-platform/positioning/">POSITIONING</a>
+  </div>
 </section>
 
 <section class="hbce-section">
-<h2>Parametri</h2>
+  <h2>Regole (UE-first)</h2>
+  <div class="hbce-grid">
+    <article class="hbce-card">
+      <h3>Hash-only pubblico</h3>
+      <p class="hbce-p">Nel registry finisce solo <strong>public_payload_sha256</strong>. Nessun dato personale.</p>
+      <div class="hbce-meta">PUBLIC = HASH ONLY</div>
+    </article>
+    <article class="hbce-card">
+      <h3>Allegato UE privato</h3>
+      <p class="hbce-p">I dati UE (nome, CF, documento, indirizzo…) restano <strong>solo locali</strong>.</p>
+      <div class="hbce-meta">PRIVATE = LOCAL ONLY</div>
+    </article>
+    <article class="hbce-card">
+      <h3>Fail-closed</h3>
+      <p class="hbce-p">Se manca un passaggio o un hash non è verificabile → <strong>INVALID</strong>.</p>
+      <div class="hbce-meta">AUDIT-FIRST</div>
+    </article>
+  </div>
 
-<div class="hbce-card hbce-card--wide">
-
-<label class="hbce-meta">Nickname operativo</label>
-<input id="nickname" class="hbce-input" placeholder="es. NODE-EU-001" />
-
-<div class="hbce-actions" style="margin-top:16px">
-<button class="hbce-btn hbce-btn--primary" onclick="generateIPR()">Genera IPR</button>
-<button class="hbce-btn" onclick="resetAll()">Reset</button>
-</div>
-
-</div>
+  <div class="hbce-meta" style="margin-top:10px">
+    Nota: l’allegato UE serve per contesti B2G/B2B regolati (IDV/KYC), ma <strong>non</strong> viene pubblicato.
+  </div>
 </section>
 
 <section class="hbce-section">
-<h2>Output</h2>
+  <h2>Input</h2>
 
-<div class="hbce-grid">
+  <div class="hbce-card hbce-card--wide">
+    <div class="hbce-grid" style="align-items:start">
 
-<article class="hbce-card">
-<div class="hbce-meta">payload canonico</div>
-<textarea id="payload" class="hbce-textarea" rows="10" readonly></textarea>
-<button class="hbce-btn" onclick="copyPayload()">Copia payload</button>
-</article>
+      <article class="hbce-card" style="margin:0">
+        <h3>1) Nickname operativo (pubblico)</h3>
+        <p class="hbce-p">
+          Etichetta tecnica. Non è identità legale. Serve per receipt/registry.
+        </p>
+        <label class="hbce-meta" for="nickname">Nickname</label>
+        <input id="nickname" class="hbce-input" placeholder="es. NODE-EU-001" autocomplete="off" />
+        <div class="hbce-meta" style="margin-top:8px">
+          Suggerimento: stabile e sobrio (no marketing).
+        </div>
+      </article>
 
-<article class="hbce-card">
-<div class="hbce-meta">payload_sha256</div>
-<textarea id="hash" class="hbce-textarea" rows="3" readonly></textarea>
-<button class="hbce-btn" onclick="copyHash()">Copia hash</button>
-</article>
+      <article class="hbce-card" style="margin:0">
+        <h3>2) Dati UE standard (opzionali, privati)</h3>
+        <p class="hbce-p">
+          Compila solo se ti serve opponibilità/IDV in contesti istituzionali.  
+          Questi dati <strong>non</strong> vengono pubblicati. Producono solo <strong>private_annex_sha256</strong>.
+        </p>
 
-</div>
+        <label class="hbce-meta" for="full_name">Nome e cognome</label>
+        <input id="full_name" class="hbce-input" placeholder="es. Mario Rossi" autocomplete="off" />
 
-<div class="hbce-meta" style="margin-top:12px">
-Prossimo passo: apri RECEIPT e registra l'hash nel registry pubblico.
-</div>
+        <label class="hbce-meta" for="dob" style="margin-top:10px">Data di nascita (YYYY-MM-DD)</label>
+        <input id="dob" class="hbce-input" placeholder="1988-02-05" autocomplete="off" />
 
+        <label class="hbce-meta" for="birth_place" style="margin-top:10px">Luogo di nascita</label>
+        <input id="birth_place" class="hbce-input" placeholder="es. Bologna (BO), Italia" autocomplete="off" />
+
+        <label class="hbce-meta" for="tax_id" style="margin-top:10px">Codice fiscale / Tax ID</label>
+        <input id="tax_id" class="hbce-input" placeholder="es. RSSMRA80A01H501U" autocomplete="off" />
+
+        <label class="hbce-meta" for="address" style="margin-top:10px">Residenza (testo)</label>
+        <input id="address" class="hbce-input" placeholder="es. Via…, CAP…, Città…, Provincia…" autocomplete="off" />
+
+        <div class="hbce-grid hbce-grid--tight" style="margin-top:10px">
+          <div>
+            <label class="hbce-meta" for="doc_type">Documento (tipo)</label>
+            <input id="doc_type" class="hbce-input" placeholder="CIE / Passaporto" autocomplete="off" />
+          </div>
+          <div>
+            <label class="hbce-meta" for="doc_number">Documento (numero)</label>
+            <input id="doc_number" class="hbce-input" placeholder="—" autocomplete="off" />
+          </div>
+        </div>
+
+        <div class="hbce-meta" style="margin-top:10px">
+          Consiglio: se non ti serve IDV, lascia vuoto tutto questo blocco.
+        </div>
+      </article>
+
+    </div>
+
+    <div class="hbce-actions" style="margin-top:16px">
+      <button class="hbce-btn hbce-btn--primary" id="btn-generate">Genera IPR</button>
+      <button class="hbce-btn" id="btn-reset">Reset</button>
+    </div>
+
+    <div class="hbce-meta" id="status" style="margin-top:10px">Pronto.</div>
+  </div>
 </section>
 
 <section class="hbce-section">
-<h2>Flusso minimo</h2>
+  <h2>Output</h2>
 
-<div class="hbce-grid hbce-grid--tight">
-<a class="hbce-tile" href="/hermeticum-bce-platform/create/">CREATE</a>
-<a class="hbce-tile" href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
-<a class="hbce-tile" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-<a class="hbce-tile" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-</div>
+  <div class="hbce-grid">
+    <article class="hbce-card">
+      <div class="hbce-meta">public_payload (canonico, minimizzato)</div>
+      <textarea id="public_payload" class="hbce-textarea" rows="10" readonly></textarea>
 
-<div class="hbce-meta">Validità = verificabilità pubblica</div>
+      <div class="hbce-meta" style="margin-top:10px">public_payload_sha256 (da registrare)</div>
+      <textarea id="public_hash" class="hbce-textarea" rows="2" readonly></textarea>
+
+      <div class="hbce-actions">
+        <button class="hbce-btn" id="copy-public-hash">Copia hash pubblico</button>
+        <button class="hbce-btn" id="copy-public-payload">Copia payload pubblico</button>
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/receipt/">Vai a RECEIPT</a>
+      </div>
+
+      <div class="hbce-meta" style="margin-top:10px">
+        Questo è l’unico hash che deve finire nel registry.
+      </div>
+    </article>
+
+    <article class="hbce-card">
+      <div class="hbce-meta">private_annex (UE standard, SOLO LOCALE)</div>
+      <textarea id="private_annex" class="hbce-textarea" rows="10" readonly></textarea>
+
+      <div class="hbce-meta" style="margin-top:10px">private_annex_sha256 (non registrare)</div>
+      <textarea id="private_hash" class="hbce-textarea" rows="2" readonly></textarea>
+
+      <div class="hbce-actions">
+        <button class="hbce-btn" id="copy-private-hash">Copia hash privato</button>
+        <button class="hbce-btn" id="copy-private-annex">Copia annex privato</button>
+      </div>
+
+      <div class="hbce-meta" style="margin-top:10px">
+        Uso: prova “off-chain” verso istituzioni/aziende, senza pubblicare dati personali.
+      </div>
+    </article>
+  </div>
 </section>
 
 <section class="hbce-section">
-<div class="hbce-card hbce-card--wide">
-<div class="hbce-hallmark">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-<div class="hbce-company">HERMETICUM B.C.E. S.r.l.</div>
-<div class="hbce-meta">UE-first · audit-first · fail-closed · hash-only</div>
-</div>
+  <h2>Flusso minimo</h2>
+  <div class="hbce-grid hbce-grid--tight">
+    <a class="hbce-tile" href="/hermeticum-bce-platform/create/">CREATE</a>
+    <a class="hbce-tile" href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
+    <a class="hbce-tile" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+    <a class="hbce-tile" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+  </div>
+  <div class="hbce-meta">Public = hash-only. Private = local-only. Zero custodia lato nodo.</div>
+</section>
+
+<section class="hbce-section">
+  <div class="hbce-card hbce-card--wide">
+    <div class="hbce-hallmark">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+    <div class="hbce-company">HERMETICUM B.C.E. S.r.l.</div>
+    <div class="hbce-meta">UE-first · audit-first · fail-closed · hash-only</div>
+  </div>
 </section>
 
 </main>
@@ -99,47 +190,159 @@ Prossimo passo: apri RECEIPT e registra l'hash nel registry pubblico.
 <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 
 <script>
-async function sha256(text){
-const enc = new TextEncoder().encode(text);
-const buf = await crypto.subtle.digest("SHA-256", enc);
-return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
-}
+(function(){
+  const $ = (id) => document.getElementById(id);
 
-function canonicalPayload(nickname){
-return {
-proto:"HBCE-IPR-v1",
-kind:"IPR_BASE",
-policy:["UE_FIRST","HASH_ONLY","NO_DATA_CUSTODY","FAIL_CLOSED"],
-nickname:nickname,
-timestamp:new Date().toISOString()
-};
-}
+  const status = $("status");
+  const btnGenerate = $("btn-generate");
+  const btnReset = $("btn-reset");
 
-async function generateIPR(){
-const nick=document.getElementById("nickname").value.trim();
-if(!nick){alert("Inserisci nickname");return;}
+  const nickname = $("nickname");
 
-const payloadObj=canonicalPayload(nick);
-const payloadStr=JSON.stringify(payloadObj);
-const hash=await sha256(payloadStr);
+  const full_name = $("full_name");
+  const dob = $("dob");
+  const birth_place = $("birth_place");
+  const tax_id = $("tax_id");
+  const address = $("address");
+  const doc_type = $("doc_type");
+  const doc_number = $("doc_number");
 
-document.getElementById("payload").value=JSON.stringify(payloadObj,null,2);
-document.getElementById("hash").value=hash;
-}
+  const public_payload = $("public_payload");
+  const public_hash = $("public_hash");
+  const private_annex = $("private_annex");
+  const private_hash = $("private_hash");
 
-function resetAll(){
-document.getElementById("nickname").value="";
-document.getElementById("payload").value="";
-document.getElementById("hash").value="";
-}
+  const copyPublicHash = $("copy-public-hash");
+  const copyPublicPayload = $("copy-public-payload");
+  const copyPrivateHash = $("copy-private-hash");
+  const copyPrivateAnnex = $("copy-private-annex");
 
-function copyPayload(){
-navigator.clipboard.writeText(document.getElementById("payload").value);
-}
+  function setStatus(msg){ status.textContent = msg; }
 
-function copyHash(){
-navigator.clipboard.writeText(document.getElementById("hash").value);
-}
+  async function sha256Hex(str){
+    const enc = new TextEncoder().encode(str);
+    const buf = await crypto.subtle.digest("SHA-256", enc);
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+  }
+
+  function normalizeStr(s){
+    return (s || "").trim().replace(/\s+/g, " ");
+  }
+
+  function canonicalPublicPayload(nick){
+    return {
+      proto: "HBCE-IPR-v1",
+      kind: "IPR_BASE_PUBLIC",
+      policy: ["UE_FIRST","HASH_ONLY","NO_DATA_CUSTODY","FAIL_CLOSED","APPEND_ONLY"],
+      nickname: nick,
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  function canonicalPrivateAnnex(){
+    // Allegato UE standard (opzionale). Rimane locale.
+    // Non mettiamo campi se vuoti: minimizzazione reale.
+    const annex = {
+      proto: "HBCE-UE-ANNEX-v1",
+      kind: "EU_STANDARD_IDENTITY_ANNEX",
+      policy: ["LOCAL_ONLY","NOT_PUBLISHED","GDPR_MIN","NO_CUSTODY"],
+      timestamp: new Date().toISOString()
+    };
+
+    const v = (x) => normalizeStr(x);
+
+    const data = {};
+    if(v(full_name.value)) data.full_name = v(full_name.value);
+    if(v(dob.value)) data.date_of_birth = v(dob.value);
+    if(v(birth_place.value)) data.place_of_birth = v(birth_place.value);
+    if(v(tax_id.value)) data.tax_id = v(tax_id.value);
+    if(v(address.value)) data.address = v(address.value);
+
+    const doc = {};
+    if(v(doc_type.value)) doc.type = v(doc_type.value);
+    if(v(doc_number.value)) doc.number = v(doc_number.value);
+
+    if(Object.keys(doc).length) data.document = doc;
+
+    // Se non c’è nulla, ritorniamo null per evitare annex “finto”.
+    if(!Object.keys(data).length) return null;
+
+    annex.data = data;
+    return annex;
+  }
+
+  async function copyText(text){
+    try{
+      await navigator.clipboard.writeText(text);
+      setStatus("Copiato.");
+    }catch(e){
+      setStatus("Copia non disponibile: seleziona e copia manualmente.");
+    }
+  }
+
+  copyPublicHash.addEventListener("click", ()=>copyText(public_hash.value || ""));
+  copyPublicPayload.addEventListener("click", ()=>copyText(public_payload.value || ""));
+  copyPrivateHash.addEventListener("click", ()=>copyText(private_hash.value || ""));
+  copyPrivateAnnex.addEventListener("click", ()=>copyText(private_annex.value || ""));
+
+  btnReset.addEventListener("click", ()=>{
+    nickname.value = "";
+    full_name.value = "";
+    dob.value = "";
+    birth_place.value = "";
+    tax_id.value = "";
+    address.value = "";
+    doc_type.value = "";
+    doc_number.value = "";
+
+    public_payload.value = "";
+    public_hash.value = "";
+    private_annex.value = "";
+    private_hash.value = "";
+    setStatus("Reset.");
+  });
+
+  btnGenerate.addEventListener("click", async ()=>{
+    const nick = normalizeStr(nickname.value);
+    if(!nick){
+      setStatus("Inserisci nickname operativo.");
+      return;
+    }
+
+    setStatus("Generazione…");
+
+    try{
+      // 1) Public payload + hash (da registrare)
+      const pubObj = canonicalPublicPayload(nick);
+      const pubStr = JSON.stringify(pubObj);
+      const pubHash = await sha256Hex(pubStr);
+
+      public_payload.value = JSON.stringify(pubObj, null, 2);
+      public_hash.value = pubHash;
+
+      // 2) Private annex (opzionale) + hash (NON registrare)
+      const annexObj = canonicalPrivateAnnex();
+      if(annexObj){
+        const annexStr = JSON.stringify(annexObj);
+        const annexHash = await sha256Hex(annexStr);
+
+        private_annex.value = JSON.stringify(annexObj, null, 2);
+        private_hash.value = annexHash;
+      }else{
+        private_annex.value = "";
+        private_hash.value = "";
+      }
+
+      setStatus("Output generato. Registra solo public_payload_sha256.");
+    }catch(e){
+      public_payload.value = "";
+      public_hash.value = "";
+      private_annex.value = "";
+      private_hash.value = "";
+      setStatus("INVALID: errore in generazione.");
+    }
+  });
+})();
 </script>
 
 </body>
