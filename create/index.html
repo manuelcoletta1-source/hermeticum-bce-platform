@@ -1,225 +1,146 @@
 <!doctype html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CREATE — Genera IPR (hash-only)</title>
-  <meta name="description" content="Generazione locale di IPR: payload canonico + SHA-256. Nessuna custodia dati. UE-first, audit-first, fail-closed." />
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Attiva IPR — Generazione locale</title>
+<meta name="description" content="Generazione IPR locale con hash SHA-256. Nessuna custodia dati. Fail-closed." />
+<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
+
 <body>
-  <div data-hbce="header"></div>
+<div data-hbce="header"></div>
 
-  <main class="hbce-container hbce-main">
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CREATE · IPR Base · Hash-only</div>
-      <h1 class="hbce-hero__title">Genera un nuovo IPR (locale)</h1>
-      <p class="hbce-hero__lead">
-        Questo step genera un payload canonico e la sua impronta <strong>SHA-256</strong> sul tuo dispositivo.
-        Nessun dato viene inviato o custodito dal nodo pubblico. Se non è verificabile → <strong>INVALID</strong>.
-      </p>
-      <div class="hbce-hero__cta">
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/receipt/">Genera receipt</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Apri registry</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verifica pubblica</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/positioning/">Positioning</a>
-      </div>
-    </section>
+<main class="hbce-container hbce-main">
 
-    <section class="hbce-section">
-      <h2>Regole</h2>
-      <div class="hbce-grid">
-        <article class="hbce-card">
-          <h3>No custody</h3>
-          <p class="hbce-p">I dati restano sul tuo dispositivo. Questo nodo pubblica solo prove (hash/receipt).</p>
-          <div class="hbce-meta">NO DATA CUSTODY</div>
-        </article>
-        <article class="hbce-card">
-          <h3>Hash-only</h3>
-          <p class="hbce-p">L’identità operativa pubblica è un’impronta: non un profilo personale.</p>
-          <div class="hbce-meta">HASH-ONLY</div>
-        </article>
-        <article class="hbce-card">
-          <h3>Fail-closed</h3>
-          <p class="hbce-p">Se non puoi verificare (o manca un passaggio), l’esito operativo è INVALID.</p>
-          <div class="hbce-meta">AUDIT-FIRST</div>
-        </article>
-      </div>
-    </section>
+<section class="hbce-hero">
+<div class="hbce-hero__kicker">IPR ACTIVATION · LOCAL · HASH-ONLY</div>
+<h1 class="hbce-hero__title">Attiva un nuovo IPR</h1>
 
-    <section class="hbce-section">
-      <h2>Generazione IPR</h2>
+<p class="hbce-hero__lead">
+Questo modulo genera un payload canonico e il relativo hash SHA-256 direttamente sul tuo dispositivo.  
+Nessun dato viene inviato o salvato.  
+Se non è verificabile → <strong>INVALID</strong>.
+</p>
 
-      <div class="hbce-card hbce-card--wide">
-        <div class="hbce-grid" style="align-items:start">
-          <article class="hbce-card" style="margin:0">
-            <h3>1) Nickname operativo</h3>
-            <p class="hbce-p">Etichetta locale (non è identità legale). Serve per receipt/registry.</p>
-            <label class="hbce-meta" for="nickname">Nickname</label>
-            <input class="hbce-input" id="nickname" placeholder="es. NODE-001" autocomplete="off" />
-            <div class="hbce-meta" style="margin-top:8px">
-              Suggerimento: usa un nickname stabile e sobrio.
-            </div>
-          </article>
+<div class="hbce-hero__cta">
+<a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/receipt/">Vai a RECEIPT</a>
+<a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+<a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+<a class="hbce-btn" href="/hermeticum-bce-platform/positioning/">POSITIONING</a>
+</div>
+</section>
 
-          <article class="hbce-card" style="margin:0">
-            <h3>2) Payload canonico</h3>
-            <p class="hbce-p">
-              Generato localmente in forma minima e deterministica. Nessun dato sensibile richiesto.
-            </p>
-            <div class="hbce-actions">
-              <button class="hbce-btn hbce-btn--primary" id="btn-generate">Genera payload + hash</button>
-              <button class="hbce-btn" id="btn-clear">Reset</button>
-            </div>
-            <div class="hbce-meta" style="margin-top:10px" id="status">Pronto.</div>
-          </article>
-        </div>
+<section class="hbce-section">
+<h2>Parametri</h2>
 
-        <hr class="hbce-hr" />
+<div class="hbce-card hbce-card--wide">
 
-        <h3>Output</h3>
-        <div class="hbce-grid">
-          <article class="hbce-card">
-            <div class="hbce-meta">payload_sha256</div>
-            <textarea class="hbce-textarea" id="hash" rows="2" readonly placeholder="—"></textarea>
-            <div class="hbce-actions">
-              <button class="hbce-btn" id="copy-hash">Copia hash</button>
-              <a class="hbce-btn" id="to-receipt" href="/hermeticum-bce-platform/create/receipt/">Vai a receipt</a>
-            </div>
-          </article>
+<label class="hbce-meta">Nickname operativo</label>
+<input id="nickname" class="hbce-input" placeholder="es. NODE-EU-001" />
 
-          <article class="hbce-card">
-            <div class="hbce-meta">payload (canonico)</div>
-            <textarea class="hbce-textarea" id="payload" rows="8" readonly placeholder="—"></textarea>
-            <div class="hbce-actions">
-              <button class="hbce-btn" id="copy-payload">Copia payload</button>
-            </div>
-          </article>
-        </div>
+<div class="hbce-actions" style="margin-top:16px">
+<button class="hbce-btn hbce-btn--primary" onclick="generateIPR()">Genera IPR</button>
+<button class="hbce-btn" onclick="resetAll()">Reset</button>
+</div>
 
-        <div class="hbce-meta" style="margin-top:12px">
-          Passo successivo: apri <strong>RECEIPT</strong> e genera l’entry JSON da appendere in <strong>registry/registry.json</strong>.
-        </div>
-      </div>
-    </section>
+</div>
+</section>
 
-    <section class="hbce-section">
-      <h2>Flusso minimo</h2>
-      <div class="hbce-grid hbce-grid--tight">
-        <a class="hbce-tile" href="/hermeticum-bce-platform/create/">CREATE</a>
-        <a class="hbce-tile" href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
-        <a class="hbce-tile" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-        <a class="hbce-tile" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-      </div>
-      <div class="hbce-meta">Validità = verificabilità pubblica. Nessuna eccezione.</div>
-    </section>
+<section class="hbce-section">
+<h2>Output</h2>
 
-    <section class="hbce-section">
-      <div class="hbce-card hbce-card--wide">
-        <div class="hbce-hallmark">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-        <div class="hbce-company">HERMETICUM B.C.E. S.r.l.</div>
-        <div class="hbce-meta">UE-first · audit-first · fail-closed · hash-only</div>
-      </div>
-    </section>
-  </main>
+<div class="hbce-grid">
 
-  <div data-hbce="footer"></div>
+<article class="hbce-card">
+<div class="hbce-meta">payload canonico</div>
+<textarea id="payload" class="hbce-textarea" rows="10" readonly></textarea>
+<button class="hbce-btn" onclick="copyPayload()">Copia payload</button>
+</article>
 
-  <!-- UI inject -->
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+<article class="hbce-card">
+<div class="hbce-meta">payload_sha256</div>
+<textarea id="hash" class="hbce-textarea" rows="3" readonly></textarea>
+<button class="hbce-btn" onclick="copyHash()">Copia hash</button>
+</article>
 
-  <!-- LOGICA: prova prima con lo script esistente del repo -->
-  <script>
-    (function () {
-      const $ = (id) => document.getElementById(id);
+</div>
 
-      const nickname = $("nickname");
-      const btnGenerate = $("btn-generate");
-      const btnClear = $("btn-clear");
-      const outHash = $("hash");
-      const outPayload = $("payload");
-      const status = $("status");
+<div class="hbce-meta" style="margin-top:12px">
+Prossimo passo: apri RECEIPT e registra l'hash nel registry pubblico.
+</div>
 
-      const copyHash = $("copy-hash");
-      const copyPayload = $("copy-payload");
+</section>
 
-      function setStatus(msg) { status.textContent = msg; }
+<section class="hbce-section">
+<h2>Flusso minimo</h2>
 
-      async function copyText(text){
-        try{
-          await navigator.clipboard.writeText(text);
-          setStatus("Copiato.");
-        }catch(e){
-          setStatus("Copia non disponibile: seleziona e copia manualmente.");
-        }
-      }
+<div class="hbce-grid hbce-grid--tight">
+<a class="hbce-tile" href="/hermeticum-bce-platform/create/">CREATE</a>
+<a class="hbce-tile" href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
+<a class="hbce-tile" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+<a class="hbce-tile" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+</div>
 
-      copyHash.addEventListener("click", () => copyText(outHash.value || ""));
-      copyPayload.addEventListener("click", () => copyText(outPayload.value || ""));
+<div class="hbce-meta">Validità = verificabilità pubblica</div>
+</section>
 
-      btnClear.addEventListener("click", () => {
-        nickname.value = "";
-        outHash.value = "";
-        outPayload.value = "";
-        setStatus("Reset.");
-      });
+<section class="hbce-section">
+<div class="hbce-card hbce-card--wide">
+<div class="hbce-hallmark">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+<div class="hbce-company">HERMETICUM B.C.E. S.r.l.</div>
+<div class="hbce-meta">UE-first · audit-first · fail-closed · hash-only</div>
+</div>
+</section>
 
-      // Se esiste una tua funzione globale già pronta (create.js), la usiamo.
-      // Altrimenti fallback interno.
-      async function sha256Hex(str){
-        const enc = new TextEncoder().encode(str);
-        const buf = await crypto.subtle.digest("SHA-256", enc);
-        return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
-      }
+</main>
 
-      function canonicalPayload(nick){
-        const now = new Date().toISOString();
-        // payload minimale e stabile (non KYC)
-        return {
-          proto: "HBCE-IPR-PAYLOAD-v1",
-          kind: "IPR_CLIENT_PAYLOAD",
-          policy: ["HASH_ONLY", "NO_CUSTODY", "FAIL_CLOSED"],
-          nickname: nick || null,
-          timestamp: now
-        };
-      }
+<div data-hbce="footer"></div>
+<script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 
-      btnGenerate.addEventListener("click", async () => {
-        const nick = (nickname.value || "").trim();
-        if(!nick){
-          setStatus("Inserisci un nickname operativo.");
-          return;
-        }
+<script>
+async function sha256(text){
+const enc = new TextEncoder().encode(text);
+const buf = await crypto.subtle.digest("SHA-256", enc);
+return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
 
-        setStatus("Generazione…");
+function canonicalPayload(nickname){
+return {
+proto:"HBCE-IPR-v1",
+kind:"IPR_BASE",
+policy:["UE_FIRST","HASH_ONLY","NO_DATA_CUSTODY","FAIL_CLOSED"],
+nickname:nickname,
+timestamp:new Date().toISOString()
+};
+}
 
-        try{
-          // Se tu hai già una funzione nel tuo create.js, puoi esporla come window.hbceCreate()
-          if(typeof window.hbceCreate === "function"){
-            const r = await window.hbceCreate({ nickname: nick });
-            // r: { payload, payload_sha256 } atteso
-            outPayload.value = JSON.stringify(r.payload, null, 2);
-            outHash.value = String(r.payload_sha256 || "");
-            setStatus("Output generato (via engine interno).");
-            return;
-          }
+async function generateIPR(){
+const nick=document.getElementById("nickname").value.trim();
+if(!nick){alert("Inserisci nickname");return;}
 
-          // Fallback interno (funziona sempre)
-          const payloadObj = canonicalPayload(nick);
-          const payloadStr = JSON.stringify(payloadObj);
-          const digest = await sha256Hex(payloadStr);
+const payloadObj=canonicalPayload(nick);
+const payloadStr=JSON.stringify(payloadObj);
+const hash=await sha256(payloadStr);
 
-          outPayload.value = JSON.stringify(payloadObj, null, 2);
-          outHash.value = digest;
+document.getElementById("payload").value=JSON.stringify(payloadObj,null,2);
+document.getElementById("hash").value=hash;
+}
 
-          setStatus("Output generato (fallback locale).");
-        }catch(e){
-          outPayload.value = "";
-          outHash.value = "";
-          setStatus("INVALID: errore in generazione.");
-        }
-      });
-    })();
-  </script>
+function resetAll(){
+document.getElementById("nickname").value="";
+document.getElementById("payload").value="";
+document.getElementById("hash").value="";
+}
+
+function copyPayload(){
+navigator.clipboard.writeText(document.getElementById("payload").value);
+}
+
+function copyHash(){
+navigator.clipboard.writeText(document.getElementById("hash").value);
+}
+</script>
+
 </body>
 </html>
