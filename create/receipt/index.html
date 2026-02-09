@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RECEIPT — Genera entry registry (append-only)</title>
-  <meta name="description" content="Generazione receipt per registry append-only: nickname + public_payload_sha256 + timestamp. Nessuna custodia dati. Fail-closed." />
+  <meta name="description" content="Generazione receipt per registry append-only: nickname + payload_sha256 + timestamp. Nessuna custodia dati. Fail-closed." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 <body>
@@ -15,9 +15,9 @@
       <div class="hbce-hero__kicker">RECEIPT · Registry entry · Append-only</div>
       <h1 class="hbce-hero__title">Genera la receipt per il registry</h1>
       <p class="hbce-hero__lead">
-        Questo step produce una entry JSON minimizzata e append-only.
-        Pubblico significa: <strong>nickname + hash + timestamp</strong>.
-        Nessun dato personale. Se non è verificabile → <strong>INVALID</strong>.
+        Produci una entry JSON minimizzata e append-only:
+        <strong>nickname + hash + timestamp</strong>. Nessun dato personale.
+        Se non è verificabile → <strong>INVALID</strong>.
       </p>
       <div class="hbce-hero__cta">
         <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/registry/">Apri REGISTRY</a>
@@ -28,45 +28,19 @@
     </section>
 
     <section class="hbce-section">
-      <h2>Regole</h2>
-      <div class="hbce-grid">
-        <article class="hbce-card">
-          <h3>Public = hash-only</h3>
-          <p class="hbce-p">La receipt pubblica non contiene dati UE. Contiene solo hash verificabile.</p>
-          <div class="hbce-meta">HASH-ONLY</div>
-        </article>
-        <article class="hbce-card">
-          <h3>Append-only</h3>
-          <p class="hbce-p">L’entry si aggiunge al registry. Nessuna riscrittura, nessun “fix” retroattivo.</p>
-          <div class="hbce-meta">APPEND-ONLY</div>
-        </article>
-        <article class="hbce-card">
-          <h3>Fail-closed</h3>
-          <p class="hbce-p">Se manca l’hash o non è valido → nessuna entry generabile (INVALID).</p>
-          <div class="hbce-meta">FAIL-CLOSED</div>
-        </article>
-      </div>
-    </section>
-
-    <section class="hbce-section">
       <h2>Input</h2>
 
       <div class="hbce-card hbce-card--wide">
         <div class="hbce-grid" style="align-items:start">
           <article class="hbce-card" style="margin:0">
             <h3>Nickname operativo</h3>
-            <p class="hbce-p">Stesso nickname usato in CREATE. Serve per operatività e audit umano.</p>
             <label class="hbce-meta" for="nickname">nickname</label>
             <input id="nickname" class="hbce-input" placeholder="es. NODE-EU-001" autocomplete="off" />
           </article>
 
           <article class="hbce-card" style="margin:0">
-            <h3>public_payload_sha256</h3>
-            <p class="hbce-p">
-              Incolla qui l’hash pubblico generato da CREATE.
-              Questo è l’unico identificatore che deve finire nel registry.
-            </p>
-            <label class="hbce-meta" for="hash">public_payload_sha256</label>
+            <h3>payload_sha256 (pubblico)</h3>
+            <label class="hbce-meta" for="hash">payload_sha256</label>
             <input id="hash" class="hbce-input" placeholder="64 hex (SHA-256)" autocomplete="off" />
             <div class="hbce-meta" style="margin-top:8px" id="hashHint">—</div>
           </article>
@@ -76,8 +50,8 @@
 
         <h3>Allegato UE privato (opzionale, NON pubblicato)</h3>
         <p class="hbce-p">
-          Se hai generato un annex UE (privato) in CREATE, puoi incollare qui <strong>private_annex_sha256</strong>
-          solo come promemoria locale. Non viene inserito nell’entry del registry.
+          Incolla qui <strong>private_annex_sha256</strong> solo come promemoria locale.
+          Non viene inserito nell’entry del registry.
         </p>
         <label class="hbce-meta" for="privateHash">private_annex_sha256 (locale)</label>
         <input id="privateHash" class="hbce-input" placeholder="opzionale (NON verrà pubblicato)" autocomplete="off" />
@@ -92,37 +66,38 @@
     </section>
 
     <section class="hbce-section">
-      <h2>Output (da copiare nel registry)</h2>
+      <h2>Output</h2>
 
       <div class="hbce-grid">
         <article class="hbce-card">
           <div class="hbce-meta">ENTRY JSON (append-only)</div>
-          <textarea id="entry" class="hbce-textarea" rows="10" readonly placeholder="—"></textarea>
+          <textarea id="entry" class="hbce-textarea" rows="12" readonly placeholder="—"></textarea>
+
           <div class="hbce-actions">
             <button class="hbce-btn" id="copy-entry">Copia entry</button>
             <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/registry/">Vai a REGISTRY</a>
-            <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Vai a VERIFY</a>
+            <a class="hbce-btn" id="btn-verify-link" href="/hermeticum-bce-platform/verify/">Apri VERIFY (prefill)</a>
           </div>
+
           <div class="hbce-meta" style="margin-top:10px">
-            Dopo aver appeso l’entry, usa VERIFY per ottenere PASS/INVALID.
+            “Apri VERIFY (prefill)” usa <code>?h=</code> e verifica automaticamente.
           </div>
         </article>
 
         <article class="hbce-card">
           <div class="hbce-meta">Nota locale (non pubblicare)</div>
-          <textarea id="localNote" class="hbce-textarea" rows="10" readonly placeholder="—"></textarea>
+          <textarea id="localNote" class="hbce-textarea" rows="12" readonly placeholder="—"></textarea>
           <div class="hbce-actions">
             <button class="hbce-btn" id="copy-note">Copia nota</button>
           </div>
           <div class="hbce-meta" style="margin-top:10px">
-            Questa nota serve a te per collegare hash pubblico ↔ annex privato. Non va nel registry.
+            Collegamento locale hash pubblico ↔ annex privato. Non va nel registry.
           </div>
         </article>
       </div>
     </section>
 
     <section class="hbce-section">
-      <h2>Flusso minimo</h2>
       <div class="hbce-grid hbce-grid--tight">
         <a class="hbce-tile" href="/hermeticum-bce-platform/create/">CREATE</a>
         <a class="hbce-tile" href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
@@ -164,10 +139,11 @@
       const copyEntry = $("copy-entry");
       const copyNote = $("copy-note");
 
+      const verifyLink = $("btn-verify-link");
+
       function setStatus(msg){ status.textContent = msg; }
       function normalize(s){ return (s || "").trim(); }
       function isHex64(s){ return /^[a-fA-F0-9]{64}$/.test(s); }
-
       function nowISO(){ return new Date().toISOString(); }
 
       async function copyText(text){
@@ -179,10 +155,20 @@
         }
       }
 
+      function updateVerifyLink(h){
+        const base = "/hermeticum-bce-platform/verify/";
+        if(isHex64(h)){
+          verifyLink.href = base + "?h=" + encodeURIComponent(h);
+        }else{
+          verifyLink.href = base;
+        }
+      }
+
       hash.addEventListener("input", () => {
         const h = normalize(hash.value);
-        if(!h){ hashHint.textContent = "—"; return; }
+        if(!h){ hashHint.textContent = "—"; updateVerifyLink(""); return; }
         hashHint.textContent = isHex64(h) ? "Formato hash OK (64 hex)" : "Formato hash NON valido (atteso SHA-256 64 hex)";
+        updateVerifyLink(h);
       });
 
       btnReset.addEventListener("click", () => {
@@ -192,6 +178,7 @@
         entry.value = "";
         localNote.value = "";
         hashHint.textContent = "—";
+        updateVerifyLink("");
         setStatus("Reset.");
       });
 
@@ -205,19 +192,13 @@
           return;
         }
         if(!isHex64(h)){
-          setStatus("INVALID: public_payload_sha256 non valido (deve essere SHA-256 64 hex).");
+          setStatus("INVALID: payload_sha256 non valido (SHA-256 64 hex).");
           return;
         }
 
-        const e = {
-          nickname: n,
-          payload_sha256: h,
-          timestamp: nowISO()
-        };
-
+        const e = { nickname: n, payload_sha256: h, timestamp: nowISO() };
         entry.value = JSON.stringify(e, null, 2);
 
-        // Nota locale: NON pubblicare
         const note = {
           note: "LOCAL_ONLY (non pubblicare)",
           nickname: n,
@@ -227,12 +208,17 @@
         };
         localNote.value = JSON.stringify(note, null, 2);
 
-        setStatus("Entry generata. Copia l’ENTRY JSON e appendila in registry/registry.json.");
+        updateVerifyLink(h);
+        setStatus("Entry generata. Ora: appendi in registry e/o apri VERIFY (prefill).");
       });
 
       copyEntry.addEventListener("click", () => copyText(entry.value || ""));
       copyNote.addEventListener("click", () => copyText(localNote.value || ""));
+
+      // init
+      updateVerifyLink("");
     })();
   </script>
 </body>
 </html>
+
