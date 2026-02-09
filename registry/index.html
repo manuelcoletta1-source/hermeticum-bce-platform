@@ -1,216 +1,291 @@
 <!doctype html>
 <html lang="it">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Registry — Public Append-only Directory</title>
-<meta name="description" content="Registro pubblico append-only (hash-only). Visualizza entries da registry.json. Fail-closed: se non accessibile → INVALID.">
-<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>REGISTRY — Append-only (public)</title>
+  <meta name="description" content="Viewer del registry append-only: ricerca, conteggio, export e link a VERIFY. UE-first, audit-first, fail-closed." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
-
 <body>
-<div class="wrap">
+  <div data-hbce="header"></div>
 
-  <div class="nav">
-    <div class="brand">
-      <strong>HERMETICUM B.C.E.</strong>
-      <span>Public Registry</span>
-    </div>
-
-    <a href="/hermeticum-bce-platform/">HOME</a>
-    <a href="/hermeticum-bce-platform/enterprise/">ENTERPRISE</a>
-    <a href="/hermeticum-bce-platform/infrastructure/">INFRASTRUCTURE</a>
-    <a href="/hermeticum-bce-platform/bruxelles/">BRUXELLES</a>
-    <a href="/hermeticum-bce-platform/ipr/">IPR</a>
-    <a href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-    <a href="/hermeticum-bce-platform/verify/">VERIFY</a>
-    <a href="/hermeticum-bce-platform/repos/">ECOSYSTEM</a>
-  </div>
-
-  <div class="kicker">Append-only · Hash-only · Audit-first</div>
-  <h1>Public Registry</h1>
-
-  <p class="lead">
-    Registro pubblico append-only. Contiene solo impronte (hash) e receipt: nessuna custodia dati del soggetto.
-    Se il registro non è accessibile o non è coerente, l’esito operativo è <b>INVALID</b>.
-  </p>
-
-  <div class="ctaRow">
-    <a class="btn" href="/hermeticum-bce-platform/create/">CREATE</a>
-    <a class="btn" href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
-    <a class="btn primary" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-    <a class="btn" href="/hermeticum-bce-platform/registry/registry.json">Apri registry.json</a>
-  </div>
-
-  <div class="hr"></div>
-
-  <div class="grid">
-
-    <div class="card wide">
-      <h3>Controllo rapido</h3>
-      <input class="input" id="search" placeholder="Cerca per hash (64 hex) o nickname…">
-      <div class="meta" id="status" style="margin-top:10px">Caricamento registry…</div>
-    </div>
-
-    <div class="card">
-      <h3>Regime</h3>
-      <p>
-        • APPEND-ONLY<br>
-        • HASH-ONLY<br>
-        • FAIL-CLOSED<br>
-        • AUDIT-FIRST<br>
-        • NO DATA CUSTODY
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">REGISTRY · Append-only · Public</div>
+      <h1 class="hbce-hero__title">Registro pubblico (append-only)</h1>
+      <p class="hbce-hero__lead">
+        Questo registro pubblica solo prove minimizzate: <strong>nickname + hash + timestamp</strong>.
+        Nessuna custodia dati. Il controllo avviene via VERIFY (PASS/INVALID).
       </p>
-      <div class="meta">Disciplina enterprise</div>
-    </div>
+      <div class="hbce-hero__cta">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/create/">CREATE</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/positioning/">POSITIONING</a>
+      </div>
+    </section>
 
-  </div>
+    <section class="hbce-section">
+      <h2>Controlli</h2>
 
-  <div class="hr"></div>
+      <div class="hbce-card hbce-card--wide">
+        <div class="hbce-grid" style="align-items:end">
+          <article class="hbce-card" style="margin:0">
+            <label class="hbce-meta" for="q">Ricerca</label>
+            <input id="q" class="hbce-input" placeholder="nickname, hash, timestamp" autocomplete="off" />
+            <div class="hbce-meta" style="margin-top:8px" id="stats">—</div>
+          </article>
 
-  <h2>Entries</h2>
+          <article class="hbce-card" style="margin:0">
+            <label class="hbce-meta">Azioni</label>
+            <div class="hbce-actions">
+              <button class="hbce-btn hbce-btn--primary" id="btn-reload">Ricarica</button>
+              <button class="hbce-btn" id="btn-clear">Reset filtro</button>
+              <button class="hbce-btn" id="btn-export">Esporta (JSON)</button>
+              <a class="hbce-btn" href="/hermeticum-bce-platform/registry/registry.json">Apri registry.json</a>
+            </div>
+            <div class="hbce-meta" style="margin-top:8px" id="status">Pronto.</div>
+          </article>
+        </div>
+      </div>
+    </section>
 
-  <div class="card wide" style="grid-column: 1 / -1">
-    <div style="overflow:auto">
-      <table class="table" id="tbl" style="width:100%">
-        <thead>
-          <tr>
-            <th>Nickname</th>
-            <th>payload_sha256</th>
-            <th>Timestamp</th>
-            <th>Azioni</th>
-          </tr>
-        </thead>
-        <tbody id="tbody">
-          <tr><td colspan="4">Caricamento…</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="meta" style="margin-top:10px">
-      Fonte: <code>/registry/registry.json</code> (cache: no-store)
-    </div>
-  </div>
+    <section class="hbce-section">
+      <h2>Entries</h2>
 
-  <div class="footer">
-    <div>
-      HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br>
-      HERMETICUM B.C.E. S.r.l. · Unione Europea
-    </div>
-    <div class="footlinks">
-      <a href="/hermeticum-bce-platform/create/">CREATE</a>
-      <a href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-      <a href="/hermeticum-bce-platform/verify/">VERIFY</a>
-      <a href="/hermeticum-bce-platform/repos/">ECOSYSTEM</a>
-    </div>
-  </div>
+      <div class="hbce-card hbce-card--wide">
+        <div class="hbce-meta" style="margin-bottom:10px">
+          Schema supportato: <code>{ "entries": [...] }</code> oppure <code>[ ... ]</code>. Fail-closed se non leggibile.
+        </div>
 
-</div>
+        <div class="hbce-table-wrap">
+          <table class="hbce-table" id="table">
+            <thead>
+              <tr>
+                <th style="width:18%">Timestamp</th>
+                <th style="width:18%">Nickname</th>
+                <th>Hash (payload_sha256)</th>
+                <th style="width:18%">Azioni</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr><td colspan="4" class="hbce-meta">Caricamento…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
-<script>
-(function(){
-  const REG_URL = "/hermeticum-bce-platform/registry/registry.json";
-  const statusEl = document.getElementById("status");
-  const tbody = document.getElementById("tbody");
-  const search = document.getElementById("search");
+    <section class="hbce-section">
+      <h2>Regola</h2>
+      <div class="hbce-card hbce-card--wide">
+        <p class="hbce-p">
+          Append-only significa: si aggiunge, non si riscrive.
+          Se un elemento non è verificabile pubblicamente → INVALID.
+        </p>
+        <div class="hbce-meta">UE-first · audit-first · fail-closed · hash-only · append-only</div>
+      </div>
+    </section>
 
-  let entries = [];
+    <section class="hbce-section">
+      <div class="hbce-card hbce-card--wide">
+        <div class="hbce-hallmark">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+        <div class="hbce-company">HERMETICUM B.C.E. S.r.l.</div>
+        <div class="hbce-meta">UE-first · audit-first · fail-closed · hash-only</div>
+      </div>
+    </section>
+  </main>
 
-  function esc(s){
-    return String(s || "").replace(/[&<>"']/g, m => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-    }[m]));
-  }
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 
-  function isSha256Hex(v){ return /^[a-f0-9]{64}$/i.test(v || ""); }
+  <script>
+    (function(){
+      const $ = (id) => document.getElementById(id);
 
-  async function copyText(text){
-    try{ await navigator.clipboard.writeText(text); return true; }
-    catch(e){ return false; }
-  }
+      const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
+      const VERIFY_BASE = "/hermeticum-bce-platform/verify/?h=";
 
-  function render(list){
-    if(!Array.isArray(list) || list.length === 0){
-      tbody.innerHTML = '<tr><td colspan="4">Nessuna entry.</td></tr>';
-      return;
-    }
+      const q = $("q");
+      const btnReload = $("btn-reload");
+      const btnClear = $("btn-clear");
+      const btnExport = $("btn-export");
 
-    tbody.innerHTML = list.map((e, idx) => {
-      const nick = esc(e.nickname || "—");
-      const sha  = esc(e.payload_sha256 || "—");
-      const ts   = esc(e.timestamp || "—");
-      const canVerify = isSha256Hex(e.payload_sha256);
+      const status = $("status");
+      const stats = $("stats");
+      const tbody = $("tbody");
 
-      const verifyLink = canVerify
-        ? `<a href="/hermeticum-bce-platform/verify/" title="Apri VERIFY e incolla hash">VERIFY</a>`
-        : `<span>—</span>`;
+      let entries = [];
+      let filtered = [];
+      let loadedAt = null;
 
-      return `
-        <tr>
-          <td>${nick}</td>
-          <td style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;">
-            ${sha}
-          </td>
-          <td>${ts}</td>
-          <td>
-            <a href="#" data-copy="${esc(e.payload_sha256 || "")}" data-i="${idx}">Copia hash</a>
-            &nbsp;·&nbsp;
-            ${verifyLink}
-          </td>
-        </tr>
-      `;
-    }).join("");
+      function setStatus(msg){ status.textContent = msg; }
+      function setStats(msg){ stats.textContent = msg; }
+      function normalize(s){ return (s || "").toString().trim(); }
 
-    Array.from(tbody.querySelectorAll("a[data-copy]")).forEach(a => {
-      a.addEventListener("click", async (ev) => {
-        ev.preventDefault();
-        const val = a.getAttribute("data-copy") || "";
-        if(!val) return;
-        const ok = await copyText(val);
-        statusEl.textContent = ok ? "Hash copiato." : "Impossibile copiare automaticamente. Copia manualmente.";
-      });
-    });
-  }
-
-  function applyFilter(){
-    const q = (search.value || "").trim().toLowerCase();
-    if(!q){
-      render(entries);
-      statusEl.textContent = `OK · entries: ${entries.length}`;
-      return;
-    }
-    const filtered = entries.filter(e => {
-      const nick = (e.nickname || "").toLowerCase();
-      const sha  = (e.payload_sha256 || "").toLowerCase();
-      return nick.includes(q) || sha.includes(q);
-    });
-    render(filtered);
-    statusEl.textContent = `OK · filtrate: ${filtered.length}/${entries.length}`;
-  }
-
-  async function load(){
-    statusEl.textContent = "Caricamento registry…";
-    try{
-      const r = await fetch(REG_URL, { cache: "no-store" });
-      if(!r.ok) throw new Error("FETCH_FAILED");
-      const reg = await r.json();
-
-      // FAIL-CLOSED: schema minimo richiesto
-      if(!reg || !Array.isArray(reg.entries)){
-        throw new Error("INVALID_SCHEMA");
+      function extractEntries(obj){
+        if(Array.isArray(obj)) return obj;
+        if(obj && Array.isArray(obj.entries)) return obj.entries;
+        if(obj && obj.registry && Array.isArray(obj.registry.entries)) return obj.registry.entries;
+        return null;
       }
 
-      entries = reg.entries.slice().reverse(); // ultime in alto
-      applyFilter();
-    }catch(e){
-      tbody.innerHTML = '<tr><td colspan="4">INVALID → registry non accessibile o non coerente (fail-closed).</td></tr>';
-      statusEl.innerHTML = "Esito operativo: <b>INVALID</b> (fail-closed).";
-    }
-  }
+      function getHash(e){
+        return normalize(e.payload_sha256 || e.public_payload_sha256 || "");
+      }
 
-  search.addEventListener("input", () => applyFilter());
-  load();
-})();
-</script>
+      function safeText(s){
+        return (s || "").toString();
+      }
 
+      function render(list){
+        tbody.innerHTML = "";
+        if(!list.length){
+          tbody.innerHTML = '<tr><td colspan="4" class="hbce-meta">Nessun risultato.</td></tr>';
+          return;
+        }
+
+        for(const e of list){
+          const ts = safeText(e.timestamp || "—");
+          const nick = safeText(e.nickname || "—");
+          const h = getHash(e) || "—";
+
+          const tr = document.createElement("tr");
+
+          const tdTs = document.createElement("td");
+          tdTs.textContent = ts;
+
+          const tdNick = document.createElement("td");
+          tdNick.textContent = nick;
+
+          const tdHash = document.createElement("td");
+          tdHash.innerHTML = '<code style="word-break:break-all">' + h + '</code>';
+
+          const tdAct = document.createElement("td");
+          const aVerify = document.createElement("a");
+          aVerify.className = "hbce-btn";
+          aVerify.textContent = "Apri VERIFY";
+          aVerify.href = (h && h !== "—") ? (VERIFY_BASE + encodeURIComponent(h)) : "/hermeticum-bce-platform/verify/";
+          aVerify.target = "_self";
+
+          const btnCopy = document.createElement("button");
+          btnCopy.className = "hbce-btn";
+          btnCopy.textContent = "Copia hash";
+          btnCopy.addEventListener("click", async () => {
+            try{
+              await navigator.clipboard.writeText(h);
+              setStatus("Copiato.");
+            }catch(e){
+              setStatus("Copia non disponibile: copia manualmente.");
+            }
+          });
+
+          const wrap = document.createElement("div");
+          wrap.style.display = "flex";
+          wrap.style.gap = "8px";
+          wrap.style.flexWrap = "wrap";
+          wrap.appendChild(aVerify);
+          wrap.appendChild(btnCopy);
+
+          tdAct.appendChild(wrap);
+
+          tr.appendChild(tdTs);
+          tr.appendChild(tdNick);
+          tr.appendChild(tdHash);
+          tr.appendChild(tdAct);
+
+          tbody.appendChild(tr);
+        }
+      }
+
+      function applyFilter(){
+        const term = normalize(q.value).toLowerCase();
+        if(!term){
+          filtered = entries.slice();
+        }else{
+          filtered = entries.filter(e => {
+            const ts = safeText(e.timestamp).toLowerCase();
+            const nick = safeText(e.nickname).toLowerCase();
+            const h = getHash(e).toLowerCase();
+            return ts.includes(term) || nick.includes(term) || h.includes(term);
+          });
+        }
+
+        render(filtered);
+        setStats("Entries: " + filtered.length + " / " + entries.length + (loadedAt ? " · caricato: " + loadedAt : ""));
+      }
+
+      async function load(){
+        setStatus("Caricamento registry…");
+        tbody.innerHTML = '<tr><td colspan="4" class="hbce-meta">Caricamento…</td></tr>';
+
+        try{
+          const res = await fetch(REGISTRY_URL, { cache: "no-store" });
+          if(!res.ok){
+            entries = [];
+            filtered = [];
+            setStatus("INVALID: registry non leggibile (HTTP " + res.status + ").");
+            tbody.innerHTML = '<tr><td colspan="4" class="hbce-meta">INVALID: registry non leggibile.</td></tr>';
+            setStats("—");
+            return;
+          }
+
+          const data = await res.json();
+          const arr = extractEntries(data);
+          if(!arr){
+            entries = [];
+            filtered = [];
+            setStatus("INVALID: schema registry non riconosciuto.");
+            tbody.innerHTML = '<tr><td colspan="4" class="hbce-meta">INVALID: schema registry non riconosciuto.</td></tr>';
+            setStats("—");
+            return;
+          }
+
+          // Normalizza oggetti
+          entries = arr.filter(x => x && typeof x === "object");
+          loadedAt = new Date().toISOString();
+
+          // Ordine: newest first (se timestamp ISO)
+          entries.sort((a,b) => safeText(b.timestamp).localeCompare(safeText(a.timestamp)));
+
+          setStatus("Registry caricato.");
+          applyFilter();
+        }catch(e){
+          entries = [];
+          filtered = [];
+          setStatus("INVALID: errore fetch/parse del registry.");
+          tbody.innerHTML = '<tr><td colspan="4" class="hbce-meta">INVALID: errore fetch/parse.</td></tr>';
+          setStats("—");
+        }
+      }
+
+      btnReload.addEventListener("click", load);
+
+      btnClear.addEventListener("click", () => {
+        q.value = "";
+        applyFilter();
+        setStatus("Filtro azzerato.");
+      });
+
+      q.addEventListener("input", applyFilter);
+
+      btnExport.addEventListener("click", async () => {
+        // Esporta vista corrente (filtered) in JSON
+        const blob = new Blob([JSON.stringify(filtered, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "registry_export.json";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        setStatus("Export generato.");
+      });
+
+      load();
+    })();
+  </script>
 </body>
 </html>
