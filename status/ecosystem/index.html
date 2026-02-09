@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Status — Ecosystem Health</title>
+  <meta name="description" content="Osservazione tecnica dei moduli esterni (GitHub Pages). Nessuna custodia dati. Audit-first.">
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">STATUS · Ecosystem Health · Audit-first</div>
+      <h1 class="hbce-hero__title">Osservazione moduli esterni</h1>
+      <p class="hbce-hero__lead">
+        Questa pagina esegue una <strong>osservazione tecnica</strong> dei principali moduli esterni (GitHub Pages).
+        Non attribuisce validità: misura raggiungibilità e restituisce <strong>OK / DEGRADED / OFFLINE</strong>.
+      </p>
+      <div class="hbce-hero__cta">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/map/">MAP</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Regole</h2>
+      <div class="hbce-grid">
+        <article class="hbce-card">
+          <h3>No custody</h3>
+          <p class="hbce-p">Nessun dato utente. Solo richieste tecniche di osservazione.</p>
+          <div class="hbce-meta">HASH-ONLY / NO DATA CUSTODY</div>
+        </article>
+        <article class="hbce-card">
+          <h3>Fail-closed</h3>
+          <p class="hbce-p">
+            Se il controllo non può essere eseguito o produce risultati incerti, lo stato è conservativo.
+          </p>
+          <div class="hbce-meta">Audit-first</div>
+        </article>
+        <article class="hbce-card">
+          <h3>CORS & limiti browser</h3>
+          <p class="hbce-p">
+            Alcuni domini non permettono lettura dello status HTTP (CORS).
+            In quel caso stimiamo “raggiungibile” solo se la richiesta non fallisce.
+          </p>
+          <div class="hbce-meta">Osservazione, non certificazione</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Health table</h2>
+      <div class="hbce-actions" style="margin-bottom:12px">
+        <button class="hbce-btn hbce-btn--primary" id="run">Esegui check</button>
+        <button class="hbce-btn" id="auto">Auto-check (30s)</button>
+        <button class="hbce-btn" id="stop" disabled>Stop</button>
+      </div>
+
+      <div class="hbce-card hbce-card--wide">
+        <div class="hbce-meta" id="meta">Pronto.</div>
+        <div style="overflow:auto; margin-top:10px">
+          <table class="hbce-table" style="width:100%">
+            <thead>
+              <tr>
+                <th>Modulo</th>
+                <th>URL</th>
+                <th>Stato</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr><td colspan="4">Nessun check eseguito.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="hbce-meta" style="margin-top:12px">
+        Suggerimento operativo: se un modulo è OFFLINE, l’operatore usa il control plane (MAP/REPOS) per scegliere fallback.
+      </div>
+    </section>
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <script>
+    (function(){
+      const modules = [
+        { name: "Technology", url: "https://manuelcoletta1-source.github.io/Hermeticum-B.C.E.-Technology/" },
+        { name: "GitJoker C2", url: "https://manuelcoletta1-source.github.io/gitjoker-c2/" },
+        { name: "IPR Gateway", url: "https://manuelcoletta1-source.github.io/hermeticum-bce-ipr/" },
+        { name: "UNEBDO", url: "https://manuelcoletta1-source.github.io/unebdo/" },
+        { name: "OPC", url: "https://manuelcoletta1-source.github.io/opc/" },
+        { name: "UE IPR Registry", url: "https://manuelcoletta1-source.github.io/ue-ipr-registry/" },
+        { name: "IPR Core", url: "https://manuelcoletta1-source.github.io/ipr-core/" },
+        { name: "IPR Gate", url: "https://manuelcoletta1-source.github.io/ipr-gate/" },
+        { name: "IPR Comply", url: "https://manuelcoletta1-source.github.io/ipr-comply/" },
+        { name: "IPR Exchange", url: "https://manuelcoletta1-source.github.io/ipr-exchange/" },
+        { name: "Capability Stack", url: "https://manuelcoletta1-source.github.io/ipr-capability-stack/" },
+        { name: "MetaExchange", url: "https://manuelcoletta1-source.github.io/metaexchange/" },
+        { name: "IoSpace", url: "https://manuelcoletta1-source.github.io/iospace/" },
+        { name: "CyberGlobal", url: "https://manuelcoletta1-source.github.io/cyberglobal/" },
+        { name: "NeuroLoop", url: "https://manuelcoletta1-source.github.io/neuroloop/" },
+        { name: "Corpus", url: "https://manuelcoletta1-source.github.io/corpus-esoterologia-ermetica/" }
+      ];
+
+      const tbody = document.getElementById("tbody");
+      const meta = document.getElementById("meta");
+      const runBtn = document.getElementById("run");
+      const autoBtn = document.getElementById("auto");
+      const stopBtn = document.getElementById("stop");
+
+      let timer = null;
+
+      function esc(s){
+        return String(s || "").replace(/[&<>"']/g, m => ({
+          "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+        }[m]));
+      }
+
+      function badge(state){
+        if(state === "OK") return `<strong>OK</strong>`;
+        if(state === "DEGRADED") return `<strong>DEGRADED</strong>`;
+        return `<strong>OFFLINE</strong>`;
+      }
+
+      async function probe(url){
+        // Tentativo 1: fetch no-cors (non leggiamo status, ma capiamo se fallisce)
+        try{
+          await fetch(url, { mode: "no-cors", cache: "no-store" });
+          return { state: "OK", note: "Raggiungibile (opaque response / CORS)" };
+        }catch(e){
+          // Tentativo 2: ping via favicon
+          return new Promise((resolve) => {
+            const img = new Image();
+            const t = setTimeout(() => {
+              img.src = "";
+              resolve({ state: "OFFLINE", note: "Timeout / unreachable" });
+            }, 4500);
+
+            img.onload = () => {
+              clearTimeout(t);
+              resolve({ state: "DEGRADED", note: "Raggiungibile via asset (favicon)" });
+            };
+            img.onerror = () => {
+              clearTimeout(t);
+              resolve({ state: "OFFLINE", note: "Unreachable / blocked" });
+            };
+
+            const u = new URL(url);
+            img.src = u.origin + "/favicon.ico?ts=" + Date.now();
+          });
+        }
+      }
+
+      async function run(){
+        meta.textContent = "Esecuzione check…";
+        tbody.innerHTML = `<tr><td colspan="4">Check in corso…</td></tr>`;
+
+        const results = [];
+        for(const m of modules){
+          const r = await probe(m.url);
+          results.push({ ...m, ...r });
+        }
+
+        // Render
+        tbody.innerHTML = results.map(r => `
+          <tr>
+            <td>${esc(r.name)}</td>
+            <td><a href="${esc(r.url)}" target="_blank" rel="noopener">Apri</a></td>
+            <td>${badge(r.state)}</td>
+            <td>${esc(r.note)}</td>
+          </tr>
+        `).join("");
+
+        const ok = results.filter(x => x.state === "OK").length;
+        const deg = results.filter(x => x.state === "DEGRADED").length;
+        const off = results.filter(x => x.state === "OFFLINE").length;
+        meta.textContent = `Risultato: OK=${ok} · DEGRADED=${deg} · OFFLINE=${off} · ${new Date().toISOString()}`;
+      }
+
+      runBtn.addEventListener("click", run);
+
+      autoBtn.addEventListener("click", async () => {
+        if(timer) return;
+        await run();
+        timer = setInterval(run, 30000);
+        autoBtn.disabled = true;
+        stopBtn.disabled = false;
+        meta.textContent = "Auto-check attivo (30s).";
+      });
+
+      stopBtn.addEventListener("click", () => {
+        if(timer) clearInterval(timer);
+        timer = null;
+        autoBtn.disabled = false;
+        stopBtn.disabled = true;
+        meta.textContent = "Auto-check fermato.";
+      });
+    })();
+  </script>
+</body>
+</html>
