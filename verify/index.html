@@ -1,140 +1,144 @@
 <!doctype html>
-<html lang="it" data-base="../">
+<html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="color-scheme" content="light dark" />
-  <title>VERIFY | Public Verification</title>
-  <meta name="description" content="Verifica pubblica deterministica IPR e manifest. PASS / FAIL / INVALID. Audit-first, fail-closed, hash-only." />
-  <meta name="robots" content="index,follow" />
-  <link rel="stylesheet" href="../assets/hbce.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VERIFY — Technical Verification Gateway</title>
 
-  <style>
-    .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:12px;margin-top:12px}
-    @media (max-width:900px){.grid2{grid-template-columns:1fr}}
-
-    input{
-      width:100%;
-      padding:12px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background:var(--panel2);
-      color:var(--text);
-      font-family:var(--mono);
-      font-size:13px;
-      outline:none;
-    }
-
-    .result{
-      margin-top:12px;
-      padding:12px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      background:var(--panel);
-      font-family:var(--mono);
-      font-size:12px;
-      color:var(--muted);
-      white-space:pre-wrap;
-    }
-
-    h1{margin:0 0 10px;font-size:30px}
-  </style>
+<style>
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#0b0c0f;color:#fff}
+.wrap{max-width:980px;margin:auto;padding:60px 20px}
+.nav{display:flex;gap:18px;margin-bottom:46px;font-size:14px;opacity:.82;flex-wrap:wrap}
+a{color:#fff;text-decoration:none;opacity:.9}
+a:hover{opacity:.75}
+h1{font-size:38px;margin:0 0 10px}
+p{opacity:.88;line-height:1.65;margin:10px 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:26px}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+.card{border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:18px}
+.card h2{font-size:16px;margin:0 0 8px}
+.small{font-size:13px;opacity:.75}
+code,input,textarea{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+input,textarea{
+width:100%;margin-top:10px;padding:12px 12px;border-radius:8px;
+border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05);color:#fff
+}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btn{
+display:inline-block;padding:12px 16px;border-radius:8px;
+border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06)
+}
+.hr{margin:36px 0;border-top:1px solid rgba(255,255,255,.10)}
+.badge{display:inline-block;font-size:12px;padding:6px 10px;border:1px solid rgba(255,255,255,.15);border-radius:999px;opacity:.86}
+footer{margin-top:70px;font-size:12px;opacity:.6}
+</style>
 </head>
 
 <body>
-<div id="hbce-header"></div>
+<div class="wrap">
 
-<main class="wrap">
+<div class="nav">
+  <a href="/hermeticum-bce-platform/">HOME</a>
+  <a href="/hermeticum-bce-platform/infrastructure/">INFRASTRUTTURA</a>
+  <a href="/hermeticum-bce-platform/ipr/">IPR</a>
+  <a href="/hermeticum-bce-platform/architecture/">ARCHITETTURA</a>
+  <a href="/hermeticum-bce-platform/map/">SYSTEM MAP</a>
+</div>
+
+<span class="badge">Fail-closed · Audit-first · Hash-only</span>
+<h1>VERIFY</h1>
+<p>
+Gateway di verifica tecnica pubblica: qui si controlla la coerenza di un nodo, di un artefatto o di un riferimento operativo.
+Se non è verificabile, è trattato come <b>INVALID</b>.
+</p>
+
+<div class="grid">
+
   <div class="card">
-
-    <div class="kicker">
-      <span class="mono">PUBLIC VERIFY</span>
-      <span class="mono">deterministic</span>
-      <span class="mono">fail-closed</span>
-      <span class="mono">hash-only</span>
-    </div>
-
-    <h1>Verifica pubblica</h1>
-    <p style="margin:0;color:var(--muted);max-width:80ch">
-      Questa interfaccia esegue un precheck deterministico su hash, receipt o manifest.
-      Non invia dati a server e non custodisce informazioni.
-      Se una verifica non è ripetibile pubblicamente → esito invalido.
+    <h2>Verifica rapida (manuale)</h2>
+    <p class="small">
+      Inserisci un hash o un riferimento (es. SHA-256 / SHA-512, payload hash, ID nodo, CID, TXID).
+      Questo gateway non acquisisce dati personali: lavora su impronte e prove.
     </p>
 
-    <div class="grid2">
+    <input id="q" placeholder="Incolla qui un hash / CID / TXID / ID..." autocomplete="off">
 
-      <section class="card2">
-        <h2 style="margin:0 0 8px;font-size:16px">Precheck</h2>
-
-        <input id="hashInput" type="text" placeholder="Inserisci hash (sha256 o sha512)" />
-
-        <div class="btnRow">
-          <button class="btn primary" onclick="runCheck()">ESEGUI VERIFICA</button>
-          <a class="btn secondary" href="../ipr/">IPR</a>
-          <a class="btn" href="../registry/">REGISTRY</a>
-        </div>
-
-        <div id="output" class="result">Stato: IDLE</div>
-      </section>
-
-      <aside class="card2">
-        <h2 style="margin:0 0 8px;font-size:16px">Modello di esito</h2>
-
-        <ul style="margin:0;padding-left:18px;color:var(--muted)">
-          <li><span class="mono">PASS</span> → formato coerente e verificabile</li>
-          <li><span class="mono">FAIL</span> → incoerenza o errore</li>
-          <li><span class="mono">INVALID</span> → nessuna verifica possibile</li>
-        </ul>
-
-        <div class="callout">
-          <strong>Fail-closed:</strong> se la verifica non è deterministica,
-          il sistema considera il riferimento non valido.
-        </div>
-
-        <p style="margin-top:10px;color:var(--muted)">
-          Questa pagina non stabilisce identità legali.  
-          Fornisce solo coerenza tecnica verificabile.
-        </p>
-      </aside>
-
+    <div class="btnrow">
+      <a class="btn" href="/hermeticum-bce-platform/ipr/">Apri IPR</a>
+      <a class="btn" href="/hermeticum-bce-platform/evidence-pack/">Evidence Pack</a>
+      <a class="btn" href="/hermeticum-bce-platform/audit/">Audit</a>
     </div>
+
+    <p class="small" id="out" style="margin-top:12px;opacity:.78"></p>
   </div>
-</main>
 
-<div id="hbce-footer"></div>
+  <div class="card">
+    <h2>Regime di verifica</h2>
+    <p class="small">
+      La verifica tecnica implementa il modello “identità primaria + autorizzazione preventiva + audit continuo”
+      come infrastruttura operativa per sistemi digitali e autonomi. 1
+    </p>
+    <p class="small">
+      Regole operative:
+      <br>• <b>Hash-only</b> — verifica su impronte, non su dati
+      <br>• <b>Fail-closed</b> — assenza prova = INVALID
+      <br>• <b>Audit-first</b> — la traccia è precondizione
+      <br>• <b>Non retroattivo</b> — la coerenza si deriva nel tempo
+    </p>
 
-<script src="../assets/hbce-ui.js"></script>
-<script>hbceBoot("../");</script>
+    <div class="hr"></div>
+
+    <h2>Ingressi principali</h2>
+    <p class="small">
+      • <a href="/hermeticum-bce-platform/verify/">VERIFY</a> — gateway di verifica<br>
+      • <a href="/hermeticum-bce-platform/ipr/">IPR</a> — identità primaria e policy<br>
+      • <a href="/hermeticum-bce-platform/architecture/">ARCHITETTURA</a> — stack operativo<br>
+      • <a href="/hermeticum-bce-platform/infrastructure/">INFRASTRUTTURA</a> — contesto UE
+    </p>
+  </div>
+
+</div>
+
+<div class="hr"></div>
+
+<h2>Esito (client-side)</h2>
+<p class="small">
+Questo controllo è volutamente minimale: serve a rendere immediata la disciplina “fail-closed”.
+L’interpretazione completa avviene nelle pagine di IPR / Evidence / Audit.
+</p>
 
 <script>
-function runCheck(){
-  const v = document.getElementById("hashInput").value.trim();
-  const out = document.getElementById("output");
+(function(){
+  const q = document.getElementById("q");
+  const out = document.getElementById("out");
 
-  if(!v){
-    out.textContent="INVALID\nNessun riferimento inserito.";
-    return;
+  function classify(v){
+    if(!v) return "";
+    const s = v.trim();
+    if(s.length < 16) return "INPUT_TOO_SHORT → INVALID (insufficiente per una prova)";
+    const looksHex = /^[a-f0-9]+$/i.test(s);
+    const looksBtc = /^[a-f0-9]{64}$/i.test(s);
+    const looksIpfs = /^bafk/i.test(s) || /^Qm[1-9A-HJ-NP-Za-km-z]{44}/.test(s);
+    const looksEvm = /^0x[a-f0-9]{64}$/i.test(s);
+
+    if(looksBtc) return "TXID (BTC) rilevato → prosegui in Evidence/Audit";
+    if(looksEvm) return "TX (EVM) rilevato → prosegui in Evidence/Audit";
+    if(looksIpfs) return "CID (IPFS) rilevato → prosegui in Evidence/Audit";
+    if(looksHex && (s.length === 64 || s.length === 128)) return "HASH rilevato → prosegui in Evidence/Audit";
+    return "FORMATO NON CLASSIFICATO → INVALID (fail-closed)";
   }
 
-  const hex=/^[0-9a-fA-F]+$/;
-  if(!hex.test(v)){
-    out.textContent="FAIL\nFormato non esadecimale.";
-    return;
-  }
-
-  if(v.length===64){
-    out.textContent="PASS\nFormato SHA256 valido.\nUsa registry o manifest per verifica completa.";
-    return;
-  }
-
-  if(v.length===128){
-    out.textContent="PASS\nFormato SHA512 valido.\nUsa registry o manifest per verifica completa.";
-    return;
-  }
-
-  out.textContent="INVALID\nLunghezza hash non riconosciuta.";
-}
+  q.addEventListener("input", () => {
+    out.textContent = classify(q.value);
+  });
+})();
 </script>
 
+<footer>
+HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br>
+HERMETICUM B.C.E. S.r.l. · Unione Europea
+</footer>
+
+</div>
 </body>
 </html>
