@@ -22,6 +22,7 @@
     <a href="/hermeticum-bce-platform/infrastructure/">INFRASTRUCTURE</a>
     <a href="/hermeticum-bce-platform/bruxelles/">BRUXELLES</a>
     <a href="/hermeticum-bce-platform/ipr/">IPR</a>
+    <a href="/hermeticum-bce-platform/registry/">REGISTRY</a>
     <a href="/hermeticum-bce-platform/verify/">VERIFY</a>
     <a href="/hermeticum-bce-platform/repos/">ECOSYSTEM</a>
   </div>
@@ -30,15 +31,16 @@
   <h1>Attiva IPR UE Base</h1>
 
   <p class="lead">
-    Flusso di attivazione “UE-ready” progettato per aumentare opponibilità e solidità istituzionale,
-    mantenendo minimizzazione e assenza di custodia: i dati restano sul dispositivo.
-    Il nodo lavora su impronte (hash) e prove. Se non verificabile → <b>INVALID</b>.
+    Flusso UE-ready per rafforzare precisione e opponibilità mantenendo minimizzazione e assenza di custodia:
+    i dati restano sul dispositivo. Il nodo pubblico lavora su impronte (hash) e receipt.
+    Se non verificabile → <b>INVALID</b>.
   </p>
 
   <div class="ctaRow">
     <a class="btn" href="/hermeticum-bce-platform/ipr/">Torna a IPR</a>
-    <a class="btn" href="/hermeticum-bce-platform/verify/">Vai a VERIFY</a>
-    <a class="btn primary" href="/hermeticum-bce-platform/create/">Vai a CREATE</a>
+    <a class="btn" href="/hermeticum-bce-platform/create/receipt/">Genera Receipt</a>
+    <a class="btn" href="/hermeticum-bce-platform/registry/">Registro pubblico</a>
+    <a class="btn primary" href="/hermeticum-bce-platform/verify/">Verifica</a>
   </div>
 
   <div class="hr"></div>
@@ -50,7 +52,7 @@
     <div class="spec"><strong>No custody</strong><span>Il nodo non conserva dati personali del soggetto.</span></div>
     <div class="spec"><strong>Fail-closed</strong><span>Assenza prova o input insufficiente → INVALID.</span></div>
     <div class="spec"><strong>Audit-first</strong><span>La verificabilità pubblica è precondizione.</span></div>
-    <div class="spec"><strong>Non retroattivo</strong><span>Append-only: coerenza derivabile nel tempo.</span></div>
+    <div class="spec"><strong>Append-only</strong><span>Non retroattivo: coerenza derivabile nel tempo.</span></div>
   </div>
 
   <div class="hr"></div>
@@ -58,7 +60,7 @@
   <h2>Profilo UE Base (compilazione locale)</h2>
   <p class="p">
     Compila solo ciò che vuoi. Più campi = maggiore specificità dell’impronta.
-    <b>Questi dati non vengono salvati sul server.</b> L’hash viene calcolato localmente nel browser.
+    <b>Questi dati non vengono salvati sul server.</b> L’hash è calcolato localmente nel browser.
   </p>
 
   <div class="grid">
@@ -84,17 +86,17 @@
       <h3>Output operativo</h3>
       <p class="p" id="status">Nessuna impronta generata.</p>
 
-      <input class="input" id="hash" readonly placeholder="hash (SHA-256)">
+      <input class="input" id="hash" readonly placeholder="payload_sha256 (SHA-256)">
       <input class="input" id="payload" readonly placeholder="payload canonical (locale)">
 
       <div class="ctaRow" style="margin-top:14px">
-        <a class="btn" id="toVerify" href="/hermeticum-bce-platform/verify/">Apri VERIFY</a>
-        <a class="btn" id="toCreate" href="/hermeticum-bce-platform/create/">Apri CREATE</a>
-        <a class="btn" id="toEvidence" href="/hermeticum-bce-platform/evidence-pack/">Evidence Pack</a>
+        <a class="btn" href="/hermeticum-bce-platform/create/receipt/">Vai a Receipt</a>
+        <a class="btn" href="/hermeticum-bce-platform/registry/">Vai a Registry</a>
+        <a class="btn" href="/hermeticum-bce-platform/verify/">Vai a Verify</a>
       </div>
 
       <div class="meta" style="margin-top:12px">
-        Suggerimento operativo: genera hash → crea receipt/prova in CREATE → verifica in VERIFY.
+        Percorso standard: genera hash → genera receipt → append nel registry → verify PASS/INVALID.
       </div>
     </div>
   </div>
@@ -106,6 +108,7 @@
     </div>
     <div class="footlinks">
       <a href="/hermeticum-bce-platform/ipr/">IPR</a>
+      <a href="/hermeticum-bce-platform/registry/">REGISTRY</a>
       <a href="/hermeticum-bce-platform/verify/">VERIFY</a>
       <a href="/hermeticum-bce-platform/repos/">ECOSYSTEM</a>
     </div>
@@ -120,7 +123,6 @@
   - Hash SHA-256 via WebCrypto
   - Fail-closed: richiede almeno un campo significativo
 */
-
 function clean(v){ return (v || "").trim(); }
 
 function buildCanonicalPayload(){
@@ -134,13 +136,12 @@ function buildCanonicalPayload(){
     note: clean(document.getElementById("note").value)
   };
 
-  // Rimuovi stringhe vuote per stabilità
   Object.keys(subject).forEach(k => { if(!subject[k]) delete subject[k]; });
 
   return JSON.stringify({
     proto: "HBCE-UE-BASE-v1",
     kind: "IPR_UE_BASE_PROFILE",
-    policy: ["UE_FIRST","HASH_ONLY","FAIL_CLOSED","AUDIT_FIRST","NO_DATA_CUSTODY"],
+    policy: ["UE_FIRST","HASH_ONLY","FAIL_CLOSED","AUDIT_FIRST","NO_DATA_CUSTODY","APPEND_ONLY"],
     subject,
     time: new Date().toISOString()
   });
@@ -158,24 +159,18 @@ function setEnabled(id, en){
 }
 
 async function copyText(text){
-  try{
-    await navigator.clipboard.writeText(text);
-    return true;
-  }catch(e){
-    return false;
-  }
+  try{ await navigator.clipboard.writeText(text); return true; }
+  catch(e){ return false; }
 }
 
 document.getElementById("gen").addEventListener("click", async () => {
-  const payload = buildCanonicalPayload();
-
   const status = document.getElementById("status");
   const hashEl = document.getElementById("hash");
   const payloadEl = document.getElementById("payload");
 
+  const payload = buildCanonicalPayload();
   payloadEl.value = payload;
 
-  // Fail-closed: richiede almeno un campo nel subject
   const parsed = JSON.parse(payload);
   const hasAnyField = parsed.subject && Object.keys(parsed.subject).length > 0;
 
@@ -190,7 +185,7 @@ document.getElementById("gen").addEventListener("click", async () => {
   const h = await sha256Hex(payload);
   hashEl.value = h;
 
-  status.innerHTML = "Esito operativo: <b>VALID</b> (impronta generata). Prosegui in CREATE per receipt/evidenze e in VERIFY per controllo pubblico.";
+  status.innerHTML = "Esito operativo: <b>VALID</b> (impronta generata). Prosegui con Receipt → Registry → Verify.";
 
   setEnabled("copyhash", true);
   setEnabled("copypayload", true);
