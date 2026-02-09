@@ -1,37 +1,17 @@
-<div class="topbar">
-  <div class="wrap">
-    <div class="nav" role="navigation" aria-label="Navigazione principale">
-      <div class="brand">
-        <img data-hbce-seal alt="Sigillo Hermeticum" style="height:24px;width:auto;vertical-align:middle;margin-right:10px">
-        <span>HERMETICUM B.C.E.</span>
-        <small>UE audit-first gateway</small>
-      </div>
+<!-- /partials/header.html -->
+<header class="hbce-header">
+  <div class="hbce-container hbce-header__row">
+    <a class="hbce-brand" href="/hermeticum-bce-platform/">
+      <span class="hbce-brand__name">HERMETICUM B.C.E.</span>
+      <span class="hbce-brand__meta">UE-first · audit-first · fail-closed · hash-only</span>
+    </a>
 
-      <div class="navlinks" aria-label="Sezioni">
-        <a href="./">HOME</a>
-        <a href="./ipr/">IPR</a>
-        <a href="./architecture/">ARCHITECTURE</a>
-        <a href="./eu/pilot/">EU PILOT</a>
-        <a href="./use-cases/">USE CASES</a>
-        <a href="./verify/">VERIFY</a>
-        <a href="./about/">ABOUT</a>
-        <a href="./NAV.html">NAV</a>
-      </div>
-    </div>
+    <nav class="hbce-nav" aria-label="Navigazione principale">
+      <a href="/hermeticum-bce-platform/infrastructure/">Infrastruttura</a>
+      <a href="/hermeticum-bce-platform/verify/">Verifica pubblica</a>
+      <a href="/hermeticum-bce-platform/create/">Crea IPR</a>
+      <a href="/hermeticum-bce-platform/evidence/">Evidence</a>
+      <a href="/hermeticum-bce-platform/catalog/">Catalogo</a>
+    </nav>
   </div>
-</div>
-
-<script>
-  // Questo script gira dentro il partial: risolve il sigillo in base al basePath impostato nella pagina.
-  (function(){
-    const seal = document.querySelector('[data-hbce-seal]');
-    const base = document.documentElement.getAttribute('data-base') || './';
-    if (seal) seal.src = base + 'sigillo-hermeticum.svg';
-    // Fix link: rende coerenti tutti gli href in base al basePath
-    document.querySelectorAll('.navlinks a').forEach(a => {
-      const href = a.getAttribute('href') || '';
-      if (href.startsWith('./')) a.setAttribute('href', base + href.slice(2));
-      else if (href === './') a.setAttribute('href', base);
-    });
-  })();
-</script>
+</header>
