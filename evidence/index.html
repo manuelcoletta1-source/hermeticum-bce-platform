@@ -1,165 +1,54 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Evidence & Verification — HERMETICUM B.C.E.</title>
-  <meta name="description" content="Guida alle evidenze (hash, manifest, prove di integrità) e alla verifica tecnica per audit.">
-  <style>
-    body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:#0b0b0b;color:#e6e6e6;line-height:1.6}
-    header,section{max-width:1100px;margin:auto;padding:2.5rem 1rem}
-    header{padding-top:3.5rem}
-    h1{font-size:2rem;margin:0 0 .5rem}
-    .sub{opacity:.85}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem;margin-top:1.5rem}
-    .card{border:1px solid #222;background:#111;border-radius:6px;padding:1.25rem}
-    .badge{display:inline-block;border:1px solid #444;border-radius:999px;padding:.15rem .6rem;font-size:.85rem;opacity:.9}
-    a{color:#9ad}
-    pre,code{background:#0f0f0f;border:1px solid #222;border-radius:6px}
-    pre{padding:1rem;overflow:auto}
-    ul{margin-top:.5rem}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Evidence — Pacchetti di prova (audit-first)</title>
+  <meta name="description" content="Evidence: pacchetti di prova riproducibili, verificabili e minimizzati. Nessuna custodia dati. Fail-closed." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 <body>
+  <div data-hbce="header"></div>
 
-<header>
-  <div class="badge">Evidence / Verification</div>
-  <h1>Evidenze e verifica tecnica</h1>
-  <p class="sub">
-    Guida per cittadini avanzati, tecnici, revisori e contesti forensi.
-    Obiettivo: verificare integrità e coerenza di un IPR in modo ripetibile.
-  </p>
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">EVIDENCE · Audit-first · Reproducible</div>
+      <h1 class="hbce-hero__title">Evidence Pack</h1>
+      <p class="hbce-hero__lead">
+        Un evidence pack è una struttura riproducibile: contiene riferimenti, hash e metadati minimi
+        per verificare nel tempo la coerenza di un artefatto o di un evento.
+      </p>
+      <div class="hbce-hero__cta">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/anchor/">ANCHOR</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/evidence-pack/">EVIDENCE-PACK</a>
+      </div>
+    </section>
 
-  <div style="margin-top:1rem;">
-    <a href="../verify/">Verifica IPR</a> ·
-    <a href="../create/">Rilascia IPR</a> ·
-    <a href="../terms/">Termini</a> ·
-    <a href="../">Home</a>
-  </div>
-</header>
+    <section class="hbce-section">
+      <h2>Regola</h2>
+      <div class="hbce-card hbce-card--wide">
+        <p class="hbce-p">
+          L’evidence non “convince”: <strong>permette di verificare</strong>.
+          Se un passaggio non è replicabile o manca l’hash → esito <strong>INVALID</strong>.
+        </p>
+        <div class="hbce-meta">Fail-closed</div>
+      </div>
+    </section>
 
-<section>
-  <h2>Definizioni operative</h2>
-  <div class="grid">
-    <div class="card">
-      <h3>Manifest</h3>
-      <p>Documento strutturato che descrive un IPR: metadati, versioni, riferimenti e hash.</p>
-    </div>
-    <div class="card">
-      <h3>Hash</h3>
-      <p>Impronta crittografica di un contenuto. Se cambia anche 1 bit, l’hash cambia.</p>
-    </div>
-    <div class="card">
-      <h3>Evidenza</h3>
-      <p>Insieme verificabile: file + hash + (eventuali) timestamp/anchor + log/versioning.</p>
-    </div>
-  </div>
-</section>
+    <section class="hbce-section">
+      <h2>Workflow (minimo)</h2>
+      <div class="hbce-grid">
+        <article class="hbce-card"><h3>1) Costruisci</h3><p class="hbce-p">Raccogli artefatti e metadati minimi.</p><div class="hbce-meta">Locale</div></article>
+        <article class="hbce-card"><h3>2) Hash</h3><p class="hbce-p">Calcola impronte (SHA) e genera manifest.</p><div class="hbce-meta">Hash-only</div></article>
+        <article class="hbce-card"><h3>3) Receipt</h3><p class="hbce-p">Produci entry append-only (timestamp + hash).</p><div class="hbce-meta">Append-only</div></article>
+        <article class="hbce-card"><h3>4) Verify</h3><p class="hbce-p">Lookup pubblico e controllo di coerenza.</p><div class="hbce-meta">PASS/INVALID</div></article>
+      </div>
+    </section>
+  </main>
 
-<section>
-  <h2>Cosa dimostra (e cosa no)</h2>
-  <div class="grid">
-    <div class="card">
-      <h3>Dimostra</h3>
-      <ul>
-        <li><strong>Integrità:</strong> il contenuto non è stato alterato (hash match)</li>
-        <li><strong>Coerenza:</strong> manifest ↔ hash ↔ file corrispondono</li>
-        <li><strong>Esistenza nel tempo:</strong> se ancorato, “esisteva” a una certa data</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>NON dimostra automaticamente</h3>
-      <ul>
-        <li>Identità legale della persona</li>
-        <li>Autenticità giuridica equivalente a firma qualificata</li>
-        <li>Riconoscimento istituzionale automatico</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Regola pratica</h3>
-      <p>Se mancano dati o c’è mismatch: esito <strong>Invalid</strong> o <strong>Inconclusive</strong>. Non forzare mai “Valid”.</p>
-    </div>
-  </div>
-</section>
-
-<section>
-  <h2>Procedura di verifica (audit-grade)</h2>
-  <ol>
-    <li>Recupera <strong>manifest</strong> e file associati.</li>
-    <li>Ricalcola gli <strong>hash</strong> in locale sui file.</li>
-    <li>Confronta con gli hash dichiarati nel manifest.</li>
-    <li>Se presente, verifica l’anchor/timestamp associato.</li>
-    <li>Registra esito e conserva evidenze/versioni.</li>
-  </ol>
-
-  <h3>Esempio CLI — SHA-256</h3>
-  <pre><code># Linux / macOS
-shasum -a 256 FILE.ext
-
-# Windows PowerShell
-Get-FileHash FILE.ext -Algorithm SHA256
-</code></pre>
-</section>
-
-<section>
-  <h2>Fail-closed</h2>
-  <p>
-    Principio operativo: se anche un solo controllo fallisce (hash diverso, file mancanti, manifest incoerente),
-    la verifica deve essere considerata <strong>NON valida</strong>.
-  </p>
-</section>
-
-<section>
-  <h2>Esiti standard</h2>
-  <div class="grid">
-    <div class="card">
-      <h3>Valid</h3>
-      <p>Match completo: manifest coerente, hash corretti, evidenze presenti.</p>
-    </div>
-    <div class="card">
-      <h3>Invalid</h3>
-      <p>Mismatch o alterazione: hash differente, file non coerenti, evidenze rotte.</p>
-    </div>
-    <div class="card">
-      <h3>Inconclusive</h3>
-      <p>Dati insufficienti: non si può concludere. Esito da trattare come non accettabile in audit.</p>
-    </div>
-  </div>
-</section>
-
-<section>
-  <h2>Buona pratica di conservazione</h2>
-  <ul>
-    <li>Conserva <span class="mono">manifest</span> e file originali</li>
-    <li>Conserva output di verifica (hash calcolati) con data/ora</li>
-    <li>Versiona modifiche e conserva changelog</li>
-    <li>Non sovrascrivere: aggiungi nuova traccia</li>
-  </ul>
-</section>
-
-<footer style="margin-top:4rem;padding:2rem 1rem;border-top:1px solid #222;font-size:0.9rem;opacity:0.85;">
-  <div style="max-width:1100px;margin:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;">
-    <div>
-      <strong>HERMETICUM B.C.E.</strong><br>
-      HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br>
-      <span class="sub">HERMETICUM B.C.E. S.r.l.</span>
-    </div>
-    <div>
-      <a href="../legal/privacy.html">Privacy</a><br>
-      <a href="../legal/cookies.html">Cookies</a><br>
-      <a href="../legal/accessibility.html">Accessibility</a>
-    </div>
-    <div>
-      <a href="../legal/legal-notice.html">Legal notice</a><br>
-      <a href="../legal/contact.html">Contact</a>
-    </div>
-    <div>
-      Platform status: <strong>Experimental</strong><br>
-      Jurisdiction: <strong>EU</strong>
-    </div>
-  </div>
-</footer>
-
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </body>
 </html>
