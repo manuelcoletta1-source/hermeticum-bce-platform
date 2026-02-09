@@ -1,176 +1,331 @@
 <!doctype html>
-<html lang="it" data-base="./">
+<html lang="it">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<meta name="color-scheme" content="light dark"/>
-<title>HERMETICUM B.C.E. | European Infrastructure Gateway</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="HERMETICUM B.C.E. — Central node of identity-first execution infrastructure. Verify before execute." />
+  <meta name="robots" content="index,follow" />
+  <title>HERMETICUM B.C.E. — Central Infrastructure</title>
 
-<meta name="description" content="HERMETICUM B.C.E. infrastruttura tecnica per identità verificabile, responsabilità digitale e audit pubblico. UE-first, audit-first, hash-only."/>
+  <style>
+    :root{
+      --bg: #0b0c0f;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.09);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.68);
+      --faint: rgba(255,255,255,.50);
+      --line: rgba(255,255,255,.12);
+      --shadow: 0 14px 50px rgba(0,0,0,.45);
+      --radius: 18px;
+      --radius2: 26px;
+      --max: 1100px;
+    }
 
-<link rel="stylesheet" href="./assets/hbce.css"/>
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg: #ffffff;
+        --panel: rgba(0,0,0,.045);
+        --panel2: rgba(0,0,0,.065);
+        --text: rgba(0,0,0,.90);
+        --muted: rgba(0,0,0,.64);
+        --faint: rgba(0,0,0,.52);
+        --line: rgba(0,0,0,.10);
+        --shadow: 0 18px 55px rgba(0,0,0,.10);
+      }
+    }
 
-<style>
-.hero{padding:18px 0 10px}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 700px at 15% 10%, rgba(255,255,255,.10), transparent 60%),
+                  radial-gradient(1000px 600px at 85% 25%, rgba(255,255,255,.07), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.35;
+    }
 
-.heroGrid{
-  display:grid;
-  grid-template-columns:1.35fr .65fr;
-  gap:18px;
-  align-items:start;
-}
-@media (max-width:900px){
-  .heroGrid{grid-template-columns:1fr}
-}
+    a{color:inherit; text-decoration:none}
+    a:hover{opacity:.92}
 
-.title{
-  font-size:26px;
-  font-weight:700;
-  letter-spacing:.3px;
-  margin-bottom:6px;
-}
+    .wrap{max-width:var(--max); margin:0 auto; padding:28px 18px 70px}
+    .topbar{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter:saturate(140%) blur(10px);
+      background: linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,0));
+      border-bottom:1px solid var(--line);
+    }
+    @media (prefers-color-scheme: light){
+      .topbar{background: linear-gradient(to bottom, rgba(255,255,255,.85), rgba(255,255,255,0))}
+    }
+    .topbar .inner{max-width:var(--max); margin:0 auto; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; gap:18px}
+    .brand{display:flex; align-items:baseline; gap:10px; letter-spacing:.04em}
+    .brand strong{font-weight:750}
+    .brand span{color:var(--muted); font-size:12px}
 
-.rule{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  color:var(--muted);
-  margin-bottom:14px;
-}
-.rule .line{
-  flex:1;
-  height:1px;
-  background:var(--line);
-}
-.rule .label{
-  font-family:var(--mono);
-  font-size:12px;
-  letter-spacing:2px;
-  color:var(--muted);
-}
+    .nav{display:flex; gap:14px; flex-wrap:wrap; justify-content:flex-end}
+    .nav a{
+      font-size:13px;
+      color:var(--muted);
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid transparent;
+    }
+    .nav a:hover{color:var(--text); border-color:var(--line); background:var(--panel)}
 
-.sub{
-  font-size:16px;
-  color:var(--muted);
-  margin:14px 0 16px;
-  max-width:70ch;
-}
+    .hero{padding:54px 0 26px}
+    .kicker{
+      display:inline-flex; gap:10px; align-items:center;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      background:var(--panel);
+      border-radius:999px;
+      color:var(--muted);
+      font-size:12px;
+    }
+    h1{
+      margin:18px 0 10px;
+      font-size:48px;
+      letter-spacing:-0.02em;
+      line-height:1.05;
+    }
+    @media (max-width:720px){ h1{font-size:38px} }
+    .lead{
+      margin:0;
+      color:var(--muted);
+      font-size:16px;
+      max-width:820px;
+    }
 
-.grid3{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  margin-top:16px;
-}
-@media (max-width:900px){
-  .grid3{grid-template-columns:1fr}
-}
+    .ctaRow{margin-top:22px; display:flex; gap:10px; flex-wrap:wrap}
+    .btn{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:12px 14px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:var(--panel);
+      color:var(--text);
+      font-weight:650;
+      font-size:14px;
+    }
+    .btn.primary{
+      background: linear-gradient(180deg, var(--panel2), var(--panel));
+      box-shadow: var(--shadow);
+    }
+    .btn.secondary{color:var(--muted)}
+    .btn:hover{transform: translateY(-1px)}
+    .btn:active{transform: translateY(0px)}
 
-.pillRow{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-top:12px;
-}
-.pill{
-  font-family:var(--mono);
-  font-size:12px;
-  padding:8px 10px;
-  border:1px solid var(--line);
-  border-radius:999px;
-  background:var(--panel);
-  color:var(--muted);
-}
-</style>
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:14px;
+      margin-top:18px;
+    }
+    .card{
+      grid-column: span 6;
+      padding:18px;
+      border:1px solid var(--line);
+      background:var(--panel);
+      border-radius:var(--radius);
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+      transition: transform .15s ease, background .15s ease;
+    }
+    .card:hover{transform: translateY(-2px); background:var(--panel2)}
+    .card h3{margin:0 0 8px; font-size:15px}
+    .card p{margin:0; color:var(--muted); font-size:13px}
+    .card .meta{margin-top:12px; color:var(--faint); font-size:12px}
+
+    .wide{grid-column: span 12; border-radius:var(--radius2)}
+    .col4{grid-column: span 4}
+    @media (max-width:980px){
+      .col4{grid-column: span 12}
+      .card{grid-column: span 12}
+    }
+
+    .sectionTitle{
+      margin:42px 0 12px;
+      display:flex; align-items:baseline; justify-content:space-between; gap:12px;
+    }
+    .sectionTitle h2{margin:0; font-size:18px; letter-spacing:-0.01em}
+    .sectionTitle .hint{margin:0; color:var(--muted); font-size:13px}
+
+    .specs{
+      display:grid;
+      grid-template-columns: repeat(12,1fr);
+      gap:12px;
+      margin-top:12px;
+    }
+    .spec{
+      grid-column: span 4;
+      padding:14px 14px;
+      border:1px solid var(--line);
+      background:var(--panel);
+      border-radius:14px;
+    }
+    .spec strong{display:block; font-size:13px; margin-bottom:6px}
+    .spec span{display:block; color:var(--muted); font-size:12px}
+    @media (max-width:980px){ .spec{grid-column: span 6} }
+    @media (max-width:640px){ .spec{grid-column: span 12} }
+
+    footer{
+      margin-top:52px;
+      padding-top:18px;
+      border-top:1px solid var(--line);
+      color:var(--faint);
+      font-size:12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .footlinks{display:flex; gap:12px; flex-wrap:wrap}
+    .footlinks a{color:var(--faint)}
+  </style>
 </head>
 
 <body>
+  <div class="topbar">
+    <div class="inner">
+      <div class="brand" aria-label="HERMETICUM B.C.E.">
+        <strong>HERMETICUM B.C.E.</strong>
+        <span>Identity Before Execution</span>
+      </div>
 
-<div id="hbce-header"></div>
+      <nav class="nav" aria-label="Navigazione">
+        <a href="./create/">Create</a>
+        <a href="./verify/">Verify</a>
+        <a href="./evidence-pack/">Evidence</a>
+        <a href="./architecture/">Architecture</a>
+        <a href="./governance/">Governance</a>
+        <a href="./catalog/">Catalog</a>
+        <a href="./map/">System Map</a>
+      </nav>
+    </div>
+  </div>
 
-<main class="wrap">
+  <main class="wrap">
+    <section class="hero">
+      <div class="kicker">Central node · UE-first · Audit-first · Fail-closed</div>
+      <h1>Verify before execute.</h1>
+      <p class="lead">
+        Infrastruttura di esecuzione identity-first basata su IPR (Identity Primary Record).
+        Nessuna custodia dati. Solo verificabilità, tracciabilità e opponibilità nel tempo.
+      </p>
 
-<section class="hero">
-<div class="heroGrid">
+      <div class="ctaRow" role="group" aria-label="Azioni principali">
+        <a class="btn primary" href="./verify/">Avvia verifica pubblica</a>
+        <a class="btn secondary" href="./create/">Crea IPR / Receipt</a>
+        <a class="btn secondary" href="./evidence-pack/">Genera Evidence Pack</a>
+      </div>
+    </section>
 
-<div class="card">
+    <div class="grid" aria-label="Percorsi principali">
+      <a class="card col4" href="./citizen/">
+        <h3>Citizen</h3>
+        <p>Ingresso “light” per attivazione e verifica IPR in modalità UE-ready.</p>
+        <div class="meta">Minimizzazione · guidato · opponibile</div>
+      </a>
 
-<div class="kicker">
-<span class="mono">UE-first</span>
-<span class="mono">audit-first</span>
-<span class="mono">fail-closed</span>
-<span class="mono">hash-only</span>
-</div>
+      <a class="card col4" href="./institution/">
+        <h3>Institution</h3>
+        <p>Flussi per enti e PA: onboarding, policy, audit, interoperabilità.</p>
+        <div class="meta">B2G · compliance · controllo ex-ante</div>
+      </a>
 
-<div class="title">HERMETICUM B.C.E.</div>
+      <a class="card col4" href="./professional/">
+        <h3>Professional</h3>
+        <p>Uso enterprise: moduli, capacità, integrazione operativa, standard.</p>
+        <div class="meta">B2B · integrazione · esecuzione controllata</div>
+      </a>
 
-<div class="rule">
-<div class="line"></div>
-<div class="label">EUROPEAN DIGITAL RESPONSIBILITY INFRASTRUCTURE</div>
-<div class="line"></div>
-</div>
+      <a class="card wide" href="./ai/">
+        <h3>AI execution model</h3>
+        <p>
+          Layer per sistemi autonomi: un’azione non parte senza identità verificata e policy applicata.
+          Progettato per auditabilità e riduzione del rischio sistemico.
+        </p>
+        <div class="meta">AI · autonomy · accountability</div>
+      </a>
+    </div>
 
-<p class="sub">
-Infrastruttura tecnica per identità verificabile, attribuzione di responsabilità
-e audit pubblico. Il sistema opera in modalità hash-only e non custodisce dati personali.
-</p>
+    <div class="sectionTitle">
+      <h2>Regime operativo</h2>
+      <p class="hint">Queste regole sono “di sistema”, non marketing.</p>
+    </div>
 
-<div class="btnRow">
-<a class="btn primary" href="./ipr/">IPR</a>
-<a class="btn secondary" href="./verify/">VERIFY</a>
-<a class="btn" href="./architecture/">ARCHITECTURE</a>
-<a class="btn" href="./eu/pilot/">EU PILOT</a>
-</div>
+    <div class="specs" aria-label="Principi">
+      <div class="spec">
+        <strong>UE-first</strong>
+        <span>Allineamento normativo e minimizzazione come default operativo.</span>
+      </div>
+      <div class="spec">
+        <strong>Hash-only</strong>
+        <span>Verifica su impronte e prove; niente custodia dei dati del soggetto.</span>
+      </div>
+      <div class="spec">
+        <strong>Fail-closed</strong>
+        <span>Se non è verificabile, non è eseguibile. Punto.</span>
+      </div>
+      <div class="spec">
+        <strong>Audit-first</strong>
+        <span>Traccia verificabile e leggibile come precondizione.</span>
+      </div>
+      <div class="spec">
+        <strong>Permissionless</strong>
+        <span>Verifiche pubbliche: nessuna autorità necessaria per leggere la prova.</span>
+      </div>
+      <div class="spec">
+        <strong>Append-only</strong>
+        <span>Stato evolutivo: si deriva, non si riscrive. Coerenza nel tempo.</span>
+      </div>
+    </div>
 
-<div class="grid3">
+    <div class="sectionTitle">
+      <h2>Link rapidi</h2>
+      <p class="hint">Orientamento, standard, prototipo, mappa completa.</p>
+    </div>
 
-<div class="card2">
-<h2 style="margin:0 0 6px;font-size:16px">Identità</h2>
-<p style="margin:0;color:var(--muted)">
-Struttura IPR verificabile e opponibile.
-</p>
-</div>
+    <div class="grid" aria-label="Link rapidi">
+      <a class="card" href="./standards/">
+        <h3>Standards</h3>
+        <p>Standard tecnici e regime di validità applicabile.</p>
+      </a>
 
-<div class="card2">
-<h2 style="margin:0 0 6px;font-size:16px">Traccia</h2>
-<p style="margin:0;color:var(--muted)">
-Append-only e audit pubblico deterministico.
-</p>
-</div>
+      <a class="card" href="./tech/">
+        <h3>Technical dossier</h3>
+        <p>Materiale tecnico per contesto enterprise e infrastrutture critiche.</p>
+      </a>
 
-<div class="card2">
-<h2 style="margin:0 0 6px;font-size:16px">Verifica</h2>
-<p style="margin:0;color:var(--muted)">
-Fail-closed e controlli riproducibili.
-</p>
-</div>
+      <a class="card" href="./onboarding/">
+        <h3>Onboarding</h3>
+        <p>Flussi operativi: attivazione, verifica, evidenze e registrazione.</p>
+      </a>
 
-</div>
+      <a class="card" href="./map/">
+        <h3>System map</h3>
+        <p>Mappa completa dell’infrastruttura e dei moduli collegati.</p>
+      </a>
 
-<div class="pillRow">
-<span class="pill">PERMISSIONLESS</span>
-<span class="pill">GDPR-MIN</span>
-<span class="pill">PUBLIC AUDIT</span>
-<span class="pill">NO DATA CUSTODY</span>
-</div>
+      <a class="card wide" href="https://github.com/manuelcoletta1-source">
+        <h3>Repository directory</h3>
+        <p>Accesso al catalogo completo dei repository del sistema.</p>
+        <div class="meta">GitHub · source of truth</div>
+      </a>
+    </div>
 
-</div>
-
-<aside class="card">
-<h2 style="margin:0 0 10px;font-size:18px">Stato</h2>
-<div class="callout">
-Nodo infrastrutturale pubblico in fase pilot tecnico UE.
-</div>
-</aside>
-
-</div>
-</section>
-
-</main>
-
-<div id="hbce-footer"></div>
-<script src="./assets/hbce-ui.js"></script>
-<script>hbceBoot("./");</script>
-
+    <footer>
+      <div>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA — <span style="white-space:nowrap;">HERMETICUM B.C.E. S.r.l.</span></div>
+      <div class="footlinks">
+        <a href="./privacy/">Privacy</a>
+        <a href="./security/">Security</a>
+        <a href="./terms/">Terms</a>
+        <a href="./audit/">Audit</a>
+      </div>
+    </footer>
+  </main>
 </body>
 </html>
