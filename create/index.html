@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Create — IPR Base</title>
+<title>Create — Crea IPR Base</title>
 <meta name="description" content="Crea un IPR Base in locale: payload canonical + hash SHA-256. Nessuna custodia dati. Fail-closed.">
 <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css">
 </head>
@@ -12,12 +12,17 @@
 <div class="wrap">
 
   <div class="nav">
-    <div class="brand"><strong>HERMETICUM B.C.E.</strong><span>Create IPR</span></div>
+    <div class="brand">
+      <strong>HERMETICUM B.C.E.</strong>
+      <span>Create IPR</span>
+    </div>
+
     <a href="/hermeticum-bce-platform/">HOME</a>
     <a href="/hermeticum-bce-platform/enterprise/">ENTERPRISE</a>
     <a href="/hermeticum-bce-platform/infrastructure/">INFRASTRUCTURE</a>
     <a href="/hermeticum-bce-platform/bruxelles/">BRUXELLES</a>
     <a href="/hermeticum-bce-platform/ipr/">IPR</a>
+    <a href="/hermeticum-bce-platform/registry/">REGISTRY</a>
     <a href="/hermeticum-bce-platform/verify/">VERIFY</a>
     <a href="/hermeticum-bce-platform/repos/">ECOSYSTEM</a>
   </div>
@@ -32,8 +37,9 @@
 
   <div class="ctaRow">
     <a class="btn" href="/hermeticum-bce-platform/ipr/">Torna a IPR</a>
-    <a class="btn" href="/hermeticum-bce-platform/registry/">Apri Registry</a>
-    <a class="btn primary" href="/hermeticum-bce-platform/create/receipt/">Genera Receipt</a>
+    <a class="btn" href="/hermeticum-bce-platform/create/receipt/">Genera Receipt</a>
+    <a class="btn primary" href="/hermeticum-bce-platform/registry/">Apri Registry</a>
+    <a class="btn" href="/hermeticum-bce-platform/verify/">Verifica</a>
   </div>
 
   <div class="hr"></div>
@@ -41,6 +47,7 @@
   <h2>Profilo operativo minimo (locale)</h2>
   <p class="p">
     Campi minimi: <b>nickname</b> e <b>intent</b>. Il resto è opzionale.
+    L’impronta dipende dal payload canonical generato localmente.
   </p>
 
   <div class="grid">
@@ -62,17 +69,35 @@
 
       <h3>Output</h3>
       <p class="p" id="status">Nessun output.</p>
-      <input class="input" id="hash" readonly placeholder="payload_sha256">
+
+      <input class="input" id="hash" readonly placeholder="payload_sha256 (SHA-256)">
       <input class="input" id="payload" readonly placeholder="payload canonical (JSON)">
 
       <div class="ctaRow" style="margin-top:14px">
-        <a class="btn" id="toReceipt" href="/hermeticum-bce-platform/create/receipt/">Vai a Receipt</a>
-        <a class="btn" id="toVerify" href="/hermeticum-bce-platform/verify/">Vai a Verify</a>
+        <a class="btn" href="/hermeticum-bce-platform/create/receipt/">Vai a Receipt</a>
+        <a class="btn" href="/hermeticum-bce-platform/registry/">Vai a Registry</a>
+        <a class="btn" href="/hermeticum-bce-platform/verify/">Vai a Verify</a>
       </div>
 
       <div class="meta" style="margin-top:12px">
-        Suggerimento: genera hash → vai a Receipt → append in Registry → verifica in Verify.
+        Percorso standard: crea hash → genera receipt → append in registry → verify PASS/INVALID.
       </div>
+    </div>
+
+    <div class="card">
+      <h3>Fail-closed</h3>
+      <p>
+        Nickname e intent sono obbligatori. Formati incompleti o ambigui non producono validità operativa.
+      </p>
+      <div class="meta">Assenza prova = INVALID</div>
+    </div>
+
+    <div class="card">
+      <h3>Hash-only</h3>
+      <p>
+        Pubblica solo impronta e receipt. Il payload completo può rimanere privato sul dispositivo del cliente.
+      </p>
+      <div class="meta">No data custody</div>
     </div>
   </div>
 
@@ -82,8 +107,8 @@
       HERMETICUM B.C.E. S.r.l. · Unione Europea
     </div>
     <div class="footlinks">
-      <a href="/hermeticum-bce-platform/registry/">REGISTRY</a>
       <a href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
+      <a href="/hermeticum-bce-platform/registry/">REGISTRY</a>
       <a href="/hermeticum-bce-platform/verify/">VERIFY</a>
     </div>
   </div>
@@ -106,7 +131,7 @@ function canonicalPayload(){
   return JSON.stringify({
     proto: "HBCE-IPR-BASE-v1",
     kind: "IPR_BASE_PAYLOAD",
-    policy: ["UE_FIRST","HASH_ONLY","FAIL_CLOSED","AUDIT_FIRST","NO_DATA_CUSTODY"],
+    policy: ["UE_FIRST","HASH_ONLY","FAIL_CLOSED","AUDIT_FIRST","NO_DATA_CUSTODY","APPEND_ONLY"],
     subject,
     time: new Date().toISOString()
   });
@@ -141,7 +166,7 @@ document.getElementById("gen").addEventListener("click", async () => {
   const i = parsed.subject && parsed.subject.intent;
 
   // FAIL-CLOSED: richiede nickname + intent
-  if(!n || !i){
+  if(!n || n.length < 2 || !i || i.length < 2){
     status.innerHTML = "Esito operativo: <b>INVALID</b> (nickname e intent sono obbligatori).";
     hashEl.value = "";
     setEnabled("copypayload", false);
@@ -152,7 +177,7 @@ document.getElementById("gen").addEventListener("click", async () => {
   const h = await sha256Hex(payload);
   hashEl.value = h;
 
-  status.innerHTML = "Esito operativo: <b>VALID</b> (payload + hash generati). Vai a Receipt per registrazione pubblica.";
+  status.innerHTML = "Esito operativo: <b>VALID</b> (payload + hash generati). Prosegui con Receipt → Registry → Verify.";
   setEnabled("copypayload", true);
   setEnabled("copyhash", true);
 });
