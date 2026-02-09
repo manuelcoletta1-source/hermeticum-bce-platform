@@ -18,8 +18,10 @@
     </div>
 
     <a href="/hermeticum-bce-platform/">HOME</a>
-    <a href="/hermeticum-bce-platform/create/">CREATE</a>
-    <a href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
+    <a href="/hermeticum-bce-platform/enterprise/">ENTERPRISE</a>
+    <a href="/hermeticum-bce-platform/infrastructure/">INFRASTRUCTURE</a>
+    <a href="/hermeticum-bce-platform/bruxelles/">BRUXELLES</a>
+    <a href="/hermeticum-bce-platform/ipr/">IPR</a>
     <a href="/hermeticum-bce-platform/registry/">REGISTRY</a>
     <a href="/hermeticum-bce-platform/verify/">VERIFY</a>
     <a href="/hermeticum-bce-platform/repos/">ECOSYSTEM</a>
@@ -34,9 +36,10 @@
   </p>
 
   <div class="ctaRow">
-    <a class="btn" href="/hermeticum-bce-platform/create/">Crea IPR</a>
-    <a class="btn" href="/hermeticum-bce-platform/create/receipt/">Genera Receipt</a>
-    <a class="btn primary" href="/hermeticum-bce-platform/verify/">Verifica</a>
+    <a class="btn" href="/hermeticum-bce-platform/create/">CREATE</a>
+    <a class="btn" href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
+    <a class="btn primary" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+    <a class="btn" href="/hermeticum-bce-platform/registry/registry.json">Apri registry.json</a>
   </div>
 
   <div class="hr"></div>
@@ -95,8 +98,9 @@
     </div>
     <div class="footlinks">
       <a href="/hermeticum-bce-platform/create/">CREATE</a>
-      <a href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
+      <a href="/hermeticum-bce-platform/registry/">REGISTRY</a>
       <a href="/hermeticum-bce-platform/verify/">VERIFY</a>
+      <a href="/hermeticum-bce-platform/repos/">ECOSYSTEM</a>
     </div>
   </div>
 
@@ -137,7 +141,7 @@
       const canVerify = isSha256Hex(e.payload_sha256);
 
       const verifyLink = canVerify
-        ? `<a href="/hermeticum-bce-platform/verify/" title="Apri VERIFY (incolla hash)">VERIFY</a>`
+        ? `<a href="/hermeticum-bce-platform/verify/" title="Apri VERIFY e incolla hash">VERIFY</a>`
         : `<span>—</span>`;
 
       return `
@@ -156,7 +160,6 @@
       `;
     }).join("");
 
-    // bind copy
     Array.from(tbody.querySelectorAll("a[data-copy]")).forEach(a => {
       a.addEventListener("click", async (ev) => {
         ev.preventDefault();
@@ -191,10 +194,12 @@
       if(!r.ok) throw new Error("FETCH_FAILED");
       const reg = await r.json();
 
-      const arr = Array.isArray(reg.entries) ? reg.entries : null;
-      if(!arr) throw new Error("INVALID_SCHEMA");
+      // FAIL-CLOSED: schema minimo richiesto
+      if(!reg || !Array.isArray(reg.entries)){
+        throw new Error("INVALID_SCHEMA");
+      }
 
-      entries = arr.slice().reverse(); // ultime in alto
+      entries = reg.entries.slice().reverse(); // ultime in alto
       applyFilter();
     }catch(e){
       tbody.innerHTML = '<tr><td colspan="4">INVALID → registry non accessibile o non coerente (fail-closed).</td></tr>';
