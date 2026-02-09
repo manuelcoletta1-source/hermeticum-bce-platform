@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Control — Ecosystem Control Panel</title>
+  <meta name="description" content="Control panel: manifest ecosistema + osservazione health moduli. Audit-first, fail-closed, hash-only." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">CONTROL · Ecosystem Panel · UE-first</div>
+      <h1 class="hbce-hero__title">Control Panel</h1>
+      <p class="hbce-hero__lead">
+        Hub unico per operatori: directory (manifest), osservazione health e ingressi di prova (VERIFY/REGISTRY).
+        Regola: ciò che non è verificabile è trattato come <strong>INVALID</strong> (fail-closed).
+      </p>
+      <div class="hbce-hero__cta">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/map/">MAP</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/ecosystem/">ECOSYSTEM</a>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Core</h2>
+      <div class="hbce-card hbce-card--wide">
+        <div class="hbce-meta" id="coreLine">Caricamento manifest…</div>
+        <div class="hbce-actions" style="margin-top:12px">
+          <a class="hbce-btn" href="/hermeticum-bce-platform/ecosystem/manifest.json">manifest.json</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/status/ecosystem/">STATUS</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/repos/">REPOS</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/docs/">DOCS</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Modules (directory + health)</h2>
+
+      <div class="hbce-card hbce-card--wide">
+        <div class="hbce-actions">
+          <button class="hbce-btn hbce-btn--primary" id="run">Esegui health check</button>
+          <button class="hbce-btn" id="auto">Auto-check (30s)</button>
+          <button class="hbce-btn" id="stop" disabled>Stop</button>
+          <input class="hbce-input" id="filter" style="max-width:320px" placeholder="Filtra per nome o ruolo…">
+        </div>
+
+        <div class="hbce-meta" id="meta" style="margin-top:10px">—</div>
+
+        <div style="overflow:auto; margin-top:10px">
+          <table class="hbce-table" style="width:100%">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Ruolo</th>
+                <th>Directory</th>
+                <th>Health</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr><td colspan="5">Caricamento…</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="hbce-meta" style="margin-top:12px">
+          Health = osservazione tecnica (CORS/opaque). Non è certificazione.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <script>
+    (function(){
+      const MANIFEST = "/hermeticum-bce-platform/ecosystem/manifest.json";
+      const tbody = document.getElementById("tbody");
+      const meta = document.getElementById("meta");
+      const coreLine = document.getElementById("coreLine");
+      const runBtn = document.getElementById("run");
+      const autoBtn = document.getElementById("auto");
+      const stopBtn = document.getElementById("stop");
+      const filter = document.getElementById("filter");
+
+      let modules = [];
+      let view = [];
+      let health = {}; // url -> {state,note}
+      let timer = null;
+
+      function esc(s){
+        return String(s || "").replace(/[&<>"']/g, m => ({
+          "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+        }[m]));
+      }
+
+      function badge(state){
+        if(state === "OK") return "<strong>OK</strong>";
+        if(state === "DEGRADED") return "<strong>DEGRADED</strong>";
+        if(state === "OFFLINE") return "<strong>OFFLINE</strong>";
+        return "<strong>—</strong>";
+      }
+
+      async function probe(url){
+        try{
+          await fetch(url, { mode: "no-cors", cache: "no-store" });
+          return { state: "OK", note: "Raggiungibile (opaque / CORS)" };
+        }catch(e){
+          return new Promise((resolve) => {
+            const img = new Image();
+            const t = setTimeout(() => resolve({ state: "OFFLINE", note: "Timeout / unreachable" }), 4500);
+            img.onload = () => { clearTimeout(t); resolve({ state: "DEGRADED", note: "Raggiungibile via asset (favicon)" }); };
+            img.onerror = () => { clearTimeout(t); resolve({ state: "OFFLINE", note: "Unreachable / blocked" }); };
+            const u = new URL(url);
+            img.src = u.origin + "/favicon.ico?ts=" + Date.now();
+          });
+        }
+      }
+
+      function render(list){
+        if(!list.length){
+          tbody.innerHTML = `<tr><td colspan="5">Nessun risultato.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = list.map(m => {
+          const h = health[m.public_url] || {};
+          return `
+            <tr>
+              <td>${esc(m.name)}</td>
+              <td>${esc(m.role)}</td>
+              <td><a href="${esc(m.public_url)}" target="_blank" rel="noopener">Apri</a></td>
+              <td>${badge(h.state)}</td>
+              <td>${esc(h.note || "")}</td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      function applyFilter(){
+        const q = (filter.value || "").trim().toLowerCase();
+        if(!q){ view = modules.slice(); render(view); return; }
+        view = modules.filter(m =>
+          (m.name || "").toLowerCase().includes(q) ||
+          (m.role || "").toLowerCase().includes(q)
+        );
+        render(view);
+      }
+
+      function summary(){
+        const vals = Object.values(health);
+        const ok = vals.filter(x => x.state === "OK").length;
+        const deg = vals.filter(x => x.state === "DEGRADED").length;
+        const off = vals.filter(x => x.state === "OFFLINE").length;
+        meta.textContent = `Modules: ${modules.length} · OK=${ok} · DEGRADED=${deg} · OFFLINE=${off} · ${new Date().toISOString()}`;
+      }
+
+      async function runHealth(){
+        meta.textContent = "Health check in corso…";
+        health = {};
+        for(const m of modules){
+          health[m.public_url] = await probe(m.public_url);
+        }
+        applyFilter();
+        summary();
+      }
+
+      async function loadManifest(){
+        try{
+          const r = await fetch(MANIFEST, { cache: "no-store" });
+          if(!r.ok) throw new Error("FETCH_FAILED");
+          const man = await r.json();
+          if(!man || !man.core || !Array.isArray(man.modules)) throw new Error("INVALID_SCHEMA");
+
+          coreLine.innerHTML =
+            `<strong>${esc(man.core.name || "core")}</strong> · ruolo: ${esc(man.core.role)} · ` +
+            `<a href="${esc(man.core.public_url)}" target="_blank" rel="noopener">apri</a>`;
+
+          modules = man.modules.slice();
+          view = modules.slice();
+          render(view);
+          meta.textContent = `Modules: ${modules.length} · pronto (nessun health check eseguito).`;
+
+          filter.addEventListener("input", applyFilter);
+
+          runBtn.addEventListener("click", runHealth);
+
+          autoBtn.addEventListener("click", async () => {
+            if(timer) return;
+            await runHealth();
+            timer = setInterval(runHealth, 30000);
+            autoBtn.disabled = true;
+            stopBtn.disabled = false;
+            meta.textContent = "Auto-check attivo (30s).";
+          });
+
+          stopBtn.addEventListener("click", () => {
+            if(timer) clearInterval(timer);
+            timer = null;
+            autoBtn.disabled = false;
+            stopBtn.disabled = true;
+            summary();
+          });
+
+        }catch(e){
+          coreLine.innerHTML = `Esito operativo: <strong>INVALID</strong> (manifest non accessibile o schema incoerente).`;
+          tbody.innerHTML = `<tr><td colspan="5">INVALID (fail-closed).</td></tr>`;
+          meta.textContent = "—";
+          runBtn.disabled = true;
+          autoBtn.disabled = true;
+          stopBtn.disabled = true;
+          filter.disabled = true;
+        }
+      }
+
+      loadManifest();
+    })();
+  </script>
+</body>
+</html>
