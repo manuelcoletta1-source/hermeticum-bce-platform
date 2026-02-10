@@ -15,7 +15,6 @@
     --accent:#00ffd5;
     --ok:#00ff9c;
     --bad:#ff4d4d;
-    --warn:#ffd54a;
   }
   body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);margin:0;}
   .container{max-width:920px;margin:0 auto;padding:40px 20px 80px;}
@@ -24,125 +23,87 @@
   p{margin:0 0 16px;line-height:1.5;color:var(--muted);}
   .panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px;margin-top:18px;}
   .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
-  .row.tight{margin-top:8px;}
-  a.link{
-    display:block;
-    padding:12px 14px;
-    border-radius:8px;
+  a.cardlink{
+    display:block;flex:1 1 240px;
+    padding:14px;border-radius:10px;
     border:1px solid var(--border);
-    background:#0f172a;
-    color:var(--text);
-    text-decoration:none;
-    font-weight:800;
-    flex:1 1 240px;
-    box-sizing:border-box;
+    background:#0f172a;color:var(--text);
+    text-decoration:none;font-weight:800;
   }
-  a.link:hover{border-color:rgba(0,255,213,.55);opacity:.95;}
+  a.cardlink:hover{border-color:rgba(0,255,213,.55);opacity:.92;}
   button{
     padding:14px 18px;border-radius:8px;border:none;cursor:pointer;font-weight:800;
     background:var(--accent);color:#000;flex:1 1 180px;
   }
   button.secondary{background:transparent;border:1px solid var(--border);color:var(--text);font-weight:700;}
   button:hover{opacity:.92;}
-  .status{
-    margin-top:14px;padding:14px;border-radius:10px;border:1px solid var(--border);background:#0f172a;
-  }
-  .ok{color:var(--ok);font-weight:900;}
-  .bad{color:var(--bad);font-weight:900;}
-  .warn{color:var(--warn);font-weight:900;}
-  .muted{color:var(--muted);}
   .mono{
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
     font-size:13px;white-space:pre-wrap;word-break:break-word;
   }
+  .status{margin-top:14px;padding:14px;border-radius:10px;border:1px solid var(--border);background:#0f172a;}
+  .ok{color:var(--ok);font-weight:900;}
+  .bad{color:var(--bad);font-weight:900;}
+  .muted{color:var(--muted);}
   hr{border:0;border-top:1px solid #2a3441;margin:12px 0;}
-  .kpi{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap:10px;
-    margin-top:10px;
-  }
-  .kpi .box{
-    border:1px solid var(--border);
-    border-radius:10px;
-    background:#0f172a;
-    padding:12px;
-  }
-  .kpi .k{color:var(--muted);font-size:12px;}
-  .kpi .v{font-weight:900;margin-top:6px;}
-  @media (max-width:720px){
-    .kpi{grid-template-columns:1fr;}
-  }
   .footer{margin-top:50px;opacity:.65;font-size:13px;}
   code{color:#cfe9ff;}
 </style>
 </head>
 
 <body>
-<div class="container">
-  <span class="badge">UE-first · Audit-first · Fail-closed · Hash-only registry</span>
+  <div class="container">
+    <span class="badge">UE-first · Audit-first · Fail-closed · Hash-only</span>
 
-  <h1>HERMETICUM B.C.E. — Node Console</h1>
-  <p>
-    Console operativa del nodo: <b>Torino–Piemonte (EU)</b>.  
-    Accesso alle operazioni base: creazione IPR, verifica pubblica, registry e documenti infrastrutturali.
-  </p>
-
-  <!-- Node Health -->
-  <div class="panel">
-    <h2 style="margin:0 0 10px;">Node status</h2>
-    <p class="muted">
-      Health-check automatico del registry canonico. Se il registry è invalido → <b>fail-closed</b>.
+    <h1>Node Console — Torino · Piemonte · EU</h1>
+    <p>
+      Console operativa del nodo HERMETICUM B.C.E.  
+      Accesso alle operazioni: <b>Create</b>, <b>Verify</b>, <b>Registry</b>, <b>Documents</b>.  
+      Modalità <b>FAIL-CLOSED</b>: se manca prova → BLOCK.
     </p>
 
-    <div class="kpi">
-      <div class="box">
-        <div class="k">Origin node</div>
-        <div class="v">Torino · Piemonte · EU</div>
+    <!-- Operations -->
+    <div class="panel">
+      <h2 style="margin:0 0 10px;">Operations</h2>
+      <p class="muted">Percorsi operativi standard della piattaforma.</p>
+
+      <div class="row">
+        <a class="cardlink" href="create/">Create IPR</a>
+        <a class="cardlink" href="verify/">Verify IPR</a>
       </div>
-      <div class="box">
-        <div class="k">Registry</div>
-        <div class="v" id="regMini">checking…</div>
+      <div class="row">
+        <a class="cardlink" href="registry/">Registry (append-only)</a>
+        <a class="cardlink" href="docs/">Documents</a>
+      </div>
+      <div class="row">
+        <a class="cardlink" href="architecture/">Architecture</a>
+        <a class="cardlink" href="audit/">Audit</a>
       </div>
     </div>
 
-    <div id="registryStatus" class="status"></div>
+    <!-- Registry Health -->
+    <div class="panel">
+      <h2 style="margin:0 0 10px;">Registry status</h2>
+      <p class="muted">Controllo automatico del registry canonico. Se invalido → fail-closed.</p>
 
-    <div class="row">
-      <button class="secondary" onclick="checkRegistry()">Re-check registry</button>
-      <button class="secondary" onclick="openRegistry()">Open registry</button>
-    </div>
-  </div>
+      <div id="registryStatus" class="status" style="margin-top:10px;"></div>
 
-  <!-- Operations -->
-  <div class="panel">
-    <h2 style="margin:0 0 10px;">Operations</h2>
-    <p class="muted">
-      Percorsi operativi standard. Tutte le azioni producono output verificabili e tracciabili.
-    </p>
+      <div class="row">
+        <button class="secondary" onclick="checkRegistry()">Re-check registry</button>
+        <button class="secondary" onclick="openRegistry()">Open registry</button>
+      </div>
 
-    <div class="row">
-      <a class="link" href="create/">Create Identity Primary Record</a>
-      <a class="link" href="verify/">Verify Identity Primary Record</a>
+      <hr>
+      <div class="muted">source</div>
+      <div class="mono" id="src"></div>
     </div>
-    <div class="row tight">
-      <a class="link" href="registry/">Registry (append-only)</a>
-      <a class="link" href="docs/">Documents</a>
-    </div>
-    <div class="row tight">
-      <a class="link" href="audit/">Audit</a>
-      <a class="link" href="architecture/">Architecture</a>
-    </div>
-  </div>
 
-  <!-- Stack -->
-  <div class="panel">
-    <h2 style="margin:0 0 10px;">Integrated stack</h2>
-    <p class="muted">
-      Stack operativo completo (integrato). Identità → evidenza → policy → spazio operativo → governance → evoluzione.
-    </p>
-    <div class="status">
-      <div class="mono">
+    <!-- Stack -->
+    <div class="panel">
+      <h2 style="margin:0 0 10px;">Integrated stack</h2>
+      <p class="muted">Strato identitario preventivo e governance operativa per sistemi autonomi.</p>
+      <div class="status">
+        <div class="mono">
 IPR Core
 UNEBDO
 OPC
@@ -151,30 +112,14 @@ METAEXCHANGE
 CYBERGLOBAL
 NEUROLOOP
 JOKER-C2
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Notes -->
-  <div class="panel">
-    <h2 style="margin:0 0 10px;">Operational notes</h2>
-    <p class="muted">
-      Regola base: il registry pubblico è <b>HASH-ONLY</b>.  
-      Nessun dato personale nel registry. Le credenziali (se presenti) stanno solo nel file cliente.
-    </p>
-    <div class="status">
-      <div class="muted">Canonical registry path</div>
-      <div class="mono" id="regPath"></div>
-      <hr>
-      <div class="muted">Append location</div>
-      <div class="mono">registry/registry.json → entries[]</div>
+    <div class="footer">
+      HERMETICUM B.C.E. S.r.l. — Operational Identity Infrastructure
     </div>
   </div>
-
-  <div class="footer">
-    HERMETICUM B.C.E. S.r.l. — Operational Identity Infrastructure
-  </div>
-</div>
 
 <script>
   // Root index → registry is inside /registry/registry.json
@@ -186,35 +131,30 @@ JOKER-C2
     }[m]));
   }
 
-  function setRegistryStatus(html){
+  function setStatus(html){
     document.getElementById("registryStatus").innerHTML = html;
   }
 
   async function checkRegistry(){
-    document.getElementById("regMini").textContent = "checking…";
     try{
       const res = await fetch(REGISTRY_URL, { cache:"no-store" });
       if(!res.ok){
-        document.getElementById("regMini").innerHTML = "<span class='bad'>BLOCKED</span>";
-        setRegistryStatus(`<div class="bad">BLOCKED — registry not reachable (HTTP ${res.status})</div>
+        setStatus(`<div class="bad">BLOCKED — registry not reachable (HTTP ${res.status})</div>
         <div class="muted mono">source: ${escapeHtml(REGISTRY_URL)}</div>`);
         return;
       }
       const json = await res.json();
       if(!json || !Array.isArray(json.entries)){
-        document.getElementById("regMini").innerHTML = "<span class='bad'>BLOCKED</span>";
-        setRegistryStatus(`<div class="bad">BLOCKED — invalid registry format</div>
+        setStatus(`<div class="bad">BLOCKED — invalid registry format</div>
         <div class="muted">Manca <b>entries[]</b>. Fail-closed.</div>
         <div class="muted mono">source: ${escapeHtml(REGISTRY_URL)}</div>`);
         return;
       }
-      document.getElementById("regMini").innerHTML = "<span class='ok'>OK</span>";
-      setRegistryStatus(`<div class="ok">OK — registry valid</div>
+      setStatus(`<div class="ok">OK — registry valid</div>
       <div class="muted">entries: <b>${json.entries.length}</b></div>
       <div class="muted mono">source: ${escapeHtml(REGISTRY_URL)}</div>`);
     }catch(e){
-      document.getElementById("regMini").innerHTML = "<span class='bad'>BLOCKED</span>";
-      setRegistryStatus(`<div class="bad">BLOCKED — registry parse error</div>
+      setStatus(`<div class="bad">BLOCKED — registry parse error</div>
       <div class="muted">Fail-closed.</div>
       <div class="muted mono">${escapeHtml(String(e))}<br>source: ${escapeHtml(REGISTRY_URL)}</div>`);
     }
@@ -224,7 +164,7 @@ JOKER-C2
     window.open(REGISTRY_URL, "_blank");
   }
 
-  document.getElementById("regPath").textContent = REGISTRY_URL;
+  document.getElementById("src").textContent = REGISTRY_URL;
   checkRegistry();
 </script>
 </body>
