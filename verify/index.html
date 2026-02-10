@@ -16,104 +16,35 @@
     --ok:#00ff9c;
     --bad:#ff4d4d;
   }
-  body{
-    font-family: Arial, Helvetica, sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    margin:0;
+  body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);margin:0;}
+  .container{max-width:920px;margin:0 auto;padding:40px 20px 80px;}
+  .badge{display:inline-block;padding:4px 10px;border:1px solid var(--border);border-radius:999px;font-size:12px;opacity:.85;margin-bottom:14px;}
+  h1{font-size:32px;margin:0 0 8px;}
+  p{margin:0 0 16px;line-height:1.5;color:var(--muted);}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px;margin-top:18px;}
+  label{display:block;margin:0 0 8px;font-weight:700;}
+  input[type="text"], input[type="file"]{
+    width:100%;padding:14px;border-radius:8px;border:1px solid var(--border);
+    background:#0f172a;color:var(--text);box-sizing:border-box;font-size:14px;outline:none;
   }
-  .container{
-    max-width: 920px;
-    margin: 0 auto;
-    padding: 40px 20px 80px;
-  }
-  .badge{
-    display:inline-block;
-    padding:4px 10px;
-    border:1px solid var(--border);
-    border-radius:999px;
-    font-size:12px;
-    opacity:.85;
-    margin-bottom:14px;
-  }
-  h1{ font-size:32px; margin: 0 0 8px; }
-  p{ margin: 0 0 16px; line-height: 1.5; color: var(--muted); }
-
-  .panel{
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 18px;
-    margin-top: 18px;
-  }
-
-  label{
-    display:block;
-    margin: 0 0 8px;
-    font-weight: 700;
-  }
-  input{
-    width:100%;
-    padding: 14px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: #0f172a;
-    color: var(--text);
-    box-sizing: border-box;
-    font-size: 14px;
-    outline: none;
-  }
-  input:focus{
-    border-color: rgba(0,255,213,.55);
-  }
-
-  .row{
-    display:flex;
-    gap:10px;
-    flex-wrap: wrap;
-    margin-top: 12px;
-  }
+  input:focus{border-color:rgba(0,255,213,.55);}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
   button{
-    padding: 14px 18px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    font-weight: 800;
-    background: var(--accent);
-    color: #000;
-    flex: 1 1 180px;
+    padding:14px 18px;border-radius:8px;border:none;cursor:pointer;font-weight:800;
+    background:var(--accent);color:#000;flex:1 1 180px;
   }
-  button.secondary{
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-weight: 700;
-  }
-  button:hover{ opacity:.92; }
-
+  button.secondary{background:transparent;border:1px solid var(--border);color:var(--text);font-weight:700;}
+  button:hover{opacity:.92;}
   .mono{
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-    font-size: 13px;
-    white-space: pre-wrap;
-    word-break: break-word;
+    font-size:13px;white-space:pre-wrap;word-break:break-word;
   }
-
-  .status{
-    margin-top: 14px;
-    padding: 14px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: #0f172a;
-  }
-  .ok{ color: var(--ok); font-weight: 900; }
-  .bad{ color: var(--bad); font-weight: 900; }
-  .muted{ color: var(--muted); }
-
-  .footer{
-    margin-top: 50px;
-    opacity: .65;
-    font-size: 13px;
-  }
+  .status{margin-top:14px;padding:14px;border-radius:10px;border:1px solid var(--border);background:#0f172a;}
+  .ok{color:var(--ok);font-weight:900;}
+  .bad{color:var(--bad);font-weight:900;}
+  .muted{color:var(--muted);}
+  hr{border:0;border-top:1px solid #2a3441;margin:12px 0;}
+  .footer{margin-top:50px;opacity:.65;font-size:13px;}
 </style>
 </head>
 
@@ -122,18 +53,36 @@
     <span class="badge">UE-first · Audit-first · Fail-closed · Hash-only</span>
 
     <h1>Verify Identity Primary Record</h1>
-    <p>Inserisci il <b>payload SHA256</b>. La verifica è <b>FAIL-CLOSED</b>: se non è presente nel registry pubblico → NON ESISTE.</p>
+    <p>Verifica tramite <b>hash</b> oppure tramite <b>upload del file IPR JSON</b>. Modalità <b>FAIL-CLOSED</b>: se manca prova → BLOCK.</p>
 
+    <!-- A) Verify by Hash -->
     <div class="panel">
+      <h2 style="margin:0 0 10px;">A) Verifica con SHA256</h2>
       <label for="hash">Payload SHA256</label>
-      <input id="hash" placeholder="Incolla qui l'hash SHA256 (64 caratteri hex)" />
+      <input id="hash" type="text" placeholder="Incolla qui l'hash SHA256 (64 caratteri hex)" />
 
       <div class="row">
-        <button id="btnVerify" onclick="verifyIPR()">Verify</button>
+        <button id="btnVerifyHash" onclick="verifyByHash()">Verify (hash)</button>
         <button class="secondary" onclick="resetUI()">Reset</button>
       </div>
 
       <div id="result" class="status" style="display:none;"></div>
+    </div>
+
+    <!-- B) Verify by File Upload -->
+    <div class="panel">
+      <h2 style="margin:0 0 10px;">B) Verifica con Upload File</h2>
+      <p>Carica il file <b>IPR_*.json</b>. Il sistema ricalcola SHA256 dal payload base e controlla integrità + presenza nel registry.</p>
+
+      <label for="file">IPR JSON file</label>
+      <input id="file" type="file" accept="application/json,.json" />
+
+      <div class="row">
+        <button id="btnVerifyFile" onclick="verifyByFile()">Verify (file)</button>
+        <button class="secondary" onclick="clearFile()">Clear file</button>
+      </div>
+
+      <div id="fileResult" class="status" style="display:none;"></div>
     </div>
 
     <div class="footer">
@@ -142,11 +91,10 @@
   </div>
 
 <script>
+  // Registry ufficiale
   const REGISTRY_URL = "../registry/registry.json";
 
-  function isHex64(s){
-    return /^[0-9a-f]{64}$/i.test(s);
-  }
+  function isHex64(s){ return /^[0-9a-f]{64}$/i.test(s); }
 
   function escapeHtml(str){
     return (str || "").replace(/[&<>"']/g, m => ({
@@ -154,21 +102,67 @@
     }[m]));
   }
 
-  function setResult(html){
-    const box = document.getElementById("result");
+  function setBox(boxId, html){
+    const box = document.getElementById(boxId);
     box.style.display = "block";
     box.innerHTML = html;
   }
 
-  function resetUI(){
-    document.getElementById("hash").value = "";
-    const box = document.getElementById("result");
+  function hideBox(boxId){
+    const box = document.getElementById(boxId);
     box.style.display = "none";
     box.innerHTML = "";
   }
 
-  async function verifyIPR(){
-    const btn = document.getElementById("btnVerify");
+  function resetUI(){
+    document.getElementById("hash").value = "";
+    hideBox("result");
+    hideBox("fileResult");
+  }
+
+  function clearFile(){
+    document.getElementById("file").value = "";
+    hideBox("fileResult");
+  }
+
+  async function sha256(message){
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2,"0")).join("");
+  }
+
+  async function fetchRegistryFailClosed(){
+    const res = await fetch(REGISTRY_URL, { cache: "no-store" });
+    if(!res.ok) throw new Error("Registry HTTP " + res.status);
+    const registry = await res.json();
+    if(!registry || !Array.isArray(registry.entries)) throw new Error("Registry format invalid (missing entries[])");
+    return registry.entries;
+  }
+
+  function findInEntries(entries, hash){
+    const h = (hash || "").toLowerCase();
+    for(let i=0;i<entries.length;i++){
+      if(((entries[i].payload_sha256 || "").toLowerCase()) === h) return entries[i];
+    }
+    return null;
+  }
+
+  // Costruisce payload base in ordine fisso (uguale alla tua Create)
+  function buildBasePayload(ipr){
+    return {
+      proto: ipr.proto || "",
+      kind: ipr.kind || "",
+      entity_type: ipr.entity_type || "",
+      nickname: ipr.nickname || "",
+      country: ipr.country || "",
+      email: ipr.email || "",
+      timestamp: ipr.timestamp || ""
+    };
+  }
+
+  async function verifyByHash(){
+    const btn = document.getElementById("btnVerifyHash");
     const hashRaw = document.getElementById("hash").value.trim();
     const hash = hashRaw.toLowerCase();
 
@@ -177,8 +171,8 @@
       return;
     }
     if(!isHex64(hash)){
-      setResult(`<div class="bad">INVALID INPUT</div>
-      <div class="muted">Formato hash non valido. Serve SHA256 in hex (64 caratteri).</div>`);
+      setBox("result", `<div class="bad">INVALID INPUT</div>
+        <div class="muted">Formato hash non valido. Serve SHA256 in hex (64 caratteri).</div>`);
       return;
     }
 
@@ -186,55 +180,112 @@
     btn.textContent = "Verifying...";
 
     try{
-      // FAIL-CLOSED: se non riesco a leggere registry → BLOCK
-      const res = await fetch(REGISTRY_URL, { cache: "no-store" });
-      if(!res.ok){
-        setResult(`<div class="bad">BLOCKED — FAIL CLOSED</div>
-        <div class="muted">Registry non accessibile (HTTP ${res.status}).</div>
-        <div class="mono">source: ${REGISTRY_URL}</div>`);
-        return;
-      }
-
-      const registry = await res.json();
-
-      // Il registry ufficiale deve avere entries[]
-      const entries = (registry && Array.isArray(registry.entries)) ? registry.entries : null;
-      if(!entries){
-        setResult(`<div class="bad">BLOCKED — FAIL CLOSED</div>
-        <div class="muted">Formato registry non valido: manca <b>entries[]</b>.</div>
-        <div class="mono">source: ${REGISTRY_URL}</div>`);
-        return;
-      }
-
-      let found = null;
-      for(let i=0;i<entries.length;i++){
-        if((entries[i].payload_sha256 || "").toLowerCase() === hash){
-          found = entries[i];
-          break;
-        }
-      }
+      const entries = await fetchRegistryFailClosed();
+      const found = findInEntries(entries, hash);
 
       if(found){
         const nick = escapeHtml(found.nickname || "");
         const ts = escapeHtml(found.timestamp || "");
-        setResult(`<div class="ok">VALID IPR — PRESENT IN REGISTRY</div>
-        <div class="muted">Registry match trovato.</div>
-        <hr style="border:0;border-top:1px solid #2a3441;margin:12px 0;">
-        <div class="mono"><b>nickname</b>: ${nick || "(empty)"}<br><b>timestamp</b>: ${ts || "(empty)"}<br><b>payload_sha256</b>: ${hash}</div>`);
+        setBox("result", `<div class="ok">VALID IPR — PRESENT IN REGISTRY</div>
+          <div class="muted">Registry match trovato.</div>
+          <hr>
+          <div class="mono"><b>nickname</b>: ${nick || "(empty)"}<br>
+          <b>timestamp</b>: ${ts || "(empty)"}<br>
+          <b>payload_sha256</b>: ${hash}</div>`);
+      } else {
+        setBox("result", `<div class="bad">NOT FOUND — FAIL CLOSED</div>
+          <div class="muted">Hash non presente nel registry pubblico.</div>
+          <hr>
+          <div class="mono"><b>payload_sha256</b>: ${hash}<br>source: ${REGISTRY_URL}</div>`);
+      }
+    }catch(e){
+      setBox("result", `<div class="bad">BLOCKED — FAIL CLOSED</div>
+        <div class="muted">Errore lettura/parse del registry.</div>
+        <hr>
+        <div class="mono">${escapeHtml(String(e))}<br>source: ${REGISTRY_URL}</div>`);
+    }finally{
+      btn.disabled = false;
+      btn.textContent = "Verify (hash)";
+    }
+  }
+
+  async function verifyByFile(){
+    const btn = document.getElementById("btnVerifyFile");
+    const fileInput = document.getElementById("file");
+
+    if(!fileInput.files || fileInput.files.length === 0){
+      alert("Seleziona un file IPR JSON.");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Verifying...";
+
+    try{
+      const f = fileInput.files[0];
+      const text = await f.text();
+
+      let ipr;
+      try{
+        ipr = JSON.parse(text);
+      }catch(parseErr){
+        setBox("fileResult", `<div class="bad">BLOCKED — FAIL CLOSED</div>
+          <div class="muted">File JSON non valido (parse error).</div>
+          <hr><div class="mono">${escapeHtml(String(parseErr))}</div>`);
+        return;
+      }
+
+      // 1) estrai hash dichiarato
+      const declared = (ipr.payload_sha256 || "").toLowerCase();
+      if(!isHex64(declared)){
+        setBox("fileResult", `<div class="bad">BLOCKED — FAIL CLOSED</div>
+          <div class="muted">Manca <b>payload_sha256</b> valido nel file.</div>`);
+        return;
+      }
+
+      // 2) ricalcola hash sul payload base (ordine fisso)
+      const base = buildBasePayload(ipr);
+      const computed = await sha256(JSON.stringify(base));
+
+      if(computed !== declared){
+        setBox("fileResult", `<div class="bad">BLOCKED — INTEGRITY FAIL</div>
+          <div class="muted">Il file non è coerente: SHA256 ricalcolato ≠ payload_sha256 dichiarato.</div>
+          <hr>
+          <div class="mono"><b>declared</b>: ${declared}<br><b>computed</b>: ${computed}</div>`);
+        return;
+      }
+
+      // 3) verifica presenza nel registry
+      const entries = await fetchRegistryFailClosed();
+      const found = findInEntries(entries, declared);
+
+      const nick = escapeHtml(ipr.nickname || "");
+      const ts = escapeHtml(ipr.timestamp || "");
+      const et = escapeHtml(ipr.entity_type || "");
+
+      if(found){
+        setBox("fileResult", `<div class="ok">VALID IPR — FILE INTEGRITY OK + PRESENT IN REGISTRY</div>
+          <div class="muted">Integrità verificata e registry match trovato.</div>
+          <hr>
+          <div class="mono"><b>entity_type</b>: ${et || "(empty)"}<br>
+          <b>nickname</b>: ${nick || "(empty)"}<br>
+          <b>timestamp</b>: ${ts || "(empty)"}<br>
+          <b>payload_sha256</b>: ${declared}</div>`);
       }else{
-        setResult(`<div class="bad">NOT FOUND — FAIL CLOSED</div>
-        <div class="muted">Hash non presente nel registry pubblico.</div>
-        <div class="mono"><b>payload_sha256</b>: ${hash}<br>source: ${REGISTRY_URL}</div>`);
+        setBox("fileResult", `<div class="bad">NOT FOUND — FAIL CLOSED</div>
+          <div class="muted">Integrità file OK, ma hash non presente nel registry pubblico.</div>
+          <hr>
+          <div class="mono"><b>payload_sha256</b>: ${declared}<br>source: ${REGISTRY_URL}</div>`);
       }
 
     }catch(e){
-      setResult(`<div class="bad">BLOCKED — FAIL CLOSED</div>
-      <div class="muted">Errore di lettura/parse del registry.</div>
-      <div class="mono">${escapeHtml(String(e))}</div>
-      <div class="mono">source: ${REGISTRY_URL}</div>`);
+      setBox("fileResult", `<div class="bad">BLOCKED — FAIL CLOSED</div>
+        <div class="muted">Errore durante verifica file o lettura registry.</div>
+        <hr>
+        <div class="mono">${escapeHtml(String(e))}<br>source: ${REGISTRY_URL}</div>`);
     }finally{
       btn.disabled = false;
-      btn.textContent = "Verify";
+      btn.textContent = "Verify (file)";
     }
   }
 </script>
