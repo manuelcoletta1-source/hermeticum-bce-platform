@@ -1,171 +1,417 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>HERMETICUM B.C.E. — Node Console</title>
-
-<style>
-  :root{
-    --bg:#0b0f14;
-    --panel:#111827;
-    --border:#2a3441;
-    --text:#e8eef7;
-    --muted:rgba(232,238,247,.75);
-    --accent:#00ffd5;
-    --ok:#00ff9c;
-    --bad:#ff4d4d;
-  }
-  body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);margin:0;}
-  .container{max-width:920px;margin:0 auto;padding:40px 20px 80px;}
-  .badge{display:inline-block;padding:4px 10px;border:1px solid var(--border);border-radius:999px;font-size:12px;opacity:.85;margin-bottom:14px;}
-  h1{font-size:32px;margin:0 0 8px;}
-  p{margin:0 0 16px;line-height:1.5;color:var(--muted);}
-  .panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px;margin-top:18px;}
-  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
-  a.cardlink{
-    display:block;flex:1 1 240px;
-    padding:14px;border-radius:10px;
-    border:1px solid var(--border);
-    background:#0f172a;color:var(--text);
-    text-decoration:none;font-weight:800;
-  }
-  a.cardlink:hover{border-color:rgba(0,255,213,.55);opacity:.92;}
-  button{
-    padding:14px 18px;border-radius:8px;border:none;cursor:pointer;font-weight:800;
-    background:var(--accent);color:#000;flex:1 1 180px;
-  }
-  button.secondary{background:transparent;border:1px solid var(--border);color:var(--text);font-weight:700;}
-  button:hover{opacity:.92;}
-  .mono{
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-    font-size:13px;white-space:pre-wrap;word-break:break-word;
-  }
-  .status{margin-top:14px;padding:14px;border-radius:10px;border:1px solid var(--border);background:#0f172a;}
-  .ok{color:var(--ok);font-weight:900;}
-  .bad{color:var(--bad);font-weight:900;}
-  .muted{color:var(--muted);}
-  hr{border:0;border-top:1px solid #2a3441;margin:12px 0;}
-  .footer{margin-top:50px;opacity:.65;font-size:13px;}
-  code{color:#cfe9ff;}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HERMETICUM B.C.E. — Portal</title>
+  <meta name="description" content="Portale operativo dei repository Hermeticum B.C.E.: accesso rapido, directory, ricerca e health-check. UE-first, audit-first, fail-closed." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
-
 <body>
-  <div class="container">
-    <span class="badge">UE-first · Audit-first · Fail-closed · Hash-only</span>
+  <div data-hbce="header"></div>
 
-    <h1>Node Console — Torino · Piemonte · EU</h1>
-    <p>
-      Console operativa del nodo HERMETICUM B.C.E.  
-      Accesso alle operazioni: <b>Create</b>, <b>Verify</b>, <b>Registry</b>, <b>Documents</b>.  
-      Modalità <b>FAIL-CLOSED</b>: se manca prova → BLOCK.
-    </p>
-
-    <!-- Operations -->
-    <div class="panel">
-      <h2 style="margin:0 0 10px;">Operations</h2>
-      <p class="muted">Percorsi operativi standard della piattaforma.</p>
-
-      <div class="row">
-        <a class="cardlink" href="create/">Create IPR</a>
-        <a class="cardlink" href="verify/">Verify IPR</a>
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">PORTAL · 32 REPOS · Public</div>
+      <h1 class="hbce-hero__title">HERMETICUM B.C.E. — Portal</h1>
+      <p class="hbce-hero__lead">
+        Indice operativo dei repository pubblicati (GitHub Pages). Nessuna pubblicità. Nessun tracking.
+        Solo accesso, verificabilità e continuità infrastrutturale.
+      </p>
+      <div class="hbce-hero__cta">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/create/">CREATE</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/docs/">DOCS</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/architecture/">ARCH</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/audit/">AUDIT</a>
       </div>
-      <div class="row">
-        <a class="cardlink" href="registry/">Registry (append-only)</a>
-        <a class="cardlink" href="docs/">Documents</a>
-      </div>
-      <div class="row">
-        <a class="cardlink" href="architecture/">Architecture</a>
-        <a class="cardlink" href="audit/">Audit</a>
-      </div>
-    </div>
+    </section>
 
-    <!-- Registry Health -->
-    <div class="panel">
-      <h2 style="margin:0 0 10px;">Registry status</h2>
-      <p class="muted">Controllo automatico del registry canonico. Se invalido → fail-closed.</p>
+    <section class="hbce-section">
+      <h2>Controlli</h2>
 
-      <div id="registryStatus" class="status" style="margin-top:10px;"></div>
+      <div class="hbce-card hbce-card--wide">
+        <div class="hbce-grid" style="align-items:end">
+          <article class="hbce-card" style="margin:0">
+            <label class="hbce-meta" for="q">Ricerca</label>
+            <input id="q" class="hbce-input" placeholder="repo, descrizione, categoria, keyword" autocomplete="off" />
+            <div class="hbce-meta" style="margin-top:8px" id="stats">—</div>
+          </article>
 
-      <div class="row">
-        <button class="secondary" onclick="checkRegistry()">Re-check registry</button>
-        <button class="secondary" onclick="openRegistry()">Open registry</button>
-      </div>
+          <article class="hbce-card" style="margin:0">
+            <label class="hbce-meta" for="cat">Categoria</label>
+            <select id="cat" class="hbce-input">
+              <option value="ALL">Tutte</option>
+              <option value="PLATFORM">Platform</option>
+              <option value="CORE_STACK">Core stack</option>
+              <option value="GOVERNANCE">Governance & compliance</option>
+              <option value="NODES_REGISTRY">Nodes & registry</option>
+              <option value="WORKERS_AI">Workers & AI</option>
+              <option value="B2B_B2G">B2B / B2G</option>
+              <option value="PUBLISHING">Publishing / Corpus</option>
+              <option value="OTHER">Other</option>
+            </select>
+            <div class="hbce-meta" style="margin-top:8px" id="status">Pronto.</div>
+          </article>
 
-      <hr>
-      <div class="muted">source</div>
-      <div class="mono" id="src"></div>
-    </div>
-
-    <!-- Stack -->
-    <div class="panel">
-      <h2 style="margin:0 0 10px;">Integrated stack</h2>
-      <p class="muted">Strato identitario preventivo e governance operativa per sistemi autonomi.</p>
-      <div class="status">
-        <div class="mono">
-IPR Core
-UNEBDO
-OPC
-IOSPACE
-METAEXCHANGE
-CYBERGLOBAL
-NEUROLOOP
-JOKER-C2
+          <article class="hbce-card" style="margin:0">
+            <label class="hbce-meta">Azioni</label>
+            <div class="hbce-actions">
+              <button class="hbce-btn hbce-btn--primary" id="btn-health">Health-check</button>
+              <button class="hbce-btn" id="btn-clear">Reset filtro</button>
+              <button class="hbce-btn" id="btn-export">Esporta (JSON)</button>
+            </div>
+            <div class="hbce-meta" style="margin-top:8px">
+              Fail-closed: se una risorsa critica non è leggibile → <strong>INVALID</strong>.
+            </div>
+          </article>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="footer">
-      HERMETICUM B.C.E. S.r.l. — Operational Identity Infrastructure
-    </div>
-  </div>
+    <section class="hbce-section">
+      <h2>Pinned</h2>
+      <div class="hbce-card hbce-card--wide">
+        <div class="hbce-meta" style="margin-bottom:10px">Accesso rapido alle superfici operative principali.</div>
+        <div class="hbce-actions">
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/">Platform</a>
+          <a class="hbce-btn" href="https://manuelcoletta1-source.github.io/unebdo/" target="_blank" rel="noopener">UNEBDO</a>
+          <a class="hbce-btn" href="https://manuelcoletta1-source.github.io/opc/" target="_blank" rel="noopener">OPC</a>
+          <a class="hbce-btn" href="https://manuelcoletta1-source.github.io/ipr-core/" target="_blank" rel="noopener">IPR Core</a>
+          <a class="hbce-btn" href="https://manuelcoletta1-source.github.io/ue-ipr-registry/" target="_blank" rel="noopener">UE Registry</a>
+          <a class="hbce-btn" href="https://manuelcoletta1-source.github.io/corpus-esoterologia-ermetica/" target="_blank" rel="noopener">Corpus</a>
+        </div>
+      </div>
+    </section>
 
-<script>
-  // Root index → registry is inside /registry/registry.json
-  const REGISTRY_URL = "registry/registry.json";
+    <section class="hbce-section">
+      <h2>Health</h2>
+      <div class="hbce-card hbce-card--wide">
+        <div class="hbce-meta" style="margin-bottom:10px">
+          Controllo rapido di leggibilità su risorse critiche (best-effort). Se fallisce → segnato come INVALID.
+        </div>
+        <div class="hbce-table-wrap">
+          <table class="hbce-table">
+            <thead>
+              <tr>
+                <th style="width:22%">Target</th>
+                <th>URL</th>
+                <th style="width:18%">Stato</th>
+                <th style="width:18%">Azioni</th>
+              </tr>
+            </thead>
+            <tbody id="healthBody">
+              <tr><td colspan="4" class="hbce-meta">Pronto. Premi “Health-check”.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
-  function escapeHtml(str){
-    return (str || "").replace(/[&<>"']/g, m => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
-    }[m]));
-  }
+    <section class="hbce-section">
+      <h2>Directory</h2>
 
-  function setStatus(html){
-    document.getElementById("registryStatus").innerHTML = html;
-  }
+      <div class="hbce-card hbce-card--wide">
+        <div class="hbce-meta" style="margin-bottom:10px">
+          Directory pubblica (GitHub Pages). Filtra e apri. Nessun tracking.
+        </div>
 
-  async function checkRegistry(){
-    try{
-      const res = await fetch(REGISTRY_URL, { cache:"no-store" });
-      if(!res.ok){
-        setStatus(`<div class="bad">BLOCKED — registry not reachable (HTTP ${res.status})</div>
-        <div class="muted mono">source: ${escapeHtml(REGISTRY_URL)}</div>`);
-        return;
+        <div class="hbce-table-wrap">
+          <table class="hbce-table">
+            <thead>
+              <tr>
+                <th style="width:22%">Repo</th>
+                <th>Descrizione</th>
+                <th style="width:18%">Categoria</th>
+                <th style="width:18%">Azioni</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr><td colspan="4" class="hbce-meta">Caricamento…</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="hbce-meta" style="margin-top:10px">
+          Nota: se un link è non raggiungibile → la pagina può essere in deploy o non pubblicata. Questo portale non riscrive: indica.
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Regola</h2>
+      <div class="hbce-card hbce-card--wide">
+        <p class="hbce-p">
+          Questo portale è un indice operativo. L’autorità non è “dire” ma “verificare”.
+          Le prove pubbliche vivono in registry (hash-only) e passano da VERIFY.
+        </p>
+        <div class="hbce-meta">UE-first · audit-first · fail-closed · hash-only · append-only</div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-card hbce-card--wide">
+        <div class="hbce-hallmark">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+        <div class="hbce-company">HERMETICUM B.C.E. S.r.l.</div>
+        <div class="hbce-meta">UE-first · audit-first · fail-closed · hash-only</div>
+      </div>
+    </section>
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <script>
+    (function(){
+      const $ = (id) => document.getElementById(id);
+
+      const q = $("q");
+      const cat = $("cat");
+      const stats = $("stats");
+      const status = $("status");
+      const tbody = $("tbody");
+
+      const btnClear = $("btn-clear");
+      const btnExport = $("btn-export");
+      const btnHealth = $("btn-health");
+
+      const healthBody = $("healthBody");
+
+      function setStatus(msg){ status.textContent = msg; }
+      function setStats(msg){ stats.textContent = msg; }
+      function normalize(s){ return (s || "").toString().trim(); }
+
+      const catLabel = {
+        ALL:"Tutte",
+        PLATFORM:"Platform",
+        CORE_STACK:"Core stack",
+        GOVERNANCE:"Governance & compliance",
+        NODES_REGISTRY:"Nodes & registry",
+        WORKERS_AI:"Workers & AI",
+        B2B_B2G:"B2B / B2G",
+        PUBLISHING:"Publishing / Corpus",
+        OTHER:"Other"
+      };
+
+      // Directory (32) — based on your published set
+      const repos = [
+        {name:"hermeticum-bce-platform", url:"https://manuelcoletta1-source.github.io/hermeticum-bce-platform/", cat:"PLATFORM", desc:"EU Citizen Gateway · Create/Verify/Registry · Fail-closed."},
+
+        {name:"Hermeticum-B.C.E.-Technology", url:"https://manuelcoletta1-source.github.io/Hermeticum-B.C.E.-Technology/", cat:"CORE_STACK", desc:"Technology overview · stack & components."},
+        {name:"gitjoker-c2", url:"https://manuelcoletta1-source.github.io/gitjoker-c2/", cat:"WORKERS_AI", desc:"C2 interface layer · operational orchestration."},
+        {name:"hermeticum-bce-ipr", url:"https://manuelcoletta1-source.github.io/hermeticum-bce-ipr/", cat:"NODES_REGISTRY", desc:"IPR gateway · identity anchoring & verification."},
+        {name:"hermeticum-bce", url:"https://manuelcoletta1-source.github.io/hermeticum-bce/", cat:"OTHER", desc:"Hermeticum base portal / overview."},
+
+        {name:"unebdo", url:"https://manuelcoletta1-source.github.io/unebdo/", cat:"GOVERNANCE", desc:"Evidence & traceability layer (audit-first)."},
+        {name:"hermeticum-system", url:"https://manuelcoletta1-source.github.io/hermeticum-system/", cat:"OTHER", desc:"System-level material / consolidation."},
+        {name:"opc", url:"https://manuelcoletta1-source.github.io/opc/", cat:"GOVERNANCE", desc:"Operational Policy Core · ex-ante constraints."},
+
+        {name:"ue-ipr-registry", url:"https://manuelcoletta1-source.github.io/ue-ipr-registry/", cat:"NODES_REGISTRY", desc:"EU-oriented IPR registry layer."},
+        {name:"neuroloop", url:"https://manuelcoletta1-source.github.io/neuroloop/", cat:"CORE_STACK", desc:"Evolution & learning governance loop."},
+        {name:"ipr-precheck-api", url:"https://manuelcoletta1-source.github.io/ipr-precheck-api/", cat:"GOVERNANCE", desc:"Pre-check / validation utilities (fail-closed posture)."},
+        {name:"ipr-3-origin", url:"https://manuelcoletta1-source.github.io/ipr-3-origin/", cat:"NODES_REGISTRY", desc:"Origin reference / root material."},
+        {name:"ipr-gov-eu-standard", url:"https://manuelcoletta1-source.github.io/ipr-gov-eu-standard/", cat:"GOVERNANCE", desc:"EU governance standardization for IPR."},
+
+        {name:"ai-joker-workers", url:"https://manuelcoletta1-source.github.io/ai-joker-workers/", cat:"WORKERS_AI", desc:"Workers framework (AI operational agents)."},
+        {name:"hermeticum-bce-ai-workers", url:"https://manuelcoletta1-source.github.io/hermeticum-bce-ai-workers/", cat:"WORKERS_AI", desc:"Hermeticum AI workers deployment surface."},
+
+        {name:"ipr-capability-stack", url:"https://manuelcoletta1-source.github.io/ipr-capability-stack/", cat:"CORE_STACK", desc:"Capability-based stack for IPR operations."},
+        {name:"ipr-core", url:"https://manuelcoletta1-source.github.io/ipr-core/", cat:"CORE_STACK", desc:"Core identity layer components."},
+        {name:"ipr-gate", url:"https://manuelcoletta1-source.github.io/ipr-gate/", cat:"CORE_STACK", desc:"Gate / entrypoints for identity operations."},
+        {name:"ipr-exchange", url:"https://manuelcoletta1-source.github.io/ipr-exchange/", cat:"CORE_STACK", desc:"Exchange layer (identity/value operations)."},
+        {name:"ipr-comply", url:"https://manuelcoletta1-source.github.io/ipr-comply/", cat:"GOVERNANCE", desc:"Compliance layer for audit-first operations."},
+
+        {name:"metaexchange", url:"https://manuelcoletta1-source.github.io/metaexchange/", cat:"CORE_STACK", desc:"Federated exchange layer."},
+        {name:"iospace", url:"https://manuelcoletta1-source.github.io/iospace/", cat:"CORE_STACK", desc:"Secure operational environment / interaction space."},
+        {name:"cyberglobal", url:"https://manuelcoletta1-source.github.io/cyberglobal/", cat:"CORE_STACK", desc:"Systemic governance layer."},
+
+        {name:"ipr-metrological-datacenter", url:"https://manuelcoletta1-source.github.io/ipr-metrological-datacenter/", cat:"GOVERNANCE", desc:"Metrological datacenter concept & ops."},
+
+        {name:"hermeticum-bce-b2b", url:"https://manuelcoletta1-source.github.io/hermeticum-bce-b2b/", cat:"B2B_B2G", desc:"B2B positioning & delivery surface."},
+        {name:"hermeticum-bce-b2g", url:"https://manuelcoletta1-source.github.io/hermeticum-bce-b2g/", cat:"B2B_B2G", desc:"B2G positioning & institutional delivery."},
+
+        {name:"corpus-esoterologia-ermetica", url:"https://manuelcoletta1-source.github.io/corpus-esoterologia-ermetica/", cat:"PUBLISHING", desc:"Corpus hub."},
+        {name:"corpus-esoterologia-ermetica-volume-I", url:"https://manuelcoletta1-source.github.io/corpus-esoterologia-ermetica-volume-I/", cat:"PUBLISHING", desc:"Volume I."},
+        {name:"corpus-esoterologia-ermetica-volume-2", url:"https://manuelcoletta1-source.github.io/corpus-esoterologia-ermetica-volume-2/", cat:"PUBLISHING", desc:"Volume II."},
+        {name:"lex-hermeticum-volume-3", url:"https://manuelcoletta1-source.github.io/lex-hermeticum-volume-3/", cat:"PUBLISHING", desc:"Volume III — Lex Hermeticum."},
+        {name:"esoterologia-edizioni-ipr5", url:"https://manuelcoletta1-source.github.io/esoterologia-edizioni-ipr5/", cat:"PUBLISHING", desc:"Publishing imprint / edition layer."},
+
+        {name:"apocalipsis", url:"https://manuelcoletta1-source.github.io/apocalipsis/", cat:"PUBLISHING", desc:"Publishing / narrative asset."},
+        {name:"il-portale-dell-anticristo", url:"https://manuelcoletta1-source.github.io/il-portale-dell-anticristo/", cat:"PUBLISHING", desc:"Publishing / narrative asset."}
+      ];
+
+      // Health targets (critical)
+      const healthTargets = [
+        {name:"platform", url:"/hermeticum-bce-platform/"},
+        {name:"registry.json", url:"/hermeticum-bce-platform/registry/registry.json"},
+        {name:"verify", url:"/hermeticum-bce-platform/verify/"},
+        {name:"create", url:"/hermeticum-bce-platform/create/"},
+        {name:"unebdo", url:"https://manuelcoletta1-source.github.io/unebdo/"},
+        {name:"ipr-core", url:"https://manuelcoletta1-source.github.io/ipr-core/"}
+      ];
+
+      function extractTerm(e){
+        return (e.name + " " + (e.desc||"") + " " + e.url + " " + e.cat).toLowerCase();
       }
-      const json = await res.json();
-      if(!json || !Array.isArray(json.entries)){
-        setStatus(`<div class="bad">BLOCKED — invalid registry format</div>
-        <div class="muted">Manca <b>entries[]</b>. Fail-closed.</div>
-        <div class="muted mono">source: ${escapeHtml(REGISTRY_URL)}</div>`);
-        return;
+
+      function render(list){
+        tbody.innerHTML = "";
+        if(!list.length){
+          tbody.innerHTML = '<tr><td colspan="4" class="hbce-meta">Nessun risultato.</td></tr>';
+          return;
+        }
+
+        for(const r of list){
+          const tr = document.createElement("tr");
+
+          const tdName = document.createElement("td");
+          tdName.innerHTML = "<strong>" + r.name + "</strong><div class='hbce-meta' style='margin-top:6px'>" + r.url + "</div>";
+
+          const tdDesc = document.createElement("td");
+          tdDesc.textContent = r.desc || "—";
+
+          const tdCat = document.createElement("td");
+          tdCat.textContent = catLabel[r.cat] || r.cat;
+
+          const tdAct = document.createElement("td");
+          const aOpen = document.createElement("a");
+          aOpen.className = "hbce-btn hbce-btn--primary";
+          aOpen.textContent = "Apri";
+          aOpen.href = r.url;
+          aOpen.target = "_blank";
+          aOpen.rel = "noopener";
+
+          const aCopy = document.createElement("button");
+          aCopy.className = "hbce-btn";
+          aCopy.textContent = "Copia URL";
+          aCopy.addEventListener("click", async () => {
+            try{
+              await navigator.clipboard.writeText(r.url);
+              setStatus("Copiato.");
+            }catch(e){
+              setStatus("Copia non disponibile: copia manualmente.");
+            }
+          });
+
+          const wrap = document.createElement("div");
+          wrap.style.display = "flex";
+          wrap.style.gap = "8px";
+          wrap.style.flexWrap = "wrap";
+          wrap.appendChild(aOpen);
+          wrap.appendChild(aCopy);
+
+          tdAct.appendChild(wrap);
+
+          tr.appendChild(tdName);
+          tr.appendChild(tdDesc);
+          tr.appendChild(tdCat);
+          tr.appendChild(tdAct);
+
+          tbody.appendChild(tr);
+        }
       }
-      setStatus(`<div class="ok">OK — registry valid</div>
-      <div class="muted">entries: <b>${json.entries.length}</b></div>
-      <div class="muted mono">source: ${escapeHtml(REGISTRY_URL)}</div>`);
-    }catch(e){
-      setStatus(`<div class="bad">BLOCKED — registry parse error</div>
-      <div class="muted">Fail-closed.</div>
-      <div class="muted mono">${escapeHtml(String(e))}<br>source: ${escapeHtml(REGISTRY_URL)}</div>`);
-    }
-  }
 
-  function openRegistry(){
-    window.open(REGISTRY_URL, "_blank");
-  }
+      let filtered = repos.slice();
 
-  document.getElementById("src").textContent = REGISTRY_URL;
-  checkRegistry();
-</script>
+      function apply(){
+        const term = normalize(q.value).toLowerCase();
+        const c = cat.value;
+
+        filtered = repos.filter(r => {
+          if(c !== "ALL" && r.cat !== c) return false;
+          if(!term) return true;
+          return extractTerm(r).includes(term);
+        });
+
+        render(filtered);
+        setStats("Repos: " + filtered.length + " / " + repos.length);
+      }
+
+      btnClear.addEventListener("click", () => {
+        q.value = "";
+        cat.value = "ALL";
+        apply();
+        setStatus("Filtro azzerato.");
+      });
+
+      q.addEventListener("input", apply);
+      cat.addEventListener("change", apply);
+
+      btnExport.addEventListener("click", () => {
+        const blob = new Blob([JSON.stringify(filtered, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "hbce_portal_export.json";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        setStatus("Export generato.");
+      });
+
+      async function healthCheck(){
+        setStatus("Health-check in corso…");
+        healthBody.innerHTML = '<tr><td colspan="4" class="hbce-meta">Health-check…</td></tr>';
+
+        const rows = [];
+
+        for(const t of healthTargets){
+          const url = t.url;
+          let ok = false;
+          let note = "—";
+
+          try{
+            const res = await fetch(url, { method:"GET", cache:"no-store" });
+            ok = res.ok;
+            note = "HTTP " + res.status;
+          }catch(e){
+            ok = false;
+            note = "FETCH ERROR";
+          }
+
+          rows.push({name:t.name, url, ok, note});
+        }
+
+        healthBody.innerHTML = "";
+        for(const r of rows){
+          const tr = document.createElement("tr");
+
+          const tdN = document.createElement("td");
+          tdN.innerHTML = "<strong>" + r.name + "</strong><div class='hbce-meta' style='margin-top:6px'>" + r.note + "</div>";
+
+          const tdU = document.createElement("td");
+          tdU.textContent = r.url;
+
+          const tdS = document.createElement("td");
+          tdS.innerHTML = r.ok ? "<span class='hbce-badge hbce-badge--ok'>OK</span>" : "<span class='hbce-badge hbce-badge--bad'>INVALID</span>";
+
+          const tdA = document.createElement("td");
+          const aOpen = document.createElement("a");
+          aOpen.className = "hbce-btn";
+          aOpen.textContent = "Apri";
+          aOpen.href = r.url;
+          aOpen.target = "_blank";
+          aOpen.rel = "noopener";
+          tdA.appendChild(aOpen);
+
+          tr.appendChild(tdN);
+          tr.appendChild(tdU);
+          tr.appendChild(tdS);
+          tr.appendChild(tdA);
+
+          healthBody.appendChild(tr);
+        }
+
+        setStatus("Health-check completato.");
+      }
+
+      btnHealth.addEventListener("click", healthCheck);
+
+      // init
+      apply();
+    })();
+  </script>
 </body>
 </html>
