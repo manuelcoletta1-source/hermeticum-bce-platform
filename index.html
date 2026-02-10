@@ -1,136 +1,231 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HERMETICUM B.C.E.</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HERMETICUM B.C.E. — Node Console</title>
 
 <style>
-body{
-margin:0;
-background:#05070c;
-color:#e8edf7;
-font-family:monospace;
-}
-
-.wrap{
-max-width:900px;
-margin:auto;
-padding:60px 20px;
-}
-
-.top{
-border-bottom:1px solid rgba(255,255,255,0.1);
-padding-bottom:20px;
-margin-bottom:40px;
-}
-
-h1{
-font-size:18px;
-letter-spacing:2px;
-margin:0;
-}
-
-.sub{
-color:#8e98a8;
-font-size:13px;
-margin-top:6px;
-}
-
-.section{
-margin-top:45px;
-}
-
-.title{
-font-size:13px;
-color:#7f8aa3;
-letter-spacing:1px;
-margin-bottom:12px;
-}
-
-.box{
-border:1px solid rgba(255,255,255,0.08);
-padding:18px;
-margin-bottom:14px;
-}
-
-a{
-color:#bcd2ff;
-text-decoration:none;
-display:block;
-padding:6px 0;
-}
-a:hover{color:white}
-
-.stack{
-line-height:1.7;
-color:#cfd6e6;
-}
-
-.footer{
-margin-top:60px;
-padding-top:20px;
-border-top:1px solid rgba(255,255,255,0.08);
-color:#6e7686;
-font-size:12px;
-}
+  :root{
+    --bg:#0b0f14;
+    --panel:#111827;
+    --border:#2a3441;
+    --text:#e8eef7;
+    --muted:rgba(232,238,247,.75);
+    --accent:#00ffd5;
+    --ok:#00ff9c;
+    --bad:#ff4d4d;
+    --warn:#ffd54a;
+  }
+  body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);margin:0;}
+  .container{max-width:920px;margin:0 auto;padding:40px 20px 80px;}
+  .badge{display:inline-block;padding:4px 10px;border:1px solid var(--border);border-radius:999px;font-size:12px;opacity:.85;margin-bottom:14px;}
+  h1{font-size:32px;margin:0 0 8px;}
+  p{margin:0 0 16px;line-height:1.5;color:var(--muted);}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px;margin-top:18px;}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+  .row.tight{margin-top:8px;}
+  a.link{
+    display:block;
+    padding:12px 14px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:#0f172a;
+    color:var(--text);
+    text-decoration:none;
+    font-weight:800;
+    flex:1 1 240px;
+    box-sizing:border-box;
+  }
+  a.link:hover{border-color:rgba(0,255,213,.55);opacity:.95;}
+  button{
+    padding:14px 18px;border-radius:8px;border:none;cursor:pointer;font-weight:800;
+    background:var(--accent);color:#000;flex:1 1 180px;
+  }
+  button.secondary{background:transparent;border:1px solid var(--border);color:var(--text);font-weight:700;}
+  button:hover{opacity:.92;}
+  .status{
+    margin-top:14px;padding:14px;border-radius:10px;border:1px solid var(--border);background:#0f172a;
+  }
+  .ok{color:var(--ok);font-weight:900;}
+  .bad{color:var(--bad);font-weight:900;}
+  .warn{color:var(--warn);font-weight:900;}
+  .muted{color:var(--muted);}
+  .mono{
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+    font-size:13px;white-space:pre-wrap;word-break:break-word;
+  }
+  hr{border:0;border-top:1px solid #2a3441;margin:12px 0;}
+  .kpi{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:10px;
+    margin-top:10px;
+  }
+  .kpi .box{
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:#0f172a;
+    padding:12px;
+  }
+  .kpi .k{color:var(--muted);font-size:12px;}
+  .kpi .v{font-weight:900;margin-top:6px;}
+  @media (max-width:720px){
+    .kpi{grid-template-columns:1fr;}
+  }
+  .footer{margin-top:50px;opacity:.65;font-size:13px;}
+  code{color:#cfe9ff;}
 </style>
 </head>
 
 <body>
+<div class="container">
+  <span class="badge">UE-first · Audit-first · Fail-closed · Hash-only registry</span>
 
-<div class="wrap">
+  <h1>HERMETICUM B.C.E. — Node Console</h1>
+  <p>
+    Console operativa del nodo: <b>Torino–Piemonte (EU)</b>.  
+    Accesso alle operazioni base: creazione IPR, verifica pubblica, registry e documenti infrastrutturali.
+  </p>
 
-<div class="top">
-<h1>HERMETICUM B.C.E.</h1>
-<div class="sub">Identity Primary Record — Preventive Infrastructure Node</div>
-</div>
+  <!-- Node Health -->
+  <div class="panel">
+    <h2 style="margin:0 0 10px;">Node status</h2>
+    <p class="muted">
+      Health-check automatico del registry canonico. Se il registry è invalido → <b>fail-closed</b>.
+    </p>
 
-<div class="section">
-<div class="title">NODE STATUS</div>
-<div class="box">
-Torino — Piemonte — European Union<br>
-Origin deployment node active.
-</div>
-</div>
+    <div class="kpi">
+      <div class="box">
+        <div class="k">Origin node</div>
+        <div class="v">Torino · Piemonte · EU</div>
+      </div>
+      <div class="box">
+        <div class="k">Registry</div>
+        <div class="v" id="regMini">checking…</div>
+      </div>
+    </div>
 
-<div class="section">
-<div class="title">OPERATIONS</div>
-<div class="box">
-<a href="create/">Create Identity Primary Record</a>
-<a href="verify/">Verify Identity Primary Record</a>
-<a href="registry/">Append registry entry</a>
-</div>
-</div>
+    <div id="registryStatus" class="status"></div>
 
-<div class="section">
-<div class="title">STACK</div>
-<div class="box stack">
-IPR Core<br>
-UNEBDO<br>
-OPC<br>
-IOSPACE<br>
-METAEXCHANGE<br>
-CYBERGLOBAL<br>
-NEUROLOOP<br>
+    <div class="row">
+      <button class="secondary" onclick="checkRegistry()">Re-check registry</button>
+      <button class="secondary" onclick="openRegistry()">Open registry</button>
+    </div>
+  </div>
+
+  <!-- Operations -->
+  <div class="panel">
+    <h2 style="margin:0 0 10px;">Operations</h2>
+    <p class="muted">
+      Percorsi operativi standard. Tutte le azioni producono output verificabili e tracciabili.
+    </p>
+
+    <div class="row">
+      <a class="link" href="create/">Create Identity Primary Record</a>
+      <a class="link" href="verify/">Verify Identity Primary Record</a>
+    </div>
+    <div class="row tight">
+      <a class="link" href="registry/">Registry (append-only)</a>
+      <a class="link" href="docs/">Documents</a>
+    </div>
+    <div class="row tight">
+      <a class="link" href="audit/">Audit</a>
+      <a class="link" href="architecture/">Architecture</a>
+    </div>
+  </div>
+
+  <!-- Stack -->
+  <div class="panel">
+    <h2 style="margin:0 0 10px;">Integrated stack</h2>
+    <p class="muted">
+      Stack operativo completo (integrato). Identità → evidenza → policy → spazio operativo → governance → evoluzione.
+    </p>
+    <div class="status">
+      <div class="mono">
+IPR Core
+UNEBDO
+OPC
+IOSPACE
+METAEXCHANGE
+CYBERGLOBAL
+NEUROLOOP
 JOKER-C2
-</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notes -->
+  <div class="panel">
+    <h2 style="margin:0 0 10px;">Operational notes</h2>
+    <p class="muted">
+      Regola base: il registry pubblico è <b>HASH-ONLY</b>.  
+      Nessun dato personale nel registry. Le credenziali (se presenti) stanno solo nel file cliente.
+    </p>
+    <div class="status">
+      <div class="muted">Canonical registry path</div>
+      <div class="mono" id="regPath"></div>
+      <hr>
+      <div class="muted">Append location</div>
+      <div class="mono">registry/registry.json → entries[]</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    HERMETICUM B.C.E. S.r.l. — Operational Identity Infrastructure
+  </div>
 </div>
 
-<div class="section">
-<div class="title">DOCUMENTATION</div>
-<div class="box">
-<a href="docs/">Infrastructure documents</a>
-<a href="audit/">Audit trail</a>
-</div>
-</div>
+<script>
+  // Root index → registry is inside /registry/registry.json
+  const REGISTRY_URL = "registry/registry.json";
 
-<div class="footer">
-HERMETICUM B.C.E. S.r.l.  
-European Identity Infrastructure  
-Torino · EU Node
-</div>
+  function escapeHtml(str){
+    return (str || "").replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+    }[m]));
+  }
 
-</div>
+  function setRegistryStatus(html){
+    document.getElementById("registryStatus").innerHTML = html;
+  }
+
+  async function checkRegistry(){
+    document.getElementById("regMini").textContent = "checking…";
+    try{
+      const res = await fetch(REGISTRY_URL, { cache:"no-store" });
+      if(!res.ok){
+        document.getElementById("regMini").innerHTML = "<span class='bad'>BLOCKED</span>";
+        setRegistryStatus(`<div class="bad">BLOCKED — registry not reachable (HTTP ${res.status})</div>
+        <div class="muted mono">source: ${escapeHtml(REGISTRY_URL)}</div>`);
+        return;
+      }
+      const json = await res.json();
+      if(!json || !Array.isArray(json.entries)){
+        document.getElementById("regMini").innerHTML = "<span class='bad'>BLOCKED</span>";
+        setRegistryStatus(`<div class="bad">BLOCKED — invalid registry format</div>
+        <div class="muted">Manca <b>entries[]</b>. Fail-closed.</div>
+        <div class="muted mono">source: ${escapeHtml(REGISTRY_URL)}</div>`);
+        return;
+      }
+      document.getElementById("regMini").innerHTML = "<span class='ok'>OK</span>";
+      setRegistryStatus(`<div class="ok">OK — registry valid</div>
+      <div class="muted">entries: <b>${json.entries.length}</b></div>
+      <div class="muted mono">source: ${escapeHtml(REGISTRY_URL)}</div>`);
+    }catch(e){
+      document.getElementById("regMini").innerHTML = "<span class='bad'>BLOCKED</span>";
+      setRegistryStatus(`<div class="bad">BLOCKED — registry parse error</div>
+      <div class="muted">Fail-closed.</div>
+      <div class="muted mono">${escapeHtml(String(e))}<br>source: ${escapeHtml(REGISTRY_URL)}</div>`);
+    }
+  }
+
+  function openRegistry(){
+    window.open(REGISTRY_URL, "_blank");
+  }
+
+  document.getElementById("regPath").textContent = REGISTRY_URL;
+  checkRegistry();
+</script>
 </body>
 </html>
