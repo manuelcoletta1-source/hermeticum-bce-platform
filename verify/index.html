@@ -1,99 +1,242 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verify IPR — Hermeticum</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Verify IPR — HERMETICUM B.C.E.</title>
 
 <style>
-body{
-font-family:Arial,Helvetica,sans-serif;
-background:#0b0f14;
-color:#e8eef7;
-margin:0;
-}
+  :root{
+    --bg:#0b0f14;
+    --panel:#111827;
+    --border:#2a3441;
+    --text:#e8eef7;
+    --muted:rgba(232,238,247,.75);
+    --accent:#00ffd5;
+    --ok:#00ff9c;
+    --bad:#ff4d4d;
+  }
+  body{
+    font-family: Arial, Helvetica, sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    margin:0;
+  }
+  .container{
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+  .badge{
+    display:inline-block;
+    padding:4px 10px;
+    border:1px solid var(--border);
+    border-radius:999px;
+    font-size:12px;
+    opacity:.85;
+    margin-bottom:14px;
+  }
+  h1{ font-size:32px; margin: 0 0 8px; }
+  p{ margin: 0 0 16px; line-height: 1.5; color: var(--muted); }
 
-.container{
-max-width:900px;
-margin:auto;
-padding:40px 20px;
-}
+  .panel{
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    margin-top: 18px;
+  }
 
-input{
-width:100%;
-padding:14px;
-background:#111827;
-border:1px solid #2a3441;
-color:#fff;
-border-radius:6px;
-margin-top:10px;
-margin-bottom:20px;
-}
+  label{
+    display:block;
+    margin: 0 0 8px;
+    font-weight: 700;
+  }
+  input{
+    width:100%;
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #0f172a;
+    color: var(--text);
+    box-sizing: border-box;
+    font-size: 14px;
+    outline: none;
+  }
+  input:focus{
+    border-color: rgba(0,255,213,.55);
+  }
 
-button{
-padding:14px 22px;
-background:#00ffd5;
-border:none;
-color:#000;
-font-weight:bold;
-cursor:pointer;
-border-radius:6px;
-}
+  .row{
+    display:flex;
+    gap:10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  button{
+    padding: 14px 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 800;
+    background: var(--accent);
+    color: #000;
+    flex: 1 1 180px;
+  }
+  button.secondary{
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-weight: 700;
+  }
+  button:hover{ opacity:.92; }
 
-.box{
-margin-top:30px;
-padding:20px;
-background:#111827;
-border:1px solid #2a3441;
-border-radius:8px;
-}
+  .mono{
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+    font-size: 13px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
 
-.pass{color:#00ff9c;font-weight:bold;}
-.fail{color:#ff4d4d;font-weight:bold;}
+  .status{
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: #0f172a;
+  }
+  .ok{ color: var(--ok); font-weight: 900; }
+  .bad{ color: var(--bad); font-weight: 900; }
+  .muted{ color: var(--muted); }
+
+  .footer{
+    margin-top: 50px;
+    opacity: .65;
+    font-size: 13px;
+  }
 </style>
 </head>
 
 <body>
-<div class="container">
+  <div class="container">
+    <span class="badge">UE-first · Audit-first · Fail-closed · Hash-only</span>
 
-<h1>Verify Identity Primary Record</h1>
-<p>Insert payload SHA256 to verify registry presence.</p>
+    <h1>Verify Identity Primary Record</h1>
+    <p>Inserisci il <b>payload SHA256</b>. La verifica è <b>FAIL-CLOSED</b>: se non è presente nel registry pubblico → NON ESISTE.</p>
 
-<input id="hash" placeholder="Paste payload SHA256">
+    <div class="panel">
+      <label for="hash">Payload SHA256</label>
+      <input id="hash" placeholder="Incolla qui l'hash SHA256 (64 caratteri hex)" />
 
-<button onclick="verify()">Verify</button>
+      <div class="row">
+        <button id="btnVerify" onclick="verifyIPR()">Verify</button>
+        <button class="secondary" onclick="resetUI()">Reset</button>
+      </div>
 
-<div id="result" class="box" style="display:none;"></div>
+      <div id="result" class="status" style="display:none;"></div>
+    </div>
 
-</div>
+    <div class="footer">
+      HERMETICUM B.C.E. S.r.l. — Operational Identity Infrastructure
+    </div>
+  </div>
 
 <script>
+  const REGISTRY_URL = "../registry/registry.json";
 
-async function verify(){
+  function isHex64(s){
+    return /^[0-9a-f]{64}$/i.test(s);
+  }
 
-const hash=document.getElementById("hash").value.trim();
-if(!hash){alert("Insert hash");return;}
+  function escapeHtml(str){
+    return (str || "").replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+    }[m]));
+  }
 
-const res=await fetch("../registry.json");
-const data=await res.json();
+  function setResult(html){
+    const box = document.getElementById("result");
+    box.style.display = "block";
+    box.innerHTML = html;
+  }
 
-let found=false;
+  function resetUI(){
+    document.getElementById("hash").value = "";
+    const box = document.getElementById("result");
+    box.style.display = "none";
+    box.innerHTML = "";
+  }
 
-for(let i=0;i<data.length;i++){
-if(data[i].payload_sha256===hash){found=true;break;}
-}
+  async function verifyIPR(){
+    const btn = document.getElementById("btnVerify");
+    const hashRaw = document.getElementById("hash").value.trim();
+    const hash = hashRaw.toLowerCase();
 
-const box=document.getElementById("result");
-box.style.display="block";
+    if(!hash){
+      alert("Inserisci un hash SHA256.");
+      return;
+    }
+    if(!isHex64(hash)){
+      setResult(`<div class="bad">INVALID INPUT</div>
+      <div class="muted">Formato hash non valido. Serve SHA256 in hex (64 caratteri).</div>`);
+      return;
+    }
 
-if(found){
-box.innerHTML="<span class='pass'>VALID IPR — PRESENT IN REGISTRY</span>";
-}else{
-box.innerHTML="<span class='fail'>NOT FOUND — FAIL CLOSED</span>";
-}
+    btn.disabled = true;
+    btn.textContent = "Verifying...";
 
-}
+    try{
+      // FAIL-CLOSED: se non riesco a leggere registry → BLOCK
+      const res = await fetch(REGISTRY_URL, { cache: "no-store" });
+      if(!res.ok){
+        setResult(`<div class="bad">BLOCKED — FAIL CLOSED</div>
+        <div class="muted">Registry non accessibile (HTTP ${res.status}).</div>
+        <div class="mono">source: ${REGISTRY_URL}</div>`);
+        return;
+      }
 
+      const registry = await res.json();
+
+      // Il registry ufficiale deve avere entries[]
+      const entries = (registry && Array.isArray(registry.entries)) ? registry.entries : null;
+      if(!entries){
+        setResult(`<div class="bad">BLOCKED — FAIL CLOSED</div>
+        <div class="muted">Formato registry non valido: manca <b>entries[]</b>.</div>
+        <div class="mono">source: ${REGISTRY_URL}</div>`);
+        return;
+      }
+
+      let found = null;
+      for(let i=0;i<entries.length;i++){
+        if((entries[i].payload_sha256 || "").toLowerCase() === hash){
+          found = entries[i];
+          break;
+        }
+      }
+
+      if(found){
+        const nick = escapeHtml(found.nickname || "");
+        const ts = escapeHtml(found.timestamp || "");
+        setResult(`<div class="ok">VALID IPR — PRESENT IN REGISTRY</div>
+        <div class="muted">Registry match trovato.</div>
+        <hr style="border:0;border-top:1px solid #2a3441;margin:12px 0;">
+        <div class="mono"><b>nickname</b>: ${nick || "(empty)"}<br><b>timestamp</b>: ${ts || "(empty)"}<br><b>payload_sha256</b>: ${hash}</div>`);
+      }else{
+        setResult(`<div class="bad">NOT FOUND — FAIL CLOSED</div>
+        <div class="muted">Hash non presente nel registry pubblico.</div>
+        <div class="mono"><b>payload_sha256</b>: ${hash}<br>source: ${REGISTRY_URL}</div>`);
+      }
+
+    }catch(e){
+      setResult(`<div class="bad">BLOCKED — FAIL CLOSED</div>
+      <div class="muted">Errore di lettura/parse del registry.</div>
+      <div class="mono">${escapeHtml(String(e))}</div>
+      <div class="mono">source: ${REGISTRY_URL}</div>`);
+    }finally{
+      btn.disabled = false;
+      btn.textContent = "Verify";
+    }
+  }
 </script>
 </body>
 </html>
