@@ -1,240 +1,99 @@
-<!doctype html>
-<html lang="it">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VERIFY — Verifica pubblica (PASS/INVALID)</title>
-  <meta name="description" content="Verifica pubblica fail-closed: lookup in registry append-only. PASS se entry esiste, altrimenti INVALID." />
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify IPR — Hermeticum</title>
+
+<style>
+body{
+font-family:Arial,Helvetica,sans-serif;
+background:#0b0f14;
+color:#e8eef7;
+margin:0;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+padding:40px 20px;
+}
+
+input{
+width:100%;
+padding:14px;
+background:#111827;
+border:1px solid #2a3441;
+color:#fff;
+border-radius:6px;
+margin-top:10px;
+margin-bottom:20px;
+}
+
+button{
+padding:14px 22px;
+background:#00ffd5;
+border:none;
+color:#000;
+font-weight:bold;
+cursor:pointer;
+border-radius:6px;
+}
+
+.box{
+margin-top:30px;
+padding:20px;
+background:#111827;
+border:1px solid #2a3441;
+border-radius:8px;
+}
+
+.pass{color:#00ff9c;font-weight:bold;}
+.fail{color:#ff4d4d;font-weight:bold;}
+</style>
 </head>
+
 <body>
-  <div data-hbce="header"></div>
+<div class="container">
 
-  <main class="hbce-container hbce-main">
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">VERIFY · Public verification · Fail-closed</div>
-      <h1 class="hbce-hero__title">PASS / INVALID</h1>
-      <p class="hbce-hero__lead">
-        Lookup deterministico nel registry append-only.
-        Se l’hash è presente → <strong>PASS</strong>. Se manca o non è verificabile → <strong>INVALID</strong>.
-      </p>
-      <div class="hbce-hero__cta">
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/">CREATE</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/positioning/">POSITIONING</a>
-      </div>
-    </section>
+<h1>Verify Identity Primary Record</h1>
+<p>Insert payload SHA256 to verify registry presence.</p>
 
-    <section class="hbce-section">
-      <h2>Input</h2>
+<input id="hash" placeholder="Paste payload SHA256">
 
-      <div class="hbce-card hbce-card--wide">
-        <label class="hbce-meta" for="hash">payload_sha256</label>
-        <input id="hash" class="hbce-input" placeholder="incolla SHA-256 (64 hex)" autocomplete="off" />
+<button onclick="verify()">Verify</button>
 
-        <div class="hbce-actions" style="margin-top:16px">
-          <button class="hbce-btn hbce-btn--primary" id="btn-verify">Verifica</button>
-          <button class="hbce-btn" id="btn-reset">Reset</button>
-          <button class="hbce-btn" id="btn-reload">Ricarica registry</button>
-        </div>
+<div id="result" class="box" style="display:none;"></div>
 
-        <div class="hbce-meta" id="status" style="margin-top:10px">Pronto.</div>
-      </div>
-    </section>
+</div>
 
-    <section class="hbce-section">
-      <h2>Esito</h2>
+<script>
 
-      <div class="hbce-grid">
-        <article class="hbce-card">
-          <div class="hbce-meta">Risultato operativo</div>
-          <div id="result" class="hbce-result hbce-result--idle">—</div>
-          <div class="hbce-meta" style="margin-top:10px" id="reason">—</div>
-        </article>
+async function verify(){
 
-        <article class="hbce-card">
-          <div class="hbce-meta">Entry matchata (se PASS)</div>
-          <textarea id="match" class="hbce-textarea" rows="12" readonly placeholder="—"></textarea>
-          <div class="hbce-meta" style="margin-top:10px">
-            Se entry non esiste o registry non è leggibile → INVALID.
-          </div>
-        </article>
-      </div>
-    </section>
+const hash=document.getElementById("hash").value.trim();
+if(!hash){alert("Insert hash");return;}
 
-    <section class="hbce-section">
-      <h2>Regola</h2>
-      <div class="hbce-card hbce-card--wide">
-        <p class="hbce-p">
-          Audit-first: ciò che non è verificabile non è valido.
-          Nessuna interpretazione. Solo lookup in registry.
-        </p>
-        <div class="hbce-meta">UE-first · audit-first · fail-closed · hash-only · append-only</div>
-      </div>
-    </section>
+const res=await fetch("../registry.json");
+const data=await res.json();
 
-    <section class="hbce-section">
-      <div class="hbce-card hbce-card--wide">
-        <div class="hbce-hallmark">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-        <div class="hbce-company">HERMETICUM B.C.E. S.r.l.</div>
-        <div class="hbce-meta">UE-first · audit-first · fail-closed · hash-only</div>
-      </div>
-    </section>
-  </main>
+let found=false;
 
-  <div data-hbce="footer"></div>
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+for(let i=0;i<data.length;i++){
+if(data[i].payload_sha256===hash){found=true;break;}
+}
 
-  <script>
-    (function(){
-      const $ = (id) => document.getElementById(id);
+const box=document.getElementById("result");
+box.style.display="block";
 
-      const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
+if(found){
+box.innerHTML="<span class='pass'>VALID IPR — PRESENT IN REGISTRY</span>";
+}else{
+box.innerHTML="<span class='fail'>NOT FOUND — FAIL CLOSED</span>";
+}
 
-      const inpHash = $("hash");
-      const btnVerify = $("btn-verify");
-      const btnReset = $("btn-reset");
-      const btnReload = $("btn-reload");
+}
 
-      const status = $("status");
-      const result = $("result");
-      const reason = $("reason");
-      const match = $("match");
-
-      let registryEntries = null;
-
-      function setStatus(msg){ status.textContent = msg; }
-
-      function setResult(state, msg, why){
-        result.textContent = msg;
-        reason.textContent = why || "—";
-        result.className = "hbce-result " + (
-          state === "PASS" ? "hbce-result--pass" :
-          state === "INVALID" ? "hbce-result--invalid" :
-          "hbce-result--idle"
-        );
-      }
-
-      function normalize(s){ return (s || "").trim(); }
-      function isHex64(s){ return /^[a-fA-F0-9]{64}$/.test(s); }
-
-      function extractEntries(obj){
-        if(Array.isArray(obj)) return obj;
-        if(obj && Array.isArray(obj.entries)) return obj.entries;
-        if(obj && obj.registry && Array.isArray(obj.registry.entries)) return obj.registry.entries;
-        return null;
-      }
-
-      async function loadRegistry(){
-        setStatus("Caricamento registry…");
-        setResult("IDLE","—","—");
-        match.value = "";
-
-        try{
-          const res = await fetch(REGISTRY_URL, { cache: "no-store" });
-          if(!res.ok){
-            registryEntries = null;
-            setStatus("INVALID: registry non leggibile (HTTP " + res.status + ").");
-            setResult("INVALID","INVALID","Registry non leggibile: " + REGISTRY_URL);
-            return false;
-          }
-
-          const data = await res.json();
-          const entries = extractEntries(data);
-
-          if(!entries){
-            registryEntries = null;
-            setStatus("INVALID: schema registry non riconosciuto.");
-            setResult("INVALID","INVALID","Schema registry non riconosciuto (atteso entries[]).");
-            return false;
-          }
-
-          registryEntries = entries.filter(e => e && typeof e === "object");
-          setStatus("Registry caricato: " + registryEntries.length + " entries.");
-          return true;
-        }catch(e){
-          registryEntries = null;
-          setStatus("INVALID: errore caricamento registry.");
-          setResult("INVALID","INVALID","Errore fetch/parse del registry (fail-closed).");
-          return false;
-        }
-      }
-
-      function getEntryHash(e){
-        return normalize(e.payload_sha256 || e.public_payload_sha256 || "");
-      }
-
-      function findMatch(h){
-        if(!registryEntries) return null;
-        const target = h.toLowerCase();
-        for(const e of registryEntries){
-          const eh = getEntryHash(e).toLowerCase();
-          if(eh && eh === target) return e;
-        }
-        return null;
-      }
-
-      async function doVerify(){
-        const h = normalize(inpHash.value);
-
-        if(!isHex64(h)){
-          setResult("INVALID","INVALID","Hash non valido: atteso SHA-256 64 hex.");
-          match.value = "";
-          setStatus("Inserisci un hash valido.");
-          return;
-        }
-
-        if(!registryEntries){
-          const ok = await loadRegistry();
-          if(!ok){
-            match.value = "";
-            return;
-          }
-        }
-
-        const m = findMatch(h);
-        if(!m){
-          setResult("INVALID","INVALID","Nessuna entry trovata nel registry (non verificabile).");
-          match.value = "";
-          setStatus("Lookup completato: nessuna corrispondenza.");
-          return;
-        }
-
-        setResult("PASS","PASS","Entry trovata nel registry (verificabile).");
-        match.value = JSON.stringify(m, null, 2);
-        setStatus("Lookup completato: PASS.");
-      }
-
-      btnReload.addEventListener("click", async ()=>{ await loadRegistry(); });
-
-      btnReset.addEventListener("click", ()=>{
-        inpHash.value = "";
-        match.value = "";
-        setResult("IDLE","—","—");
-        setStatus("Reset.");
-        // Non svuotiamo registryEntries: reset input, non cache.
-      });
-
-      btnVerify.addEventListener("click", async ()=>{ await doVerify(); });
-
-      // Autoload registry
-      loadRegistry();
-
-      // Prefill da querystring: ?h=<sha256>
-      try{
-        const params = new URLSearchParams(window.location.search || "");
-        const h = normalize(params.get("h") || "");
-        if(h){
-          inpHash.value = h;
-          // auto-verify (fail-closed)
-          setStatus("Prefill rilevato (?h=). Verifica automatica…");
-          doVerify();
-        }
-      }catch(e){
-        // ignore
-      }
-    })();
-  </script>
+</script>
 </body>
 </html>
