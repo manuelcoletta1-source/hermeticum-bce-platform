@@ -1,149 +1,166 @@
-<!doctype html>
-<html lang="it">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CREATE — Attiva IPR (Wizard / Manuale)</title>
-  <meta name="description" content="Attivazione IPR: percorso enterprise (wizard) con rilascio pacchetto cliente, oppure strumenti manuali per operatori. UE-first, hash-only." />
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create IPR — Hermeticum B.C.E.</title>
+
+<style>
+body{
+font-family:Arial,Helvetica,sans-serif;
+background:#0b0f14;
+color:#e8eef7;
+margin:0;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+padding:40px 20px;
+}
+
+h1{
+font-size:32px;
+margin-bottom:10px;
+}
+
+h2{
+margin-top:40px;
+}
+
+input, select{
+width:100%;
+padding:12px;
+margin-top:8px;
+margin-bottom:20px;
+background:#111827;
+border:1px solid #2a3441;
+color:#fff;
+border-radius:6px;
+}
+
+button{
+padding:14px 22px;
+background:#00ffd5;
+border:none;
+color:#000;
+font-weight:bold;
+cursor:pointer;
+border-radius:6px;
+}
+
+button:hover{
+opacity:0.9;
+}
+
+.box{
+background:#111827;
+padding:20px;
+margin-top:30px;
+border-radius:8px;
+border:1px solid #2a3441;
+}
+
+.footer{
+margin-top:60px;
+opacity:0.6;
+font-size:14px;
+}
+</style>
 </head>
+
 <body>
-  <div data-hbce="header"></div>
 
-  <main class="hbce-container hbce-main">
+<div class="container">
 
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CREATE · IPR ISSUANCE</div>
-      <h1 class="hbce-hero__title">Attiva IPR</h1>
-      <p class="hbce-hero__lead">
-        Due modalità operative:
-        <strong>Wizard enterprise</strong> (consigliato) per rilascio pacchetto cliente,
-        oppure <strong>manuale</strong> per operatori e test tecnici.
-      </p>
+<h1>Create Identity Primary Record</h1>
+<p>Activate a verifiable operational identity for human, company or AI system.</p>
 
-      <div class="hbce-hero__cta">
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">Avvia Wizard (Enterprise)</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/create/manual/">Create Manuale (Operatori)</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/create/receipt/">Receipt</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verify</a>
-      </div>
+<h2>1. Entity Type</h2>
+<select id="type">
+<option>Human</option>
+<option>Company</option>
+<option>AI System</option>
+<option>Robot</option>
+<option>Infrastructure Node</option>
+</select>
 
-      <div class="hbce-meta" style="margin-top:10px">
-        Pubblico = hash-only. Privato (annex UE) = local-only. Nessuna custodia dati lato nodo.
-      </div>
-    </section>
+<h2>2. Name / Entity ID</h2>
+<input id="name" placeholder="Enter name or entity identifier">
 
-    <section class="hbce-section">
-      <h2>Percorso consigliato (cliente)</h2>
-      <div class="hbce-card hbce-card--wide">
-        <p class="hbce-p">
-          Il wizard guida la creazione in step distinti (citizen/company), genera credenziali locali,
-          e rilascia un <strong>pacchetto cliente</strong> scaricabile con hash pubblico e receipt.
-        </p>
+<h2>3. Country</h2>
+<input id="country" placeholder="EU Country">
 
-        <div class="hbce-grid hbce-grid--tight" style="margin-top:12px">
-          <a class="hbce-tile" href="/hermeticum-bce-platform/create/wizard/">1 — Wizard</a>
-          <a class="hbce-tile" href="/hermeticum-bce-platform/create/receipt/">2 — Receipt</a>
-          <a class="hbce-tile" href="/hermeticum-bce-platform/registry/">3 — Registry</a>
-          <a class="hbce-tile" href="/hermeticum-bce-platform/verify/">4 — Verify</a>
-        </div>
+<h2>4. Optional Email</h2>
+<input id="email" placeholder="contact@email.com">
 
-        <div class="hbce-actions" style="margin-top:14px">
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">Avvia wizard ora</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Apri registry</a>
-        </div>
-      </div>
-    </section>
+<button onclick="generateIPR()">Generate IPR</button>
 
-    <section class="hbce-section">
-      <h2>Strumenti operatori (manuale)</h2>
+<div class="box" id="result" style="display:none;">
+<h2>IPR Generated</h2>
+<p><b>Timestamp:</b> <span id="timestamp"></span></p>
+<p><b>SHA256:</b></p>
+<p id="hash"></p>
 
-      <div class="hbce-grid">
-        <article class="hbce-card">
-          <h3>Create manuale</h3>
-          <p class="hbce-p">
-            Generazione manuale payload/hash per test e operatori.
-            Utile quando vuoi controllare ogni campo.
-          </p>
-          <div class="hbce-actions">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/create/manual/">Apri</a>
-          </div>
-          <div class="hbce-meta">Operatori</div>
-        </article>
+<button onclick="downloadIPR()">Download IPR File</button>
+</div>
 
-        <article class="hbce-card">
-          <h3>Receipt generator</h3>
-          <p class="hbce-p">
-            Genera entry JSON append-only per il registry a partire da hash pubblico.
-          </p>
-          <div class="hbce-actions">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/create/receipt/">Apri</a>
-          </div>
-          <div class="hbce-meta">Append-only</div>
-        </article>
+<div class="footer">
+HERMETICUM B.C.E. — Operational Identity Infrastructure
+</div>
 
-        <article class="hbce-card">
-          <h3>Registry</h3>
-          <p class="hbce-p">
-            Viewer pubblico del registro. Ricerca, export, link VERIFY per entry.
-          </p>
-          <div class="hbce-actions">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Apri</a>
-          </div>
-          <div class="hbce-meta">Public</div>
-        </article>
+</div>
 
-        <article class="hbce-card">
-          <h3>Verify</h3>
-          <p class="hbce-p">
-            Verifica fail-closed PASS/INVALID via lookup nel registry.
-            Supporta prefill <code>?h=</code>.
-          </p>
-          <div class="hbce-actions">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Apri</a>
-          </div>
-          <div class="hbce-meta">Fail-closed</div>
-        </article>
-      </div>
-    </section>
+<script>
+let iprData = "";
 
-    <section class="hbce-section">
-      <h2>Regole</h2>
-      <div class="hbce-grid">
-        <article class="hbce-card">
-          <h3>Hash-only (pubblico)</h3>
-          <p class="hbce-p">Nel registry finiscono solo hash e receipt. Mai dati personali.</p>
-          <div class="hbce-meta">HASH-ONLY</div>
-        </article>
-        <article class="hbce-card">
-          <h3>Local-only (privato)</h3>
-          <p class="hbce-p">Annex UE e credenziali restano sul dispositivo del cliente.</p>
-          <div class="hbce-meta">LOCAL-ONLY</div>
-        </article>
-        <article class="hbce-card">
-          <h3>Append-only</h3>
-          <p class="hbce-p">Le entries si aggiungono. Nessuna riscrittura retroattiva.</p>
-          <div class="hbce-meta">APPEND-ONLY</div>
-        </article>
-        <article class="hbce-card">
-          <h3>Fail-closed</h3>
-          <p class="hbce-p">Se non è verificabile pubblicamente → INVALID.</p>
-          <div class="hbce-meta">FAIL-CLOSED</div>
-        </article>
-      </div>
-    </section>
+async function sha256(message){
+const msgBuffer = new TextEncoder().encode(message);
+const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+const hashArray = Array.from(new Uint8Array(hashBuffer));
+return hashArray.map(b=>b.toString(16).padStart(2,'0')).join('');
+}
 
-    <section class="hbce-section">
-      <div class="hbce-card hbce-card--wide">
-        <div class="hbce-hallmark">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-        <div class="hbce-company">HERMETICUM B.C.E. S.r.l.</div>
-        <div class="hbce-meta">UE-first · audit-first · fail-closed · hash-only</div>
-      </div>
-    </section>
+async function generateIPR(){
 
-  </main>
+const type=document.getElementById("type").value;
+const name=document.getElementById("name").value;
+const country=document.getElementById("country").value;
+const email=document.getElementById("email").value;
 
-  <div data-hbce="footer"></div>
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+if(!name){alert("Insert name");return;}
+
+const timestamp=new Date().toISOString();
+
+const payload={
+proto:"HBCE-IPR-v1",
+type:type,
+name:name,
+country:country,
+email:email,
+timestamp:timestamp
+};
+
+const payloadString=JSON.stringify(payload);
+const hash=await sha256(payloadString);
+
+payload.sha256=hash;
+
+iprData=JSON.stringify(payload,null,2);
+
+document.getElementById("timestamp").innerText=timestamp;
+document.getElementById("hash").innerText=hash;
+document.getElementById("result").style.display="block";
+}
+
+function downloadIPR(){
+const blob=new Blob([iprData],{type:"application/json"});
+const a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="IPR_"+Date.now()+".json";
+a.click();
+}
+</script>
+
 </body>
 </html>
