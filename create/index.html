@@ -1,300 +1,285 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Create IPR — HERMETICUM B.C.E.</title>
-
-<style>
-  :root{
-    --bg:#0b0f14;
-    --panel:#111827;
-    --border:#2a3441;
-    --text:#e8eef7;
-    --muted:rgba(232,238,247,.75);
-    --accent:#00ffd5;
-    --ok:#00ff9c;
-    --bad:#ff4d4d;
-    --warn:#ffd54a;
-  }
-  body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);margin:0;}
-  .container{max-width:920px;margin:0 auto;padding:40px 20px 80px;}
-  .badge{display:inline-block;padding:4px 10px;border:1px solid var(--border);border-radius:999px;font-size:12px;opacity:.85;margin-bottom:14px;}
-  h1{font-size:32px;margin:0 0 8px;}
-  p{margin:0 0 16px;line-height:1.5;color:var(--muted);}
-  .panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px;margin-top:18px;}
-  label{display:block;margin:0 0 8px;font-weight:700;}
-  input, select{
-    width:100%;padding:14px;border-radius:8px;border:1px solid var(--border);
-    background:#0f172a;color:var(--text);box-sizing:border-box;font-size:14px;outline:none;
-  }
-  input:focus, select:focus{border-color:rgba(0,255,213,.55);}
-  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
-  button{
-    padding:14px 18px;border-radius:8px;border:none;cursor:pointer;font-weight:800;
-    background:var(--accent);color:#000;flex:1 1 180px;
-  }
-  button.secondary{background:transparent;border:1px solid var(--border);color:var(--text);font-weight:700;}
-  button:hover{opacity:.92;}
-  .mono{
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-    font-size:13px;white-space:pre-wrap;word-break:break-word;
-  }
-  .status{margin-top:14px;padding:14px;border-radius:10px;border:1px solid var(--border);background:#0f172a;}
-  .ok{color:var(--ok);font-weight:900;}
-  .bad{color:var(--bad);font-weight:900;}
-  .warn{color:var(--warn);font-weight:900;}
-  .muted{color:var(--muted);}
-  hr{border:0;border-top:1px solid #2a3441;margin:12px 0;}
-  .footer{margin-top:50px;opacity:.65;font-size:13px;}
-  code{color:#cfe9ff;}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CREATE — IPR Release</title>
+  <meta name="description" content="Create IPR: genera file cliente + entry hash-only per registry append-only. UE-first, audit-first, fail-closed." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
-
 <body>
-  <div class="container">
-    <span class="badge">UE-first · Audit-first · Fail-closed · Hash-only</span>
+  <div data-hbce="header"></div>
 
-    <h1>Create Identity Primary Record</h1>
-    <p>
-      Genera un <b>IPR release file</b> per il cliente + una <b>entry HASH-ONLY</b> pronta da appendere nel registry pubblico
-      (<code>registry/registry.json → entries[]</code>).
-    </p>
-
-    <!-- Registry Health -->
-    <div class="panel">
-      <h2 style="margin:0 0 10px;">Registry status</h2>
-      <p class="muted">Controllo automatico del registry canonico. Se invalido → fail-closed.</p>
-
-      <div id="registryStatus" class="status" style="margin-top:10px;"></div>
-
-      <div class="row">
-        <button class="secondary" onclick="checkRegistry()">Re-check registry</button>
-        <button class="secondary" onclick="openRegistry()">Open registry</button>
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">CREATE · IPR RELEASE · Client file</div>
+      <h1 class="hbce-hero__title">Create Identity Primary Record</h1>
+      <p class="hbce-hero__lead">
+        Genera un <strong>file IPR_*.json</strong> per il cliente e una entry <strong>HASH-ONLY</strong> pronta da appendere nel registry pubblico.
+        Fail-closed: se il registry non è leggibile → BLOCK.
+      </p>
+      <div class="hbce-hero__cta">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/positioning/">POSITIONING</a>
       </div>
-    </div>
+    </section>
 
-    <!-- Create Form -->
-    <div class="panel">
-      <h2 style="margin:0 0 10px;">IPR form</h2>
-
-      <label for="etype">Entity type</label>
-      <select id="etype">
-        <option>Human</option>
-        <option>Company</option>
-        <option>AI System</option>
-        <option>Robot</option>
-        <option>Infrastructure Node</option>
-      </select>
-
-      <label for="nick">Nickname / Entity ID</label>
-      <input id="nick" placeholder="Esempio: ManuHell / ACME_SRL / AI_NODE_001" />
-
-      <label for="country">Country (optional)</label>
-      <input id="country" placeholder="Esempio: IT" />
-
-      <label for="email">Email (optional — sconsigliata se l’IPR deve essere pubblico)</label>
-      <input id="email" placeholder="contact@email.com" />
-
-      <div class="row">
-        <button id="btnGen" onclick="generateIPR()">Generate IPR</button>
-        <button class="secondary" onclick="resetAll()">Reset</button>
+    <section class="hbce-section">
+      <h2>Registry status</h2>
+      <div class="hbce-card hbce-card--wide">
+        <p class="hbce-p">
+          Controllo automatico del registry canonico. Se manca <code>entries[]</code> o non è leggibile → <strong>INVALID</strong>.
+        </p>
+        <div class="hbce-actions">
+          <button class="hbce-btn hbce-btn--primary" id="btn-regcheck">Re-check</button>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/registry.json">Apri registry.json</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Apri viewer</a>
+        </div>
+        <div class="hbce-meta" style="margin-top:10px" id="regStatus">—</div>
       </div>
+    </section>
 
-      <div id="result" class="status" style="display:none;"></div>
-    </div>
+    <section class="hbce-section">
+      <h2>IPR form</h2>
 
-    <div class="footer">
-      HERMETICUM B.C.E. S.r.l. — Operational Identity Infrastructure
-    </div>
-  </div>
+      <div class="hbce-card hbce-card--wide">
+        <div class="hbce-grid" style="align-items:end">
+          <article class="hbce-card" style="margin:0">
+            <label class="hbce-meta" for="etype">Entity type</label>
+            <select id="etype" class="hbce-input">
+              <option>Human</option>
+              <option>Company</option>
+              <option>AI System</option>
+              <option>Robot</option>
+              <option>Infrastructure Node</option>
+            </select>
+          </article>
 
-<script>
-  // /create/ → registry is one level up
-  const REGISTRY_URL = "../registry/registry.json";
+          <article class="hbce-card" style="margin:0">
+            <label class="hbce-meta" for="nick">Nickname / Entity ID</label>
+            <input id="nick" class="hbce-input" placeholder="Esempio: ManuHell / ACME_SRL / AI_NODE_001" autocomplete="off" />
+          </article>
 
-  let iprFileJson = "";
-  let lastHash = "";
-  let registryEntryJson = "";
+          <article class="hbce-card" style="margin:0">
+            <label class="hbce-meta" for="country">Country (optional)</label>
+            <input id="country" class="hbce-input" placeholder="Esempio: IT" autocomplete="off" />
+          </article>
 
-  function escapeHtml(str){
-    return (str || "").replace(/[&<>"']/g, m => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
-    }[m]));
-  }
-
-  function cleanNickname(s){
-    return (s || "").trim().replace(/\s+/g," ").slice(0,80);
-  }
-
-  async function sha256(message){
-    const msgBuffer = new TextEncoder().encode(message);
-    const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2,"0")).join("");
-  }
-
-  function setRegistryStatus(html){
-    document.getElementById("registryStatus").innerHTML = html;
-  }
-
-  async function checkRegistry(){
-    try{
-      const res = await fetch(REGISTRY_URL, { cache:"no-store" });
-      if(!res.ok){
-        setRegistryStatus(`<div class="bad">BLOCKED — registry not reachable (HTTP ${res.status})</div>
-        <div class="muted mono">source: ${escapeHtml(REGISTRY_URL)}</div>`);
-        return;
-      }
-      const json = await res.json();
-      if(!json || !Array.isArray(json.entries)){
-        setRegistryStatus(`<div class="bad">BLOCKED — invalid registry format</div>
-        <div class="muted">Manca <b>entries[]</b>. Fail-closed.</div>
-        <div class="muted mono">source: ${escapeHtml(REGISTRY_URL)}</div>`);
-        return;
-      }
-      setRegistryStatus(`<div class="ok">OK — registry valid</div>
-      <div class="muted">entries: <b>${json.entries.length}</b></div>
-      <div class="muted mono">source: ${escapeHtml(REGISTRY_URL)}</div>`);
-    }catch(e){
-      setRegistryStatus(`<div class="bad">BLOCKED — registry parse error</div>
-      <div class="muted">Fail-closed.</div>
-      <div class="muted mono">${escapeHtml(String(e))}<br>source: ${escapeHtml(REGISTRY_URL)}</div>`);
-    }
-  }
-
-  function openRegistry(){
-    window.open(REGISTRY_URL, "_blank");
-  }
-
-  function resetAll(){
-    document.getElementById("etype").value = "Human";
-    document.getElementById("nick").value = "";
-    document.getElementById("country").value = "";
-    document.getElementById("email").value = "";
-    iprFileJson = "";
-    lastHash = "";
-    registryEntryJson = "";
-    const box = document.getElementById("result");
-    box.style.display = "none";
-    box.innerHTML = "";
-  }
-
-  function setResult(html){
-    const box = document.getElementById("result");
-    box.style.display = "block";
-    box.innerHTML = html;
-  }
-
-  async function generateIPR(){
-    const btn = document.getElementById("btnGen");
-    const entity_type = document.getElementById("etype").value;
-    const nickname = cleanNickname(document.getElementById("nick").value);
-    const country = (document.getElementById("country").value || "").trim();
-    const email = (document.getElementById("email").value || "").trim();
-
-    if(!nickname){
-      alert("Inserisci Nickname / Entity ID");
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = "Generating...";
-
-    try{
-      const timestamp = new Date().toISOString();
-
-      // Base payload (THIS is what gets hashed - deterministic)
-      const basePayload = {
-        proto: "HBCE-IPR-v1",
-        kind: "IPR_RELEASE",
-        entity_type: entity_type,
-        nickname: nickname,
-        country: country || "",
-        email: email || "",
-        timestamp: timestamp
-      };
-
-      const computed = await sha256(JSON.stringify(basePayload));
-      lastHash = computed;
-
-      // Release file = base payload + payload_sha256
-      const releaseFile = {
-        ...basePayload,
-        payload_sha256: computed
-      };
-      iprFileJson = JSON.stringify(releaseFile, null, 2);
-
-      // Registry entry = HASH ONLY (no country, no email)
-      const entry = {
-        nickname: nickname,
-        payload_sha256: computed,
-        timestamp: timestamp
-      };
-      registryEntryJson = JSON.stringify(entry, null, 2);
-
-      const warnEmail = email
-        ? `<div class="warn">WARNING</div>
-           <div class="muted">Email presente nel file cliente. <b>NON deve mai finire nel registry pubblico</b>.</div>
-           <hr>`
-        : "";
-
-      setResult(`
-        <div class="ok">IPR GENERATED</div>
-        <div class="muted">Release file + registry entry pronti.</div>
-        <hr>
-        <div class="mono"><b>timestamp</b>: ${escapeHtml(timestamp)}<br>
-        <b>payload_sha256</b>: ${escapeHtml(computed)}</div>
-        <hr>
-        ${warnEmail}
-        <div class="muted"><b>Download IPR release file</b> (può contenere email)</div>
-        <div class="row">
-          <button onclick="downloadIPR()">Download IPR JSON</button>
-          <button class="secondary" onclick="copyHash()">Copy hash</button>
+          <article class="hbce-card" style="margin:0">
+            <label class="hbce-meta" for="email">Email (optional — sconsigliata se pubblico)</label>
+            <input id="email" class="hbce-input" placeholder="contact@email.com" autocomplete="off" />
+          </article>
         </div>
-        <hr>
-        <div class="muted"><b>NODE READY TO REGISTER</b> (HASH-ONLY)</div>
-        <div class="muted">Append this entry into <code>registry/registry.json → entries[]</code></div>
-        <div class="mono" style="margin-top:10px;">${escapeHtml(registryEntryJson)}</div>
-        <div class="row" style="margin-top:10px;">
-          <button onclick="copyEntry()">Copy registry entry</button>
-          <button class="secondary" onclick="openRegistry()">Open registry</button>
+
+        <div class="hbce-actions" style="margin-top:12px">
+          <button class="hbce-btn hbce-btn--primary" id="btnGen">Generate</button>
+          <button class="hbce-btn" id="btnReset">Reset</button>
         </div>
-      `);
 
-    }catch(e){
-      setResult(`<div class="bad">BLOCKED — FAIL CLOSED</div>
-      <div class="muted">Errore durante generazione.</div>
-      <hr><div class="mono">${escapeHtml(String(e))}</div>`);
-    }finally{
-      btn.disabled = false;
-      btn.textContent = "Generate IPR";
-    }
-  }
+        <div class="hbce-meta" style="margin-top:10px">
+          Registry append location: <code>registry/registry.json → entries[]</code>
+        </div>
 
-  function downloadIPR(){
-    if(!iprFileJson) return;
-    const blob = new Blob([iprFileJson], {type:"application/json"});
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "IPR_" + Date.now() + ".json";
-    a.click();
-  }
+        <div class="hbce-card" style="margin-top:14px" id="out" hidden>
+          <div id="outHtml"></div>
+        </div>
+      </div>
+    </section>
 
-  async function copyEntry(){
-    if(!registryEntryJson) return;
-    await navigator.clipboard.writeText(registryEntryJson);
-    setResult(document.getElementById("result").innerHTML + `<div class="muted" style="margin-top:10px;">Copied registry entry ✅</div>`);
-  }
+    <section class="hbce-section">
+      <div class="hbce-card hbce-card--wide">
+        <div class="hbce-hallmark">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+        <div class="hbce-company">HERMETICUM B.C.E. S.r.l.</div>
+        <div class="hbce-meta">UE-first · audit-first · fail-closed · hash-only</div>
+      </div>
+    </section>
+  </main>
 
-  async function copyHash(){
-    if(!lastHash) return;
-    await navigator.clipboard.writeText(lastHash);
-    setResult(document.getElementById("result").innerHTML + `<div class="muted" style="margin-top:10px;">Copied hash ✅</div>`);
-  }
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 
-  // Run registry check on load
-  checkRegistry();
-</script>
+  <script>
+    (function(){
+      const $ = (id) => document.getElementById(id);
+
+      const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
+
+      const etype = $("etype");
+      const nick = $("nick");
+      const country = $("country");
+      const email = $("email");
+
+      const btnGen = $("btnGen");
+      const btnReset = $("btnReset");
+      const btnReg = $("btn-regcheck");
+
+      const regStatus = $("regStatus");
+      const out = $("out");
+      const outHtml = $("outHtml");
+
+      let iprFileJson = "";
+      let registryEntryJson = "";
+      let lastHash = "";
+
+      function normalize(s){ return (s || "").toString().trim(); }
+      function cleanNickname(s){ return normalize(s).replace(/\s+/g," ").slice(0,80); }
+
+      function escapeHtml(str){
+        return (str || "").replace(/[&<>"']/g, m => ({
+          "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+        }[m]));
+      }
+
+      async function sha256(message){
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2,"0")).join("");
+      }
+
+      function extractEntries(obj){
+        if(Array.isArray(obj)) return obj;
+        if(obj && Array.isArray(obj.entries)) return obj.entries;
+        if(obj && obj.registry && Array.isArray(obj.registry.entries)) return obj.registry.entries;
+        return null;
+      }
+
+      function setReg(msg){ regStatus.textContent = msg; }
+
+      async function checkRegistry(){
+        setReg("Checking registry…");
+        try{
+          const res = await fetch(REGISTRY_URL, { cache:"no-store" });
+          if(!res.ok){ setReg("INVALID — registry non leggibile (HTTP " + res.status + ")"); return false; }
+          const data = await res.json();
+          const arr = extractEntries(data);
+          if(!arr){ setReg("INVALID — schema non riconosciuto (manca entries[])"); return false; }
+          setReg("OK — registry valid · entries: " + arr.length);
+          return true;
+        }catch(e){
+          setReg("INVALID — errore fetch/parse (fail-closed)");
+          return false;
+        }
+      }
+
+      function resetAll(){
+        etype.value = "Human";
+        nick.value = "";
+        country.value = "";
+        email.value = "";
+        iprFileJson = "";
+        registryEntryJson = "";
+        lastHash = "";
+        out.hidden = true;
+        outHtml.innerHTML = "";
+      }
+
+      function show(html){
+        out.hidden = false;
+        outHtml.innerHTML = html;
+      }
+
+      function downloadIPR(){
+        if(!iprFileJson) return;
+        const blob = new Blob([iprFileJson], {type:"application/json"});
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "IPR_" + Date.now() + ".json";
+        a.click();
+      }
+
+      async function copyText(txt){
+        try{
+          await navigator.clipboard.writeText(txt);
+          return true;
+        }catch(e){
+          return false;
+        }
+      }
+
+      async function generate(){
+        const ok = await checkRegistry();
+        if(!ok){
+          show(`<div class="hbce-meta"><strong>BLOCKED</strong> — Registry INVALID. Fail-closed.</div>
+                <div class="hbce-meta" style="margin-top:8px">source: <code>${REGISTRY_URL}</code></div>`);
+          return;
+        }
+
+        const n = cleanNickname(nick.value);
+        if(!n){ alert("Inserisci Nickname / Entity ID"); return; }
+
+        btnGen.disabled = true;
+        btnGen.textContent = "Generating…";
+
+        try{
+          const ts = new Date().toISOString();
+          const basePayload = {
+            proto: "HBCE-IPR-v1",
+            kind: "IPR_RELEASE",
+            entity_type: etype.value,
+            nickname: n,
+            country: normalize(country.value),
+            email: normalize(email.value),
+            timestamp: ts
+          };
+
+          const computed = await sha256(JSON.stringify(basePayload));
+          lastHash = computed;
+
+          const releaseFile = { ...basePayload, payload_sha256: computed };
+          iprFileJson = JSON.stringify(releaseFile, null, 2);
+
+          const entry = { nickname: n, payload_sha256: computed, timestamp: ts };
+          registryEntryJson = JSON.stringify(entry, null, 2);
+
+          const hasEmail = normalize(email.value) ? true : false;
+
+          show(`
+            <div class="hbce-meta"><strong>IPR GENERATED</strong></div>
+            <div class="hbce-meta">timestamp: <code>${escapeHtml(ts)}</code></div>
+            <div class="hbce-meta">payload_sha256: <code>${escapeHtml(computed)}</code></div>
+            ${hasEmail ? `<div class="hbce-meta" style="margin-top:10px"><strong>WARNING</strong> — email presente nel file cliente. Non deve entrare nel registry pubblico.</div>` : ``}
+            <div class="hbce-actions" style="margin-top:12px">
+              <button class="hbce-btn hbce-btn--primary" id="btnDl">Download IPR JSON</button>
+              <button class="hbce-btn" id="btnCopyHash">Copia hash</button>
+            </div>
+
+            <div class="hbce-meta" style="margin-top:14px"><strong>NODE READY TO REGISTER (HASH-ONLY)</strong></div>
+            <div class="hbce-meta">Append in: <code>registry/registry.json → entries[]</code></div>
+            <pre class="hbce-code" style="margin-top:10px">${escapeHtml(registryEntryJson)}</pre>
+            <div class="hbce-actions" style="margin-top:10px">
+              <button class="hbce-btn hbce-btn--primary" id="btnCopyEntry">Copia entry</button>
+              <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Apri Registry viewer</a>
+              <a class="hbce-btn" href="/hermeticum-bce-platform/verify/?h=${encodeURIComponent(computed)}">Apri Verify</a>
+            </div>
+          `);
+
+          $("btnDl").addEventListener("click", downloadIPR);
+          $("btnCopyHash").addEventListener("click", async () => {
+            const ok = await copyText(lastHash);
+            setReg(ok ? "Copiato." : "Copia non disponibile: copia manualmente.");
+          });
+          $("btnCopyEntry").addEventListener("click", async () => {
+            const ok = await copyText(registryEntryJson);
+            setReg(ok ? "Entry copiata." : "Copia non disponibile: copia manualmente.");
+          });
+
+        }catch(e){
+          show(`<div class="hbce-meta"><strong>BLOCKED</strong> — Errore generazione (fail-closed).</div>`);
+        }finally{
+          btnGen.disabled = false;
+          btnGen.textContent = "Generate";
+        }
+      }
+
+      btnGen.addEventListener("click", generate);
+      btnReset.addEventListener("click", resetAll);
+      btnReg.addEventListener("click", checkRegistry);
+
+      checkRegistry();
+    })();
+  </script>
 </body>
 </html>
