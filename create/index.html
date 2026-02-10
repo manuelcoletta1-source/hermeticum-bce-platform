@@ -36,77 +36,81 @@
   }
   button.secondary{background:transparent;border:1px solid var(--border);color:var(--text);font-weight:700;}
   button:hover{opacity:.92;}
-  .status{
-    margin-top:14px;padding:14px;border-radius:10px;border:1px solid var(--border);background:#0f172a;
-  }
-  .ok{color:var(--ok);font-weight:900;}
-  .bad{color:var(--bad);font-weight:900;}
-  .warn{color:var(--warn);font-weight:900;}
-  .muted{color:var(--muted);}
   .mono{
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
     font-size:13px;white-space:pre-wrap;word-break:break-word;
   }
+  .status{margin-top:14px;padding:14px;border-radius:10px;border:1px solid var(--border);background:#0f172a;}
+  .ok{color:var(--ok);font-weight:900;}
+  .bad{color:var(--bad);font-weight:900;}
+  .warn{color:var(--warn);font-weight:900;}
+  .muted{color:var(--muted);}
   hr{border:0;border-top:1px solid #2a3441;margin:12px 0;}
   .footer{margin-top:50px;opacity:.65;font-size:13px;}
+  code{color:#cfe9ff;}
 </style>
 </head>
 
 <body>
-<div class="container">
-  <span class="badge">UE-first · Audit-first · Fail-closed · Hash-only registry</span>
+  <div class="container">
+    <span class="badge">UE-first · Audit-first · Fail-closed · Hash-only</span>
 
-  <h1>Create Identity Primary Record</h1>
-  <p>Genera un <b>IPR release file</b> per il cliente + una <b>entry HASH-ONLY</b> pronta da appendere nel registry pubblico (<code>registry/registry.json → entries[]</code>).</p>
+    <h1>Create Identity Primary Record</h1>
+    <p>
+      Genera un <b>IPR release file</b> per il cliente + una <b>entry HASH-ONLY</b> pronta da appendere nel registry pubblico
+      (<code>registry/registry.json → entries[]</code>).
+    </p>
 
-  <!-- Registry Health -->
-  <div class="panel">
-    <h2 style="margin:0 0 10px;">Registry status</h2>
-    <p class="muted">Controllo automatico del registry canonico. Se il registry è invalido → la piattaforma è in fail-closed.</p>
-    <div id="registryStatus" class="status" style="margin-top:10px;"></div>
-    <div class="row">
-      <button class="secondary" onclick="checkRegistry()">Re-check registry</button>
-      <button class="secondary" onclick="openRegistry()">Open registry</button>
-    </div>
-  </div>
+    <!-- Registry Health -->
+    <div class="panel">
+      <h2 style="margin:0 0 10px;">Registry status</h2>
+      <p class="muted">Controllo automatico del registry canonico. Se invalido → fail-closed.</p>
 
-  <!-- Create Form -->
-  <div class="panel">
-    <h2 style="margin:0 0 10px;">IPR form</h2>
+      <div id="registryStatus" class="status" style="margin-top:10px;"></div>
 
-    <label for="etype">Entity type</label>
-    <select id="etype">
-      <option>Human</option>
-      <option>Company</option>
-      <option>AI System</option>
-      <option>Robot</option>
-      <option>Infrastructure Node</option>
-    </select>
-
-    <label for="nick">Nickname / Entity ID</label>
-    <input id="nick" placeholder="Esempio: ManuHell / ACME_SRL / AI_NODE_001" />
-
-    <label for="country">Country (optional)</label>
-    <input id="country" placeholder="Esempio: IT" />
-
-    <label for="email">Email (optional — sconsigliata se l’IPR deve essere pubblico)</label>
-    <input id="email" placeholder="contact@email.com" />
-
-    <div class="row">
-      <button id="btnGen" onclick="generateIPR()">Generate IPR</button>
-      <button class="secondary" onclick="resetAll()">Reset</button>
+      <div class="row">
+        <button class="secondary" onclick="checkRegistry()">Re-check registry</button>
+        <button class="secondary" onclick="openRegistry()">Open registry</button>
+      </div>
     </div>
 
-    <div id="result" class="status" style="display:none;"></div>
-  </div>
+    <!-- Create Form -->
+    <div class="panel">
+      <h2 style="margin:0 0 10px;">IPR form</h2>
 
-  <div class="footer">
-    HERMETICUM B.C.E. S.r.l. — Operational Identity Infrastructure
+      <label for="etype">Entity type</label>
+      <select id="etype">
+        <option>Human</option>
+        <option>Company</option>
+        <option>AI System</option>
+        <option>Robot</option>
+        <option>Infrastructure Node</option>
+      </select>
+
+      <label for="nick">Nickname / Entity ID</label>
+      <input id="nick" placeholder="Esempio: ManuHell / ACME_SRL / AI_NODE_001" />
+
+      <label for="country">Country (optional)</label>
+      <input id="country" placeholder="Esempio: IT" />
+
+      <label for="email">Email (optional — sconsigliata se l’IPR deve essere pubblico)</label>
+      <input id="email" placeholder="contact@email.com" />
+
+      <div class="row">
+        <button id="btnGen" onclick="generateIPR()">Generate IPR</button>
+        <button class="secondary" onclick="resetAll()">Reset</button>
+      </div>
+
+      <div id="result" class="status" style="display:none;"></div>
+    </div>
+
+    <div class="footer">
+      HERMETICUM B.C.E. S.r.l. — Operational Identity Infrastructure
+    </div>
   </div>
-</div>
 
 <script>
-  // Canonical registry path
+  // /create/ → registry is one level up
   const REGISTRY_URL = "../registry/registry.json";
 
   let iprFileJson = "";
@@ -139,23 +143,23 @@
       const res = await fetch(REGISTRY_URL, { cache:"no-store" });
       if(!res.ok){
         setRegistryStatus(`<div class="bad">BLOCKED — registry not reachable (HTTP ${res.status})</div>
-        <div class="muted mono">source: ${REGISTRY_URL}</div>`);
+        <div class="muted mono">source: ${escapeHtml(REGISTRY_URL)}</div>`);
         return;
       }
       const json = await res.json();
       if(!json || !Array.isArray(json.entries)){
         setRegistryStatus(`<div class="bad">BLOCKED — invalid registry format</div>
         <div class="muted">Manca <b>entries[]</b>. Fail-closed.</div>
-        <div class="muted mono">source: ${REGISTRY_URL}</div>`);
+        <div class="muted mono">source: ${escapeHtml(REGISTRY_URL)}</div>`);
         return;
       }
       setRegistryStatus(`<div class="ok">OK — registry valid</div>
       <div class="muted">entries: <b>${json.entries.length}</b></div>
-      <div class="muted mono">source: ${REGISTRY_URL}</div>`);
+      <div class="muted mono">source: ${escapeHtml(REGISTRY_URL)}</div>`);
     }catch(e){
       setRegistryStatus(`<div class="bad">BLOCKED — registry parse error</div>
       <div class="muted">Fail-closed.</div>
-      <div class="muted mono">${escapeHtml(String(e))}<br>source: ${REGISTRY_URL}</div>`);
+      <div class="muted mono">${escapeHtml(String(e))}<br>source: ${escapeHtml(REGISTRY_URL)}</div>`);
     }
   }
 
@@ -219,7 +223,6 @@
         ...basePayload,
         payload_sha256: computed
       };
-
       iprFileJson = JSON.stringify(releaseFile, null, 2);
 
       // Registry entry = HASH ONLY (no country, no email)
@@ -232,7 +235,7 @@
 
       const warnEmail = email
         ? `<div class="warn">WARNING</div>
-           <div class="muted">Hai inserito una email. OK nel file cliente, ma <b>NON deve mai finire nel registry pubblico</b>.</div>
+           <div class="muted">Email presente nel file cliente. <b>NON deve mai finire nel registry pubblico</b>.</div>
            <hr>`
         : "";
 
@@ -281,7 +284,6 @@
   async function copyEntry(){
     if(!registryEntryJson) return;
     await navigator.clipboard.writeText(registryEntryJson);
-    // small visual feedback
     setResult(document.getElementById("result").innerHTML + `<div class="muted" style="margin-top:10px;">Copied registry entry ✅</div>`);
   }
 
