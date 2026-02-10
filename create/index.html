@@ -7,158 +7,250 @@
 
 <style>
 body{
-font-family:Arial,Helvetica,sans-serif;
-background:#0b0f14;
-color:#e8eef7;
-margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#0b0f14;
+  color:#e8eef7;
+  margin:0;
 }
-
 .container{
-max-width:900px;
-margin:auto;
-padding:40px 20px;
+  max-width:900px;
+  margin:auto;
+  padding:40px 20px;
 }
-
-h1{
-font-size:32px;
-margin-bottom:10px;
+h1{ font-size:32px; margin-bottom:10px; }
+h2{ margin-top:34px; }
+p{ line-height:1.5; }
+input, select, textarea{
+  width:100%;
+  padding:12px;
+  margin-top:8px;
+  margin-bottom:18px;
+  background:#111827;
+  border:1px solid #2a3441;
+  color:#fff;
+  border-radius:6px;
+  box-sizing:border-box;
 }
-
-h2{
-margin-top:40px;
-}
-
-input, select{
-width:100%;
-padding:12px;
-margin-top:8px;
-margin-bottom:20px;
-background:#111827;
-border:1px solid #2a3441;
-color:#fff;
-border-radius:6px;
-}
-
 button{
-padding:14px 22px;
-background:#00ffd5;
-border:none;
-color:#000;
-font-weight:bold;
-cursor:pointer;
-border-radius:6px;
+  padding:14px 22px;
+  background:#00ffd5;
+  border:none;
+  color:#000;
+  font-weight:bold;
+  cursor:pointer;
+  border-radius:6px;
 }
-
-button:hover{
-opacity:0.9;
+button:hover{ opacity:0.9; }
+.secondary{
+  background:#1f2937;
+  color:#e8eef7;
+  border:1px solid #2a3441;
 }
-
 .box{
-background:#111827;
-padding:20px;
-margin-top:30px;
-border-radius:8px;
-border:1px solid #2a3441;
+  background:#111827;
+  padding:20px;
+  margin-top:26px;
+  border-radius:8px;
+  border:1px solid #2a3441;
 }
-
+.mono{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size:13px;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+.row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.row > button{
+  flex: 1 1 220px;
+}
+.badge{
+  display:inline-block;
+  padding:4px 10px;
+  border:1px solid #2a3441;
+  border-radius:999px;
+  font-size:12px;
+  opacity:0.85;
+}
+hr{
+  border:0;
+  border-top:1px solid #2a3441;
+  margin:18px 0;
+}
 .footer{
-margin-top:60px;
-opacity:0.6;
-font-size:14px;
+  margin-top:60px;
+  opacity:0.6;
+  font-size:14px;
 }
+small{ opacity:0.75; }
 </style>
 </head>
 
 <body>
-
 <div class="container">
 
-<h1>Create Identity Primary Record</h1>
-<p>Activate a verifiable operational identity for human, company or AI system.</p>
+  <span class="badge">UE-first · Audit-first · Fail-closed · Hash-only</span>
 
-<h2>1. Entity Type</h2>
-<select id="type">
-<option>Human</option>
-<option>Company</option>
-<option>AI System</option>
-<option>Robot</option>
-<option>Infrastructure Node</option>
-</select>
+  <h1>Create Identity Primary Record</h1>
+  <p>Generate an <b>IPR release file</b> + a <b>registry append block</b> (copy/paste) using SHA-256 on the client side.</p>
 
-<h2>2. Name / Entity ID</h2>
-<input id="name" placeholder="Enter name or entity identifier">
+  <h2>1. Entity Type</h2>
+  <select id="type">
+    <option>Human</option>
+    <option>Company</option>
+    <option>AI System</option>
+    <option>Robot</option>
+    <option>Infrastructure Node</option>
+  </select>
 
-<h2>3. Country</h2>
-<input id="country" placeholder="EU Country">
+  <h2>2. Nickname / Entity ID</h2>
+  <input id="name" placeholder="Example: ManuHell / ACME_SRL / AI_NODE_001">
 
-<h2>4. Optional Email</h2>
-<input id="email" placeholder="contact@email.com">
+  <h2>3. Country (optional)</h2>
+  <input id="country" placeholder="Example: IT">
 
-<button onclick="generateIPR()">Generate IPR</button>
+  <h2>4. Optional Email (not recommended for public registry)</h2>
+  <input id="email" placeholder="contact@email.com">
 
-<div class="box" id="result" style="display:none;">
-<h2>IPR Generated</h2>
-<p><b>Timestamp:</b> <span id="timestamp"></span></p>
-<p><b>SHA256:</b></p>
-<p id="hash"></p>
+  <div class="row">
+    <button onclick="generateIPR()">Generate IPR</button>
+    <button class="secondary" onclick="resetForm()">Reset</button>
+  </div>
 
-<button onclick="downloadIPR()">Download IPR File</button>
-</div>
+  <div class="box" id="result" style="display:none;">
+    <h2>IPR Generated</h2>
+    <p><b>Timestamp:</b> <span id="timestamp"></span></p>
+    <p><b>Payload SHA256:</b></p>
+    <div class="mono" id="hash"></div>
 
-<div class="footer">
-HERMETICUM B.C.E. — Operational Identity Infrastructure
-</div>
+    <hr>
+
+    <h2>Download IPR File</h2>
+    <p><small>This JSON file is the client release. The registry should store only hash + nickname + timestamp.</small></p>
+    <button onclick="downloadIPR()">Download IPR JSON</button>
+
+    <hr>
+
+    <h2>NODE READY TO REGISTER</h2>
+    <p><small>Copy this block and append to <b>registry.json</b> (append-only).</small></p>
+    <div class="mono" id="registryBlock"></div>
+
+    <div class="row">
+      <button onclick="copyRegistry()">Copy registry block</button>
+      <button class="secondary" onclick="copyHash()">Copy hash</button>
+    </div>
+    <p id="copyStatus" style="margin-top:10px; opacity:0.8;"></p>
+  </div>
+
+  <div class="footer">
+    HERMETICUM B.C.E. S.r.l. — Operational Identity Infrastructure
+  </div>
 
 </div>
 
 <script>
 let iprData = "";
+let registryEntry = "";
+let lastHash = "";
 
 async function sha256(message){
-const msgBuffer = new TextEncoder().encode(message);
-const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-const hashArray = Array.from(new Uint8Array(hashBuffer));
-return hashArray.map(b=>b.toString(16).padStart(2,'0')).join('');
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function cleanNickname(s){
+  return (s || "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .slice(0, 80);
+}
+
+function resetForm(){
+  document.getElementById("type").value = "Human";
+  document.getElementById("name").value = "";
+  document.getElementById("country").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("result").style.display = "none";
+  document.getElementById("copyStatus").innerText = "";
+  iprData = "";
+  registryEntry = "";
+  lastHash = "";
 }
 
 async function generateIPR(){
+  const type = document.getElementById("type").value;
+  const nameRaw = document.getElementById("name").value;
+  const name = cleanNickname(nameRaw);
+  const country = document.getElementById("country").value.trim();
+  const email = document.getElementById("email").value.trim();
 
-const type=document.getElementById("type").value;
-const name=document.getElementById("name").value;
-const country=document.getElementById("country").value;
-const email=document.getElementById("email").value;
+  if(!name){
+    alert("Insert Nickname / Entity ID");
+    return;
+  }
 
-if(!name){alert("Insert name");return;}
+  const timestamp = new Date().toISOString();
 
-const timestamp=new Date().toISOString();
+  // Payload (client release). NOTE: registry should NOT include personal data.
+  const payload = {
+    proto: "HBCE-IPR-v1",
+    kind: "IPR_RELEASE",
+    entity_type: type,
+    nickname: name,
+    country: country || "",
+    email: email || "",
+    timestamp: timestamp
+  };
 
-const payload={
-proto:"HBCE-IPR-v1",
-type:type,
-name:name,
-country:country,
-email:email,
-timestamp:timestamp
-};
+  // Hash BEFORE adding hash field (deterministic)
+  const payloadString = JSON.stringify(payload);
+  const hash = await sha256(payloadString);
 
-const payloadString=JSON.stringify(payload);
-const hash=await sha256(payloadString);
+  payload.payload_sha256 = hash;
 
-payload.sha256=hash;
+  iprData = JSON.stringify(payload, null, 2);
+  lastHash = hash;
 
-iprData=JSON.stringify(payload,null,2);
+  // Registry append block (hash-only)
+  const entryObj = {
+    nickname: name,
+    payload_sha256: hash,
+    timestamp: timestamp
+  };
+  registryEntry = JSON.stringify(entryObj, null, 2);
 
-document.getElementById("timestamp").innerText=timestamp;
-document.getElementById("hash").innerText=hash;
-document.getElementById("result").style.display="block";
+  document.getElementById("timestamp").innerText = timestamp;
+  document.getElementById("hash").innerText = hash;
+  document.getElementById("registryBlock").innerText = registryEntry;
+  document.getElementById("copyStatus").innerText = "";
+
+  document.getElementById("result").style.display = "block";
 }
 
 function downloadIPR(){
-const blob=new Blob([iprData],{type:"application/json"});
-const a=document.createElement("a");
-a.href=URL.createObjectURL(blob);
-a.download="IPR_"+Date.now()+".json";
-a.click();
+  if(!iprData){ return; }
+  const blob = new Blob([iprData], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "IPR_" + Date.now() + ".json";
+  a.click();
+}
+
+async function copyRegistry(){
+  if(!registryEntry){ return; }
+  await navigator.clipboard.writeText(registryEntry);
+  document.getElementById("copyStatus").innerText = "Copied registry block ✅";
+}
+
+async function copyHash(){
+  if(!lastHash){ return; }
+  await navigator.clipboard.writeText(lastHash);
+  document.getElementById("copyStatus").innerText = "Copied hash ✅";
 }
 </script>
 
