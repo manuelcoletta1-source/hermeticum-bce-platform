@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Operator Playbook — Emissione & Certificazione IPR</title>
+  <meta name="description" content="Playbook Operatore IPR: procedura E2E (create/receipt/registry/verify), regole append-only, anti-errori JSON, fail-closed." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">OPERATOR PLAYBOOK · E2E · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Operator Playbook</h1>
+      <p class="hbce-hero__lead">
+        Procedura ufficiale per emissione/certificazione IPR in HBCE.
+        Obiettivo: passare da <strong>hash</strong> a <strong>opponibilità nel tempo</strong> tramite registry append-only e verify pubblico.
+      </p>
+      <div class="hbce-actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/operator-console/">OPERATOR CONSOLE</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/governance/">GOVERNANCE</a>
+      </div>
+      <p class="hbce-note">
+        Regola sistema: se registry è assente o JSON invalido → <strong>INVALID</strong> (fail-closed).
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Principi non negoziabili</h2>
+      <div class="hbce-card">
+        <ul class="hbce-list">
+          <li><strong>Append-only</strong>: mai cancellare, mai riscrivere il passato</li>
+          <li><strong>Hash-only</strong>: pubblico = nickname + hash + timestamp</li>
+          <li><strong>No custody</strong>: nessun dato personale nel registry pubblico</li>
+          <li><strong>Fail-closed</strong>: se non verificabile → blocco</li>
+          <li><strong>Audit-first</strong>: tutto deve essere ricostruibile a posteriori</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Procedura E2E (4 passaggi)</h2>
+
+      <div class="hbce-card">
+        <h3 class="hbce-card__title">1) CREATE (cliente)</h3>
+        <p class="hbce-card__text">
+          Il cliente genera localmente file + hash. Nessun invio server.
+        </p>
+        <ul class="hbce-list">
+          <li>output: <code>IPR_RELEASE.json</code></li>
+          <li>output: <code>payload_sha256</code></li>
+        </ul>
+        <div class="hbce-actions">
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/">OPEN CREATE</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/create/wizard/">OPEN WIZARD</a>
+        </div>
+      </div>
+
+      <div class="hbce-card" style="margin-top:1rem;">
+        <h3 class="hbce-card__title">2) CERTIFIED / REQUEST (post-pagamento)</h3>
+        <p class="hbce-card__text">
+          La certificazione è il passaggio operativo: richiesta → controllo → registrazione.
+          Qui si rilascia anche il documento “issuer certificate / ricevuta”.
+        </p>
+        <div class="hbce-actions">
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/certified/">OPEN CERTIFIED</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/pricing/">PRICING</a>
+        </div>
+      </div>
+
+      <div class="hbce-card" style="margin-top:1rem;">
+        <h3 class="hbce-card__title">3) REGISTRY APPEND (operatore)</h3>
+        <p class="hbce-card__text">
+          L’operatore appende una entry in <code>registry/registry.json</code>, dentro <code>entries[]</code>.
+          Solo dopo l’append, VERIFY può tornare VALID.
+        </p>
+
+        <p class="hbce-note">
+          Entry valida = oggetto singolo con 3 campi: nickname, payload_sha256, timestamp.
+        </p>
+
+        <pre class="hbce-card__text" style="white-space:pre-wrap;">{
+  "nickname": "ESEMPIO",
+  "payload_sha256": "64-hex...",
+  "timestamp": "2026-02-11T18:45:00.000Z"
+}</pre>
+
+        <div class="hbce-actions">
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/registry/">OPEN REGISTRY</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/operator-console/">OPEN CONSOLE</a>
+        </div>
+      </div>
+
+      <div class="hbce-card" style="margin-top:1rem;">
+        <h3 class="hbce-card__title">4) VERIFY (pubblico)</h3>
+        <p class="hbce-card__text">
+          Il sistema confronta hash del file e match nel registry. Se non trova match → INVALID.
+        </p>
+        <div class="hbce-actions">
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">OPEN VERIFY</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Errori tipici (che rompono tutto)</h2>
+      <div class="hbce-card">
+        <ul class="hbce-list">
+          <li><strong>Doppie graffe</strong> dentro entries: <code>{ { ... } }</code> → JSON invalido</li>
+          <li><strong>Virgole</strong> mancanti o in eccesso → JSON invalido</li>
+          <li><strong>Entry fuori da entries[]</strong> → registry incoerente</li>
+          <li><strong>payload_sha256 non 64 hex</strong> → mismatch / invalid</li>
+          <li><strong>Nickname vuoto</strong> → entry inutile (audit degrade)</li>
+          <li><strong>Modificare vecchie entry</strong> → viola append-only (audit fail)</li>
+        </ul>
+        <p class="hbce-note">
+          Se il registry è invalido: VERIFY entra in fail-closed e torna INVALID anche se “la hash è giusta”.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Checklist operatore (prima del commit)</h2>
+      <div class="hbce-card">
+        <ul class="hbce-list">
+          <li>Ho incollato <strong>solo</strong> l’oggetto entry dentro <code>entries[]</code></li>
+          <li>Il file <code>registry.json</code> è JSON valido</li>
+          <li>Non ho cancellato o riscritto entry esistenti</li>
+          <li>Hash = 64 caratteri hex (0-9 a-f)</li>
+          <li>Timestamp ISO valido</li>
+          <li>Dopo push, VERIFY trova match</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Link rapidi</h2>
+      <div class="hbce-card">
+        <div class="hbce-actions">
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/operator-console/">OPERATOR CONSOLE</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/operator-license/">OPERATOR LICENSE</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/lavora-con-noi/">LAVORA CON NOI</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+</body>
+</html>
