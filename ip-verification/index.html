@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IP Verification — Hash-only</title>
+  <meta name="description" content="IP verification hash-only (GDPR-min). Rilevamento IP client-side, hashing locale, export receipt. Nessuna custodia, nessuna pubblicazione IP in chiaro." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">IP VERIFICATION · HASH-ONLY · GDPR-MIN</div>
+      <h1 class="hbce-hero__title">IP Verification (hash-only)</h1>
+      <p class="hbce-hero__lead">
+        Questa pagina genera una prova <strong>hash-only</strong> della presenza di rete.
+        L’IP non viene salvato né pubblicato: viene letto dal client e hashato localmente.
+      </p>
+      <p class="hbce-note">
+        No custody: Hermeticum non conserva l’IP. Output: hash + timestamp + receipt locale.
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Come funziona</h2>
+      <div class="hbce-grid hbce-grid--3">
+        <div class="hbce-card">
+          <h3 class="hbce-h3">1) Detect</h3>
+          <p class="hbce-card__text">Rileva l’IP pubblico dal browser (client-side).</p>
+        </div>
+        <div class="hbce-card">
+          <h3 class="hbce-h3">2) Hash</h3>
+          <p class="hbce-card__text">Calcola SHA-256 dell’IP (e opzionale salt locale).</p>
+        </div>
+        <div class="hbce-card">
+          <h3 class="hbce-h3">3) Receipt</h3>
+          <p class="hbce-card__text">Esporta un receipt JSON (local-first) per audit.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Genera prova</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Modalità consigliata: <strong>hash-only</strong> con salt (opzionale) per ridurre correlabilità.
+        </p>
+
+        <div class="hbce-grid hbce-grid--2" style="margin-top:.75rem;">
+          <div class="hbce-card">
+            <h3 class="hbce-h3">Salt (opzionale)</h3>
+            <p class="hbce-card__text">Testo libero (resta locale). Se vuoto → hash solo IP.</p>
+            <input id="salt" class="hbce-input" type="text" placeholder="salt locale (opzionale)" />
+          </div>
+
+          <div class="hbce-card">
+            <h3 class="hbce-h3">Collega a IPR (opzionale)</h3>
+            <p class="hbce-card__text">Inserisci payload_sha256 IPR per legare la prova a un’identità operativa.</p>
+            <input id="iprHash" class="hbce-input" type="text" placeholder="IPR payload_sha256 (opzionale)" />
+          </div>
+        </div>
+
+        <div class="hbce-actions" style="margin-top:1rem;">
+          <button class="hbce-btn hbce-btn--primary" id="btnDetect">DETECT + HASH</button>
+          <button class="hbce-btn" id="btnDownload" disabled>DOWNLOAD RECEIPT</button>
+        </div>
+
+        <div class="hbce-card" style="margin-top:1rem;">
+          <h3 class="hbce-h3">Output</h3>
+          <p class="hbce-card__text">
+            <strong>ip_hash_sha256</strong>: <span id="outHash">—</span><br/>
+            <strong>timestamp</strong>: <span id="outTs">—</span>
+          </p>
+          <p class="hbce-note">
+            Nota: questo receipt è “client observation”. La firma issuer (ED25519) richiede un nodo Hermeticum (server) o una procedura di firma offline.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Link operativi</h2>
+      <div class="hbce-grid hbce-grid--3">
+        <div class="hbce-card">
+          <h3 class="hbce-h3">Verify IPR</h3>
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">OPEN</a>
+        </div>
+        <div class="hbce-card">
+          <h3 class="hbce-h3">Registry</h3>
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/registry/">OPEN</a>
+        </div>
+        <div class="hbce-card">
+          <h3 class="hbce-h3">Governance</h3>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/governance/">OPEN</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Issuer</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Hallmark: <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong><br/>
+          Società: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong>
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <script>
+    // Minimal SHA-256 helper (browser)
+    async function sha256Hex(str) {
+      const data = new TextEncoder().encode(str);
+      const hash = await crypto.subtle.digest('SHA-256', data);
+      return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // Detect public IP via ipify (client-side). No storage.
+    async function detectIp() {
+      const r = await fetch('https://api.ipify.org?format=json', { cache: 'no-store' });
+      if (!r.ok) throw new Error('IP detect failed');
+      const j = await r.json();
+      return j.ip;
+    }
+
+    let lastReceipt = null;
+
+    document.getElementById('btnDetect').addEventListener('click', async () => {
+      try {
+        const salt = (document.getElementById('salt').value || '').trim();
+        const iprHash = (document.getElementById('iprHash').value || '').trim();
+        const ip = await detectIp();
+        const ts = new Date().toISOString();
+
+        // hash-only: ip + optional salt + optional ipr binding
+        const material = `ip=${ip}|salt=${salt}|ipr=${iprHash}`;
+        const ip_hash_sha256 = await sha256Hex(material);
+
+        lastReceipt = {
+          proto: "HBCE-IP-OBS-v1",
+          kind: "IP_HASH_OBSERVATION_RECEIPT",
+          issuer: "HERMETICUM B.C.E. S.r.l.",
+          jurisdiction: "EU",
+          policy: ["GDPR_MIN", "HASH_ONLY", "NO_IDENTITY_CUSTODY", "LOCAL_FIRST"],
+          subject: {
+            ip_hash_sha256: ip_hash_sha256,
+            ipr_payload_sha256: iprHash || null
+          },
+          timestamp: ts,
+          note: "Client-side observation. IP is not stored; only hash is produced."
+        };
+
+        document.getElementById('outHash').textContent = ip_hash_sha256;
+        document.getElementById('outTs').textContent = ts;
+        document.getElementById('btnDownload').disabled = false;
+
+      } catch (e) {
+        document.getElementById('outHash').textContent = 'ERROR';
+        document.getElementById('outTs').textContent = (e && e.message) ? e.message : 'failed';
+        document.getElementById('btnDownload').disabled = true;
+        lastReceipt = null;
+      }
+    });
+
+    document.getElementById('btnDownload').addEventListener('click', () => {
+      if (!lastReceipt) return;
+      const blob = new Blob([JSON.stringify(lastReceipt, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'IP_VERIFICATION_RECEIPT.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(a.href);
+    });
+  </script>
+</body>
+</html>
