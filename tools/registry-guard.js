@@ -1,14 +1,10 @@
 /**
- * HBCE Registry Guard — fail-closed + metrological time rules
+ * HBCE Registry Guard — fail-closed + metrological time rules (HARD)
  * - Validates registry/registry.json schema
- * - Enforces append-only semantics on PRs:
- *   head.entries must start with base.entries (same order, same objects)
- *   only appends are allowed (no edits, deletes, reorders)
- * - Enforces time monotonicity:
- *   timestamps must be non-decreasing across entries
- *   appended timestamps must be >= last base timestamp
- * - Enforces future drift guard (soft):
- *   timestamp must not be more than 10 minutes in the future vs CI time
+ * - Enforces append-only semantics on PRs
+ * - Enforces time monotonicity (non-decreasing timestamps)
+ * - Enforces future drift guard (10 min)
+ * - Enforces realtime issuance window for appended entries (±2 min vs CI time)
  */
 
 const fs = require("fs");
@@ -16,7 +12,9 @@ const path = require("path");
 const { execSync } = require("child_process");
 
 const REG_PATH = "registry/registry.json";
+
 const FUTURE_DRIFT_MS = 10 * 60 * 1000; // 10 minutes
+const REALTIME_WINDOW_MS = 2 * 60 * 1000; // ±2 minutes for appended entries
 
 function die(msg) {
   console.error("\n[REGISTRY-GUARD] BLOCKED ❌");
@@ -80,26 +78,18 @@ function validateSchema(registry, label) {
   registry.entries.forEach((raw, idx) => {
     const e = normalizeEntry(raw);
 
-    if (!e.nickname || e.nickname.length < 2) {
-      die(`[${label}] entries[${idx}] nickname mancante/troppo corto.`);
-    }
-    if (!isSha256(e.payload_sha256)) {
-      die(`[${label}] entries[${idx}] payload_sha256 non valido (atteso sha256 hex lowercase 64).`);
-    }
-    if (!isIsoUtc(e.timestamp)) {
-      die(`[${label}] entries[${idx}] timestamp non valido (atteso ISO UTC con Z).`);
-    }
+    if (!e.nickname || e.nickname.length < 2) die(`[${label}] entries[${idx}] nickname mancante/troppo corto.`);
+    if (!isSha256(e.payload_sha256)) die(`[${label}] entries[${idx}] payload_sha256 non valido (sha256 hex 64 lowercase).`);
+    if (!isIsoUtc(e.timestamp)) die(`[${label}] entries[${idx}] timestamp non valido (ISO UTC con Z).`);
 
     const t = parseUtc(e.timestamp);
-    if (t === null) {
-      die(`[${label}] entries[${idx}] timestamp non parsabile.`);
-    }
+    if (t === null) die(`[${label}] entries[${idx}] timestamp non parsabile.`);
 
-    // time monotonicity across whole file
+    // monotonic timestamps across whole file
     if (prevTime !== null && t < prevTime) {
       die(
         `[${label}] ordine temporale violato: entries[${idx}] (${e.timestamp}) < entry precedente.\n` +
-        `Regola: timestamp non-decrescenti (metrological monotonic time).`
+        `Regola: timestamp non-decrescenti.`
       );
     }
     prevTime = t;
@@ -115,9 +105,7 @@ function validateSchema(registry, label) {
 
     // uniqueness: nickname+hash must not repeat
     const key = `${e.nickname}::${e.payload_sha256}`;
-    if (seen.has(key)) {
-      die(`[${label}] duplicato rilevato: nickname+hash già presente (entries[${idx}]).`);
-    }
+    if (seen.has(key)) die(`[${label}] duplicato rilevato: nickname+hash già presente (entries[${idx}]).`);
     seen.add(key);
   });
 
@@ -125,25 +113,19 @@ function validateSchema(registry, label) {
 }
 
 function entriesEqual(a, b) {
-  return (
-    a.nickname === b.nickname &&
-    a.payload_sha256 === b.payload_sha256 &&
-    a.timestamp === b.timestamp
-  );
+  return a.nickname === b.nickname && a.payload_sha256 === b.payload_sha256 && a.timestamp === b.timestamp;
 }
 
 function enforceAppendOnly(baseRegistry, headRegistry) {
   const base = baseRegistry.entries.map(normalizeEntry);
   const head = headRegistry.entries.map(normalizeEntry);
 
-  if (head.length < base.length) {
-    die(`Append-only violato: HEAD ha meno entries di BASE (base=${base.length}, head=${head.length}).`);
-  }
+  if (head.length < base.length) die(`Append-only violato: HEAD < BASE (base=${base.length}, head=${head.length}).`);
 
   for (let i = 0; i < base.length; i++) {
     if (!entriesEqual(base[i], head[i])) {
       die(
-        `Append-only violato: entry modificata o riordinata a index=${i}.\n` +
+        `Append-only violato: entry modificata/riordinata a index=${i}.\n` +
         `BASE: ${JSON.stringify(base[i])}\n` +
         `HEAD: ${JSON.stringify(head[i])}\n` +
         `Sono consentite solo aggiunte in coda.`
@@ -166,8 +148,26 @@ function enforceAppendedTimeNotBeforeBaseLast(baseRegistry, appendedEntries) {
     if (t === null) die(`Timestamp appended non parsabile: ${e.timestamp}`);
     if (t < lastBaseTime) {
       die(
-        `Metrological rule violata: appended[${k}] timestamp (${e.timestamp}) < ultimo timestamp BASE (${lastBase.timestamp}).\n` +
-        `Regola: nuove entry non possono retrodatare la sequenza temporale del registry.`
+        `Metrological rule violata: appended[${k}] (${e.timestamp}) < ultimo BASE (${lastBase.timestamp}).\n` +
+        `Regola: nuove entry non possono retrodatare la sequenza.`
+      );
+    }
+  });
+}
+
+function enforceRealtimeWindowForAppends(appendedEntries) {
+  const now = Date.now();
+
+  appendedEntries.forEach((e, k) => {
+    const t = parseUtc(e.timestamp);
+    if (t === null) die(`Timestamp appended non parsabile: ${e.timestamp}`);
+
+    const delta = Math.abs(t - now);
+    if (delta > REALTIME_WINDOW_MS) {
+      die(
+        `Realtime window violata: appended[${k}] timestamp (${e.timestamp}) è fuori finestra.\n` +
+        `Regola HARD: |timestamp - now| <= ${Math.floor(REALTIME_WINDOW_MS / 60000)} minuti.\n` +
+        `Questo impedisce retrodatazioni/postdatazioni sulle nuove entry.`
       );
     }
   });
@@ -183,22 +183,20 @@ function main() {
   if (isPR) {
     const baseSha = process.env.PR_BASE_SHA;
     const headSha = process.env.PR_HEAD_SHA;
-
-    if (!baseSha || !headSha) {
-      die("PR_BASE_SHA / PR_HEAD_SHA mancanti. Workflow non sta leggendo l'evento PR correttamente.");
-    }
+    if (!baseSha || !headSha) die("PR_BASE_SHA / PR_HEAD_SHA mancanti.");
 
     const baseReg = readJsonAtRef(baseSha, REG_PATH);
     validateSchema(baseReg, "BASE");
 
     const appended = enforceAppendOnly(baseReg, headWorking);
     enforceAppendedTimeNotBeforeBaseLast(baseReg, appended);
+    enforceRealtimeWindowForAppends(appended);
 
-    ok(`Append-only OK + time monotonicity OK. base=${baseReg.entries.length}, head=${headWorking.entries.length}, appended=${appended.length}.`);
+    ok(`Append-only OK + monotonic time OK + realtime window OK. appended=${appended.length}.`);
     return;
   }
 
-  ok(`Schema OK + time monotonicity OK su ${REG_PATH}. entries=${headWorking.entries.length}.`);
+  ok(`Schema OK + monotonic time OK su ${REG_PATH}. entries=${headWorking.entries.length}.`);
 }
 
 main();
