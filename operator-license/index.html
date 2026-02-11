@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Licenza Operatore IPR — Application</title>
+  <meta name="description" content="Application locale per Licenza Operatore IPR: genera packet JSON, SHA-256 e entry per registry. Hash-only, no-custody, UE-first." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">OPERATOR LICENSE · APPLICATION · LOCAL-FIRST</div>
+      <h1 class="hbce-hero__title">Licenza Operatore IPR</h1>
+      <p class="hbce-hero__lead">
+        Questa pagina genera un <strong>Application Packet</strong> localmente (nel tuo browser).
+        Nessun invio server, nessuna custodia dati.  
+        Produci: <strong>packet.json</strong> + <strong>SHA-256</strong> + <strong>entry per registry</strong>.
+      </p>
+      <div class="hbce-actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/lavora-con-noi/">LAVORA CON NOI</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+      </div>
+      <p class="hbce-note">
+        Policy: hash-only, append-only, fail-closed, no identity custody, UE-first.
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Dati minimi (non pubblici)</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Questi dati restano nel tuo packet. Nel registry pubblico andrà solo <strong>nickname + hash + timestamp</strong>.
+        </p>
+
+        <div class="hbce-grid" style="grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: .75rem;">
+          <div>
+            <label class="hbce-label">Nome e cognome (reale)</label>
+            <input id="full_name" class="hbce-input" placeholder="Es. Mario Rossi" />
+          </div>
+          <div>
+            <label class="hbce-label">Email operativa</label>
+            <input id="email" class="hbce-input" placeholder="Es. operatore@..." />
+          </div>
+          <div>
+            <label class="hbce-label">IPR personale (hash / id)</label>
+            <input id="ipr_ref" class="hbce-input" placeholder="Es. IPR-... oppure hash 64 hex" />
+          </div>
+          <div>
+            <label class="hbce-label">Area operativa (quorum)</label>
+            <input id="location" class="hbce-input" placeholder="Country / State / Region / City / District" />
+          </div>
+        </div>
+
+        <div style="margin-top:1rem;">
+          <label class="hbce-label">Note (opzionale)</label>
+          <textarea id="notes" class="hbce-input" rows="4" placeholder="Esperienza, disponibilità, motivazione..."></textarea>
+        </div>
+
+        <div class="hbce-actions" style="margin-top:1rem;">
+          <button class="hbce-btn hbce-btn--primary" onclick="generate()">GENERA PACKET</button>
+          <button class="hbce-btn" onclick="resetAll()">RESET</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Output</h2>
+      <div class="hbce-card">
+        <div class="hbce-grid" style="grid-template-columns: 1fr; gap: .75rem;">
+          <div>
+            <div class="hbce-note">SHA-256 (payload)</div>
+            <code id="hash_out" style="word-break:break-all;">—</code>
+          </div>
+
+          <div>
+            <div class="hbce-note">Registry Entry (copia e append)</div>
+            <pre id="entry_out" class="hbce-card__text" style="white-space:pre-wrap;">—</pre>
+          </div>
+
+          <div class="hbce-actions">
+            <button class="hbce-btn hbce-btn--primary" onclick="downloadPacket()">DOWNLOAD PACKET.json</button>
+            <a class="hbce-btn" id="verify_link" href="/hermeticum-bce-platform/verify/">OPEN VERIFY</a>
+          </div>
+
+          <p class="hbce-note">
+            Procedura: dopo pagamento/approvazione, un operatore HBCE appende l’entry nel registry.
+            Dopo l’append, VERIFY darà VALID.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+<script>
+let packet = null;
+
+function nowISO(){
+  return new Date().toISOString();
+}
+
+function clean(s){
+  return (s || "").trim();
+}
+
+async function sha256Hex(str){
+  const enc = new TextEncoder().encode(str);
+  const buf = await crypto.subtle.digest("SHA-256", enc);
+  const arr = Array.from(new Uint8Array(buf));
+  return arr.map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+function resetAll(){
+  document.getElementById("full_name").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("ipr_ref").value = "";
+  document.getElementById("location").value = "";
+  document.getElementById("notes").value = "";
+  document.getElementById("hash_out").textContent = "—";
+  document.getElementById("entry_out").textContent = "—";
+  document.getElementById("verify_link").href = "/hermeticum-bce-platform/verify/";
+  packet = null;
+}
+
+async function generate(){
+  const full_name = clean(document.getElementById("full_name").value);
+  const email = clean(document.getElementById("email").value);
+  const ipr_ref = clean(document.getElementById("ipr_ref").value);
+  const location = clean(document.getElementById("location").value);
+  const notes = clean(document.getElementById("notes").value);
+
+  if(!full_name || !email || !ipr_ref || !location){
+    document.getElementById("entry_out").textContent =
+      "Errore: compila Nome, Email, IPR personale, Area operativa (quorum).";
+    return;
+  }
+
+  const ts = nowISO();
+
+  packet = {
+    proto: "HBCE-OPERATOR-LICENSE-v1",
+    kind: "OPERATOR_LICENSE_APPLICATION",
+    issuer: "HERMETICUM B.C.E. S.r.l.",
+    jurisdiction: "EU",
+    mode: "PERMISSIONLESS",
+    policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","NO_IDENTITY_CUSTODY"],
+    application: {
+      role: "IPR_OPERATOR",
+      full_name,
+      email,
+      ipr_reference: ipr_ref,
+      location_now: location,
+      notes: notes || null,
+      timestamp: ts
+    },
+    mutability: "APPEND_ONLY"
+  };
+
+  const payload = JSON.stringify(packet);
+  const digest = await sha256Hex(payload);
+
+  document.getElementById("hash_out").textContent = digest;
+
+  const entry = {
+    nickname: "OPERATOR_LICENSE: " + full_name,
+    payload_sha256: digest,
+    timestamp: ts
+  };
+
+  document.getElementById("entry_out").textContent = JSON.stringify(entry, null, 2);
+  document.getElementById("verify_link").href = "/hermeticum-bce-platform/verify/?h=" + digest;
+}
+
+function downloadPacket(){
+  if(!packet){
+    alert("Prima genera il packet.");
+    return;
+  }
+  const blob = new Blob([JSON.stringify(packet, null, 2)], {type: "application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "HBCE_OPERATOR_LICENSE_APPLICATION.json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+</script>
+
+</body>
+</html>
