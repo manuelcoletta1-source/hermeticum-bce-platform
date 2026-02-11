@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HERMETICUM B.C.E. — Operational Identity Infrastructure</title>
-  <meta name="description" content="IPR — Identity Primary Record. Infrastruttura di identità operativa verificabile per umani, aziende, AI e software. UE-first, audit-first, fail-closed, hash-only, append-only." />
+  <title>HERMETICUM B.C.E. — IPR (EU-first)</title>
+  <meta name="description" content="Gateway pubblico EU-first per creare, registrare e verificare un IPR (Identity Primary Record). Hash-only, append-only, fail-closed. BASE=SOFT, EU/CERT=HARD." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
@@ -13,141 +13,155 @@
 
   <main class="hbce-container hbce-main">
 
-    <!-- HERO -->
-    <section class="hbce-hero" style="text-align:center; padding-top:4rem;">
-      <div class="hbce-hero__kicker">EU-FIRST · AUDIT-FIRST · FAIL-CLOSED</div>
-
-      <h1 class="hbce-hero__title" style="font-size:2.2rem;">
-        Identity infrastructure. Active. Verifiable. Append-only.
-      </h1>
-
-      <p class="hbce-hero__lead" style="max-width:820px;margin:1.5rem auto;">
-        IPR (Identity Primary Record) è la radice di identità operativa verificabile per
-        <strong>umani</strong>, <strong>AI</strong> e <strong>software</strong>.
-        Pubblico: <strong>hash-only</strong>. Registry: <strong>append-only</strong>.
-        Verifica: <strong>fail-closed</strong>.
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">EU-FIRST · HASH-ONLY · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">IPR — Identità operativa verificabile nel tempo</h1>
+      <p class="hbce-hero__lead">
+        Un IPR (Identity Primary Record) è un <strong>file rilasciato</strong> che genera una prova pubblica minima:
+        <strong>nickname + hash + timestamp</strong> in un registry <strong>append-only</strong>.
+        Se non è verificabile → <strong>INVALID</strong>.
       </p>
 
-      <div class="hbce-actions" style="justify-content:center; margin-top:2rem;">
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">EMIT IPR</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">Crea IPR Base (local-first)</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/what-is-ipr/">Cos’è IPR</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verifica</a>
       </div>
 
-      <p class="hbce-note" style="margin-top:1.25rem;">
-        Regola metrologica HARD: append nel registry entro <strong>±2 minuti</strong> dal timestamp di emissione. Fuori finestra → INVALID (fail-closed).
+      <p class="hbce-note" style="margin-top:1rem;">
+        Pubblico = <strong>hash-only</strong>. Nessun dato personale nel registry. Nessuna custodia identitaria.
       </p>
     </section>
 
-    <!-- WHAT IT IS -->
-    <section class="hbce-section" style="margin-top:3rem;">
-      <h2 class="hbce-h2">Cos’è</h2>
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Regola operativa: SOFT vs HARD</h2>
+      <div class="hbce-grid hbce-grid--2">
+        <div class="hbce-card">
+          <h3 class="hbce-h3">BASE (SOFT)</h3>
+          <p class="hbce-card__text">
+            Per il cittadino UE che vuole iniziare: <strong>nessun vincolo temporale</strong>.
+            Se l’hash è presente nel registry append-only → <strong>VALID (SOFT)</strong>.
+          </p>
+          <p class="hbce-note">
+            Pacchetto tipico: <strong>BASE_19</strong>.
+          </p>
+        </div>
+
+        <div class="hbce-card">
+          <h3 class="hbce-h3">EU/CERT (HARD)</h3>
+          <p class="hbce-card__text">
+            Per emissioni con garanzia metrologica: <strong>finestra ±2 minuti</strong> per append nel registry.
+            Fuori finestra → <strong>INVALID (HARD)</strong> (fail-closed).
+          </p>
+          <p class="hbce-note">
+            HARD è per pacchetti certificati/istituzionali, non per l’onboarding base.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Flusso minimo (cittadino UE)</h2>
+
+      <div class="hbce-grid hbce-grid--2">
+        <div class="hbce-card">
+          <div class="hbce-hero__kicker">1</div>
+          <h3 class="hbce-h3">CREATE (local-first)</h3>
+          <p class="hbce-card__text">
+            Generi l’IPR nel browser: nessun upload, nessuna custodia.
+            Ottieni 3 file: <strong>IPR_RELEASE</strong>, <strong>ISSUER_CERTIFICATE</strong>, <strong>REGISTRY_ENTRY</strong>.
+          </p>
+          <div class="hbce-actions" style="margin-top:.75rem;">
+            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">Apri Wizard</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/standards/">Standard</a>
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-hero__kicker">2</div>
+          <h3 class="hbce-h3">REGISTRY (append-only)</h3>
+          <p class="hbce-card__text">
+            L’entry pubblica è <strong>hash-only</strong>: nickname + payload_sha256 + timestamp.
+            Si aggiunge al registry <strong>senza cancellare nulla</strong>.
+          </p>
+          <div class="hbce-actions" style="margin-top:.75rem;">
+            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/registry/">Apri Registry</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/registry/registry.json">Apri registry.json</a>
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-hero__kicker">3</div>
+          <h3 class="hbce-h3">VERIFY (fail-closed)</h3>
+          <p class="hbce-card__text">
+            Verifica in due modi:
+            <strong>by hash</strong> (prova pubblica) oppure <strong>by file</strong> (integrità locale + match registry).
+            Se non c’è match → INVALID.
+          </p>
+          <div class="hbce-actions" style="margin-top:.75rem;">
+            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">Apri Verify</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/ip-verification/">IP Verification</a>
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-hero__kicker">4</div>
+          <h3 class="hbce-h3">UPGRADE (opzionale)</h3>
+          <p class="hbce-card__text">
+            Dopo la base puoi aggiungere ancoraggi (IPFS/EVM/BTC) o moduli software (UNEBDO, OPC, ecc.).
+            La prova pubblica resta <strong>minimizzata</strong>.
+          </p>
+          <div class="hbce-actions" style="margin-top:.75rem;">
+            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/pricing/">Pacchetti</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/ecosystem/">Ecosystem</a>
+          </div>
+        </div>
+      </div>
+
+      <p class="hbce-note" style="margin-top:1rem;">
+        Regola unica: <strong>CREATE → REGISTRY → VERIFY</strong>. Se salti REGISTRY, VERIFY non può passare.
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Perché serve</h2>
+
+      <div class="hbce-grid hbce-grid--2">
+        <div class="hbce-card">
+          <h3 class="hbce-h3">Cittadini e professionisti</h3>
+          <p class="hbce-card__text">
+            Una radice minimale, verificabile, che abilita evoluzioni operative senza trasformare il portale in un database di persone.
+          </p>
+        </div>
+        <div class="hbce-card">
+          <h3 class="hbce-h3">Imprese e istituzioni (B2B/B2G)</h3>
+          <p class="hbce-card__text">
+            Identità operative per software, AI, robotica e sistemi critici: verificabili ex-ante, auditabili, fail-closed.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Policy (baseline)</h2>
       <div class="hbce-card">
         <p class="hbce-card__text">
-          Hermeticum implementa un livello base di identità operativa: una radice verificabile opponibile nel tempo.
-          Non è login, non è account, non è marketing: è infrastruttura.
+          UE-first · Audit-first · Fail-closed · Hash-only · No identity custody · Append-only
         </p>
-        <ul class="hbce-list">
-          <li><strong>Hash-only</strong>: minimizzazione pubblica</li>
-          <li><strong>Append-only</strong>: storia non riscrivibile</li>
-          <li><strong>Fail-closed</strong>: non verificabile → blocco</li>
-          <li><strong>UE-first</strong>: standard normativo di riferimento</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- HOW IT WORKS -->
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Come funziona</h2>
-      <div class="hbce-grid hbce-grid--4">
-        <div class="hbce-card">
-          <h3 class="hbce-h3">1) Generate</h3>
-          <p class="hbce-card__text">Emissione local-first via wizard. Download dei file IPR.</p>
-        </div>
-        <div class="hbce-card">
-          <h3 class="hbce-h3">2) Done</h3>
-          <p class="hbce-card__text">Hash + timestamp + countdown HARD (±2 min).</p>
-        </div>
-        <div class="hbce-card">
-          <h3 class="hbce-h3">3) Registry</h3>
-          <p class="hbce-card__text">Append hash-only nel registro pubblico append-only.</p>
-        </div>
-        <div class="hbce-card">
-          <h3 class="hbce-h3">4) Verify</h3>
-          <p class="hbce-card__text">VALID solo se integrità file + match registry.</p>
+        <div class="hbce-actions" style="margin-top:.75rem;">
+          <a class="hbce-btn" href="/hermeticum-bce-platform/governance/">Governance</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/normative/">Normative mapping</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/privacy/">Privacy (GDPR-min)</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/terms/">Terms</a>
         </div>
       </div>
     </section>
 
-    <!-- ECOSYSTEM ROOT -->
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Ecosystem (active)</h2>
-      <div class="hbce-card">
-        <p class="hbce-card__text">
-          Lo stato dell’ecosistema è dichiarato come root append-only:
-          <strong>ECOSYSTEM_ROOT</strong> (human + ai + system nodes).
-        </p>
-
-        <div class="hbce-grid hbce-grid--3" style="margin-top:.75rem;">
-          <div class="hbce-card">
-            <h3 class="hbce-h3">Roots</h3>
-            <ul class="hbce-list">
-              <li>Manuel (IPR-3)</li>
-              <li>Joker (IPR-AI-0001)</li>
-            </ul>
-          </div>
-          <div class="hbce-card">
-            <h3 class="hbce-h3">System nodes</h3>
-            <ul class="hbce-list">
-              <li>UNEBDO</li>
-              <li>OPC</li>
-              <li>CyberGlobal</li>
-              <li>MetaExchange</li>
-              <li>NeuroLoop</li>
-              <li>IoSpace</li>
-            </ul>
-          </div>
-          <div class="hbce-card">
-            <h3 class="hbce-h3">Reference</h3>
-            <ul class="hbce-list">
-              <li><a href="/hermeticum-bce-platform/what-is-ipr/">WHAT IS IPR</a></li>
-              <li><a href="/hermeticum-bce-platform/docs/">DOCS</a></li>
-              <li><a href="/hermeticum-bce-platform/standard/ipr/">STANDARD</a></li>
-            </ul>
-          </div>
-        </div>
-
-        <p class="hbce-note" style="margin-top:.75rem;">
-          Nota: il layer pubblico resta hash-only. I dati completi restano local-first (no custody).
-        </p>
-      </div>
-    </section>
-
-    <!-- FOR WHOM -->
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Per chi serve</h2>
-      <div class="hbce-grid hbce-grid--3">
-        <div class="hbce-card">
-          <h3 class="hbce-h3">Cittadini</h3>
-          <p class="hbce-card__text">Radice identità operativa opponibile nel tempo.</p>
-        </div>
-        <div class="hbce-card">
-          <h3 class="hbce-h3">Aziende</h3>
-          <p class="hbce-card__text">Identità verificabile per processi, responsabilità e automazione.</p>
-        </div>
-        <div class="hbce-card">
-          <h3 class="hbce-h3">AI & Software</h3>
-          <p class="hbce-card__text">Root persistente per agenti e moduli esecutivi.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ISSUER -->
     <section class="hbce-section">
       <h2 class="hbce-h2">Issuer</h2>
       <div class="hbce-card">
         <p class="hbce-card__text">
-          Hallmark: <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong><br/>
+          Hallmark: <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong><br />
           Società: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong>
         </p>
       </div>
