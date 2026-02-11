@@ -1,0 +1,243 @@
+2) FILE
+
+Path: create/certified/index.html
+
+COMMIT
+
+git add create/certified/index.html
+git commit -m "feat(certified): post-payment certified pack generator (issuer certificate + operational receipt + release + registry entry)"
+git push
+
+FILE COMPLETO (incolla tutto)
+
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CERTIFIED — Post-payment Pack</title>
+  <meta name="description" content="Generatore Certified Pack post-pagamento: IPR_RELEASE + ISSUER_CERTIFICATE + OPERATIONAL_RECEIPT + REGISTRY_ENTRY. UE-first, audit-first, fail-closed, hash-only. VAT pending assignment." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">CERTIFIED · POST-PAYMENT · ISSUER ACT</div>
+      <h1 class="hbce-hero__title">Rilascio Certified Pack</h1>
+      <p class="hbce-hero__lead">
+        Questa pagina genera il pacchetto ufficiale <strong>dopo pagamento</strong>:
+        <code>IPR_RELEASE.json</code> + <code>ISSUER_CERTIFICATE.json</code> + <code>OPERATIONAL_RECEIPT.json</code> + <code>REGISTRY_ENTRY.json</code>.
+        Output locale. Nessuna custodia identità.
+      </p>
+      <p class="hbce-note">
+        Nota UE: l’issuer opera con <strong>P.IVA in assegnazione</strong> (VAT pending assignment). La ricevuta è “operativa”, non fattura fiscale.
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Input (post-pagamento)</h2>
+      <div class="hbce-card">
+        <div class="hbce-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+          <div>
+            <label class="hbce-label"><strong>Nickname (pubblico)</strong></label>
+            <input id="nickname" class="hbce-input" placeholder="Es. Manuel Coletta / JOKER-C2 / METAEXCHANGE" />
+            <div class="hbce-note" style="margin-top:.35rem;">Deve coincidere con l’entry registry che pubblicherai.</div>
+          </div>
+
+          <div>
+            <label class="hbce-label"><strong>payload_sha256 (64 hex)</strong></label>
+            <input id="hash" class="hbce-input" placeholder="Es. 71ffa5e9..." />
+            <div class="hbce-note" style="margin-top:.35rem;">È l’hash del file canonico (IPR_CANON.json) generato dal wizard.</div>
+          </div>
+
+          <div>
+            <label class="hbce-label"><strong>Package</strong></label>
+            <select id="pkg" class="hbce-input">
+              <option value="BASE_19">BASE_19 — SOFT</option>
+              <option value="EU_CERT">EU_CERT — HARD (±2 min)</option>
+            </select>
+            <div class="hbce-note" style="margin-top:.35rem;">EU_CERT abilita metrologia HARD. BASE_19 = SOFT.</div>
+          </div>
+
+          <div>
+            <label class="hbce-label"><strong>Amount (EUR)</strong></label>
+            <input id="amount" class="hbce-input" value="19.00" />
+            <div class="hbce-note" style="margin-top:.35rem;">Importo del pacchetto acquistato.</div>
+          </div>
+
+          <div>
+            <label class="hbce-label"><strong>PAYMENT_ID</strong></label>
+            <input id="paymentId" class="hbce-input" placeholder="Es. STRIPE_xxx / PAYPAL_xxx / BONIFICO_xxx" />
+            <div class="hbce-note" style="margin-top:.35rem;">Riferimento pagamento (provider o interno).</div>
+          </div>
+
+          <div>
+            <label class="hbce-label"><strong>Certificate ID (seriale)</strong></label>
+            <input id="certId" class="hbce-input" placeholder="Es. HBCE-CERT-000001" />
+            <div class="hbce-note" style="margin-top:.35rem;">Seriale certificazione. Se vuoto → auto “HBCE-CERT-PENDING”.</div>
+          </div>
+        </div>
+
+        <div class="hbce-actions" style="margin-top:1rem;">
+          <button class="hbce-btn hbce-btn--primary" id="btn">GENERA PACK</button>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        </div>
+
+        <div id="out" style="margin-top:1rem;"></div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Issuer</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong><br />
+          <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong><br />
+          VAT: <strong>PENDING_ASSIGNMENT</strong> · EU-first · Audit-first · Fail-closed · Hash-only · Append-only · No identity custody
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <div data-hbce="footer"></div>
+
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+  <script>
+    (function () {
+      const isHex64 = (h) => /^[a-f0-9]{64}$/i.test(String(h || "").trim());
+
+      function dl(filename, obj) {
+        const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }
+
+      function esc(s){return String(s||"").replace(/[&<>"']/g,(c)=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));}
+
+      const $ = (id) => document.getElementById(id);
+      const $out = $("out");
+
+      $("btn").addEventListener("click", () => {
+        const nickname = String($("nickname").value || "").trim();
+        const hash = String($("hash").value || "").trim().toLowerCase();
+        const pkg = String($("pkg").value || "BASE_19").trim();
+        const amount = String($("amount").value || "").trim();
+        const paymentId = String($("paymentId").value || "").trim();
+        const certId = String($("certId").value || "").trim() || "HBCE-CERT-PENDING";
+
+        if (!nickname || !hash || !amount || !paymentId) {
+          $out.innerHTML = `<div class="hbce-card__text"><strong>Errore:</strong> compila nickname, payload_sha256, amount, payment_id.</div>`;
+          return;
+        }
+        if (!isHex64(hash)) {
+          $out.innerHTML = `<div class="hbce-card__text"><strong>Errore:</strong> payload_sha256 deve essere 64 hex.</div>`;
+          return;
+        }
+
+        const ts = new Date().toISOString();
+
+        const ipr_release = {
+          proto: "HBCE-IPR-RELEASE-v2",
+          kind: "IPR_RELEASE",
+          issuer: "HERMETICUM B.C.E. S.r.l.",
+          jurisdiction: "EU",
+          mode: "PERMISSIONLESS",
+          package: pkg,
+          policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","NO_IDENTITY_CUSTODY"],
+          nickname: nickname,
+          timestamp: ts,
+          payload_sha256: hash,
+          note: "Certified release (post-payment)."
+        };
+
+        const issuer_certificate = {
+          proto: "HBCE-ISSUER-CERT-v1",
+          kind: "OPERATIONAL_IDENTITY_CERTIFICATE",
+          issuer: {
+            legal_name: "HERMETICUM B.C.E. S.r.l.",
+            jurisdiction: "EU (Italy)",
+            vat_status: "PENDING_ASSIGNMENT",
+            status: "ACTIVE_OPERATIONAL_ENTITY"
+          },
+          certificate: {
+            id: certId,
+            type: "IPR_OPERATIONAL_RELEASE",
+            timestamp: ts,
+            validity: "INDEFINITE",
+            revocable: false
+          },
+          subject: {
+            nickname: nickname,
+            ipr_hash: hash
+          },
+          service: {
+            type: "Operational Identity Issuance",
+            package: pkg,
+            network_status: "ACTIVE"
+          },
+          policy: ["UE_FIRST","HASH_ONLY","NO_IDENTITY_CUSTODY","APPEND_ONLY","AUDIT_FIRST"],
+          verification: {
+            registry: "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/registry/",
+            verify: "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/verify/?h=" + hash
+          },
+          issuer_signature: "HBCE_ED25519_SIGNATURE"
+        };
+
+        const operational_receipt = {
+          proto: "HBCE-RECEIPT-v1",
+          kind: "OPERATIONAL_SERVICE_RECEIPT",
+          issuer: {
+            legal_name: "HERMETICUM B.C.E. S.r.l.",
+            vat_status: "PENDING_ASSIGNMENT",
+            jurisdiction: "EU"
+          },
+          transaction: {
+            service: "IPR Operational Identity Issuance",
+            package: pkg,
+            amount: amount,
+            currency: "EUR",
+            timestamp: ts,
+            payment_method: "DIGITAL",
+            payment_id: paymentId
+          },
+          linked_ipr: {
+            nickname: nickname,
+            payload_sha256: hash
+          },
+          note: "Operational digital service. VAT number pending assignment (EU).",
+          issuer_signature: "HBCE_ED25519_SIGNATURE"
+        };
+
+        const registry_entry = {
+          nickname: nickname,
+          payload_sha256: hash,
+          timestamp: ts
+        };
+
+        dl("IPR_RELEASE.json", ipr_release);
+        dl("ISSUER_CERTIFICATE.json", issuer_certificate);
+        dl("OPERATIONAL_RECEIPT.json", operational_receipt);
+        dl("REGISTRY_ENTRY.json", registry_entry);
+
+        $out.innerHTML = `
+          <div class="hbce-card__text">
+            <strong>Certified Pack generato.</strong><br/>
+            File: <code>IPR_RELEASE.json</code>, <code>ISSUER_CERTIFICATE.json</code>, <code>OPERATIONAL_RECEIPT.json</code>, <code>REGISTRY_ENTRY.json</code><br/>
+            Verify: <a href="/hermeticum-bce-platform/verify/?h=${esc(hash)}">/verify/?h=${esc(hash)}</a><br/>
+            <div class="hbce-note" style="margin-top:.5rem;">
+              Prossimo passo: appendi <code>REGISTRY_ENTRY.json</code> nel registry append-only e verifica.
+            </div>
+          </div>
+        `;
+      });
+    })();
+  </script>
+</body>
+</html>
+```0
