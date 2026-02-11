@@ -3,149 +3,62 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CREATE — Canonical Gateway</title>
-  <meta name="description" content="Gateway canonico emissione IPR: Wizard local-first (download immediato), append hash-only nel registry append-only, verify fail-closed. UE-first, audit-first, metrological HARD (±2 min)." />
+  <title>CREATE — IPR (Hub)</title>
+  <meta name="description" content="Hub CREATE: Wizard Git-style (nome+descrizione+bios_hash+location-now quorum) e Certified Pack post-pagamento (certificate+receipt). UE-first, audit-first, fail-closed." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 <body>
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
-
-    <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CREATE · Canonical · UE-first</div>
-      <h1 class="hbce-hero__title">Emissione IPR (flusso canonico)</h1>
+      <div class="hbce-hero__kicker">CREATE · LOCAL-FIRST · HASH-ONLY</div>
+      <h1 class="hbce-hero__title">Creazione IPR</h1>
       <p class="hbce-hero__lead">
-        Questo è l’unico percorso operativo valido per emissione IPR in modalità pubblica:
-        <strong>Wizard → Done → Registry → Verify</strong>.
-        Pubblico: <strong>hash-only</strong>. Registry: <strong>append-only</strong>. Esito: <strong>fail-closed</strong>.
+        Due fasi operative:
+        <strong>Wizard (Draft)</strong> per generare l’IPR localmente e ottenere l’hash,
+        poi <strong>Certified</strong> post-pagamento per ottenere certificazione e ricevuta firmata.
       </p>
-
       <p class="hbce-note">
-        Regola metrologica HARD: dopo generazione devi appendere nel registry entro <strong>±2 minuti</strong>.
-        Fuori finestra → blocco CI (fail-closed).
+        Regola: se non verificabile pubblicamente (registry append-only) → INVALID (fail-closed).
       </p>
     </section>
 
-    <!-- CANONICAL FLOW -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Flusso canonico</h2>
-
-      <div class="hbce-grid hbce-grid--4">
-        <div class="hbce-card">
-          <h3 class="hbce-h3">1) Wizard</h3>
-          <p class="hbce-card__text">
-            Generazione locale nel browser. Download immediato:
-            IPR_RELEASE + ISSUER_CERTIFICATE + REGISTRY_ENTRY.
-          </p>
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">OPEN WIZARD</a>
-        </div>
-
-        <div class="hbce-card">
-          <h3 class="hbce-h3">2) Done</h3>
-          <p class="hbce-card__text">
-            Pagina di chiusura: hash, timestamp, countdown HARD e link diretti a Verify/Registry.
-          </p>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/create/done/">OPEN DONE</a>
-        </div>
-
-        <div class="hbce-card">
-          <h3 class="hbce-h3">3) Registry</h3>
-          <p class="hbce-card__text">
-            Append assistito: carica REGISTRY_ENTRY.json e copia il blocco pronto-incolla in entries[].
-          </p>
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/registry/">OPEN REGISTRY</a>
-        </div>
-
-        <div class="hbce-card">
-          <h3 class="hbce-h3">4) Verify</h3>
-          <p class="hbce-card__text">
-            VALID solo se: integrità file + match registry. Altrimenti INVALID (fail-closed).
-          </p>
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">OPEN VERIFY</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- WHAT YOU GET -->
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Output (pacchetto IPR)</h2>
-      <div class="hbce-card">
-        <ul class="hbce-list">
-          <li><strong>IPR_RELEASE.json</strong> — radice operativa (DNA digitale)</li>
-          <li><strong>ISSUER_CERTIFICATE.json</strong> — certificazione issuer 🜏 HERMETICUM B.C.E. S.r.l.</li>
-          <li><strong>REGISTRY_ENTRY.json</strong> — prova pubblica hash-only (append-only)</li>
-          <li><strong>ANCHOR_RECEIPT.json</strong> — opzionale (IPFS/ETH/BTC) quando attivo</li>
-        </ul>
-        <p class="hbce-note">
-          Pubblico: solo nickname + hash + timestamp. Nessuna custodia dati personali.
-        </p>
-      </div>
-    </section>
-
-    <!-- PRINCIPLES -->
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Principi (operativi)</h2>
-      <div class="hbce-card">
-        <ul class="hbce-list">
-          <li><strong>UE-first</strong>: riferimento normativo UE</li>
-          <li><strong>Audit-first</strong>: verificabilità prima dell’azione</li>
-          <li><strong>Fail-closed</strong>: non verificabile → INVALID</li>
-          <li><strong>Hash-only</strong>: pubblicazione minimizzata</li>
-          <li><strong>Append-only</strong>: registry incrementale (storia non riscrivibile)</li>
-          <li><strong>Metrological HARD</strong>: append entro ±2 min</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- DECLASS / TOOLS -->
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Tool e superfici non canoniche</h2>
+      <h2 class="hbce-h2">1) Wizard (Draft) — stile Git</h2>
       <div class="hbce-card">
         <p class="hbce-card__text">
-          Le pagine sotto sono strumenti o superfici storiche. Non sono il flusso canonico di emissione.
-          Se vuoi emettere un IPR valido, usa <strong>Wizard</strong>.
+          Inserisci <strong>nome</strong>, <strong>descrizione</strong>, <strong>bios_hash</strong> e <strong>location-now (quorum)</strong>.
+          Il sistema genera localmente: <code>IPR_CANON.json</code>, <code>IPR_RELEASE.json</code>, <code>REGISTRY_ENTRY.json</code>.
         </p>
-
-        <div class="hbce-grid hbce-grid--2" style="margin-top:.75rem;">
-          <div class="hbce-card">
-            <div class="hbce-hero__kicker">DECLASSATO · Tool</div>
-            <h3 class="hbce-h3">Receipt generator</h3>
-            <p class="hbce-card__text">
-              Strumento tecnico. Non definisce il percorso canonico.
-            </p>
-            <a class="hbce-btn" href="/hermeticum-bce-platform/create/receipt/">OPEN TOOL</a>
-          </div>
-
-          <div class="hbce-card">
-            <div class="hbce-hero__kicker">DECLASSATO · Legacy</div>
-            <h3 class="hbce-h3">Create (legacy)</h3>
-            <p class="hbce-card__text">
-              Superficie storica. Mantieni per compatibilità, non per emissione.
-            </p>
-            <a class="hbce-btn" href="/hermeticum-bce-platform/create/">OPEN (THIS PAGE)</a>
-          </div>
+        <div class="hbce-actions">
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">APRI WIZARD</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
         </div>
-
-        <p class="hbce-note" style="margin-top:.75rem;">
-          Nota: “declassato” significa “non usato come verità operativa” — resta consultabile, non autoritativo.
-        </p>
       </div>
     </section>
 
-    <!-- ISSUER -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Issuer</h2>
+      <h2 class="hbce-h2">2) Certified (post-pagamento)</h2>
       <div class="hbce-card">
         <p class="hbce-card__text">
-          Certificazione emissione: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong><br/>
-          Sigillo: <strong>🜏</strong><br/>
-          Hallmark: <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong>
+          Dopo pagamento, genera il pacchetto ufficiale:
+          <code>ISSUER_CERTIFICATE.json</code> (atto principale) +
+          <code>OPERATIONAL_RECEIPT.json</code> (ricevuta firmata) +
+          <code>IPR_RELEASE.json</code> +
+          <code>REGISTRY_ENTRY.json</code>.
+        </p>
+        <div class="hbce-actions">
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/certified/">APRI CERTIFIED</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/pricing/">PRICING</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/terms/">TERMS</a>
+        </div>
+        <p class="hbce-note" style="margin-top:1rem;">
+          UE note: l’issuer opera con <strong>P.IVA in assegnazione</strong> (VAT pending assignment). La ricevuta è operativa, non fattura fiscale.
         </p>
       </div>
     </section>
-
   </main>
 
   <div data-hbce="footer"></div>
