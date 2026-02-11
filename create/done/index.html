@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DONE — IPR Generated</title>
+  <meta name="description" content="Pagina finale: hash generato, link diretto a VERIFY e REGISTRY append-only, guida operativa per chiudere la finestra metrologica HARD (±2 min)." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">DONE · Local-first · Metrological HARD</div>
+      <h1 class="hbce-hero__title">IPR generato</h1>
+      <p class="hbce-hero__lead">
+        Il pacchetto è stato generato e scaricato. Ora devi chiudere la prova pubblica:
+        <strong>append hash-only nel registry</strong>.
+      </p>
+      <p class="hbce-note">
+        Regola HARD: append entro <strong>±2 minuti</strong> dal timestamp. Fuori finestra → CI blocca (fail-closed).
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Dati operativi</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          <strong>Nickname:</strong> <span id="nick">—</span><br/>
+          <strong>Hash (payload_sha256):</strong> <span id="hash">—</span><br/>
+          <strong>Timestamp UTC:</strong> <span id="ts">—</span>
+        </p>
+
+        <div class="hbce-card" style="margin-top:1rem;">
+          <p class="hbce-card__text">
+            <strong>Tempo residuo (HARD):</strong> <span id="left">--:--</span><br/>
+            <span class="hbce-muted" id="hint">—</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Prossime azioni (ordine consigliato)</h2>
+      <div class="hbce-grid hbce-grid--3">
+        <div class="hbce-card">
+          <h3 class="hbce-h3">1) Apri VERIFY</h3>
+          <p class="hbce-card__text">
+            Verifica pubblica dell’hash (registry match).
+          </p>
+          <a class="hbce-btn hbce-btn--primary" id="goVerify" href="#">OPEN VERIFY</a>
+        </div>
+
+        <div class="hbce-card">
+          <h3 class="hbce-h3">2) Apri REGISTRY (append)</h3>
+          <p class="hbce-card__text">
+            Carica REGISTRY_ENTRY.json e copia il blocco pronto-incolla.
+          </p>
+          <a class="hbce-btn hbce-btn--primary" id="goRegistry" href="/hermeticum-bce-platform/registry/">OPEN REGISTRY</a>
+        </div>
+
+        <div class="hbce-card">
+          <h3 class="hbce-h3">3) Apri registry.json su GitHub</h3>
+          <p class="hbce-card__text">
+            Incolla in <strong>entries[]</strong> e fai commit append-only.
+          </p>
+          <a class="hbce-btn" id="goGitHub" href="#" target="_blank" rel="noopener">OPEN GitHub EDIT</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Certificazione</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Issuer: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong><br/>
+          Sigillo: <strong>🜏</strong><br/>
+          Policy: UE-first · audit-first · fail-closed · hash-only · append-only
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <script>
+    (function(){
+      const params = new URLSearchParams(location.search);
+      const h = (params.get("h") || "").trim().toLowerCase();
+      const n = (params.get("n") || "").trim();
+      const ts = (params.get("t") || "").trim();
+
+      const nickEl = document.getElementById("nick");
+      const hashEl = document.getElementById("hash");
+      const tsEl = document.getElementById("ts");
+      const leftEl = document.getElementById("left");
+      const hintEl = document.getElementById("hint");
+
+      const goVerify = document.getElementById("goVerify");
+      const goGitHub = document.getElementById("goGitHub");
+
+      const GH_OWNER = "manuelcoletta1-source";
+      const GH_REPO  = "hermeticum-bce-platform";
+      const GH_PATH  = "registry/registry.json";
+
+      function isSha256(x){ return /^[a-f0-9]{64}$/.test(x); }
+      function fmt(ms){
+        const s = Math.max(0, Math.floor(ms/1000));
+        const m = String(Math.floor(s/60)).padStart(2,"0");
+        const r = String(s%60).padStart(2,"0");
+        return `${m}:${r}`;
+      }
+
+      nickEl.textContent = n || "—";
+      hashEl.textContent = isSha256(h) ? h : "—";
+      tsEl.textContent = ts || "—";
+
+      if(isSha256(h)){
+        goVerify.href = `/hermeticum-bce-platform/verify/?h=${h}`;
+      } else {
+        goVerify.href = "/hermeticum-bce-platform/verify/";
+      }
+
+      goGitHub.href = `https://github.com/${GH_OWNER}/${GH_REPO}/edit/main/${GH_PATH}`;
+
+      // HARD window countdown (±2 min)
+      const WINDOW_MS = 2 * 60 * 1000;
+      const t0 = Date.parse(ts);
+      if(!Number.isNaN(t0)){
+        const tick = () => {
+          const now = Date.now();
+          const delta = Math.abs(now - t0);
+          const left = WINDOW_MS - delta;
+          leftEl.textContent = fmt(left);
+
+          if(left > 0){
+            hintEl.textContent = "Append adesso (HARD window attiva).";
+          } else {
+            hintEl.textContent = "Finestra scaduta: rigenera IPR e ripeti append immediato.";
+          }
+        };
+        tick();
+        setInterval(tick, 250);
+      } else {
+        leftEl.textContent = "--:--";
+        hintEl.textContent = "Timestamp non disponibile. Append immediato consigliato.";
+      }
+    })();
+  </script>
+</body>
+</html>
