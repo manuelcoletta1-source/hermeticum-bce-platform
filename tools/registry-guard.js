@@ -1,9 +1,14 @@
 /**
- * HBCE Registry Guard — fail-closed
+ * HBCE Registry Guard — fail-closed + metrological time rules
  * - Validates registry/registry.json schema
  * - Enforces append-only semantics on PRs:
  *   head.entries must start with base.entries (same order, same objects)
  *   only appends are allowed (no edits, deletes, reorders)
+ * - Enforces time monotonicity:
+ *   timestamps must be non-decreasing across entries
+ *   appended timestamps must be >= last base timestamp
+ * - Enforces future drift guard (soft):
+ *   timestamp must not be more than 10 minutes in the future vs CI time
  */
 
 const fs = require("fs");
@@ -11,6 +16,7 @@ const path = require("path");
 const { execSync } = require("child_process");
 
 const REG_PATH = "registry/registry.json";
+const FUTURE_DRIFT_MS = 10 * 60 * 1000; // 10 minutes
 
 function die(msg) {
   console.error("\n[REGISTRY-GUARD] BLOCKED ❌");
@@ -24,7 +30,6 @@ function ok(msg) {
 }
 
 function readJsonAtRef(ref, filePath) {
-  // Reads file at git ref (commit SHA / branch) without checkout
   try {
     const out = execSync(`git show ${ref}:${filePath}`, { stdio: ["ignore", "pipe", "pipe"] }).toString("utf8");
     return JSON.parse(out);
@@ -51,9 +56,15 @@ function isSha256(h) {
   return typeof h === "string" && /^[a-f0-9]{64}$/.test(h);
 }
 
+function parseUtc(ts) {
+  const t = Date.parse(ts);
+  if (Number.isNaN(t)) return null;
+  return t;
+}
+
 function normalizeEntry(e) {
   return {
-    nickname: (e && typeof e.nickname === "string") ? e.nickname : null,
+    nickname: (e && typeof e.nickname === "string") ? e.nickname.trim() : null,
     payload_sha256: (e && typeof e.payload_sha256 === "string") ? e.payload_sha256 : null,
     timestamp: (e && typeof e.timestamp === "string") ? e.timestamp : null
   };
@@ -64,10 +75,12 @@ function validateSchema(registry, label) {
   if (!Array.isArray(registry.entries)) die(`[${label}] registry.json deve contenere "entries": []`);
 
   const seen = new Set();
+  let prevTime = null;
+
   registry.entries.forEach((raw, idx) => {
     const e = normalizeEntry(raw);
 
-    if (!e.nickname || e.nickname.trim().length < 2) {
+    if (!e.nickname || e.nickname.length < 2) {
       die(`[${label}] entries[${idx}] nickname mancante/troppo corto.`);
     }
     if (!isSha256(e.payload_sha256)) {
@@ -77,8 +90,31 @@ function validateSchema(registry, label) {
       die(`[${label}] entries[${idx}] timestamp non valido (atteso ISO UTC con Z).`);
     }
 
-    // Unicità minima: stessa coppia nickname+hash non deve ripetersi
-    const key = `${e.nickname.trim()}::${e.payload_sha256}`;
+    const t = parseUtc(e.timestamp);
+    if (t === null) {
+      die(`[${label}] entries[${idx}] timestamp non parsabile.`);
+    }
+
+    // time monotonicity across whole file
+    if (prevTime !== null && t < prevTime) {
+      die(
+        `[${label}] ordine temporale violato: entries[${idx}] (${e.timestamp}) < entry precedente.\n` +
+        `Regola: timestamp non-decrescenti (metrological monotonic time).`
+      );
+    }
+    prevTime = t;
+
+    // future drift guard (soft)
+    const now = Date.now();
+    if (t > now + FUTURE_DRIFT_MS) {
+      die(
+        `[${label}] timestamp troppo nel futuro: entries[${idx}] (${e.timestamp}).\n` +
+        `Tolleranza massima: ${Math.floor(FUTURE_DRIFT_MS / 60000)} minuti.`
+      );
+    }
+
+    // uniqueness: nickname+hash must not repeat
+    const key = `${e.nickname}::${e.payload_sha256}`;
     if (seen.has(key)) {
       die(`[${label}] duplicato rilevato: nickname+hash già presente (entries[${idx}]).`);
     }
@@ -89,7 +125,6 @@ function validateSchema(registry, label) {
 }
 
 function entriesEqual(a, b) {
-  // strict equality on canonical fields
   return (
     a.nickname === b.nickname &&
     a.payload_sha256 === b.payload_sha256 &&
@@ -105,7 +140,6 @@ function enforceAppendOnly(baseRegistry, headRegistry) {
     die(`Append-only violato: HEAD ha meno entries di BASE (base=${base.length}, head=${head.length}).`);
   }
 
-  // prefix must match exactly
   for (let i = 0; i < base.length; i++) {
     if (!entriesEqual(base[i], head[i])) {
       die(
@@ -117,15 +151,32 @@ function enforceAppendOnly(baseRegistry, headRegistry) {
     }
   }
 
-  const appended = head.length - base.length;
-  return appended;
+  return head.slice(base.length);
+}
+
+function enforceAppendedTimeNotBeforeBaseLast(baseRegistry, appendedEntries) {
+  const base = baseRegistry.entries.map(normalizeEntry);
+  if (base.length === 0) return;
+
+  const lastBase = base[base.length - 1];
+  const lastBaseTime = parseUtc(lastBase.timestamp);
+
+  appendedEntries.forEach((e, k) => {
+    const t = parseUtc(e.timestamp);
+    if (t === null) die(`Timestamp appended non parsabile: ${e.timestamp}`);
+    if (t < lastBaseTime) {
+      die(
+        `Metrological rule violata: appended[${k}] timestamp (${e.timestamp}) < ultimo timestamp BASE (${lastBase.timestamp}).\n` +
+        `Regola: nuove entry non possono retrodatare la sequenza temporale del registry.`
+      );
+    }
+  });
 }
 
 function main() {
   const eventName = process.env.GITHUB_EVENT_NAME || "";
   const isPR = eventName === "pull_request";
 
-  // Always validate current working file
   const headWorking = readWorkingJson(REG_PATH);
   validateSchema(headWorking, "HEAD");
 
@@ -140,15 +191,14 @@ function main() {
     const baseReg = readJsonAtRef(baseSha, REG_PATH);
     validateSchema(baseReg, "BASE");
 
-    // enforce append-only comparing BASE vs current HEAD file (working tree)
     const appended = enforceAppendOnly(baseReg, headWorking);
+    enforceAppendedTimeNotBeforeBaseLast(baseReg, appended);
 
-    ok(`Append-only OK. Entries base=${baseReg.entries.length}, head=${headWorking.entries.length}, appended=${appended}.`);
+    ok(`Append-only OK + time monotonicity OK. base=${baseReg.entries.length}, head=${headWorking.entries.length}, appended=${appended.length}.`);
     return;
   }
 
-  // On push to main: schema only (append-only already enforced by PR guard)
-  ok(`Schema OK su ${REG_PATH}. entries=${headWorking.entries.length}.`);
+  ok(`Schema OK + time monotonicity OK su ${REG_PATH}. entries=${headWorking.entries.length}.`);
 }
 
 main();
