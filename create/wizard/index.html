@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CREATE — IPR Wizard</title>
-  <meta name="description" content="Emissione IPR UE local-first: genera e scarica subito il pacchetto, certificazione issuer 🜏, registry append-only hash-only, verify fail-closed, finestra metrologica HARD (±2 min)." />
+  <title>CREATE — IPR Wizard (EU-first)</title>
+  <meta name="description" content="Wizard EU-first per creare un IPR local-first (nessun upload). Genera IPR_RELEASE, ISSUER_CERTIFICATE, REGISTRY_ENTRY. BASE=SOFT, EU/CERT=HARD." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
@@ -13,250 +13,386 @@
 
   <main class="hbce-container hbce-main">
 
-    <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CREATE · Local-first · Fail-closed</div>
-      <h1 class="hbce-hero__title">Identity Primary Record</h1>
+      <div class="hbce-hero__kicker">CREATE · LOCAL-FIRST · NO CUSTODY</div>
+      <h1 class="hbce-hero__title">Crea IPR (procedura UE)</h1>
       <p class="hbce-hero__lead">
-        L’IPR nasce nel browser: <strong>scarichi subito</strong> i file.
-        La prova pubblica è <strong>hash-only</strong> (nickname + hash + timestamp) su registry <strong>append-only</strong>.
-        Issuer: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong>
+        Questo wizard genera un IPR <strong>nel tuo browser</strong> (lettura/scrittura locale).
+        Nessun dato viene caricato sul server. Output: 3 file scaricabili.
       </p>
-      <p class="hbce-note">
-        Regola metrologica HARD: dopo generazione devi appendere nel registry entro <strong>±2 minuti</strong>.
-        Fuori finestra → blocco CI (fail-closed).
-      </p>
-    </section>
 
-    <!-- PANEL: INPUT -->
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Dati</h2>
-
-      <div class="hbce-card">
-        <div class="hbce-grid hbce-grid--2">
-          <div>
-            <label class="hbce-label" for="entity_type">Tipo entità</label>
-            <select class="hbce-input" id="entity_type" name="entity_type">
-              <option value="HUMAN">Human (cittadino UE)</option>
-              <option value="ORG">Organization</option>
-              <option value="AI">AI / Software</option>
-              <option value="ROBOT">Robot / Device</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="hbce-label" for="nickname">Nickname operativo (pubblico)</label>
-            <input class="hbce-input" id="nickname" name="nickname" type="text" placeholder="es. ManuHell" autocomplete="off" />
-          </div>
-        </div>
-
-        <div style="margin-top:1rem;">
-          <label class="hbce-label" for="email">Email (solo consegna/recupero — non pubblica)</label>
-          <input class="hbce-input" id="email" name="email" type="email" placeholder="nome@dominio.tld" autocomplete="email" />
-        </div>
-
-        <p class="hbce-note" style="margin-top:.75rem;">
-          Pubblico (registry): solo <strong>nickname + payload_sha256 + timestamp</strong>.
-          Nessun dato personale in pubblico.
+      <div class="hbce-card" style="margin-top:1rem;">
+        <p class="hbce-card__text">
+          Regola operativa:
+          <strong>BASE (SOFT)</strong> = nessun vincolo temporale.
+          <strong>EU/CERT (HARD)</strong> = append nel registry entro <strong>±2 min</strong> (fail-closed).
         </p>
       </div>
     </section>
 
-    <!-- PANEL: PACKAGE -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Pacchetto</h2>
-      <div class="hbce-card">
-        <p class="hbce-note">
-          Ogni pacchetto include <strong>ISSUER_CERTIFICATE.json</strong> con sigillo <strong>🜏</strong>.
-          Anchor crypto: rafforzano persistenza/opponibilità (non creano l’IPR).
-        </p>
+      <h2 class="hbce-h2">Step 1 — Identità (pubblica)</h2>
 
-        <div class="hbce-radio">
-          <label><input type="radio" name="pkg" value="BASE_19" checked /> <strong>IPR Base UE — 19 €</strong></label><br/>
-          <label><input type="radio" name="pkg" value="IPFS_39" /> <strong>IPR + IPFS — 39 €</strong></label><br/>
-          <label><input type="radio" name="pkg" value="IPFS_ETH_79" /> <strong>IPR + IPFS + Ethereum — 79 €</strong></label><br/>
-          <label><input type="radio" name="pkg" value="FULL_149" /> <strong>FULL (IPFS + ETH + BTC) — 149 €</strong></label>
+      <div class="hbce-grid hbce-grid--2">
+        <div class="hbce-card">
+          <h3 class="hbce-h3">Tipo entità</h3>
+          <p class="hbce-card__text">Scegli la classe operativa (nessuna implicazione “personale”: è solo categoria tecnica).</p>
+
+          <select id="entityType" class="hbce-input">
+            <option value="HUMAN">Umano (cittadino)</option>
+            <option value="AI_SOFTWARE" selected>AI / Software</option>
+            <option value="ROBOT_DEVICE">Robot / Device</option>
+            <option value="ORG">Organizzazione</option>
+          </select>
+
+          <p class="hbce-note" style="margin-top:.75rem;">
+            Joker = <strong>AI / Software</strong>. Robot/Device solo se esiste hardware fisico reale.
+          </p>
+        </div>
+
+        <div class="hbce-card">
+          <h3 class="hbce-h3">Nickname (pubblico)</h3>
+          <p class="hbce-card__text">
+            Questo valore può comparire nel registry (hash-only). Non usare dati sensibili.
+          </p>
+          <input id="nickname" class="hbce-input" type="text" placeholder="es. JOKER-C2" />
+          <p class="hbce-note" style="margin-top:.75rem;">
+            Regola: usa un nickname stabile, senza cambiare mai spazi/maiuscole dopo emissione.
+          </p>
         </div>
       </div>
     </section>
 
-    <!-- PANEL: ANNEX -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Annex UE (opzionale)</h2>
+      <h2 class="hbce-h2">Step 2 — Annex UE (opzionale, resta nel file)</h2>
+
       <div class="hbce-card">
         <p class="hbce-card__text">
-          Annex UE serve alla <strong>coerenza evolutiva</strong> (match stabile tra evoluzioni operative).
-          Non viene pubblicato nel registry.
+          Questi campi sono <strong>opzionali</strong>. Se li compili, restano nel file <strong>IPR_RELEASE.json</strong>.
+          Non vanno nel registry pubblico (GDPR-min).
         </p>
+      </div>
 
-        <div class="hbce-grid hbce-grid--3">
-          <div>
-            <label class="hbce-label" for="full_name">Nome e cognome</label>
-            <input class="hbce-input" id="full_name" name="full_name" type="text" placeholder="Nome Cognome" />
-          </div>
-          <div>
-            <label class="hbce-label" for="tax_code">Codice fiscale</label>
-            <input class="hbce-input" id="tax_code" name="tax_code" type="text" placeholder="CF..." />
-          </div>
-          <div>
-            <label class="hbce-label" for="doc_id">Documento (numero)</label>
-            <input class="hbce-input" id="doc_id" name="doc_id" type="text" placeholder="CIE/Passaporto..." />
-          </div>
+      <div class="hbce-grid hbce-grid--2">
+        <div class="hbce-card">
+          <h3 class="hbce-h3">Codice Fiscale (opzionale)</h3>
+          <input id="cf" class="hbce-input" type="text" placeholder="es. CLTMNL..." />
+          <p class="hbce-note" style="margin-top:.75rem;">Non verrà pubblicato nel registry.</p>
         </div>
 
-        <p class="hbce-note" style="margin-top:.75rem;">
-          Policy: <strong>NO-IDENTITY-CUSTODY</strong>. Il pubblico vede solo hash-only.
-        </p>
+        <div class="hbce-card">
+          <h3 class="hbce-h3">Documento UE (opzionale)</h3>
+          <input id="docType" class="hbce-input" type="text" placeholder="es. CIE / PASSAPORTO" />
+          <input id="docNumber" class="hbce-input" type="text" placeholder="Numero documento (opzionale)" style="margin-top:.5rem;" />
+          <p class="hbce-note" style="margin-top:.75rem;">Non verrà pubblicato nel registry.</p>
+        </div>
+      </div>
+
+      <p class="hbce-note" style="margin-top:1rem;">
+        Se lasci vuoto tutto l’Annex UE, l’IPR resta valido come identità operativa base.
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Step 3 — Pacchetto</h2>
+
+      <div class="hbce-grid hbce-grid--2">
+        <div class="hbce-card">
+          <h3 class="hbce-h3">Selezione</h3>
+          <select id="package" class="hbce-input">
+            <option value="BASE_19" selected>IPR BASE (EU) — 19€ — SOFT</option>
+            <option value="BASE_IPFS">IPR BASE + IPFS — SOFT</option>
+            <option value="BASE_IPFS_EVM">IPR BASE + IPFS + EVM — SOFT</option>
+            <option value="BASE_IPFS_EVM_BTC">IPR BASE + IPFS + EVM + BTC — SOFT</option>
+            <option value="EU_CERT_HARD">EU/CERT (HARD ±2 min) — istituzionale</option>
+          </select>
+
+          <p class="hbce-note" style="margin-top:.75rem;">
+            In questa fase il wizard genera solo file e hash.
+            Gli ancoraggi crypto (IPFS/EVM/BTC) sono upgrade successivo.
+          </p>
+        </div>
+
+        <div class="hbce-card">
+          <h3 class="hbce-h3">Output (sempre)</h3>
+          <ul class="hbce-list">
+            <li><strong>IPR_RELEASE.json</strong> — file identità + hash integrità</li>
+            <li><strong>ISSUER_CERTIFICATE.json</strong> — certificazione emittente</li>
+            <li><strong>REGISTRY_ENTRY.json</strong> — entry hash-only pronta per append</li>
+          </ul>
+          <p class="hbce-note" style="margin-top:.75rem;">
+            Regola: non modificare i file dopo emissione (altrimenti hash cambia).
+          </p>
+        </div>
       </div>
     </section>
 
-    <!-- PANEL: POLICY -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Policy</h2>
-      <div class="hbce-card">
-        <ul class="hbce-list">
-          <li><strong>UE-first</strong> · <strong>Audit-first</strong> · <strong>Fail-closed</strong></li>
-          <li><strong>Hash-only</strong> pubblico</li>
-          <li><strong>Append-only</strong> registry</li>
-          <li><strong>Issuer</strong>: 🜏 HERMETICUM B.C.E. S.r.l.</li>
-          <li><strong>Metrological HARD</strong>: append entro ±2 min</li>
-        </ul>
+      <h2 class="hbce-h2">Step 4 — Genera</h2>
 
-        <label class="hbce-check">
-          <input type="checkbox" id="accept" />
-          Accetto: se cambia la radice operativa → <strong>nuovo IPR</strong>.
-        </label>
-      </div>
-    </section>
-
-    <!-- PANEL: OUTPUT -->
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Genera (local-first)</h2>
       <div class="hbce-card">
         <p class="hbce-card__text">
-          Il sistema genera e scarica:
-          <strong>IPR_RELEASE.json</strong>, <strong>ISSUER_CERTIFICATE.json</strong>, <strong>REGISTRY_ENTRY.json</strong>.
+          Premi “GENERA” per creare i file. Tutto avviene localmente.
         </p>
 
         <div class="hbce-actions">
-          <button class="hbce-btn hbce-btn--primary" id="generateBtn" type="button">GENERATE & DOWNLOAD</button>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/pricing/">PRICING</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+          <button class="hbce-btn hbce-btn--primary" id="btnGenerate">GENERA IPR</button>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">OPEN REGISTRY</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">OPEN VERIFY</a>
         </div>
 
-        <div class="hbce-card" style="margin-top:1rem;">
-          <p class="hbce-card__text">
-            <strong>HARD window:</strong> <span id="windowState">non avviata</span><br/>
-            Residuo: <strong><span id="countdown">--:--</span></strong>
+        <p class="hbce-note" style="margin-top:1rem;">
+          Sequenza corretta: <strong>GENERA → APPEND REGISTRY → VERIFY</strong>.
+          Se salti registry, verify non può passare.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Risultato</h2>
+
+      <div class="hbce-grid hbce-grid--2">
+        <div class="hbce-card">
+          <h3 class="hbce-h3">Hash (payload_sha256)</h3>
+          <p class="hbce-card__text">Questa è la prova minima: servirà per verify e registry.</p>
+          <input id="outHash" class="hbce-input" type="text" readonly placeholder="—" />
+          <p class="hbce-note" id="outTs" style="margin-top:.75rem;">timestamp: —</p>
+        </div>
+
+        <div class="hbce-card">
+          <h3 class="hbce-h3">Registry entry (hash-only)</h3>
+          <p class="hbce-card__text">Copia/incolla nel file <code>registry/registry.json</code> dentro <code>entries[]</code>.</p>
+          <textarea id="outRegistry" class="hbce-input" rows="8" readonly placeholder="—"></textarea>
+          <div class="hbce-actions" style="margin-top:.75rem;">
+            <button class="hbce-btn" id="btnCopyRegistry">COPIA ENTRY</button>
+          </div>
+          <p class="hbce-note" style="margin-top:.75rem;">
+            Nel registry: solo nickname + hash + timestamp. Nessun dato UE.
           </p>
-          <p class="hbce-muted" id="windowHint">La finestra parte al momento della generazione.</p>
         </div>
+      </div>
 
-        <p class="hbce-note" id="status">Stato: pronto.</p>
+      <div class="hbce-card" style="margin-top:1rem;">
+        <h3 class="hbce-h3">Download</h3>
+        <p class="hbce-card__text">
+          Scarica i 3 file. Non modificarli dopo download.
+        </p>
+        <div class="hbce-actions">
+          <button class="hbce-btn hbce-btn--primary" id="btnDlRelease" disabled>DOWNLOAD IPR_RELEASE.json</button>
+          <button class="hbce-btn" id="btnDlCert" disabled>DOWNLOAD ISSUER_CERTIFICATE.json</button>
+          <button class="hbce-btn" id="btnDlEntry" disabled>DOWNLOAD REGISTRY_ENTRY.json</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Issuer</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Hallmark: <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong><br/>
+          Società: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong><br/>
+          Policy: UE-first · Audit-first · Fail-closed · Hash-only · No identity custody · Append-only
+        </p>
       </div>
     </section>
 
   </main>
 
   <div data-hbce="footer"></div>
-
   <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
-  <script src="/hermeticum-bce-platform/assets/ipr-gen.js"></script>
 
   <script>
-    (function(){
-      const HARD_MS = 2 * 60 * 1000;
+    // ---------- deterministic JSON stringify (stable keys) ----------
+    function stableStringify(obj) {
+      if (obj === null || typeof obj !== "object") return JSON.stringify(obj);
+      if (Array.isArray(obj)) return "[" + obj.map(stableStringify).join(",") + "]";
+      const keys = Object.keys(obj).sort();
+      return "{" + keys.map(k => JSON.stringify(k) + ":" + stableStringify(obj[k])).join(",") + "}";
+    }
 
-      const statusEl = document.getElementById("status");
-      const btn = document.getElementById("generateBtn");
+    // ---------- sha256 hex ----------
+    async function sha256Hex(text) {
+      const enc = new TextEncoder();
+      const buf = await crypto.subtle.digest("SHA-256", enc.encode(text));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+    }
 
-      const windowState = document.getElementById("windowState");
-      const countdownEl = document.getElementById("countdown");
-      const windowHint = document.getElementById("windowHint");
+    function isoNow() {
+      return new Date().toISOString();
+    }
 
-      let tStart = null;
-      let timer = null;
+    function downloadJson(filename, obj) {
+      const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
 
-      function setStatus(t){ statusEl.textContent = "Stato: " + t; }
+    function clean(s) { return String(s || "").trim(); }
 
-      function fmt(ms){
-        const s = Math.max(0, Math.floor(ms/1000));
-        const m = String(Math.floor(s/60)).padStart(2,"0");
-        const r = String(s%60).padStart(2,"0");
-        return `${m}:${r}`;
+    function packageMode(pkg) {
+      return (pkg === "EU_CERT_HARD") ? "HARD" : "SOFT";
+    }
+
+    // outputs cached
+    let OUT_RELEASE = null;
+    let OUT_CERT = null;
+    let OUT_ENTRY = null;
+
+    document.getElementById("btnGenerate").addEventListener("click", async () => {
+      const entity_type = clean(document.getElementById("entityType").value);
+      const nickname = clean(document.getElementById("nickname").value);
+
+      if (!nickname) {
+        alert("Inserisci un nickname pubblico (es. JOKER-C2).");
+        return;
       }
 
-      function startHardWindow(){
-        tStart = Date.now();
-        windowState.textContent = "ATTIVA (HARD)";
-        windowHint.textContent = "Apri DONE e append subito nel registry (±2 min).";
+      const pkg = clean(document.getElementById("package").value);
+      const ts = isoNow();
 
-        if(timer) clearInterval(timer);
-        timer = setInterval(() => {
-          const left = HARD_MS - (Date.now() - tStart);
-          countdownEl.textContent = fmt(left);
+      // Annex UE (optional, stays in file only)
+      const annex_ue = {
+        cod_fiscale: clean(document.getElementById("cf").value) || null,
+        document: {
+          type: clean(document.getElementById("docType").value) || null,
+          number: clean(document.getElementById("docNumber").value) || null
+        }
+      };
 
-          if(left <= 0){
-            windowState.textContent = "SCADUTA";
-            windowHint.textContent = "Finestra scaduta: rigenera e ripeti append immediato.";
-            clearInterval(timer);
-          }
-        }, 250);
+      // Minimal canonical payload (what gets hashed)
+      // Important: hash should be stable and independent from UI artifacts.
+      const payload = {
+        proto: "HBCE-IPR-PAYLOAD-v1",
+        issuer: "🜏 HERMETICUM B.C.E. S.r.l.",
+        jurisdiction: "EU",
+        policy: {
+          UE_FIRST: true,
+          AUDIT_FIRST: true,
+          FAIL_CLOSED: true,
+          HASH_ONLY: true,
+          NO_IDENTITY_CUSTODY: true,
+          APPEND_ONLY: true
+        },
+        subject: {
+          entity_type,
+          nickname
+        },
+        package: {
+          code: pkg,
+          mode: packageMode(pkg)
+        },
+        timestamp: ts,
+        annex_ue: annex_ue
+      };
+
+      const canonical = stableStringify(payload);
+      const payload_sha256 = await sha256Hex(canonical);
+
+      // Public registry entry (hash-only)
+      const registry_entry = {
+        nickname,
+        payload_sha256,
+        timestamp: ts
+      };
+
+      // IPR release (robust schema: hash_integrity + registry.public_entry)
+      const ipr_release = {
+        proto: "HBCE-IPR-RELEASE-v2",
+        kind: "IPR_RELEASE_FILE",
+        issuer: {
+          hallmark: "HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA",
+          legal_name: "🜏 HERMETICUM B.C.E. S.r.l.",
+          jurisdiction: "EU"
+        },
+        subject: {
+          entity_type,
+          nickname
+        },
+        package: pkg,
+        timestamp: ts,
+        hash_integrity: {
+          algo: "SHA-256",
+          payload_sha256,
+          canonicalization: "stableStringify(keys-sorted)"
+        },
+        payload: payload,
+        registry: {
+          kind: "HASH_ONLY_PUBLIC_ENTRY",
+          public_entry: registry_entry
+        },
+        next: {
+          registry_append_required: true,
+          verify: "/hermeticum-bce-platform/verify/",
+          registry: "/hermeticum-bce-platform/registry/",
+          anchors: "/hermeticum-bce-platform/anchor/"
+        }
+      };
+
+      // Issuer certificate (minimal; public proof is the registry match)
+      const issuer_certificate = {
+        proto: "HBCE-ISSUER-CERTIFICATE-v1",
+        kind: "ISSUER_CERTIFICATE",
+        issuer: {
+          hallmark: "HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA",
+          legal_name: "🜏 HERMETICUM B.C.E. S.r.l.",
+          jurisdiction: "EU"
+        },
+        policy: [
+          "UE_FIRST",
+          "AUDIT_FIRST",
+          "FAIL_CLOSED",
+          "HASH_ONLY",
+          "NO_IDENTITY_CUSTODY",
+          "APPEND_ONLY"
+        ],
+        note: "Questo certificato descrive l’emittente. La prova pubblica minima è l’entry hash-only nel registry append-only."
+      };
+
+      // Cache outputs
+      OUT_RELEASE = ipr_release;
+      OUT_CERT = issuer_certificate;
+      OUT_ENTRY = registry_entry;
+
+      // UI outputs
+      document.getElementById("outHash").value = payload_sha256;
+      document.getElementById("outTs").textContent = "timestamp: " + ts;
+      document.getElementById("outRegistry").value = JSON.stringify(registry_entry, null, 2);
+
+      // Enable downloads
+      document.getElementById("btnDlRelease").disabled = false;
+      document.getElementById("btnDlCert").disabled = false;
+      document.getElementById("btnDlEntry").disabled = false;
+    });
+
+    document.getElementById("btnCopyRegistry").addEventListener("click", async () => {
+      const txt = document.getElementById("outRegistry").value;
+      if (!txt || txt.trim() === "" || txt.trim() === "—") return;
+      try {
+        await navigator.clipboard.writeText(txt);
+        alert("Entry copiata. Ora appendila in registry/registry.json dentro entries[].");
+      } catch {
+        alert("Copia non riuscita. Seleziona e copia manualmente.");
       }
+    });
 
-      function getPkg(){
-        const el = document.querySelector('[name="pkg"]:checked');
-        return el ? el.value : "BASE_19";
-      }
-
-      async function onGenerate(){
-        const accept = document.getElementById("accept");
-        if(!accept.checked){
-          alert("Devi accettare la policy operativa.");
-          return;
-        }
-
-        const entityType = document.getElementById("entity_type").value || "HUMAN";
-        const nickname = (document.getElementById("nickname").value || "").trim();
-        const pkg = getPkg();
-
-        const annex = {
-          full_name: (document.getElementById("full_name").value || "").trim() || null,
-          tax_code: (document.getElementById("tax_code").value || "").trim() || null,
-          doc_id: (document.getElementById("doc_id").value || "").trim() || null
-        };
-
-        if(!nickname){
-          alert("Inserisci un nickname operativo.");
-          return;
-        }
-
-        if(!window.hbceIprGen || !window.hbceIprGen.generateAndDownload){
-          alert("Generatore mancante: assets/ipr-gen.js non caricato.");
-          return;
-        }
-
-        setStatus("generazione in corso…");
-        try{
-          const out = await window.hbceIprGen.generateAndDownload({ entityType, nickname, pkg, annex });
-          startHardWindow();
-
-          const h = out && out.ipr && out.ipr.hash_integrity ? out.ipr.hash_integrity.payload_sha256 : "";
-          const t = out && out.ipr && out.ipr.root_identity ? out.ipr.root_identity.created_at_utc : "";
-          setStatus("OK. Redirect a DONE…");
-
-          const url = `/hermeticum-bce-platform/create/done/?h=${encodeURIComponent(h)}&n=${encodeURIComponent(nickname)}&t=${encodeURIComponent(t)}`;
-          setTimeout(() => { window.location.href = url; }, 350);
-
-        }catch(e){
-          console.error(e);
-          setStatus("errore (vedi console).");
-          alert("Errore generazione. Apri console e verifica.");
-        }
-      }
-
-      btn.addEventListener("click", onGenerate);
-    })();
+    document.getElementById("btnDlRelease").addEventListener("click", () => {
+      if (!OUT_RELEASE) return;
+      downloadJson("IPR_RELEASE.json", OUT_RELEASE);
+    });
+    document.getElementById("btnDlCert").addEventListener("click", () => {
+      if (!OUT_CERT) return;
+      downloadJson("ISSUER_CERTIFICATE.json", OUT_CERT);
+    });
+    document.getElementById("btnDlEntry").addEventListener("click", () => {
+      if (!OUT_ENTRY) return;
+      downloadJson("REGISTRY_ENTRY.json", OUT_ENTRY);
+    });
   </script>
 </body>
 </html>
