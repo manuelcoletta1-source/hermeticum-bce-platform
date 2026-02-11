@@ -3,158 +3,346 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VERIFY — Public Verification</title>
-  <meta name="description" content="Verifica pubblica IPR. Fail-closed. Hash-only registry. SOFT/HARD validity model." />
+  <title>VERIFY — IPR Public Verification</title>
+  <meta name="description" content="Verifica pubblica IPR. Hash-only registry, append-only, fail-closed. Verify by hash (pubblico) o by file (integrità locale). BASE=SOFT, EU/CERT=HARD." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
 <body>
-<div data-hbce="header"></div>
+  <div data-hbce="header"></div>
 
-<main class="hbce-container hbce-main">
+  <main class="hbce-container hbce-main">
 
-<section class="hbce-hero">
-<div class="hbce-hero__kicker">VERIFY · PUBLIC · FAIL-CLOSED</div>
-<h1 class="hbce-hero__title">IPR Verification</h1>
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">VERIFY · FAIL-CLOSED · HASH-ONLY</div>
+      <h1 class="hbce-hero__title">IPR Verification</h1>
+      <p class="hbce-hero__lead">
+        Verifica pubblica di coerenza operativa tra <strong>file rilasciato</strong> e <strong>registry append-only</strong>.
+        Il registry pubblico non contiene dati personali: solo <strong>nickname + hash + timestamp</strong>.
+      </p>
 
-<p class="hbce-hero__lead">
-Verifica pubblica di coerenza operativa tra file rilasciato e registry append-only.
-Sistema hash-only, audit-first, fail-closed.
-</p>
+      <div class="hbce-card" style="margin-top:1rem;">
+        <p class="hbce-card__text">
+          <strong>VALID (SOFT)</strong> = match registry + file coerente (nessun vincolo temporale, es. BASE_19)<br><br>
+          <strong>VALID (HARD)</strong> = match registry + file coerente + finestra metrologica <strong>±2 min</strong> (EU/CERT)<br><br>
+          <strong>INVALID</strong> = mismatch hash, file non conforme, registry assente/invalido o policy HARD fallita<br><br>
+          <strong>Hash-only</strong>: in modalità “verify by hash” l’integrità file è <strong>NOT_CHECKED</strong>.
+        </p>
+      </div>
+    </section>
 
-<p class="hbce-note">
-Il registry pubblico non contiene dati personali.
-Solo nickname + hash + timestamp.
-</p>
-</section>
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Verify</h2>
 
-<section class="hbce-section">
-<h2 class="hbce-h2">Validity model</h2>
+      <div class="hbce-grid hbce-grid--2">
 
-<div class="hbce-card">
-<p class="hbce-card__text">
+        <div class="hbce-card">
+          <h3 class="hbce-h3">A) Verify by hash (pubblico)</h3>
+          <p class="hbce-card__text">
+            Inserisci <strong>payload_sha256</strong> oppure usa <code>?h=...</code>.
+            Questo controlla solo la presenza nel registry (hash-only proof).
+          </p>
 
-<strong>VALID (SOFT)</strong> = file conforme + hash coerente + match registry append-only (nessun vincolo temporale)<br><br>
+          <input id="hashInput" class="hbce-input" type="text" placeholder="payload_sha256 (64 hex)" />
 
-<strong>VALID (HARD)</strong> = file conforme + hash coerente + match registry append-only + finestra metrologica ±2 min<br><br>
+          <div class="hbce-actions" style="margin-top:.75rem;">
+            <button class="hbce-btn hbce-btn--primary" id="btnVerifyHash">VERIFY HASH</button>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">OPEN REGISTRY</a>
+          </div>
 
-<strong>INVALID</strong> = mismatch hash, file non conforme, registry assente o incoerente<br><br>
+          <p class="hbce-note" style="margin-top:.75rem;">
+            A) è pubblico: non richiede file. Integrità file = NOT_CHECKED.
+          </p>
+        </div>
 
-<strong>Metrological HARD (EU/CERT)</strong>:
-nuove entry devono essere appendate entro ±2 min (controllo CI / policy)<br><br>
+        <div class="hbce-card">
+          <h3 class="hbce-h3">B) Verify by file (locale)</h3>
+          <p class="hbce-card__text">
+            Carica <strong>solo</strong> <code>IPR_RELEASE.json</code>.
+            Il file viene letto localmente (nessun upload) e confrontato col registry.
+          </p>
 
-<strong>Pubblico hash-only</strong>:
-nel registry solo nickname + hash + timestamp.
-Nessun dato personale.
+          <input id="fileInput" class="hbce-input" type="file" accept=".json,application/json" />
 
-</p>
-</div>
-</section>
+          <div class="hbce-actions" style="margin-top:.75rem;">
+            <button class="hbce-btn hbce-btn--primary" id="btnVerifyFile">VERIFY FILE</button>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/create/wizard/">EMIT (WIZARD)</a>
+          </div>
 
-<section class="hbce-section">
-<h2 class="hbce-h2">Verify</h2>
+          <p class="hbce-note" style="margin-top:.75rem;">
+            Se carichi <em>ISSUER_CERTIFICATE</em> o <em>REGISTRY_ENTRY</em> → INVALID (file sbagliato).
+          </p>
+        </div>
 
-<div class="hbce-grid hbce-grid--2">
+      </div>
+    </section>
 
-<div class="hbce-card">
-<h3 class="hbce-h3">Verify by file</h3>
-<p class="hbce-card__text">
-Carica IPR_RELEASE.json per verifica completa.
-</p>
-<input type="file" id="fileInput" class="hbce-input" />
-<button class="hbce-btn hbce-btn--primary" onclick="verifyFile()">VERIFY FILE</button>
-</div>
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Result</h2>
+      <div class="hbce-card">
+        <p id="statusLine" class="hbce-card__text"><strong>STATUS:</strong> —</p>
+        <p id="reasonLine" class="hbce-note">—</p>
 
-<div class="hbce-card">
-<h3 class="hbce-h3">Verify by hash</h3>
-<p class="hbce-card__text">
-Inserisci payload hash oppure usa ?h=
-</p>
-<input type="text" id="hashInput" class="hbce-input" placeholder="payload_sha256" />
-<button class="hbce-btn hbce-btn--primary" onclick="verifyHash()">VERIFY HASH</button>
-</div>
+        <div style="margin-top:1rem;">
+          <h3 class="hbce-h3">Dettagli</h3>
+          <ul class="hbce-list" id="detailsList">
+            <li>Integrità file: —</li>
+            <li>Registry match: —</li>
+            <li>Metrological: —</li>
+            <li>Package: —</li>
+            <li>Nickname: —</li>
+            <li>Timestamp: —</li>
+            <li>Hash: —</li>
+          </ul>
+        </div>
 
-</div>
-</section>
+        <div class="hbce-actions" style="margin-top:1rem;">
+          <a class="hbce-btn" id="openVerifyLink" href="#">OPEN ?h=</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/registry.json">OPEN registry.json</a>
+        </div>
+      </div>
+    </section>
 
-<section class="hbce-section">
-<h2 class="hbce-h2">Result</h2>
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Issuer</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Hallmark: <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong><br />
+          Società: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong>
+        </p>
+      </div>
+    </section>
 
-<div class="hbce-card">
-<p id="status"><strong>STATUS:</strong> —</p>
-<p id="details" class="hbce-note">—</p>
-</div>
+  </main>
 
-</section>
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 
-<section class="hbce-section">
-<h2 class="hbce-h2">Issuer</h2>
-<div class="hbce-card">
-<p class="hbce-card__text">
-HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br>
-🜏 HERMETICUM B.C.E. S.r.l.
-</p>
-</div>
-</section>
+  <script>
+    const HARD_WINDOW_MS = 2 * 60 * 1000;
 
-</main>
+    function esc(s){
+      return String(s||"").replace(/[&<>"']/g, m => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[m]));
+    }
 
-<div data-hbce="footer"></div>
-<script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+    function isHex64(s){
+      return /^[0-9a-f]{64}$/i.test((s||"").trim());
+    }
 
-<script>
-async function loadRegistry(){
-const r = await fetch("/hermeticum-bce-platform/registry/registry.json",{cache:"no-store"});
-return await r.json();
-}
+    function setStatus(status, reason){
+      document.getElementById("statusLine").innerHTML = "<strong>STATUS:</strong> " + esc(status);
+      document.getElementById("reasonLine").textContent = reason || "—";
+    }
 
-function setStatus(s,d){
-document.getElementById("status").innerHTML="<strong>STATUS:</strong> "+s;
-document.getElementById("details").innerText=d;
-}
+    function setDetails(d){
+      const rows = [
+        ["Integrità file", d.fileIntegrity],
+        ["Registry match", d.registryMatch],
+        ["Metrological", d.metrological],
+        ["Package", d.pkg],
+        ["Nickname", d.nickname],
+        ["Timestamp", d.ts],
+        ["Hash", d.hash]
+      ];
+      const ul = document.getElementById("detailsList");
+      ul.innerHTML = "";
+      rows.forEach(([k,v]) => {
+        const li = document.createElement("li");
+        li.textContent = k + ": " + (v ?? "—");
+        ul.appendChild(li);
+      });
 
-async function verifyHash(){
-const h=document.getElementById("hashInput").value.trim().toLowerCase();
-if(!h){setStatus("INVALID","hash mancante");return;}
+      const link = document.getElementById("openVerifyLink");
+      if (d.hash && isHex64(d.hash)) {
+        link.href = "/hermeticum-bce-platform/verify/?h=" + encodeURIComponent(d.hash);
+        link.textContent = "OPEN ?h=" + d.hash.slice(0,10) + "…";
+      } else {
+        link.href = "#";
+        link.textContent = "OPEN ?h=";
+      }
+    }
 
-const reg=await loadRegistry();
-const found=reg.entries.find(e=>e.payload_sha256===h);
+    function getQueryParam(name){
+      return new URLSearchParams(location.search).get(name);
+    }
 
-if(found){
-setStatus("VALID (HASH)","registry match trovato — hash-only public proof");
-}else{
-setStatus("INVALID","hash non presente nel registry");
-}
-}
+    async function loadRegistry(){
+      const r = await fetch("/hermeticum-bce-platform/registry/registry.json", { cache: "no-store" });
+      if(!r.ok) throw new Error("registry fetch failed");
+      return await r.json();
+    }
 
-async function verifyFile(){
-const f=document.getElementById("fileInput").files[0];
-if(!f){setStatus("INVALID","file mancante");return;}
+    function findEntry(reg, hash){
+      const entries = (reg && Array.isArray(reg.entries)) ? reg.entries : [];
+      const h = String(hash||"").toLowerCase();
+      return entries.find(e => String(e.payload_sha256||"").toLowerCase() === h) || null;
+    }
 
-const txt=await f.text();
-let j;
-try{j=JSON.parse(txt);}catch{setStatus("INVALID","json non valido");return;}
+    // Robust extractor for IPR_RELEASE:
+    // Supports:
+    // - hash_integrity.payload_sha256 (wizard v2)
+    // - registry.public_entry.payload_sha256 (wizard v2)
+    // - hash.payload_sha256 (legacy)
+    // - payload_sha256 (flat)
+    function extractFromRelease(j){
+      const hashCandidates = [
+        j?.hash_integrity?.payload_sha256,
+        j?.registry?.public_entry?.payload_sha256,
+        j?.hash?.payload_sha256,
+        j?.payload_sha256
+      ].filter(Boolean).map(x => String(x).trim());
 
-const hash=j.hash?.payload_sha256;
-if(!hash){setStatus("INVALID","hash non presente nel file");return;}
+      const hash = hashCandidates.find(isHex64) || null;
 
-const reg=await loadRegistry();
-const found=reg.entries.find(e=>e.payload_sha256===hash);
+      const nickname =
+        (typeof j?.subject?.nickname === "string" ? j.subject.nickname :
+         typeof j?.registry?.public_entry?.nickname === "string" ? j.registry.public_entry.nickname :
+         typeof j?.nickname === "string" ? j.nickname :
+         null);
 
-if(!found){
-setStatus("INVALID","registry match mancante");
-return;
-}
+      const pkg =
+        (typeof j?.package === "string" ? j.package :
+         typeof j?.package?.code === "string" ? j.package.code :
+         null);
 
-if(j.package==="BASE_19"){
-setStatus("VALID (SOFT)","ipR base valido — nessun vincolo temporale");
-return;
-}
+      const ts =
+        j?.timestamp ||
+        j?.registry?.public_entry?.timestamp ||
+        null;
 
-setStatus("VALID","coerenza file + registry verificata");
-}
-</script>
+      return { hash, nickname, pkg, ts };
+    }
 
+    function metrologicalMode(pkg){
+      return (pkg === "EU_CERT_HARD") ? "HARD" : "SOFT";
+    }
+
+    function hardWindowOk(ts){
+      if(!ts) return false;
+      const t = Date.parse(ts);
+      if(Number.isNaN(t)) return false;
+      const delta = Math.abs(Date.now() - t);
+      return delta <= HARD_WINDOW_MS;
+    }
+
+    async function verifyByHash(hash){
+      const h = (hash || "").trim();
+      if(!isHex64(h)){
+        setStatus("INVALID", "Hash non valido (serve 64 hex).");
+        setDetails({ fileIntegrity:"NOT_CHECKED", registryMatch:"NO", metrological:"NOT_APPLICABLE", pkg:"—", nickname:"—", ts:"—", hash:h || "—" });
+        return;
+      }
+
+      let reg;
+      try{
+        reg = await loadRegistry();
+      }catch{
+        setStatus("INVALID", "Registry non disponibile o JSON invalido (fail-closed).");
+        setDetails({ fileIntegrity:"NOT_CHECKED", registryMatch:"UNKNOWN", metrological:"NOT_APPLICABLE", pkg:"—", nickname:"—", ts:"—", hash:h });
+        return;
+      }
+
+      const entry = findEntry(reg, h);
+      if(!entry){
+        setStatus("INVALID", "Registry match non trovato.");
+        setDetails({ fileIntegrity:"NOT_CHECKED", registryMatch:"NO", metrological:"NOT_APPLICABLE", pkg:"UNKNOWN", nickname:"—", ts:"—", hash:h });
+        return;
+      }
+
+      setStatus("VALID (HASH)", "Registry match trovato (hash-only proof).");
+      setDetails({ fileIntegrity:"NOT_CHECKED", registryMatch:"YES", metrological:"NOT_APPLICABLE", pkg:"UNKNOWN", nickname: entry.nickname || "—", ts: entry.timestamp || "—", hash:h });
+    }
+
+    async function verifyByFile(file){
+      if(!file){
+        setStatus("INVALID", "File mancante.");
+        setDetails({ fileIntegrity:"FAILED", registryMatch:"—", metrological:"—", pkg:"—", nickname:"—", ts:"—", hash:"—" });
+        return;
+      }
+
+      let j;
+      try{
+        j = JSON.parse(await file.text());
+      }catch{
+        setStatus("INVALID", "JSON non valido.");
+        setDetails({ fileIntegrity:"FAILED", registryMatch:"—", metrological:"—", pkg:"—", nickname:"—", ts:"—", hash:"—" });
+        return;
+      }
+
+      // Simple guard: must look like IPR_RELEASE
+      const proto = String(j?.proto || "");
+      if(!proto.startsWith("HBCE-IPR-RELEASE")){
+        setStatus("INVALID", "File sbagliato: carica solo IPR_RELEASE.json.");
+        setDetails({ fileIntegrity:"FAILED", registryMatch:"—", metrological:"—", pkg:"—", nickname:"—", ts:"—", hash:"—" });
+        return;
+      }
+
+      const meta = extractFromRelease(j);
+      if(!meta.hash){
+        setStatus("INVALID", "hash non presente nel file (schema non riconosciuto).");
+        setDetails({ fileIntegrity:"FAILED", registryMatch:"—", metrological:"—", pkg: meta.pkg || "—", nickname: meta.nickname || "—", ts: meta.ts || "—", hash:"—" });
+        return;
+      }
+
+      let reg;
+      try{
+        reg = await loadRegistry();
+      }catch{
+        setStatus("INVALID", "Registry non disponibile o JSON invalido (fail-closed).");
+        setDetails({ fileIntegrity:"CHECKED", registryMatch:"UNKNOWN", metrological:"NOT_EVALUATED", pkg: meta.pkg || "—", nickname: meta.nickname || "—", ts: meta.ts || "—", hash: meta.hash });
+        return;
+      }
+
+      const entry = findEntry(reg, meta.hash);
+      if(!entry){
+        setStatus("INVALID", "Registry match mancante (append required).");
+        setDetails({ fileIntegrity:"CHECKED", registryMatch:"NO", metrological:"NOT_EVALUATED", pkg: meta.pkg || "—", nickname: meta.nickname || "—", ts: meta.ts || "—", hash: meta.hash });
+        return;
+      }
+
+      const mode = metrologicalMode(meta.pkg);
+      if(mode === "HARD"){
+        const ok = hardWindowOk(meta.ts || entry.timestamp);
+        if(!ok){
+          setStatus("INVALID", "Metrological HARD fallita (fuori ±2 min o timestamp mancante).");
+          setDetails({ fileIntegrity:"CHECKED", registryMatch:"YES", metrological:"HARD_FAIL", pkg: meta.pkg || "—", nickname: meta.nickname || entry.nickname || "—", ts: (meta.ts || entry.timestamp || "—"), hash: meta.hash });
+          return;
+        }
+        setStatus("VALID (HARD)", "File + registry coerenti e dentro finestra metrologica.");
+        setDetails({ fileIntegrity:"CHECKED", registryMatch:"YES", metrological:"HARD_OK", pkg: meta.pkg || "—", nickname: meta.nickname || entry.nickname || "—", ts: (meta.ts || entry.timestamp || "—"), hash: meta.hash });
+        return;
+      }
+
+      setStatus("VALID (SOFT)", "File + registry coerenti (BASE, nessun vincolo temporale).");
+      setDetails({ fileIntegrity:"CHECKED", registryMatch:"YES", metrological:"SOFT_OK", pkg: meta.pkg || "—", nickname: meta.nickname || entry.nickname || "—", ts: (meta.ts || entry.timestamp || "—"), hash: meta.hash });
+    }
+
+    // Wire
+    document.getElementById("btnVerifyHash").addEventListener("click", () => {
+      verifyByHash(document.getElementById("hashInput").value).catch(() => {
+        setStatus("INVALID", "Errore durante verify hash.");
+      });
+    });
+
+    document.getElementById("btnVerifyFile").addEventListener("click", () => {
+      verifyByFile(document.getElementById("fileInput").files[0]).catch(() => {
+        setStatus("INVALID", "Errore durante verify file.");
+      });
+    });
+
+    // Boot: support ?h=
+    (function boot(){
+      const h = getQueryParam("h");
+      if(h){
+        document.getElementById("hashInput").value = h;
+        verifyByHash(h).catch(() => setStatus("INVALID", "Errore durante boot verify."));
+        return;
+      }
+      setStatus("—", "Inserisci hash oppure carica IPR_RELEASE.json.");
+      setDetails({ fileIntegrity:"—", registryMatch:"—", metrological:"—", pkg:"—", nickname:"—", ts:"—", hash:"—" });
+    })();
+  </script>
 </body>
 </html>
-```0
