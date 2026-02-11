@@ -3,222 +3,85 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RECEIPT — Genera entry registry (append-only)</title>
-  <meta name="description" content="Generazione receipt per registry append-only: nickname + payload_sha256 + timestamp. Nessuna custodia dati. Fail-closed." />
+  <title>CREATE/RECEIPT — Declassato (Tool)</title>
+  <meta name="description" content="Pagina tool declassata. Il flusso canonico di emissione IPR è /create/wizard/ → /create/done/ → /registry/ → /verify/. UE-first, audit-first, fail-closed." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 <body>
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
+
+    <!-- DECLASS BANNER -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">RECEIPT · Registry entry · Append-only</div>
-      <h1 class="hbce-hero__title">Genera la receipt per il registry</h1>
+      <div class="hbce-hero__kicker">DECLASSATO · Tool (non canonico)</div>
+      <h1 class="hbce-hero__title">Receipt generator (tool)</h1>
       <p class="hbce-hero__lead">
-        Produci una entry JSON minimizzata e append-only:
-        <strong>nickname + hash + timestamp</strong>. Nessun dato personale.
-        Se non è verificabile → <strong>INVALID</strong>.
+        Questa pagina è uno <strong>strumento tecnico</strong>. Non è il percorso ufficiale di emissione.
+        Per emettere un IPR valido in modalità pubblica, usa il <strong>flusso canonico</strong>.
       </p>
-      <div class="hbce-hero__cta">
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/registry/">Apri REGISTRY</a>
+
+      <div class="hbce-actions" style="margin-top:1rem;">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">OPEN CANONICAL WIZARD</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/create/">CREATE GATEWAY</a>
         <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/create/">Torna a CREATE</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/positioning/">POSITIONING</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
       </div>
+
+      <p class="hbce-note" style="margin-top:1rem;">
+        Regola metrologica HARD: dopo generazione, append nel registry entro <strong>±2 minuti</strong>. Fuori finestra → CI blocca (fail-closed).
+      </p>
     </section>
 
+    <!-- TOOL MODE -->
     <section class="hbce-section">
-      <h2>Input</h2>
-
-      <div class="hbce-card hbce-card--wide">
-        <div class="hbce-grid" style="align-items:start">
-          <article class="hbce-card" style="margin:0">
-            <h3>Nickname operativo</h3>
-            <label class="hbce-meta" for="nickname">nickname</label>
-            <input id="nickname" class="hbce-input" placeholder="es. NODE-EU-001" autocomplete="off" />
-          </article>
-
-          <article class="hbce-card" style="margin:0">
-            <h3>payload_sha256 (pubblico)</h3>
-            <label class="hbce-meta" for="hash">payload_sha256</label>
-            <input id="hash" class="hbce-input" placeholder="64 hex (SHA-256)" autocomplete="off" />
-            <div class="hbce-meta" style="margin-top:8px" id="hashHint">—</div>
-          </article>
-        </div>
-
-        <hr class="hbce-hr" />
-
-        <h3>Allegato UE privato (opzionale, NON pubblicato)</h3>
-        <p class="hbce-p">
-          Incolla qui <strong>private_annex_sha256</strong> solo come promemoria locale.
-          Non viene inserito nell’entry del registry.
+      <h2 class="hbce-h2">Tool mode (preservato)</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Questo tool resta disponibile per usi tecnici/diagnostici.
+          Non sostituisce il wizard e non definisce la policy canonica.
         </p>
-        <label class="hbce-meta" for="privateHash">private_annex_sha256 (locale)</label>
-        <input id="privateHash" class="hbce-input" placeholder="opzionale (NON verrà pubblicato)" autocomplete="off" />
 
-        <div class="hbce-actions" style="margin-top:16px">
-          <button class="hbce-btn hbce-btn--primary" id="btn-generate">Genera entry JSON</button>
-          <button class="hbce-btn" id="btn-reset">Reset</button>
+        <ul class="hbce-list">
+          <li>Usa <strong>/create/wizard/</strong> per emissione cliente</li>
+          <li>Usa questo tool solo se sai esattamente cosa stai facendo</li>
+          <li>La validità pubblica resta sempre: <strong>registry match</strong> + <strong>verify fail-closed</strong></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- OPTIONAL: PLACEHOLDER FOR EXISTING TOOL UI -->
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Interfaccia tool</h2>
+      <div class="hbce-card">
+        <p class="hbce-muted">
+          Se qui sotto avevi già una UI/JS dedicata, reinseriscila in questa sezione mantenendo il banner “DECLASSATO”.
+          (Obiettivo: nessuna ambiguità per l’utente.)
+        </p>
+
+        <div class="hbce-card" style="margin-top:1rem;">
+          <p class="hbce-card__text">
+            Suggerimento: se vuoi, possiamo integrare questo tool nel wizard come “advanced” senza esporlo nel percorso pubblico.
+          </p>
         </div>
-
-        <div class="hbce-meta" id="status" style="margin-top:10px">Pronto.</div>
       </div>
     </section>
 
+    <!-- ISSUER -->
     <section class="hbce-section">
-      <h2>Output</h2>
-
-      <div class="hbce-grid">
-        <article class="hbce-card">
-          <div class="hbce-meta">ENTRY JSON (append-only)</div>
-          <textarea id="entry" class="hbce-textarea" rows="12" readonly placeholder="—"></textarea>
-
-          <div class="hbce-actions">
-            <button class="hbce-btn" id="copy-entry">Copia entry</button>
-            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/registry/">Vai a REGISTRY</a>
-            <a class="hbce-btn" id="btn-verify-link" href="/hermeticum-bce-platform/verify/">Apri VERIFY (prefill)</a>
-          </div>
-
-          <div class="hbce-meta" style="margin-top:10px">
-            “Apri VERIFY (prefill)” usa <code>?h=</code> e verifica automaticamente.
-          </div>
-        </article>
-
-        <article class="hbce-card">
-          <div class="hbce-meta">Nota locale (non pubblicare)</div>
-          <textarea id="localNote" class="hbce-textarea" rows="12" readonly placeholder="—"></textarea>
-          <div class="hbce-actions">
-            <button class="hbce-btn" id="copy-note">Copia nota</button>
-          </div>
-          <div class="hbce-meta" style="margin-top:10px">
-            Collegamento locale hash pubblico ↔ annex privato. Non va nel registry.
-          </div>
-        </article>
+      <h2 class="hbce-h2">Issuer</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Certificazione emissione: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong><br/>
+          Sigillo: <strong>🜏</strong><br/>
+          Hallmark: <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong>
+        </p>
       </div>
     </section>
 
-    <section class="hbce-section">
-      <div class="hbce-grid hbce-grid--tight">
-        <a class="hbce-tile" href="/hermeticum-bce-platform/create/">CREATE</a>
-        <a class="hbce-tile" href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
-        <a class="hbce-tile" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-        <a class="hbce-tile" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-      </div>
-      <div class="hbce-meta">Public = hash-only. Private = local-only. Zero custodia lato nodo.</div>
-    </section>
-
-    <section class="hbce-section">
-      <div class="hbce-card hbce-card--wide">
-        <div class="hbce-hallmark">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-        <div class="hbce-company">HERMETICUM B.C.E. S.r.l.</div>
-        <div class="hbce-meta">UE-first · audit-first · fail-closed · hash-only</div>
-      </div>
-    </section>
   </main>
 
   <div data-hbce="footer"></div>
   <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
-
-  <script>
-    (function(){
-      const $ = (id) => document.getElementById(id);
-
-      const nickname = $("nickname");
-      const hash = $("hash");
-      const privateHash = $("privateHash");
-
-      const hashHint = $("hashHint");
-      const status = $("status");
-
-      const btnGenerate = $("btn-generate");
-      const btnReset = $("btn-reset");
-
-      const entry = $("entry");
-      const localNote = $("localNote");
-
-      const copyEntry = $("copy-entry");
-      const copyNote = $("copy-note");
-
-      const verifyLink = $("btn-verify-link");
-
-      function setStatus(msg){ status.textContent = msg; }
-      function normalize(s){ return (s || "").trim(); }
-      function isHex64(s){ return /^[a-fA-F0-9]{64}$/.test(s); }
-      function nowISO(){ return new Date().toISOString(); }
-
-      async function copyText(text){
-        try{
-          await navigator.clipboard.writeText(text);
-          setStatus("Copiato.");
-        }catch(e){
-          setStatus("Copia non disponibile: seleziona e copia manualmente.");
-        }
-      }
-
-      function updateVerifyLink(h){
-        const base = "/hermeticum-bce-platform/verify/";
-        if(isHex64(h)){
-          verifyLink.href = base + "?h=" + encodeURIComponent(h);
-        }else{
-          verifyLink.href = base;
-        }
-      }
-
-      hash.addEventListener("input", () => {
-        const h = normalize(hash.value);
-        if(!h){ hashHint.textContent = "—"; updateVerifyLink(""); return; }
-        hashHint.textContent = isHex64(h) ? "Formato hash OK (64 hex)" : "Formato hash NON valido (atteso SHA-256 64 hex)";
-        updateVerifyLink(h);
-      });
-
-      btnReset.addEventListener("click", () => {
-        nickname.value = "";
-        hash.value = "";
-        privateHash.value = "";
-        entry.value = "";
-        localNote.value = "";
-        hashHint.textContent = "—";
-        updateVerifyLink("");
-        setStatus("Reset.");
-      });
-
-      btnGenerate.addEventListener("click", () => {
-        const n = normalize(nickname.value);
-        const h = normalize(hash.value);
-        const ph = normalize(privateHash.value);
-
-        if(!n){
-          setStatus("Inserisci nickname operativo.");
-          return;
-        }
-        if(!isHex64(h)){
-          setStatus("INVALID: payload_sha256 non valido (SHA-256 64 hex).");
-          return;
-        }
-
-        const e = { nickname: n, payload_sha256: h, timestamp: nowISO() };
-        entry.value = JSON.stringify(e, null, 2);
-
-        const note = {
-          note: "LOCAL_ONLY (non pubblicare)",
-          nickname: n,
-          public_payload_sha256: h,
-          private_annex_sha256: ph || null,
-          generated_at: nowISO()
-        };
-        localNote.value = JSON.stringify(note, null, 2);
-
-        updateVerifyLink(h);
-        setStatus("Entry generata. Ora: appendi in registry e/o apri VERIFY (prefill).");
-      });
-
-      copyEntry.addEventListener("click", () => copyText(entry.value || ""));
-      copyNote.addEventListener("click", () => copyText(localNote.value || ""));
-
-      // init
-      updateVerifyLink("");
-    })();
-  </script>
 </body>
 </html>
-
