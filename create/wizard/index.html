@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CREATE — IPR Wizard (Draft → Certified)</title>
-  <meta name="description" content="Wizard IPR EU-first: Draft locale (hash-only) → pagamento → Certified Pack (IPR release + issuer certificate + operational receipt + registry entry). Fail-closed." />
+  <title>CREATE — IPR Wizard (Git-style)</title>
+  <meta name="description" content="Creazione IPR in stile Git: nome, descrizione, bios_hash, location-now (quorum). Local-first, hash-only, fail-closed. Output: IPR_CANON.json + payload_sha256 + registry entry." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 <body>
@@ -12,95 +12,101 @@
 
   <main class="hbce-container hbce-main">
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CREATE · LOCAL-FIRST · HASH-ONLY · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">IPR Wizard</h1>
+      <div class="hbce-hero__kicker">CREATE · GIT-STYLE · LOCAL-FIRST · HASH-ONLY</div>
+      <h1 class="hbce-hero__title">Crea IPR (stile Git)</h1>
       <p class="hbce-hero__lead">
-        Flusso operativo in due fasi:
-        <strong>Draft</strong> (gratis, locale) → <strong>Certified</strong> (post-pagamento: certificazione + ricevuta firmata).
-        Nessuna custodia dati: il payload resta sul tuo dispositivo.
+        Questo wizard genera localmente un’identità operativa in stile Git:
+        <strong>nome</strong>, <strong>descrizione</strong>, <strong>bios_hash</strong> e <strong>location-now (quorum)</strong>.
+        Nessun dato viene inviato o custodito. Output: file canonico + hash + entry per registry.
+      </p>
+      <p class="hbce-note">
+        Location = dove sei ora (quorum). <strong>Non</strong> è nazionalità. Nessun indirizzo, nessuna via, nessuna coordinata.
       </p>
     </section>
 
     <section class="hbce-section">
-      <h2 class="hbce-h2">Fase 1 — Draft (gratuito, locale)</h2>
+      <h2 class="hbce-h2">Input (stile Git)</h2>
       <div class="hbce-card">
-        <p class="hbce-note">
-          Il Draft produce hash e file tecnici, ma <strong>non è una certificazione</strong>.
-          La certificazione (Issuer Certificate) viene rilasciata <strong>solo dopo pagamento</strong>.
-        </p>
-
-        <div class="hbce-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top:1rem;">
+        <div class="hbce-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
           <div>
-            <label class="hbce-label"><strong>Nickname (pubblico)</strong></label>
-            <input id="nick" class="hbce-input" placeholder="Es. Manuel Coletta / Azienda / Robot / Software" />
+            <label class="hbce-label"><strong>Nome (repo-name)</strong></label>
+            <input id="name" class="hbce-input" placeholder="Es. Manuel Coletta / CYBERGLOBAL / Robot-X1" />
+            <div class="hbce-note" style="margin-top:.35rem;">Obbligatorio. Nome pubblico leggibile.</div>
+          </div>
+
+          <div>
+            <label class="hbce-label"><strong>Descrizione (README short)</strong></label>
+            <input id="desc" class="hbce-input" placeholder="Es. Identità biologica primaria / Software operativo / Nodo aziendale…" />
+            <div class="hbce-note" style="margin-top:.35rem;">Obbligatorio. Contesto operativo.</div>
+          </div>
+
+          <div>
+            <label class="hbce-label"><strong>Primary Biological Hash (BIOS_HASH)</strong></label>
+            <input id="bios" class="hbce-input" placeholder="64 hex (sha-256) oppure stringa qualsiasi (verrà hashata)" />
             <div class="hbce-note" style="margin-top:.35rem;">
-              Nel registry pubblico comparirà solo nickname + hash + timestamp.
+              Hash-only. Se non è 64-hex, lo convertiamo in SHA-256 localmente. Nessun dato personale in chiaro.
             </div>
           </div>
+
           <div>
             <label class="hbce-label"><strong>Package</strong></label>
             <select id="pkg" class="hbce-input">
-              <option value="BASE_19">BASE_19 — SOFT (no window)</option>
+              <option value="BASE_19">BASE_19 — SOFT</option>
               <option value="EU_CERT">EU_CERT — HARD (±2 min)</option>
             </select>
-            <div class="hbce-note" style="margin-top:.35rem;">
-              EU_CERT abilita finestra metrologica HARD. BASE_19 = SOFT.
-            </div>
+            <div class="hbce-note" style="margin-top:.35rem;">BASE_19 = nessun vincolo temporale (SOFT).</div>
+          </div>
+        </div>
+
+        <hr style="border:none;border-top:1px solid rgba(0,0,0,.12); margin:1rem 0;" />
+
+        <div class="hbce-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+          <div>
+            <label class="hbce-label"><strong>Country (now)</strong></label>
+            <input id="country" class="hbce-input" placeholder="Es. IT / FR / DE" />
+          </div>
+          <div>
+            <label class="hbce-label"><strong>State/Province (now)</strong></label>
+            <input id="state" class="hbce-input" placeholder="Es. Piedmont / Bavaria / Île-de-France" />
+          </div>
+          <div>
+            <label class="hbce-label"><strong>Region (now)</strong></label>
+            <input id="region" class="hbce-input" placeholder="Es. Torino" />
+          </div>
+          <div>
+            <label class="hbce-label"><strong>City (now)</strong></label>
+            <input id="city" class="hbce-input" placeholder="Es. Torino" />
+          </div>
+          <div>
+            <label class="hbce-label"><strong>District / Quartiere (now)</strong></label>
+            <input id="district" class="hbce-input" placeholder="Es. San Salvario" />
+          </div>
+          <div>
+            <label class="hbce-label"><strong>Timezone (opzionale)</strong></label>
+            <input id="tz" class="hbce-input" placeholder="Es. Europe/Rome" />
           </div>
         </div>
 
         <div class="hbce-actions" style="margin-top:1rem;">
-          <button class="hbce-btn hbce-btn--primary" id="btnDraft">GENERA DRAFT</button>
+          <button class="hbce-btn hbce-btn--primary" id="btnGen">GENERA IPR</button>
           <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">APRI VERIFY</a>
           <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">APRI REGISTRY</a>
         </div>
 
-        <div id="draftOut" style="margin-top:1rem;"></div>
+        <div id="out" style="margin-top:1rem;"></div>
       </div>
     </section>
 
     <section class="hbce-section">
-      <h2 class="hbce-h2">Fase 2 — Certified (post-pagamento)</h2>
+      <h2 class="hbce-h2">Output</h2>
       <div class="hbce-card">
+        <ul class="hbce-list">
+          <li><code>IPR_CANON.json</code> — payload canonico deterministico</li>
+          <li><code>IPR_RELEASE.json</code> — release tecnica (pre-certificazione)</li>
+          <li><code>REGISTRY_ENTRY.json</code> — entry pronta da appendere nel registry pubblico</li>
+        </ul>
         <p class="hbce-note">
-          Dopo pagamento, rilasciamo un <strong>Certified Pack</strong> con:
-          <strong>IPR_RELEASE.json</strong> + <strong>ISSUER_CERTIFICATE.json</strong> + <strong>OPERATIONAL_RECEIPT.json</strong> + <strong>REGISTRY_ENTRY.json</strong>.
-          L’issuer opera come entità UE con <strong>P.IVA in assegnazione</strong>.
-        </p>
-
-        <div class="hbce-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top:1rem;">
-          <div>
-            <label class="hbce-label"><strong>PAYMENT_ID</strong></label>
-            <input id="payid" class="hbce-input" placeholder="Es. STRIPE_..., PAYPAL_..., BONIFICO_..." />
-            <div class="hbce-note" style="margin-top:.35rem;">
-              Identificatore pagamento (provider o riferimento interno).
-            </div>
-          </div>
-
-          <div>
-            <label class="hbce-label"><strong>Amount (EUR)</strong></label>
-            <input id="amount" class="hbce-input" value="19.00" />
-            <div class="hbce-note" style="margin-top:.35rem;">
-              BASE_19 = 19.00 EUR (modificabile per altri pacchetti).
-            </div>
-          </div>
-        </div>
-
-        <div class="hbce-actions" style="margin-top:1rem;">
-          <button class="hbce-btn hbce-btn--primary" id="btnCertified" disabled>GENERA CERTIFIED PACK</button>
-        </div>
-
-        <div id="certOut" style="margin-top:1rem;"></div>
-      </div>
-    </section>
-
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Issuer</h2>
-      <div class="hbce-card">
-        <p class="hbce-card__text">
-          <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong><br />
-          <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong><br />
-          VAT: <strong>PENDING_ASSIGNMENT</strong> · EU-first · Audit-first · Fail-closed · Hash-only · No identity custody · Append-only
+          Certificazione e ricevuta firmata vengono rilasciate nella fase “Certified” (post-pagamento).
         </p>
       </div>
     </section>
@@ -111,7 +117,8 @@
   <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
   <script>
     (function () {
-      // Minimal local SHA-256 using WebCrypto
+      const isHex64 = (v) => /^[a-f0-9]{64}$/i.test(String(v || "").trim());
+
       async function sha256Hex(str) {
         const data = new TextEncoder().encode(str);
         const hash = await crypto.subtle.digest("SHA-256", data);
@@ -129,181 +136,97 @@
 
       function esc(s){return String(s||"").replace(/[&<>"']/g,(c)=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));}
 
-      const $nick = document.getElementById("nick");
-      const $pkg = document.getElementById("pkg");
-      const $draftOut = document.getElementById("draftOut");
-      const $certOut = document.getElementById("certOut");
-      const $btnDraft = document.getElementById("btnDraft");
-      const $btnCert = document.getElementById("btnCertified");
-      const $payid = document.getElementById("payid");
-      const $amount = document.getElementById("amount");
+      const $ = (id) => document.getElementById(id);
+      const $out = $("out");
 
-      let lastDraft = null;
+      $("btnGen").addEventListener("click", async () => {
+        const name = String($("name").value || "").trim();
+        const desc = String($("desc").value || "").trim();
+        const biosRaw = String($("bios").value || "").trim();
+        const pkg = String($("pkg").value || "BASE_19").trim();
 
-      function renderDraft(d){
-        $draftOut.innerHTML = `
-          <div class="hbce-card__text">
-            <strong>DRAFT generato.</strong><br/>
-            Nickname: <code>${esc(d.nickname)}</code><br/>
-            Package: <code>${esc(d.package)}</code><br/>
-            Timestamp: <code>${esc(d.timestamp)}</code><br/>
-            payload_sha256: <code style="display:block;word-break:break-all;">${esc(d.payload_sha256)}</code><br/>
-            Verify link: <a href="/hermeticum-bce-platform/verify/?h=${esc(d.payload_sha256)}">/verify/?h=${esc(d.payload_sha256)}</a><br/>
-            <div class="hbce-note" style="margin-top:.5rem;">
-              Questo Draft non è certificato. Procedi al pagamento per ottenere ISSUER_CERTIFICATE + RECEIPT firmati.
-            </div>
-          </div>
-        `;
-      }
+        const country = String($("country").value || "").trim();
+        const state = String($("state").value || "").trim();
+        const region = String($("region").value || "").trim();
+        const city = String($("city").value || "").trim();
+        const district = String($("district").value || "").trim();
+        const timezone = String($("tz").value || "").trim();
 
-      function renderCert(p){
-        $certOut.innerHTML = `
-          <div class="hbce-card__text">
-            <strong>CERTIFIED PACK generato.</strong><br/>
-            Scaricati: <code>IPR_RELEASE.json</code>, <code>ISSUER_CERTIFICATE.json</code>, <code>OPERATIONAL_RECEIPT.json</code>, <code>REGISTRY_ENTRY.json</code><br/>
-            Verify: <a href="/hermeticum-bce-platform/verify/?h=${esc(p.ipr_hash)}">/verify/?h=${esc(p.ipr_hash)}</a>
-          </div>
-        `;
-      }
-
-      function canCertify(){
-        return !!lastDraft && String($payid.value || "").trim().length >= 6 && String($amount.value || "").trim().length > 0;
-      }
-
-      $payid.addEventListener("input", () => { $btnCert.disabled = !canCertify(); });
-      $amount.addEventListener("input", () => { $btnCert.disabled = !canCertify(); });
-      $nick.addEventListener("input", () => { /* noop */ });
-
-      $btnDraft.addEventListener("click", async () => {
-        const nickname = String($nick.value || "").trim();
-        if (!nickname) {
-          $draftOut.innerHTML = `<div class="hbce-card__text"><strong>Errore:</strong> inserisci un nickname.</div>`;
+        if (!name || !desc || !biosRaw || !country || !state || !region || !city || !district) {
+          $out.innerHTML = `<div class="hbce-card__text"><strong>Errore:</strong> compila tutti i campi obbligatori (nome, descrizione, bios_hash, location-now completa).</div>`;
           return;
         }
-        const pkg = String($pkg.value || "BASE_19");
-        const timestamp = new Date().toISOString();
 
-        // Draft payload (local)
-        const payload = {
-          proto: "HBCE-IPR-DRAFT-v1",
-          kind: "IPR_DRAFT",
+        const bios_hash = isHex64(biosRaw) ? biosRaw.toLowerCase() : await sha256Hex(biosRaw);
+
+        const now = new Date().toISOString();
+
+        // Canonical payload: stable ordering, minimal fields, hash-only
+        const canon = {
+          proto: "HBCE-IPR-v2",
+          kind: "PRIMARY_OPERATIONAL_IDENTITY",
           issuer: "HERMETICUM B.C.E. S.r.l.",
           jurisdiction: "EU",
           mode: "LOCAL_FIRST",
           package: pkg,
-          policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","NO_IDENTITY_CUSTODY"],
-          nickname,
-          timestamp
+          policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","NO_IDENTITY_CUSTODY","APPEND_ONLY"],
+          name: name,
+          description: desc,
+          bio: {
+            primary_bio_hash: bios_hash,
+            location_now: {
+              country: country,
+              state: state,
+              region: region,
+              city: city,
+              district: district
+            },
+            timezone: timezone || "UNSPECIFIED"
+          },
+          timestamp: now,
+          status: "ACTIVE"
         };
 
-        const payload_sha256 = await sha256Hex(JSON.stringify(payload));
+        const payload_sha256 = await sha256Hex(JSON.stringify(canon));
 
-        lastDraft = { nickname, package: pkg, timestamp, payload_sha256, payload };
-        renderDraft(lastDraft);
-
-        // downloads
-        dl("IPR_DRAFT.json", payload);
-        dl("REGISTRY_ENTRY.json", {
-          nickname,
-          payload_sha256,
-          timestamp
-        });
-
-        $btnCert.disabled = !canCertify();
-      });
-
-      $btnCert.addEventListener("click", async () => {
-        if (!canCertify()) return;
-
-        const payment_id = String($payid.value || "").trim();
-        const amount = String($amount.value || "").trim();
-        const ts = new Date().toISOString();
-
-        // Release (official)
-        const ipr_release = {
-          proto: "HBCE-IPR-RELEASE-v1",
+        const release = {
+          proto: "HBCE-IPR-RELEASE-v2",
           kind: "IPR_RELEASE",
           issuer: "HERMETICUM B.C.E. S.r.l.",
           jurisdiction: "EU",
           mode: "PERMISSIONLESS",
-          package: lastDraft.package,
+          package: pkg,
           policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","NO_IDENTITY_CUSTODY"],
-          nickname: lastDraft.nickname,
-          timestamp: lastDraft.timestamp,
-          payload_sha256: lastDraft.payload_sha256
+          name: name,
+          timestamp: now,
+          payload_sha256: payload_sha256,
+          note: "Pre-certification release. Issuer certificate + receipt are issued post-payment."
         };
 
-        // NOTE: signature placeholder (real signature happens server-side or with issuer key mgmt)
-        const issuer_certificate = {
-          proto: "HBCE-ISSUER-CERT-v1",
-          kind: "OPERATIONAL_IDENTITY_CERTIFICATE",
-          issuer: {
-            legal_name: "HERMETICUM B.C.E. S.r.l.",
-            jurisdiction: "EU (Italy)",
-            vat_status: "PENDING_ASSIGNMENT",
-            status: "ACTIVE_OPERATIONAL_ENTITY"
-          },
-          certificate: {
-            id: "HBCE-CERT-PENDING",
-            type: "IPR_OPERATIONAL_RELEASE",
-            timestamp: ts,
-            validity: "INDEFINITE",
-            revocable: false
-          },
-          subject: {
-            nickname: lastDraft.nickname,
-            ipr_hash: lastDraft.payload_sha256
-          },
-          service: {
-            type: "Operational Identity Issuance",
-            package: lastDraft.package,
-            network_status: "ACTIVE"
-          },
-          policy: ["UE_FIRST","HASH_ONLY","NO_IDENTITY_CUSTODY","APPEND_ONLY","AUDIT_FIRST"],
-          verification: {
-            registry: "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/registry/",
-            verify: "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/verify/?h=" + lastDraft.payload_sha256
-          },
-          issuer_signature: "HBCE_ED25519_SIGNATURE"
+        const registryEntry = {
+          nickname: name,
+          payload_sha256: payload_sha256,
+          timestamp: now
         };
 
-        const operational_receipt = {
-          proto: "HBCE-RECEIPT-v1",
-          kind: "OPERATIONAL_SERVICE_RECEIPT",
-          issuer: {
-            legal_name: "HERMETICUM B.C.E. S.r.l.",
-            vat_status: "PENDING_ASSIGNMENT",
-            jurisdiction: "EU"
-          },
-          transaction: {
-            service: "IPR Operational Identity Issuance",
-            package: lastDraft.package,
-            amount: amount,
-            currency: "EUR",
-            timestamp: ts,
-            payment_method: "DIGITAL",
-            payment_id: payment_id
-          },
-          linked_ipr: {
-            nickname: lastDraft.nickname,
-            payload_sha256: lastDraft.payload_sha256
-          },
-          note: "Operational digital service. VAT number pending assignment (EU).",
-          issuer_signature: "HBCE_ED25519_SIGNATURE"
-        };
+        $out.innerHTML = `
+          <div class="hbce-card__text">
+            <strong>IPR generato (local-first).</strong><br/>
+            Nome: <code>${esc(name)}</code><br/>
+            Package: <code>${esc(pkg)}</code><br/>
+            Timestamp: <code>${esc(now)}</code><br/>
+            bios_hash: <code style="display:block;word-break:break-all;">${esc(bios_hash)}</code><br/>
+            payload_sha256: <code style="display:block;word-break:break-all;">${esc(payload_sha256)}</code><br/>
+            Verify: <a href="/hermeticum-bce-platform/verify/?h=${esc(payload_sha256)}">/verify/?h=${esc(payload_sha256)}</a><br/>
+            <div class="hbce-note" style="margin-top:.5rem;">
+              Ora: appendi <code>REGISTRY_ENTRY.json</code> nel registry append-only. Poi verifica.
+            </div>
+          </div>
+        `;
 
-        const registry_entry = {
-          nickname: lastDraft.nickname,
-          payload_sha256: lastDraft.payload_sha256,
-          timestamp: lastDraft.timestamp
-        };
-
-        dl("IPR_RELEASE.json", ipr_release);
-        dl("ISSUER_CERTIFICATE.json", issuer_certificate);
-        dl("OPERATIONAL_RECEIPT.json", operational_receipt);
-        dl("REGISTRY_ENTRY.json", registry_entry);
-
-        renderCert({ ipr_hash: lastDraft.payload_sha256 });
+        dl("IPR_CANON.json", canon);
+        dl("IPR_RELEASE.json", release);
+        dl("REGISTRY_ENTRY.json", registryEntry);
       });
     })();
   </script>
