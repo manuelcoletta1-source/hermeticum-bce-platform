@@ -1,0 +1,37 @@
+name: registry-guard
+
+on:
+  pull_request:
+    paths:
+      - "registry/registry.json"
+      - ".github/workflows/registry-guard.yml"
+      - "tools/registry-guard.js"
+  push:
+    branches: ["main"]
+    paths:
+      - "registry/registry.json"
+      - ".github/workflows/registry-guard.yml"
+      - "tools/registry-guard.js"
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run registry guard
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          node tools/registry-guard.js
