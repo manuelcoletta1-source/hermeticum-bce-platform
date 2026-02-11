@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Wizard — Emissione IPR (Cliente · Citizen/Company)</title>
-  <meta name="description" content="Emissione IPR enterprise: citizen/company, credenziali locali, pacchetto cliente unico scaricabile + receipt append-only. UE-first." />
+  <title>CREATE — IPR Wizard</title>
+  <meta name="description" content="Wizard emissione IPR UE: pacchetti (19/39/79/149), certificazione issuer 🜏 HERMETICUM B.C.E. S.r.l., registry append-only, verify fail-closed." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 <body>
@@ -13,257 +13,138 @@
   <main class="hbce-container hbce-main">
 
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">ISSUANCE · IPR · CLIENT PACKAGE (LOCAL ONLY)</div>
-      <h1 class="hbce-hero__title">Crea e rilascia un IPR al cliente</h1>
+      <div class="hbce-hero__kicker">CREATE · EU-first · Issuer-certified</div>
+      <h1 class="hbce-hero__title">Emissione Identity Primary Record</h1>
       <p class="hbce-hero__lead">
-        Procedura enterprise in 4 passaggi. Tutto avviene nel browser (locale).
-        Output: <strong>pacchetto cliente unico</strong> + receipt append-only per il registry.
+        Questo flusso emette un IPR come <strong>radice operativa</strong>: hash + tempo + certificazione issuer.
+        L’emissione base UE è certificata da <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong>.
       </p>
-      <div class="hbce-hero__cta">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/">HOME</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/create/">CREATE (manuale)</a>
+      <p class="hbce-note">
+        Il registry pubblico conserva solo <strong>nickname + hash + timestamp</strong>.
+        Nessuna custodia di identità completa. Verifica <strong>fail-closed</strong>.
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">1) Entità</h2>
+      <div class="hbce-card">
+        <label class="hbce-label">Tipo entità</label>
+        <select class="hbce-input" name="entity_type">
+          <option value="HUMAN">Human (cittadino UE)</option>
+          <option value="ORG">Organization</option>
+          <option value="AI">AI / Software</option>
+          <option value="ROBOT">Robot / Device</option>
+        </select>
+
+        <label class="hbce-label">Nickname operativo</label>
+        <input class="hbce-input" type="text" name="nickname" placeholder="es. ManuHell" />
+
+        <label class="hbce-label">Email (consegna pacchetto)</label>
+        <input class="hbce-input" type="email" name="email" placeholder="nome@dominio.tld" />
       </div>
     </section>
 
     <section class="hbce-section">
-      <h2>Stato</h2>
-      <div class="hbce-card hbce-card--wide">
-        <div class="hbce-grid hbce-grid--tight">
-          <div class="hbce-tile" id="s1">1 — Profilo</div>
-          <div class="hbce-tile" id="s2">2 — Annex UE (opz.)</div>
-          <div class="hbce-tile" id="s3">3 — Credenziali</div>
-          <div class="hbce-tile" id="s4">4 — Rilascio</div>
-        </div>
-        <div class="hbce-meta" id="status" style="margin-top:10px">Pronto.</div>
-      </div>
-    </section>
-
-    <!-- STEP 1 -->
-    <section class="hbce-section" id="step1">
-      <h2>1 — Profilo cliente</h2>
-      <div class="I class="hbce-card hbce-card--wide">
-        <div class="hbce-grid">
-          <div class="hbce-card" style="margin:0">
-            <label class="hbce-meta" for="nickname">Nickname operativo (pubblico)</label>
-            <input id="nickname" class="hbce-input" placeholder="es. CLIENT-001 / ORG-EU-001" autocomplete="off" />
-            <div class="hbce-meta" style="margin-top:8px">Etichetta tecnica: non è identità legale.</div>
-          </div>
-
-          <div class="hbce-card" style="margin:0">
-            <label class="hbce-meta">Tipo soggetto</label>
-            <div class="hbce-grid hbce-grid--tight">
-              <label class="hbce-card" style="margin:0; cursor:pointer">
-                <input type="radio" name="subject" value="CITIZEN" checked />
-                <div style="margin-top:8px"><strong>Cittadino</strong></div>
-                <div class="hbce-meta">persona fisica (annex UE opzionale)</div>
-              </label>
-              <label class="hbce-card" style="margin:0; cursor:pointer">
-                <input type="radio" name="subject" value="COMPANY" />
-                <div style="margin-top:8px"><strong>Azienda</strong></div>
-                <div class="hbce-meta">persona giuridica (annex UE opzionale)</div>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div style="margin-top:14px">
-          <label class="hbce-meta">Profilo emissione</label>
-          <div class="hbce-grid hbce-grid--tight">
-            <label class="hbce-card" style="margin:0; cursor:pointer">
-              <input type="radio" name="profile" value="BASE" checked />
-              <div style="margin-top:8px"><strong>IPR Base</strong></div>
-              <div class="hbce-meta">pubblico hash-only</div>
-            </label>
-
-            <label class="hbce-card" style="margin:0; cursor:pointer">
-              <input type="radio" name="profile" value="UE" />
-              <div style="margin-top:8px"><strong>IPR + Annex UE</strong></div>
-              <div class="hbce-meta">dati UE locali (non pubblicati)</div>
-            </label>
-          </div>
-        </div>
-
-        <div class="hbce-actions" style="margin-top:16px">
-          <button class="hbce-btn hbce-btn--primary" id="to2">Continua</button>
-        </div>
-
-        <div class="hbce-meta" style="margin-top:10px">
-          Regola: nel registry finisce solo l’hash pubblico. Nessuna custodia dati personali.
-        </div>
-      </div>
-    </section>
-
-    <!-- STEP 2 -->
-    <section class="hbce-section" id="step2" style="display:none">
-      <h2>2 — Annex UE (opzionale, locale)</h2>
-      <div class="hbce-card hbce-card--wide">
-        <p class="hbce-p">
-          Compila solo se hai selezionato “IPR + Annex UE”.  
-          Questo annex <strong>non viene pubblicato</strong>: produce solo un hash privato separato.
+      <h2 class="hbce-h2">2) Pacchetto</h2>
+      <div class="hbce-card">
+        <p class="hbce-note">
+          Ogni pacchetto include <strong>certificazione issuer</strong>: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong>.
+          Gli anchor aumentano persistenza/opponibilità nel tempo.
         </p>
 
-        <div class="hbce-grid">
-          <div class="hbce-card" style="margin:0">
-            <h3>Dati base (UE)</h3>
-            <label class="hbce-meta" for="full_name">Nome e cognome / Ragione sociale</label>
-            <input id="full_name" class="hbce-input" placeholder="—" autocomplete="off" />
-
-            <label class="hbce-meta" for="country" style="margin-top:10px">Paese</label>
-            <input id="country" class="hbce-input" placeholder="Italia" autocomplete="off" />
-
-            <label class="hbce-meta" for="email" style="margin-top:10px">Email (opzionale)</label>
-            <input id="email" class="hbce-input" placeholder="—" autocomplete="off" />
-          </div>
-
-          <div class="hbce-card" style="margin:0">
-            <h3>Dati identificativi (UE)</h3>
-            <label class="hbce-meta" for="tax_id">Codice fiscale / VAT / Tax ID</label>
-            <input id="tax_id" class="hbce-input" placeholder="—" autocomplete="off" />
-
-            <label class="hbce-meta" for="address" style="margin-top:10px">Sede/Residenza (testo)</label>
-            <input id="address" class="hbce-input" placeholder="—" autocomplete="off" />
-
-            <div class="hbce-grid hbce-grid--tight" style="margin-top:10px">
-              <div>
-                <label class="hbce-meta" for="doc_type">Documento (tipo)</label>
-                <input id="doc_type" class="hbce-input" placeholder="CIE / Passaporto / Registro imprese" autocomplete="off" />
-              </div>
-              <div>
-                <label class="hbce-meta" for="doc_number">Documento (numero)</label>
-                <input id="doc_number" class="hbce-input" placeholder="—" autocomplete="off" />
-              </div>
-            </div>
-
-            <div class="hbce-grid hbce-grid--tight" style="margin-top:10px">
-              <div>
-                <label class="hbce-meta" for="dob">Data nascita (solo citizen)</label>
-                <input id="dob" class="hbce-input" placeholder="YYYY-MM-DD" autocomplete="off" />
-              </div>
-              <div>
-                <label class="hbce-meta" for="birth_place">Luogo nascita (solo citizen)</label>
-                <input id="birth_place" class="hbce-input" placeholder="—" autocomplete="off" />
-              </div>
-            </div>
-          </div>
+        <div class="hbce-radio">
+          <label><input type="radio" name="pkg" value="BASE_19" checked>
+            <strong>IPR Base UE — 19 €</strong> · emissione + registry + verify
+          </label><br/>
+          <label><input type="radio" name="pkg" value="IPFS_39">
+            <strong>IPR + IPFS — 39 €</strong> · CID incluso nel pacchetto
+          </label><br/>
+          <label><input type="radio" name="pkg" value="IPFS_ETH_79">
+            <strong>IPR + IPFS + Ethereum — 79 €</strong> · TX Ethereum incluso nel pacchetto
+          </label><br/>
+          <label><input type="radio" name="pkg" value="FULL_149">
+            <strong>FULL — 149 €</strong> · IPFS + ETH + BTC (tri-anchor)
+          </label>
         </div>
 
-        <div class="hbce-actions" style="margin-top:16px">
-          <button class="hbce-btn" id="back1">Indietro</button>
-          <button class="hbce-btn hbce-btn--primary" id="to3">Continua</button>
-        </div>
-
-        <div class="hbce-meta" style="margin-top:10px">
-          Minimizzazione: campi vuoti non vengono inclusi.
-        </div>
-      </div>
-    </section>
-
-    <!-- STEP 3 -->
-    <section class="hbce-section" id="step3" style="display:none">
-      <h2>3 — Credenziali operative (locali)</h2>
-      <div class="hbce-card hbce-card--wide">
-        <p class="hbce-p">
-          Generiamo una credenziale locale. È il “segreto” operativo del cliente.
-          <strong>Non viene pubblicata</strong> e non è recuperabile.
+        <p class="hbce-note">
+          <strong>Automatico:</strong> se selezioni un pacchetto con anchor, il nodo genera automaticamente
+          <strong>ANCHOR_RECEIPT</strong> (CID/TX/TXID) e lo include nel pacchetto cliente.
         </p>
-
-        <div class="hbce-actions">
-          <button class="hbce-btn hbce-btn--primary" id="genCred">Genera credenziale</button>
-          <button class="hbce-btn" id="clearCred">Reset</button>
-        </div>
-
-        <div class="hbce-grid" style="margin-top:12px">
-          <div class="hbce-card" style="margin:0">
-            <div class="hbce-meta">client_secret (locale)</div>
-            <textarea id="client_secret" class="hbce-textarea" rows="3" readonly></textarea>
-            <button class="hbce-btn" id="copySecret">Copia</button>
-          </div>
-          <div class="hbce-card" style="margin:0">
-            <div class="hbce-meta">client_id (derivato: hash del secret)</div>
-            <textarea id="client_id" class="hbce-textarea" rows="3" readonly></textarea>
-            <button class="hbce-btn" id="copyId">Copia</button>
-          </div>
-        </div>
-
-        <div class="hbce-actions" style="margin-top:16px">
-          <button class="hbce-btn" id="back2">Indietro</button>
-          <button class="hbce-btn hbce-btn--primary" id="to4">Continua</button>
-        </div>
-
-        <div class="hbce-meta" style="margin-top:10px">
-          Fail-closed: senza credenziale non si rilascia alcun pacchetto.
-        </div>
-      </div>
-    </section>
-
-    <!-- STEP 4 -->
-    <section class="hbce-section" id="step4" style="display:none">
-      <h2>4 — Rilascio pacchetto cliente</h2>
-      <div class="hbce-card hbce-card--wide">
-        <p class="hbce-p">
-          Generiamo: IPR pubblico (hash-only), annex UE privato (se selezionato), receipt entry (append-only),
-          e un <strong>pacchetto cliente unico</strong> scaricabile.
-        </p>
-
-        <div class="hbce-actions">
-          <button class="hbce-btn hbce-btn--primary" id="build">Genera</button>
-          <button class="hbce-btn" id="downloadBundle">Scarica PACCHETTO (1 file)</button>
-          <button class="hbce-btn" id="downloadSplit">Scarica file separati</button>
-        </div>
-
-        <div class="hbce-grid" style="margin-top:12px">
-          <div class="hbce-card" style="margin:0">
-            <div class="hbce-meta">public_payload_sha256 (da registrare)</div>
-            <textarea id="pubHash" class="hbce-textarea" rows="2" readonly></textarea>
-            <a class="hbce-btn" id="verifyPrefill" href="/hermeticum-bce-platform/verify/">Apri VERIFY (prefill)</a>
-          </div>
-          <div class="hbce-card" style="margin:0">
-            <div class="hbce-meta">receipt_entry.json (append-only)</div>
-            <textarea id="receipt" class="hbce-textarea" rows="8" readonly></textarea>
-          </div>
-        </div>
-
-        <div class="hbce-grid" style="margin-top:12px">
-          <div class="hbce-card" style="margin:0">
-            <div class="hbce-meta">IPR_PUBLIC.json</div>
-            <textarea id="pubPayload" class="hbce-textarea" rows="10" readonly></textarea>
-          </div>
-          <div class="hbce-card" style="margin:0">
-            <div class="hbce-meta">IPR_PRIVATE_UE_ANNEX.json (se presente)</div>
-            <textarea id="annexPayload" class="hbce-textarea" rows="10" readonly></textarea>
-          </div>
-        </div>
-
-        <div class="hbce-grid" style="margin-top:12px">
-          <div class="hbce-card" style="margin:0">
-            <div class="hbce-meta">PACK_MANIFEST (interno, nel bundle)</div>
-            <textarea id="manifest" class="hbce-textarea" rows="10" readonly></textarea>
-          </div>
-          <div class="hbce-card" style="margin:0">
-            <div class="hbce-meta">CREDENTIALS.txt (interno, nel bundle)</div>
-            <textarea id="credPreview" class="hbce-textarea" rows="10" readonly></textarea>
-          </div>
-        </div>
-
-        <div class="hbce-actions" style="margin-top:16px">
-          <button class="hbce-btn" id="back3">Indietro</button>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Vai a REGISTRY</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Vai a VERIFY</a>
-        </div>
-
-        <div class="hbce-meta" style="margin-top:10px">
-          Pubblicare solo: receipt_entry (nickname + payload_sha256 + timestamp). Tutto il resto è del cliente.
-        </div>
       </div>
     </section>
 
     <section class="hbce-section">
-      <div class="hbce-card hbce-card--wide">
-        <div class="hbce-hallmark">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-        <div class="hbce-company">HERMETICUM B.C.E. S.r.l.</div>
-        <div class="hbce-meta">UE-first · audit-first · fail-closed · hash-only</div>
+      <h2 class="hbce-h2">3) Annex UE (coerenza evolutiva)</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Questa sezione abilita coerenza evolutiva (match tra evoluzioni operative future) senza pubblicare dati.
+          I dati identificativi UE non finiscono nel registry pubblico: producono solo impronte crittografiche.
+        </p>
+
+        <label class="hbce-label">Nome e cognome (opzionale)</label>
+        <input class="hbce-input" type="text" name="full_name" placeholder="Nome Cognome" />
+
+        <label class="hbce-label">Codice fiscale (opzionale)</label>
+        <input class="hbce-input" type="text" name="tax_code" placeholder="CF..." />
+
+        <label class="hbce-label">Documento (numero) (opzionale)</label>
+        <input class="hbce-input" type="text" name="doc_id" placeholder="CIE/Passaporto..." />
+
+        <p class="hbce-note">
+          Pubblico (hash-only): <strong>nickname + hash + timestamp</strong>.  
+          Privato (cliente): eventuale annex UE nel pacchetto rilasciato.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">4) Policy</h2>
+      <div class="hbce-card">
+        <ul class="hbce-list">
+          <li><strong>UE-first</strong>: riferimento normativo UE</li>
+          <li><strong>Audit-first</strong>: verificabilità prima dell’azione</li>
+          <li><strong>Fail-closed</strong>: non verificabile → INVALID</li>
+          <li><strong>Hash-only</strong>: nessuna custodia pubblica di dati sensibili</li>
+          <li><strong>Append-only</strong>: registry solo incrementale</li>
+        </ul>
+
+        <label class="hbce-check">
+          <input type="checkbox" name="accept" />
+          Accetto policy operative (emissione non modificabile; se cambia identità operativa → nuovo IPR).
+        </label>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">5) Emissione</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Output del processo:
+        </p>
+        <ul class="hbce-list">
+          <li><strong>IPR_RELEASE.json</strong> (pacchetto cliente)</li>
+          <li><strong>ISSUER_CERTIFICATE.json</strong> (certificazione: 🜏 HERMETICUM B.C.E. S.r.l.)</li>
+          <li><strong>REGISTRY_ENTRY.json</strong> (hash-only)</li>
+          <li><strong>ANCHOR_RECEIPT.json</strong> (solo se pacchetto include IPFS/ETH/BTC)</li>
+        </ul>
+        <div class="hbce-actions">
+          <a class="hbce-btn hbce-btn--primary" href="#">PROCEED TO PAYMENT</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        </div>
+        <p class="hbce-note">
+          Certificazione di emissione: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong> · Sigillo: <strong>🜏</strong>
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Punto zero</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Nascita operativa della rete: <strong>19 gennaio 2026</strong>.
+          Il tempo rende opponibile ciò che è verificabile.
+        </p>
       </div>
     </section>
 
@@ -271,328 +152,5 @@
 
   <div data-hbce="footer"></div>
   <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
-
-  <script>
-    (function(){
-      const $ = (id) => document.getElementById(id);
-
-      const status = $("status");
-      const s1 = $("s1"), s2 = $("s2"), s3 = $("s3"), s4 = $("s4");
-      const step1 = $("step1"), step2 = $("step2"), step3 = $("step3"), step4 = $("step4");
-
-      const nickname = $("nickname");
-
-      const full_name = $("full_name");
-      const country = $("country");
-      const email = $("email");
-      const tax_id = $("tax_id");
-      const address = $("address");
-      const doc_type = $("doc_type");
-      const doc_number = $("doc_number");
-      const dob = $("dob");
-      const birth_place = $("birth_place");
-
-      const client_secret = $("client_secret");
-      const client_id = $("client_id");
-
-      const pubHash = $("pubHash");
-      const receipt = $("receipt");
-      const pubPayload = $("pubPayload");
-      const annexPayload = $("annexPayload");
-      const manifest = $("manifest");
-      const credPreview = $("credPreview");
-      const verifyPrefill = $("verifyPrefill");
-
-      let built = false;
-
-      const state = {
-        subject: "CITIZEN",
-        profile: "BASE",
-        nickname: "",
-        secret: "",
-        client_id: "",
-        public_payload: null,
-        public_hash: "",
-        annex: null,
-        annex_hash: "",
-        receipt_entry: null,
-        pack_manifest: null,
-        credentials_txt: ""
-      };
-
-      function setStatus(msg){ status.textContent = msg; }
-
-      function setActive(n){
-        [s1,s2,s3,s4].forEach(x => x.style.opacity = "0.55");
-        [step1,step2,step3,step4].forEach(x => x.style.display = "none");
-        if(n===1){ s1.style.opacity="1"; step1.style.display="block"; setStatus("Step 1/4"); }
-        if(n===2){ s2.style.opacity="1"; step2.style.display="block"; setStatus("Step 2/4"); }
-        if(n===3){ s3.style.opacity="1"; step3.style.display="block"; setStatus("Step 3/4"); }
-        if(n===4){ s4.style.opacity="1"; step4.style.display="block"; setStatus("Step 4/4"); }
-      }
-
-      function normalize(s){ return (s||"").toString().trim().replace(/\s+/g," "); }
-      function nowISO(){ return new Date().toISOString(); }
-
-      async function sha256Hex(str){
-        const enc = new TextEncoder().encode(str);
-        const buf = await crypto.subtle.digest("SHA-256", enc);
-        return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
-      }
-
-      function getRadio(name){
-        const r = document.querySelector('input[name="'+name+'"]:checked');
-        return r ? r.value : "";
-      }
-
-      function randomSecret(){
-        const arr = new Uint8Array(32);
-        crypto.getRandomValues(arr);
-        return Array.from(arr).map(b=>b.toString(16).padStart(2,"0")).join("");
-      }
-
-      function buildAnnexIfAny(){
-        if(state.profile !== "UE") return null;
-
-        const v = (x) => normalize(x);
-        const data = {};
-
-        const name = v(full_name.value);
-        const ctry = v(country.value);
-        const mail = v(email.value);
-        const tax = v(tax_id.value);
-        const addr = v(address.value);
-
-        if(name) data.legal_name = name;
-        if(ctry) data.country = ctry;
-        if(mail) data.email = mail;
-        if(tax) data.tax_id = tax;
-        if(addr) data.address = addr;
-
-        const doc = {};
-        const dt = v(doc_type.value);
-        const dn = v(doc_number.value);
-        if(dt) doc.type = dt;
-        if(dn) doc.number = dn;
-        if(Object.keys(doc).length) data.document = doc;
-
-        if(state.subject === "CITIZEN"){
-          const d = v(dob.value);
-          const bp = v(birth_place.value);
-          if(d) data.date_of_birth = d;
-          if(bp) data.place_of_birth = bp;
-        }
-
-        if(!Object.keys(data).length) return null;
-
-        return {
-          proto: "HBCE-UE-ANNEX-v1",
-          kind: "EU_STANDARD_IDENTITY_ANNEX",
-          policy: ["LOCAL_ONLY","NOT_PUBLISHED","GDPR_MIN","NO_CUSTODY"],
-          subject_type: state.subject,
-          timestamp: nowISO(),
-          data
-        };
-      }
-
-      function buildPublicPayload(){
-        return {
-          proto: "HBCE-IPR-v1",
-          kind: "IPR_PUBLIC",
-          policy: ["UE_FIRST","HASH_ONLY","NO_DATA_CUSTODY","FAIL_CLOSED","APPEND_ONLY"],
-          subject_type: state.subject,
-          nickname: state.nickname,
-          client_id: state.client_id,
-          timestamp: nowISO()
-        };
-      }
-
-      function download(name, content, type="application/json"){
-        const blob = new Blob([content], {type});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = name;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-      }
-
-      async function copyText(text){
-        try{ await navigator.clipboard.writeText(text); setStatus("Copiato."); }
-        catch(e){ setStatus("Copia non disponibile: copia manualmente."); }
-      }
-
-      // NAV
-      $("to2").addEventListener("click", () => {
-        const n = normalize(nickname.value);
-        if(!n){ setStatus("Inserisci nickname."); return; }
-
-        state.subject = getRadio("subject") || "CITIZEN";
-        state.profile = getRadio("profile") || "BASE";
-        state.nickname = n;
-
-        built = false;
-
-        if(state.profile === "UE") setActive(2);
-        else setActive(3);
-      });
-
-      $("back1").addEventListener("click", () => setActive(1));
-      $("to3").addEventListener("click", () => setActive(3));
-
-      $("back2").addEventListener("click", () => {
-        if(state.profile === "UE") setActive(2);
-        else setActive(1);
-      });
-
-      $("back3").addEventListener("click", () => setActive(3));
-
-      // CREDENTIALS
-      $("genCred").addEventListener("click", async () => {
-        state.secret = randomSecret();
-        state.client_id = await sha256Hex(state.secret);
-        client_secret.value = state.secret;
-        client_id.value = state.client_id;
-        setStatus("Credenziale generata (locale).");
-      });
-
-      $("clearCred").addEventListener("click", () => {
-        state.secret = "";
-        state.client_id = "";
-        client_secret.value = "";
-        client_id.value = "";
-        setStatus("Credenziale azzerata.");
-      });
-
-      $("copySecret").addEventListener("click", () => copyText(client_secret.value||""));
-      $("copyId").addEventListener("click", () => copyText(client_id.value||""));
-
-      $("to4").addEventListener("click", () => {
-        if(!state.client_id){
-          setStatus("Genera credenziale prima di continuare (fail-closed).");
-          return;
-        }
-        setActive(4);
-      });
-
-      // BUILD
-      $("build").addEventListener("click", async () => {
-        built = false;
-
-        state.annex = buildAnnexIfAny();
-        state.annex_hash = state.annex ? await sha256Hex(JSON.stringify(state.annex)) : "";
-
-        state.public_payload = buildPublicPayload();
-        const pubStr = JSON.stringify(state.public_payload);
-        state.public_hash = await sha256Hex(pubStr);
-
-        state.receipt_entry = {
-          nickname: state.nickname,
-          payload_sha256: state.public_hash,
-          timestamp: nowISO()
-        };
-
-        const verifyLink = "/hermeticum-bce-platform/verify/?h=" + state.public_hash;
-
-        state.credentials_txt =
-          "HERMETICUM CLIENT CREDENTIALS (LOCAL ONLY)\n" +
-          "subject_type: " + state.subject + "\n" +
-          "nickname: " + state.nickname + "\n" +
-          "client_id: " + state.client_id + "\n" +
-          "client_secret: " + state.secret + "\n" +
-          "public_payload_sha256: " + state.public_hash + "\n" +
-          "verify: " + verifyLink + "\n" +
-          "rule: if lost, no recovery (fail-closed)\n";
-
-        state.pack_manifest = {
-          proto: "HBCE-PACK-v1",
-          kind: "CLIENT_IPR_PACKAGE",
-          policy: ["UE_FIRST","HASH_ONLY_PUBLIC","LOCAL_ONLY_PRIVATE","NO_DATA_CUSTODY","FAIL_CLOSED"],
-          subject_type: state.subject,
-          nickname: state.nickname,
-          generated_at: nowISO(),
-          artifacts: {
-            public_payload_sha256: state.public_hash,
-            private_annex_sha256: state.annex_hash || null,
-            receipt_entry: state.receipt_entry
-          },
-          links: {
-            verify: verifyLink,
-            create_receipt: "/hermeticum-bce-platform/create/receipt/",
-            registry: "/hermeticum-bce-platform/registry/"
-          }
-        };
-
-        // Render
-        pubHash.value = state.public_hash;
-        receipt.value = JSON.stringify(state.receipt_entry, null, 2);
-        pubPayload.value = JSON.stringify(state.public_payload, null, 2);
-        annexPayload.value = state.annex ? JSON.stringify(state.annex, null, 2) : "";
-        manifest.value = JSON.stringify(state.pack_manifest, null, 2);
-        credPreview.value = state.credentials_txt;
-
-        verifyPrefill.href = "/hermeticum-bce-platform/verify/?h=" + encodeURIComponent(state.public_hash);
-
-        built = true;
-        setStatus("Generato. Ora scarica il pacchetto (1 file) o i file separati.");
-      });
-
-      // DOWNLOAD BUNDLE (1 FILE)
-      $("downloadBundle").addEventListener("click", () => {
-        if(!built){ setStatus("Prima genera (fail-closed)."); return; }
-
-        const safeNick = state.nickname.replace(/[^a-zA-Z0-9_-]/g,"-");
-        const name = "HBCE_CLIENT_PACKAGE__" + safeNick + ".json";
-
-        const bundle = {
-          proto: "HBCE-BUNDLE-v1",
-          kind: "CLIENT_PACKAGE_BUNDLE",
-          policy: ["PUBLIC_HASH_ONLY","PRIVATE_LOCAL_ONLY","NO_DATA_CUSTODY","FAIL_CLOSED"],
-          pack_manifest: state.pack_manifest,
-          files: {
-            "IPR_PUBLIC.json": state.public_payload,
-            "public_payload_sha256.txt": state.public_hash + "\n",
-            "RECEIPT_ENTRY.json": state.receipt_entry,
-            "VERIFY_LINK.txt": (state.pack_manifest.links.verify + "\n"),
-            "CREDENTIALS.txt": state.credentials_txt
-          }
-        };
-
-        if(state.annex){
-          bundle.files["IPR_PRIVATE_UE_ANNEX.json"] = state.annex;
-          bundle.files["private_annex_sha256.txt"] = state.annex_hash + "\n";
-        }
-
-        download(name, JSON.stringify(bundle, null, 2));
-        setStatus("Pacchetto cliente scaricato (1 file).");
-      });
-
-      // DOWNLOAD SPLIT
-      $("downloadSplit").addEventListener("click", () => {
-        if(!built){ setStatus("Prima genera (fail-closed)."); return; }
-
-        const base = "IPR_" + state.nickname.replace(/[^a-zA-Z0-9_-]/g,"-");
-
-        download(base + "__IPR_PUBLIC.json", JSON.stringify(state.public_payload, null, 2));
-        download(base + "__public_payload_sha256.txt", state.public_hash + "\n", "text/plain");
-        download(base + "__RECEIPT_ENTRY.json", JSON.stringify(state.receipt_entry, null, 2));
-        download(base + "__VERIFY_LINK.txt", (state.pack_manifest.links.verify + "\n"), "text/plain");
-        download(base + "__CREDENTIALS.txt", state.credentials_txt, "text/plain");
-        download(base + "__PACK_MANIFEST.json", JSON.stringify(state.pack_manifest, null, 2));
-
-        if(state.annex){
-          download(base + "__IPR_PRIVATE_UE_ANNEX.json", JSON.stringify(state.annex, null, 2));
-          download(base + "__private_annex_sha256.txt", state.annex_hash + "\n", "text/plain");
-        }
-
-        setStatus("File separati scaricati.");
-      });
-
-      // Init
-      setActive(1);
-    })();
-  </script>
 </body>
 </html>
