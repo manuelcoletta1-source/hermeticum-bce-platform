@@ -3,73 +3,102 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VERIFY — IPR (public)</title>
-  <meta name="description" content="Verify IPR: verifica per hash o upload file. Fail-closed: se manca prova → INVALID." />
+  <title>VERIFY — IPR Public Verification</title>
+  <meta name="description" content="Verifica pubblica IPR: integrità file, match registry append-only (hash-only), esito fail-closed PASS/INVALID, diagnostica finestra metrologica HARD (±2 min)." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 <body>
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
+
     <section class="hbce-hero">
       <div class="hbce-hero__kicker">VERIFY · Public · Fail-closed</div>
-      <h1 class="hbce-hero__title">Verify Identity Primary Record</h1>
+      <h1 class="hbce-hero__title">Verifica IPR (PASS / INVALID)</h1>
       <p class="hbce-hero__lead">
-        Verifica tramite <strong>hash</strong> oppure tramite <strong>upload file IPR_*.json</strong>.
-        Se manca prova verificabile → <strong>INVALID</strong>.
+        Un IPR è <strong>VALID</strong> solo se: <strong>integrità file</strong> + <strong>match registry append-only</strong>.
+        Se manca una condizione → <strong>INVALID</strong> (fail-closed).
       </p>
-      <div class="hbce-hero__cta">
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/create/">CREATE</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/positioning/">POSITIONING</a>
-      </div>
+      <p class="hbce-note">
+        Issuer: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong> · Pubblico: <strong>hash-only</strong> · Registry: <strong>append-only</strong>
+      </p>
     </section>
 
     <section class="hbce-section">
-      <h2>A) Verifica con SHA256</h2>
-      <div class="hbce-card hbce-card--wide">
-        <label class="hbce-meta" for="hash">Payload SHA256</label>
-        <input id="hash" class="hbce-input" placeholder="SHA256 (64 caratteri hex)" autocomplete="off" />
-
-        <div class="hbce-actions" style="margin-top:12px">
-          <button class="hbce-btn hbce-btn--primary" id="btnHash">Verify (hash)</button>
-          <button class="hbce-btn" id="btnReset">Reset</button>
-        </div>
-
-        <div class="hbce-meta" style="margin-top:10px" id="hashStatus">Pronto.</div>
-        <div class="hbce-card" style="margin-top:14px" id="hashOut" hidden></div>
-      </div>
-    </section>
-
-    <section class="hbce-section">
-      <h2>B) Verifica con Upload File</h2>
-      <div class="hbce-card hbce-card--wide">
-        <p class="hbce-p">
-          Carica <strong>IPR_*.json</strong>. Il sistema ricalcola SHA256 dal payload base e verifica:
-          integrità + presenza nel registry pubblico.
+      <h2 class="hbce-h2">Metodo A — Verifica via hash (URL)</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Inserisci l’hash (SHA-256) dell’IPR (payload_sha256) o apri questa pagina con <strong>?h=</strong>.
         </p>
 
-        <label class="hbce-meta" for="file">IPR JSON file</label>
-        <input id="file" class="hbce-input" type="file" accept="application/json,.json" />
-
-        <div class="hbce-actions" style="margin-top:12px">
-          <button class="hbce-btn hbce-btn--primary" id="btnFile">Verify (file)</button>
-          <button class="hbce-btn" id="btnClear">Clear file</button>
+        <div class="hbce-grid hbce-grid--2">
+          <div>
+            <label class="hbce-label">payload_sha256</label>
+            <input class="hbce-input" id="hash" type="text" placeholder="64 hex (sha256)..." autocomplete="off" />
+          </div>
+          <div style="display:flex; align-items:flex-end; gap:.75rem;">
+            <button class="hbce-btn hbce-btn--primary" id="btnVerifyHash" type="button">VERIFY HASH</button>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/registry/registry.json">Apri registry.json</a>
+          </div>
         </div>
 
-        <div class="hbce-meta" style="margin-top:10px" id="fileStatus">Pronto.</div>
-        <div class="hbce-card" style="margin-top:14px" id="fileOut" hidden></div>
+        <p class="hbce-note">
+          Questo metodo verifica solo <strong>registry match</strong>. Per verificare anche l’integrità file, usa il Metodo B.
+        </p>
       </div>
     </section>
 
     <section class="hbce-section">
-      <div class="hbce-card hbce-card--wide">
-        <div class="hbce-hallmark">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-        <div class="hbce-company">HERMETICUM B.C.E. S.r.l.</div>
-        <div class="hbce-meta">UE-first · audit-first · fail-closed · hash-only</div>
+      <h2 class="hbce-h2">Metodo B — Verifica file IPR (local-first)</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Carica <strong>IPR_RELEASE.json</strong>. Il sistema calcola SHA-256 e confronta con il registry.
+        </p>
+
+        <input class="hbce-input" type="file" id="iprFile" accept="application/json" />
+
+        <p class="hbce-note">
+          Fail-closed: se il file non è conforme o l’hash non matcha il registry → INVALID.
+        </p>
       </div>
     </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Risultato</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          <strong>STATUS:</strong> <span id="status">—</span>
+        </p>
+        <p class="hbce-muted" id="reason">Nessuna verifica eseguita.</p>
+
+        <div class="hbce-card" style="margin-top:1rem;">
+          <p class="hbce-card__text"><strong>Dettagli</strong></p>
+          <ul class="hbce-list" id="details">
+            <li>Integrità file: —</li>
+            <li>Registry match: —</li>
+            <li>Metrological (HARD): —</li>
+          </ul>
+        </div>
+
+        <div class="hbce-actions" style="margin-top:.75rem;">
+          <a class="hbce-btn" id="openVerifyLink" href="#" target="_blank" rel="noopener">Apri link verify</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Apri REGISTRY (append)</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Regole (fail-closed)</h2>
+      <div class="hbce-card">
+        <ul class="hbce-list">
+          <li><strong>VALID</strong> = file conforme + hash coerente + match registry append-only</li>
+          <li><strong>INVALID</strong> = qualunque mismatch o assenza prova pubblica</li>
+          <li><strong>Metrological HARD</strong>: nuove entry devono essere appendate entro <strong>±2 min</strong> (controllo CI)</li>
+          <li>Pubblico hash-only: nessun dato personale nel registry</li>
+        </ul>
+      </div>
+    </section>
+
   </main>
 
   <div data-hbce="footer"></div>
@@ -77,242 +106,203 @@
 
   <script>
     (function(){
-      const $ = (id) => document.getElementById(id);
+      const statusEl = document.getElementById("status");
+      const reasonEl = document.getElementById("reason");
+      const detailsEl = document.getElementById("details");
+      const hashInput = document.getElementById("hash");
+      const btnVerifyHash = document.getElementById("btnVerifyHash");
+      const iprFile = document.getElementById("iprFile");
+      const openVerifyLink = document.getElementById("openVerifyLink");
 
       const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
+      const HARD_WINDOW_MS = 2 * 60 * 1000;
 
-      const hash = $("hash");
-      const file = $("file");
-
-      const btnHash = $("btnHash");
-      const btnReset = $("btnReset");
-      const btnFile = $("btnFile");
-      const btnClear = $("btnClear");
-
-      const hashStatus = $("hashStatus");
-      const fileStatus = $("fileStatus");
-
-      const hashOut = $("hashOut");
-      const fileOut = $("fileOut");
-
-      function normalize(s){ return (s || "").toString().trim(); }
-      function isHex64(s){ return /^[0-9a-f]{64}$/i.test(s); }
-
-      function escapeHtml(str){
-        return (str || "").replace(/[&<>"']/g, m => ({
-          "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
-        }[m]));
+      function setStatus(s, ok){
+        statusEl.textContent = s;
+        statusEl.style.fontWeight = "800";
+        statusEl.style.letterSpacing = ".3px";
+        statusEl.dataset.ok = ok ? "1" : "0";
       }
 
-      function extractEntries(obj){
-        if(Array.isArray(obj)) return obj;
-        if(obj && Array.isArray(obj.entries)) return obj.entries;
-        if(obj && obj.registry && Array.isArray(obj.registry.entries)) return obj.registry.entries;
-        return null;
+      function setDetails(fileOk, regOk, metOk){
+        detailsEl.innerHTML = "";
+        const li1 = document.createElement("li");
+        li1.textContent = `Integrità file: ${fileOk}`;
+        const li2 = document.createElement("li");
+        li2.textContent = `Registry match: ${regOk}`;
+        const li3 = document.createElement("li");
+        li3.textContent = `Metrological (HARD): ${metOk}`;
+        detailsEl.appendChild(li1);
+        detailsEl.appendChild(li2);
+        detailsEl.appendChild(li3);
       }
 
-      async function fetchRegistryFailClosed(){
-        const res = await fetch(REGISTRY_URL, { cache:"no-store" });
-        if(!res.ok) throw new Error("Registry HTTP " + res.status);
-        const data = await res.json();
-        const arr = extractEntries(data);
-        if(!arr) throw new Error("Registry format invalid (missing entries[])");
-        return arr.filter(x => x && typeof x === "object");
+      function isSha256(h){
+        return typeof h === "string" && /^[a-f0-9]{64}$/.test(h);
       }
 
-      function findInEntries(entries, h){
-        const target = (h || "").toLowerCase();
-        for(const e of entries){
-          const eh = normalize(e.payload_sha256 || e.public_payload_sha256 || "").toLowerCase();
-          if(eh === target) return e;
+      async function sha256Text(text) {
+        const enc = new TextEncoder().encode(text);
+        const digest = await crypto.subtle.digest("SHA-256", enc);
+        return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, "0")).join("");
+      }
+
+      async function fetchRegistry(){
+        const res = await fetch(REGISTRY_URL, { cache: "no-store" });
+        if(!res.ok) throw new Error("Impossibile caricare registry.json");
+        return await res.json();
+      }
+
+      function registryHasHash(reg, h){
+        if(!reg || !Array.isArray(reg.entries)) return false;
+        return reg.entries.some(e => e && e.payload_sha256 === h);
+      }
+
+      function findEntry(reg, h){
+        if(!reg || !Array.isArray(reg.entries)) return null;
+        return reg.entries.find(e => e && e.payload_sha256 === h) || null;
+      }
+
+      function metrologicalDiag(entry){
+        if(!entry || !entry.timestamp) return { ok: "—", note: "Nessun timestamp disponibile." };
+        const t = Date.parse(entry.timestamp);
+        if(Number.isNaN(t)) return { ok: "UNKNOWN", note: "Timestamp non parsabile." };
+        const now = Date.now();
+        const delta = Math.abs(now - t);
+
+        // Questo è diagnostico: la validità HARD è garantita dal CI quando l'entry è stata appendata.
+        if(delta <= HARD_WINDOW_MS){
+          return { ok: "LIKELY_OK", note: "Timestamp vicino al tempo reale (entro ±2 min). Coerente con finestra HARD." };
         }
-        return null;
+        return { ok: "LIKELY_FAILED", note: "Timestamp distante da now (> ±2 min). Se l'entry è stata appena aggiunta, potrebbe essere stata bloccata dal CI oppure l'append non è avvenuto in finestra." };
       }
 
-      async function sha256(message){
-        const msgBuffer = new TextEncoder().encode(message);
-        const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2,"0")).join("");
+      function updateVerifyLink(h){
+        const url = `/hermeticum-bce-platform/verify/?h=${h}`;
+        openVerifyLink.href = url;
       }
 
-      function buildBasePayload(ipr){
-        return {
-          proto: ipr.proto || "",
-          kind: ipr.kind || "",
-          entity_type: ipr.entity_type || "",
-          nickname: ipr.nickname || "",
-          country: ipr.country || "",
-          email: ipr.email || "",
-          timestamp: ipr.timestamp || ""
-        };
-      }
-
-      function showBox(box, html){
-        box.hidden = false;
-        box.innerHTML = html;
-      }
-      function hideBox(box){
-        box.hidden = true;
-        box.innerHTML = "";
-      }
-
-      function resetUI(){
-        hash.value = "";
-        hashStatus.textContent = "Pronto.";
-        fileStatus.textContent = "Pronto.";
-        hideBox(hashOut);
-        hideBox(fileOut);
-      }
-      function clearFile(){
-        file.value = "";
-        fileStatus.textContent = "Pronto.";
-        hideBox(fileOut);
-      }
-
-      // Prefill from ?h=
-      (function(){
-        const params = new URLSearchParams(window.location.search);
-        const h = params.get("h");
-        if(h){ hash.value = h; }
-      })();
-
-      async function verifyByHash(){
-        const h = normalize(hash.value).toLowerCase();
-        if(!h){ alert("Inserisci un hash SHA256."); return; }
-        if(!isHex64(h)){
-          hashStatus.textContent = "INVALID input.";
-          showBox(hashOut, `<div class="hbce-meta"><strong>INVALID INPUT</strong></div>
-            <div class="hbce-meta">Serve SHA256 hex (64 caratteri).</div>`);
+      async function verifyByHash(h){
+        if(!isSha256(h)){
+          setStatus("INVALID", false);
+          reasonEl.textContent = "Hash non valido (atteso sha256 hex 64).";
+          setDetails("—", "NO", "—");
           return;
         }
 
-        btnHash.disabled = true;
-        btnHash.textContent = "Verifying…";
-        hashStatus.textContent = "Verifica in corso…";
+        updateVerifyLink(h);
 
         try{
-          const entries = await fetchRegistryFailClosed();
-          const found = findInEntries(entries, h);
+          const reg = await fetchRegistry();
+          const match = registryHasHash(reg, h);
+          const entry = match ? findEntry(reg, h) : null;
+          const met = entry ? metrologicalDiag(entry) : { ok: "—", note: "Nessuna entry: metrological non applicabile." };
 
-          if(found){
-            const nick = escapeHtml(found.nickname || "");
-            const ts = escapeHtml(found.timestamp || "");
-            hashStatus.textContent = "PASS.";
-            showBox(hashOut, `
-              <div class="hbce-meta"><strong>PASS — PRESENT IN REGISTRY</strong></div>
-              <div class="hbce-meta" style="margin-top:8px">nickname: <code>${nick || "—"}</code></div>
-              <div class="hbce-meta">timestamp: <code>${ts || "—"}</code></div>
-              <div class="hbce-meta">payload_sha256: <code>${escapeHtml(h)}</code></div>
-            `);
-          }else{
-            hashStatus.textContent = "INVALID (fail-closed).";
-            showBox(hashOut, `
-              <div class="hbce-meta"><strong>INVALID — NOT FOUND</strong></div>
-              <div class="hbce-meta" style="margin-top:8px">Hash non presente nel registry pubblico.</div>
-              <div class="hbce-meta">payload_sha256: <code>${escapeHtml(h)}</code></div>
-              <div class="hbce-meta">source: <code>${REGISTRY_URL}</code></div>
-            `);
+          if(match){
+            setStatus("VALID (HASH)", true);
+            reasonEl.textContent = `Registry match trovato. ${met.note}`;
+            setDetails("NOT_CHECKED", "YES", met.ok);
+          } else {
+            setStatus("INVALID", false);
+            reasonEl.textContent = "Nessun match nel registry append-only. (Fail-closed)";
+            setDetails("NOT_CHECKED", "NO", "—");
           }
         }catch(e){
-          hashStatus.textContent = "BLOCKED (fail-closed).";
-          showBox(hashOut, `
-            <div class="hbce-meta"><strong>BLOCKED — FAIL CLOSED</strong></div>
-            <div class="hbce-meta" style="margin-top:8px">Errore lettura/parse registry.</div>
-            <div class="hbce-meta">detail: <code>${escapeHtml(String(e))}</code></div>
-            <div class="hbce-meta">source: <code>${REGISTRY_URL}</code></div>
-          `);
-        }finally{
-          btnHash.disabled = false;
-          btnHash.textContent = "Verify (hash)";
+          console.error(e);
+          setStatus("INVALID", false);
+          reasonEl.textContent = "Errore caricamento registry. Fail-closed.";
+          setDetails("—", "UNKNOWN", "—");
         }
       }
 
-      async function verifyByFile(){
-        if(!file.files || file.files.length === 0){ alert("Seleziona un file IPR JSON."); return; }
-
-        btnFile.disabled = true;
-        btnFile.textContent = "Verifying…";
-        fileStatus.textContent = "Verifica file in corso…";
-
+      async function verifyByFile(file){
         try{
-          const f = file.files[0];
-          const text = await f.text();
+          const text = await file.text();
+          let parsed = null;
+          try { parsed = JSON.parse(text); } catch(_) {}
 
-          let ipr;
-          try{
-            ipr = JSON.parse(text);
-          }catch(parseErr){
-            fileStatus.textContent = "BLOCKED (fail-closed).";
-            showBox(fileOut, `<div class="hbce-meta"><strong>BLOCKED — JSON PARSE ERROR</strong></div>
-              <div class="hbce-meta" style="margin-top:8px"><code>${escapeHtml(String(parseErr))}</code></div>`);
+          // basic structure check
+          if(!parsed || parsed.proto !== "HBCE-IPR-v1" || parsed.kind !== "IDENTITY_PRIMARY_RECORD"){
+            setStatus("INVALID", false);
+            reasonEl.textContent = "File non conforme: atteso IPR_RELEASE.json (HBCE-IPR-v1 / IDENTITY_PRIMARY_RECORD).";
+            setDetails("NO", "—", "—");
             return;
           }
 
-          const declared = normalize(ipr.payload_sha256).toLowerCase();
-          if(!isHex64(declared)){
-            fileStatus.textContent = "BLOCKED (fail-closed).";
-            showBox(fileOut, `<div class="hbce-meta"><strong>BLOCKED — MISSING payload_sha256</strong></div>`);
+          // hash check: recompute using same rule as generator (exclude payload_sha256 field value)
+          if(!parsed.hash_integrity || typeof parsed.hash_integrity !== "object"){
+            setStatus("INVALID", false);
+            reasonEl.textContent = "File non conforme: hash_integrity mancante.";
+            setDetails("NO", "—", "—");
             return;
           }
 
-          const base = buildBasePayload(ipr);
-          const computed = await sha256(JSON.stringify(base));
+          const declared = parsed.hash_integrity.payload_sha256;
+          if(!isSha256(declared)){
+            setStatus("INVALID", false);
+            reasonEl.textContent = "File non conforme: payload_sha256 dichiarato non valido.";
+            setDetails("NO", "—", "—");
+            return;
+          }
+
+          const tmp = JSON.parse(JSON.stringify(parsed));
+          tmp.hash_integrity.payload_sha256 = "PENDING";
+          const computed = await sha256Text(JSON.stringify(tmp));
 
           if(computed !== declared){
-            fileStatus.textContent = "INVALID integrity.";
-            showBox(fileOut, `
-              <div class="hbce-meta"><strong>INVALID — INTEGRITY FAIL</strong></div>
-              <div class="hbce-meta" style="margin-top:8px">computed ≠ declared</div>
-              <div class="hbce-meta">declared: <code>${escapeHtml(declared)}</code></div>
-              <div class="hbce-meta">computed: <code>${escapeHtml(computed)}</code></div>
-            `);
+            setStatus("INVALID", false);
+            reasonEl.textContent = "Integrità file fallita: hash calcolato ≠ hash dichiarato. (Fail-closed)";
+            setDetails("NO", "—", "—");
             return;
           }
 
-          const entries = await fetchRegistryFailClosed();
-          const found = findInEntries(entries, declared);
+          // registry match
+          updateVerifyLink(declared);
 
-          const nick = escapeHtml(ipr.nickname || "");
-          const ts = escapeHtml(ipr.timestamp || "");
-          const et = escapeHtml(ipr.entity_type || "");
+          const reg = await fetchRegistry();
+          const match = registryHasHash(reg, declared);
+          const entry = match ? findEntry(reg, declared) : null;
+          const met = entry ? metrologicalDiag(entry) : { ok: "—", note: "Nessuna entry: metrological non applicabile." };
 
-          if(found){
-            fileStatus.textContent = "PASS.";
-            showBox(fileOut, `
-              <div class="hbce-meta"><strong>PASS — INTEGRITY OK + PRESENT IN REGISTRY</strong></div>
-              <div class="hbce-meta" style="margin-top:8px">entity_type: <code>${et || "—"}</code></div>
-              <div class="hbce-meta">nickname: <code>${nick || "—"}</code></div>
-              <div class="hbce-meta">timestamp: <code>${ts || "—"}</code></div>
-              <div class="hbce-meta">payload_sha256: <code>${escapeHtml(declared)}</code></div>
-            `);
-          }else{
-            fileStatus.textContent = "INVALID (fail-closed).";
-            showBox(fileOut, `
-              <div class="hbce-meta"><strong>INVALID — INTEGRITY OK, NOT IN REGISTRY</strong></div>
-              <div class="hbce-meta" style="margin-top:8px">Hash non presente nel registry pubblico.</div>
-              <div class="hbce-meta">payload_sha256: <code>${escapeHtml(declared)}</code></div>
-              <div class="hbce-meta">source: <code>${REGISTRY_URL}</code></div>
-            `);
+          if(match){
+            setStatus("VALID", true);
+            reasonEl.textContent = `Integrità OK + registry match. ${met.note}`;
+            setDetails("YES", "YES", met.ok);
+          } else {
+            setStatus("INVALID", false);
+            reasonEl.textContent = "Integrità OK ma nessun match nel registry append-only. (Fail-closed)";
+            setDetails("YES", "NO", "—");
           }
 
         }catch(e){
-          fileStatus.textContent = "BLOCKED (fail-closed).";
-          showBox(fileOut, `
-            <div class="hbce-meta"><strong>BLOCKED — FAIL CLOSED</strong></div>
-            <div class="hbce-meta" style="margin-top:8px">Errore verifica file o lettura registry.</div>
-            <div class="hbce-meta">detail: <code>${escapeHtml(String(e))}</code></div>
-          `);
-        }finally{
-          btnFile.disabled = false;
-          btnFile.textContent = "Verify (file)";
+          console.error(e);
+          setStatus("INVALID", false);
+          reasonEl.textContent = "Errore verifica file. Fail-closed.";
+          setDetails("UNKNOWN", "UNKNOWN", "—");
         }
       }
 
-      btnHash.addEventListener("click", verifyByHash);
-      btnReset.addEventListener("click", resetUI);
-      btnFile.addEventListener("click", verifyByFile);
-      btnClear.addEventListener("click", clearFile);
+      // Wire events
+      btnVerifyHash.addEventListener("click", () => {
+        const h = (hashInput.value || "").trim().toLowerCase();
+        verifyByHash(h);
+      });
+
+      iprFile.addEventListener("change", () => {
+        const f = iprFile.files && iprFile.files[0];
+        if(!f) return;
+        verifyByFile(f);
+      });
+
+      // auto-verify from ?h=
+      const params = new URLSearchParams(location.search);
+      const h0 = (params.get("h") || "").trim().toLowerCase();
+      if(h0){
+        hashInput.value = h0;
+        verifyByHash(h0);
+      } else {
+        openVerifyLink.href = "#";
+      }
     })();
   </script>
 </body>
