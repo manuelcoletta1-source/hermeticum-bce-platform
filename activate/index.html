@@ -1,124 +1,61 @@
 <!doctype html>
-<html lang="en">
+<html lang="it">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Activate — IPR Infrastructure</title>
-
-<link rel="stylesheet" href="../assets/css/main.css"/>
-<link rel="stylesheet" href="../assets/css/brand.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ACTIVATE — Canonical Gateway</title>
+  <meta name="description" content="Gateway di attivazione: nessun flusso alternativo. Emissione IPR solo via wizard canonico → done → registry → verify. UE-first, audit-first, fail-closed." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
-
 <body>
+  <div data-hbce="header"></div>
 
-<header class="topbar">
-  <div class="wrap">
-    <div class="row">
+  <main class="hbce-container hbce-main">
 
-      <div class="brandmark">
-        <img src="../assets/img/hermeticum-mark-neon.svg" alt="IPR"/>
-        <span>IPR</span>
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">ACTIVATE · Controlled Gateway</div>
+      <h1 class="hbce-hero__title">Attivazione IPR</h1>
+      <p class="hbce-hero__lead">
+        Qui non esistono percorsi alternativi: l’attivazione passa dal flusso canonico di emissione.
+        Pubblico: <strong>hash-only</strong>. Registro: <strong>append-only</strong>. Esito: <strong>fail-closed</strong>.
+      </p>
+      <p class="hbce-note">
+        Regola metrologica HARD: dopo generazione, append nel registry entro <strong>±2 minuti</strong>. Fuori finestra → blocco CI.
+      </p>
+
+      <div class="hbce-actions" style="margin-top:1rem;">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">OPEN WIZARD</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/pricing/">PRICING</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
       </div>
+    </section>
 
-      <nav class="nav">
-        <a href="../">Gateway</a>
-        <a class="active" href="./">Activate</a>
-        <a href="../verify/">Verify</a>
-        <a href="../infrastructure/">Infrastructure</a>
-        <a href="../docs/">Docs</a>
-        <a href="../status/">Status</a>
-      </nav>
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Cosa succede (in 4 step)</h2>
+      <div class="hbce-card">
+        <ol class="hbce-list">
+          <li><strong>Wizard</strong>: genera localmente e scarica i file (IPR_RELEASE, ISSUER_CERTIFICATE, REGISTRY_ENTRY).</li>
+          <li><strong>Done</strong>: mostra hash/timestamp e guida operativa (countdown HARD).</li>
+          <li><strong>Registry</strong>: append hash-only nel registro pubblico append-only.</li>
+          <li><strong>Verify</strong>: VALID solo se integrità + match registry (altrimenti INVALID).</li>
+        </ol>
+      </div>
+    </section>
 
-      <div class="spacer"></div>
-      <div class="status active">EU Infrastructure: ACTIVE</div>
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Issuer</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Certificazione emissione: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong><br/>
+          Hallmark: <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong>
+        </p>
+      </div>
+    </section>
 
-    </div>
-  </div>
-</header>
+  </main>
 
-<main class="wrap">
-
-<section class="hero">
-<h1>Activate IPR</h1>
-
-<p class="lead">
-Generate an Identity Primary Record and obtain a verifiable receipt.  
-Activation produces cryptographic evidence usable for ex-ante verification.
-</p>
-
-<div class="cta">
-<a class="btn primary" href="../create/">Generate IPR</a>
-<a class="btn" href="../verify/">Verify</a>
-<a class="btn" href="../docs/">Documentation</a>
-</div>
-
-<div class="pillrow">
-<span class="pill">Step 1: Generate</span>
-<span class="pill">Step 2: Receipt</span>
-<span class="pill">Step 3: Verify</span>
-<span class="pill">Step 4: Active</span>
-</div>
-</section>
-
-<section class="section">
-<h2>Activation flow</h2>
-
-<div class="grid">
-
-<div class="card">
-Generate IPR
-<small>Create canonical identity record</small>
-</div>
-
-<div class="card">
-Receive receipt
-<small>Hash-based cryptographic proof</small>
-</div>
-
-<div class="card">
-Verify ex-ante
-<small>PASS / FAIL deterministic check</small>
-</div>
-
-</div>
-</section>
-
-<section class="section">
-<div class="panel">
-
-<h2>Operational notes</h2>
-
-<div style="color:var(--muted);line-height:1.7">
-
-<p>
-The activation process does not create a central identity database.  
-The system is designed to operate with minimal data exposure.
-</p>
-
-<p>
-Receipts contain cryptographic references only.  
-Verification is deterministic and publicly reproducible.
-</p>
-
-<p>
-If verification cannot be completed, result is considered invalid (fail-closed).
-</p>
-
-</div>
-
-</div>
-</section>
-
-</main>
-
-<footer class="footer">
-<div class="wrap">
-<div class="row">
-<strong>IPR Infrastructure</strong>
-<div>EU-first · audit-first · fail-closed · hash-only</div>
-</div>
-</div>
-</footer>
-
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </body>
 </html>
