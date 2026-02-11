@@ -3,130 +3,220 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ecosystem — Manifest Viewer</title>
-  <meta name="description" content="Viewer del manifest ecosistema (core + moduli esterni). Directory enterprise UE-first." />
+  <title>ECOSYSTEM — Root & Nodes</title>
+  <meta name="description" content="Viewer ecosistema Hermeticum: legge ECOSYSTEM_ROOT.json e mostra roots e nodi software. Layer pubblico hash-only, audit-first, fail-closed." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
+
 <body>
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
+
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">ECOSYSTEM · Manifest Viewer</div>
-      <h1 class="hbce-hero__title">Ecosystem Manifest</h1>
+      <div class="hbce-hero__kicker">ECOSYSTEM · ROOT · NODES</div>
+      <h1 class="hbce-hero__title">Ecosystem Viewer</h1>
       <p class="hbce-hero__lead">
-        Directory macchina-leggibile e human-readable dell’ecosistema: core + moduli esterni.
-        Non certifica validità: è un indice stabile per audit e navigazione.
+        Viewer pubblico dell’ecosistema: carica <strong>ECOSYSTEM_ROOT.json</strong> e rende visibili roots e nodi software.
+        Pubblico: <strong>hash-only</strong>. Governance: <strong>audit-first</strong> e <strong>fail-closed</strong>.
       </p>
-      <div class="hbce-hero__cta">
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/ecosystem/manifest.json">Apri manifest.json</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/status/ecosystem/">STATUS</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/map/">MAP</a>
+      <p class="hbce-note">
+        Questo viewer non custodisce identità complete. Mostra solo metadati operativi e collegamenti di verifica.
+      </p>
+
+      <div class="hbce-actions" style="margin-top:1.25rem;">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/ECOSYSTEM_ROOT.json">OPEN ROOT JSON</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
       </div>
     </section>
 
     <section class="hbce-section">
-      <h2>Core</h2>
-      <div class="hbce-card hbce-card--wide">
-        <div class="hbce-meta" id="coreMeta">Caricamento…</div>
+      <h2 class="hbce-h2">Root</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Stato: <span id="rootStatus">loading…</span><br/>
+          Proto: <span id="rootProto">—</span><br/>
+          Kind: <span id="rootKind">—</span><br/>
+          Jurisdiction: <span id="rootJurisdiction">—</span>
+        </p>
+        <p class="hbce-note" id="rootNote" style="display:none;"></p>
       </div>
     </section>
 
     <section class="hbce-section">
-      <h2>Modules</h2>
-      <div class="hbce-card hbce-card--wide">
-        <input class="hbce-input" id="filter" placeholder="Filtra per nome o ruolo…" />
-        <div style="overflow:auto;margin-top:10px">
-          <table class="hbce-table" style="width:100%">
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Ruolo</th>
-                <th>URL</th>
-              </tr>
-            </thead>
-            <tbody id="tbody">
-              <tr><td colspan="3">Caricamento…</td></tr>
-            </tbody>
-          </table>
+      <h2 class="hbce-h2">Roots (Human / AI)</h2>
+      <div class="hbce-grid hbce-grid--2" id="rootsGrid">
+        <!-- injected -->
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Nodes (Software Modules)</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Ogni nodo può avere un proprio IPR (hash-only public layer) e collegamenti di verifica.
+          La presenza nel registry è la condizione di opponibilità pubblica.
+        </p>
+      </div>
+      <div class="hbce-grid hbce-grid--3" id="nodesGrid" style="margin-top:1rem;">
+        <!-- injected -->
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Operational Links</h2>
+      <div class="hbce-grid hbce-grid--4">
+        <div class="hbce-card">
+          <h3 class="hbce-h3">Emit</h3>
+          <p class="hbce-card__text">Wizard canonico emissione IPR.</p>
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">OPEN</a>
         </div>
-        <div class="hbce-meta" id="meta">—</div>
+        <div class="hbce-card">
+          <h3 class="hbce-h3">Verify</h3>
+          <p class="hbce-card__text">Verifica fail-closed.</p>
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">OPEN</a>
+        </div>
+        <div class="hbce-card">
+          <h3 class="hbce-h3">Registry</h3>
+          <p class="hbce-card__text">Append-only hash registry.</p>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">OPEN</a>
+        </div>
+        <div class="hbce-card">
+          <h3 class="hbce-h3">Standard</h3>
+          <p class="hbce-card__text">IPR EU minimal standard.</p>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/standard/ipr/">OPEN</a>
+        </div>
       </div>
     </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Issuer</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Hallmark: <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong><br/>
+          Società: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong>
+        </p>
+      </div>
+    </section>
+
   </main>
 
   <div data-hbce="footer"></div>
   <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 
   <script>
-    (function(){
-      const URL = "/hermeticum-bce-platform/ecosystem/manifest.json";
-      const tbody = document.getElementById("tbody");
-      const meta = document.getElementById("meta");
-      const coreMeta = document.getElementById("coreMeta");
-      const filter = document.getElementById("filter");
+    function el(tag, attrs, children) {
+      const n = document.createElement(tag);
+      if (attrs) Object.entries(attrs).forEach(([k,v]) => {
+        if (k === "class") n.className = v;
+        else if (k === "html") n.innerHTML = v;
+        else n.setAttribute(k, v);
+      });
+      (children || []).forEach(c => n.appendChild(typeof c === "string" ? document.createTextNode(c) : c));
+      return n;
+    }
 
-      let modules = [];
+    function safeText(v) {
+      if (v === null || v === undefined) return "—";
+      if (typeof v === "string" && v.trim() === "") return "—";
+      return String(v);
+    }
 
-      function esc(s){
-        return String(s || "").replace(/[&<>"']/g, m => ({
-          "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-        }[m]));
+    function mkRootCard(title, obj) {
+      const lines = [];
+      Object.entries(obj || {}).forEach(([k,v]) => {
+        lines.push(`<strong>${k}</strong>: ${safeText(v)}`);
+      });
+      return el("div", { class: "hbce-card" }, [
+        el("h3", { class: "hbce-h3" }, [title]),
+        el("p", { class: "hbce-card__text", html: lines.join("<br/>") })
+      ]);
+    }
+
+    function mkNodeCard(node) {
+      const name = safeText(node && (node.name || node.nickname || node.id));
+      const repo = safeText(node && (node.repo || node.repo_url || node.url));
+      const hash = (node && (node.payload_sha256 || node.hash || node.ipr_hash)) ? String(node.payload_sha256 || node.hash || node.ipr_hash) : "";
+      const ts = safeText(node && (node.timestamp || node.ts));
+
+      const btns = el("div", { class: "hbce-actions", style: "margin-top:.75rem;" }, []);
+      if (repo && repo !== "—") {
+        btns.appendChild(el("a", { class: "hbce-btn", href: repo }, ["REPO"]));
       }
+      if (hash) {
+        btns.appendChild(el("a", { class: "hbce-btn hbce-btn--primary", href: `/hermeticum-bce-platform/verify/?h=${encodeURIComponent(hash)}` }, ["VERIFY"]));
+      } else {
+        btns.appendChild(el("a", { class: "hbce-btn", href: "/hermeticum-bce-platform/verify/" }, ["VERIFY"]));
+      }
+      btns.appendChild(el("a", { class: "hbce-btn", href: "/hermeticum-bce-platform/registry/" }, ["REGISTRY"]));
 
-      function render(list){
-        if(!list.length){
-          tbody.innerHTML = `<tr><td colspan="3">Nessun risultato.</td></tr>`;
-          meta.textContent = `0/${modules.length}`;
-          return;
+      return el("div", { class: "hbce-card" }, [
+        el("h3", { class: "hbce-h3" }, [name]),
+        el("p", { class: "hbce-card__text", html:
+          `<strong>repo</strong>: ${repo}<br/>` +
+          `<strong>payload_sha256</strong>: ${hash ? hash : "—"}<br/>` +
+          `<strong>timestamp</strong>: ${ts}`
+        }),
+        btns
+      ]);
+    }
+
+    async function loadRoot() {
+      const rootStatus = document.getElementById("rootStatus");
+      try {
+        const r = await fetch("/hermeticum-bce-platform/ECOSYSTEM_ROOT.json", { cache: "no-store" });
+        if (!r.ok) throw new Error("ROOT fetch failed");
+        const data = await r.json();
+
+        document.getElementById("rootProto").textContent = safeText(data.proto || data.PROTO);
+        document.getElementById("rootKind").textContent = safeText(data.kind || data.KIND);
+        document.getElementById("rootJurisdiction").textContent = safeText(data.jurisdiction || data.JURISDICTION);
+
+        const note = data.note || data.NOTE || "";
+        const noteEl = document.getElementById("rootNote");
+        if (note && String(note).trim() !== "") {
+          noteEl.style.display = "block";
+          noteEl.textContent = String(note);
         }
-        tbody.innerHTML = list.map(m => `
-          <tr>
-            <td>${esc(m.name)}</td>
-            <td>${esc(m.role)}</td>
-            <td><a href="${esc(m.public_url)}" target="_blank" rel="noopener">Apri</a></td>
-          </tr>
-        `).join("");
-        meta.textContent = `${list.length}/${modules.length}`;
-      }
 
-      function applyFilter(){
-        const q = (filter.value || "").trim().toLowerCase();
-        if(!q){ render(modules); return; }
-        const f = modules.filter(m =>
-          (m.name || "").toLowerCase().includes(q) ||
-          (m.role || "").toLowerCase().includes(q)
-        );
-        render(f);
-      }
+        // Roots
+        const rootsGrid = document.getElementById("rootsGrid");
+        rootsGrid.innerHTML = "";
+        const rootsObj = data.roots || data.ROOTS || {};
+        const human = rootsObj.human || rootsObj.HUMAN || null;
+        const ai = rootsObj.ai || rootsObj.AI || null;
 
-      async function load(){
-        try{
-          const r = await fetch(URL, { cache: "no-store" });
-          if(!r.ok) throw new Error("FETCH_FAILED");
-          const m = await r.json();
-
-          // fail-closed: schema minimo
-          if(!m || !m.core || !Array.isArray(m.modules)) throw new Error("INVALID_SCHEMA");
-
-          coreMeta.innerHTML =
-            `<strong>${esc(m.core.name || "core")}</strong> · ruolo: ${esc(m.core.role)} · ` +
-            `<a href="${esc(m.core.public_url)}" target="_blank" rel="noopener">apri</a>`;
-
-          modules = m.modules.slice();
-          render(modules);
-          meta.textContent = `${modules.length}/${modules.length}`;
-
-          filter.addEventListener("input", applyFilter);
-        }catch(e){
-          coreMeta.innerHTML = `Esito operativo: <strong>INVALID</strong> (manifest non accessibile o schema incoerente).`;
-          tbody.innerHTML = `<tr><td colspan="3">INVALID (fail-closed).</td></tr>`;
-          meta.textContent = "—";
+        if (human) rootsGrid.appendChild(mkRootCard("Human Root", human));
+        if (ai) rootsGrid.appendChild(mkRootCard("AI Root", ai));
+        if (!human && !ai) {
+          rootsGrid.appendChild(el("div", { class: "hbce-card" }, [
+            el("p", { class: "hbce-card__text" }, ["Nessun root dichiarato nel file."])
+          ]));
         }
-      }
 
-      load();
-    })();
+        // Nodes
+        const nodesGrid = document.getElementById("nodesGrid");
+        nodesGrid.innerHTML = "";
+        const nodes = data.nodes || data.NODES || data.modules || data.MODULES || [];
+        if (Array.isArray(nodes) && nodes.length) {
+          nodes.forEach(n => nodesGrid.appendChild(mkNodeCard(n)));
+        } else {
+          nodesGrid.appendChild(el("div", { class: "hbce-card" }, [
+            el("p", { class: "hbce-card__text" }, ["Nessun nodo dichiarato nel file (nodes/modules)."])
+          ]));
+        }
+
+        rootStatus.textContent = "ACTIVE";
+      } catch (e) {
+        rootStatus.textContent = "ERROR";
+        document.getElementById("rootProto").textContent = "—";
+        document.getElementById("rootKind").textContent = "—";
+        document.getElementById("rootJurisdiction").textContent = "—";
+      }
+    }
+
+    loadRoot();
   </script>
 </body>
 </html>
