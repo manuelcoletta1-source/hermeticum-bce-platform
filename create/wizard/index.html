@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CREATE — IPR Wizard</title>
-  <meta name="description" content="Wizard emissione IPR UE: pacchetti (19/39/79/149), certificazione issuer 🜏 HERMETICUM B.C.E. S.r.l., registry append-only, verify fail-closed." />
+  <meta name="description" content="Wizard emissione IPR UE: generazione locale, download immediato, certificazione issuer 🜏 HERMETICUM B.C.E. S.r.l., registry append-only hash-only, verify fail-closed." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 <body>
@@ -13,144 +13,232 @@
   <main class="hbce-container hbce-main">
 
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CREATE · EU-first · Issuer-certified</div>
+      <div class="hbce-hero__kicker">CREATE · Local-first · UE-first</div>
       <h1 class="hbce-hero__title">Emissione Identity Primary Record</h1>
       <p class="hbce-hero__lead">
-        Questo flusso emette un IPR come <strong>radice operativa</strong>: hash + tempo + certificazione issuer.
-        L’emissione base UE è certificata da <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong>.
+        Generazione <strong>locale</strong> (nel browser): scarichi subito il pacchetto IPR.
+        L’IPR Base UE è <strong>certificato da 🜏 HERMETICUM B.C.E. S.r.l.</strong>.
+        Il registry pubblico conserva solo prove <strong>hash-only</strong>.
       </p>
       <p class="hbce-note">
-        Il registry pubblico conserva solo <strong>nickname + hash + timestamp</strong>.
-        Nessuna custodia di identità completa. Verifica <strong>fail-closed</strong>.
+        Principio operativo: <strong>hash + tempo + certificazione issuer</strong> = identità operativa primaria opponibile nel tempo.
+        Gli ancoraggi (IPFS/ETH/BTC) rafforzano persistenza/opponibilità ma non “creano” l’IPR.
       </p>
     </section>
 
-    <section class="hbce-section">
+    <!-- STEP 1 -->
+    <section class="hbce-section" id="step-1">
       <h2 class="hbce-h2">1) Entità</h2>
       <div class="hbce-card">
         <label class="hbce-label">Tipo entità</label>
-        <select class="hbce-input" name="entity_type">
+        <select class="hbce-input" name="entity_type" id="entity_type">
           <option value="HUMAN">Human (cittadino UE)</option>
           <option value="ORG">Organization</option>
           <option value="AI">AI / Software</option>
           <option value="ROBOT">Robot / Device</option>
         </select>
 
-        <label class="hbce-label">Nickname operativo</label>
-        <input class="hbce-input" type="text" name="nickname" placeholder="es. ManuHell" />
+        <label class="hbce-label">Nickname operativo (pubblico)</label>
+        <input class="hbce-input" type="text" id="nickname" name="nickname" placeholder="es. ManuHell" autocomplete="off" />
 
-        <label class="hbce-label">Email (consegna pacchetto)</label>
-        <input class="hbce-input" type="email" name="email" placeholder="nome@dominio.tld" />
+        <label class="hbce-label">Email (solo consegna / recupero)</label>
+        <input class="hbce-input" type="email" id="email" name="email" placeholder="nome@dominio.tld" autocomplete="email" />
+
+        <p class="hbce-note">
+          Pubblico (registry): solo <strong>nickname + hash + timestamp</strong>.
+          Email non viene pubblicata nel registry.
+        </p>
       </div>
     </section>
 
-    <section class="hbce-section">
+    <!-- STEP 2 -->
+    <section class="hbce-section" id="step-2">
       <h2 class="hbce-h2">2) Pacchetto</h2>
       <div class="hbce-card">
         <p class="hbce-note">
-          Ogni pacchetto include <strong>certificazione issuer</strong>: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong>.
-          Gli anchor aumentano persistenza/opponibilità nel tempo.
+          Ogni pacchetto include <strong>ISSUER_CERTIFICATE</strong> con sigillo <strong>🜏</strong>.
+          Se scegli un pacchetto con anchor, il sistema include <strong>ANCHOR_RECEIPT</strong> (quando disponibile).
         </p>
 
         <div class="hbce-radio">
-          <label><input type="radio" name="pkg" value="BASE_19" checked>
-            <strong>IPR Base UE — 19 €</strong> · emissione + registry + verify
+          <label>
+            <input type="radio" name="pkg" value="BASE_19" checked />
+            <strong>IPR Base UE — 19 €</strong> · emissione + certificazione + registry + verify
           </label><br/>
-          <label><input type="radio" name="pkg" value="IPFS_39">
-            <strong>IPR + IPFS — 39 €</strong> · CID incluso nel pacchetto
+          <label>
+            <input type="radio" name="pkg" value="IPFS_39" />
+            <strong>IPR + IPFS — 39 €</strong> · CID nel receipt (persistenza distribuita)
           </label><br/>
-          <label><input type="radio" name="pkg" value="IPFS_ETH_79">
-            <strong>IPR + IPFS + Ethereum — 79 €</strong> · TX Ethereum incluso nel pacchetto
+          <label>
+            <input type="radio" name="pkg" value="IPFS_ETH_79" />
+            <strong>IPR + IPFS + Ethereum — 79 €</strong> · TX Ethereum nel receipt (opponibilità pubblica)
           </label><br/>
-          <label><input type="radio" name="pkg" value="FULL_149">
+          <label>
+            <input type="radio" name="pkg" value="FULL_149" />
             <strong>FULL — 149 €</strong> · IPFS + ETH + BTC (tri-anchor)
           </label>
         </div>
 
         <p class="hbce-note">
-          <strong>Automatico:</strong> se selezioni un pacchetto con anchor, il nodo genera automaticamente
-          <strong>ANCHOR_RECEIPT</strong> (CID/TX/TXID) e lo include nel pacchetto cliente.
+          Nota: in modalità <strong>local-first</strong> l’IPR nasce nel browser.
+          L’anchor crypto richiede infrastruttura dedicata (o firma wallet) e può essere attivato in fase successiva.
         </p>
       </div>
     </section>
 
-    <section class="hbce-section">
+    <!-- STEP 3 -->
+    <section class="hbce-section" id="step-3">
       <h2 class="hbce-h2">3) Annex UE (coerenza evolutiva)</h2>
       <div class="hbce-card">
         <p class="hbce-card__text">
-          Questa sezione abilita coerenza evolutiva (match tra evoluzioni operative future) senza pubblicare dati.
-          I dati identificativi UE non finiscono nel registry pubblico: producono solo impronte crittografiche.
+          Annex UE serve a <strong>coerenza evolutiva</strong>: permette match stabile tra evoluzioni operative future
+          (AI/robot/moduli) senza pubblicare dati personali. Nel registry pubblico resta <strong>hash-only</strong>.
         </p>
 
         <label class="hbce-label">Nome e cognome (opzionale)</label>
-        <input class="hbce-input" type="text" name="full_name" placeholder="Nome Cognome" />
+        <input class="hbce-input" type="text" id="full_name" name="full_name" placeholder="Nome Cognome" />
 
         <label class="hbce-label">Codice fiscale (opzionale)</label>
-        <input class="hbce-input" type="text" name="tax_code" placeholder="CF..." />
+        <input class="hbce-input" type="text" id="tax_code" name="tax_code" placeholder="CF..." />
 
         <label class="hbce-label">Documento (numero) (opzionale)</label>
-        <input class="hbce-input" type="text" name="doc_id" placeholder="CIE/Passaporto..." />
+        <input class="hbce-input" type="text" id="doc_id" name="doc_id" placeholder="CIE/Passaporto..." />
 
         <p class="hbce-note">
-          Pubblico (hash-only): <strong>nickname + hash + timestamp</strong>.  
-          Privato (cliente): eventuale annex UE nel pacchetto rilasciato.
+          Questi dati non vengono pubblicati nel registry. Servono solo per costruire impronte e continuità operativa nel tempo.
         </p>
       </div>
     </section>
 
-    <section class="hbce-section">
+    <!-- STEP 4 -->
+    <section class="hbce-section" id="step-4">
       <h2 class="hbce-h2">4) Policy</h2>
       <div class="hbce-card">
         <ul class="hbce-list">
           <li><strong>UE-first</strong>: riferimento normativo UE</li>
           <li><strong>Audit-first</strong>: verificabilità prima dell’azione</li>
           <li><strong>Fail-closed</strong>: non verificabile → INVALID</li>
-          <li><strong>Hash-only</strong>: nessuna custodia pubblica di dati sensibili</li>
+          <li><strong>Hash-only</strong>: nel pubblico solo prove minimizzate</li>
           <li><strong>Append-only</strong>: registry solo incrementale</li>
+          <li><strong>Issuer seal</strong>: 🜏 certificazione emissione Hermeticum</li>
         </ul>
 
         <label class="hbce-check">
-          <input type="checkbox" name="accept" />
-          Accetto policy operative (emissione non modificabile; se cambia identità operativa → nuovo IPR).
+          <input type="checkbox" id="accept" name="accept" />
+          Accetto policy operative (emissione non modificabile; variazione radice → nuovo IPR).
         </label>
       </div>
     </section>
 
-    <section class="hbce-section">
-      <h2 class="hbce-h2">5) Emissione</h2>
+    <!-- STEP 5 -->
+    <section class="hbce-section" id="step-5">
+      <h2 class="hbce-h2">5) Genera e scarica</h2>
       <div class="hbce-card">
         <p class="hbce-card__text">
-          Output del processo:
+          Output del pacchetto IPR:
         </p>
         <ul class="hbce-list">
-          <li><strong>IPR_RELEASE.json</strong> (pacchetto cliente)</li>
-          <li><strong>ISSUER_CERTIFICATE.json</strong> (certificazione: 🜏 HERMETICUM B.C.E. S.r.l.)</li>
-          <li><strong>REGISTRY_ENTRY.json</strong> (hash-only)</li>
-          <li><strong>ANCHOR_RECEIPT.json</strong> (solo se pacchetto include IPFS/ETH/BTC)</li>
+          <li><strong>IPR_RELEASE.json</strong> (radice operativa / DNA digitale)</li>
+          <li><strong>ISSUER_CERTIFICATE.json</strong> (certificazione issuer: 🜏 HERMETICUM B.C.E. S.r.l.)</li>
+          <li><strong>REGISTRY_ENTRY.json</strong> (hash-only, pronto per append nel registry)</li>
+          <li><strong>ANCHOR_RECEIPT.json</strong> (solo se/quando anchor attivi)</li>
         </ul>
+
         <div class="hbce-actions">
-          <a class="hbce-btn hbce-btn--primary" href="#">PROCEED TO PAYMENT</a>
+          <a class="hbce-btn hbce-btn--primary" href="#" data-hbce-generate>GENERATE & DOWNLOAD</a>
           <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
         </div>
-        <p class="hbce-note">
-          Certificazione di emissione: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong> · Sigillo: <strong>🜏</strong>
+
+        <div class="hbce-card" style="margin-top:1rem;">
+          <p class="hbce-card__text">
+            Certificazione: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong><br/>
+            Sigillo: <strong>🜏</strong><br/>
+            Punto zero rete: <strong>19 gennaio 2026</strong>
+          </p>
+        </div>
+
+        <p class="hbce-note" id="gen_status">
+          Stato: pronto a generare.
         </p>
       </div>
     </section>
 
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Punto zero</h2>
+    <!-- STEP 6 -->
+    <section class="hbce-section" id="step-6">
+      <h2 class="hbce-h2">6) Pubblicazione hash-only (append-only)</h2>
       <div class="hbce-card">
         <p class="hbce-card__text">
-          Nascita operativa della rete: <strong>19 gennaio 2026</strong>.
-          Il tempo rende opponibile ciò che è verificabile.
+          Dopo il download, pubblica solo la voce <strong>REGISTRY_ENTRY.json</strong> nel registry append-only.
+          Questo rende verificabile l’IPR in modo pubblico senza esporre dati sensibili.
         </p>
+        <p class="hbce-note">
+          Regola fail-closed: senza match registry → <strong>INVALID</strong>.
+        </p>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Apri REGISTRY</a>
       </div>
     </section>
 
   </main>
 
   <div data-hbce="footer"></div>
+
   <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+  <script src="/hermeticum-bce-platform/assets/ipr-gen.js"></script>
+
+  <script>
+    (function(){
+      const statusEl = document.getElementById("gen_status");
+      const btn = document.querySelector('[data-hbce-generate]');
+
+      function setStatus(t){ if(statusEl) statusEl.textContent = "Stato: " + t; }
+
+      async function generate(){
+        const accept = document.getElementById("accept");
+        if(!accept || !accept.checked){
+          alert("Devi accettare la policy operativa.");
+          return;
+        }
+
+        const entityType = (document.getElementById("entity_type") || {}).value || "HUMAN";
+        const nickname = (document.getElementById("nickname") || {}).value || "";
+        const pkgEl = document.querySelector('[name="pkg"]:checked');
+        const pkg = pkgEl ? pkgEl.value : "BASE_19";
+
+        const annex = {
+          full_name: (document.getElementById("full_name") || {}).value || null,
+          tax_code: (document.getElementById("tax_code") || {}).value || null,
+          doc_id: (document.getElementById("doc_id") || {}).value || null
+        };
+
+        if(!nickname.trim()){
+          alert("Inserisci un nickname operativo.");
+          return;
+        }
+
+        setStatus("generazione in corso…");
+        try{
+          await window.hbceIprGen.generateAndDownload({
+            entityType,
+            nickname: nickname.trim(),
+            pkg,
+            annex
+          });
+          setStatus("pacchetto generato e scaricato. Ora append REGISTRY_ENTRY nel registry.");
+        }catch(e){
+          console.error(e);
+          setStatus("errore di generazione (vedi console).");
+          alert("Errore di generazione. Apri la console e verifica.");
+        }
+      }
+
+      if(btn){
+        btn.addEventListener("click", function(e){
+          e.preventDefault();
+          generate();
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
