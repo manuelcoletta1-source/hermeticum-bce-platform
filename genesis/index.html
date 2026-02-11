@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GENESIS — 19 Jan 2026 (Founding Node)</title>
+  <meta name="description" content="Record storico del primo nodo operativo (19/01/2026): root umano + root AI + tri-ancoraggio (IPFS/BTC/EVM). UE-first, audit-first, fail-closed." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">GENESIS · FOUNDING NODE · IMMUTABLE</div>
+      <h1 class="hbce-hero__title">19 gennaio 2026 — Primo record storico</h1>
+      <p class="hbce-hero__lead">
+        Questo documento esplicita la <strong>nascita operativa</strong> del primo nodo Hermeticum:
+        <strong>root umano + root AI</strong> con <strong>ancoraggio tri-chain</strong>.
+        È un record pubblico <strong>append-only</strong> e <strong>auditabile</strong>.
+      </p>
+
+      <div class="hbce-actions" style="margin-top:1rem;">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/ecosystem/">ECOSYSTEM</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Fonte immutabile</h2>
+      <div class="hbce-card">
+        <div><strong>File:</strong> <code>/hermeticum-bce-platform/FOUNDING-GENESIS-NODE.json</code></div>
+        <div class="hbce-note" style="margin-top:.5rem;">
+          Fail-closed: se il file non è raggiungibile o non è valido → il genesis non è verificabile.
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Record</h2>
+      <div id="genesisPanel" class="hbce-card">
+        <div class="hbce-skeleton">Caricamento…</div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Link operativi</h2>
+      <div class="hbce-card">
+        <div class="hbce-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:.75rem;">
+          <a class="hbce-btn" href="/hermeticum-bce-platform/create/">CREATE</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/ecosystem/">ECOSYSTEM ROOT</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/standard/ipr/">STANDARD IPR</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/normative/">NORMATIVE MAPPING</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-hbce="footer"></div>
+
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+  <script>
+    (function () {
+      const SRC = "/hermeticum-bce-platform/FOUNDING-GENESIS-NODE.json";
+      const el = document.getElementById("genesisPanel");
+
+      const esc = (s) => String(s || "").replace(/[&<>"']/g, (c) => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+      }[c]));
+
+      function fail(msg) {
+        el.innerHTML = `
+          <div class="hbce-card__text">
+            <strong>FAIL-CLOSED:</strong> genesis non verificabile.<br/>
+            Motivo: <code>${esc(msg)}</code>
+          </div>
+        `;
+      }
+
+      fetch(SRC, { cache: "no-store" })
+        .then(r => { if (!r.ok) throw new Error("FOUNDING-GENESIS-NODE.json non disponibile"); return r.json(); })
+        .then(g => {
+          const date = esc(g?.genesis?.date || "2026-01-19");
+          const event = esc(g?.genesis?.event || "FIRST_OPERATIONAL_IPR_ACTIVATION");
+          const desc = esc(g?.genesis?.description || "");
+          const ipfs = esc(g?.anchors?.ipfs?.cid || "");
+          const btc = esc(g?.anchors?.bitcoin?.txid || "");
+          const evm = esc(g?.anchors?.ethereum?.txid || "");
+          const human = esc(g?.root?.human?.name || "Manuel Coletta");
+          const ai = esc(g?.root?.ai?.name || "JOKER-C2");
+
+          el.innerHTML = `
+            <div class="hbce-grid" style="grid-template-columns: 1fr; gap:.6rem;">
+              <div><strong>Data:</strong> <code>${date}</code></div>
+              <div><strong>Evento:</strong> <code>${event}</code></div>
+              <div><strong>Descrizione:</strong> ${desc}</div>
+              <hr style="border:none;border-top:1px solid rgba(0,0,0,.12); margin:.25rem 0;" />
+              <div><strong>Root umano:</strong> ${human}</div>
+              <div><strong>Root AI:</strong> ${ai}</div>
+              <hr style="border:none;border-top:1px solid rgba(0,0,0,.12); margin:.25rem 0;" />
+              <div><strong>IPFS CID:</strong><br/><code style="display:block;word-break:break-all;">${ipfs}</code></div>
+              <div><strong>BTC TXID:</strong><br/><code style="display:block;word-break:break-all;">${btc}</code></div>
+              <div><strong>EVM TX:</strong><br/><code style="display:block;word-break:break-all;">${evm}</code></div>
+            </div>
+          `;
+        })
+        .catch(e => fail(e?.message || "errore sconosciuto"));
+    })();
+  </script>
+</body>
+</html>
