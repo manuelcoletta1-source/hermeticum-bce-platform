@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Operator Console — IPR Inbox</title>
+  <meta name="description" content="Console Operatore IPR: inbox local-first per richieste (pending -> approve -> registry entry -> verify). Hash-only, append-only, fail-closed." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">OPERATOR CONSOLE · INBOX · LOCAL-FIRST</div>
+      <h1 class="hbce-hero__title">Operator Console</h1>
+      <p class="hbce-hero__lead">
+        Inbox operatore per gestire richieste di certificazione/evoluzione: nessun backend, nessuna custodia.
+        Incolli una richiesta (packet o release), la console calcola hash e produce <strong>Registry Entry</strong> pronta.
+      </p>
+      <div class="hbce-actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/lavora-con-noi/">LAVORA CON NOI</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/operator-license/">OPERATOR LICENSE</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+      </div>
+      <p class="hbce-note">
+        Regola: se registry non è disponibile o JSON invalido → INVALID (fail-closed).
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">1) Incolla richiesta (JSON)</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Incolla qui un JSON rilasciato (es. IPR_RELEASE) o un packet (es. operator license application).
+          La console calcola SHA-256 del payload normalizzato (string JSON) e genera entry append-only.
+        </p>
+
+        <label class="hbce-label">Nickname pubblico (quello che finirà nel registry)</label>
+        <input id="nickname" class="hbce-input" placeholder="Es. Manuel Coletta / JOKER-C2 / METAEXCHANGE" />
+
+        <label class="hbce-label" style="margin-top:.75rem;">Timestamp (ISO) — se vuoto usa now()</label>
+        <input id="ts" class="hbce-input" placeholder="Es. 2026-02-11T18:45:00.000Z" />
+
+        <label class="hbce-label" style="margin-top:.75rem;">Richiesta JSON (payload)</label>
+        <textarea id="payload" class="hbce-input" rows="12" placeholder='Incolla JSON qui...'></textarea>
+
+        <div class="hbce-actions" style="margin-top:1rem;">
+          <button class="hbce-btn hbce-btn--primary" onclick="approve()">APPROVE (GENERA HASH+ENTRY)</button>
+          <button class="hbce-btn" onclick="clearAll()">RESET</button>
+        </div>
+
+        <p class="hbce-note">
+          Nota operativa: l’operatore non “inventà” dati. Verifica coerenza, produce prova hash-only, e appende entry.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">2) Output operatore</h2>
+      <div class="hbce-card">
+        <div class="hbce-grid" style="grid-template-columns: 1fr; gap: .75rem;">
+          <div>
+            <div class="hbce-note">SHA-256 (payload)</div>
+            <code id="hash_out" style="word-break:break-all;">—</code>
+          </div>
+
+          <div>
+            <div class="hbce-note">Registry Entry (append-only)</div>
+            <pre id="entry_out" class="hbce-card__text" style="white-space:pre-wrap;">—</pre>
+          </div>
+
+          <div class="hbce-actions">
+            <button class="hbce-btn hbce-btn--primary" onclick="copyEntry()">COPIA ENTRY</button>
+            <a class="hbce-btn" id="open_registry" href="/hermeticum-bce-platform/registry/">OPEN REGISTRY</a>
+            <a class="hbce-btn" id="open_verify" href="/hermeticum-bce-platform/verify/">OPEN VERIFY</a>
+          </div>
+
+          <p class="hbce-note">
+            Sequenza: copia entry → append nel file <code>registry/registry.json</code> → commit/push → verifica su VERIFY.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Checklist (anti-errori)</h2>
+      <div class="hbce-card">
+        <ul class="hbce-list">
+          <li>nickname presente e pulito</li>
+          <li>payload è JSON valido</li>
+          <li>entry è un oggetto singolo (no doppie graffe, no virgole sbagliate)</li>
+          <li>append-only: mai cancellare entries esistenti</li>
+          <li>dopo commit, VERIFY deve trovare hash nel registry</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+<script>
+function nowISO(){
+  return new Date().toISOString();
+}
+
+function clean(s){
+  return (s || "").trim();
+}
+
+async function sha256Hex(str){
+  const enc = new TextEncoder().encode(str);
+  const buf = await crypto.subtle.digest("SHA-256", enc);
+  const arr = Array.from(new Uint8Array(buf));
+  return arr.map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+function stableStringify(obj){
+  // deterministic-ish stringify: sort keys recursively
+  if(obj === null) return "null";
+  if(Array.isArray(obj)){
+    return "[" + obj.map(stableStringify).join(",") + "]";
+  }
+  if(typeof obj === "object"){
+    const keys = Object.keys(obj).sort();
+    return "{" + keys.map(k => JSON.stringify(k) + ":" + stableStringify(obj[k])).join(",") + "}";
+  }
+  return JSON.stringify(obj);
+}
+
+function clearAll(){
+  document.getElementById("nickname").value = "";
+  document.getElementById("ts").value = "";
+  document.getElementById("payload").value = "";
+  document.getElementById("hash_out").textContent = "—";
+  document.getElementById("entry_out").textContent = "—";
+  document.getElementById("open_verify").href = "/hermeticum-bce-platform/verify/";
+}
+
+async function approve(){
+  const nickname = clean(document.getElementById("nickname").value);
+  const tsIn = clean(document.getElementById("ts").value);
+  const payloadText = clean(document.getElementById("payload").value);
+
+  if(!nickname){
+    document.getElementById("entry_out").textContent = "Errore: inserisci nickname pubblico.";
+    return;
+  }
+  if(!payloadText){
+    document.getElementById("entry_out").textContent = "Errore: incolla un JSON payload.";
+    return;
+  }
+
+  let obj;
+  try{
+    obj = JSON.parse(payloadText);
+  }catch(e){
+    document.getElementById("entry_out").textContent = "Errore: JSON invalido. Controlla virgole e parentesi.";
+    return;
+  }
+
+  const ts = tsIn || nowISO();
+  const canon = stableStringify(obj);
+  const digest = await sha256Hex(canon);
+
+  document.getElementById("hash_out").textContent = digest;
+
+  const entry = {
+    nickname: nickname,
+    payload_sha256: digest,
+    timestamp: ts
+  };
+
+  document.getElementById("entry_out").textContent = JSON.stringify(entry, null, 2);
+  document.getElementById("open_verify").href = "/hermeticum-bce-platform/verify/?h=" + digest;
+}
+
+function copyEntry(){
+  const text = document.getElementById("entry_out").textContent;
+  if(!text || text === "—") return;
+  navigator.clipboard.writeText(text);
+}
+</script>
+
+</body>
+</html>
