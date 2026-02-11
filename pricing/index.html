@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pricing — IPR EU (Entry + Modules)</title>
-  <meta name="description" content="Prezzi pubblici Hermeticum: atto di entrata (certificazione) + operatività + moduli (software/AI/robot) + ancoraggi. UE-first, hash-only." />
+  <title>Pricing — IPR & Certificazione</title>
+  <meta name="description" content="Prezzi pubblici per IPR base, certificazione ed evoluzione operativa. Modello hash-only, append-only, fail-closed. Licenza Operatore IPR." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 <body>
@@ -12,102 +12,163 @@
 
   <main class="hbce-container hbce-main">
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">PRICING · EU-FIRST · CERTIFIED PACK</div>
+      <div class="hbce-hero__kicker">PRICING · EU-FIRST · HASH-ONLY</div>
       <h1 class="hbce-hero__title">Prezzi pubblici</h1>
       <p class="hbce-hero__lead">
-        Modello semplice: <strong>atto di entrata</strong> (certificazione) → <strong>operatività</strong> → <strong>moduli</strong>.
-        Il registry pubblico resta hash-only. Nessuna custodia identità.
+        IPR è una identità operativa verificabile nel tempo.  
+        Il registry è <strong>append-only</strong> e la verifica è <strong>fail-closed</strong>: se non verificabile → INVALID.
+        I prezzi separano due cose: <strong>creazione</strong> (local-first) e <strong>certificazione/registrazione</strong> (opponibilità).
+      </p>
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/">CREA IPR</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/lavora-con-noi/">LAVORA CON NOI</a>
+      </div>
+      <p class="hbce-note">
+        Pubblico hash-only: nel registry non entrano dati personali, solo nickname + hash + timestamp.
       </p>
     </section>
 
     <section class="hbce-section">
-      <h2 class="hbce-h2">1) Atto di entrata (certificazione)</h2>
+      <h2 class="hbce-h2">Modello di validità</h2>
       <div class="hbce-card">
-        <div class="hbce-kicker">Documento principale</div>
-        <p class="hbce-card__text">
-          Il rilascio ufficiale include un <strong>Certified Pack</strong> post-pagamento:
-          <code>ISSUER_CERTIFICATE.json</code> (atto principale) +
-          <code>IPR_RELEASE.json</code> +
-          <code>OPERATIONAL_RECEIPT.json</code> +
-          <code>REGISTRY_ENTRY.json</code>.
+        <ul class="hbce-list">
+          <li><strong>VALID (SOFT)</strong> = file coerente + match registry (nessun vincolo temporale)</li>
+          <li><strong>VALID (HARD)</strong> = file coerente + match registry + finestra metrologica ±2 min (EU/CERT)</li>
+          <li><strong>INVALID</strong> = registry assente/invalido, mismatch hash, file non conforme, policy fallita</li>
+        </ul>
+        <p class="hbce-note">
+          La “certificazione” è il passaggio operativo che porta un IPR nel registro pubblico append-only e lo rende opponibile nel tempo.
         </p>
-        <div class="hbce-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: .75rem; margin-top:.75rem;">
-          <div class="hbce-card" style="margin:0;">
-            <div class="hbce-kicker">BASE_19</div>
-            <div style="font-weight:800;font-size:1.35rem;">19,00 €</div>
-            <div class="hbce-note">Verifica SOFT (nessun vincolo temporale)</div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Pacchetti Cittadino (IPR)</h2>
+
+      <div class="hbce-grid" style="grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:1rem;">
+        <div class="hbce-card">
+          <div class="hbce-card__kicker">BASE_19</div>
+          <h3 class="hbce-card__title">IPR Base</h3>
+          <p class="hbce-card__text">
+            Creazione local-first + file + hash.  
+            Include strumenti di verify pubblici.
+          </p>
+          <ul class="hbce-list">
+            <li>IPR_RELEASE.json (cliente)</li>
+            <li>REGISTRY_ENTRY.json (pronta)</li>
+            <li>Verify (SOFT)</li>
+          </ul>
+          <p class="hbce-card__price"><strong>19€</strong> una tantum (creazione)</p>
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/">INIZIA</a>
           </div>
-          <div class="hbce-card" style="margin:0;">
-            <div class="hbce-kicker">EU_CERT</div>
-            <div style="font-weight:800;font-size:1.35rem;">(in attivazione)</div>
-            <div class="hbce-note">HARD ±2 min (policy certificata)</div>
+          <p class="hbce-note">Nota: per diventare opponibile serve registrazione/certificazione (vedi sotto).</p>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-card__kicker">CERTIFIED</div>
+          <h3 class="hbce-card__title">Certificazione (Registry + Issuer)</h3>
+          <p class="hbce-card__text">
+            Passaggio operativo: richiesta → verifica → append nel registry → VALID.
+            Rilascia anche certificazione issuer.
+          </p>
+          <ul class="hbce-list">
+            <li>Append registry (entry pubblica)</li>
+            <li>Issuer certificate (documento)</li>
+            <li>Verify: VALID (SOFT) / HARD se in finestra</li>
+          </ul>
+          <p class="hbce-card__price"><strong>29€</strong> per certificazione (una release)</p>
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/certified/">RICHIEDI</a>
           </div>
+          <p class="hbce-note">Per evoluzioni: ogni nuova release produce un nuovo hash e richiede nuova certificazione.</p>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-card__kicker">EVOLUTION</div>
+          <h3 class="hbce-card__title">Evoluzione operativa (mensile)</h3>
+          <p class="hbce-card__text">
+            Identità viva nel tempo: ogni mese (o quando serve) rilasci una nuova versione.
+            Nuovo hash → nuovo record → nuova opponibilità.
+          </p>
+          <ul class="hbce-list">
+            <li>1 certificazione/mese inclusa</li>
+            <li>Append registry + verify</li>
+            <li>Timeline di responsabilità</li>
+          </ul>
+          <p class="hbce-card__price"><strong>9€ / mese</strong></p>
+          <p class="hbce-note">
+            Modello “maintenance”: mantiene l’identità operativa aggiornata e verificabile.
+          </p>
         </div>
       </div>
     </section>
 
     <section class="hbce-section">
-      <h2 class="hbce-h2">2) Operatività (accesso rete)</h2>
-      <div class="hbce-card">
-        <p class="hbce-card__text">
-          L’operatività abilita evoluzione, gestione e creazione di entità collegate (software/AI/robot).
-          È l’accesso alla piattaforma come infrastruttura viva.
-        </p>
-        <div class="hbce-card" style="margin:0;">
-          <div class="hbce-kicker">Operatività</div>
-          <div style="font-weight:800;font-size:1.35rem;">19,00 € / mese</div>
-          <div class="hbce-note">Accesso moduli + controllo + verify continuo</div>
+      <h2 class="hbce-h2">Operatore IPR (nuovo lavoro)</h2>
+      <div class="hbce-grid" style="grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:1rem;">
+        <div class="hbce-card">
+          <div class="hbce-card__kicker">OPERATOR LICENSE</div>
+          <h3 class="hbce-card__title">Licenza Operatore</h3>
+          <p class="hbce-card__text">
+            Abilitazione operativa per gestire emissioni e certificazioni nel perimetro HBCE.
+            Generazione application packet local-first (no-custody).
+          </p>
+          <ul class="hbce-list">
+            <li>IPR personale richiesto</li>
+            <li>Accesso al flusso emissione</li>
+            <li>Ruolo: verifica + append</li>
+          </ul>
+          <p class="hbce-card__price"><strong>49€</strong> una tantum</p>
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/operator-license/">GENERA PACKET</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/lavora-con-noi/">PERCORSO</a>
+          </div>
+          <p class="hbce-note">
+            Guadagno per emissione: definito per programma operatori (per-release).
+          </p>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-card__kicker">PER EMISSION</div>
+          <h3 class="hbce-card__title">Compenso operatore</h3>
+          <p class="hbce-card__text">
+            Ogni certificazione (una release) genera lavoro operativo: verifica → append → conferma.
+            L’operatore viene remunerato per emissione.
+          </p>
+          <ul class="hbce-list">
+            <li>flusso controllato (audit-first)</li>
+            <li>fail-closed: errori bloccano</li>
+            <li>scalabile da casa</li>
+          </ul>
+          <p class="hbce-card__price"><strong>5€ – 8€</strong> per emissione (target)</p>
+          <p class="hbce-note">
+            Nota: range indicativo per programma operatori. Valori finali dipendono da volume e policy.
+          </p>
         </div>
       </div>
     </section>
 
     <section class="hbce-section">
-      <h2 class="hbce-h2">3) Moduli (IPR per software/AI/robot)</h2>
+      <h2 class="hbce-h2">Trasparenza</h2>
       <div class="hbce-card">
-        <p class="hbce-card__text">
-          Una root certificata può emettere IPR per la propria struttura: software, AI, robot, device e progetti.
-          Ogni entità ottiene hash, prove pubbliche e verifica.
-        </p>
-        <div class="hbce-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: .75rem;">
-          <div class="hbce-card" style="margin:0;">
-            <div class="hbce-kicker">Software module</div>
-            <div style="font-weight:800;font-size:1.35rem;">9,00 € / mese</div>
-            <div class="hbce-note">Per singolo software (es. UNEBDO, OPC…)</div>
-          </div>
-          <div class="hbce-card" style="margin:0;">
-            <div class="hbce-kicker">Enterprise module</div>
-            <div style="font-weight:800;font-size:1.35rem;">29,00 € / mese</div>
-            <div class="hbce-note">Audit esteso, policy avanzate, reporting</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Note UE (P.IVA)</h2>
-      <div class="hbce-card">
-        <p class="hbce-card__text">
-          Emissione operativa UE. <strong>P.IVA in assegnazione</strong>. Il pacchetto include ricevuta firmata
-          (<code>OPERATIONAL_RECEIPT.json</code>). La fatturazione fiscale completa può essere integrata al rilascio P.IVA.
-        </p>
-      </div>
-    </section>
-
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Link</h2>
-      <div class="hbce-card">
-        <div class="hbce-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:.75rem;">
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">APRI WIZARD</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/terms/">TERMS</a>
+        <ul class="hbce-list">
+          <li>Il registry è pubblico e append-only</li>
+          <li>La verifica è pubblica e fail-closed</li>
+          <li>Non custodiamo dati personali nel registry</li>
+          <li>Le evoluzioni operative producono nuovi hash e nuovi record</li>
+        </ul>
+        <div class="hbce-actions" style="margin-top:1rem;">
           <a class="hbce-btn" href="/hermeticum-bce-platform/privacy/">PRIVACY</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/terms/">TERMS</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/governance/">GOVERNANCE</a>
         </div>
       </div>
     </section>
   </main>
 
   <div data-hbce="footer"></div>
-
   <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </body>
 </html>
