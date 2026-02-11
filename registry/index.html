@@ -4,78 +4,158 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>REGISTRY — Append-only (public)</title>
-  <meta name="description" content="Assistente append-only: upload REGISTRY_ENTRY.json, validazione fail-closed, blocco pronto-incolla per registry.json (entries[]). Include regola metrologica HARD (append ±2 min)." />
+  <meta name="description" content="Viewer del registry append-only: ricerca, conteggio, export e link a VERIFY. UE-first, audit-first, fail-closed. Hash-only." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
+
 <body>
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
 
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">REGISTRY · Append-only · Public</div>
+      <div class="hbce-hero__kicker">REGISTRY · APPEND-ONLY · PUBLIC</div>
       <h1 class="hbce-hero__title">Registro pubblico (hash-only)</h1>
       <p class="hbce-hero__lead">
-        Questo registro pubblica solo prove minimizzate: <strong>nickname + hash + timestamp</strong>.
-        Nessuna custodia di identità completa. Non verificabile → <strong>INVALID</strong> (fail-closed).
+        Questo registro pubblica solo prove minimizzate:
+        <strong>nickname + payload_sha256 + timestamp</strong>.
+        Nessun dato personale. Nessuna custodia identitaria.
       </p>
-      <p class="hbce-note">
-        Regola HARD (metrologica): le nuove entry devono essere appendate <strong>entro ±2 minuti</strong> dal timestamp di emissione.
-        Fuori finestra → blocco automatico CI.
-      </p>
-      <p class="hbce-note">
-        Issuer: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong> · Registry: <strong>append-only</strong> · Pubblico: <strong>hash-only</strong>
-      </p>
+
+      <div class="hbce-card" style="margin-top:1rem;">
+        <p class="hbce-card__text">
+          Regola: <strong>append-only</strong>. Si aggiunge una nuova entry in <code>registry.json</code> dentro <code>entries[]</code>.
+          Non si cancella, non si riscrive, non si “riordina”.
+        </p>
+      </div>
+
+      <div class="hbce-actions" style="margin-top:1rem;">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">Crea (Wizard)</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verify</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/registry.json">Apri registry.json</a>
+      </div>
     </section>
 
     <section class="hbce-section">
-      <h2 class="hbce-h2">1) Carica REGISTRY_ENTRY.json</h2>
+      <h2 class="hbce-h2">SOFT vs HARD</h2>
+      <div class="hbce-grid hbce-grid--2">
+        <div class="hbce-card">
+          <h3 class="hbce-h3">BASE (SOFT)</h3>
+          <p class="hbce-card__text">
+            Per IPR base (es. <strong>BASE_19</strong>) non c’è finestra temporale.
+            Se l’hash è presente qui → <strong>VALID (SOFT)</strong>.
+          </p>
+        </div>
+        <div class="hbce-card">
+          <h3 class="hbce-h3">EU/CERT (HARD)</h3>
+          <p class="hbce-card__text">
+            Per pacchetti certificati/istituzionali l’append deve avvenire entro <strong>±2 min</strong>.
+            Fuori finestra → <strong>INVALID</strong> (fail-closed).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Checklist (cittadino UE)</h2>
+
+      <div class="hbce-grid hbce-grid--2">
+
+        <div class="hbce-card">
+          <div class="hbce-hero__kicker">1</div>
+          <h3 class="hbce-h3">Genera entry</h3>
+          <p class="hbce-card__text">
+            Dal wizard scarichi <strong>REGISTRY_ENTRY.json</strong>. È la prova pubblica minima.
+          </p>
+          <div class="hbce-actions" style="margin-top:.75rem;">
+            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">Apri Wizard</a>
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-hero__kicker">2</div>
+          <h3 class="hbce-h3">Append in registry.json</h3>
+          <p class="hbce-card__text">
+            Apri <code>registry/registry.json</code> nella repo e incolla l’oggetto dentro <code>entries[]</code>.
+            Serve solo una cosa: JSON valido.
+          </p>
+          <div class="hbce-actions" style="margin-top:.75rem;">
+            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/registry/registry.json">Apri registry.json</a>
+          </div>
+          <p class="hbce-note" style="margin-top:.75rem;">
+            Errore tipico: incollare solo la stringa hash oppure aggiungere parentesi graffe doppie → JSON invalido → fail-closed.
+          </p>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-hero__kicker">3</div>
+          <h3 class="hbce-h3">Verifica</h3>
+          <p class="hbce-card__text">
+            Dopo il commit, verifica:
+            <strong>by hash</strong> (pubblico) o <strong>by file</strong> (integrità locale).
+          </p>
+          <div class="hbce-actions" style="margin-top:.75rem;">
+            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">Apri Verify</a>
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-hero__kicker">4</div>
+          <h3 class="hbce-h3">Upgrade (opzionale)</h3>
+          <p class="hbce-card__text">
+            Anchors (IPFS/EVM/BTC) e moduli software (UNEBDO/OPC/...) sono livelli successivi.
+            Il registry resta hash-only.
+          </p>
+          <div class="hbce-actions" style="margin-top:.75rem;">
+            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/anchor/">Anchor</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/ecosystem/">Ecosystem</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Ricerca nel registry</h2>
+
+      <div class="hbce-grid hbce-grid--2">
+        <div class="hbce-card">
+          <h3 class="hbce-h3">Cerca per hash</h3>
+          <input id="q" class="hbce-input" type="text" placeholder="payload_sha256 (64 hex)" />
+          <div class="hbce-actions" style="margin-top:.75rem;">
+            <button class="hbce-btn hbce-btn--primary" id="btnSearch">CERCA</button>
+            <button class="hbce-btn" id="btnClear">RESET</button>
+          </div>
+          <p class="hbce-note" style="margin-top:.75rem;">
+            Consiglio: usa <code>/verify/?h=...</code> per un check rapido.
+          </p>
+        </div>
+
+        <div class="hbce-card">
+          <h3 class="hbce-h3">Stato registry</h3>
+          <p class="hbce-card__text" id="statLine">—</p>
+          <div class="hbce-actions" style="margin-top:.75rem;">
+            <a class="hbce-btn" id="btnExport" href="#" download="registry-export.json">EXPORT JSON</a>
+          </div>
+          <p class="hbce-note" id="statNote" style="margin-top:.75rem;">—</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Entries</h2>
+      <div class="hbce-card">
+        <div id="list" class="hbce-note">Caricamento…</div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Issuer</h2>
       <div class="hbce-card">
         <p class="hbce-card__text">
-          Carica il file generato dal wizard (<strong>REGISTRY_ENTRY.json</strong>).
-          Il sistema valida localmente e produce l’entry pronta da appendere.
+          Hallmark: <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong><br />
+          Società: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong>
         </p>
-
-        <input class="hbce-input" type="file" id="file" accept="application/json" />
-
-        <div class="hbce-card" style="margin-top:1rem;">
-          <p class="hbce-card__text"><strong>Stato:</strong> <span id="status">in attesa file…</span></p>
-          <p class="hbce-muted" id="details"></p>
-          <p class="hbce-muted" id="timehint"></p>
-        </div>
-      </div>
-    </section>
-
-    <section class="hbce-section">
-      <h2 class="hbce-h2">2) Entry pronta-incolla (entries[])</h2>
-      <div class="hbce-card">
-        <p class="hbce-note">
-          Copia questo blocco e appendilo in <strong>registry/registry.json → entries[]</strong>.
-          Solo append in coda. Nessuna modifica al passato (append-only).
-        </p>
-
-        <textarea class="hbce-input" id="entryOut" rows="7" readonly placeholder="(carica REGISTRY_ENTRY.json)"></textarea>
-
-        <div class="hbce-actions" style="margin-top:.75rem;">
-          <button class="hbce-btn hbce-btn--primary" id="copyBtn" type="button" disabled>COPY</button>
-          <a class="hbce-btn" id="openRegistryBtn" href="#" target="_blank" rel="noopener">OPEN registry.json (GitHub)</a>
-        </div>
-
-        <p class="hbce-note" style="margin-top:.75rem;">
-          Se l’entry viene appendata fuori finestra temporale HARD, il CI la blocca. In quel caso: rigenera IPR.
-        </p>
-      </div>
-    </section>
-
-    <section class="hbce-section">
-      <h2 class="hbce-h2">3) Checklist append-only</h2>
-      <div class="hbce-card">
-        <ul class="hbce-list">
-          <li>Append in coda a <strong>entries[]</strong> (mai sovrascrivere entry precedenti)</li>
-          <li>Non cambiare nickname/hash/timestamp dopo emissione</li>
-          <li>Regola HARD: append entro <strong>±2 minuti</strong> dal timestamp</li>
-          <li>Dopo commit, verifica su <strong>/verify/?h=&lt;hash&gt;</strong></li>
-        </ul>
       </div>
     </section>
 
@@ -85,122 +165,108 @@
   <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 
   <script>
-    (function(){
-      const statusEl = document.getElementById("status");
-      const detailsEl = document.getElementById("details");
-      const timeHintEl = document.getElementById("timehint");
-      const fileEl = document.getElementById("file");
-      const entryOut = document.getElementById("entryOut");
-      const copyBtn = document.getElementById("copyBtn");
-      const openRegistryBtn = document.getElementById("openRegistryBtn");
+    let REG = null;
+    let FILTER = "";
 
-      const GH_OWNER = "manuelcoletta1-source";
-      const GH_REPO  = "hermeticum-bce-platform";
-      const GH_PATH  = "registry/registry.json";
-      openRegistryBtn.href = `https://github.com/${GH_OWNER}/${GH_REPO}/edit/main/${GH_PATH}`;
+    function esc(s){
+      return String(s||"").replace(/[&<>"']/g, m => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[m]));
+    }
 
-      const WINDOW_MS = 2 * 60 * 1000;
+    function isHex64(s){
+      return /^[0-9a-f]{64}$/i.test((s||"").trim());
+    }
 
-      function setStatus(s, ok){
-        statusEl.textContent = s;
-        statusEl.style.fontWeight = "700";
-        statusEl.dataset.ok = ok ? "1" : "0";
+    async function loadRegistry(){
+      const r = await fetch("/hermeticum-bce-platform/registry/registry.json", { cache: "no-store" });
+      if(!r.ok) throw new Error("registry fetch failed");
+      const j = await r.json();
+      return j;
+    }
+
+    function render(entries){
+      const list = document.getElementById("list");
+      if(!entries || entries.length === 0){
+        list.innerHTML = "Nessuna entry trovata.";
+        return;
       }
 
-      function fail(msg){
-        setStatus("INVALID", false);
-        detailsEl.textContent = msg || "Entry non valida.";
-        timeHintEl.textContent = "";
-        entryOut.value = "";
-        copyBtn.disabled = true;
+      const rows = entries.map(e => {
+        const h = esc(e.payload_sha256 || "");
+        const n = esc(e.nickname || "");
+        const t = esc(e.timestamp || "");
+        const v = "/hermeticum-bce-platform/verify/?h=" + encodeURIComponent(h);
+        return `
+          <div style="padding:.75rem 0;border-top:1px solid rgba(255,255,255,.08)">
+            <div><strong>${n}</strong></div>
+            <div class="hbce-note">hash: ${h}</div>
+            <div class="hbce-note">ts: ${t}</div>
+            <div class="hbce-actions" style="margin-top:.5rem;">
+              <a class="hbce-btn" href="${v}">VERIFY</a>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      list.innerHTML = rows;
+    }
+
+    function updateStats(){
+      const count = (REG && Array.isArray(REG.entries)) ? REG.entries.length : 0;
+      document.getElementById("statLine").innerHTML =
+        "<strong>STATUS:</strong> LOADED · entries: <strong>" + count + "</strong>";
+
+      document.getElementById("statNote").textContent =
+        "Pubblico hash-only: nickname + payload_sha256 + timestamp. Append-only. Fail-closed se JSON invalido.";
+
+      // export
+      const blob = new Blob([JSON.stringify(REG, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.getElementById("btnExport");
+      a.href = url;
+    }
+
+    function applyFilter(){
+      const entries = (REG && Array.isArray(REG.entries)) ? REG.entries.slice() : [];
+      if(!FILTER){
+        render(entries.slice().reverse());
+        return;
       }
+      const f = FILTER.toLowerCase();
+      const out = entries.filter(e => String(e.payload_sha256||"").toLowerCase() === f);
+      render(out);
+    }
 
-      function pass(msg){
-        setStatus("PASS", true);
-        detailsEl.textContent = msg || "Entry valida e pronta da appendere.";
-        copyBtn.disabled = false;
+    document.getElementById("btnSearch").addEventListener("click", () => {
+      const q = (document.getElementById("q").value || "").trim();
+      if(!isHex64(q)){
+        alert("Inserisci un payload_sha256 valido (64 caratteri hex).");
+        return;
       }
+      FILTER = q;
+      applyFilter();
+    });
 
-      function isIsoUtc(ts){
-        return typeof ts === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/.test(ts);
+    document.getElementById("btnClear").addEventListener("click", () => {
+      FILTER = "";
+      document.getElementById("q").value = "";
+      applyFilter();
+    });
+
+    (async () => {
+      try{
+        REG = await loadRegistry();
+        updateStats();
+        applyFilter();
+      }catch(e){
+        document.getElementById("list").innerHTML =
+          "<strong>FAIL-CLOSED:</strong> impossibile caricare registry.json (deploy/cache o JSON invalido).";
+        document.getElementById("statLine").innerHTML =
+          "<strong>STATUS:</strong> INVALID (fail-closed)";
+        document.getElementById("statNote").textContent =
+          "Se registry.json non è leggibile/valido → nessuna verifica può passare.";
       }
-
-      function isSha256(h){
-        return typeof h === "string" && /^[a-f0-9]{64}$/.test(h);
-      }
-
-      function readJsonText(text){
-        return JSON.parse(text);
-      }
-
-      function msToHuman(ms){
-        const s = Math.max(0, Math.floor(ms/1000));
-        const m = String(Math.floor(s/60)).padStart(2,"0");
-        const r = String(s%60).padStart(2,"0");
-        return `${m}:${r}`;
-      }
-
-      fileEl.addEventListener("change", async () => {
-        const f = fileEl.files && fileEl.files[0];
-        if(!f) return;
-
-        try{
-          const text = await f.text();
-          const j = readJsonText(text);
-
-          const nickname = j.nickname;
-          const payload = j.payload_sha256;
-          const ts = j.timestamp;
-
-          if(typeof nickname !== "string" || nickname.trim().length < 2){
-            return fail("Campo 'nickname' mancante o troppo corto.");
-          }
-          if(!isSha256(payload)){
-            return fail("Campo 'payload_sha256' non valido (atteso sha256 hex 64).");
-          }
-          if(!isIsoUtc(ts)){
-            return fail("Campo 'timestamp' non valido (atteso ISO UTC con Z).");
-          }
-
-          const entry = { nickname: nickname.trim(), payload_sha256: payload, timestamp: ts };
-          entryOut.value = JSON.stringify(entry, null, 2);
-
-          // Time window hint
-          const t = Date.parse(ts);
-          const now = Date.now();
-          const delta = Math.abs(now - t);
-
-          if(delta <= WINDOW_MS){
-            const left = WINDOW_MS - delta;
-            timeHintEl.textContent = `Finestra HARD: OK. Append adesso. Margine residuo ~ ${msToHuman(left)}.`;
-          } else {
-            timeHintEl.textContent = `Finestra HARD: probabilmente SCADUTA (|now - timestamp| > 2 min). Rigenera IPR e ripeti append immediato.`;
-          }
-
-          pass(`Entry valida per ${entry.nickname}. Ora apri registry.json su GitHub e appendi in entries[].`);
-
-        }catch(e){
-          console.error(e);
-          fail("Errore lettura JSON. Verifica che il file sia REGISTRY_ENTRY.json valido.");
-        }
-      });
-
-      copyBtn.addEventListener("click", async () => {
-        const v = entryOut.value.trim();
-        if(!v) return;
-        try{
-          await navigator.clipboard.writeText(v);
-          detailsEl.textContent = "Copiato. Incolla in registry/registry.json → entries[] e fai commit.";
-        }catch(e){
-          entryOut.focus();
-          entryOut.select();
-          document.execCommand("copy");
-          detailsEl.textContent = "Copiato (fallback). Incolla in registry/registry.json → entries[] e fai commit.";
-        }
-      });
-
-      setStatus("in attesa file…", false);
-      detailsEl.textContent = "Carica REGISTRY_ENTRY.json generato dal wizard (local-first).";
     })();
   </script>
 </body>
