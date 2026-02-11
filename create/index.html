@@ -3,283 +3,152 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CREATE — IPR Release</title>
-  <meta name="description" content="Create IPR: genera file cliente + entry hash-only per registry append-only. UE-first, audit-first, fail-closed." />
+  <title>CREATE — Canonical Gateway</title>
+  <meta name="description" content="Gateway canonico emissione IPR: Wizard local-first (download immediato), append hash-only nel registry append-only, verify fail-closed. UE-first, audit-first, metrological HARD (±2 min)." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 <body>
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
+
+    <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CREATE · IPR RELEASE · Client file</div>
-      <h1 class="hbce-hero__title">Create Identity Primary Record</h1>
+      <div class="hbce-hero__kicker">CREATE · Canonical · UE-first</div>
+      <h1 class="hbce-hero__title">Emissione IPR (flusso canonico)</h1>
       <p class="hbce-hero__lead">
-        Genera un <strong>file IPR_*.json</strong> per il cliente e una entry <strong>HASH-ONLY</strong> pronta da appendere nel registry pubblico.
-        Fail-closed: se il registry non è leggibile → BLOCK.
+        Questo è l’unico percorso operativo valido per emissione IPR in modalità pubblica:
+        <strong>Wizard → Done → Registry → Verify</strong>.
+        Pubblico: <strong>hash-only</strong>. Registry: <strong>append-only</strong>. Esito: <strong>fail-closed</strong>.
       </p>
-      <div class="hbce-hero__cta">
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/positioning/">POSITIONING</a>
+
+      <p class="hbce-note">
+        Regola metrologica HARD: dopo generazione devi appendere nel registry entro <strong>±2 minuti</strong>.
+        Fuori finestra → blocco CI (fail-closed).
+      </p>
+    </section>
+
+    <!-- CANONICAL FLOW -->
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Flusso canonico</h2>
+
+      <div class="hbce-grid hbce-grid--4">
+        <div class="hbce-card">
+          <h3 class="hbce-h3">1) Wizard</h3>
+          <p class="hbce-card__text">
+            Generazione locale nel browser. Download immediato:
+            IPR_RELEASE + ISSUER_CERTIFICATE + REGISTRY_ENTRY.
+          </p>
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">OPEN WIZARD</a>
+        </div>
+
+        <div class="hbce-card">
+          <h3 class="hbce-h3">2) Done</h3>
+          <p class="hbce-card__text">
+            Pagina di chiusura: hash, timestamp, countdown HARD e link diretti a Verify/Registry.
+          </p>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/create/done/">OPEN DONE</a>
+        </div>
+
+        <div class="hbce-card">
+          <h3 class="hbce-h3">3) Registry</h3>
+          <p class="hbce-card__text">
+            Append assistito: carica REGISTRY_ENTRY.json e copia il blocco pronto-incolla in entries[].
+          </p>
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/registry/">OPEN REGISTRY</a>
+        </div>
+
+        <div class="hbce-card">
+          <h3 class="hbce-h3">4) Verify</h3>
+          <p class="hbce-card__text">
+            VALID solo se: integrità file + match registry. Altrimenti INVALID (fail-closed).
+          </p>
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">OPEN VERIFY</a>
+        </div>
       </div>
     </section>
 
+    <!-- WHAT YOU GET -->
     <section class="hbce-section">
-      <h2>Registry status</h2>
-      <div class="hbce-card hbce-card--wide">
-        <p class="hbce-p">
-          Controllo automatico del registry canonico. Se manca <code>entries[]</code> o non è leggibile → <strong>INVALID</strong>.
+      <h2 class="hbce-h2">Output (pacchetto IPR)</h2>
+      <div class="hbce-card">
+        <ul class="hbce-list">
+          <li><strong>IPR_RELEASE.json</strong> — radice operativa (DNA digitale)</li>
+          <li><strong>ISSUER_CERTIFICATE.json</strong> — certificazione issuer 🜏 HERMETICUM B.C.E. S.r.l.</li>
+          <li><strong>REGISTRY_ENTRY.json</strong> — prova pubblica hash-only (append-only)</li>
+          <li><strong>ANCHOR_RECEIPT.json</strong> — opzionale (IPFS/ETH/BTC) quando attivo</li>
+        </ul>
+        <p class="hbce-note">
+          Pubblico: solo nickname + hash + timestamp. Nessuna custodia dati personali.
         </p>
-        <div class="hbce-actions">
-          <button class="hbce-btn hbce-btn--primary" id="btn-regcheck">Re-check</button>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/registry.json">Apri registry.json</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Apri viewer</a>
-        </div>
-        <div class="hbce-meta" style="margin-top:10px" id="regStatus">—</div>
       </div>
     </section>
 
+    <!-- PRINCIPLES -->
     <section class="hbce-section">
-      <h2>IPR form</h2>
-
-      <div class="hbce-card hbce-card--wide">
-        <div class="hbce-grid" style="align-items:end">
-          <article class="hbce-card" style="margin:0">
-            <label class="hbce-meta" for="etype">Entity type</label>
-            <select id="etype" class="hbce-input">
-              <option>Human</option>
-              <option>Company</option>
-              <option>AI System</option>
-              <option>Robot</option>
-              <option>Infrastructure Node</option>
-            </select>
-          </article>
-
-          <article class="hbce-card" style="margin:0">
-            <label class="hbce-meta" for="nick">Nickname / Entity ID</label>
-            <input id="nick" class="hbce-input" placeholder="Esempio: ManuHell / ACME_SRL / AI_NODE_001" autocomplete="off" />
-          </article>
-
-          <article class="hbce-card" style="margin:0">
-            <label class="hbce-meta" for="country">Country (optional)</label>
-            <input id="country" class="hbce-input" placeholder="Esempio: IT" autocomplete="off" />
-          </article>
-
-          <article class="hbce-card" style="margin:0">
-            <label class="hbce-meta" for="email">Email (optional — sconsigliata se pubblico)</label>
-            <input id="email" class="hbce-input" placeholder="contact@email.com" autocomplete="off" />
-          </article>
-        </div>
-
-        <div class="hbce-actions" style="margin-top:12px">
-          <button class="hbce-btn hbce-btn--primary" id="btnGen">Generate</button>
-          <button class="hbce-btn" id="btnReset">Reset</button>
-        </div>
-
-        <div class="hbce-meta" style="margin-top:10px">
-          Registry append location: <code>registry/registry.json → entries[]</code>
-        </div>
-
-        <div class="hbce-card" style="margin-top:14px" id="out" hidden>
-          <div id="outHtml"></div>
-        </div>
+      <h2 class="hbce-h2">Principi (operativi)</h2>
+      <div class="hbce-card">
+        <ul class="hbce-list">
+          <li><strong>UE-first</strong>: riferimento normativo UE</li>
+          <li><strong>Audit-first</strong>: verificabilità prima dell’azione</li>
+          <li><strong>Fail-closed</strong>: non verificabile → INVALID</li>
+          <li><strong>Hash-only</strong>: pubblicazione minimizzata</li>
+          <li><strong>Append-only</strong>: registry incrementale (storia non riscrivibile)</li>
+          <li><strong>Metrological HARD</strong>: append entro ±2 min</li>
+        </ul>
       </div>
     </section>
 
+    <!-- DECLASS / TOOLS -->
     <section class="hbce-section">
-      <div class="hbce-card hbce-card--wide">
-        <div class="hbce-hallmark">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-        <div class="hbce-company">HERMETICUM B.C.E. S.r.l.</div>
-        <div class="hbce-meta">UE-first · audit-first · fail-closed · hash-only</div>
+      <h2 class="hbce-h2">Tool e superfici non canoniche</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Le pagine sotto sono strumenti o superfici storiche. Non sono il flusso canonico di emissione.
+          Se vuoi emettere un IPR valido, usa <strong>Wizard</strong>.
+        </p>
+
+        <div class="hbce-grid hbce-grid--2" style="margin-top:.75rem;">
+          <div class="hbce-card">
+            <div class="hbce-hero__kicker">DECLASSATO · Tool</div>
+            <h3 class="hbce-h3">Receipt generator</h3>
+            <p class="hbce-card__text">
+              Strumento tecnico. Non definisce il percorso canonico.
+            </p>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/create/receipt/">OPEN TOOL</a>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-hero__kicker">DECLASSATO · Legacy</div>
+            <h3 class="hbce-h3">Create (legacy)</h3>
+            <p class="hbce-card__text">
+              Superficie storica. Mantieni per compatibilità, non per emissione.
+            </p>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/create/">OPEN (THIS PAGE)</a>
+          </div>
+        </div>
+
+        <p class="hbce-note" style="margin-top:.75rem;">
+          Nota: “declassato” significa “non usato come verità operativa” — resta consultabile, non autoritativo.
+        </p>
       </div>
     </section>
+
+    <!-- ISSUER -->
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Issuer</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Certificazione emissione: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong><br/>
+          Sigillo: <strong>🜏</strong><br/>
+          Hallmark: <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong>
+        </p>
+      </div>
+    </section>
+
   </main>
 
   <div data-hbce="footer"></div>
   <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
-
-  <script>
-    (function(){
-      const $ = (id) => document.getElementById(id);
-
-      const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
-
-      const etype = $("etype");
-      const nick = $("nick");
-      const country = $("country");
-      const email = $("email");
-
-      const btnGen = $("btnGen");
-      const btnReset = $("btnReset");
-      const btnReg = $("btn-regcheck");
-
-      const regStatus = $("regStatus");
-      const out = $("out");
-      const outHtml = $("outHtml");
-
-      let iprFileJson = "";
-      let registryEntryJson = "";
-      let lastHash = "";
-
-      function normalize(s){ return (s || "").toString().trim(); }
-      function cleanNickname(s){ return normalize(s).replace(/\s+/g," ").slice(0,80); }
-
-      function escapeHtml(str){
-        return (str || "").replace(/[&<>"']/g, m => ({
-          "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
-        }[m]));
-      }
-
-      async function sha256(message){
-        const msgBuffer = new TextEncoder().encode(message);
-        const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2,"0")).join("");
-      }
-
-      function extractEntries(obj){
-        if(Array.isArray(obj)) return obj;
-        if(obj && Array.isArray(obj.entries)) return obj.entries;
-        if(obj && obj.registry && Array.isArray(obj.registry.entries)) return obj.registry.entries;
-        return null;
-      }
-
-      function setReg(msg){ regStatus.textContent = msg; }
-
-      async function checkRegistry(){
-        setReg("Checking registry…");
-        try{
-          const res = await fetch(REGISTRY_URL, { cache:"no-store" });
-          if(!res.ok){ setReg("INVALID — registry non leggibile (HTTP " + res.status + ")"); return false; }
-          const data = await res.json();
-          const arr = extractEntries(data);
-          if(!arr){ setReg("INVALID — schema non riconosciuto (manca entries[])"); return false; }
-          setReg("OK — registry valid · entries: " + arr.length);
-          return true;
-        }catch(e){
-          setReg("INVALID — errore fetch/parse (fail-closed)");
-          return false;
-        }
-      }
-
-      function resetAll(){
-        etype.value = "Human";
-        nick.value = "";
-        country.value = "";
-        email.value = "";
-        iprFileJson = "";
-        registryEntryJson = "";
-        lastHash = "";
-        out.hidden = true;
-        outHtml.innerHTML = "";
-      }
-
-      function show(html){
-        out.hidden = false;
-        outHtml.innerHTML = html;
-      }
-
-      function downloadIPR(){
-        if(!iprFileJson) return;
-        const blob = new Blob([iprFileJson], {type:"application/json"});
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "IPR_" + Date.now() + ".json";
-        a.click();
-      }
-
-      async function copyText(txt){
-        try{
-          await navigator.clipboard.writeText(txt);
-          return true;
-        }catch(e){
-          return false;
-        }
-      }
-
-      async function generate(){
-        const ok = await checkRegistry();
-        if(!ok){
-          show(`<div class="hbce-meta"><strong>BLOCKED</strong> — Registry INVALID. Fail-closed.</div>
-                <div class="hbce-meta" style="margin-top:8px">source: <code>${REGISTRY_URL}</code></div>`);
-          return;
-        }
-
-        const n = cleanNickname(nick.value);
-        if(!n){ alert("Inserisci Nickname / Entity ID"); return; }
-
-        btnGen.disabled = true;
-        btnGen.textContent = "Generating…";
-
-        try{
-          const ts = new Date().toISOString();
-          const basePayload = {
-            proto: "HBCE-IPR-v1",
-            kind: "IPR_RELEASE",
-            entity_type: etype.value,
-            nickname: n,
-            country: normalize(country.value),
-            email: normalize(email.value),
-            timestamp: ts
-          };
-
-          const computed = await sha256(JSON.stringify(basePayload));
-          lastHash = computed;
-
-          const releaseFile = { ...basePayload, payload_sha256: computed };
-          iprFileJson = JSON.stringify(releaseFile, null, 2);
-
-          const entry = { nickname: n, payload_sha256: computed, timestamp: ts };
-          registryEntryJson = JSON.stringify(entry, null, 2);
-
-          const hasEmail = normalize(email.value) ? true : false;
-
-          show(`
-            <div class="hbce-meta"><strong>IPR GENERATED</strong></div>
-            <div class="hbce-meta">timestamp: <code>${escapeHtml(ts)}</code></div>
-            <div class="hbce-meta">payload_sha256: <code>${escapeHtml(computed)}</code></div>
-            ${hasEmail ? `<div class="hbce-meta" style="margin-top:10px"><strong>WARNING</strong> — email presente nel file cliente. Non deve entrare nel registry pubblico.</div>` : ``}
-            <div class="hbce-actions" style="margin-top:12px">
-              <button class="hbce-btn hbce-btn--primary" id="btnDl">Download IPR JSON</button>
-              <button class="hbce-btn" id="btnCopyHash">Copia hash</button>
-            </div>
-
-            <div class="hbce-meta" style="margin-top:14px"><strong>NODE READY TO REGISTER (HASH-ONLY)</strong></div>
-            <div class="hbce-meta">Append in: <code>registry/registry.json → entries[]</code></div>
-            <pre class="hbce-code" style="margin-top:10px">${escapeHtml(registryEntryJson)}</pre>
-            <div class="hbce-actions" style="margin-top:10px">
-              <button class="hbce-btn hbce-btn--primary" id="btnCopyEntry">Copia entry</button>
-              <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Apri Registry viewer</a>
-              <a class="hbce-btn" href="/hermeticum-bce-platform/verify/?h=${encodeURIComponent(computed)}">Apri Verify</a>
-            </div>
-          `);
-
-          $("btnDl").addEventListener("click", downloadIPR);
-          $("btnCopyHash").addEventListener("click", async () => {
-            const ok = await copyText(lastHash);
-            setReg(ok ? "Copiato." : "Copia non disponibile: copia manualmente.");
-          });
-          $("btnCopyEntry").addEventListener("click", async () => {
-            const ok = await copyText(registryEntryJson);
-            setReg(ok ? "Entry copiata." : "Copia non disponibile: copia manualmente.");
-          });
-
-        }catch(e){
-          show(`<div class="hbce-meta"><strong>BLOCKED</strong> — Errore generazione (fail-closed).</div>`);
-        }finally{
-          btnGen.disabled = false;
-          btnGen.textContent = "Generate";
-        }
-      }
-
-      btnGen.addEventListener("click", generate);
-      btnReset.addEventListener("click", resetAll);
-      btnReg.addEventListener("click", checkRegistry);
-
-      checkRegistry();
-    })();
-  </script>
 </body>
 </html>
