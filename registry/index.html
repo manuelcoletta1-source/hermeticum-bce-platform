@@ -1,96 +1,67 @@
 <!doctype html>
 <html lang="it">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>REGISTRY — Append-only</title>
-<meta name="description" content="Registro pubblico append-only IPR. Solo nickname + hash + timestamp. Hash-only, UE-first, audit-first." />
-<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>REGISTRY PUBBLICO — IPR</title>
+  <meta name="description" content="Registro pubblico append-only. Hash verificabili di identità operative." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
 <body>
-<div data-hbce="header"></div>
 
 <main class="hbce-container hbce-main">
 
 <section class="hbce-hero">
-  <div class="hbce-hero__kicker">REGISTRY · PUBLIC · APPEND-ONLY</div>
-  <h1 class="hbce-hero__title">Registro pubblico IPR</h1>
+  <div class="hbce-hero__kicker">Public Registry · Append-only</div>
+  <h1 class="hbce-hero__title">Registro pubblico identità operative</h1>
+
   <p class="hbce-hero__lead">
-    Registro pubblico hash-only.  
-    Contiene solo: <strong>nickname + hash + timestamp</strong>.  
-    Nessun dato personale custodito.
+    Registro tecnico append-only.  
+    Pubblica solo hash verificabili.  
+    Nessun dato personale.
   </p>
 </section>
 
-<section class="hbce-section">
-  <h2 class="hbce-h2">Search</h2>
-  <div class="hbce-card">
-    <input id="search" class="hbce-input" placeholder="Cerca nickname o hash..." />
-    <div class="hbce-actions" style="margin-top:1rem;">
-      <button class="hbce-btn hbce-btn--primary" onclick="load()">REFRESH</button>
-      <a class="hbce-btn" href="/hermeticum-bce-platform/create/">CREATE IPR</a>
-      <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-    </div>
-  </div>
-</section>
 
 <section class="hbce-section">
-  <h2 class="hbce-h2">Entries</h2>
-  <div id="list" class="hbce-grid" style="grid-template-columns:1fr;"></div>
+  <h2>Entità attive</h2>
+
+  <div class="hbce-card">
+    <h3>AI JOKER C2</h3>
+    <p><strong>Tipo:</strong> Entità cibernetica operativa</p>
+
+    <p><strong>SHA-256:</strong></p>
+    <pre style="white-space:pre-wrap">
+13a955dd8b8df92603952c3aa25aaaf7571c7bc6c6a49679dc2ac7ff12b99324
+    </pre>
+
+    <p class="hbce-muted">
+    Anchor verificabile nel repository pubblico.  
+    Collegabile a sistemi robotici e AI operative.
+    </p>
+  </div>
+
+</section>
+
+
+<section class="hbce-section">
+  <h2>Verifica</h2>
+
+  <div class="hbce-card">
+    <p><strong>File anchor:</strong></p>
+    <a href="/hermeticum-bce-platform/ai-joker-c2/anchor.json">
+    Apri anchor Joker
+    </a>
+
+    <p><strong>Calcolo hash:</strong></p>
+    <a href="/hermeticum-bce-platform/ai-joker-c2/hash.html">
+    Verifica SHA-256
+    </a>
+  </div>
 </section>
 
 </main>
 
-<div data-hbce="footer"></div>
-<script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
-
-<script>
-async function load(){
-  const list = document.getElementById("list");
-  const q = document.getElementById("search").value.toLowerCase();
-
-  list.innerHTML = "<div class='hbce-note'>Loading registry...</div>";
-
-  try{
-    const res = await fetch("/hermeticum-bce-platform/registry/registry.json?"+Date.now());
-    const data = await res.json();
-
-    const entries = data.entries || [];
-
-    const filtered = entries.filter(e =>
-      !q ||
-      e.nickname.toLowerCase().includes(q) ||
-      e.payload_sha256.toLowerCase().includes(q)
-    );
-
-    if(filtered.length === 0){
-      list.innerHTML = "<div class='hbce-note'>Nessun risultato.</div>";
-      return;
-    }
-
-    list.innerHTML = filtered.reverse().map(e => `
-      <div class="hbce-card">
-        <div class="hbce-card__text">
-          <strong>${e.nickname}</strong><br/>
-          Hash:<br/>
-          <code style="word-break:break-all">${e.payload_sha256}</code><br/>
-          Timestamp: <code>${e.timestamp}</code><br/>
-          <a href="/hermeticum-bce-platform/verify/?h=${e.payload_sha256}">
-          VERIFY →
-          </a>
-        </div>
-      </div>
-    `).join("");
-
-  }catch(err){
-    list.innerHTML = "<div class='hbce-note'>Errore lettura registry.</div>";
-  }
-}
-
-load();
-</script>
-
 </body>
 </html>
-```0
