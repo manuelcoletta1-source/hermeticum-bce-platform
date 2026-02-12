@@ -3,36 +3,70 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- GitHub Pages (project site) -->
   <base href="/hermeticum-bce-platform/" />
 
   <title>IPR EUROPEO — Identità Operativa (HBCE)</title>
-  <meta name="description" content="IPR europeo: il conto corrente dell’identità operativa. Entra a 49€ nel registry (hash-only). Poi scegli moduli professionali con prezzi pubblici fino allo stack completo." />
+  <meta name="description" content="IPR europeo: il conto corrente dell’identità operativa. Entra a 49€ nel registry (hash-only) e sblocca moduli software professionali con prezzi pubblici fino allo stack completo." />
 
-  <!-- HBCE CSS -->
-  <link rel="stylesheet" href="assets/hbce.css" />
+  <!-- HBCE assets (absolute paths to avoid GitHub Pages path issues) -->
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 
-  <!-- Fail-safe: se hbce.css non carica, la pagina resta leggibile -->
+  <!-- CONTRAST FIX (anti bianco-su-bianco) -->
   <style>
-    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-    .hbce-container { max-width: 1120px; margin: 0 auto; padding: 16px; }
-    .hbce-main { padding-bottom: 40px; }
-    .hbce-section { margin: 26px 0; }
-    .hbce-card { background:#fff; border:1px solid rgba(0,0,0,.08); border-radius: 16px; padding: 16px; }
-    .hbce-grid { display:grid; gap:12px; }
-    .hbce-grid--2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
-    .hbce-grid--3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    /* Mantieni stile HBCE ma rendi leggibile sempre */
+    :root{
+      --hbce-fg: #0b0f14;
+      --hbce-muted: rgba(11,15,20,.78);
+      --hbce-bg: #ffffff;
+      --hbce-surface: #ffffff;
+      --hbce-border: rgba(11,15,20,.12);
+      --hbce-shadow: 0 1px 0 rgba(11,15,20,.04), 0 10px 30px rgba(11,15,20,.06);
+      --hbce-link: #0b0f14;
+    }
+
+    html, body { background: var(--hbce-bg); color: var(--hbce-fg); }
+    a { color: var(--hbce-link); }
+
+    /* Se hbce.css imposta colori chiari, li sovrascriviamo qui */
+    .hbce-container, .hbce-main, .hbce-hero, .hbce-section { color: var(--hbce-fg); }
+    .hbce-muted, .hbce-hero__lead, .hbce-hero__kicker { color: var(--hbce-muted) !important; }
+
+    .hbce-card{
+      background: var(--hbce-surface) !important;
+      color: var(--hbce-fg) !important;
+      border: 1px solid var(--hbce-border) !important;
+      box-shadow: var(--hbce-shadow);
+    }
+
+    .hbce-list li { color: var(--hbce-fg) !important; }
+
+    /* Bottoni leggibili anche se hbce.css li rende “ghost” */
+    .hbce-btn{
+      background: #fff !important;
+      color: var(--hbce-fg) !important;
+      border: 1px solid var(--hbce-border) !important;
+    }
+    .hbce-btn--primary{
+      background: var(--hbce-fg) !important;
+      color: #fff !important;
+      border-color: var(--hbce-fg) !important;
+    }
+
+    /* Titoli sempre visibili */
+    h1, h2, h3, h4 { color: var(--hbce-fg) !important; }
+
+    /* Piccolo layout grid se hbce.css non lo fornisce */
+    .hbce-grid{ display:grid; gap:12px; }
+    .hbce-grid--2{ grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .hbce-grid--3{ grid-template-columns: repeat(3,minmax(0,1fr)); }
     @media (max-width: 900px){ .hbce-grid--2,.hbce-grid--3{ grid-template-columns: 1fr; } }
-    .hbce-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px; }
-    .hbce-btn{ display:inline-block; padding:10px 14px; border-radius:12px; border:1px solid rgba(0,0,0,.14); text-decoration:none; color:inherit; }
-    .hbce-btn--primary{ font-weight:800; }
-    .hbce-muted{ opacity:.78; }
-    .hbce-list{ margin:0; padding-left:18px; }
-    .hbce-divider{ border:0; border-top:1px solid rgba(0,0,0,.08); margin: 16px 0; }
-    .hbce-price{ font-size:28px; font-weight:900; margin: 6px 0 0; }
-    .hbce-kicker{ font-size:12px; letter-spacing:.08em; text-transform:uppercase; opacity:.7; }
-    .hbce-badge{ display:inline-block; padding:6px 10px; border-radius:999px; border:1px solid rgba(0,0,0,.12); font-size:12px; }
+
+    .hbce-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+    .hbce-divider{ border:0; border-top:1px solid var(--hbce-border); margin:16px 0; }
+    .hbce-price{ font-size:28px; font-weight:900; margin:6px 0 0; }
+    .hbce-kicker{ font-size:12px; letter-spacing:.08em; text-transform:uppercase; color: var(--hbce-muted) !important; }
+    .hbce-badge{ display:inline-block; padding:6px 10px; border-radius:999px; border:1px solid var(--hbce-border); color: var(--hbce-fg); font-size:12px; }
+    .hbce-note{ padding:10px 12px; border-radius:12px; border:1px dashed var(--hbce-border); background:#fff; color: var(--hbce-fg); }
   </style>
 </head>
 
@@ -42,80 +76,79 @@
   <main class="hbce-container hbce-main">
 
     <!-- HERO -->
-    <section class="hbce-section">
-      <div class="hbce-kicker">IPR EUROPEO · Registry · Append-only · Hash-only</div>
+    <section class="hbce-hero hbce-section">
+      <div class="hbce-hero__kicker">IPR EUROPEO · Registry · Append-only · Hash-only</div>
       <h1 class="hbce-hero__title">Il conto corrente dell’identità operativa</h1>
       <p class="hbce-hero__lead">
-        IPR è un registro operativo per identità umane, AI e sistemi autonomi.
-        Entri con una base semplice (49€) e poi scegli implementazioni software professionali
-        in base a ciò che vuoi <strong>fare</strong>: lavorare, costruire reti, AI evolutive, robotica, energia, spazio.
+        Entri con un IPR base europeo (49€) registrato nel registry pubblico. Poi scegli i moduli software in base a ciò che vuoi
+        <strong>fare</strong>: AI personale, lavoro (operatore), rete, robotica/energia/spazio. Prezzi pubblici, percorso chiaro.
       </p>
 
       <div class="hbce-actions">
-        <a class="hbce-btn hbce-btn--primary" href="activate/">Entra ora: IPR base 49€</a>
-        <a class="hbce-btn" href="registry/">Vedi registry pubblico</a>
-        <a class="hbce-btn" href="#prezzi">Vedi prezzi moduli</a>
+        <a class="hbce-btn hbce-btn--primary" href="activate/">Entra: IPR base 49€</a>
+        <a class="hbce-btn" href="registry/">Registry pubblico</a>
+        <a class="hbce-btn" href="#percorsi">Percorsi e costi</a>
       </div>
 
-      <div class="hbce-grid hbce-grid--3 hbce-section">
+      <div class="hbce-grid hbce-grid--3" style="margin-top:14px;">
         <div class="hbce-card">
           <div class="hbce-kicker">ENTRATA</div>
           <h3>49€</h3>
-          <p class="hbce-muted">Attivi IPR base nel registry. Da qui in avanti puoi evolvere.</p>
+          <p class="hbce-muted">IPR base nel registry: identità operativa persistente, verificabile.</p>
         </div>
         <div class="hbce-card">
           <div class="hbce-kicker">DOPO</div>
           <h3>Moduli</h3>
-          <p class="hbce-muted">Sblocchi capacità: AI, operatore IPR, rete, robotica, energia, spazio.</p>
+          <p class="hbce-muted">Sblocchi capacità precise con prezzi pubblici.</p>
         </div>
         <div class="hbce-card">
           <div class="hbce-kicker">MASSIMO</div>
-          <h3>Stack completo</h3>
-          <p class="hbce-muted">Vetrina: identità biologica + cibernetica + moduli avanzati.</p>
+          <h3>IPR completo</h3>
+          <p class="hbce-muted">Stack totale per AI evolutiva, rete e sistemi fisici autonomi.</p>
         </div>
       </div>
     </section>
 
-    <!-- COME FUNZIONA -->
+    <!-- STEP -->
     <section class="hbce-section" id="come-funziona">
-      <h2>Come funziona (in 3 step)</h2>
+      <h2>Come funziona (chiaro)</h2>
       <div class="hbce-grid hbce-grid--3">
         <div class="hbce-card">
           <span class="hbce-badge">STEP 1</span>
-          <h3>Entri (49€)</h3>
-          <p><strong>Attivi IPR base europeo</strong> e vieni registrato nel registry (hash-only).</p>
+          <h3>Entri</h3>
+          <p><strong>Attivi IPR base (49€)</strong> e vieni registrato nel registry (hash-only).</p>
           <ul class="hbce-list">
             <li>identità operativa persistente</li>
-            <li>presenza nel registry</li>
+            <li>verificabilità pubblica</li>
             <li>base per evoluzione futura</li>
           </ul>
         </div>
         <div class="hbce-card">
           <span class="hbce-badge">STEP 2</span>
-          <h3>Scegli cosa vuoi fare</h3>
-          <p>Non tutti hanno gli stessi obiettivi. I moduli servono a sbloccare capacità precise.</p>
+          <h3>Scegli capacità</h3>
+          <p>Compri moduli solo se ti servono. Ogni modulo = una capacità specifica.</p>
           <ul class="hbce-list">
-            <li>AI personale evolutiva</li>
-            <li>diventare operatore e creare IPR</li>
-            <li>rete e coordinamento</li>
-            <li>robotica / energia / spazio</li>
+            <li>AI personale (Joker)</li>
+            <li>memoria evolutiva (NeuroLoop)</li>
+            <li>lavoro operatore (UNEBDO+OPC)</li>
+            <li>rete e scala (MetaExchange/CyberGlobal)</li>
+            <li>sistemi fisici (IoSpace)</li>
           </ul>
         </div>
         <div class="hbce-card">
           <span class="hbce-badge">STEP 3</span>
           <h3>Arrivi al massimo</h3>
-          <p>Se lavori su sistemi avanzati, puoi arrivare allo <strong>stack completo</strong> (vetrina).</p>
+          <p>Stack completo = identità biologica + cibernetica + moduli avanzati.</p>
           <ul class="hbce-list">
-            <li>identità biologica + cibernetica</li>
-            <li>memoria evolutiva</li>
-            <li>operatore e rete</li>
-            <li>sistemi fisici autonomi</li>
+            <li>AI evolutiva nel tempo</li>
+            <li>rete territoriale/europea</li>
+            <li>robotica/droni/energia/spazio</li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- ENTRATA (CHIARA) -->
+    <!-- ENTRATA -->
     <section class="hbce-section" id="entrata">
       <h2>Dove si entra</h2>
       <div class="hbce-grid hbce-grid--2">
@@ -123,78 +156,73 @@
           <div class="hbce-kicker">IPR BASE EUROPEO</div>
           <h3>Entrata universale</h3>
           <p class="hbce-price">49€</p>
-          <p class="hbce-muted">Una tantum. Base per chiunque. Registry + identità operativa.</p>
-
-          <hr class="hbce-divider">
-
+          <p class="hbce-muted">Una tantum. Registry + identità operativa persistente.</p>
+          <hr class="hbce-divider" />
           <h4>Cosa ricevi</h4>
           <ul class="hbce-list">
-            <li>IPR biologico europeo (identità operativa)</li>
+            <li>IPR biologico europeo (origine e responsabilità)</li>
             <li>registrazione nel registry (append-only, hash-only)</li>
-            <li>file/record IPR per verifica</li>
-            <li>accesso alla rete HBCE</li>
+            <li>base per acquistare moduli successivi</li>
           </ul>
-
           <div class="hbce-actions">
             <a class="hbce-btn hbce-btn--primary" href="activate/">Attiva IPR base</a>
-            <a class="hbce-btn" href="registry/">Verifica registry</a>
+            <a class="hbce-btn" href="registry/">Vedi registry</a>
           </div>
         </div>
 
         <div class="hbce-card">
-          <div class="hbce-kicker">COSA CAMBIA</div>
-          <h3>Prima / Dopo</h3>
+          <div class="hbce-kicker">PER CHI È</div>
+          <h3>Target reale</h3>
           <ul class="hbce-list">
-            <li><strong>Prima:</strong> identità frammentata, senza continuità verificabile</li>
-            <li><strong>Dopo:</strong> identità operativa persistente e verificabile nel tempo</li>
-            <li><strong>Risultato:</strong> puoi agganciare moduli e capacità operative</li>
+            <li>AI e sviluppo software</li>
+            <li>robotica, droni, sistemi autonomi</li>
+            <li>energia e industria avanzata</li>
+            <li>cybersecurity e infrastrutture critiche</li>
+            <li>spazio e sistemi remoti</li>
           </ul>
-          <p class="hbce-muted">
-            Come un conto corrente abilita pagamenti online, IPR abilita operazioni identitarie nel tempo.
+          <p class="hbce-note">
+            IPR base è per chiunque. I moduli sono per uso professionale: sbloccano “poter fare”, non teoria.
           </p>
         </div>
       </div>
     </section>
 
-    <!-- PREZZI MODULI (PRECISI) -->
-    <section class="hbce-section" id="prezzi">
-      <h2>Cosa puoi acquistare dopo (moduli con prezzo)</h2>
+    <!-- MODULI (PREZZI + COSA FAI) -->
+    <section class="hbce-section" id="moduli">
+      <h2>Moduli software (prezzi pubblici + cosa ottieni)</h2>
       <p class="hbce-muted">
-        I moduli sono implementazioni software. Ogni modulo aggiunge capacità e, in molti casi, un tipo di lavoro.
-        Prezzi una tantum, pubblici.
+        Dopo l’entrata (49€) puoi acquistare moduli. Ogni modulo aggiunge capacità operative e spesso abilita un tipo di lavoro.
       </p>
 
       <div class="hbce-grid hbce-grid--3">
 
-        <!-- JOKER -->
         <div class="hbce-card">
           <div class="hbce-kicker">MODULO</div>
           <h3>Joker</h3>
           <p class="hbce-price">420€</p>
-          <p class="hbce-muted"><strong>Serve per:</strong> AI personale operativa collegata all’IPR.</p>
-          <hr class="hbce-divider">
+          <p class="hbce-muted"><strong>Scopo:</strong> AI personale operativa collegata all’IPR.</p>
+          <hr class="hbce-divider" />
           <h4>Cosa ottieni</h4>
           <ul class="hbce-list">
             <li>interfaccia AI collegata a identità verificabile</li>
-            <li>continuità operativa e output tracciabili</li>
-            <li>base per automazioni e workflow</li>
+            <li>output operativi tracciabili</li>
+            <li>workflow e automazioni</li>
           </ul>
           <h4>Cosa puoi fare</h4>
           <ul class="hbce-list">
             <li>report verificabili</li>
-            <li>workflow AI ripetibili</li>
+            <li>procedure ripetibili con AI</li>
             <li>inizio identità cibernetica</li>
           </ul>
-          <p class="hbce-muted"><strong>Lavoro abilitato:</strong> operatore AI personale / supporto tecnico evolutivo.</p>
+          <p class="hbce-muted"><strong>Abilita:</strong> operatore AI personale (uso professionale).</p>
         </div>
 
-        <!-- NEUROLOOP -->
         <div class="hbce-card">
           <div class="hbce-kicker">MODULO</div>
           <h3>NeuroLoop</h3>
           <p class="hbce-price">680€</p>
-          <p class="hbce-muted"><strong>Serve per:</strong> memoria evolutiva, continuità e progressione nel tempo.</p>
-          <hr class="hbce-divider">
+          <p class="hbce-muted"><strong>Scopo:</strong> memoria evolutiva e continuità nel tempo.</p>
+          <hr class="hbce-divider" />
           <h4>Cosa ottieni</h4>
           <ul class="hbce-list">
             <li>storico evoluzione (stati/milestone)</li>
@@ -204,23 +232,22 @@
           <h4>Cosa puoi fare</h4>
           <ul class="hbce-list">
             <li>profilo evolutivo verificabile</li>
-            <li>continuità tecnica dei progetti</li>
-            <li>preparazione a sistemi autonomi</li>
+            <li>continuità tecnica di progetti</li>
+            <li>identità pronta per sistemi autonomi</li>
           </ul>
-          <p class="hbce-muted"><strong>Lavoro abilitato:</strong> operatore evolutivo (AI+memoria), R&D.</p>
+          <p class="hbce-muted"><strong>Abilita:</strong> profilo evolutivo avanzato (R&D).</p>
         </div>
 
-        <!-- UNEBDO + OPC -->
         <div class="hbce-card">
           <div class="hbce-kicker">MODULO LAVORO</div>
           <h3>UNEBDO + OPC</h3>
           <p class="hbce-price">950€</p>
-          <p class="hbce-muted"><strong>Serve per:</strong> diventare operatore e creare IPR ad altri.</p>
-          <hr class="hbce-divider">
+          <p class="hbce-muted"><strong>Scopo:</strong> diventare operatore e creare IPR ad altri.</p>
+          <hr class="hbce-divider" />
           <h4>Cosa ottieni</h4>
           <ul class="hbce-list">
-            <li>processo operativo di creazione IPR</li>
-            <li>gestione richieste, rilascio, verifica</li>
+            <li>processo operativo creazione IPR</li>
+            <li>gestione richieste e rilascio</li>
             <li>standard operativo e tracciabilità</li>
           </ul>
           <h4>Cosa puoi fare</h4>
@@ -229,91 +256,68 @@
             <li>gestire clienti e identità</li>
             <li>operare come nodo territoriale</li>
           </ul>
-          <p class="hbce-muted"><strong>Lavoro abilitato:</strong> <strong>Operatore IPR</strong> (nuovo lavoro digitale).</p>
+          <p class="hbce-muted"><strong>Abilita:</strong> <strong>lavoro Operatore IPR</strong>.</p>
         </div>
 
-        <!-- METAEXCHANGE -->
         <div class="hbce-card">
           <div class="hbce-kicker">SCALA</div>
           <h3>MetaExchange</h3>
           <p class="hbce-price">780€</p>
-          <p class="hbce-muted"><strong>Serve per:</strong> rete economica e scambio servizi tra nodi.</p>
-          <hr class="hbce-divider">
-          <h4>Cosa ottieni</h4>
-          <ul class="hbce-list">
-            <li>strato servizi/pack tra nodi</li>
-            <li>meccaniche di ecosistema</li>
-            <li>base marketplace territoriale</li>
-          </ul>
+          <p class="hbce-muted"><strong>Scopo:</strong> rete economica e scambio servizi tra nodi.</p>
+          <hr class="hbce-divider" />
           <h4>Cosa puoi fare</h4>
           <ul class="hbce-list">
-            <li>offrire servizi come nodo</li>
-            <li>coordinare attività tra territori</li>
-            <li>creare economia di rete</li>
+            <li>servizi/pack tra nodi</li>
+            <li>ecosistema operativo</li>
+            <li>economia di rete</li>
           </ul>
-          <p class="hbce-muted"><strong>Lavoro abilitato:</strong> operatore rete / servizi territoriali.</p>
+          <p class="hbce-muted"><strong>Abilita:</strong> operatore rete / servizi territoriali.</p>
         </div>
 
-        <!-- CYBERGLOBAL -->
         <div class="hbce-card">
-          <div class="hbce-kicker">EU / MULTI-TERRITORIO</div>
+          <div class="hbce-kicker">EU / MULTI-AREA</div>
           <h3>CyberGlobal</h3>
           <p class="hbce-price">1.400€</p>
-          <p class="hbce-muted"><strong>Serve per:</strong> coordinamento nodi su scala nazionale/europea.</p>
-          <hr class="hbce-divider">
-          <h4>Cosa ottieni</h4>
-          <ul class="hbce-list">
-            <li>gestione rete nodi multi-area</li>
-            <li>scalabilità Italia/Europa</li>
-            <li>base per governance distribuita</li>
-          </ul>
+          <p class="hbce-muted"><strong>Scopo:</strong> coordinamento rete nodi su scala Italia/Europa.</p>
+          <hr class="hbce-divider" />
           <h4>Cosa puoi fare</h4>
           <ul class="hbce-list">
             <li>coordinare più nodi</li>
-            <li>avviare espansione europea</li>
-            <li>gestire progetti multi-area</li>
+            <li>espansione nazionale/europea</li>
+            <li>progetti multi-territorio</li>
           </ul>
-          <p class="hbce-muted"><strong>Lavoro abilitato:</strong> coordinatore rete (Italia/Europa).</p>
+          <p class="hbce-muted"><strong>Abilita:</strong> coordinatore rete (Italia/Europa).</p>
         </div>
 
-        <!-- IOSPACE -->
         <div class="hbce-card">
           <div class="hbce-kicker">SISTEMI FISICI</div>
           <h3>IoSpace</h3>
           <p class="hbce-price">2.200€</p>
-          <p class="hbce-muted"><strong>Serve per:</strong> robotica, droni, energia, sistemi autonomi e spazio.</p>
-          <hr class="hbce-divider">
-          <h4>Cosa ottieni</h4>
-          <ul class="hbce-list">
-            <li>identità per unità autonome</li>
-            <li>log missione e audit</li>
-            <li>base per flotte e sistemi critici</li>
-          </ul>
+          <p class="hbce-muted"><strong>Scopo:</strong> robotica, droni, energia, spazio.</p>
+          <hr class="hbce-divider" />
           <h4>Cosa puoi fare</h4>
           <ul class="hbce-list">
-            <li>collegare robot/drone/veicolo a IPR</li>
-            <li>missioni tracciabili</li>
+            <li>identità per robot/drone/veicolo</li>
+            <li>mission log e audit operativo</li>
             <li>pacchetti per aziende (robotica/energia)</li>
           </ul>
-          <p class="hbce-muted"><strong>Lavoro abilitato:</strong> operatore robotico / integrazione sistemi autonomi.</p>
+          <p class="hbce-muted"><strong>Abilita:</strong> operatore robotico / integrazione sistemi autonomi.</p>
         </div>
 
       </div>
     </section>
 
-    <!-- PERCORSI DI ACQUISTO (CHIARISSIMI) -->
+    <!-- PERCORSI (SOLDI CHIARI) -->
     <section class="hbce-section" id="percorsi">
-      <h2>Percorsi chiari (quanto spendi e cosa ottieni)</h2>
+      <h2>Percorsi d’acquisto (quanto spendi e cosa ottieni)</h2>
       <div class="hbce-grid hbce-grid--3">
-
         <div class="hbce-card">
           <div class="hbce-kicker">MINIMO</div>
           <h3>Solo identità</h3>
           <p class="hbce-price">49€</p>
-          <p class="hbce-muted">Entri nel registry. Identità operativa persistente.</p>
           <ul class="hbce-list">
             <li>IPR base</li>
-            <li>registry</li>
+            <li>registry pubblico (hash-only)</li>
             <li>verificabilità</li>
           </ul>
         </div>
@@ -322,10 +326,9 @@
           <div class="hbce-kicker">AI PERSONALE</div>
           <h3>IPR + Joker</h3>
           <p class="hbce-price">469€</p>
-          <p class="hbce-muted">AI operativa collegata all’identità.</p>
           <ul class="hbce-list">
-            <li>49€ IPR base</li>
-            <li>+ 420€ Joker</li>
+            <li>49€ + 420€</li>
+            <li>AI operativa collegata all’IPR</li>
             <li>workflow AI</li>
           </ul>
         </div>
@@ -334,24 +337,19 @@
           <div class="hbce-kicker">LAVORO</div>
           <h3>Operatore IPR</h3>
           <p class="hbce-price">999€</p>
-          <p class="hbce-muted">Crei IPR ad altri. Nodo operativo.</p>
           <ul class="hbce-list">
-            <li>49€ IPR base</li>
-            <li>+ 950€ UNEBDO+OPC</li>
-            <li>creazione/gestione IPR</li>
+            <li>49€ + 950€</li>
+            <li>crei IPR ad altri</li>
+            <li>diventi nodo operativo</li>
           </ul>
         </div>
-
       </div>
     </section>
 
-    <!-- STACK COMPLETO (MAX) -->
+    <!-- MASSIMO -->
     <section class="hbce-section" id="fullstack">
       <h2>Massimo: IPR completo (vetrina)</h2>
-      <p class="hbce-muted">
-        Questo è il livello massimo. Serve per ricerca avanzata, AI evolutiva, rete e sistemi fisici autonomi.
-        È la configurazione completa.
-      </p>
+      <p class="hbce-muted">Stack totale per AI evolutiva, rete e sistemi fisici autonomi. Prezzo pubblico totale.</p>
 
       <div class="hbce-card">
         <div class="hbce-kicker">STACK COMPLETO</div>
@@ -359,9 +357,9 @@
 
         <div class="hbce-grid hbce-grid--2">
           <div>
-            <h4>Componenti</h4>
+            <h4>Componenti inclusi</h4>
             <ul class="hbce-list">
-              <li>IPR base europeo (49€)</li>
+              <li>IPR base (49€)</li>
               <li>Joker (420€)</li>
               <li>NeuroLoop (680€)</li>
               <li>UNEBDO + OPC (950€)</li>
@@ -373,20 +371,20 @@
           <div>
             <h4>Totale massimo</h4>
             <p class="hbce-price">6.479€</p>
-            <p class="hbce-muted">Somma moduli + IPR base. Prezzo pubblico.</p>
+            <p class="hbce-muted">Somma moduli + IPR base. (Prezzo pubblico)</p>
             <hr class="hbce-divider" />
             <h4>Cosa abilita</h4>
             <ul class="hbce-list">
               <li>identità biologica + cibernetica</li>
               <li>memoria evolutiva verificabile</li>
-              <li>creazione IPR (lavoro)</li>
+              <li>lavoro operatore (creazione IPR)</li>
               <li>rete economica e coordinamento</li>
               <li>robotica/droni/energia/spazio</li>
             </ul>
           </div>
         </div>
 
-        <hr class="hbce-divider">
+        <hr class="hbce-divider" />
 
         <h4>Profilo operativo (vetrina)</h4>
         <ul class="hbce-list">
@@ -403,9 +401,7 @@
     <section class="hbce-section" id="registry">
       <h2>Registry pubblico</h2>
       <div class="hbce-card">
-        <p>
-          Registro tecnico <strong>append-only</strong>. Pubblica solo hash verificabili. Nessun dato personale.
-        </p>
+        <p>Registro tecnico <strong>append-only</strong>. Pubblica solo hash verificabili. Nessun dato personale.</p>
         <div class="hbce-actions">
           <a class="hbce-btn" href="registry/">Apri viewer registry</a>
           <a class="hbce-btn" href="registry/registry.json">Apri registry.json</a>
@@ -413,27 +409,25 @@
       </div>
     </section>
 
-    <!-- CTA FINALE -->
+    <!-- CTA -->
     <section class="hbce-section" id="cta">
       <div class="hbce-card">
         <h2>Entra nel registry europeo</h2>
         <p class="hbce-muted">
-          Inizia dal base: 49€.
-          Dopo l’attivazione, scegli i moduli in base a cosa vuoi fare (AI, lavoro operatore, rete, robotica).
+          Inizia dal base (49€). Dopo l’attivazione scegli i moduli in base a ciò che vuoi fare.
         </p>
         <div class="hbce-actions">
           <a class="hbce-btn hbce-btn--primary" href="activate/">Attiva IPR base 49€</a>
-          <a class="hbce-btn" href="#prezzi">Vedi moduli e prezzi</a>
+          <a class="hbce-btn" href="#moduli">Vedi moduli e prezzi</a>
         </div>
       </div>
     </section>
 
-    <!-- LOCALIZZAZIONE -->
+    <!-- LOCAL -->
     <section class="hbce-section">
       <div class="hbce-card">
         <h3>Localizzazione operativa</h3>
         <p><strong>EU</strong> · Italia · Piemonte · Torino · Barriera di Milano</p>
-        <p class="hbce-muted">Nodo origine infrastruttura. Modello replicabile per rete nazionale ed espansione europea.</p>
       </div>
     </section>
 
@@ -442,6 +436,6 @@
   <div data-hbce="footer"></div>
 
   <!-- HBCE UI loader -->
-  <script src="assets/hbce-ui.js"></script>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </body>
 </html>
