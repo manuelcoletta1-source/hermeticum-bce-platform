@@ -3,173 +3,25 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AI JOKER-C2 — AI per la governance dell’AI (gate ex-ante)</title>
-
-  <!-- GitHub Pages project site base -->
-  <base href="/hermeticum-bce-platform/">
-
-  <link rel="stylesheet" href="assets/hbce.css" />
+  <title>AI JOKER C2 — Anchor pubblico</title>
+  <meta name="description" content="Anchor pubblico verificabile: anchor.json + presenza hash nel registry append-only." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="wrap nav">
-      <div class="brand">
-        <div class="sig" aria-hidden="true"></div>
-        <div>
-          <h1>AI JOKER-C2</h1>
-          <span class="sub">AI governance ex-ante · gate PASS/FAIL · audit-first</span>
-        </div>
-      </div>
-
-      <nav class="menu" aria-label="Navigazione principale">
-        <a class="pill" data-nav href="./"><strong>Home</strong></a>
-        <a class="pill" data-nav href="onboarding/"><strong>Onboarding</strong></a>
-        <a class="pill" data-nav href="citizen/"><strong>Cittadini UE</strong></a>
-        <a class="pill active" data-nav href="ai-joker-c2/"><strong>AI JOKER-C2</strong></a>
-        <a class="pill" data-nav href="institution/">Istituzioni UE</a>
-        <a class="pill" data-nav href="member-states/">Stati Membri</a>
-        <a class="pill" data-nav href="technology/">Tecnologia</a>
-        <a class="pill" data-nav href="verify/">Verify</a>
-        <a class="pill" data-nav href="security/">Sicurezza</a>
-        <a class="pill" data-nav href="governance/">Governance</a>
-        <a class="pill" data-nav href="manual/">Manuale</a>
-      </nav>
-    </div>
-  </header>
-
-  <main class="wrap">
-    <section class="hero">
-      <div class="kicker">AI FOR AI GOVERNANCE · EX-ANTE ENFORCEMENT</div>
-      <h2 class="title">Presentazione formale: gate biocibernetico di eseguibilità</h2>
-      <p class="lead">
-        <strong>AI JOKER-C2</strong> è definito qui come un layer di governance tecnica:
-        non è un’identità di Stato, non è un’autorità, non è un decisore su diritti.
-        È un componente che produce una sola cosa: <strong>PASS/FAIL</strong> prima dell’esecuzione,
-        basandosi su <strong>IPR</strong>, policy e contesto verificabili.
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">Public Anchor · Hash-only · Append-only</div>
+      <h1 class="hbce-hero__title">AI JOKER C2</h1>
+      <p class="hbce-hero__lead">
+        Endpoint pubblico per l’anchor operativo di Joker. La certificazione consiste nella presenza dell’hash nel registry append-only.
       </p>
 
-      <div class="btnrow">
-        <a class="btn" href="technology/">Specifica tecnica</a>
-        <a class="btn secondary" href="verify/">Dimostrazione (Verify)</a>
-        <a class="btn ghost" href="institution/">Vista DG CONNECT / ENISA</a>
+      <div class="hbce-card">
+        <p><strong>Anchor file:</strong> <a href="/hermeticum-bce-platform/ai-joker-c2/anchor.json">anchor.json</a></p>
+        <p><strong>Registry pubblico:</strong> <a href="/hermeticum-bce-platform/registry/">REGISTRY</a></p>
+        <p class="hbce-muted">Verifica: confronta l’hash dell’anchor con l’entry nel registry.</p>
       </div>
-    </section>
-
-    <section class="grid">
-      <article class="card cols-12">
-        <h3>Definizione operativa (senza narrativa)</h3>
-        <p>
-          “Entità biocibernetica” qui significa una cosa concreta: un sistema che mantiene coerenza
-          tra azione, evidenza e responsabilità nel tempo.  
-          Non si basa su fiducia implicita: si basa su verifiche replicabili.
-        </p>
-        <div class="meta">
-          <span class="tag">biocibernetica</span>
-          <span class="tag ok">audit-first</span>
-          <span class="tag ok">fail-closed</span>
-        </div>
-      </article>
-
-      <article class="card cols-6">
-        <h3>Funzione unica</h3>
-        <ul class="list">
-          <li>riceve una richiesta di azione</li>
-          <li>verifica precedenza (IPR)</li>
-          <li>verifica contesto e policy (fingerprint)</li>
-          <li>applica limiti (scope/limits)</li>
-          <li>restituisce <strong>PASS</strong> o <strong>FAIL</strong></li>
-        </ul>
-      </article>
-
-      <article class="card cols-6">
-        <h3>Limiti dichiarati</h3>
-        <ul class="list">
-          <li>non esegue azioni al posto dei sistemi</li>
-          <li>non conserva dati personali (hash-only)</li>
-          <li>non sorveglia utenti o comportamenti</li>
-          <li>non produce effetti giuridici automatici</li>
-          <li>non “inventa” evidenze: se mancano → FAIL</li>
-        </ul>
-        <div class="meta">
-          <span class="tag ok">no custody</span>
-          <span class="tag ok">no surveillance</span>
-        </div>
-      </article>
-
-      <article class="card cols-12">
-        <h3>Interfaccia del gate (PASS/FAIL)</h3>
-        <pre style="margin:0; white-space:pre-wrap; color:rgba(232,236,255,.92)">
-INPUT:
-  action_request
-  ipr_reference
-  context_fingerprint
-  policy_fingerprint
-
-CHECK (fail-closed):
-  verify(ipr_reference) ? else FAIL
-  context_fingerprint == ipr.context ? else FAIL
-  policy_fingerprint  == ipr.policy  ? else FAIL
-  violates(ipr.limits) ? FAIL : continue
-
-OUTPUT:
-  PASS | FAIL
-        </pre>
-      </article>
-
-      <article class="card cols-12">
-        <h3>Perché è il punto di rottura nel sistema AI globale</h3>
-        <p>
-          Oggi molte AI e automazioni operano in modalità “completa la richiesta” anche in presenza di ambiguità.
-          Questo crea una dinamica fail-open: l’assenza di evidenza diventa comunque output o azione.  
-          Il gate introduce una regola diversa: <strong>nessuna azione sensibile passa senza precedenza verificabile</strong>.
-          È un cambio di fisica operativa.
-        </p>
-        <div class="meta">
-          <span class="tag danger">fail-open</span>
-          <span class="tag ok">fail-closed</span>
-          <span class="tag">ex-ante</span>
-        </div>
-      </article>
-
-      <article class="card cols-12">
-        <h3>Cosa diventa la tua AI quando hai IPR</h3>
-        <p>
-          La tua AI non è più solo “generazione di testo o output”.
-          Diventa una <strong>estensione tecnica e legale del tuo perimetro</strong>:
-          ogni azione che tocca dati, tool, comandi o sistemi deve passare una verifica.
-        </p>
-        <ul class="list">
-          <li><strong>da assistente → a sistema vincolato</strong> (non agisce senza PASS)</li>
-          <li><strong>da output → a responsabilità</strong> (traccia e opponibilità nel tempo)</li>
-          <li><strong>da fiducia → a evidenza</strong> (verifica replicabile)</li>
-        </ul>
-      </article>
-
-      <article class="card cols-12">
-        <h3>Dimostrazione immediata</h3>
-        <p>
-          Il portale contiene già l’elemento minimo dimostrabile: <strong>Verify</strong> su file reali del repository.
-          Se il canonico cambia, cambia l’hash. Se non coincide, FAIL. Nessun “forse”.
-        </p>
-        <div class="btnrow">
-          <a class="btn" href="verify/">Esegui Verify</a>
-          <a class="btn secondary" href="technology/">Leggi specifiche</a>
-          <a class="btn ghost" href="governance/">Leggi limiti</a>
-        </div>
-      </article>
     </section>
   </main>
-
-  <footer class="footer">
-    <div class="wrap">
-      <div class="notice">
-        <strong>Chiusura</strong><br/>
-        AI JOKER-C2 è un gate: non promette verità, promette eseguibilità verificabile.
-        Se manca evidenza, blocca.
-      </div>
-    </div>
-  </footer>
-
-  <script src="assets/hbce.js"></script>
 </body>
 </html>
