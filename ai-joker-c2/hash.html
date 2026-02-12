@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI JOKER C2 — Calcolo hash (SHA-256)</title>
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+<body>
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">Verifier Tool</div>
+      <h1 class="hbce-hero__title">Calcola SHA-256 di anchor.json</h1>
+      <p class="hbce-hero__lead">Questo tool calcola in-browser l’hash SHA-256 dell’anchor pubblico.</p>
+      <div class="hbce-card">
+        <p><strong>File:</strong> <a id="fileLink" href="/hermeticum-bce-platform/ai-joker-c2/anchor.json">anchor.json</a></p>
+        <p><strong>SHA-256:</strong></p>
+        <pre id="out" style="white-space:pre-wrap">Calcolo in corso…</pre>
+        <p class="hbce-muted">Copia l’hash e confrontalo con l’entry nel registry.</p>
+      </div>
+    </section>
+  </main>
+
+<script>
+async function sha256HexFromUrl(url) {
+  const res = await fetch(url, { cache: "no-store" });
+  const buf = await res.arrayBuffer();
+  const hashBuf = await crypto.subtle.digest("SHA-256", buf);
+  const hashArr = Array.from(new Uint8Array(hashBuf));
+  return hashArr.map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+(async () => {
+  const url = "/hermeticum-bce-platform/ai-joker-c2/anchor.json";
+  try {
+    const hex = await sha256HexFromUrl(url);
+    document.getElementById("out").textContent = hex;
+  } catch (e) {
+    document.getElementById("out").textContent = "Errore nel calcolo: " + String(e);
+  }
+})();
+</script>
+</body>
+</html>
