@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>REGISTRY APPEND — Operator Tool</title>
+  <meta name="description" content="Strumento operatore: append sicuro (no errori) di REGISTRY_ENTRY nel registry append-only." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">OPERATOR · APPEND-ONLY · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Registry Append Tool</h1>
+      <p class="hbce-hero__lead">
+        Carichi <strong>registry.json</strong> e un file <strong>REGISTRY_ENTRY</strong>.
+        Il tool valida, blocca duplicati e genera:
+        <strong>registry.json aggiornato</strong> + blocco append da incollare.
+      </p>
+      <p class="hbce-note">
+        Regola: append-only. Se payload_sha256 già presente → STOP.
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Input</h2>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>1) Carica registry.json</h3>
+          <input type="file" id="registryFile" accept=".json,application/json" />
+          <p class="hbce-note">
+            Suggerimento: scaricalo prima dalla pagina pubblica <code>/registry/registry.json</code> per avere l’ultima versione live.
+          </p>
+          <ul class="hbce-list">
+            <li><strong>Esito:</strong> <span id="regStatus">—</span></li>
+            <li><strong>Entries:</strong> <span id="regCount">—</span></li>
+            <li><strong>Last hash:</strong> <span id="regLastHash">—</span></li>
+          </ul>
+        </div>
+
+        <div class="hbce-card">
+          <h3>2) Carica REGISTRY_ENTRY</h3>
+          <input type="file" id="entryFile" accept=".json,application/json" />
+          <p class="hbce-note">
+            Deve contenere almeno: <code>payload_sha256</code> + <code>timestamp</code> + <code>name</code> (oppure legacy <code>nickname</code>).
+          </p>
+          <ul class="hbce-list">
+            <li><strong>Esito:</strong> <span id="entryStatus">—</span></li>
+            <li><strong>Display:</strong> <span id="entryDisplay">—</span></li>
+            <li><strong>Hash:</strong> <span id="entryHash">—</span></li>
+            <li><strong>Timestamp:</strong> <span id="entryTs">—</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Output</h2>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>Append block (da incollare)</h3>
+          <p class="hbce-note">
+            Questo è il blocco oggetto entry, già “pulito”. Lo incolli in fondo a <code>entries[]</code> se vuoi fare manuale.
+          </p>
+          <pre class="hbce-pre"><code id="appendBlock">—</code></pre>
+
+          <div class="hbce-actions">
+            <button class="hbce-btn hbce-btn--ghost" id="copyAppend" type="button" disabled>Copia blocco</button>
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <h3>registry.json aggiornato</h3>
+          <p class="hbce-note">
+            Generato in modo sicuro (niente virgole sbagliate). Se duplicato → non genera.
+          </p>
+          <pre class="hbce-pre"><code id="newRegistryPreview">—</code></pre>
+
+          <div class="hbce-actions">
+            <button class="hbce-btn" id="downloadRegistry" type="button" disabled>Download registry.json (UPDATED)</button>
+          </div>
+
+          <p class="hbce-note" id="finalHint">—</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Procedura operatore (zero errori)</h2>
+      <div class="hbce-card">
+        <ol class="hbce-list">
+          <li>Scarica il registry live: <code>/registry/registry.json</code></li>
+          <li>Caricalo qui.</li>
+          <li>Carica <code>REGISTRY_ENTRY_*.json</code> (dal cliente o dal tuo create).</li>
+          <li>Scarica <strong>registry.json UPDATED</strong>.</li>
+          <li>Sostituisci il file nel repo e fai commit. Fine.</li>
+        </ol>
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+
+  <script>
+    (function () {
+      const $ = (id) => document.getElementById(id);
+
+      function setText(id, v) { const el = $(id); if (el) el.textContent = v; }
+
+      function isNonEmptyString(x) { return typeof x === "string" && x.trim().length > 0; }
+      function isHex64(x) { return typeof x === "string" && /^[a-f0-9]{64}$/i.test(x.trim()); }
+      function isISODateString(x) {
+        if (!isNonEmptyString(x)) return false;
+        const d = new Date(x);
+        return !Number.isNaN(d.valueOf());
+      }
+
+      function readDisplay(entry) {
+        const n = entry && entry.name;
+        const k = entry && entry.nickname;
+        return (isNonEmptyString(n) ? n.trim() : isNonEmptyString(k) ? k.trim() : "—");
+      }
+
+      function downloadText(filename, text, mime) {
+        const blob = new Blob([text], { type: mime || "application/octet-stream" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      async function readJsonFile(file) {
+        const text = await file.text();
+        return JSON.parse(text);
+      }
+
+      function normalizeEntry(raw) {
+        // Manteniamo pubblico-min: name|nickname + payload_sha256 + timestamp + opzionali
+        const e = raw || {};
+        const out = {};
+
+        if (isNonEmptyString(e.name)) out.name = e.name.trim();
+        if (!out.name && isNonEmptyString(e.nickname)) out.nickname = e.nickname.trim();
+
+        out.payload_sha256 = isNonEmptyString(e.payload_sha256) ? e.payload_sha256.trim() : "";
+        out.timestamp = isNonEmptyString(e.timestamp) ? e.timestamp.trim() : "";
+
+        if (isNonEmptyString(e.entity_type)) out.entity_type = e.entity_type.trim();
+        if (isNonEmptyString(e.status)) out.status = e.status.trim();
+
+        return out;
+      }
+
+      function validateRegistry(reg) {
+        if (!reg || typeof reg !== "object") return "FAIL — registry not object";
+        if (!Array.isArray(reg.entries)) return "FAIL — missing entries[]";
+        return "OK";
+      }
+
+      function validateEntry(entry) {
+        if (!entry || typeof entry !== "object") return "FAIL — entry not object";
+        if (!(isNonEmptyString(entry.name) || isNonEmptyString(entry.nickname))) return "FAIL — missing name/nickname";
+        if (!isHex64(entry.payload_sha256)) return "FAIL — payload_sha256 invalid";
+        if (!isISODateString(entry.timestamp)) return "FAIL — timestamp invalid";
+        return "OK";
+      }
+
+      let registryJson = null;
+      let entryJson = null;
+      let newRegistryJson = null;
+
+      function resetOutput() {
+        $("downloadRegistry").disabled = true;
+        $("copyAppend").disabled = true;
+        setText("appendBlock", "—");
+        setText("newRegistryPreview", "—");
+        setText("finalHint", "—");
+      }
+
+      async function tryBuild() {
+        resetOutput();
+        if (!registryJson || !entryJson) return;
+
+        const regOk = validateRegistry(registryJson);
+        const entOk = validateEntry(entryJson);
+
+        if (regOk !== "OK") { setText("finalHint", "STOP: registry invalido."); return; }
+        if (entOk !== "OK") { setText("finalHint", "STOP: entry invalida."); return; }
+
+        const entries = registryJson.entries || [];
+        const hash = entryJson.payload_sha256;
+
+        const exists = entries.some(x => x && String(x.payload_sha256 || "").trim() === hash);
+        if (exists) {
+          setText("finalHint", "STOP: hash già presente nel registry (duplicato).");
+          return;
+        }
+
+        // Append-only: copia registry e aggiungi entry
+        newRegistryJson = JSON.parse(JSON.stringify(registryJson));
+        newRegistryJson.entries = Array.isArray(newRegistryJson.entries) ? newRegistryJson.entries : [];
+        newRegistryJson.entries.push(entryJson);
+
+        const appendBlock = JSON.stringify(entryJson, null, 2);
+        setText("appendBlock", appendBlock);
+        $("copyAppend").disabled = false;
+
+        const preview = JSON.stringify(newRegistryJson, null, 2);
+        setText("newRegistryPreview", preview.slice(0, 6000) + (preview.length > 6000 ? "\n…(troncato preview)\n" : ""));
+        $("downloadRegistry").disabled = false;
+
+        setText("finalHint", "OK: scarica registry UPDATED e sostituisci registry/registry.json nel repo (commit).");
+      }
+
+      $("registryFile").addEventListener("change", async (ev) => {
+        resetOutput();
+        const f = ev.target.files && ev.target.files[0];
+        if (!f) return;
+
+        try {
+          const j = await readJsonFile(f);
+          registryJson = j;
+
+          const ok = validateRegistry(registryJson);
+          setText("regStatus", ok);
+
+          if (ok === "OK") {
+            const entries = registryJson.entries;
+            setText("regCount", String(entries.length));
+            if (entries.length) {
+              const last = entries[entries.length - 1];
+              setText("regLastHash", (last && last.payload_sha256) ? String(last.payload_sha256).slice(0, 20) + "…" : "—");
+            } else {
+              setText("regLastHash", "—");
+            }
+          } else {
+            setText("regCount", "—");
+            setText("regLastHash", "—");
+          }
+
+        } catch (e) {
+          registryJson = null;
+          setText("regStatus", "FAIL — invalid JSON");
+          setText("regCount", "—");
+          setText("regLastHash", "—");
+        }
+
+        await tryBuild();
+      });
+
+      $("entryFile").addEventListener("change", async (ev) => {
+        resetOutput();
+        const f = ev.target.files && ev.target.files[0];
+        if (!f) return;
+
+        try {
+          const j = await readJsonFile(f);
+          entryJson = normalizeEntry(j);
+
+          const ok = validateEntry(entryJson);
+          setText("entryStatus", ok);
+
+          setText("entryDisplay", readDisplay(entryJson));
+          setText("entryHash", isNonEmptyString(entryJson.payload_sha256) ? entryJson.payload_sha256 : "—");
+          setText("entryTs", isNonEmptyString(entryJson.timestamp) ? entryJson.timestamp : "—");
+
+        } catch (e) {
+          entryJson = null;
+          setText("entryStatus", "FAIL — invalid JSON");
+          setText("entryDisplay", "—");
+          setText("entryHash", "—");
+          setText("entryTs", "—");
+        }
+
+        await tryBuild();
+      });
+
+      $("copyAppend").addEventListener("click", async () => {
+        const t = $("appendBlock").textContent || "";
+        if (!t || t === "—") return;
+        try {
+          await navigator.clipboard.writeText(t);
+          setText("finalHint", "Copia OK: blocco entry copiato negli appunti.");
+        } catch (_) {
+          setText("finalHint", "Copia NON riuscita (browser). Usa selezione manuale.");
+        }
+      });
+
+      $("downloadRegistry").addEventListener("click", () => {
+        if (!newRegistryJson) return;
+        const text = JSON.stringify(newRegistryJson, null, 2);
+        downloadText("registry.json", text, "application/json;charset=utf-8");
+      });
+
+      // init
+      resetOutput();
+      setText("regStatus", "—");
+      setText("entryStatus", "—");
+    })();
+  </script>
+</body>
+</html>
