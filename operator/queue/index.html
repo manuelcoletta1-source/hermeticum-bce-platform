@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>OPERATOR — Receipt + Queue</title>
-  <meta name="description" content="Genera ricevuta operatore + append in coda append-only (queue). Livello militare: audit minimale, fail-closed." />
+  <title>OPERATOR QUEUE — Ticket · Receipt · Audit</title>
+  <meta name="description" content="Queue operatore HBCE: gestione richieste, ticket, receipt e stato. Local-only, audit-first, fail-closed." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
@@ -14,124 +14,146 @@
   <main class="hbce-container hbce-main">
 
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">OPERATOR · RECEIPT · QUEUE · APPEND-ONLY</div>
-      <h1 class="hbce-hero__title">Receipt + Queue (livello militare)</h1>
+      <div class="hbce-hero__kicker">OPERATOR QUEUE · TICKET · RECEIPT · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Coda operativa</h1>
       <p class="hbce-hero__lead">
-        Genera artefatti operatore: <strong>REGISTRY_ENTRY</strong> + <strong>HBCE_RECEIPT</strong> + <strong>QUEUE_ITEM</strong>.
-        Poi aggiorna <strong>queue.json</strong> in modo sicuro (append-only).
+        Ogni richiesta cliente diventa un <strong>TICKET</strong> (ID + stato) e produce una <strong>RECEIPT</strong>
+        operativa scaricabile. Nessun dato pubblico: pubblico resta <strong>hash-only</strong>.
       </p>
       <p class="hbce-note">
-        Minimizzazione: la coda traccia solo <strong>hash + timestamp + operator tag</strong>. Nessuna custodia pubblica di dati personali.
+        Storage: <strong>solo browser</strong> (local). Se cancelli cache → perdi la coda. Audit-first: scarica sempre ticket+receipt.
       </p>
     </section>
 
-    <!-- INPUT -->
+    <!-- CONTROL BAR -->
     <section class="hbce-section">
-      <h2>Input</h2>
+      <h2>Comandi</h2>
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operator/">Operator Console</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/wizard/">Create Wizard</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/append/">Registry Append</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
+      </div>
+    </section>
+
+    <!-- NEW TICKET -->
+    <section class="hbce-section">
+      <h2>Nuovo ticket (richiesta cliente)</h2>
 
       <div class="hbce-grid">
         <div class="hbce-card">
-          <h3>1) IPR_RELEASE (cliente)</h3>
-          <input type="file" id="releaseFile" accept=".json,application/json" />
+          <h3>Dati minimi (militare)</h3>
+
+          <label><strong>Nome e Cognome (display)</strong></label><br />
+          <input id="t_name" style="width:100%;padding:10px;" placeholder="Es. Mario Rossi" />
+
+          <div style="height:10px;"></div>
+
+          <label><strong>Tipo richiesta</strong></label><br />
+          <select id="t_type" style="width:100%;padding:10px;">
+            <option value="IPR_BASE">IPR_BASE</option>
+            <option value="OPERATOR_ONBOARDING">OPERATOR_ONBOARDING</option>
+            <option value="MODULE_LICENSE">MODULE_LICENSE</option>
+            <option value="ENTERPRISE_B2B">ENTERPRISE_B2B</option>
+            <option value="INSTITUTION_B2G">INSTITUTION_B2G</option>
+          </select>
+
+          <div style="height:10px;"></div>
+
+          <label><strong>Canale contatto (privato)</strong></label><br />
+          <input id="t_contact" style="width:100%;padding:10px;" placeholder="Email/PEC/Telefono (facoltativo)" />
+
+          <div style="height:10px;"></div>
+
+          <label><strong>Nota operativa (privata)</strong></label><br />
+          <textarea id="t_note" style="width:100%;padding:10px;min-height:90px;" placeholder="Es. richiesta IPR Base 49€; consegna oggi; priorità normale"></textarea>
+
+          <div class="hbce-actions" style="margin-top:12px;">
+            <button class="hbce-btn" id="btnCreateTicket" type="button">CREA TICKET</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btnDlTicket" type="button" disabled>Download TICKET (JSON)</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btnDlReceipt" type="button" disabled>Download RECEIPT (JSON)</button>
+          </div>
 
           <ul class="hbce-list">
-            <li><strong>Name:</strong> <span id="subName">—</span></li>
-            <li><strong>Timestamp:</strong> <span id="subTs">—</span></li>
-            <li><strong>payload_sha256 (computed):</strong> <span id="subHash">—</span></li>
-            <li><strong>Integrity:</strong> <span id="subIntegrity">—</span></li>
+            <li><strong>Status:</strong> <span id="t_status">—</span></li>
+            <li><strong>Ticket ID:</strong> <span id="t_id">—</span></li>
+            <li><strong>Timestamp:</strong> <span id="t_ts">—</span></li>
+            <li><strong>Receipt SHA-256:</strong> <span id="t_receipt_hash">—</span></li>
           </ul>
 
-          <div class="hbce-card" style="padding:12px;">
-            <h4 style="margin:0 0 8px 0;">Operator metadata (minimo)</h4>
-
-            <label><strong>Operator display name</strong></label><br/>
-            <input id="opName" style="width:100%;padding:10px;" placeholder="Es. Manuel Coletta" value="Manuel Coletta" />
-
-            <div style="height:10px;"></div>
-
-            <label><strong>Operator role</strong></label><br/>
-            <select id="opRole" style="width:100%;padding:10px;">
-              <option value="OPERATOR">OPERATOR</option>
-              <option value="NODE">NODE</option>
-              <option value="COORDINATOR">COORDINATOR</option>
-            </select>
-
-            <div style="height:10px;"></div>
-
-            <label><strong>Territory tag</strong> (facoltativo)</label><br/>
-            <input id="opTerritory" style="width:100%;padding:10px;" placeholder="Es. IT-PIEMONTE-TORINO" value="IT-PIEMONTE-TORINO" />
-
-            <div style="height:10px;"></div>
-
-            <label><strong>Case / Note</strong> (facoltativo)</label><br/>
-            <textarea id="opCase" style="width:100%;padding:10px;min-height:80px;" placeholder="Es. Rilascio IPR Base Europeo"></textarea>
-          </div>
-
-          <div class="hbce-actions">
-            <button class="hbce-btn" id="btnBuild" type="button" disabled>Genera artefatti operatore</button>
-          </div>
-
           <p class="hbce-note">
-            La ricevuta è un artefatto “ufficiale” per il cliente: prova del rilascio e della presa in carico operatore.
+            La receipt è una prova operativa: minimizzata, hash-only, ripetibile. Non è un pagamento.
           </p>
         </div>
 
         <div class="hbce-card">
-          <h3>2) queue.json (append-only)</h3>
-          <input type="file" id="queueFile" accept=".json,application/json" />
-          <p class="hbce-note">Carica <code>operator/queue/queue.json</code> (versione live) per aggiornamento sicuro.</p>
+          <h3>Preview TICKET</h3>
+          <pre class="hbce-pre"><code id="ticketPreview">—</code></pre>
+        </div>
 
+        <div class="hbce-card">
+          <h3>Preview RECEIPT</h3>
+          <pre class="hbce-pre"><code id="receiptPreview">—</code></pre>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Regole</h3>
           <ul class="hbce-list">
-            <li><strong>Queue status:</strong> <span id="queueStatus">—</span></li>
-            <li><strong>Items:</strong> <span id="queueCount">—</span></li>
-            <li><strong>Duplicate hash:</strong> <span id="queueDup">—</span></li>
+            <li><strong>Fail-closed:</strong> niente ticket senza name</li>
+            <li><strong>Local-only:</strong> la coda è tua, non pubblica</li>
+            <li><strong>Audit:</strong> scarica ticket+receipt e conserva</li>
+            <li><strong>Pubblico:</strong> solo registry hash-only (altro mai)</li>
           </ul>
-
-          <div class="hbce-actions">
-            <button class="hbce-btn" id="btnDownloadQueue" type="button" disabled>Download queue.json UPDATED</button>
-          </div>
-
-          <pre class="hbce-pre"><code id="queuePreview">—</code></pre>
         </div>
       </div>
     </section>
 
-    <!-- OUTPUT -->
+    <!-- QUEUE LIST -->
     <section class="hbce-section">
-      <h2>Output</h2>
+      <h2>Queue (locale)</h2>
 
       <div class="hbce-grid">
         <div class="hbce-card">
-          <h3>REGISTRY_ENTRY (pubblico)</h3>
-          <div class="hbce-actions">
-            <button class="hbce-btn hbce-btn--ghost" id="dlEntry" type="button" disabled>Download REGISTRY_ENTRY</button>
-          </div>
-          <pre class="hbce-pre"><code id="entryOut">—</code></pre>
-        </div>
-
-        <div class="hbce-card">
-          <h3>HBCE_RECEIPT (cliente)</h3>
-          <div class="hbce-actions">
-            <button class="hbce-btn" id="dlReceipt" type="button" disabled>Download HBCE_RECEIPT</button>
-          </div>
-          <pre class="hbce-pre"><code id="receiptOut">—</code></pre>
-        </div>
-
-        <div class="hbce-card">
-          <h3>QUEUE_ITEM (append-only)</h3>
-          <div class="hbce-actions">
-            <button class="hbce-btn hbce-btn--ghost" id="dlQueueItem" type="button" disabled>Download QUEUE_ITEM</button>
-          </div>
-          <pre class="hbce-pre"><code id="queueItemOut">—</code></pre>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Nota operativa</h3>
+          <h3>Lista ticket</h3>
           <p class="hbce-note">
-            1) Pubblica il REGISTRY_ENTRY nel registry. <br/>
-            2) Appendi il QUEUE_ITEM in queue.json (o usa Download queue UPDATED). <br/>
-            3) Il cliente verifica su /verify/ e scarica il CERTIFICATO finale.
+            Stati: <strong>NEW</strong> → <strong>IN_PROGRESS</strong> → <strong>DONE</strong> / <strong>BLOCKED</strong>.
           </p>
+
+          <div class="hbce-actions">
+            <button class="hbce-btn hbce-btn--ghost" id="btnExportQueue" type="button">Export QUEUE (JSON)</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btnClearQueue" type="button">CLEAR QUEUE (local)</button>
+          </div>
+
+          <div style="overflow:auto;">
+            <table class="hbce-table" style="width:100%;margin-top:10px;">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Ops</th>
+                </tr>
+              </thead>
+              <tbody id="queueBody">
+                <tr><td colspan="6">—</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="hbce-note">
+            Export serve per backup o per passaggio di mano (append-only mentale 😈).
+          </p>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Dettaglio ticket selezionato</h3>
+          <pre class="hbce-pre"><code id="detail">—</code></pre>
+          <div class="hbce-actions">
+            <button class="hbce-btn hbce-btn--ghost" id="btnDlSelectedTicket" type="button" disabled>Download selected TICKET</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btnDlSelectedReceipt" type="button" disabled>Download selected RECEIPT</button>
+          </div>
         </div>
       </div>
     </section>
@@ -141,17 +163,12 @@
   <div data-hbce="footer"></div>
 
 <script>
-(function () {
+(function(){
+  const STORAGE_KEY = "HBCE_OPERATOR_QUEUE_V1";
   const $ = (id) => document.getElementById(id);
 
   function setText(id, v){ const el = $(id); if(el) el.textContent = v; }
   function isNonEmptyString(x){ return typeof x === "string" && x.trim().length > 0; }
-  function isHex64(x){ return typeof x === "string" && /^[a-f0-9]{64}$/i.test(x.trim()); }
-  function isISODateString(x){
-    if(!isNonEmptyString(x)) return false;
-    const d = new Date(x);
-    return !Number.isNaN(d.valueOf());
-  }
 
   function safeNameForFile(name){
     return String(name||"IPR").trim().replace(/\s+/g,"_").replace(/[^a-zA-Z0-9_\-]/g,"");
@@ -177,270 +194,266 @@
     return hashArr.map(b => b.toString(16).padStart(2,"0")).join("");
   }
 
-  function readPublicName(obj){
-    const a = obj && obj.name;
-    const b = obj && obj.nickname;
-    return (isNonEmptyString(a) ? a.trim() : isNonEmptyString(b) ? b.trim() : "—");
-  }
-
-  async function readJsonFile(file){
-    const text = await file.text();
-    return JSON.parse(text);
-  }
-
-  function validateQueue(q){
-    if(!q || typeof q !== "object") return "FAIL — queue not object";
-    if(!Array.isArray(q.items)) return "FAIL — missing items[]";
-    return "OK";
-  }
-
-  // STATE
-  let release = null;
-  let computedHash = null;
-  let subjectName = null;
-  let subjectTs = null;
-
-  let entry = null;
-  let receipt = null;
-  let queueItem = null;
-
-  let queue = null;
-  let newQueue = null;
-
-  function resetAllOutputs(){
-    $("btnBuild").disabled = true;
-
-    $("dlEntry").disabled = true;
-    $("dlReceipt").disabled = true;
-    $("dlQueueItem").disabled = true;
-
-    setText("entryOut","—");
-    setText("receiptOut","—");
-    setText("queueItemOut","—");
-
-    $("btnDownloadQueue").disabled = true;
-    setText("queuePreview","—");
-    setText("queueDup","—");
-    newQueue = null;
-  }
-
-  $("releaseFile").addEventListener("change", async (ev) => {
-    resetAllOutputs();
-
-    const f = ev.target.files && ev.target.files[0];
-    if(!f) return;
-
+  function loadQueue(){
     try{
-      release = await readJsonFile(f);
-    } catch(e){
-      setText("subIntegrity","FAIL — invalid JSON");
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return [];
+      const obj = JSON.parse(raw);
+      return Array.isArray(obj) ? obj : [];
+    } catch(_) { return []; }
+  }
+
+  function saveQueue(q){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(q));
+  }
+
+  function genId(ts){
+    // deterministic-ish local id: HBCE-REQ-YYYYMMDD-HHMMSS-XXXX
+    const d = new Date(ts);
+    const pad = (n) => String(n).padStart(2,"0");
+    const y = d.getUTCFullYear();
+    const m = pad(d.getUTCMonth()+1);
+    const da = pad(d.getUTCDate());
+    const hh = pad(d.getUTCHours());
+    const mm = pad(d.getUTCMinutes());
+    const ss = pad(d.getUTCSeconds());
+    const rnd = Math.random().toString(16).slice(2,6).toUpperCase();
+    return `HBCE-REQ-${y}${m}${da}-${hh}${mm}${ss}-${rnd}`;
+  }
+
+  function renderQueue(){
+    const q = loadQueue();
+    const body = $("queueBody");
+    body.innerHTML = "";
+
+    if(q.length === 0){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="6">—</td>`;
+      body.appendChild(tr);
       return;
     }
 
-    const payload = release && release.payload;
-    if(!payload){
-      setText("subIntegrity","FAIL — missing payload");
+    // newest first
+    const items = [...q].sort((a,b) => String(b.created_at).localeCompare(String(a.created_at)));
+    for(const item of items){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${item.created_at || "—"}</td>
+        <td><code>${item.ticket_id || "—"}</code></td>
+        <td>${item.name || "—"}</td>
+        <td>${item.request_type || "—"}</td>
+        <td><strong>${item.status || "—"}</strong></td>
+        <td style="white-space:nowrap;">
+          <button class="hbce-btn hbce-btn--ghost" data-op="select" data-id="${item.ticket_id}">View</button>
+          <button class="hbce-btn hbce-btn--ghost" data-op="status" data-to="IN_PROGRESS" data-id="${item.ticket_id}">InProgress</button>
+          <button class="hbce-btn hbce-btn--ghost" data-op="status" data-to="DONE" data-id="${item.ticket_id}">Done</button>
+          <button class="hbce-btn hbce-btn--ghost" data-op="status" data-to="BLOCKED" data-id="${item.ticket_id}">Blocked</button>
+        </td>
+      `;
+      body.appendChild(tr);
+    }
+  }
+
+  function updateStatus(ticket_id, to){
+    const q = loadQueue();
+    const idx = q.findIndex(x => x && x.ticket_id === ticket_id);
+    if(idx < 0) return;
+    q[idx].status = to;
+    q[idx].updated_at = new Date().toISOString();
+    saveQueue(q);
+    renderQueue();
+  }
+
+  let selected = null;
+
+  function selectTicket(ticket_id){
+    const q = loadQueue();
+    selected = q.find(x => x && x.ticket_id === ticket_id) || null;
+    setText("detail", selected ? JSON.stringify(selected, null, 2) : "—");
+    $("btnDlSelectedTicket").disabled = !selected;
+    $("btnDlSelectedReceipt").disabled = !selected;
+
+    if(selected){
+      $("btnDlSelectedTicket").onclick = () => {
+        downloadText(`HBCE_TICKET_${safeNameForFile(selected.name)}_${selected.ticket_id}.json`,
+          JSON.stringify(selected.ticket, null, 2),
+          "application/json;charset=utf-8"
+        );
+      };
+      $("btnDlSelectedReceipt").onclick = () => {
+        downloadText(`HBCE_RECEIPT_${safeNameForFile(selected.name)}_${selected.ticket_id}.json`,
+          JSON.stringify(selected.receipt, null, 2),
+          "application/json;charset=utf-8"
+        );
+      };
+    }
+  }
+
+  $("queueBody").addEventListener("click", (ev) => {
+    const btn = ev.target.closest("button");
+    if(!btn) return;
+    const op = btn.getAttribute("data-op");
+    const id = btn.getAttribute("data-id");
+    if(!id) return;
+
+    if(op === "select"){
+      selectTicket(id);
       return;
     }
-
-    subjectName = readPublicName(release);
-    subjectTs = (release.timestamp || release.issued_at || new Date().toISOString());
-    computedHash = await sha256HexFromText(JSON.stringify(payload));
-
-    const declared = isNonEmptyString(release.payload_sha256) ? String(release.payload_sha256).trim() : null;
-    const integrityOk = isHex64(computedHash) && (!declared || declared === computedHash);
-
-    setText("subName", subjectName);
-    setText("subTs", subjectTs);
-    setText("subHash", computedHash);
-    setText("subIntegrity", integrityOk ? "OK" : "FAIL (declared mismatch)");
-
-    $("btnBuild").disabled = false;
+    if(op === "status"){
+      const to = btn.getAttribute("data-to");
+      updateStatus(id, to);
+      selectTicket(id);
+      return;
+    }
   });
 
-  $("btnBuild").addEventListener("click", async () => {
-    // build entry + receipt + queue item
-    const opName = ($("opName").value || "").trim();
-    const opRole = ($("opRole").value || "OPERATOR").trim();
-    const opTerritory = ($("opTerritory").value || "").trim();
-    const opCase = ($("opCase").value || "").trim();
+  // Create Ticket + Receipt
+  let lastTicket = null;
+  let lastReceipt = null;
 
-    if(!isNonEmptyString(opName)){
-      alert("Inserisci Operator display name.");
+  $("btnCreateTicket").addEventListener("click", async () => {
+    lastTicket = null;
+    lastReceipt = null;
+
+    $("btnDlTicket").disabled = true;
+    $("btnDlReceipt").disabled = true;
+
+    setText("ticketPreview","—");
+    setText("receiptPreview","—");
+    setText("t_status","—");
+    setText("t_id","—");
+    setText("t_ts","—");
+    setText("t_receipt_hash","—");
+
+    const name = ($("t_name").value || "").trim();
+    const request_type = ($("t_type").value || "IPR_BASE").trim();
+    const contact = ($("t_contact").value || "").trim();
+    const note = ($("t_note").value || "").trim();
+
+    if(!isNonEmptyString(name)){
+      setText("t_status","FAIL-CLOSED — name required");
       return;
     }
-    if(!isHex64(computedHash)){
-      alert("Hash non valido. Ricontrolla il release.");
-      return;
-    }
-    if(!isISODateString(subjectTs)){
-      alert("Timestamp non valido.");
-      return;
-    }
 
-    // 1) REGISTRY_ENTRY
-    entry = {
-      name: subjectName,
-      payload_sha256: computedHash,
-      timestamp: subjectTs,
-      status: "ACTIVE"
-    };
+    const ts = new Date().toISOString();
+    const ticket_id = genId(ts);
 
-    // 2) RECEIPT (cliente)
-    receipt = {
-      proto: "HBCE-RECEIPT-v1",
-      kind: "IPR_OPERATOR_RECEIPT",
+    // TICKET (private operational request)
+    lastTicket = {
+      proto: "HBCE-TICKET-v1",
+      kind: "IPR_REQUEST_TICKET",
       policy: [
         "UE_FIRST",
         "AUDIT_FIRST",
         "FAIL_CLOSED",
-        "HASH_ONLY",
-        "APPEND_ONLY",
         "GDPR_MIN",
         "NO_PUBLIC_DATA_CUSTODY"
       ],
-      issued_at: new Date().toISOString(),
-      operator: {
-        name: opName,
-        role: opRole,
-        territory: opTerritory || null,
-        case: opCase || null
-      },
-      subject: {
-        name: subjectName,
-        payload_sha256: computedHash,
-        timestamp: subjectTs
-      },
-      registry: {
-        action: "APPEND_REQUIRED",
-        target_file: "/registry/registry.json"
-      },
-      signature: {
-        algo: null,
-        value: null,
-        note: "Optional: sign this receipt offline (ED25519) and store signature fields."
+      ticket_id,
+      created_at: ts,
+      request: {
+        name,
+        request_type,
+        contact: contact || null,
+        note: note || null
       }
     };
 
-    // aggiungiamo hash del receipt stesso per chiusura artefatto
-    const receiptJson0 = JSON.stringify(receipt, null, 2);
-    const receiptSha = await sha256HexFromText(receiptJson0);
-    receipt.receipt_sha256 = receiptSha;
-
-    // 3) QUEUE_ITEM (append-only)
-    queueItem = {
-      proto: "HBCE-QUEUE-ITEM-v1",
-      kind: "OPERATOR_QUEUE_ITEM",
-      policy: ["APPEND_ONLY","FAIL_CLOSED","HASH_ONLY","GDPR_MIN","NO_PUBLIC_DATA_CUSTODY"],
-      timestamp: new Date().toISOString(),
-      operator_tag: {
-        name: opName,
-        role: opRole,
-        territory: opTerritory || null
-      },
-      subject: {
-        payload_sha256: computedHash,
-        name: subjectName
-      },
-      stage: "READY_TO_APPEND",
-      note: opCase || null
+    // RECEIPT (minimized operational evidence)
+    // receipt_hash is computed over receipt.payload (deterministic)
+    const receipt_payload = {
+      ticket_id,
+      name,
+      request_type,
+      created_at: ts,
+      // minimization: contact/note are private -> not inside payload by default
+      // (if you want them, move them in, but this is more GDPR-min)
+      policy: [
+        "HASH_ONLY",
+        "FAIL_CLOSED",
+        "AUDIT_FIRST",
+        "UE_FIRST",
+        "GDPR_MIN"
+      ]
     };
 
+    const receipt_hash = await sha256HexFromText(JSON.stringify(receipt_payload));
+
+    lastReceipt = {
+      proto: "HBCE-RECEIPT-v1",
+      kind: "OPERATOR_REQUEST_RECEIPT",
+      policy: [
+        "HASH_ONLY",
+        "FAIL_CLOSED",
+        "UE_FIRST",
+        "AUDIT_FIRST",
+        "GDPR_MIN",
+        "NO_PUBLIC_DATA_CUSTODY"
+      ],
+      ticket_id,
+      issued_at: ts,
+      payload_sha256: receipt_hash,
+      payload: receipt_payload,
+      operator_note: "Receipt proves operator intake. Not a payment proof. Public layer remains registry hash-only."
+    };
+
+    // Store in queue
+    const q = loadQueue();
+    q.push({
+      ticket_id,
+      name,
+      request_type,
+      status: "NEW",
+      created_at: ts,
+      updated_at: ts,
+      ticket: lastTicket,
+      receipt: lastReceipt
+    });
+    saveQueue(q);
+    renderQueue();
+
     // UI
-    setText("entryOut", JSON.stringify(entry, null, 2));
-    setText("receiptOut", JSON.stringify(receipt, null, 2));
-    setText("queueItemOut", JSON.stringify(queueItem, null, 2));
+    setText("t_status","OK — ticket created (queue updated)");
+    setText("t_id", ticket_id);
+    setText("t_ts", ts);
+    setText("t_receipt_hash", receipt_hash);
 
-    $("dlEntry").disabled = false;
-    $("dlReceipt").disabled = false;
-    $("dlQueueItem").disabled = false;
+    const ticketJson = JSON.stringify(lastTicket, null, 2);
+    const receiptJson = JSON.stringify(lastReceipt, null, 2);
+    setText("ticketPreview", ticketJson);
+    setText("receiptPreview", receiptJson);
 
-    // Se queue già caricata, prova a generare queue UPDATED
-    await rebuildQueueIfPossible();
+    $("btnDlTicket").disabled = false;
+    $("btnDlReceipt").disabled = false;
+
+    $("btnDlTicket").onclick = () => {
+      downloadText(`HBCE_TICKET_${safeNameForFile(name)}_${ticket_id}.json`, ticketJson, "application/json;charset=utf-8");
+    };
+
+    $("btnDlReceipt").onclick = () => {
+      downloadText(`HBCE_RECEIPT_${safeNameForFile(name)}_${ticket_id}.json`, receiptJson, "application/json;charset=utf-8");
+    };
   });
 
-  $("dlEntry").addEventListener("click", () => {
-    if(!entry) return;
-    const fn = "REGISTRY_ENTRY_" + safeNameForFile(entry.name) + ".json";
-    downloadText(fn, JSON.stringify(entry, null, 2), "application/json;charset=utf-8");
+  $("btnExportQueue").addEventListener("click", () => {
+    const q = loadQueue();
+    const ts = new Date().toISOString().replace(/[:.]/g,"-");
+    downloadText(`HBCE_QUEUE_EXPORT_${ts}.json`, JSON.stringify(q, null, 2), "application/json;charset=utf-8");
   });
 
-  $("dlReceipt").addEventListener("click", () => {
-    if(!receipt) return;
-    const fn = "HBCE_RECEIPT_" + safeNameForFile(subjectName) + "_" + computedHash.slice(0,12) + ".json";
-    downloadText(fn, JSON.stringify(receipt, null, 2), "application/json;charset=utf-8");
-  });
-
-  $("dlQueueItem").addEventListener("click", () => {
-    if(!queueItem) return;
-    const fn = "QUEUE_ITEM_" + computedHash.slice(0,12) + ".json";
-    downloadText(fn, JSON.stringify(queueItem, null, 2), "application/json;charset=utf-8");
-  });
-
-  $("queueFile").addEventListener("change", async (ev) => {
-    // carico queue e tento rebuild
-    const f = ev.target.files && ev.target.files[0];
-    if(!f) return;
-
-    try{
-      queue = await readJsonFile(f);
-    } catch(e){
-      queue = null;
-      setText("queueStatus","FAIL — invalid JSON");
-      setText("queueCount","—");
-      setText("queueDup","—");
-      $("btnDownloadQueue").disabled = true;
-      setText("queuePreview","—");
-      return;
-    }
-
-    const ok = validateQueue(queue);
-    setText("queueStatus", ok);
-    if(ok === "OK") setText("queueCount", String(queue.items.length));
-
-    await rebuildQueueIfPossible();
-  });
-
-  async function rebuildQueueIfPossible(){
-    $("btnDownloadQueue").disabled = true;
-    setText("queuePreview","—");
-    setText("queueDup","—");
-    newQueue = null;
-
-    if(!queue || !queueItem) return;
-    if(validateQueue(queue) !== "OK") return;
-
-    const items = queue.items || [];
-    const hash = computedHash;
-
-    const dup = items.some(it => it && it.subject && String(it.subject.payload_sha256||"").trim() === hash);
-    setText("queueDup", dup ? "YES" : "NO");
-
-    if(dup){
-      setText("queueStatus","OK — duplicate blocked (append-only)");
-      return;
-    }
-
-    newQueue = JSON.parse(JSON.stringify(queue));
-    newQueue.items = Array.isArray(newQueue.items) ? newQueue.items : [];
-    newQueue.items.push(queueItem);
-
-    const preview = JSON.stringify(newQueue, null, 2);
-    setText("queuePreview", preview.slice(0, 6000) + (preview.length > 6000 ? "\n…(troncato preview)\n" : ""));
-    $("btnDownloadQueue").disabled = false;
-
-    setText("queueStatus","OK — ready to download UPDATED");
-  }
-
-  $("btnDownloadQueue").addEventListener("click", () => {
-    if(!newQueue) return;
-    downloadText("queue.json", JSON.stringify(newQueue, null, 2), "application/json;charset=utf-8");
+  $("btnClearQueue").addEventListener("click", () => {
+    // fail-closed mental model: explicit clear
+    localStorage.removeItem(STORAGE_KEY);
+    selected = null;
+    setText("detail","—");
+    $("btnDlSelectedTicket").disabled = true;
+    $("btnDlSelectedReceipt").disabled = true;
+    renderQueue();
   });
 
   // init
-  resetAllOutputs();
-  setText("subIntegrity","—");
-  setText("queueStatus","—");
+  renderQueue();
 })();
 </script>
 
