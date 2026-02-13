@@ -1,148 +1,231 @@
 <!doctype html>
 <html lang="it">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-
-<title>VERIFY — IPR Public Verification</title>
-<meta name="description" content="Verifica pubblica IPR. Se hash presente nel registry -> VALID." />
-
-<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VERIFY — Verifica Pubblica IPR</title>
+  <meta name="description" content="Verifica pubblica IPR: integrità file + match nel registry. Se VALID rilascia certificato finale cliente." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
-
 <body>
-<div data-hbce="header"></div>
+  <div data-hbce="header"></div>
 
-<main class="hbce-container hbce-main">
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">VERIFY · PUBLIC · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Verifica IPR</h1>
+      <p class="hbce-hero__lead">
+        Carica un file <strong>IPR_RELEASE</strong>. Il browser calcola lo SHA-256 del <code>payload</code> e verifica presenza nel registry.
+        Se <strong>VALID</strong> → viene rilasciato il <strong>CERTIFICATO</strong> finale cliente.
+      </p>
+    </section>
 
-<section class="hbce-hero">
-<div class="hbce-hero__kicker">VERIFY · PUBLIC</div>
-<h1 class="hbce-hero__title">Verifica IPR</h1>
-<p class="hbce-hero__lead">
-Carica file IPR_RELEASE.  
-Se hash presente nel registry → VALID.
-</p>
-</section>
+    <section class="hbce-section">
+      <h2>Carica IPR_RELEASE</h2>
+      <div class="hbce-card">
+        <input type="file" id="fileInput" />
+        <p class="hbce-note">
+          Registry: <code id="regUrl">/hermeticum-bce-platform/registry/registry.json</code>
+        </p>
+      </div>
+    </section>
 
-<section class="hbce-section">
-<h2>Carica file</h2>
+    <section class="hbce-section">
+      <h2>Esito</h2>
+      <div class="hbce-card">
+        <pre class="hbce-pre"><code id="out">—</code></pre>
+      </div>
+    </section>
 
-<input type="file" id="fileInput" class="hbce-btn"/>
-<pre class="hbce-pre" id="output">—</pre>
-</section>
+    <section class="hbce-section" id="certSection" style="display:none;">
+      <h2>Certificato (artefatto finale cliente)</h2>
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>HBCE-CERT-v1</h3>
+          <p class="hbce-note">
+            Questo file è l’attestato finale: prova minimizzata + esito VALID + riferimento registry/verify.
+            Non contiene dati privati.
+          </p>
+          <div class="hbce-actions">
+            <button class="hbce-btn" id="btnCertJson" type="button">Download CERTIFICATO (JSON)</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btnCertTxt" type="button">Download CERTIFICATO (TXT)</button>
+          </div>
+        </div>
+        <div class="hbce-card">
+          <h3>Preview</h3>
+          <pre class="hbce-pre"><code id="certPreview">—</code></pre>
+        </div>
+      </div>
+    </section>
 
-<section class="hbce-section" id="certBox" style="display:none;">
-<h2>Certificato IPR (rilascio cliente)</h2>
+  </main>
 
-<div class="hbce-actions">
-<button class="hbce-btn" id="downloadJson">Download CERTIFICATO JSON</button>
-<button class="hbce-btn hbce-btn--ghost" id="downloadTxt">Download CERTIFICATO TXT</button>
-</div>
+  <div data-hbce="footer"></div>
 
-<pre class="hbce-pre" id="certPreview"></pre>
-</section>
+  <script>
+    (function(){
+      const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
+      const VERIFY_URL = "/hermeticum-bce-platform/verify/";
+      const $ = (id) => document.getElementById(id);
 
-</main>
-<div data-hbce="footer"></div>
+      $("regUrl").textContent = REGISTRY_URL;
 
-<script>
-const REGISTRY_URL="/hermeticum-bce-platform/registry/registry.json";
-const VERIFY_URL="/hermeticum-bce-platform/verify/";
+      function isHex64(x){ return typeof x === "string" && /^[a-f0-9]{64}$/i.test(x.trim()); }
+      function safeNameForFile(name){
+        return String(name||"IPR").trim().replace(/\s+/g,"_").replace(/[^a-zA-Z0-9_\-]/g,"");
+      }
 
-function hex(buffer){
-return [...new Uint8Array(buffer)].map(b=>b.toString(16).padStart(2,"0")).join("");
-}
+      function downloadText(filename, text, mime){
+        const blob = new Blob([text], { type: mime || "application/octet-stream" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
 
-async function sha256(text){
-const buf=new TextEncoder().encode(text);
-const hash=await crypto.subtle.digest("SHA-256",buf);
-return hex(hash);
-}
+      async function sha256HexFromText(text){
+        const enc = new TextEncoder();
+        const buf = enc.encode(text);
+        const hashBuf = await crypto.subtle.digest("SHA-256", buf);
+        const hashArr = Array.from(new Uint8Array(hashBuf));
+        return hashArr.map(b => b.toString(16).padStart(2,"0")).join("");
+      }
 
-function download(name,data,type){
-const blob=new Blob([data],{type:type});
-const url=URL.createObjectURL(blob);
-const a=document.createElement("a");
-a.href=url;
-a.download=name;
-a.click();
-URL.revokeObjectURL(url);
-}
+      function readPublicName(obj){
+        const a = obj && obj.name;
+        const b = obj && obj.nickname;
+        return (typeof a === "string" && a.trim().length) ? a.trim()
+             : (typeof b === "string" && b.trim().length) ? b.trim()
+             : "—";
+      }
 
-document.getElementById("fileInput").addEventListener("change",async e=>{
-const file=e.target.files[0];
-if(!file)return;
+      function setOut(lines){ $("out").textContent = lines.join("\n"); }
 
-const text=await file.text();
-const json=JSON.parse(text);
-const payload=json.payload;
+      function showCert(certJson, certTxt, baseName){
+        $("certSection").style.display = "";
+        $("certPreview").textContent = certJson;
 
-const computed=await sha256(JSON.stringify(payload));
-const name=json.name;
-const ts=json.timestamp;
+        const jsonName = "IPR_CERTIFICATE_" + baseName + ".json";
+        const txtName  = "IPR_CERTIFICATE_" + baseName + ".txt";
 
-let registry=await fetch(REGISTRY_URL).then(r=>r.json());
+        $("btnCertJson").onclick = () => downloadText(jsonName, certJson, "application/json;charset=utf-8");
+        $("btnCertTxt").onclick  = () => downloadText(txtName, certTxt, "text/plain;charset=utf-8");
+      }
 
-let found=false;
-if(registry.entries){
-for(let e of registry.entries){
-if(e.payload_sha256===computed) found=true;
-}
-}
+      function hideCert(){
+        $("certSection").style.display = "none";
+        $("certPreview").textContent = "—";
+      }
 
-let result=found?"VALID":"INVALID";
+      function makeCertTxt(cert){
+        return [
+          "HERMETICUM — IPR CERTIFICATE (HBCE-CERT-v1)",
+          "------------------------------------------------",
+          "RESULT: " + cert.result,
+          "Status: " + cert.status,
+          "Name: " + cert.subject.name,
+          "Timestamp: " + cert.subject.timestamp,
+          "payload_sha256: " + cert.subject.payload_sha256,
+          "Registry match: " + (cert.registry.match ? "YES" : "NO"),
+          "Registry URL: " + cert.registry.url,
+          "Verify URL: " + cert.verify.url,
+          "Issued at: " + cert.issued_at,
+          "Certificate SHA-256: " + (cert.certificate_sha256 || "—")
+        ].join("\n");
+      }
 
-document.getElementById("output").textContent=
-"RESULT: "+result+"\n"+
-"Name: "+name+"\n"+
-"Timestamp: "+ts+"\n"+
-"payload_sha256: "+computed+"\n"+
-"Registry match: "+(found?"YES":"NO");
+      $("fileInput").addEventListener("change", async (ev) => {
+        hideCert();
 
-if(result==="VALID"){
-generateCert(name,ts,computed);
-}
-});
+        const file = ev.target.files && ev.target.files[0];
+        if (!file) return;
 
-async function generateCert(name,ts,hash){
+        let release;
+        try {
+          release = JSON.parse(await file.text());
+        } catch (e) {
+          setOut(["RESULT", "INVALID", "- Status: FAIL — invalid JSON"]);
+          return;
+        }
 
-const cert={
-proto:"HBCE-CERT-v1",
-kind:"IPR_VALID_CERTIFICATE",
-result:"VALID",
-issued_at:new Date().toISOString(),
-subject:{
-name:name,
-timestamp:ts,
-payload_sha256:hash
-},
-registry:{
-url:REGISTRY_URL,
-match:true
-},
-verify:{
-url:VERIFY_URL
-}
-};
+        const name = readPublicName(release);
+        const ts = release && (release.timestamp || release.issued_at || "—");
 
-const certText=JSON.stringify(cert,null,2);
-const certHash=await sha256(certText);
-cert.certificate_sha256=certHash;
+        const payload = release && release.payload;
+        if (!payload) {
+          setOut(["RESULT", "INVALID", "- Status: FAIL — missing payload"]);
+          return;
+        }
 
-const final=JSON.stringify(cert,null,2);
+        const computed = await sha256HexFromText(JSON.stringify(payload));
+        const declared = (release && release.payload_sha256) ? String(release.payload_sha256).trim() : null;
 
-document.getElementById("certPreview").textContent=final;
-document.getElementById("certBox").style.display="block";
+        const integrityOk = isHex64(computed) && (!declared || declared === computed);
 
-document.getElementById("downloadJson").onclick=()=>{
-download("IPR_CERT_"+name.replace(/ /g,"_")+".json",final,"application/json");
-};
+        let registry;
+        try {
+          registry = await fetch(REGISTRY_URL, { cache: "no-store" }).then(r => r.json());
+        } catch (e) {
+          setOut(["RESULT", "INVALID", "- Status: FAIL — registry fetch error"]);
+          return;
+        }
 
-document.getElementById("downloadTxt").onclick=()=>{
-download("IPR_CERT_"+name.replace(/ /g,"_")+".txt",final,"text/plain");
-};
-}
-</script>
+        const entries = registry && registry.entries;
+        if (!Array.isArray(entries)) {
+          setOut(["RESULT", "INVALID", "- Status: FAIL — registry schema invalid (entries[])"]);
+          return;
+        }
 
+        const match = entries.some(x => x && String(x.payload_sha256||"").trim() === computed);
+
+        const result = (integrityOk && match) ? "VALID" : "INVALID";
+        const statusLine = integrityOk
+          ? (match ? "FILE INTEGRITY OK + PRESENT IN REGISTRY" : "OK file integrity — NOT IN REGISTRY")
+          : "FAIL file integrity — computed mismatch";
+
+        setOut([
+          "### Esito",
+          "RESULT",
+          result,
+          "- Status: " + statusLine,
+          "- Name: " + name,
+          "- Timestamp: " + ts,
+          "- payload_sha256 (file): " + (declared || "—"),
+          "- payload_sha256 (computed): " + computed,
+          "- Registry match: " + (match ? "YES" : "NO"),
+          "",
+          "“computed” = SHA-256 calcolato dal browser sul payload del file."
+        ]);
+
+        if (result === "VALID") {
+          const cert = {
+            proto: "HBCE-CERT-v1",
+            kind: "IPR_VALIDITY_CERTIFICATE",
+            policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","GDPR_MIN","NO_PUBLIC_DATA_CUSTODY"],
+            result: "VALID",
+            status: "FILE INTEGRITY OK + PRESENT IN REGISTRY",
+            issued_at: new Date().toISOString(),
+            subject: { name, payload_sha256: computed, timestamp: ts },
+            registry: { match: true, url: REGISTRY_URL },
+            verify: { url: VERIFY_URL }
+          };
+
+          const certJson0 = JSON.stringify(cert, null, 2);
+          const certHash = await sha256HexFromText(certJson0);
+          if (certHash) cert.certificate_sha256 = certHash;
+
+          const finalJson = JSON.stringify(cert, null, 2);
+          const finalTxt = makeCertTxt(cert);
+          const baseName = safeNameForFile(name) + "_" + computed.slice(0, 12);
+
+          showCert(finalJson, finalTxt, baseName);
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
