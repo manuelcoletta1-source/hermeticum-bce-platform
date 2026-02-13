@@ -4,11 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>CREATE — IPR · Emissione cliente (local-first, fail-closed)</title>
-  <meta name="description" content="Creazione IPR per clienti: generazione local-first, prove hash-only, registry append-only e verifica pubblica fail-closed. Nessuna custodia pubblica di dati personali." />
-
-  <meta name="robots" content="index,follow" />
-  <meta name="theme-color" content="#0b0f14" />
+  <title>CREATE (Operator) — Append Registry Entry</title>
+  <meta name="description" content="CREATE operatore: importa IPR_RELEASE.json del cliente, verifica hash SHA-256, genera REGISTRY_ENTRY.json (name + hash + timestamp). Fail-closed." />
 
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
@@ -18,193 +15,312 @@
 
   <main class="hbce-container hbce-main">
 
-    <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CREATE · CLIENT-FIRST · LOCAL-FIRST · HASH-ONLY</div>
-
-      <h1 class="hbce-hero__title">Crea il tuo IPR (senza custodia di dati personali).</h1>
-
+      <div class="hbce-hero__kicker">CREATE · OPERATOR · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Operatore: importa file cliente → verifica → entry registry</h1>
       <p class="hbce-hero__lead">
-        Questa procedura genera un’<strong>identità operativa (IPR)</strong> in modalità <strong>local-first</strong>:
-        i file vengono creati nel tuo browser e scaricati sul tuo dispositivo.
+        Qui non si “inventa” nulla e non si chiede al cliente di scrivere hash a mano.
+        Importi <strong>IPR_RELEASE.json</strong>, il browser ricontrolla lo SHA-256 del payload e genera
+        <strong>REGISTRY_ENTRY.json</strong> pronto da appendere nel registry pubblico.
         <br />
-        Il registry pubblico contiene <strong>solo prove minimizzate</strong> (<strong>nickname + hash + timestamp</strong>).
-        <br />
-        Regola: <strong>se non verificabile → INVALID</strong> (<strong>fail-closed</strong>).
+        Regola: <strong>se non matcha → FAIL-CLOSED</strong>.
       </p>
 
       <div class="hbce-actions">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/create/wizard/">Avvia Wizard (Draft locale)</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/certified/">Rilascio Certified Pack (post-pagamento)</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">Prezzi</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/terms/">Termini</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/wizard/">CREATE (client wizard)</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
       </div>
 
       <p class="hbce-note">
-        Policy: <strong>UE-first</strong> · <strong>audit-first</strong> · <strong>fail-closed</strong> ·
-        <strong>hash-only</strong> · <strong>append-only</strong> · <strong>GDPR-min</strong> · <strong>no public data custody</strong>
+        Pubblico (registry) = <strong>name + payload_sha256 + timestamp</strong> (GDPR-min). Niente custodia pubblica di dati personali.
       </p>
     </section>
 
-    <!-- QUICK CHECKLIST -->
     <section class="hbce-section">
-      <h2>Checklist cliente (prima di iniziare)</h2>
+      <h2>1) Importa IPR_RELEASE.json (cliente)</h2>
 
       <div class="hbce-grid">
         <div class="hbce-card">
-          <h3>Cosa ti serve</h3>
-          <ul class="hbce-list">
-            <li>Un nickname pubblico (non usare dati sensibili)</li>
-            <li>Un dispositivo dove scaricare i file (telefono/PC)</li>
-            <li>Capire la regola: senza registry + verify, non esiste VALID</li>
-          </ul>
-        </div>
+          <h3>Carica file</h3>
 
-        <div class="hbce-card">
-          <h3>Cosa ricevi</h3>
-          <ul class="hbce-list">
-            <li><strong>IPR_RELEASE.json</strong> (file di rilascio)</li>
-            <li><strong>REGISTRY_ENTRY.json</strong> (entry hash-only pronta)</li>
-            <li>Se “Certified”: <strong>ISSUER_CERTIFICATE.json</strong> + <strong>OPERATIONAL_RECEIPT.json</strong></li>
-          </ul>
-          <p class="hbce-note">
-            Nota: il registry pubblico non contiene dati UE. Pubblica solo prove minimizzate.
-          </p>
-        </div>
-      </div>
-    </section>
+          <div class="hbce-form">
+            <label class="hbce-label" for="fileRelease">Seleziona file IPR_RELEASE_*.json</label>
+            <input class="hbce-input" id="fileRelease" type="file" accept="application/json,.json" />
 
-    <!-- TWO MODES -->
-    <section class="hbce-section">
-      <h2>Due modalità: Draft (locale) e Certified (opponibile)</h2>
+            <label class="hbce-label" for="operatorNode">Nodo operatore (facoltativo)</label>
+            <input class="hbce-input" id="operatorNode" type="text" placeholder="IT-PIEMONTE-TORINO / NODE-ID / OPERATOR-ID" />
 
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>1) Draft locale (Wizard)</h3>
-          <p>
-            Generi i file <strong>localmente</strong> e ottieni l’hash (<code>payload_sha256</code>).
-            Nessun dato viene caricato su server. È il modo corretto per partire in sicurezza.
-          </p>
-          <ul class="hbce-list">
-            <li><strong>Chi agisce:</strong> tu (cliente)</li>
-            <li><strong>Dati pubblici:</strong> solo nickname (se decidi di registrare)</li>
-            <li><strong>Output:</strong> file + hash</li>
-          </ul>
-          <div class="hbce-actions">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/create/wizard/">Apri Wizard</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
+            <div class="hbce-actions">
+              <button class="hbce-btn" id="btnLoad" type="button">Importa &amp; verifica</button>
+              <button class="hbce-btn hbce-btn--ghost" id="btnReset" type="button">Reset</button>
+            </div>
+
+            <p class="hbce-note">
+              Fail-closed: se JSON invalido, hash non valido o payload alterato → blocco totale.
+            </p>
           </div>
         </div>
 
         <div class="hbce-card">
-          <h3>2) Certified Pack (post-pagamento)</h3>
-          <p>
-            Dopo il pagamento, viene generato un pacchetto ufficiale con
-            <strong>atto emittente</strong> e <strong>ricevuta operativa</strong>.
-            Serve quando vuoi opponibilità e tracciabilità forte nel tempo, con processo controllato.
-          </p>
+          <h3>Stato verifica</h3>
           <ul class="hbce-list">
-            <li><strong>Chi agisce:</strong> operatore/issuer + tua conferma dati tecnici</li>
-            <li><strong>Input:</strong> nickname + payload_sha256 + riferimento pagamento</li>
-            <li><strong>Output:</strong> pack completo + entry per registry</li>
+            <li><strong>Status:</strong> <span id="status">—</span></li>
+            <li><strong>Name (public):</strong> <span id="outName">—</span></li>
+            <li><strong>Timestamp:</strong> <span id="outTs">—</span></li>
+            <li><strong>payload_sha256 (file):</strong> <span id="outHashFile">—</span></li>
+            <li><strong>payload_sha256 (computed):</strong> <span id="outHashComputed">—</span></li>
           </ul>
+
+          <p class="hbce-note">
+            “computed” = SHA-256 calcolato dal browser sul <code>payload</code> contenuto nel file.
+            Deve combaciare col valore dichiarato.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>2) Output per registry (append-only)</h2>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>REGISTRY_ENTRY.json (pubblico)</h3>
+          <p class="hbce-note">
+            Copia questo oggetto e appendilo a <code>registry/registry.json → entries[]</code>.
+          </p>
+
+          <pre class="hbce-pre"><code id="outRegistry">{}</code></pre>
+
           <div class="hbce-actions">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/certified/">Apri Certified</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">Apri Pricing</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/terms/">Apri Terms</a>
+            <button class="hbce-btn hbce-btn--ghost" id="btnCopyRegistry" type="button">Copy</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btnDownloadRegistry" type="button">Download</button>
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <h3>READY TO REGISTER (incolla nel registry)</h3>
+          <p class="hbce-note">
+            Questo è lo stesso contenuto, in formato “blocco” per operare veloce.
+          </p>
+
+          <pre class="hbce-pre"><code id="outBlock">—</code></pre>
+
+          <div class="hbce-actions">
+            <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Apri REGISTRY</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Apri VERIFY</a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- THE NON-NEGOTIABLE SEQUENCE -->
     <section class="hbce-section">
-      <h2>Sequenza non negoziabile (fail-closed)</h2>
-
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>VALID esiste solo così</h3>
-          <p>
-            La verifica pubblica è deterministica:
-            senza match nel registry append-only → <strong>INVALID</strong>.
-          </p>
-          <div class="hbce-actions">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/create/wizard/">1 — GENERA (Wizard)</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">2 — REGISTRY (append)</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">3 — VERIFY</a>
-          </div>
-          <p class="hbce-note">
-            Se salti il registry, la verify non può passare.
-          </p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Cosa finisce nel registry (pubblico)</h3>
-          <ul class="hbce-list">
-            <li><strong>nickname</strong> (non sensibile)</li>
-            <li><strong>payload_sha256</strong> (prova minima)</li>
-            <li><strong>timestamp</strong> (tempo evento)</li>
-          </ul>
-          <p class="hbce-note">
-            Nessun campo UE (documento/CF) entra nel registry pubblico. Questa è la linea GDPR-min.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- GDPR MIN -->
-    <section class="hbce-section">
-      <h2>GDPR-min: cosa viene custodito (e cosa no)</h2>
-
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>No public data custody</h3>
-          <p>
-            HERMETICUM non pubblica dati personali nel registry.
-            Il registry è un viewer di prove minimizzate (hash-only, append-only).
-          </p>
-          <ul class="hbce-list">
-            <li>Pubblico: nickname + hash + timestamp</li>
-            <li>Locale (tu): eventuali campi UE nel file (se li inserisci)</li>
-            <li>Fail-closed: se non verificabile pubblicamente → INVALID</li>
-          </ul>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Nota su “Annex UE”</h3>
-          <p>
-            Se inserisci campi UE (opzionali), restano nel file <strong>sul tuo dispositivo</strong>.
-            Non vengono pubblicati nel registry.
-          </p>
-          <p class="hbce-note">
-            Questo consente un profilo “base” (solo hash-only) o un profilo “ricco” (dati locali) senza esporre dati pubblicamente.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- NEXT STEPS -->
-    <section class="hbce-section">
-      <h2>Prossimi passi</h2>
-
-      <div class="hbce-actions">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">ACTIVATE (cittadino)</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/wizard/">CREATE Wizard</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/certified/">CERTIFIED Pack</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">STATUS</a>
-      </div>
-
       <p class="hbce-note">
         HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br />
         HERMETICUM B.C.E. S.r.l.<br />
-        UE-first · audit-first · fail-closed · hash-only · append-only
+        UE-first · audit-first · fail-closed · hash-only · append-only · GDPR-min
       </p>
     </section>
 
   </main>
 
   <div data-hbce="footer"></div>
+
+  <script>
+    (function () {
+      const $ = (id) => document.getElementById(id);
+
+      const el = {
+        file: $("fileRelease"),
+        node: $("operatorNode"),
+        btnLoad: $("btnLoad"),
+        btnReset: $("btnReset"),
+        status: $("status"),
+        name: $("outName"),
+        ts: $("outTs"),
+        hashFile: $("outHashFile"),
+        hashComputed: $("outHashComputed"),
+        outRegistry: $("outRegistry"),
+        outBlock: $("outBlock"),
+        btnCopyRegistry: $("btnCopyRegistry"),
+        btnDownloadRegistry: $("btnDownloadRegistry")
+      };
+
+      function setText(target, value) {
+        if (target) target.textContent = value;
+      }
+
+      function pretty(obj) {
+        return JSON.stringify(obj, null, 2);
+      }
+
+      function isNonEmptyString(x) {
+        return typeof x === "string" && x.trim().length > 0;
+      }
+
+      function isISODateString(x) {
+        if (!isNonEmptyString(x)) return false;
+        const d = new Date(x);
+        return !Number.isNaN(d.valueOf());
+      }
+
+      function isHex64(x) {
+        return typeof x === "string" && /^[a-f0-9]{64}$/i.test(x.trim());
+      }
+
+      async function sha256HexFromText(text) {
+        if (!window.crypto || !crypto.subtle) return null;
+        const enc = new TextEncoder();
+        const buf = enc.encode(text);
+        const hashBuf = await crypto.subtle.digest("SHA-256", buf);
+        const hashArr = Array.from(new Uint8Array(hashBuf));
+        return hashArr.map(b => b.toString(16).padStart(2, "0")).join("");
+      }
+
+      function failClosed(reason) {
+        setText(el.status, "FAIL-CLOSED — " + reason);
+        setText(el.outRegistry, "{}");
+        setText(el.outBlock, "—");
+        throw new Error(reason);
+      }
+
+      async function readFileText(file) {
+        return await new Promise((resolve, reject) => {
+          const r = new FileReader();
+          r.onload = () => resolve(String(r.result || ""));
+          r.onerror = () => reject(new Error("file read error"));
+          r.readAsText(file);
+        });
+      }
+
+      async function copyText(text) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch (_) {
+          return false;
+        }
+      }
+
+      function downloadJSON(filename, obj) {
+        const blob = new Blob([pretty(obj)], { type: "application/json;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      function resetUI() {
+        setText(el.status, "—");
+        setText(el.name, "—");
+        setText(el.ts, "—");
+        setText(el.hashFile, "—");
+        setText(el.hashComputed, "—");
+        setText(el.outRegistry, "{}");
+        setText(el.outBlock, "—");
+        window.__hbce_create_latest = null;
+      }
+
+      async function loadAndVerify() {
+        resetUI();
+
+        const file = el.file.files && el.file.files[0];
+        if (!file) return failClosed("nessun file selezionato");
+
+        const text = await readFileText(file);
+
+        let json;
+        try {
+          json = JSON.parse(text);
+        } catch (_) {
+          return failClosed("JSON invalido");
+        }
+
+        // Expected: file produced by wizard
+        // {
+        //   proto: "HBCE-IPR-RELEASE-FILE-v1",
+        //   kind: "IPR_EU_BASE_FILE",
+        //   timestamp, name, payload_sha256, payload
+        // }
+        const name = (json && json.name) ? String(json.name).trim() : "";
+        const ts = (json && json.timestamp) ? String(json.timestamp).trim() : "";
+        const payloadSha = (json && json.payload_sha256) ? String(json.payload_sha256).trim() : "";
+        const payload = json && json.payload;
+
+        if (!isNonEmptyString(name)) return failClosed("campo name mancante");
+        if (!isISODateString(ts)) return failClosed("timestamp mancante/invalid");
+        if (!isHex64(payloadSha)) return failClosed("payload_sha256 mancante/invalid");
+        if (!payload || typeof payload !== "object") return failClosed("payload mancante");
+
+        // Compute SHA over canonical JSON string of payload (same as wizard pretty-print)
+        const payloadText = JSON.stringify(payload, null, 2);
+        const computed = await sha256HexFromText(payloadText);
+        if (!computed) return failClosed("SHA-256 non disponibile (browser non supportato)");
+
+        setText(el.name, name);
+        setText(el.ts, ts);
+        setText(el.hashFile, payloadSha);
+        setText(el.hashComputed, computed);
+
+        if (computed.toLowerCase() !== payloadSha.toLowerCase()) {
+          return failClosed("hash mismatch: payload alterato o file non coerente");
+        }
+
+        // Registry entry: PUBLIC-MIN
+        const entry = {
+          name: name,
+          payload_sha256: payloadSha,
+          timestamp: ts
+        };
+
+        // Optional: operator node annotation (NOT in registry entry, keep out of public)
+        const opNode = String(el.node.value || "").trim();
+        const block = [
+          "NODE READY TO REGISTER — append to registry.json entries[]:",
+          pretty(entry)
+        ].join("\n");
+
+        setText(el.status, "OK — file integrity verified");
+        setText(el.outRegistry, pretty(entry));
+        setText(el.outBlock, block);
+
+        window.__hbce_create_latest = { entry, name };
+      }
+
+      el.btnLoad.addEventListener("click", () => {
+        loadAndVerify().catch((e) => {
+          // already fail-closed, just stop
+          console.warn(e);
+        });
+      });
+
+      el.btnReset.addEventListener("click", () => {
+        el.file.value = "";
+        el.node.value = "";
+        resetUI();
+      });
+
+      el.btnCopyRegistry.addEventListener("click", async () => {
+        const x = window.__hbce_create_latest && window.__hbce_create_latest.entry;
+        if (!x) return alert("FAIL-CLOSED — importa e verifica prima un file");
+        const ok = await copyText(pretty(x));
+        if (!ok) alert("Copy non disponibile su questo browser");
+      });
+
+      el.btnDownloadRegistry.addEventListener("click", () => {
+        const x = window.__hbce_create_latest && window.__hbce_create_latest.entry;
+        const nm = window.__hbce_create_latest && window.__hbce_create_latest.name;
+        if (!x || !nm) return alert("FAIL-CLOSED — importa e verifica prima un file");
+        const safeName = String(nm).replace(/[^a-z0-9]+/gi, "_").replace(/^_+|_+$/g, "");
+        downloadJSON("REGISTRY_ENTRY_" + safeName + ".json", x);
+      });
+
+      resetUI();
+    })();
+  </script>
 </body>
 </html>
