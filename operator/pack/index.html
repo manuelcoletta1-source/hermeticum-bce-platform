@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OPERATOR PACK — HARD (Cross-link Enforced)</title>
+  <meta name="description" content="Evidence Pack HARD HBCE: enforcement cross-link (ticket/receipt/release/entry/cert), operator_id mandatory, PACK_MANIFEST + PACK_CHAIN. Fail-closed." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">HARD MODE · CROSS-LINK · OPERATOR-ID · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Evidence Pack Builder (HARD)</h1>
+      <p class="hbce-hero__lead">
+        Questo builder rifiuta qualsiasi incoerenza: <strong>ticket_id</strong>, <strong>payload_sha256</strong>, riferimenti certificate,
+        e operator identity. Se un link non torna → <strong>FAIL-CLOSED</strong>.
+      </p>
+      <p class="hbce-note">
+        Output: <strong>PACK_MANIFEST.json</strong> + <strong>PACK_CHAIN.json</strong> (hash del manifest).
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Operator identity (mandatory)</h2>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>operator_id</h3>
+          <input id="operator_id" style="width:100%;padding:10px;" placeholder="Es. HBCE-OP-IT-PIEMONTE-TORINO-0001" />
+          <p class="hbce-note">
+            Non è un dato personale pubblico. È un identificatore operativo interno.
+          </p>
+
+          <h3 style="margin-top:14px;">policy (hard)</h3>
+          <ul class="hbce-list">
+            <li>Required: release + entry + certificate</li>
+            <li>Enforce: release.hash == entry.hash == certificate.subject.hash</li>
+            <li>Enforce ticket chain se ticket/receipt presenti</li>
+            <li>Enforce operator_id non vuoto</li>
+          </ul>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Cross-link status</h3>
+          <ul class="hbce-list">
+            <li><strong>payload chain:</strong> <span id="x_payload">—</span></li>
+            <li><strong>ticket chain:</strong> <span id="x_ticket">—</span></li>
+            <li><strong>operator_id:</strong> <span id="x_operator">—</span></li>
+          </ul>
+          <p class="hbce-note" id="x_note">—</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Input artefatti</h2>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>Ticket (HBCE-TICKET-v1) — optional</h3>
+          <input type="file" id="f_ticket" accept=".json,application/json" />
+          <ul class="hbce-list">
+            <li><strong>Detected:</strong> <span id="d_ticket">—</span></li>
+            <li><strong>ticket_id:</strong> <span id="t_ticket_id">—</span></li>
+            <li><strong>SHA-256:</strong> <span id="h_ticket">—</span></li>
+          </ul>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Receipt (HBCE-RECEIPT-v1) — optional</h3>
+          <input type="file" id="f_receipt" accept=".json,application/json" />
+          <ul class="hbce-list">
+            <li><strong>Detected:</strong> <span id="d_receipt">—</span></li>
+            <li><strong>ticket_id:</strong> <span id="t_receipt_id">—</span></li>
+            <li><strong>SHA-256:</strong> <span id="h_receipt">—</span></li>
+          </ul>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Release (HBCE-RELEASE-v1) — REQUIRED</h3>
+          <input type="file" id="f_release" accept=".json,application/json" />
+          <ul class="hbce-list">
+            <li><strong>Detected:</strong> <span id="d_release">—</span></li>
+            <li><strong>name:</strong> <span id="t_release_name">—</span></li>
+            <li><strong>payload_sha256:</strong> <span id="t_release_hash">—</span></li>
+            <li><strong>ticket_id (if any):</strong> <span id="t_release_ticket">—</span></li>
+            <li><strong>SHA-256:</strong> <span id="h_release">—</span></li>
+          </ul>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Registry Entry — REQUIRED</h3>
+          <input type="file" id="f_entry" accept=".json,application/json" />
+          <ul class="hbce-list">
+            <li><strong>Detected:</strong> <span id="d_entry">—</span></li>
+            <li><strong>name:</strong> <span id="t_entry_name">—</span></li>
+            <li><strong>payload_sha256:</strong> <span id="t_entry_hash">—</span></li>
+            <li><strong>SHA-256:</strong> <span id="h_entry">—</span></li>
+          </ul>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Certificate (HBCE-CERT-v1) — REQUIRED</h3>
+          <input type="file" id="f_cert" accept=".json,application/json" />
+          <ul class="hbce-list">
+            <li><strong>Detected:</strong> <span id="d_cert">—</span></li>
+            <li><strong>subject.name:</strong> <span id="t_cert_name">—</span></li>
+            <li><strong>subject.payload_sha256:</strong> <span id="t_cert_hash">—</span></li>
+            <li><strong>ticket_id (if any):</strong> <span id="t_cert_ticket">—</span></li>
+            <li><strong>SHA-256:</strong> <span id="h_cert">—</span></li>
+          </ul>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Registry snapshot (registry.json) — optional</h3>
+          <input type="file" id="f_registry" accept=".json,application/json" />
+          <ul class="hbce-list">
+            <li><strong>Detected:</strong> <span id="d_registry">—</span></li>
+            <li><strong>entries:</strong> <span id="t_reg_count">—</span></li>
+            <li><strong>SHA-256:</strong> <span id="h_registry">—</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Build</h2>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>Output</h3>
+          <div class="hbce-actions">
+            <button class="hbce-btn" id="btnBuild" type="button">BUILD (HARD)</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btnDlManifest" type="button" disabled>Download PACK_MANIFEST.json</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btnDlChain" type="button" disabled>Download PACK_CHAIN.json</button>
+          </div>
+
+          <ul class="hbce-list">
+            <li><strong>Status:</strong> <span id="status">—</span></li>
+            <li><strong>Pack ID:</strong> <span id="packId">—</span></li>
+            <li><strong>Created at:</strong> <span id="createdAt">—</span></li>
+          </ul>
+
+          <p class="hbce-note">
+            Fail-closed: nessun download se non passa tutte le verifiche HARD.
+          </p>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Manifest preview</h3>
+          <pre class="hbce-pre"><code id="preview">—</code></pre>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Chain preview</h3>
+          <pre class="hbce-pre"><code id="previewChain">—</code></pre>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+
+<script>
+(function(){
+  const $ = (id) => document.getElementById(id);
+
+  function setText(id, v){ const el = $(id); if(el) el.textContent = v; }
+  function isNonEmptyString(x){ return typeof x === "string" && x.trim().length > 0; }
+  function isHex64(x){ return typeof x === "string" && /^[a-f0-9]{64}$/i.test(String(x||"").trim()); }
+
+  function readPublicName(obj){
+    const a = obj && obj.name;
+    const b = obj && obj.nickname;
+    const v = isNonEmptyString(a) ? a : (isNonEmptyString(b) ? b : null);
+    return v ? String(v).trim() : null;
+  }
+
+  function downloadText(filename, text, mime){
+    const blob = new Blob([text], { type: mime || "application/octet-stream" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  async function sha256HexFromText(text){
+    const enc = new TextEncoder();
+    const buf = enc.encode(text);
+    const hashBuf = await crypto.subtle.digest("SHA-256", buf);
+    const hashArr = Array.from(new Uint8Array(hashBuf));
+    return hashArr.map(b => b.toString(16).padStart(2,"0")).join("");
+  }
+
+  function safeNameForFile(name){
+    return String(name||"IPR").trim().replace(/\s+/g,"_").replace(/[^a-zA-Z0-9_\-]/g,"");
+  }
+
+  function genPackId(){
+    const ts = new Date().toISOString().replace(/[:.]/g,"-");
+    const rnd = Math.random().toString(16).slice(2,8).toUpperCase();
+    return `HBCE-PACK-${ts}-${rnd}`;
+  }
+
+  const slots = {
+    ticket:   { input:"f_ticket",  det:"d_ticket",  hash:"h_ticket",  obj:null, text:null, sha:null, kind:null },
+    receipt:  { input:"f_receipt", det:"d_receipt", hash:"h_receipt", obj:null, text:null, sha:null, kind:null },
+    release:  { input:"f_release", det:"d_release", hash:"h_release", obj:null, text:null, sha:null, kind:null },
+    entry:    { input:"f_entry",   det:"d_entry",   hash:"h_entry",   obj:null, text:null, sha:null, kind:null },
+    cert:     { input:"f_cert",    det:"d_cert",    hash:"h_cert",    obj:null, text:null, sha:null, kind:null },
+    registry: { input:"f_registry",det:"d_registry",hash:"h_registry",obj:null, text:null, sha:null, kind:null }
+  };
+
+  async function loadSlot(key){
+    const s = slots[key];
+    const inp = $(s.input);
+    const f = inp.files && inp.files[0];
+    if(!f){
+      s.obj=null; s.text=null; s.sha=null; s.kind=null;
+      setText(s.det,"—"); setText(s.hash,"—");
+      return;
+    }
+
+    try{ s.text = await f.text(); }
+    catch(_){
+      s.obj=null; s.sha=null; s.kind=null;
+      setText(s.det,"FAIL — cannot read"); setText(s.hash,"—");
+      return;
+    }
+
+    try{ s.sha = await sha256HexFromText(s.text); }
+    catch(_){ s.sha=null; }
+
+    try{ s.obj = JSON.parse(s.text); }
+    catch(_){
+      s.obj=null; s.kind=null;
+      setText(s.det,"FAIL — invalid JSON"); setText(s.hash, s.sha || "—");
+      return;
+    }
+
+    s.kind = (s.obj && (s.obj.kind || s.obj.KIND)) ? String(s.obj.kind || s.obj.KIND) : null;
+    setText(s.det, s.kind ? ("OK — " + s.kind) : "OK");
+    setText(s.hash, s.sha || "—");
+
+    refreshDerived();
+  }
+
+  Object.keys(slots).forEach(k => {
+    $(slots[k].input).addEventListener("change", () => loadSlot(k));
+  });
+
+  function refreshDerived(){
+    // ticket_id surfaces
+    const ticket_id = slots.ticket.obj ? (slots.ticket.obj.ticket_id || (slots.ticket.obj.ticket && slots.ticket.obj.ticket.ticket_id)) : null;
+    const receipt_id = slots.receipt.obj ? (slots.receipt.obj.ticket_id || (slots.receipt.obj.payload && slots.receipt.obj.payload.ticket_id)) : null;
+
+    setText("t_ticket_id", ticket_id ? String(ticket_id) : "—");
+    setText("t_receipt_id", receipt_id ? String(receipt_id) : "—");
+
+    // release surfaces
+    const rel = slots.release.obj;
+    const relName = rel ? (readPublicName(rel) || (rel.payload && rel.payload.subject && rel.payload.subject.name) || null) : null;
+    const relHash = rel ? rel.payload_sha256 : null;
+    const relTicket = rel ? (rel.ticket_id || (rel.payload && rel.payload.ticket_id) || null) : null;
+
+    setText("t_release_name", relName || "—");
+    setText("t_release_hash", isHex64(relHash) ? String(relHash).trim() : "—");
+    setText("t_release_ticket", relTicket ? String(relTicket) : "—");
+
+    // entry
+    const ent = slots.entry.obj;
+    const entName = ent ? (readPublicName(ent) || null) : null;
+    const entHash = ent ? ent.payload_sha256 : null;
+
+    setText("t_entry_name", entName || "—");
+    setText("t_entry_hash", isHex64(entHash) ? String(entHash).trim() : "—");
+
+    // cert
+    const crt = slots.cert.obj;
+    const crtName = crt && crt.subject ? (crt.subject.name || null) : (readPublicName(crt) || null);
+    const crtHash = crt && crt.subject ? crt.subject.payload_sha256 : null;
+    const crtTicket = crt ? (crt.ticket_id || (crt.subject && crt.subject.ticket_id) || null) : null;
+
+    setText("t_cert_name", crtName ? String(crtName).trim() : "—");
+    setText("t_cert_hash", isHex64(crtHash) ? String(crtHash).trim() : "—");
+    setText("t_cert_ticket", crtTicket ? String(crtTicket) : "—");
+
+    // registry snapshot count
+    const r = slots.registry.obj;
+    const cnt = (r && Array.isArray(r.entries)) ? r.entries.length : null;
+    setText("t_reg_count", (cnt === null) ? "—" : String(cnt));
+
+    // cross-link status
+    computeCrossLink();
+  }
+
+  function computeCrossLink(){
+    const opId = ($("operator_id").value || "").trim();
+    const opOk = isNonEmptyString(opId);
+    setText("x_operator", opOk ? "OK" : "FAIL");
+    if(!opOk) setText("x_note", "operator_id mancante: HARD mode blocca.");
+
+    // payload chain
+    const rel = slots.release.obj;
+    const ent = slots.entry.obj;
+    const crt = slots.cert.obj;
+
+    const relHash = rel ? String(rel.payload_sha256 || "").trim() : "";
+    const entHash = ent ? String(ent.payload_sha256 || "").trim() : "";
+    const crtHash = (crt && crt.subject && crt.subject.payload_sha256) ? String(crt.subject.payload_sha256).trim() : "";
+
+    let payloadOk = true;
+    const reasons = [];
+
+    if(!slots.release.obj) { payloadOk = false; reasons.push("missing release"); }
+    if(!slots.entry.obj) { payloadOk = false; reasons.push("missing entry"); }
+    if(!slots.cert.obj) { payloadOk = false; reasons.push("missing certificate"); }
+
+    if(payloadOk){
+      if(!isHex64(relHash)) { payloadOk = false; reasons.push("release payload_sha256 invalid"); }
+      if(!isHex64(entHash)) { payloadOk = false; reasons.push("entry payload_sha256 invalid"); }
+      if(!isHex64(crtHash)) { payloadOk = false; reasons.push("cert.subject.payload_sha256 invalid"); }
+      if(payloadOk && (relHash !== entHash)) { payloadOk = false; reasons.push("release hash != entry hash"); }
+      if(payloadOk && (relHash !== crtHash)) { payloadOk = false; reasons.push("release hash != cert hash"); }
+    }
+
+    setText("x_payload", payloadOk ? "OK" : "FAIL");
+
+    // ticket chain (only enforced if any is present)
+    const hasTicket = !!slots.ticket.obj;
+    const hasReceipt = !!slots.receipt.obj;
+
+    let ticketOk = true;
+    const treasons = [];
+
+    if(hasTicket || hasReceipt){
+      if(!hasTicket) { ticketOk = false; treasons.push("receipt present but ticket missing"); }
+      if(!hasReceipt) { ticketOk = false; treasons.push("ticket present but receipt missing"); }
+
+      const ticket_id = slots.ticket.obj ? (slots.ticket.obj.ticket_id || null) : null;
+      const receipt_id = slots.receipt.obj ? (slots.receipt.obj.ticket_id || (slots.receipt.obj.payload && slots.receipt.obj.payload.ticket_id) || null) : null;
+
+      if(ticketOk){
+        if(!isNonEmptyString(ticket_id)) { ticketOk = false; treasons.push("ticket.ticket_id missing"); }
+        if(!isNonEmptyString(receipt_id)) { ticketOk = false; treasons.push("receipt ticket_id missing"); }
+        if(ticketOk && String(ticket_id) !== String(receipt_id)) { ticketOk = false; treasons.push("ticket_id mismatch ticket vs receipt"); }
+      }
+
+      // if release claims a ticket_id, enforce
+      const relTicket = slots.release.obj ? (slots.release.obj.ticket_id || (slots.release.obj.payload && slots.release.obj.payload.ticket_id) || null) : null;
+      if(ticketOk && relTicket && String(relTicket) !== String(ticket_id)) { ticketOk = false; treasons.push("release.ticket_id != ticket.ticket_id"); }
+
+      // if cert claims a ticket_id, enforce
+      const crtTicket = slots.cert.obj ? (slots.cert.obj.ticket_id || (slots.cert.obj.subject && slots.cert.obj.subject.ticket_id) || null) : null;
+      if(ticketOk && crtTicket && String(crtTicket) !== String(ticket_id)) { ticketOk = false; treasons.push("cert.ticket_id != ticket.ticket_id"); }
+    }
+
+    setText("x_ticket", (hasTicket || hasReceipt) ? (ticketOk ? "OK" : "FAIL") : "N/A");
+
+    const allOk = opOk && payloadOk && ( (hasTicket||hasReceipt) ? ticketOk : true );
+    if(allOk){
+      setText("x_note", "HARD checks OK. Build consentito.");
+    } else {
+      const msg = []
+        .concat(!opOk ? ["operator_id missing"] : [])
+        .concat(!payloadOk ? reasons : [])
+        .concat(((hasTicket||hasReceipt) && !ticketOk) ? treasons : []);
+      setText("x_note", "FAIL-CLOSED: " + (msg.length ? msg.join(" | ") : "unknown"));
+    }
+  }
+
+  $("operator_id").addEventListener("input", computeCrossLink);
+
+  function fail(reason){
+    setText("status", "FAIL-CLOSED — " + reason);
+    setText("packId","—");
+    setText("createdAt","—");
+    setText("preview","—");
+    setText("previewChain","—");
+    $("btnDlManifest").disabled = true;
+    $("btnDlChain").disabled = true;
+    lastManifest = null;
+    lastChain = null;
+  }
+
+  function ok(msg){
+    setText("status", "OK — " + msg);
+  }
+
+  let lastManifest = null;
+  let lastChain = null;
+
+  $("btnBuild").addEventListener("click", async () => {
+    computeCrossLink();
+
+    const opId = ($("operator_id").value || "").trim();
+    if(!isNonEmptyString(opId)) return fail("operator_id missing");
+
+    // required
+    if(!slots.release.obj || !slots.entry.obj || !slots.cert.obj) return fail("missing required (release+entry+certificate)");
+
+    const relHash = String(slots.release.obj.payload_sha256 || "").trim();
+    const entHash = String(slots.entry.obj.payload_sha256 || "").trim();
+    const crtHash = String((slots.cert.obj.subject && slots.cert.obj.subject.payload_sha256) || "").trim();
+    if(!isHex64(relHash) || !isHex64(entHash) || !isHex64(crtHash)) return fail("invalid sha256 fields");
+    if(relHash !== entHash) return fail("release hash != entry hash");
+    if(relHash !== crtHash) return fail("release hash != cert hash");
+
+    // ticket chain enforcement if any present
+    const hasTicket = !!slots.ticket.obj;
+    const hasReceipt = !!slots.receipt.obj;
+    let ticket_id = null;
+
+    if(hasTicket || hasReceipt){
+      if(!hasTicket || !hasReceipt) return fail("ticket/receipt chain incomplete");
+      const tId = slots.ticket.obj.ticket_id || null;
+      const rId = slots.receipt.obj.ticket_id || (slots.receipt.obj.payload && slots.receipt.obj.payload.ticket_id) || null;
+      if(!isNonEmptyString(tId) || !isNonEmptyString(rId)) return fail("ticket_id missing");
+      if(String(tId) !== String(rId)) return fail("ticket_id mismatch (ticket vs receipt)");
+      ticket_id = String(tId);
+
+      const relTicket = slots.release.obj.ticket_id || (slots.release.obj.payload && slots.release.obj.payload.ticket_id) || null;
+      if(relTicket && String(relTicket) !== ticket_id) return fail("release.ticket_id mismatch");
+
+      const crtTicket = slots.cert.obj.ticket_id || (slots.cert.obj.subject && slots.cert.obj.subject.ticket_id) || null;
+      if(crtTicket && String(crtTicket) !== ticket_id) return fail("cert.ticket_id mismatch");
+    }
+
+    const name =
+      readPublicName(slots.release.obj) ||
+      readPublicName(slots.entry.obj) ||
+      (slots.cert.obj.subject && slots.cert.obj.subject.name) ||
+      "—";
+
+    const createdAt = new Date().toISOString();
+    const packId = genPackId();
+
+    function fileMeta(label, key){
+      const s = slots[key];
+      const inp = $(s.input);
+      const f = inp.files && inp.files[0];
+      if(!s.text || !s.sha) return null;
+      return {
+        label,
+        kind: s.kind || null,
+        sha256: s.sha,
+        filename: f ? f.name : null
+      };
+    }
+
+    const files = []
+      .concat(fileMeta("TICKET","ticket") || [])
+      .concat(fileMeta("RECEIPT","receipt") || [])
+      .concat(fileMeta("RELEASE","release") || [])
+      .concat(fileMeta("REGISTRY_ENTRY","entry") || [])
+      .concat(fileMeta("CERTIFICATE","cert") || [])
+      .concat(fileMeta("REGISTRY_SNAPSHOT","registry") || []);
+
+    const registrySnapshotSha = slots.registry.sha || null;
+    const registrySnapshotCount = (slots.registry.obj && Array.isArray(slots.registry.obj.entries)) ? slots.registry.obj.entries.length : null;
+
+    lastManifest = {
+      proto: "HBCE-PACK_MANIFEST-v1",
+      kind: "EVIDENCE_PACK_MANIFEST_HARD",
+      policy: [
+        "UE_FIRST",
+        "AUDIT_FIRST",
+        "FAIL_CLOSED",
+        "HASH_ONLY",
+        "APPEND_ONLY",
+        "GDPR_MIN",
+        "NO_PUBLIC_DATA_CUSTODY"
+      ],
+      pack_id: packId,
+      created_at: createdAt,
+      operator_id: opId,
+      subject: { name },
+      linkage: {
+        payload_sha256: relHash,
+        ticket_id: ticket_id || null,
+        release_file_sha256: slots.release.sha || null,
+        entry_file_sha256: slots.entry.sha || null,
+        certificate_file_sha256: slots.cert.sha || null
+      },
+      registry_snapshot: {
+        included: !!registrySnapshotSha,
+        registry_sha256: registrySnapshotSha,
+        entries: (registrySnapshotCount === null ? null : registrySnapshotCount)
+      },
+      files,
+      note: "HARD manifest enforces cross-link integrity across artifacts. Reproducible by recalculating file hashes and re-running VERIFY."
+    };
+
+    const manifestJson = JSON.stringify(lastManifest, null, 2);
+    const manifestSha = await sha256HexFromText(manifestJson);
+
+    lastChain = {
+      proto: "HBCE-PACK_CHAIN-v1",
+      kind: "EVIDENCE_PACK_CHAIN",
+      policy: ["HASH_ONLY","APPEND_ONLY","FAIL_CLOSED","UE_FIRST","AUDIT_FIRST"],
+      pack_id: packId,
+      created_at: createdAt,
+      operator_id: opId,
+      manifest_sha256: manifestSha,
+      prev_chain_sha256: null,
+      note: "Chain object references the manifest hash. For append-only chaining, set prev_chain_sha256 to previous pack chain hash."
+    };
+
+    const chainJson = JSON.stringify(lastChain, null, 2);
+
+    ok("HARD checks passed. Pack ready.");
+    setText("packId", packId);
+    setText("createdAt", createdAt);
+    setText("preview", manifestJson);
+    setText("previewChain", chainJson);
+
+    $("btnDlManifest").disabled = false;
+    $("btnDlChain").disabled = false;
+
+    $("btnDlManifest").onclick = () => {
+      const fn = `PACK_MANIFEST_HARD_${safeNameForFile(name)}_${String(relHash).slice(0,12)}.json`;
+      downloadText(fn, manifestJson, "application/json;charset=utf-8");
+    };
+
+    $("btnDlChain").onclick = () => {
+      const fn = `PACK_CHAIN_${safeNameForFile(name)}_${String(relHash).slice(0,12)}.json`;
+      downloadText(fn, chainJson, "application/json;charset=utf-8");
+    };
+  });
+
+  // init
+  setText("status","—");
+  setText("packId","—");
+  setText("createdAt","—");
+  setText("preview","—");
+  setText("previewChain","—");
+  setText("x_payload","—");
+  setText("x_ticket","—");
+  setText("x_operator","—");
+  setText("x_note","—");
+  $("btnDlManifest").disabled = true;
+  $("btnDlChain").disabled = true;
+
+  // initial derived
+  refreshDerived();
+})();
+</script>
+
+</body>
+</html>
