@@ -3,65 +3,208 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CREATE — IPR (Hub)</title>
-  <meta name="description" content="Hub CREATE: Wizard Git-style (nome+descrizione+bios_hash+location-now quorum) e Certified Pack post-pagamento (certificate+receipt). UE-first, audit-first, fail-closed." />
+
+  <title>CREATE — IPR · Emissione cliente (local-first, fail-closed)</title>
+  <meta name="description" content="Creazione IPR per clienti: generazione local-first, prove hash-only, registry append-only e verifica pubblica fail-closed. Nessuna custodia pubblica di dati personali." />
+
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
+
 <body>
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
+
+    <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CREATE · LOCAL-FIRST · HASH-ONLY</div>
-      <h1 class="hbce-hero__title">Creazione IPR</h1>
+      <div class="hbce-hero__kicker">CREATE · CLIENT-FIRST · LOCAL-FIRST · HASH-ONLY</div>
+
+      <h1 class="hbce-hero__title">Crea il tuo IPR (senza custodia di dati personali).</h1>
+
       <p class="hbce-hero__lead">
-        Due fasi operative:
-        <strong>Wizard (Draft)</strong> per generare l’IPR localmente e ottenere l’hash,
-        poi <strong>Certified</strong> post-pagamento per ottenere certificazione e ricevuta firmata.
+        Questa procedura genera un’<strong>identità operativa (IPR)</strong> in modalità <strong>local-first</strong>:
+        i file vengono creati nel tuo browser e scaricati sul tuo dispositivo.
+        <br />
+        Il registry pubblico contiene <strong>solo prove minimizzate</strong> (<strong>nickname + hash + timestamp</strong>).
+        <br />
+        Regola: <strong>se non verificabile → INVALID</strong> (<strong>fail-closed</strong>).
       </p>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/create/wizard/">Avvia Wizard (Draft locale)</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/certified/">Rilascio Certified Pack (post-pagamento)</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">Prezzi</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/terms/">Termini</a>
+      </div>
+
       <p class="hbce-note">
-        Regola: se non verificabile pubblicamente (registry append-only) → INVALID (fail-closed).
+        Policy: <strong>UE-first</strong> · <strong>audit-first</strong> · <strong>fail-closed</strong> ·
+        <strong>hash-only</strong> · <strong>append-only</strong> · <strong>GDPR-min</strong> · <strong>no public data custody</strong>
       </p>
     </section>
 
+    <!-- QUICK CHECKLIST -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">1) Wizard (Draft) — stile Git</h2>
-      <div class="hbce-card">
-        <p class="hbce-card__text">
-          Inserisci <strong>nome</strong>, <strong>descrizione</strong>, <strong>bios_hash</strong> e <strong>location-now (quorum)</strong>.
-          Il sistema genera localmente: <code>IPR_CANON.json</code>, <code>IPR_RELEASE.json</code>, <code>REGISTRY_ENTRY.json</code>.
-        </p>
-        <div class="hbce-actions">
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">APRI WIZARD</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+      <h2>Checklist cliente (prima di iniziare)</h2>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>Cosa ti serve</h3>
+          <ul class="hbce-list">
+            <li>Un nickname pubblico (non usare dati sensibili)</li>
+            <li>Un dispositivo dove scaricare i file (telefono/PC)</li>
+            <li>Capire la regola: senza registry + verify, non esiste VALID</li>
+          </ul>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Cosa ricevi</h3>
+          <ul class="hbce-list">
+            <li><strong>IPR_RELEASE.json</strong> (file di rilascio)</li>
+            <li><strong>REGISTRY_ENTRY.json</strong> (entry hash-only pronta)</li>
+            <li>Se “Certified”: <strong>ISSUER_CERTIFICATE.json</strong> + <strong>OPERATIONAL_RECEIPT.json</strong></li>
+          </ul>
+          <p class="hbce-note">
+            Nota: il registry pubblico non contiene dati UE. Pubblica solo prove minimizzate.
+          </p>
         </div>
       </div>
     </section>
 
+    <!-- TWO MODES -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">2) Certified (post-pagamento)</h2>
-      <div class="hbce-card">
-        <p class="hbce-card__text">
-          Dopo pagamento, genera il pacchetto ufficiale:
-          <code>ISSUER_CERTIFICATE.json</code> (atto principale) +
-          <code>OPERATIONAL_RECEIPT.json</code> (ricevuta firmata) +
-          <code>IPR_RELEASE.json</code> +
-          <code>REGISTRY_ENTRY.json</code>.
-        </p>
-        <div class="hbce-actions">
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/certified/">APRI CERTIFIED</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/pricing/">PRICING</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/terms/">TERMS</a>
+      <h2>Due modalità: Draft (locale) e Certified (opponibile)</h2>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>1) Draft locale (Wizard)</h3>
+          <p>
+            Generi i file <strong>localmente</strong> e ottieni l’hash (<code>payload_sha256</code>).
+            Nessun dato viene caricato su server. È il modo corretto per partire in sicurezza.
+          </p>
+          <ul class="hbce-list">
+            <li><strong>Chi agisce:</strong> tu (cliente)</li>
+            <li><strong>Dati pubblici:</strong> solo nickname (se decidi di registrare)</li>
+            <li><strong>Output:</strong> file + hash</li>
+          </ul>
+          <div class="hbce-actions">
+            <a class="hbce-btn" href="/hermeticum-bce-platform/create/wizard/">Apri Wizard</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
+          </div>
         </div>
-        <p class="hbce-note" style="margin-top:1rem;">
-          UE note: l’issuer opera con <strong>P.IVA in assegnazione</strong> (VAT pending assignment). La ricevuta è operativa, non fattura fiscale.
-        </p>
+
+        <div class="hbce-card">
+          <h3>2) Certified Pack (post-pagamento)</h3>
+          <p>
+            Dopo il pagamento, viene generato un pacchetto ufficiale con
+            <strong>atto emittente</strong> e <strong>ricevuta operativa</strong>.
+            Serve quando vuoi opponibilità e tracciabilità forte nel tempo, con processo controllato.
+          </p>
+          <ul class="hbce-list">
+            <li><strong>Chi agisce:</strong> operatore/issuer + tua conferma dati tecnici</li>
+            <li><strong>Input:</strong> nickname + payload_sha256 + riferimento pagamento</li>
+            <li><strong>Output:</strong> pack completo + entry per registry</li>
+          </ul>
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/certified/">Apri Certified</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">Apri Pricing</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/terms/">Apri Terms</a>
+          </div>
+        </div>
       </div>
     </section>
+
+    <!-- THE NON-NEGOTIABLE SEQUENCE -->
+    <section class="hbce-section">
+      <h2>Sequenza non negoziabile (fail-closed)</h2>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>VALID esiste solo così</h3>
+          <p>
+            La verifica pubblica è deterministica:
+            senza match nel registry append-only → <strong>INVALID</strong>.
+          </p>
+          <div class="hbce-actions">
+            <a class="hbce-btn" href="/hermeticum-bce-platform/create/wizard/">1 — GENERA (Wizard)</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">2 — REGISTRY (append)</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">3 — VERIFY</a>
+          </div>
+          <p class="hbce-note">
+            Se salti il registry, la verify non può passare.
+          </p>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Cosa finisce nel registry (pubblico)</h3>
+          <ul class="hbce-list">
+            <li><strong>nickname</strong> (non sensibile)</li>
+            <li><strong>payload_sha256</strong> (prova minima)</li>
+            <li><strong>timestamp</strong> (tempo evento)</li>
+          </ul>
+          <p class="hbce-note">
+            Nessun campo UE (documento/CF) entra nel registry pubblico. Questa è la linea GDPR-min.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- GDPR MIN -->
+    <section class="hbce-section">
+      <h2>GDPR-min: cosa viene custodito (e cosa no)</h2>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>No public data custody</h3>
+          <p>
+            HERMETICUM non pubblica dati personali nel registry.
+            Il registry è un viewer di prove minimizzate (hash-only, append-only).
+          </p>
+          <ul class="hbce-list">
+            <li>Pubblico: nickname + hash + timestamp</li>
+            <li>Locale (tu): eventuali campi UE nel file (se li inserisci)</li>
+            <li>Fail-closed: se non verificabile pubblicamente → INVALID</li>
+          </ul>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Nota su “Annex UE”</h3>
+          <p>
+            Se inserisci campi UE (opzionali), restano nel file <strong>sul tuo dispositivo</strong>.
+            Non vengono pubblicati nel registry.
+          </p>
+          <p class="hbce-note">
+            Questo consente un profilo “base” (solo hash-only) o un profilo “ricco” (dati locali) senza esporre dati pubblicamente.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEXT STEPS -->
+    <section class="hbce-section">
+      <h2>Prossimi passi</h2>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">ACTIVATE (cittadino)</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/wizard/">CREATE Wizard</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/certified/">CERTIFIED Pack</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">STATUS</a>
+      </div>
+
+      <p class="hbce-note">
+        HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br />
+        HERMETICUM B.C.E. S.r.l.<br />
+        UE-first · audit-first · fail-closed · hash-only · append-only
+      </p>
+    </section>
+
   </main>
 
   <div data-hbce="footer"></div>
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </body>
 </html>
