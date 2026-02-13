@@ -28,10 +28,10 @@
       </p>
 
       <div class="hbce-actions">
-        <a class="hbce-btn" href="/activate/">Attiva IPR Base Europeo</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/verify/">Verifica pubblica</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/registry/">Registry</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/standard/">Standard IPR</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Attiva IPR Base Europeo</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verifica pubblica</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/standard/">Standard IPR</a>
       </div>
 
       <p class="hbce-note">
@@ -40,7 +40,40 @@
       </p>
     </section>
 
-    <!-- STATO OPERATIVO -->
+    <!-- EU GATEWAY + R&D QUICK -->
+    <section class="hbce-section">
+      <h2>Gateway europeo & R&amp;D</h2>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>EU Gateway</h3>
+          <p>
+            Ingresso ufficiale continentale: <strong>Citizen</strong> e <strong>Institution/Enterprise</strong>.
+            Porta d’accesso UE alla baseline (verify/registry/status) e ai percorsi B2B/B2G.
+          </p>
+          <div class="hbce-actions">
+            <a class="hbce-btn" href="/hermeticum-bce-platform/eu/">Apri EU Gateway</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">STATUS (live)</a>
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <h3>R&amp;D europeo</h3>
+          <p>
+            Documentazione istituzionale: missione LAB, proposta Horizon e ricerca partner UE
+            per pilot multi-dominio e standardizzazione.
+          </p>
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/lab/">LAB</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/horizon/">Horizon (EU)</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/partners/">Partners UE</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/press/">Press</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATO OPERATIVO + LIVE HEALTH -->
     <section class="hbce-section">
       <h2>Stato laboratorio</h2>
 
@@ -52,26 +85,41 @@
             L’infrastruttura opera in <strong>fail-closed</strong>: se manca un passaggio o un match nel registry → <strong>INVALID</strong>.
           </p>
           <div class="hbce-actions">
-            <a class="hbce-btn" href="/create/">1 — CREATE</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/receipt/">2 — RECEIPT</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/registry/">3 — REGISTRY</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/verify/">4 — VERIFY</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/create/">1 — CREATE</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/receipt/">2 — RECEIPT</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">3 — REGISTRY</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">4 — VERIFY</a>
           </div>
         </div>
 
         <div class="hbce-card">
-          <h3>Che tipo di “identità” è</h3>
+          <h3>Live health (registry)</h3>
+          <p class="hbce-note">
+            Questo check legge <code>registry/registry.json</code> dal browser.
+            Se non è leggibile o non è coerente → <strong>FAIL-CLOSED</strong>.
+          </p>
+
           <ul class="hbce-list">
-            <li><strong>Identità operativa minimale</strong> (hash-only) per attribuire azioni/output</li>
-            <li><strong>Precheck</strong>: condizione tecnica prima dell’esecuzione</li>
-            <li><strong>Audit replicabile</strong>: verificabile da terze parti</li>
-            <li><strong>Append-only</strong>: coerenza nel tempo, non riscrittura</li>
+            <li><strong>Status:</strong> <span id="hbce-registry-status">Checking…</span></li>
+            <li><strong>Entries:</strong> <span id="hbce-entries-count">—</span></li>
+            <li><strong>Last timestamp:</strong> <span id="hbce-last-ts">—</span></li>
+            <li><strong>Last nickname:</strong> <span id="hbce-last-nick">—</span></li>
+            <li><strong>Registry SHA-256:</strong> <span id="hbce-registry-sha256">—</span></li>
           </ul>
+
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">Apri STATUS completo</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Apri registry</a>
+          </div>
+
+          <p class="hbce-note">
+            Source: <code id="hbce-registry-url">/hermeticum-bce-platform/registry/registry.json</code>
+          </p>
         </div>
       </div>
     </section>
 
-    <!-- COSA NON È -->
+    <!-- COSA È / COSA NON È -->
     <section class="hbce-section">
       <h2>Cosa è / cosa non è</h2>
 
@@ -93,9 +141,9 @@
             Una volta attivato, esisti in modalità verificabile. Cambiano i moduli e l’operatività ottenuta.
           </p>
           <div class="hbce-actions">
-            <a class="hbce-btn" href="/activate/">Attiva</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/registry/">Apri registry</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/verify/">Verifica</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Attiva</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Apri registry</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verifica</a>
           </div>
           <p class="hbce-note">Base: hash-only + registry. Nessuna custodia pubblica di dati personali.</p>
         </div>
@@ -120,8 +168,8 @@
             <li>Operatività: “operatore AI personale” (output verificabili)</li>
           </ul>
           <div class="hbce-actions">
-            <a class="hbce-btn hbce-btn--ghost" href="/ai-joker-c2/">Apri Joker unit</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/verify/">Verifica output</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/ai-joker-c2/">Apri Joker unit</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verifica output</a>
           </div>
         </div>
 
@@ -133,8 +181,8 @@
             <li>Operatività: profilo R&D evolutivo (milestone verificabili)</li>
           </ul>
           <div class="hbce-actions">
-            <a class="hbce-btn hbce-btn--ghost" href="/verify/">Verifica milestone</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/registry/">Registry</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verifica milestone</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry</a>
           </div>
         </div>
 
@@ -146,10 +194,10 @@
             <li>Flusso: richiesta → create → receipt → registry → verify</li>
           </ul>
           <div class="hbce-actions">
-            <a class="hbce-btn" href="/create/">CREATE</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/receipt/">RECEIPT</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/registry/">REGISTRY</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/verify/">VERIFY</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/create/">CREATE</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/receipt/">RECEIPT</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
           </div>
         </div>
 
@@ -255,10 +303,10 @@
             Se manca un passaggio o un hash non è presente → INVALID (fail-closed).
           </p>
           <div class="hbce-actions">
-            <a class="hbce-btn" href="/create/">1 — CREATE</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/receipt/">2 — RECEIPT</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/registry/">3 — REGISTRY</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/verify/">4 — VERIFY</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/create/">1 — CREATE</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/receipt/">2 — RECEIPT</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">3 — REGISTRY</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">4 — VERIFY</a>
           </div>
         </div>
       </div>
@@ -269,16 +317,24 @@
       <h2>Ingressi di sistema</h2>
 
       <div class="hbce-actions">
-        <a class="hbce-btn hbce-btn--ghost" href="/activate/">ACTIVATE</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/create/">CREATE</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/verify/">VERIFY</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/registry/">REGISTRY</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/control/">CONTROL</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/status/">STATUS</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/map/">MAP</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/positioning/">POSITIONING</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/infrastructure/">INFRASTRUCTURE</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/enterprise/">ENTERPRISE</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/eu/">EU</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/lab/">LAB</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/horizon/">HORIZON</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/partners/">PARTNERS</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/press/">PRESS</a>
+
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/activate/">ACTIVATE</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/">CREATE</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/receipt/">RECEIPT</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">STATUS</a>
+
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/control/">CONTROL</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/map/">MAP</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/positioning/">POSITIONING</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/infrastructure/">INFRASTRUCTURE</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/enterprise/">ENTERPRISE</a>
       </div>
 
       <p class="hbce-note">
@@ -291,5 +347,114 @@
   </main>
 
   <div data-hbce="footer"></div>
+
+  <script>
+    (function () {
+      const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
+      const $ = (id) => document.getElementById(id);
+
+      function setText(id, value) {
+        const el = $(id);
+        if (el) el.textContent = value;
+      }
+
+      function isNonEmptyString(x) {
+        return typeof x === "string" && x.trim().length > 0;
+      }
+
+      function isISODateString(x) {
+        if (!isNonEmptyString(x)) return false;
+        const d = new Date(x);
+        return !Number.isNaN(d.valueOf());
+      }
+
+      async function sha256HexFromText(text) {
+        if (!window.crypto || !window.crypto.subtle) return null;
+        const enc = new TextEncoder();
+        const buf = enc.encode(text);
+        const hashBuf = await crypto.subtle.digest("SHA-256", buf);
+        const hashArr = Array.from(new Uint8Array(hashBuf));
+        return hashArr.map(b => b.toString(16).padStart(2, "0")).join("");
+      }
+
+      function fail(reason) {
+        setText("hbce-registry-status", "FAIL-CLOSED — " + reason);
+      }
+
+      function pass(msg) {
+        setText("hbce-registry-status", "OK — " + msg);
+      }
+
+      async function run() {
+        setText("hbce-registry-url", REGISTRY_URL);
+
+        let resp, text;
+        try {
+          resp = await fetch(REGISTRY_URL, { cache: "no-store" });
+        } catch (e) {
+          fail("registry fetch error");
+          return;
+        }
+
+        if (!resp || !resp.ok) {
+          fail("registry HTTP " + (resp ? resp.status : "error"));
+          return;
+        }
+
+        try {
+          text = await resp.text();
+        } catch (e) {
+          fail("registry read error");
+          return;
+        }
+
+        try {
+          const hex = await sha256HexFromText(text);
+          if (hex) setText("hbce-registry-sha256", hex);
+        } catch (_) {}
+
+        let json;
+        try {
+          json = JSON.parse(text);
+        } catch (e) {
+          fail("registry JSON invalid");
+          return;
+        }
+
+        if (!json || !Array.isArray(json.entries)) {
+          fail("registry schema invalid (entries[])");
+          return;
+        }
+
+        const entries = json.entries;
+        setText("hbce-entries-count", String(entries.length));
+
+        if (entries.length === 0) {
+          pass("registry valid (0 entries)");
+          setText("hbce-last-ts", "—");
+          setText("hbce-last-nick", "—");
+          return;
+        }
+
+        const last = entries[entries.length - 1];
+
+        const okNick = isNonEmptyString(last.nickname);
+        const okHash = isNonEmptyString(last.payload_sha256);
+        const okTs = isISODateString(last.timestamp);
+
+        setText("hbce-last-nick", okNick ? last.nickname : "—");
+        setText("hbce-last-ts", okTs ? last.timestamp : "—");
+
+        if (!okNick || !okHash || !okTs) {
+          fail("last entry missing required fields");
+          return;
+        }
+
+        pass("registry valid");
+      }
+
+      run();
+    })();
+  </script>
 </body>
 </html>
