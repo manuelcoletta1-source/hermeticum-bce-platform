@@ -11,19 +11,24 @@
     "NO_PUBLIC_DATA_CUSTODY"
   ],
   "description": "Registro pubblico append-only. Pubblica solo prove minimizzate (name|nickname + hash + timestamp). Nessuna custodia pubblica di dati personali. Verifica deterministica: se non matcha -> INVALID (fail-closed).",
+  "schema": {
+    "entry_required": ["payload_sha256", "timestamp"],
+    "entry_public_identity": ["name"],
+    "entry_legacy_allowed": ["nickname"],
+    "entry_optional": ["entity_type", "status"],
+    "constraints": {
+      "payload_sha256": "64-hex sha256",
+      "timestamp": "ISO 8601",
+      "name": "public display name (Nome Cognome or approved abbreviated form)"
+    },
+    "compatibility": "UI renders entry.name if present else entry.nickname (legacy). Matching uses payload_sha256 only."
+  },
   "entries": [
     {
       "nickname": "AI_JOKER_C2",
       "payload_sha256": "13a955dd8b8df92603952c3aa25aaaf7571c7bc6c6a49679dc2ac7ff12b99324",
       "timestamp": "2026-02-12T00:00:00Z",
       "entity_type": "CYBER_ENTITY",
-      "status": "ACTIVE"
-    },
-    {
-      "name": "Manuel Coletta",
-      "payload_sha256": "426639d86a26e623ac7184d1beadac74e3ddb5b07f4b6466e46b5dbc6b851195",
-      "timestamp": "2026-02-13T18:34:11.305Z",
-      "entity_type": "HUMAN",
       "status": "ACTIVE"
     }
   ]
