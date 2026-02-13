@@ -1,10 +1,11 @@
+
 <!doctype html>
 <html lang="it">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PACK VERIFY — ULTRA-HARD (Recompute + Chain Continuity)</title>
-  <meta name="description" content="ULTRA-HARD verifier: ricalcola SHA-256 dei file, verifica corrispondenza col PACK_MANIFEST, verifica chain (PACK_CHAIN) + continuità prev/last da local storage. Fail-closed." />
+  <title>PACK VERIFY — ULTRA-HARD v2 STRICT</title>
+  <meta name="description" content="ULTRA-HARD STRICT verifier: recompute SHA-256, enforce manifest integrity, chain continuity, strict filename match, registry snapshot hash enforcement, optional signature gate. Fail-closed." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
@@ -14,16 +15,65 @@
   <main class="hbce-container hbce-main">
 
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">ULTRA-HARD · RECOMPUTE HASH · MANIFEST INTEGRITY · CHAIN CONTINUITY</div>
-      <h1 class="hbce-hero__title">Evidence Pack Verifier (ULTRA-HARD)</h1>
+      <div class="hbce-hero__kicker">ULTRA-HARD v2 · STRICT FILENAME · REGISTRY SNAPSHOT ENFORCED · OPTIONAL SIG GATE</div>
+      <h1 class="hbce-hero__title">Evidence Pack Verifier (STRICT)</h1>
       <p class="hbce-hero__lead">
-        Carica <strong>PACK_MANIFEST</strong>, <strong>PACK_CHAIN</strong> e i file elencati nel manifest.
-        Il sistema ricalcola gli SHA-256 e controlla: <strong>match totale</strong> + <strong>continuità chain</strong> (prev/last in locale).
-        Se un singolo bit non torna → <strong>FAIL-CLOSED</strong>.
+        Qui non basta “più o meno”: i file devono combaciare per <strong>hash</strong> e (in modalità strict) anche per <strong>filename</strong>.
+        Se il manifest dichiara uno snapshot del registry, devi caricare anche quel <strong>registry.json</strong> e deve matchare l’hash.
       </p>
       <p class="hbce-note">
-        Questo è il “bunker test”: niente fiducia, solo determinismo.
+        Fail-closed reale: un mismatch = INVALID.
       </p>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Strict controls</h2>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>Strict filename</h3>
+          <label style="display:flex;gap:10px;align-items:center;">
+            <input type="checkbox" id="strict_name" checked />
+            <span><strong>ENFORCE filename</strong> (manifest.filename deve matchare il file caricato)</span>
+          </label>
+          <p class="hbce-note">
+            Se disabilitato: match solo per hash (meno bunker).
+          </p>
+
+          <h3 style="margin-top:14px;">Registry snapshot enforcement</h3>
+          <label style="display:flex;gap:10px;align-items:center;">
+            <input type="checkbox" id="strict_registry" checked />
+            <span><strong>ENFORCE registry snapshot</strong> (se manifest.registry_snapshot.included=true)</span>
+          </label>
+          <p class="hbce-note">
+            Se attivo, devi caricare un file registry snapshot e l’hash deve combaciare.
+          </p>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Optional signature gate</h3>
+          <label style="display:flex;gap:10px;align-items:center;">
+            <input type="checkbox" id="sig_gate" />
+            <span><strong>Require signature fields</strong> (solo se manifest.signature.mode != NONE)</span>
+          </label>
+          <ul class="hbce-list">
+            <li>Se OFF: signature è solo placeholder (default)</li>
+            <li>Se ON: se mode != NONE → public_key + signature non vuoti</li>
+          </ul>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Decision</h3>
+          <div class="hbce-actions">
+            <button class="hbce-btn" id="btnVerify" type="button">VERIFY (ULTRA-HARD STRICT)</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btnSaveLocal" type="button" disabled>SAVE CHAIN AS LAST (local)</button>
+          </div>
+          <ul class="hbce-list">
+            <li><strong>RESULT:</strong> <span id="result">—</span></li>
+            <li><strong>Reason:</strong> <span id="reason">—</span></li>
+          </ul>
+        </div>
+      </div>
     </section>
 
     <section class="hbce-section">
@@ -40,6 +90,8 @@
             <li><strong>operator_id:</strong> <span id="m_op">—</span></li>
             <li><strong>payload_sha256:</strong> <span id="m_payload">—</span></li>
             <li><strong>manifest_sha256 (computed):</strong> <span id="m_sha">—</span></li>
+            <li><strong>registry_snapshot.included:</strong> <span id="m_reg_inc">—</span></li>
+            <li><strong>registry_snapshot.sha256:</strong> <span id="m_reg_sha">—</span></li>
           </ul>
         </div>
 
@@ -59,12 +111,23 @@
           <h3>3) Files referenced in manifest (required)</h3>
           <input type="file" id="f_files" multiple />
           <p class="hbce-note">
-            Carica i file reali (release/entry/cert ecc). Il verifier li abbina usando il loro SHA-256 ricalcolato.
+            Carica i file reali (release/entry/cert ecc). STRICT: anche i filename devono combaciare.
           </p>
           <ul class="hbce-list">
             <li><strong>Loaded files:</strong> <span id="f_count">0</span></li>
             <li><strong>Matched entries:</strong> <span id="f_match">0</span></li>
             <li><strong>Missing entries:</strong> <span id="f_missing">—</span></li>
+            <li><strong>Filename mismatches:</strong> <span id="f_name_miss">—</span></li>
+          </ul>
+        </div>
+
+        <div class="hbce-card">
+          <h3>4) Registry snapshot file (optional / required if enforced)</h3>
+          <input type="file" id="f_registry_snapshot" accept=".json,application/json" />
+          <ul class="hbce-list">
+            <li><strong>Status:</strong> <span id="rs_status">—</span></li>
+            <li><strong>SHA-256 (computed):</strong> <span id="rs_sha">—</span></li>
+            <li><strong>Matches manifest:</strong> <span id="rs_match">—</span></li>
           </ul>
         </div>
       </div>
@@ -78,7 +141,6 @@
           <h3>Local chain state</h3>
           <ul class="hbce-list">
             <li><strong>local last_chain_sha256:</strong> <span id="l_last">—</span></li>
-            <li><strong>expected prev_chain_sha256:</strong> <span id="l_expected_prev">—</span></li>
             <li><strong>chain continuity:</strong> <span id="l_ok">—</span></li>
           </ul>
           <div class="hbce-actions">
@@ -86,32 +148,12 @@
             <button class="hbce-btn hbce-btn--ghost" id="btnExportLocal" type="button">EXPORT LOCAL CHAIN LOG</button>
           </div>
           <p class="hbce-note">
-            ULTRA-HARD: se hai una chain locale, il pack deve puntare al <strong>last</strong> come prev. Altrimenti FAIL.
+            ULTRA-HARD: se local last esiste → il pack deve puntare a quello come prev.
           </p>
         </div>
 
         <div class="hbce-card">
-          <h3>Decision</h3>
-          <div class="hbce-actions">
-            <button class="hbce-btn" id="btnVerify" type="button">VERIFY (ULTRA-HARD)</button>
-            <button class="hbce-btn hbce-btn--ghost" id="btnSaveLocal" type="button" disabled>SAVE CHAIN AS LAST (local)</button>
-          </div>
-          <ul class="hbce-list">
-            <li><strong>RESULT:</strong> <span id="result">—</span></li>
-            <li><strong>Reason:</strong> <span id="reason">—</span></li>
-          </ul>
-          <p class="hbce-note">
-            Se PASS, puoi salvare la chain come nuovo last (append-only locale).
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="hbce-section">
-      <h2>Report</h2>
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>Details</h3>
+          <h3>Report</h3>
           <pre class="hbce-pre"><code id="report">—</code></pre>
         </div>
       </div>
@@ -170,18 +212,12 @@
     try { localStorage.setItem(CHAIN_LOG_KEY, JSON.stringify(log)); } catch(_) {}
   }
 
-  function refreshLocalUI(chainPrevExpected){
-    const last = getLastChainSha();
-    setText("l_last", last || "—");
-    setText("l_expected_prev", chainPrevExpected || (last || "—"));
-  }
-
   $("btnClearLocal").addEventListener("click", () => {
     try{
       localStorage.removeItem(CHAIN_LAST_KEY);
       localStorage.removeItem(CHAIN_LOG_KEY);
     }catch(_){}
-    refreshLocalUI(null);
+    setText("l_last","—");
     setText("l_ok","—");
   });
 
@@ -201,7 +237,9 @@
 
   let manifestObj=null, manifestText=null, manifestSha=null;
   let chainObj=null, chainText=null, chainSha=null;
+
   let loadedFiles = []; // {name, sha256}
+  let regSnapText=null, regSnapSha=null;
 
   function resetResult(){
     setText("result","—");
@@ -231,6 +269,11 @@
     setText("m_pack", manifestObj.pack_id || "—");
     setText("m_op", manifestObj.operator_id || "—");
     setText("m_payload", (manifestObj.linkage && manifestObj.linkage.payload_sha256) ? manifestObj.linkage.payload_sha256 : "—");
+
+    const inc = !!(manifestObj.registry_snapshot && manifestObj.registry_snapshot.included);
+    const rsha = manifestObj.registry_snapshot ? manifestObj.registry_snapshot.registry_sha256 : null;
+    setText("m_reg_inc", inc ? "true" : "false");
+    setText("m_reg_sha", rsha ? String(rsha) : "—");
 
     // minimal schema
     if(!manifestObj.proto || !manifestObj.kind || !manifestObj.pack_id || !manifestObj.operator_id) {
@@ -281,8 +324,10 @@
 
     setText("c_status","OK");
 
-    // refresh local expected
-    refreshLocalUI(chainObj.prev_chain_sha256 || null);
+    // local
+    const localLast = getLastChainSha();
+    setText("l_last", localLast || "—");
+    setText("l_ok", "—");
   }
 
   async function loadFiles(){
@@ -292,8 +337,8 @@
     setText("f_count", String(list.length));
     setText("f_match", "0");
     setText("f_missing", "—");
+    setText("f_name_miss", "—");
 
-    // compute sha for each file
     for(const f of list){
       try{
         const sha = await sha256HexFromBlob(f);
@@ -304,9 +349,30 @@
     }
   }
 
+  async function loadRegistrySnapshot(){
+    resetResult();
+    const f = $("f_registry_snapshot").files && $("f_registry_snapshot").files[0];
+    regSnapText=null; regSnapSha=null;
+    setText("rs_status","—");
+    setText("rs_sha","—");
+    setText("rs_match","—");
+
+    if(!f) return;
+
+    try{ regSnapText = await f.text(); }
+    catch(_){ setText("rs_status","FAIL — read"); return; }
+
+    try{ regSnapSha = await sha256HexFromText(regSnapText); setText("rs_sha", regSnapSha); }
+    catch(_){ setText("rs_sha","—"); }
+
+    // accept JSON but don't strictly parse; hash is enough
+    setText("rs_status","OK");
+  }
+
   $("f_manifest").addEventListener("change", loadManifest);
   $("f_chain").addEventListener("change", loadChain);
   $("f_files").addEventListener("change", loadFiles);
+  $("f_registry_snapshot").addEventListener("change", loadRegistrySnapshot);
 
   function fail(reason, details){
     setText("result","FAIL-CLOSED");
@@ -325,12 +391,15 @@
   $("btnVerify").addEventListener("click", async () => {
     resetResult();
 
-    // require
+    const strictName = $("strict_name").checked;
+    const strictRegistry = $("strict_registry").checked;
+    const sigGate = $("sig_gate").checked;
+
     if(!manifestObj || !manifestText || !manifestSha) return fail("missing manifest", {});
     if(!chainObj || !chainText || !chainSha) return fail("missing chain", {});
     if(!Array.isArray(manifestObj.files)) return fail("manifest files[] invalid", {});
 
-    // check chain->manifest link
+    // chain->manifest link
     if(String(chainObj.manifest_sha256).trim().toLowerCase() !== String(manifestSha).trim().toLowerCase()){
       return fail("chain.manifest_sha256 != computed manifest sha", {
         chain_manifest_sha256: chainObj.manifest_sha256,
@@ -338,16 +407,15 @@
       });
     }
 
-    // check pack_id consistency
+    // pack_id match
     if(String(chainObj.pack_id||"") !== String(manifestObj.pack_id||"")){
       return fail("pack_id mismatch (chain vs manifest)", { chain_pack_id: chainObj.pack_id, manifest_pack_id: manifestObj.pack_id });
     }
 
-    // ULTRA-HARD local continuity
-    const localLast = getLastChainSha(); // may be null
+    // local continuity
+    const localLast = getLastChainSha();
     const prev = chainObj.prev_chain_sha256 || null;
 
-    // rule: if localLast exists -> prev MUST equal localLast
     if(localLast){
       if(!prev) return fail("local chain exists but pack has no prev_chain_sha256", { local_last_chain_sha256: localLast });
       if(String(prev).toLowerCase() !== String(localLast).toLowerCase()){
@@ -355,11 +423,26 @@
       }
       setText("l_ok","OK");
     } else {
-      // no local chain: prev can be null (genesis) or set (manual import)
       setText("l_ok", prev ? "OK (import)" : "OK (genesis)");
     }
 
-    // recompute & match files by sha256
+    // signature gate (optional)
+    if(sigGate){
+      const sig = manifestObj.signature || null;
+      const mode = sig ? (sig.mode || "NONE") : "NONE";
+      if(mode && String(mode) !== "NONE"){
+        const pk = sig ? sig.public_key : null;
+        const sv = sig ? sig.signature : null;
+        if(!isNonEmptyString(pk) || !isNonEmptyString(sv)){
+          return fail("signature gate failed (mode!=NONE but missing public_key/signature)", { signature: sig });
+        }
+      }
+    }
+
+    // require files loaded
+    if(loadedFiles.length === 0) return fail("no files loaded", { expected_count: manifestObj.files.length });
+
+    // expected hashes
     const manifestFiles = manifestObj.files.map(x => ({
       label: x.label || null,
       sha256: x.sha256 || null,
@@ -370,14 +453,41 @@
     const expected = manifestFiles.filter(x => isHex64(x.sha256)).map(x => String(x.sha256).toLowerCase());
     const provided = loadedFiles.filter(x => isHex64(x.sha256)).map(x => String(x.sha256).toLowerCase());
 
-    // check all expected are present
     const missing = expected.filter(h => !provided.includes(h));
 
-    // if user didn't load any files, fail
-    if(loadedFiles.length === 0) return fail("no files loaded", { expected_count: expected.length });
+    // strict filename mismatches
+    const nameMismatches = [];
+    if(strictName){
+      // build map sha -> expected filename (first occurrence)
+      const map = new Map();
+      for(const mf of manifestFiles){
+        if(isHex64(mf.sha256) && isNonEmptyString(mf.filename) && !map.has(String(mf.sha256).toLowerCase())){
+          map.set(String(mf.sha256).toLowerCase(), String(mf.filename));
+        }
+      }
+      // check each loaded file: if its sha is in map, filename must match
+      for(const lf of loadedFiles){
+        if(!isHex64(lf.sha256)) continue;
+        const key = String(lf.sha256).toLowerCase();
+        if(map.has(key)){
+          const expName = map.get(key);
+          if(String(lf.name) !== String(expName)){
+            nameMismatches.push({ sha256: key, expected_filename: expName, provided_filename: lf.name });
+          }
+        }
+      }
+      // also ensure every manifest entry that has filename is satisfied by some loaded file with same name+sha
+      for(const [sha, expName] of map.entries()){
+        const ok = loadedFiles.some(lf => isHex64(lf.sha256) && String(lf.sha256).toLowerCase() === sha && String(lf.name) === expName);
+        if(!ok){
+          nameMismatches.push({ sha256: sha, expected_filename: expName, provided_filename: null });
+        }
+      }
+    }
 
     setText("f_match", String(expected.length - missing.length));
     setText("f_missing", missing.length ? missing.join(", ") : "0");
+    setText("f_name_miss", nameMismatches.length ? String(nameMismatches.length) : "0");
 
     if(missing.length){
       return fail("missing files: not all manifest hashes provided", {
@@ -387,7 +497,11 @@
       });
     }
 
-    // Optional: enforce mandatory presence labels (RELEASE/REGISTRY_ENTRY/CERTIFICATE)
+    if(strictName && nameMismatches.length){
+      return fail("strict filename mismatch", { mismatches: nameMismatches });
+    }
+
+    // mandatory labels
     const labels = manifestFiles.map(x => x.label).filter(Boolean);
     const must = ["RELEASE","REGISTRY_ENTRY","CERTIFICATE"];
     for(const m of must){
@@ -396,18 +510,44 @@
       }
     }
 
-    // Also enforce linkage hashes exist
+    // linkage sanity
     const link = manifestObj.linkage || {};
     if(!isHex64(link.payload_sha256)) return fail("manifest.linkage.payload_sha256 missing/invalid", { linkage: link });
 
-    // if these are present, must be valid hex
     const lcheck = ["release_file_sha256","entry_file_sha256","certificate_file_sha256"];
     for(const k of lcheck){
       if(link[k] && !isHex64(link[k])) return fail("manifest.linkage."+k+" invalid", { linkage: link });
     }
 
+    // registry snapshot enforcement
+    const regInc = !!(manifestObj.registry_snapshot && manifestObj.registry_snapshot.included);
+    const regShaExp = manifestObj.registry_snapshot ? manifestObj.registry_snapshot.registry_sha256 : null;
+
+    if(regInc && strictRegistry){
+      if(!isHex64(regShaExp)) return fail("manifest registry_snapshot included but registry_sha256 missing/invalid", { registry_snapshot: manifestObj.registry_snapshot });
+      if(!regSnapSha) return fail("registry snapshot required but not provided", { expected_registry_sha256: regShaExp });
+      setText("rs_match", (String(regSnapSha).toLowerCase() === String(regShaExp).toLowerCase()) ? "YES" : "NO");
+      if(String(regSnapSha).toLowerCase() !== String(regShaExp).toLowerCase()){
+        return fail("registry snapshot hash mismatch", { expected_registry_sha256: regShaExp, computed_registry_sha256: regSnapSha });
+      }
+    } else {
+      if(regInc){
+        // show best-effort match if provided
+        if(regSnapSha && isHex64(regShaExp)){
+          setText("rs_match", (String(regSnapSha).toLowerCase() === String(regShaExp).toLowerCase()) ? "YES" : "NO");
+        } else {
+          setText("rs_match","—");
+        }
+      }
+    }
+
     pass({
       result: "PASS",
+      strict: {
+        filename: strictName,
+        registry_snapshot: strictRegistry,
+        signature_gate: sigGate
+      },
       pack_id: manifestObj.pack_id,
       operator_id: manifestObj.operator_id,
       manifest_sha256_computed: manifestSha,
@@ -416,7 +556,7 @@
       local_last_chain_sha256: localLast || null,
       files_expected: expected.length,
       files_loaded: loadedFiles.length,
-      note: "ULTRA-HARD passed: recompute OK + chain continuity OK"
+      note: "ULTRA-HARD STRICT passed: recompute OK + chain continuity OK + strict policies satisfied"
     });
   });
 
@@ -430,7 +570,6 @@
       manifest_sha256: chainObj ? chainObj.manifest_sha256 : null,
       prev_chain_sha256: chainObj ? chainObj.prev_chain_sha256 : null
     });
-    refreshLocalUI(chainObj ? chainObj.prev_chain_sha256 : null);
     setText("l_last", chainSha);
   });
 
@@ -440,7 +579,11 @@
   setText("f_count","0");
   setText("f_match","0");
   setText("f_missing","—");
-  refreshLocalUI(null);
+  setText("f_name_miss","—");
+  setText("rs_status","—");
+  setText("rs_sha","—");
+  setText("rs_match","—");
+  setText("l_last", getLastChainSha() || "—");
   setText("l_ok","—");
   resetResult();
 })();
