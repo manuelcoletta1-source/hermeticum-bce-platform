@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>REGISTRY APPEND — Operator Tool</title>
-  <meta name="description" content="Strumento operatore: append sicuro (no errori) di REGISTRY_ENTRY nel registry append-only." />
+  <title>REGISTRY APPEND — Safe Tool</title>
+  <meta name="description" content="Tool sicuro per append nel registry HBCE: valida registry schema, valida entry, dedupe, genera registry aggiornato. Fail-closed." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
@@ -14,15 +14,14 @@
   <main class="hbce-container hbce-main">
 
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">OPERATOR · APPEND-ONLY · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">Registry Append Tool</h1>
+      <div class="hbce-hero__kicker">REGISTRY · APPEND-ONLY · SAFE TOOL · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Append sicuro nel registry pubblico</h1>
       <p class="hbce-hero__lead">
-        Carichi <strong>registry.json</strong> e un file <strong>REGISTRY_ENTRY</strong>.
-        Il tool valida, blocca duplicati e genera:
-        <strong>registry.json aggiornato</strong> + blocco append da incollare.
+        Carichi <strong>registry.json</strong> + <strong>REGISTRY_ENTRY_*.json</strong>.
+        Il tool valida schema, controlla duplicati e ti rilascia <strong>registry.json UPDATED</strong>.
       </p>
       <p class="hbce-note">
-        Regola: append-only. Se payload_sha256 già presente → STOP.
+        Pubblico = <strong>name|nickname + payload_sha256 + timestamp</strong>. Matching = solo <code>payload_sha256</code>.
       </p>
     </section>
 
@@ -31,76 +30,66 @@
 
       <div class="hbce-grid">
         <div class="hbce-card">
-          <h3>1) Carica registry.json</h3>
-          <input type="file" id="registryFile" accept=".json,application/json" />
-          <p class="hbce-note">
-            Suggerimento: scaricalo prima dalla pagina pubblica <code>/registry/registry.json</code> per avere l’ultima versione live.
-          </p>
+          <h3>1) registry.json (canonico)</h3>
+          <input type="file" id="regFile" accept=".json,application/json" />
+
           <ul class="hbce-list">
-            <li><strong>Esito:</strong> <span id="regStatus">—</span></li>
+            <li><strong>Registry proto:</strong> <span id="regProto">—</span></li>
             <li><strong>Entries:</strong> <span id="regCount">—</span></li>
-            <li><strong>Last hash:</strong> <span id="regLastHash">—</span></li>
+            <li><strong>Registry SHA-256:</strong> <span id="regSha">—</span></li>
+            <li><strong>Schema:</strong> <span id="regSchema">—</span></li>
           </ul>
+
+          <p class="hbce-note">
+            Fail-closed: se il registry non è valido → nessuna operazione.
+          </p>
         </div>
 
         <div class="hbce-card">
-          <h3>2) Carica REGISTRY_ENTRY</h3>
+          <h3>2) REGISTRY_ENTRY (da appendere)</h3>
           <input type="file" id="entryFile" accept=".json,application/json" />
-          <p class="hbce-note">
-            Deve contenere almeno: <code>payload_sha256</code> + <code>timestamp</code> + <code>name</code> (oppure legacy <code>nickname</code>).
-          </p>
+
           <ul class="hbce-list">
-            <li><strong>Esito:</strong> <span id="entryStatus">—</span></li>
-            <li><strong>Display:</strong> <span id="entryDisplay">—</span></li>
-            <li><strong>Hash:</strong> <span id="entryHash">—</span></li>
-            <li><strong>Timestamp:</strong> <span id="entryTs">—</span></li>
+            <li><strong>Public name:</strong> <span id="entryName">—</span></li>
+            <li><strong>payload_sha256:</strong> <span id="entryHash">—</span></li>
+            <li><strong>timestamp:</strong> <span id="entryTs">—</span></li>
+            <li><strong>Entry valid:</strong> <span id="entryValid">—</span></li>
+            <li><strong>Duplicate:</strong> <span id="entryDup">—</span></li>
           </ul>
+
+          <p class="hbce-note">
+            UI name-first: usa <code>name</code> se presente, altrimenti <code>nickname</code> (legacy).
+          </p>
         </div>
       </div>
     </section>
 
     <section class="hbce-section">
-      <h2>Output</h2>
+      <h2>Operazione</h2>
 
       <div class="hbce-grid">
         <div class="hbce-card">
-          <h3>Append block (da incollare)</h3>
-          <p class="hbce-note">
-            Questo è il blocco oggetto entry, già “pulito”. Lo incolli in fondo a <code>entries[]</code> se vuoi fare manuale.
-          </p>
-          <pre class="hbce-pre"><code id="appendBlock">—</code></pre>
+          <h3>Append → Download updated</h3>
 
           <div class="hbce-actions">
-            <button class="hbce-btn hbce-btn--ghost" id="copyAppend" type="button" disabled>Copia blocco</button>
+            <button class="hbce-btn" id="btnAppend" type="button" disabled>APPEND (generate updated registry)</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btnDownload" type="button" disabled>Download registry.json UPDATED</button>
           </div>
+
+          <ul class="hbce-list">
+            <li><strong>Status:</strong> <span id="status">—</span></li>
+            <li><strong>New entries:</strong> <span id="newCount">—</span></li>
+          </ul>
+
+          <p class="hbce-note">
+            Dopo il download: sostituisci <code>registry/registry.json</code> nel repo e fai commit.
+          </p>
         </div>
 
         <div class="hbce-card">
-          <h3>registry.json aggiornato</h3>
-          <p class="hbce-note">
-            Generato in modo sicuro (niente virgole sbagliate). Se duplicato → non genera.
-          </p>
-          <pre class="hbce-pre"><code id="newRegistryPreview">—</code></pre>
-
-          <div class="hbce-actions">
-            <button class="hbce-btn" id="downloadRegistry" type="button" disabled>Download registry.json (UPDATED)</button>
-          </div>
-
-          <p class="hbce-note" id="finalHint">—</p>
+          <h3>Preview updated registry (estratto)</h3>
+          <pre class="hbce-pre"><code id="preview">—</code></pre>
         </div>
-      </div>
-    </section>
-
-    <section class="hbce-section">
-      <h2>Procedura operatore (zero errori)</h2>
-      <div class="hbce-card">
-        <ol class="hbce-list">
-          <li>Scarica il registry live: <code>/registry/registry.json</code></li>
-          <li>Caricalo qui.</li>
-          <li>Carica <code>REGISTRY_ENTRY_*.json</code> (dal cliente o dal tuo create).</li>
-          <li>Scarica <strong>registry.json UPDATED</strong>.</li>
-          <li>Sostituisci il file nel repo e fai commit. Fine.</li>
-        </ol>
       </div>
     </section>
 
@@ -108,206 +97,235 @@
 
   <div data-hbce="footer"></div>
 
-  <script>
-    (function () {
-      const $ = (id) => document.getElementById(id);
+<script>
+(function(){
+  const $ = (id) => document.getElementById(id);
 
-      function setText(id, v) { const el = $(id); if (el) el.textContent = v; }
+  function setText(id, v){ const el = $(id); if(el) el.textContent = v; }
+  function isNonEmptyString(x){ return typeof x === "string" && x.trim().length > 0; }
+  function isISODateString(x){
+    if(!isNonEmptyString(x)) return false;
+    const d = new Date(x);
+    return !Number.isNaN(d.valueOf());
+  }
+  function isHex64(x){ return typeof x === "string" && /^[a-f0-9]{64}$/i.test(x.trim()); }
 
-      function isNonEmptyString(x) { return typeof x === "string" && x.trim().length > 0; }
-      function isHex64(x) { return typeof x === "string" && /^[a-f0-9]{64}$/i.test(x.trim()); }
-      function isISODateString(x) {
-        if (!isNonEmptyString(x)) return false;
-        const d = new Date(x);
-        return !Number.isNaN(d.valueOf());
-      }
+  function readPublicName(obj){
+    const a = obj && obj.name;
+    const b = obj && obj.nickname;
+    const v = isNonEmptyString(a) ? a : (isNonEmptyString(b) ? b : null);
+    return v ? String(v).trim() : null;
+  }
 
-      function readDisplay(entry) {
-        const n = entry && entry.name;
-        const k = entry && entry.nickname;
-        return (isNonEmptyString(n) ? n.trim() : isNonEmptyString(k) ? k.trim() : "—");
-      }
+  async function sha256HexFromText(text){
+    const enc = new TextEncoder();
+    const buf = enc.encode(text);
+    const hashBuf = await crypto.subtle.digest("SHA-256", buf);
+    const hashArr = Array.from(new Uint8Array(hashBuf));
+    return hashArr.map(b => b.toString(16).padStart(2,"0")).join("");
+  }
 
-      function downloadText(filename, text, mime) {
-        const blob = new Blob([text], { type: mime || "application/octet-stream" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-      }
+  function downloadText(filename, text, mime){
+    const blob = new Blob([text], { type: mime || "application/octet-stream" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
 
-      async function readJsonFile(file) {
-        const text = await file.text();
-        return JSON.parse(text);
-      }
+  // state
+  let regObj = null;
+  let regText = null;
+  let entryObj = null;
+  let updatedObj = null;
+  let updatedText = null;
 
-      function normalizeEntry(raw) {
-        // Manteniamo pubblico-min: name|nickname + payload_sha256 + timestamp + opzionali
-        const e = raw || {};
-        const out = {};
+  function reset(){
+    regObj = null; regText = null;
+    entryObj = null;
+    updatedObj = null; updatedText = null;
+    setText("regProto","—");
+    setText("regCount","—");
+    setText("regSha","—");
+    setText("regSchema","—");
 
-        if (isNonEmptyString(e.name)) out.name = e.name.trim();
-        if (!out.name && isNonEmptyString(e.nickname)) out.nickname = e.nickname.trim();
+    setText("entryName","—");
+    setText("entryHash","—");
+    setText("entryTs","—");
+    setText("entryValid","—");
+    setText("entryDup","—");
 
-        out.payload_sha256 = isNonEmptyString(e.payload_sha256) ? e.payload_sha256.trim() : "";
-        out.timestamp = isNonEmptyString(e.timestamp) ? e.timestamp.trim() : "";
+    setText("status","—");
+    setText("newCount","—");
+    setText("preview","—");
 
-        if (isNonEmptyString(e.entity_type)) out.entity_type = e.entity_type.trim();
-        if (isNonEmptyString(e.status)) out.status = e.status.trim();
+    $("btnAppend").disabled = true;
+    $("btnDownload").disabled = true;
+  }
 
-        return out;
-      }
+  function validateRegistry(obj){
+    if(!obj || typeof obj !== "object") return { ok:false, reason:"registry not object" };
+    if(!Array.isArray(obj.entries)) return { ok:false, reason:"missing entries[]" };
+    const proto = obj.proto || obj.PROTO;
+    if(!isNonEmptyString(proto)) return { ok:false, reason:"missing proto" };
+    // allow legacy kind; just ensure entries array
+    return { ok:true };
+  }
 
-      function validateRegistry(reg) {
-        if (!reg || typeof reg !== "object") return "FAIL — registry not object";
-        if (!Array.isArray(reg.entries)) return "FAIL — missing entries[]";
-        return "OK";
-      }
+  function validateEntry(obj){
+    if(!obj || typeof obj !== "object") return { ok:false, reason:"entry not object" };
+    const name = readPublicName(obj);
+    const hash = obj.payload_sha256;
+    const ts = obj.timestamp;
+    if(!name) return { ok:false, reason:"missing name (or nickname legacy)" };
+    if(!isHex64(hash)) return { ok:false, reason:"payload_sha256 invalid" };
+    if(!isISODateString(ts)) return { ok:false, reason:"timestamp invalid" };
+    return { ok:true, name, hash:String(hash).trim(), ts:String(ts).trim() };
+  }
 
-      function validateEntry(entry) {
-        if (!entry || typeof entry !== "object") return "FAIL — entry not object";
-        if (!(isNonEmptyString(entry.name) || isNonEmptyString(entry.nickname))) return "FAIL — missing name/nickname";
-        if (!isHex64(entry.payload_sha256)) return "FAIL — payload_sha256 invalid";
-        if (!isISODateString(entry.timestamp)) return "FAIL — timestamp invalid";
-        return "OK";
-      }
+  function canEnableAppend(){
+    if(!regObj || !entryObj) return false;
+    const vr = validateRegistry(regObj);
+    const ve = validateEntry(entryObj);
+    if(!vr.ok || !ve.ok) return false;
+    return true;
+  }
 
-      let registryJson = null;
-      let entryJson = null;
-      let newRegistryJson = null;
+  function checkDuplicate(reg, entryHash){
+    const entries = reg.entries || [];
+    return entries.some(e => e && String(e.payload_sha256 || "").trim() === String(entryHash).trim());
+  }
 
-      function resetOutput() {
-        $("downloadRegistry").disabled = true;
-        $("copyAppend").disabled = true;
-        setText("appendBlock", "—");
-        setText("newRegistryPreview", "—");
-        setText("finalHint", "—");
-      }
+  $("regFile").addEventListener("change", async (ev) => {
+    updatedObj = null; updatedText = null;
+    $("btnDownload").disabled = true;
+    setText("preview","—");
 
-      async function tryBuild() {
-        resetOutput();
-        if (!registryJson || !entryJson) return;
+    const f = ev.target.files && ev.target.files[0];
+    if(!f) return;
 
-        const regOk = validateRegistry(registryJson);
-        const entOk = validateEntry(entryJson);
+    try { regText = await f.text(); }
+    catch(_) { setText("status","FAIL-CLOSED — cannot read registry file"); return; }
 
-        if (regOk !== "OK") { setText("finalHint", "STOP: registry invalido."); return; }
-        if (entOk !== "OK") { setText("finalHint", "STOP: entry invalida."); return; }
+    let sha = null;
+    try { sha = await sha256HexFromText(regText); } catch(_) {}
 
-        const entries = registryJson.entries || [];
-        const hash = entryJson.payload_sha256;
+    try { regObj = JSON.parse(regText); }
+    catch(_) { regObj = null; setText("regSchema","FAIL — JSON invalid"); return; }
 
-        const exists = entries.some(x => x && String(x.payload_sha256 || "").trim() === hash);
-        if (exists) {
-          setText("finalHint", "STOP: hash già presente nel registry (duplicato).");
-          return;
-        }
+    const vr = validateRegistry(regObj);
+    setText("regProto", (regObj && regObj.proto) ? String(regObj.proto) : "—");
+    setText("regCount", regObj && Array.isArray(regObj.entries) ? String(regObj.entries.length) : "—");
+    setText("regSha", sha || "—");
+    setText("regSchema", vr.ok ? "OK" : ("FAIL — " + vr.reason));
 
-        // Append-only: copia registry e aggiungi entry
-        newRegistryJson = JSON.parse(JSON.stringify(registryJson));
-        newRegistryJson.entries = Array.isArray(newRegistryJson.entries) ? newRegistryJson.entries : [];
-        newRegistryJson.entries.push(entryJson);
+    $("btnAppend").disabled = !canEnableAppend();
+    setText("status","—");
+  });
 
-        const appendBlock = JSON.stringify(entryJson, null, 2);
-        setText("appendBlock", appendBlock);
-        $("copyAppend").disabled = false;
+  $("entryFile").addEventListener("change", async (ev) => {
+    updatedObj = null; updatedText = null;
+    $("btnDownload").disabled = true;
+    setText("preview","—");
 
-        const preview = JSON.stringify(newRegistryJson, null, 2);
-        setText("newRegistryPreview", preview.slice(0, 6000) + (preview.length > 6000 ? "\n…(troncato preview)\n" : ""));
-        $("downloadRegistry").disabled = false;
+    const f = ev.target.files && ev.target.files[0];
+    if(!f) return;
 
-        setText("finalHint", "OK: scarica registry UPDATED e sostituisci registry/registry.json nel repo (commit).");
-      }
+    let text;
+    try { text = await f.text(); }
+    catch(_) { entryObj = null; setText("entryValid","FAIL — cannot read entry"); return; }
 
-      $("registryFile").addEventListener("change", async (ev) => {
-        resetOutput();
-        const f = ev.target.files && ev.target.files[0];
-        if (!f) return;
+    try { entryObj = JSON.parse(text); }
+    catch(_) { entryObj = null; setText("entryValid","FAIL — JSON invalid"); return; }
 
-        try {
-          const j = await readJsonFile(f);
-          registryJson = j;
+    const ve = validateEntry(entryObj);
+    setText("entryName", ve.ok ? ve.name : "—");
+    setText("entryHash", ve.ok ? ve.hash : "—");
+    setText("entryTs", ve.ok ? ve.ts : "—");
+    setText("entryValid", ve.ok ? "OK" : ("FAIL — " + ve.reason));
 
-          const ok = validateRegistry(registryJson);
-          setText("regStatus", ok);
+    if(ve.ok && regObj){
+      const dup = checkDuplicate(regObj, ve.hash);
+      setText("entryDup", dup ? "YES (already present)" : "NO");
+    } else {
+      setText("entryDup","—");
+    }
 
-          if (ok === "OK") {
-            const entries = registryJson.entries;
-            setText("regCount", String(entries.length));
-            if (entries.length) {
-              const last = entries[entries.length - 1];
-              setText("regLastHash", (last && last.payload_sha256) ? String(last.payload_sha256).slice(0, 20) + "…" : "—");
-            } else {
-              setText("regLastHash", "—");
-            }
-          } else {
-            setText("regCount", "—");
-            setText("regLastHash", "—");
-          }
+    $("btnAppend").disabled = !canEnableAppend();
+    setText("status","—");
+  });
 
-        } catch (e) {
-          registryJson = null;
-          setText("regStatus", "FAIL — invalid JSON");
-          setText("regCount", "—");
-          setText("regLastHash", "—");
-        }
+  $("btnAppend").addEventListener("click", () => {
+    $("btnDownload").disabled = true;
+    setText("preview","—");
 
-        await tryBuild();
-      });
+    if(!regObj || !entryObj){
+      setText("status","FAIL-CLOSED — missing input files");
+      return;
+    }
 
-      $("entryFile").addEventListener("change", async (ev) => {
-        resetOutput();
-        const f = ev.target.files && ev.target.files[0];
-        if (!f) return;
+    const vr = validateRegistry(regObj);
+    if(!vr.ok){
+      setText("status","FAIL-CLOSED — registry invalid (" + vr.reason + ")");
+      return;
+    }
 
-        try {
-          const j = await readJsonFile(f);
-          entryJson = normalizeEntry(j);
+    const ve = validateEntry(entryObj);
+    if(!ve.ok){
+      setText("status","FAIL-CLOSED — entry invalid (" + ve.reason + ")");
+      return;
+    }
 
-          const ok = validateEntry(entryJson);
-          setText("entryStatus", ok);
+    // dedupe
+    const dup = checkDuplicate(regObj, ve.hash);
+    if(dup){
+      setText("status","NO-OP — entry already present (append-only)");
+      setText("newCount", String(regObj.entries.length));
+      updatedObj = regObj;
+      updatedText = JSON.stringify(updatedObj, null, 2);
+      setText("preview", JSON.stringify({ last_entry: regObj.entries[regObj.entries.length-1] || null }, null, 2));
+      $("btnDownload").disabled = false;
+      return;
+    }
 
-          setText("entryDisplay", readDisplay(entryJson));
-          setText("entryHash", isNonEmptyString(entryJson.payload_sha256) ? entryJson.payload_sha256 : "—");
-          setText("entryTs", isNonEmptyString(entryJson.timestamp) ? entryJson.timestamp : "—");
+    // append
+    updatedObj = JSON.parse(JSON.stringify(regObj));
+    updatedObj.entries = Array.isArray(updatedObj.entries) ? updatedObj.entries : [];
+    updatedObj.entries.push({
+      ...(entryObj.name ? { name: ve.name } : {}),
+      ...(entryObj.nickname && !entryObj.name ? { nickname: String(entryObj.nickname).trim() } : {}),
+      payload_sha256: ve.hash,
+      timestamp: ve.ts,
+      ...(entryObj.entity_type ? { entity_type: String(entryObj.entity_type).trim() } : {}),
+      ...(entryObj.status ? { status: String(entryObj.status).trim() } : {})
+    });
 
-        } catch (e) {
-          entryJson = null;
-          setText("entryStatus", "FAIL — invalid JSON");
-          setText("entryDisplay", "—");
-          setText("entryHash", "—");
-          setText("entryTs", "—");
-        }
+    updatedText = JSON.stringify(updatedObj, null, 2);
 
-        await tryBuild();
-      });
+    setText("status","OK — appended (append-only)");
+    setText("newCount", String(updatedObj.entries.length));
 
-      $("copyAppend").addEventListener("click", async () => {
-        const t = $("appendBlock").textContent || "";
-        if (!t || t === "—") return;
-        try {
-          await navigator.clipboard.writeText(t);
-          setText("finalHint", "Copia OK: blocco entry copiato negli appunti.");
-        } catch (_) {
-          setText("finalHint", "Copia NON riuscita (browser). Usa selezione manuale.");
-        }
-      });
+    const last = updatedObj.entries[updatedObj.entries.length - 1];
+    setText("preview", JSON.stringify({ appended: last }, null, 2));
 
-      $("downloadRegistry").addEventListener("click", () => {
-        if (!newRegistryJson) return;
-        const text = JSON.stringify(newRegistryJson, null, 2);
-        downloadText("registry.json", text, "application/json;charset=utf-8");
-      });
+    $("btnDownload").disabled = false;
+  });
 
-      // init
-      resetOutput();
-      setText("regStatus", "—");
-      setText("entryStatus", "—");
-    })();
-  </script>
+  $("btnDownload").addEventListener("click", () => {
+    if(!updatedText){
+      setText("status","FAIL — nothing to download");
+      return;
+    }
+    downloadText("registry.json", updatedText, "application/json;charset=utf-8");
+  });
+
+  reset();
+})();
+</script>
+
 </body>
 </html>
