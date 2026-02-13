@@ -2,66 +2,387 @@
 <html lang="it">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>REGISTRY PUBBLICO — IPR</title>
-  <meta name="description" content="Registro pubblico append-only. Hash verificabili di identità operative." />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>REGISTRY — Append-only (public)</title>
+  <meta name="description" content="Viewer del registry append-only: ricerca, conteggio, export e link a VERIFY. UE-first, audit-first, fail-closed, hash-only, GDPR-min." />
+
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
 <body>
+  <div data-hbce="header"></div>
 
-<main class="hbce-container hbce-main">
+  <main class="hbce-container hbce-main">
 
-<section class="hbce-hero">
-  <div class="hbce-hero__kicker">Public Registry · Append-only</div>
-  <h1 class="hbce-hero__title">Registro pubblico identità operative</h1>
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">REGISTRY · Append-only · Public · HASH-ONLY</div>
+      <h1 class="hbce-hero__title">Registro pubblico (append-only)</h1>
+      <p class="hbce-hero__lead">
+        Questo registry pubblica solo prove minimizzate: <strong>name</strong> (Nome Cognome) + <strong>payload_sha256</strong> + <strong>timestamp</strong>.
+        <br />
+        Nessuna custodia pubblica di dati personali (GDPR-min). Se il registry non è leggibile o non è coerente → <strong>FAIL-CLOSED</strong>.
+      </p>
 
-  <p class="hbce-hero__lead">
-    Registro tecnico append-only.  
-    Pubblica solo hash verificabili.  
-    Nessun dato personale.
-  </p>
-</section>
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/wizard/">CREATE (client)</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/">CREATE (operator)</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">STATUS</a>
+      </div>
 
+      <p class="hbce-note">
+        Compatibilità: entry legacy possono avere <code>nickname</code>. Il viewer le mostra come <strong>name</strong>.
+      </p>
+    </section>
 
-<section class="hbce-section">
-  <h2>Entità attive</h2>
+    <section class="hbce-section">
+      <h2>Registry health</h2>
 
-  <div class="hbce-card">
-    <h3>AI JOKER C2</h3>
-    <p><strong>Tipo:</strong> Entità cibernetica operativa</p>
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>Live</h3>
+          <ul class="hbce-list">
+            <li><strong>Status:</strong> <span id="hbce-status">Checking…</span></li>
+            <li><strong>Entries:</strong> <span id="hbce-count">—</span></li>
+            <li><strong>Last timestamp:</strong> <span id="hbce-last-ts">—</span></li>
+            <li><strong>Last name:</strong> <span id="hbce-last-name">—</span></li>
+            <li><strong>Registry SHA-256:</strong> <span id="hbce-sha">—</span></li>
+          </ul>
 
-    <p><strong>SHA-256:</strong></p>
-    <pre style="white-space:pre-wrap">
-13a955dd8b8df92603952c3aa25aaaf7571c7bc6c6a49679dc2ac7ff12b99324
-    </pre>
+          <p class="hbce-note">
+            Source: <code id="hbce-url">/hermeticum-bce-platform/registry/registry.json</code>
+          </p>
+        </div>
 
-    <p class="hbce-muted">
-    Anchor verificabile nel repository pubblico.  
-    Collegabile a sistemi robotici e AI operative.
-    </p>
-  </div>
+        <div class="hbce-card">
+          <h3>Ricerca</h3>
+          <div class="hbce-form">
+            <label class="hbce-label" for="q">Query (name / hash)</label>
+            <input class="hbce-input" id="q" type="text" placeholder="Mario Rossi oppure 1db2ab..." />
 
-</section>
+            <div class="hbce-actions">
+              <button class="hbce-btn" id="btnSearch" type="button">Cerca</button>
+              <button class="hbce-btn hbce-btn--ghost" id="btnClear" type="button">Pulisci</button>
+              <button class="hbce-btn hbce-btn--ghost" id="btnExport" type="button">Export (filtered)</button>
+            </div>
 
+            <p class="hbce-note">
+              La ricerca è locale (nel browser). Non invia query.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<section class="hbce-section">
-  <h2>Verifica</h2>
+    <section class="hbce-section">
+      <h2>Entries</h2>
 
-  <div class="hbce-card">
-    <p><strong>File anchor:</strong></p>
-    <a href="/hermeticum-bce-platform/ai-joker-c2/anchor.json">
-    Apri anchor Joker
-    </a>
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>Lista (filtrabile)</h3>
+          <p class="hbce-note">
+            Colonne: <strong>name</strong> (fallback nickname) · <strong>payload_sha256</strong> · <strong>timestamp</strong>.
+          </p>
 
-    <p><strong>Calcolo hash:</strong></p>
-    <a href="/hermeticum-bce-platform/ai-joker-c2/hash.html">
-    Verifica SHA-256
-    </a>
-  </div>
-</section>
+          <div class="hbce-table-wrap">
+            <table class="hbce-table" id="tbl">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>payload_sha256</th>
+                  <th>timestamp</th>
+                  <th>verify</th>
+                </tr>
+              </thead>
+              <tbody id="tbody">
+                <tr><td colspan="5">Loading…</td></tr>
+              </tbody>
+            </table>
+          </div>
 
-</main>
+          <p class="hbce-note">
+            Append-only: questo viewer non modifica nulla.
+          </p>
+        </div>
 
+        <div class="hbce-card">
+          <h3>Entry (raw)</h3>
+          <p class="hbce-note">
+            Seleziona una riga per vedere il JSON completo.
+          </p>
+          <pre class="hbce-pre"><code id="raw">—</code></pre>
+          <div class="hbce-actions">
+            <button class="hbce-btn hbce-btn--ghost" id="btnCopyRaw" type="button">Copy</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <p class="hbce-note">
+        HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br />
+        HERMETICUM B.C.E. S.r.l.<br />
+        UE-first · audit-first · fail-closed · hash-only · append-only · GDPR-min
+      </p>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+
+  <script>
+    (function () {
+      const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
+
+      const $ = (id) => document.getElementById(id);
+
+      const el = {
+        url: $("hbce-url"),
+        status: $("hbce-status"),
+        count: $("hbce-count"),
+        lastTs: $("hbce-last-ts"),
+        lastName: $("hbce-last-name"),
+        sha: $("hbce-sha"),
+        q: $("q"),
+        btnSearch: $("btnSearch"),
+        btnClear: $("btnClear"),
+        btnExport: $("btnExport"),
+        tbody: $("tbody"),
+        raw: $("raw"),
+        btnCopyRaw: $("btnCopyRaw"),
+        table: $("tbl")
+      };
+
+      let allEntries = [];
+      let filtered = [];
+
+      function setText(target, value) {
+        if (target) target.textContent = value;
+      }
+
+      function nonEmpty(x) {
+        return typeof x === "string" && x.trim().length > 0;
+      }
+
+      function isISODateString(x) {
+        if (!nonEmpty(x)) return false;
+        const d = new Date(x);
+        return !Number.isNaN(d.valueOf());
+      }
+
+      function isHex64(x) {
+        return typeof x === "string" && /^[a-f0-9]{64}$/i.test(x.trim());
+      }
+
+      function readName(entry) {
+        const a = entry && entry.name;
+        const b = entry && entry.nickname; // legacy
+        const v = nonEmpty(a) ? a : (nonEmpty(b) ? b : "");
+        return v.trim();
+      }
+
+      function pretty(obj) {
+        return JSON.stringify(obj, null, 2);
+      }
+
+      async function sha256HexFromText(text) {
+        if (!window.crypto || !crypto.subtle) return null;
+        const enc = new TextEncoder();
+        const buf = enc.encode(text);
+        const hashBuf = await crypto.subtle.digest("SHA-256", buf);
+        const hashArr = Array.from(new Uint8Array(hashBuf));
+        return hashArr.map(b => b.toString(16).padStart(2, "0")).join("");
+      }
+
+      function fail(reason) {
+        setText(el.status, "FAIL-CLOSED — " + reason);
+      }
+
+      function pass(msg) {
+        setText(el.status, "OK — " + msg);
+      }
+
+      function renderTable(rows) {
+        if (!el.tbody) return;
+
+        if (!rows || rows.length === 0) {
+          el.tbody.innerHTML = '<tr><td colspan="5">No results</td></tr>';
+          return;
+        }
+
+        el.tbody.innerHTML = "";
+        rows.forEach((e, idx) => {
+          const name = readName(e) || "—";
+          const hash = (e && e.payload_sha256) ? String(e.payload_sha256) : "—";
+          const ts = (e && e.timestamp) ? String(e.timestamp) : "—";
+
+          const tr = document.createElement("tr");
+          tr.style.cursor = "pointer";
+
+          const verifyHref = "/hermeticum-bce-platform/verify/";
+          tr.innerHTML = `
+            <td>${idx + 1}</td>
+            <td>${escapeHtml(name)}</td>
+            <td><code>${escapeHtml(hash)}</code></td>
+            <td>${escapeHtml(ts)}</td>
+            <td><a class="hbce-link" href="${verifyHref}">open</a></td>
+          `;
+
+          tr.addEventListener("click", () => {
+            setText(el.raw, pretty(e));
+            // highlight selected row
+            Array.from(el.tbody.querySelectorAll("tr")).forEach(r => r.classList.remove("hbce-row-selected"));
+            tr.classList.add("hbce-row-selected");
+          });
+
+          el.tbody.appendChild(tr);
+        });
+      }
+
+      function escapeHtml(s) {
+        return String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function applyFilter() {
+        const q = String(el.q.value || "").trim().toLowerCase();
+        if (!q) {
+          filtered = allEntries.slice();
+          renderTable(filtered);
+          return;
+        }
+
+        filtered = allEntries.filter((e) => {
+          const nm = readName(e).toLowerCase();
+          const hs = (e && e.payload_sha256) ? String(e.payload_sha256).toLowerCase() : "";
+          const ts = (e && e.timestamp) ? String(e.timestamp).toLowerCase() : "";
+          return nm.includes(q) || hs.includes(q) || ts.includes(q);
+        });
+
+        renderTable(filtered);
+      }
+
+      async function exportFiltered() {
+        const obj = {
+          proto: "HBCE-REGISTRY-EXPORT-v1",
+          kind: "REGISTRY_EXPORT",
+          source: REGISTRY_URL,
+          exported_at: new Date().toISOString(),
+          count: filtered.length,
+          entries: filtered
+        };
+        const blob = new Blob([pretty(obj)], { type: "application/json;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "REGISTRY_EXPORT_" + filtered.length + ".json";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      async function copyRaw() {
+        const text = el.raw && el.raw.textContent ? el.raw.textContent : "";
+        if (!text || text === "—") return alert("Seleziona prima un’entry");
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch (_) {
+          alert("Copy non disponibile su questo browser");
+        }
+      }
+
+      async function loadRegistry() {
+        setText(el.url, REGISTRY_URL);
+
+        let resp, text;
+        try {
+          resp = await fetch(REGISTRY_URL, { cache: "no-store" });
+        } catch (_) {
+          fail("registry fetch error");
+          return;
+        }
+
+        if (!resp || !resp.ok) {
+          fail("registry HTTP " + (resp ? resp.status : "error"));
+          return;
+        }
+
+        try {
+          text = await resp.text();
+        } catch (_) {
+          fail("registry read error");
+          return;
+        }
+
+        try {
+          const hex = await sha256HexFromText(text);
+          if (hex) setText(el.sha, hex);
+        } catch (_) {}
+
+        let json;
+        try {
+          json = JSON.parse(text);
+        } catch (_) {
+          fail("registry JSON invalid");
+          return;
+        }
+
+        if (!json || !Array.isArray(json.entries)) {
+          fail("registry schema invalid (entries[])");
+          return;
+        }
+
+        allEntries = json.entries.slice();
+        setText(el.count, String(allEntries.length));
+
+        if (allEntries.length === 0) {
+          pass("registry valid (0 entries)");
+          setText(el.lastTs, "—");
+          setText(el.lastName, "—");
+          filtered = [];
+          renderTable(filtered);
+          return;
+        }
+
+        const last = allEntries[allEntries.length - 1];
+        const lastName = readName(last);
+        const okName = nonEmpty(lastName);
+        const okHash = isHex64(last && last.payload_sha256);
+        const okTs = isISODateString(last && last.timestamp);
+
+        setText(el.lastName, okName ? lastName : "—");
+        setText(el.lastTs, okTs ? last.timestamp : "—");
+
+        if (!okName || !okHash || !okTs) {
+          fail("last entry missing/invalid required fields");
+          return;
+        }
+
+        pass("registry valid");
+        filtered = allEntries.slice();
+        renderTable(filtered);
+      }
+
+      el.btnSearch.addEventListener("click", applyFilter);
+      el.q.addEventListener("input", () => applyFilter());
+      el.btnClear.addEventListener("click", () => {
+        el.q.value = "";
+        applyFilter();
+      });
+      el.btnExport.addEventListener("click", exportFiltered);
+      el.btnCopyRaw.addEventListener("click", copyRaw);
+
+      // init
+      setText(el.raw, "—");
+      loadRegistry();
+    })();
+  </script>
 </body>
 </html>
