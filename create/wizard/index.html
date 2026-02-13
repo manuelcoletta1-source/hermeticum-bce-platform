@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CREATE (Wizard) — IPR EU Base · Client-first → SHA-256 → Pack</title>
-  <meta name="description" content="Wizard client-first: compila dati minimi UE, genera payload canonico e calcola SHA-256 localmente. Poi genera Certified Pack firmato. Fail-closed." />
+  <meta name="description" content="Wizard client-first: compila dati minimi UE, genera payload canonico e calcola SHA-256 localmente. Proofs minimizzati (hash+salt). Download PAYLOAD_PRIVATE.json. Poi genera Certified Pack firmato. Fail-closed." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 
   <!-- ED25519 -->
@@ -18,11 +18,11 @@
   <main class="hbce-container hbce-main">
 
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CREATE WIZARD · CLIENT-FIRST · LOCAL-ONLY · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">Crea IPR: prima dati cliente → poi SHA-256 → poi pack.</h1>
+      <div class="hbce-hero__kicker">CREATE WIZARD · CLIENT-FIRST · LOCAL-ONLY · GDPR-MIN · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Crea IPR: dati cliente → proofs hash → SHA-256 → pack.</h1>
       <p class="hbce-hero__lead">
-        Qui non inserisci hash “a mano”. Compili i campi cliente, il browser genera il <strong>payload canonico</strong> e calcola <strong>SHA-256</strong>.
-        Solo dopo puoi generare il pack e la entry hash-only per il registry.
+        Compili i campi cliente. Il browser costruisce un <strong>payload canonico</strong>, calcola <strong>proofs minimizzati (hash+salt)</strong>
+        e poi calcola <strong>SHA-256</strong>. Solo dopo generi il pack e la entry hash-only per il registry.
       </p>
       <p class="hbce-note">
         Policy: UE-first · audit-first · fail-closed · hash-only · append-only · GDPR-min · no public data custody
@@ -33,7 +33,7 @@
     <section class="hbce-section">
       <h2>1) Dati cliente (minimi UE) — local-only</h2>
       <p class="hbce-note">
-        Questi dati restano nel browser e servono a costruire il payload (che NON pubblichi). Nel registry va solo <strong>hash-only</strong>.
+        Questi dati restano nel browser e servono a costruire il payload (privato). Nel registry va solo <strong>hash-only</strong>.
       </p>
 
       <div class="hbce-grid">
@@ -63,12 +63,12 @@
           </select>
 
           <p class="hbce-note">
-            Nota: questo wizard costruisce un payload “opponibile” a livello tecnico (canonico + hash). Non pubblica dati personali.
+            Payload privato: può essere consegnato al cliente. Pubblico: solo hash-only.
           </p>
         </div>
 
         <div class="hbce-card">
-          <h3>Contatti / riferimenti (minimizzati)</h3>
+          <h3>Contatti / note (minimizzati)</h3>
 
           <label class="hbce-label" for="contact_email">Email (opzionale, NON va nel registry)</label>
           <input class="hbce-input" id="contact_email" type="email" placeholder="opzionale" autocomplete="off" />
@@ -89,9 +89,69 @@
       </div>
     </section>
 
+    <!-- 1B) PROOFS MINIMIZZATI (HASH+SALT) -->
+    <section class="hbce-section">
+      <h2>1B) Proofs minimizzati (GDPR-min) — hash+salt (non in chiaro)</h2>
+      <p class="hbce-note">
+        Se usi proofs devi impostare un <strong>salt</strong>. Nel payload finiscono solo hash salted.
+        Il salt resta locale (o lo consegni al cliente separatamente).
+      </p>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>Salt (locale)</h3>
+          <label class="hbce-label" for="salt">Salt (testo) — obbligatorio se usi proofs</label>
+          <input class="hbce-input" id="salt" type="text" placeholder="stringa casuale lunga" autocomplete="off" />
+
+          <div class="hbce-actions" style="margin-top:12px;">
+            <button class="hbce-btn hbce-btn--ghost" id="btn-gen-salt" type="button">Genera salt casuale</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btn-clear-proofs" type="button">Pulisci proofs</button>
+          </div>
+
+          <p class="hbce-note">Raccomandato: salt ≥ 24 caratteri. Non pubblicarlo.</p>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Campi (opzionali, solo hash)</h3>
+
+          <label class="hbce-label" for="cf">Codice Fiscale — solo hash</label>
+          <input class="hbce-input" id="cf" type="text" placeholder="CLTMNL88B05A944R" autocomplete="off" />
+
+          <label class="hbce-label" for="cie">CIE numero — solo hash</label>
+          <input class="hbce-input" id="cie" type="text" placeholder="CA19311XQ" autocomplete="off" />
+
+          <label class="hbce-label" for="doc_id">ID documento — solo hash</label>
+          <input class="hbce-input" id="doc_id" type="text" placeholder="473902" autocomplete="off" />
+
+          <label class="hbce-label" for="dob">Data nascita (YYYY-MM-DD) — solo hash</label>
+          <input class="hbce-input" id="dob" type="text" placeholder="1988-02-05" autocomplete="off" />
+
+          <label class="hbce-label" for="place">Luogo nascita — solo hash</label>
+          <input class="hbce-input" id="place" type="text" placeholder="Bologna (BO)" autocomplete="off" />
+
+          <p class="hbce-note" id="proofs_msg">—</p>
+        </div>
+      </div>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>Proofs output (preview)</h3>
+          <pre class="hbce-code" id="proofs_preview">—</pre>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Regola fail-closed</h3>
+          <ul class="hbce-list">
+            <li>Campo sensibile compilato + salt mancante → <strong>FAIL-CLOSED</strong></li>
+            <li>Payload privato: ok. Registry pubblico: sempre hash-only</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
     <!-- 2) OUTPUT PAYLOAD + HASH -->
     <section class="hbce-section">
-      <h2>2) Payload canonico + SHA-256 (generato)</h2>
+      <h2>2) Payload privato + SHA-256 (generato)</h2>
 
       <div class="hbce-grid">
         <div class="hbce-card">
@@ -104,18 +164,16 @@
 
           <div class="hbce-actions">
             <button class="hbce-btn hbce-btn--ghost" id="btn-copy-hash" type="button" disabled>Copia SHA-256</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btn-dl-payload" type="button" disabled>Download PAYLOAD_PRIVATE.json</button>
           </div>
 
           <p class="hbce-note">
-            Questo hash è quello che finirà nel registry (hash-only), insieme al nickname e al timestamp.
+            PAYLOAD_PRIVATE.json è un artefatto privato: consegnalo al cliente (insieme al salt se vuoi verifiche future).
           </p>
         </div>
 
         <div class="hbce-card">
           <h3>Payload (preview locale)</h3>
-          <p class="hbce-note">
-            Questo JSON è il contenuto che viene hashato. Non viene pubblicato automaticamente.
-          </p>
           <pre class="hbce-code" id="payload_preview">—</pre>
         </div>
       </div>
@@ -125,8 +183,7 @@
     <section class="hbce-section">
       <h2>3) Certified Pack (firma ED25519) — operatore</h2>
       <p class="hbce-note">
-        Inserisci la tua private key ED25519 (Base64, 64 bytes). Il pack firma certificate/receipt/manifest e genera la entry per il registry.
-        Se manca SHA-256 → blocco (fail-closed).
+        Inserisci la tua private key ED25519 (Base64, 64 bytes). Il receipt viene “legato” al payload_sha256.
       </p>
 
       <div class="hbce-grid">
@@ -169,10 +226,6 @@
             <button class="hbce-btn hbce-btn--ghost" id="dl-entry" type="button" disabled>Download REGISTRY_ENTRY.json</button>
             <button class="hbce-btn hbce-btn--ghost" id="dl-manifest" type="button" disabled>Download PACK_MANIFEST.json</button>
           </div>
-
-          <p class="hbce-note">
-            Dopo: appendi REGISTRY_ENTRY nel registry append-only e fai VERIFY pubblico.
-          </p>
         </div>
       </div>
 
@@ -216,11 +269,24 @@
         btnClear: $("btn-clear"),
         buildMsg: $("build_msg"),
 
+        // proofs
+        salt: $("salt"),
+        btnGenSalt: $("btn-gen-salt"),
+        btnClearProofs: $("btn-clear-proofs"),
+        cf: $("cf"),
+        cie: $("cie"),
+        docId: $("doc_id"),
+        dob: $("dob"),
+        place: $("place"),
+        proofsMsg: $("proofs_msg"),
+        proofsPreview: $("proofs_preview"),
+
         hashStatus: $("hash_status"),
         payloadSha: $("payload_sha256"),
         payloadTs: $("payload_ts"),
         payloadPreview: $("payload_preview"),
         btnCopyHash: $("btn-copy-hash"),
+        btnDlPayload: $("btn-dl-payload"),
 
         // keys
         sk: $("sk"),
@@ -277,6 +343,16 @@
 
       function isoNow() { return new Date().toISOString(); }
 
+      function normalizeValue(label, v) {
+        if (!isNonEmptyString(v)) return null;
+        const s = String(v).trim();
+        if (label === "country") return s.toUpperCase();
+        if (label === "cf") return s.toUpperCase().replace(/\s+/g, "");
+        if (label === "cie") return s.toUpperCase().replace(/\s+/g, "");
+        if (label === "doc_id") return s.replace(/\s+/g, "");
+        return s;
+      }
+
       async function sha256HexFromText(text) {
         if (!window.crypto || !window.crypto.subtle) return null;
         const enc = new TextEncoder();
@@ -284,6 +360,11 @@
         const hashBuf = await crypto.subtle.digest("SHA-256", buf);
         const arr = Array.from(new Uint8Array(hashBuf));
         return arr.map(b => b.toString(16).padStart(2, "0")).join("");
+      }
+
+      async function sha256HexSalted(salt, valueNorm) {
+        const material = "HBCE|v1|" + salt + "|" + valueNorm;
+        return await sha256HexFromText(material);
       }
 
       async function copy(text) {
@@ -330,8 +411,7 @@
         URL.revokeObjectURL(url);
       }
 
-      function disablePack() {
-        els.btnPack.disabled = true;
+      function disablePackDownloads() {
         els.dlCert.disabled = true;
         els.dlReceipt.disabled = true;
         els.dlEntry.disabled = true;
@@ -344,31 +424,92 @@
         els.btnPack.disabled = !ok;
       }
 
+      function resetPackUi() {
+        state.pack = { cert: null, receipt: null, entry: null, manifest: null, entryBlock: null, manifestSha: null };
+        setText(els.packStatus, "—");
+        setText(els.entryReady, "—");
+        setText(els.manifestSha, "—");
+        setText(els.entryBlock, "—");
+        setText(els.copyMsg, "—");
+        disablePackDownloads();
+        enablePackButtonIfReady();
+      }
+
       function resetAll() {
         state.payload = null;
         state.payloadText = null;
         state.payloadSha256 = null;
         state.payloadTs = null;
-        state.pack = { cert: null, receipt: null, entry: null, manifest: null, entryBlock: null, manifestSha: null };
 
         setText(els.hashStatus, "—");
         setText(els.payloadSha, "—");
         setText(els.payloadTs, "—");
         setText(els.payloadPreview, "—");
         els.btnCopyHash.disabled = true;
+        els.btnDlPayload.disabled = true;
 
-        setText(els.packStatus, "—");
-        setText(els.entryReady, "—");
-        setText(els.manifestSha, "—");
-        setText(els.entryBlock, "—");
-        setText(els.copyMsg, "—");
-
-        disablePack();
-        enablePackButtonIfReady();
         setText(els.buildMsg, "—");
+        setText(els.proofsMsg, "—");
+        setText(els.proofsPreview, "—");
+
+        resetPackUi();
       }
 
-      // 1) BUILD PAYLOAD + HASH
+      function anyProofFieldFilled() {
+        return [els.cf.value, els.cie.value, els.docId.value, els.dob.value, els.place.value]
+          .some(v => isNonEmptyString(v));
+      }
+
+      async function buildProofsMin() {
+        const saltRaw = (els.salt.value || "").trim();
+
+        const cf = normalizeValue("cf", els.cf.value);
+        const cie = normalizeValue("cie", els.cie.value);
+        const doc_id = normalizeValue("doc_id", els.docId.value);
+        const dob = normalizeValue("dob", els.dob.value);
+        const place = normalizeValue("place", els.place.value);
+
+        const filled = { cf, cie, doc_id, dob, place };
+        const usedKeys = Object.keys(filled).filter(k => isNonEmptyString(filled[k]));
+
+        if (usedKeys.length === 0) {
+          setText(els.proofsPreview, "—");
+          setText(els.proofsMsg, "Proofs: non usati.");
+          return { proofs_min: null, used: false };
+        }
+
+        if (!isNonEmptyString(saltRaw) || saltRaw.length < 12) {
+          return { error: "proofs usati ma salt mancante/too short (min 12, consigliato ≥24)" };
+        }
+
+        const out = {
+          proto: "HBCE-PROOFS-MIN-v1",
+          kind: "GDPR_MIN_HASH_PROOFS",
+          alg: "SHA-256",
+          scheme: "sha256('HBCE|v1|' + salt + '|' + normalized_value)",
+          fields: {}
+        };
+
+        for (const k of usedKeys) {
+          const h = await sha256HexSalted(saltRaw, filled[k]);
+          if (!h) return { error: "crypto.subtle unavailable (SHA-256 non supportato)" };
+          out.fields[k] = h;
+        }
+
+        setText(els.proofsPreview, JSON.stringify(out, null, 2));
+        setText(els.proofsMsg, "Proofs: OK (hash generati, nessun dato in chiaro).");
+        return { proofs_min: out, used: true };
+      }
+
+      function genRandomSalt(len) {
+        const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
+        const bytes = new Uint8Array(len);
+        if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(bytes);
+        let s = "";
+        for (let i = 0; i < len; i++) s += alphabet[bytes[i] % alphabet.length];
+        return s;
+      }
+
       async function buildPayloadAndHash() {
         const nickname = (els.nickname.value || "").trim();
         const entity_type = els.entity_type.value || "HUMAN";
@@ -381,24 +522,28 @@
         if (!isValidNickname(nickname)) return { error: "nickname invalid (3–32, no spazi, A-Z0-9_.-)" };
         if (!/^[A-Z]{2}$/.test(country)) return { error: "country invalid (ISO-2, es. IT)" };
 
+        const proofsRes = await buildProofsMin();
+        if (proofsRes.error) return { error: proofsRes.error };
+
         const ts = isoNow();
 
-        // Payload canonico (local-only): minimizzato ma utile per opposability tecnica
         const payload = {
-          proto: "HBCE-IPR-PAYLOAD-v1",
+          proto: "HBCE-IPR-PAYLOAD-v2",
           kind: "IPR_EU_BASE_PAYLOAD",
           issued_at: ts,
           policy: POLICY,
+          privacy: {
+            classification: "PRIVATE_ARTIFACT",
+            note: "This payload is private. Public registry contains only hash-only entry."
+          },
           subject: {
             entity_type,
             nickname_public: nickname,
             country_iso2: country,
             id_method_label: id_method
           },
-          contact: {
-            email: contact_email,
-            phone: contact_phone
-          },
+          contact: { email: contact_email, phone: contact_phone },
+          proofs_min: proofsRes.proofs_min || null,
           notes
         };
 
@@ -409,7 +554,6 @@
         return { payload, payloadText, sha, ts };
       }
 
-      // 2) CREATE PACK (sign)
       async function createSignedPack() {
         if (!assertEd25519Ready()) return { error: "ed25519 library not loaded" };
         if (!state.payloadSha256 || !isHex64(state.payloadSha256)) return { error: "missing payload_sha256 (prima calcola hash)" };
@@ -420,7 +564,6 @@
         const payload_sha256 = state.payloadSha256;
         const ts = state.payloadTs;
 
-        // Certificate/Receipt minimal, hash-only subject
         const cert = {
           proto: "HBCE-CERTIFICATE-v1",
           kind: "IPR_ISSUER_CERTIFICATE",
@@ -445,11 +588,15 @@
         };
 
         const receipt = {
-          proto: "HBCE-RECEIPT-v1",
+          proto: "HBCE-RECEIPT-v2",
           kind: "IPR_OPERATIONAL_RECEIPT",
           issued_at: ts,
           issuer: { legal_name: ISSUER.legal_name, hallmark: ISSUER.hallmark, ed25519_public_key_base64: state.keys.pkB64 },
           subject: { nickname, payload_sha256 },
+          binding: {
+            payload_sha256: payload_sha256,
+            payload_note: "Receipt bound to payload_sha256 generated by client-first wizard."
+          },
           policy: POLICY,
           fail_closed: true,
           next_steps: [
@@ -462,7 +609,6 @@
         const entry = { nickname, payload_sha256, timestamp: ts };
         const entryBlock = JSON.stringify(entry, null, 2);
 
-        // manifest hashes are on unsigned docs
         const certUnsigned = JSON.stringify(cert, null, 2);
         const receiptUnsigned = JSON.stringify(receipt, null, 2);
         const certSha = await sha256HexFromText(certUnsigned);
@@ -486,7 +632,6 @@
           signature: null
         };
 
-        // sign canonical (signature=null)
         const sigCert = signDetachedBase64(state.keys.skBytes, certUnsigned);
         const sigReceipt = signDetachedBase64(state.keys.skBytes, receiptUnsigned);
         const manUnsigned = JSON.stringify(manifest, null, 2);
@@ -502,7 +647,23 @@
         return { cert, receipt, entry, manifest, entryBlock, manifestSha };
       }
 
-      // EVENTS
+      // events
+      els.btnGenSalt.addEventListener("click", () => {
+        els.salt.value = genRandomSalt(32);
+        setText(els.proofsMsg, "Salt generato.");
+      });
+
+      els.btnClearProofs.addEventListener("click", () => {
+        els.salt.value = "";
+        els.cf.value = "";
+        els.cie.value = "";
+        els.docId.value = "";
+        els.dob.value = "";
+        els.place.value = "";
+        setText(els.proofsPreview, "—");
+        setText(els.proofsMsg, "Proofs puliti.");
+      });
+
       els.btnBuild.addEventListener("click", async () => {
         setText(els.buildMsg, "Checking…");
         const out = await buildPayloadAndHash();
@@ -512,8 +673,8 @@
           state.payloadSha256 = null;
           state.payloadTs = null;
           els.btnCopyHash.disabled = true;
-          disablePack();
-          enablePackButtonIfReady();
+          els.btnDlPayload.disabled = true;
+          resetPackUi();
           return;
         }
 
@@ -526,10 +687,17 @@
         setText(els.payloadSha, out.sha);
         setText(els.payloadTs, out.ts);
         setText(els.payloadPreview, out.payloadText);
-        setText(els.buildMsg, "OK: payload generato e SHA-256 calcolato. Ora puoi firmare/generare pack.");
+        setText(els.buildMsg, "OK: payload generato + SHA-256 calcolato. Ora puoi scaricare PAYLOAD_PRIVATE e/o firmare il pack.");
         els.btnCopyHash.disabled = false;
+        els.btnDlPayload.disabled = false;
 
+        resetPackUi();
         enablePackButtonIfReady();
+      });
+
+      els.btnDlPayload.addEventListener("click", () => {
+        if (!state.payload) return;
+        downloadJson("PAYLOAD_PRIVATE.json", state.payload);
       });
 
       els.btnCopyHash.addEventListener("click", async () => {
@@ -544,9 +712,16 @@
         els.contact_email.value = "";
         els.contact_phone.value = "";
         els.notes.value = "";
+        els.salt.value = "";
+        els.cf.value = "";
+        els.cie.value = "";
+        els.docId.value = "";
+        els.dob.value = "";
+        els.place.value = "";
         resetAll();
       });
 
+      // keys
       els.btnDerive.addEventListener("click", () => {
         const parsed = parseSk(els.sk.value || "");
         if (parsed.error) {
@@ -582,18 +757,18 @@
         enablePackButtonIfReady();
       });
 
+      // pack
       els.btnPack.addEventListener("click", async () => {
         setText(els.packStatus, "Checking…");
         const out = await createSignedPack();
         if (out.error) {
           setText(els.packStatus, "FAIL-CLOSED — " + out.error);
           setText(els.entryReady, "NO");
-          disablePack();
+          disablePackDownloads();
           return;
         }
 
         state.pack = out;
-
         setText(els.packStatus, "OK — pack generated");
         setText(els.entryReady, "YES");
         setText(els.manifestSha, out.manifestSha);
@@ -606,16 +781,7 @@
         els.btnCopyEntry.disabled = false;
       });
 
-      els.btnPackReset.addEventListener("click", () => {
-        state.pack = { cert:null, receipt:null, entry:null, manifest:null, entryBlock:null, manifestSha:null };
-        setText(els.packStatus, "—");
-        setText(els.entryReady, "—");
-        setText(els.manifestSha, "—");
-        setText(els.entryBlock, "—");
-        setText(els.copyMsg, "—");
-        disablePack();
-        enablePackButtonIfReady();
-      });
+      els.btnPackReset.addEventListener("click", () => { resetPackUi(); });
 
       els.dlCert.addEventListener("click", () => { if (state.pack.cert) downloadJson("IPR_ISSUER_CERTIFICATE.json", state.pack.cert); });
       els.dlReceipt.addEventListener("click", () => { if (state.pack.receipt) downloadJson("IPR_OPERATIONAL_RECEIPT.json", state.pack.receipt); });
@@ -628,14 +794,11 @@
         setText(els.copyMsg, ok ? "Entry copiata." : "Clipboard non disponibile: copia dal blocco.");
       });
 
-      // INIT
+      // init
       resetAll();
-
-      if (!assertEd25519Ready()) {
-        setText(els.keyMsg, "FAIL-CLOSED: libreria ED25519 non caricata.");
-      } else {
-        setText(els.keyMsg, "Inserisci private key e deriva public key.");
-      }
+      if (!assertEd25519Ready()) setText(els.keyMsg, "FAIL-CLOSED: libreria ED25519 non caricata.");
+      else setText(els.keyMsg, "Inserisci private key e deriva public key.");
+      setText(els.proofsMsg, "Proofs: opzionali. Se li usi, imposta un salt.");
     })();
   </script>
 </body>
