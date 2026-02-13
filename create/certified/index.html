@@ -4,13 +4,17 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>CERTIFIED — IPR · Certified Pack (issuer + receipt + manifest, fail-closed)</title>
-  <meta name="description" content="Rilascio Certified Pack IPR: issuer certificate + operational receipt + pack manifest + registry entry hash-only. Local-first, audit-first, fail-closed. Nessuna custodia pubblica di dati personali." />
+  <title>CERTIFIED — IPR · Certified Pack (ED25519 signed + offline verify, fail-closed)</title>
+  <meta name="description" content="Rilascio Certified Pack IPR: certificate + receipt + manifest + registry entry hash-only, con firme ED25519 e verifica offline. Local-first, audit-first, fail-closed." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
 
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+
+  <!-- ED25519 -->
+  <script src="https://cdn.jsdelivr.net/npm/tweetnacl@1.0.3/nacl.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tweetnacl-util@0.15.1/nacl-util.min.js"></script>
 </head>
 
 <body>
@@ -20,13 +24,12 @@
 
     <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CERTIFIED PACK · ISSUER + RECEIPT + MANIFEST · HASH-ONLY · LOCAL-FIRST</div>
+      <div class="hbce-hero__kicker">CERTIFIED PACK · ED25519 SIGNED · OFFLINE VERIFY · FAIL-CLOSED</div>
 
-      <h1 class="hbce-hero__title">Rilascio Certified Pack IPR (post-pagamento).</h1>
+      <h1 class="hbce-hero__title">Rilascio Certified Pack IPR (firmato + verificabile offline).</h1>
 
       <p class="hbce-hero__lead">
-        Questa pagina genera un <strong>Certified Pack</strong> in modalità <strong>local-first</strong>:
-        i file vengono creati nel browser e scaricati sul dispositivo.
+        Generazione <strong>local-first</strong> (browser → download) + <strong>firme ED25519</strong> su Certificate/Receipt/Manifest.
         <br />
         Il registry pubblico resta <strong>hash-only</strong> (<strong>nickname + payload_sha256 + timestamp</strong>).
         <br />
@@ -37,7 +40,7 @@
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/">CREATE hub</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/wizard/">Wizard (Draft)</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">Pricing</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify (public)</a>
       </div>
 
       <p class="hbce-note">
@@ -46,47 +49,50 @@
       </p>
     </section>
 
-    <!-- EXPLAIN -->
+    <!-- ISSUER KEYS -->
     <section class="hbce-section">
-      <h2>Cosa genera il Certified Pack (v1.1)</h2>
+      <h2>Issuer keys (ED25519) — obbligatorie (fail-closed)</h2>
 
       <div class="hbce-grid">
         <div class="hbce-card">
-          <h3>File inclusi</h3>
-          <ul class="hbce-list">
-            <li><strong>IPR_ISSUER_CERTIFICATE.json</strong> — attestazione emittente (metadati minimi)</li>
-            <li><strong>IPR_OPERATIONAL_RECEIPT.json</strong> — ricevuta operativa (riferimenti + hash)</li>
-            <li><strong>REGISTRY_ENTRY.json</strong> — entry hash-only pronta per append</li>
-            <li><strong>PACK_MANIFEST.json</strong> — manifest con SHA-256 di tutti i file (evidence-grade)</li>
-          </ul>
+          <h3>Chiave privata (operator)</h3>
           <p class="hbce-note">
-            Nota: il registry pubblico resta hash-only. Il manifest serve per provare integrità del pack offline.
+            Inserisci la <strong>private key ED25519</strong> in <strong>Base64</strong> (64 bytes — secretKey tweetnacl).
+            Resta in RAM. Se non è valida → <strong>FAIL-CLOSED</strong>.
           </p>
+
+          <label class="hbce-label" for="sk">ED25519 private key (Base64)</label>
+          <input class="hbce-input" id="sk" type="password" placeholder="Base64… (64 bytes)" autocomplete="off" />
+
+          <div class="hbce-actions" style="margin-top:12px;">
+            <button class="hbce-btn hbce-btn--ghost" id="btn-derive" type="button">Deriva public key</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btn-clear-keys" type="button">Pulisci chiave</button>
+          </div>
+
+          <p class="hbce-note" id="key-msg">—</p>
         </div>
 
         <div class="hbce-card">
-          <h3>Validità (non negoziabile)</h3>
+          <h3>Public key (inclusa nel pack)</h3>
           <ul class="hbce-list">
-            <li>Il pack è <strong>rilasciato</strong> → tu possiedi i file</li>
-            <li>Il pack è <strong>VALID</strong> solo se l’entry è in registry e la verify trova match</li>
-            <li>Se manca match → <strong>INVALID</strong> (fail-closed)</li>
+            <li><strong>PubKey (Base64):</strong> <span id="pk-b64">—</span></li>
+            <li><strong>PubKey (hex):</strong> <span id="pk-hex">—</span></li>
           </ul>
-          <div class="hbce-actions">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">Status</a>
-          </div>
+
+          <p class="hbce-note">
+            Questa chiave pubblica permette la verifica offline delle firme.
+          </p>
         </div>
       </div>
     </section>
 
-    <!-- FORM -->
+    <!-- PACK -->
     <section class="hbce-section">
-      <h2>Dati minimi (issuer)</h2>
+      <h2>Certified Pack (firmato)</h2>
 
       <div class="hbce-grid">
         <div class="hbce-card">
-          <h3>Input richiesti</h3>
+          <h3>Input (minimi)</h3>
 
           <label class="hbce-label" for="nick">Nickname pubblico (no dati sensibili)</label>
           <input class="hbce-input" id="nick" type="text" placeholder="es. ManuHell" autocomplete="off" />
@@ -101,12 +107,12 @@
           <input class="hbce-input" id="notes" type="text" placeholder="es. modulo acquistato / livello / contesto" autocomplete="off" />
 
           <div class="hbce-actions" style="margin-top:12px;">
-            <button class="hbce-btn" id="btn-generate" type="button">Genera Certified Pack</button>
+            <button class="hbce-btn" id="btn-generate" type="button">Genera Pack firmato</button>
             <button class="hbce-btn hbce-btn--ghost" id="btn-reset" type="button">Reset</button>
           </div>
 
           <p class="hbce-note" id="msg">
-            Il sistema valida i campi. Se non rispettano il formato → FAIL-CLOSED.
+            Requisiti: ED25519 key valida + nickname valido + hash valido. Se manca qualcosa → FAIL-CLOSED.
           </p>
         </div>
 
@@ -117,10 +123,15 @@
             <li><strong>Status:</strong> <span id="out-status">—</span></li>
             <li><strong>Timestamp (ISO):</strong> <span id="out-ts">—</span></li>
             <li><strong>Registry entry:</strong> <span id="out-entry-ready">—</span></li>
+
             <li><strong>Cert SHA-256:</strong> <span id="out-sha-cert">—</span></li>
             <li><strong>Receipt SHA-256:</strong> <span id="out-sha-receipt">—</span></li>
             <li><strong>Entry SHA-256:</strong> <span id="out-sha-entry">—</span></li>
             <li><strong>Manifest SHA-256:</strong> <span id="out-sha-manifest">—</span></li>
+
+            <li><strong>Cert signature (b64):</strong> <span id="out-sig-cert">—</span></li>
+            <li><strong>Receipt signature (b64):</strong> <span id="out-sig-receipt">—</span></li>
+            <li><strong>Manifest signature (b64):</strong> <span id="out-sig-manifest">—</span></li>
           </ul>
 
           <div class="hbce-actions">
@@ -131,13 +142,13 @@
           </div>
 
           <p class="hbce-note">
-            Dopo append in registry: vai su <strong>Verify</strong> e controlla che risulti VALID.
+            Dopo append in registry: vai su <strong>Verify (public)</strong> e controlla che risulti VALID.
           </p>
         </div>
       </div>
     </section>
 
-    <!-- COPY BLOCK -->
+    <!-- REGISTRY BLOCK -->
     <section class="hbce-section">
       <h2>Blocco pronto da appendere nel registry (hash-only)</h2>
 
@@ -145,8 +156,7 @@
         <div class="hbce-card">
           <h3>Registry entry (copy/paste)</h3>
           <p class="hbce-note">
-            Copia questo blocco e appendilo in <code>registry/registry.json → entries[]</code>.
-            Il registry è append-only.
+            Copia questo blocco e appendilo in <code>registry/registry.json → entries[]</code>. Append-only.
           </p>
 
           <pre class="hbce-code" id="out-entry-block">—</pre>
@@ -161,21 +171,103 @@
         </div>
 
         <div class="hbce-card">
-          <h3>Fail-closed: errori tipici</h3>
+          <h3>Fail-closed: cosa blocca il pack</h3>
           <ul class="hbce-list">
-            <li>hash non valido (non 64 hex) → FAIL-CLOSED</li>
-            <li>nickname troppo corto/lungo o con caratteri non ammessi → FAIL-CLOSED</li>
-            <li>entry non inserita nel registry → VERIFY non può passare</li>
-            <li>registry JSON incoerente → STATUS/VERIFY falliscono</li>
+            <li>Libreria ED25519 non caricata → FAIL-CLOSED</li>
+            <li>Private key non valida (Base64, 64 bytes) → FAIL-CLOSED</li>
+            <li>Nickname/hash non validi → FAIL-CLOSED</li>
+            <li>Crypto SHA-256 non disponibile → FAIL-CLOSED</li>
           </ul>
           <p class="hbce-note">
-            Mezzo livello extra: il <strong>PACK_MANIFEST</strong> consente audit offline dell’integrità del pack.
+            Manifest + firme = audit offline dell’integrità del pack.
           </p>
         </div>
       </div>
     </section>
 
-    <!-- SYSTEM ENTRANCES -->
+    <!-- OFFLINE VERIFY (MILITARE) -->
+    <section class="hbce-section">
+      <h2>VERIFY SIGNATURE (offline) — modalità “militare”</h2>
+
+      <p class="hbce-note">
+        Qui non ci interessa “chi lo dice”. Ci interessa: <strong>la firma verifica o no</strong>.
+        Incolla un JSON firmato (Certificate/Receipt/Manifest). La pagina ricostruisce il contenuto unsigned e verifica ED25519.
+        <br />
+        Regola: <strong>se non verifica → FAIL-CLOSED</strong>.
+      </p>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>Input</h3>
+
+          <label class="hbce-label" for="vf-type">Tipo documento</label>
+          <select class="hbce-input" id="vf-type">
+            <option value="auto">AUTO (deduce da kind)</option>
+            <option value="IPR_ISSUER_CERTIFICATE">Certificate</option>
+            <option value="IPR_OPERATIONAL_RECEIPT">Receipt</option>
+            <option value="CERTIFIED_PACK_MANIFEST">Manifest</option>
+          </select>
+
+          <label class="hbce-label" for="vf-json">JSON firmato (incolla)</label>
+          <textarea class="hbce-input" id="vf-json" rows="10" placeholder='Incolla qui il JSON firmato…'></textarea>
+
+          <label class="hbce-label" for="vf-pk">Public key (Base64) — opzionale</label>
+          <input class="hbce-input" id="vf-pk" type="text" placeholder="Se vuoto, usa la key del documento.signature.public_key_base64" autocomplete="off" />
+
+          <div class="hbce-actions" style="margin-top:12px;">
+            <button class="hbce-btn" id="btn-verify-offline" type="button">Verifica firma</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btn-verify-clear" type="button">Pulisci</button>
+          </div>
+
+          <p class="hbce-note" id="vf-msg">—</p>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Risultato</h3>
+          <ul class="hbce-list">
+            <li><strong>Status:</strong> <span id="vf-status">—</span></li>
+            <li><strong>Kind:</strong> <span id="vf-kind">—</span></li>
+            <li><strong>Signed over:</strong> <span id="vf-over">—</span></li>
+            <li><strong>Signature (b64):</strong> <span id="vf-sig">—</span></li>
+            <li><strong>PubKey (b64):</strong> <span id="vf-pk-used">—</span></li>
+            <li><strong>Unsigned SHA-256:</strong> <span id="vf-unsigned-sha">—</span></li>
+          </ul>
+
+          <p class="hbce-note">
+            Se la firma passa, il documento è integro rispetto al contenuto unsigned canonico.
+            Se fallisce: alterato / chiave sbagliata / formato non canonico → <strong>INVALID</strong>.
+          </p>
+        </div>
+      </div>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>Bonus audit: verifica “manifest ↔ file hash” (manuale)</h3>
+          <p class="hbce-note">
+            Se vuoi chiudere il cerchio: verifica che i SHA-256 nel manifest coincidano con i file.
+            <br />
+            (Operativo) Calcoli sha256 dei file e confronti con <code>manifest.files[]</code>.
+          </p>
+          <ul class="hbce-list">
+            <li>Manifest passa firma → autentico</li>
+            <li>Hash file corrispondono → pack integro</li>
+            <li>Registry match → VALID pubblico (fail-closed)</li>
+          </ul>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Fail-closed rules (riassunto)</h3>
+          <ul class="hbce-list">
+            <li>Signature verify FAIL → INVALID</li>
+            <li>Manifest verify FAIL → INVALID</li>
+            <li>Hash mismatch (manifest vs file) → INVALID</li>
+            <li>Registry no match → INVALID</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ENTRANCES -->
     <section class="hbce-section">
       <h2>Ingressi di sistema</h2>
 
@@ -204,6 +296,13 @@
       const $ = (id) => document.getElementById(id);
 
       const els = {
+        sk: $("sk"),
+        pkB64: $("pk-b64"),
+        pkHex: $("pk-hex"),
+        keyMsg: $("key-msg"),
+        btnDerive: $("btn-derive"),
+        btnClearKeys: $("btn-clear-keys"),
+
         nick: $("nick"),
         hash: $("hash"),
         payref: $("payref"),
@@ -219,6 +318,10 @@
         outShaEntry: $("out-sha-entry"),
         outShaManifest: $("out-sha-manifest"),
 
+        outSigCert: $("out-sig-cert"),
+        outSigReceipt: $("out-sig-receipt"),
+        outSigManifest: $("out-sig-manifest"),
+
         outEntryBlock: $("out-entry-block"),
         copyMsg: $("copy-msg"),
 
@@ -231,49 +334,49 @@
         btnDlManifest: $("btn-dl-manifest"),
 
         btnCopy: $("btn-copy"),
+
+        // offline verify
+        vfType: $("vf-type"),
+        vfJson: $("vf-json"),
+        vfPk: $("vf-pk"),
+        btnVerifyOffline: $("btn-verify-offline"),
+        btnVerifyClear: $("btn-verify-clear"),
+        vfMsg: $("vf-msg"),
+        vfStatus: $("vf-status"),
+        vfKind: $("vf-kind"),
+        vfOver: $("vf-over"),
+        vfSig: $("vf-sig"),
+        vfPkUsed: $("vf-pk-used"),
+        vfUnsignedSha: $("vf-unsigned-sha"),
       };
 
       let state = {
+        keys: { skBytes: null, pkBytes: null, pkB64: null, pkHex: null },
         ts: null,
         issuerCertificate: null,
         operationalReceipt: null,
         registryEntry: null,
         packManifest: null,
         entryBlock: null,
-        sha: {
-          cert: null,
-          receipt: null,
-          entry: null,
-          manifest: null,
-        }
+        sha: { cert: null, receipt: null, entry: null, manifest: null },
+        sig: { cert: null, receipt: null, manifest: null },
       };
 
       function setText(el, v) { if (el) el.textContent = v; }
+      function isNonEmptyString(x) { return typeof x === "string" && x.trim().length > 0; }
+      function isHex64(x) { return typeof x === "string" && /^[a-f0-9]{64}$/i.test(x.trim()); }
 
-      function isNonEmptyString(x) {
-        return typeof x === "string" && x.trim().length > 0;
-      }
-
-      function isHex64(x) {
-        return typeof x === "string" && /^[a-f0-9]{64}$/i.test(x.trim());
-      }
-
-      // Nickname policy: safe, readable, no whitespace, no "@".
-      // Keep it strict to avoid accidental personal data.
       function isValidNickname(n) {
         if (!isNonEmptyString(n)) return false;
         const s = n.trim();
         if (s.length < 3 || s.length > 32) return false;
         if (/\s/.test(s)) return false;
         if (/@/.test(s)) return false;
-        // allow: letters, numbers, underscore, dash, dot
         if (!/^[A-Za-z0-9_.-]+$/.test(s)) return false;
         return true;
       }
 
-      function isoNow() {
-        return new Date().toISOString();
-      }
+      function isoNow() { return new Date().toISOString(); }
 
       function disableOutputs() {
         els.btnDlCert.disabled = true;
@@ -282,21 +385,23 @@
         els.btnDlManifest.disabled = true;
         els.btnCopy.disabled = true;
       }
+      function enableOutputs() {
+        els.btnDlCert.disabled = false;
+        els.btnDlReceipt.disabled = false;
+        els.btnDlEntry.disabled = false;
+        els.btnDlManifest.disabled = false;
+        els.btnCopy.disabled = false;
+      }
 
       function fail(reason) {
         setText(els.outStatus, "FAIL-CLOSED — " + reason);
         setText(els.outEntryReady, "NO");
         disableOutputs();
       }
-
       function ok(msg) {
         setText(els.outStatus, "OK — " + msg);
         setText(els.outEntryReady, "YES");
-        els.btnDlCert.disabled = false;
-        els.btnDlReceipt.disabled = false;
-        els.btnDlEntry.disabled = false;
-        els.btnDlManifest.disabled = false;
-        els.btnCopy.disabled = false;
+        enableOutputs();
       }
 
       function downloadJson(filename, obj) {
@@ -326,7 +431,66 @@
         return await sha256HexFromText(text);
       }
 
-      async function buildPack() {
+      function bytesToHex(bytes) {
+        return Array.from(bytes).map(b => b.toString(16).padStart(2, "0")).join("");
+      }
+
+      function assertEd25519Ready() {
+        return !!(window.nacl && window.nacl.sign && window.nacl.util);
+      }
+
+      function parseSkBase64ToBytes(skB64) {
+        if (!assertEd25519Ready()) return { error: "ed25519 library not loaded" };
+        if (!isNonEmptyString(skB64)) return { error: "private key missing" };
+        let bytes;
+        try { bytes = nacl.util.decodeBase64(skB64.trim()); }
+        catch (_) { return { error: "private key base64 invalid" }; }
+        if (!(bytes instanceof Uint8Array) || bytes.length !== 64) {
+          return { error: "private key must be 64 bytes (Base64)" };
+        }
+        return { bytes };
+      }
+
+      function derivePkFromSk(skBytes) {
+        return skBytes.slice(32, 64);
+      }
+
+      function signDetachedBase64(skBytes, messageText) {
+        const msgBytes = nacl.util.decodeUTF8(messageText);
+        const sigBytes = nacl.sign.detached(msgBytes, skBytes);
+        return nacl.util.encodeBase64(sigBytes);
+      }
+
+      function verifyDetachedBase64(pkBytes, messageText, sigB64) {
+        const msgBytes = nacl.util.decodeUTF8(messageText);
+        const sigBytes = nacl.util.decodeBase64(sigB64);
+        return nacl.sign.detached.verify(msgBytes, sigBytes, pkBytes);
+      }
+
+      function sanitizeDocForUnsignedCanonical(docObj) {
+        // Canonical: same method used in signing: JSON.stringify(obj, null, 2) with signature field = null.
+        // We preserve all fields except signature object replaced with null.
+        const clone = JSON.parse(JSON.stringify(docObj));
+        clone.signature = null;
+        return clone;
+      }
+
+      function deduceKind(doc) {
+        if (!doc || typeof doc !== "object") return null;
+        if (typeof doc.kind === "string") return doc.kind;
+        return null;
+      }
+
+      function getSignatureObject(doc) {
+        if (!doc || typeof doc !== "object") return null;
+        if (!doc.signature || typeof doc.signature !== "object") return null;
+        return doc.signature;
+      }
+
+      async function buildSignedPack() {
+        if (!assertEd25519Ready()) return { error: "ed25519 library not loaded" };
+        if (!state.keys.skBytes || !state.keys.pkBytes) return { error: "issuer key not set (derive public key first)" };
+
         const nickname = (els.nick.value || "").trim();
         const payload_sha256 = (els.hash.value || "").trim().toLowerCase();
         const payment_ref = (els.payref.value || "").trim();
@@ -342,6 +506,7 @@
           hallmark: "HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA",
           policy: ["UE-first", "audit-first", "fail-closed", "hash-only", "append-only", "GDPR-min", "no public data custody"],
           portal: "/hermeticum-bce-platform/",
+          ed25519_public_key_base64: state.keys.pkB64
         };
 
         const issuerCertificate = {
@@ -365,12 +530,9 @@
           proto: "HBCE-RECEIPT-v1",
           kind: "IPR_OPERATIONAL_RECEIPT",
           issued_at: ts,
-          issuer: { legal_name: issuer.legal_name, hallmark: issuer.hallmark },
+          issuer: { legal_name: issuer.legal_name, hallmark: issuer.hallmark, ed25519_public_key_base64: state.keys.pkB64 },
           subject: { nickname, payload_sha256 },
-          transaction: {
-            payment_ref: payment_ref || null,
-            notes: notes || null,
-          },
+          transaction: { payment_ref: payment_ref || null, notes: notes || null },
           policy: issuer.policy,
           fail_closed: true,
           next_steps: [
@@ -383,7 +545,6 @@
         const registryEntry = { nickname, payload_sha256, timestamp: ts };
         const entryBlock = JSON.stringify(registryEntry, null, 2);
 
-        // Evidence-grade: hashes of each file + a manifest that binds them together.
         const cert_sha256 = await sha256HexFromJson(issuerCertificate);
         const receipt_sha256 = await sha256HexFromJson(operationalReceipt);
         const entry_sha256 = await sha256HexFromJson(registryEntry);
@@ -396,7 +557,7 @@
           proto: "HBCE-PACK-MANIFEST-v1",
           kind: "CERTIFIED_PACK_MANIFEST",
           issued_at: ts,
-          issuer: { legal_name: issuer.legal_name, hallmark: issuer.hallmark },
+          issuer: { legal_name: issuer.legal_name, hallmark: issuer.hallmark, ed25519_public_key_base64: state.keys.pkB64 },
           policy: issuer.policy,
           subject: { nickname, payload_sha256 },
           files: [
@@ -409,6 +570,43 @@
         };
 
         const manifest_sha256 = await sha256HexFromJson(packManifest);
+        if (!manifest_sha256) return { error: "manifest sha256 failed" };
+
+        const certTextUnsigned = JSON.stringify(issuerCertificate, null, 2);
+        const receiptTextUnsigned = JSON.stringify(operationalReceipt, null, 2);
+        const manifestTextUnsigned = JSON.stringify(packManifest, null, 2);
+
+        const sigCert = signDetachedBase64(state.keys.skBytes, certTextUnsigned);
+        const sigReceipt = signDetachedBase64(state.keys.skBytes, receiptTextUnsigned);
+        const sigManifest = signDetachedBase64(state.keys.skBytes, manifestTextUnsigned);
+
+        issuerCertificate.signature = {
+          alg: "ED25519",
+          encoding: "base64",
+          public_key_base64: state.keys.pkB64,
+          signed_over: "canonical_json_pretty_v1",
+          value: sigCert
+        };
+
+        operationalReceipt.signature = {
+          alg: "ED25519",
+          encoding: "base64",
+          public_key_base64: state.keys.pkB64,
+          signed_over: "canonical_json_pretty_v1",
+          value: sigReceipt
+        };
+
+        packManifest.signature = {
+          alg: "ED25519",
+          encoding: "base64",
+          public_key_base64: state.keys.pkB64,
+          signed_over: "canonical_json_pretty_v1",
+          value: sigManifest
+        };
+
+        const cert_sha256_signed = await sha256HexFromJson(issuerCertificate);
+        const receipt_sha256_signed = await sha256HexFromJson(operationalReceipt);
+        const manifest_sha256_signed = await sha256HexFromJson(packManifest);
 
         return {
           ts,
@@ -418,29 +616,35 @@
           packManifest,
           entryBlock,
           sha: {
-            cert: cert_sha256,
-            receipt: receipt_sha256,
+            cert: cert_sha256_signed,
+            receipt: receipt_sha256_signed,
             entry: entry_sha256,
-            manifest: manifest_sha256
-          }
+            manifest: manifest_sha256_signed
+          },
+          sig: { cert: sigCert, receipt: sigReceipt, manifest: sigManifest }
         };
       }
 
-      function resetAll() {
+      async function copyToClipboard(text) {
+        if (!navigator.clipboard || !navigator.clipboard.writeText) return false;
+        try { await navigator.clipboard.writeText(text); return true; }
+        catch (_) { return false; }
+      }
+
+      function resetPack() {
         els.nick.value = "";
         els.hash.value = "";
         els.payref.value = "";
         els.notes.value = "";
 
-        state = {
-          ts: null,
-          issuerCertificate: null,
-          operationalReceipt: null,
-          registryEntry: null,
-          packManifest: null,
-          entryBlock: null,
-          sha: { cert: null, receipt: null, entry: null, manifest: null }
-        };
+        state.ts = null;
+        state.issuerCertificate = null;
+        state.operationalReceipt = null;
+        state.registryEntry = null;
+        state.packManifest = null;
+        state.entryBlock = null;
+        state.sha = { cert: null, receipt: null, entry: null, manifest: null };
+        state.sig = { cert: null, receipt: null, manifest: null };
 
         setText(els.outStatus, "—");
         setText(els.outTs, "—");
@@ -451,27 +655,146 @@
         setText(els.outShaEntry, "—");
         setText(els.outShaManifest, "—");
 
+        setText(els.outSigCert, "—");
+        setText(els.outSigReceipt, "—");
+        setText(els.outSigManifest, "—");
+
         setText(els.outEntryBlock, "—");
         setText(els.copyMsg, "—");
-        setText(els.msg, "Il sistema valida i campi. Se non rispettano il formato → FAIL-CLOSED.");
 
+        setText(els.msg, "Requisiti: ED25519 key valida + nickname valido + hash valido. Se manca qualcosa → FAIL-CLOSED.");
         disableOutputs();
       }
 
-      async function copyToClipboard(text) {
-        if (!navigator.clipboard || !navigator.clipboard.writeText) return false;
-        try {
-          await navigator.clipboard.writeText(text);
-          return true;
-        } catch (_) {
+      function resetVerify() {
+        setText(els.vfMsg, "—");
+        setText(els.vfStatus, "—");
+        setText(els.vfKind, "—");
+        setText(els.vfOver, "—");
+        setText(els.vfSig, "—");
+        setText(els.vfPkUsed, "—");
+        setText(els.vfUnsignedSha, "—");
+        els.vfJson.value = "";
+        els.vfPk.value = "";
+        els.vfType.value = "auto";
+      }
+
+      function clearKeys() {
+        state.keys.skBytes = null;
+        state.keys.pkBytes = null;
+        state.keys.pkB64 = null;
+        state.keys.pkHex = null;
+        els.sk.value = "";
+        setText(els.pkB64, "—");
+        setText(els.pkHex, "—");
+        setText(els.keyMsg, "Chiave rimossa dalla RAM.");
+      }
+
+      function deriveKeysFromInput() {
+        if (!assertEd25519Ready()) {
+          setText(els.keyMsg, "FAIL-CLOSED: libreria ED25519 non caricata.");
           return false;
         }
+
+        const parsed = parseSkBase64ToBytes(els.sk.value || "");
+        if (parsed.error) {
+          setText(els.keyMsg, "FAIL-CLOSED: " + parsed.error);
+          return false;
+        }
+
+        const skBytes = parsed.bytes;
+        const pkBytes = derivePkFromSk(skBytes);
+
+        state.keys.skBytes = skBytes;
+        state.keys.pkBytes = pkBytes;
+        state.keys.pkB64 = nacl.util.encodeBase64(pkBytes);
+        state.keys.pkHex = bytesToHex(pkBytes);
+
+        setText(els.pkB64, state.keys.pkB64);
+        setText(els.pkHex, state.keys.pkHex);
+        setText(els.keyMsg, "OK: public key derivata. Pronto a firmare.");
+        return true;
       }
+
+      // OFFLINE VERIFY (militare)
+      async function offlineVerify() {
+        if (!assertEd25519Ready()) return { error: "ed25519 library not loaded" };
+
+        const raw = (els.vfJson.value || "").trim();
+        if (!isNonEmptyString(raw)) return { error: "missing JSON input" };
+
+        let doc;
+        try { doc = JSON.parse(raw); }
+        catch (_) { return { error: "JSON invalid" }; }
+
+        const sigObj = getSignatureObject(doc);
+        if (!sigObj) return { error: "missing signature object" };
+        if (!isNonEmptyString(sigObj.value)) return { error: "missing signature.value" };
+
+        const kind = deduceKind(doc);
+        if (!kind) return { error: "missing kind" };
+
+        // optional: enforce kind selection
+        const forced = els.vfType.value;
+        if (forced !== "auto" && kind !== forced) {
+          return { error: "kind mismatch (selected " + forced + " but doc.kind is " + kind + ")" };
+        }
+
+        const signedOver = sigObj.signed_over || "—";
+        if (signedOver !== "canonical_json_pretty_v1") {
+          return { error: "unsupported signed_over (expected canonical_json_pretty_v1)" };
+        }
+
+        // choose pubkey: input overrides, else signature.public_key_base64
+        const pkB64 = (els.vfPk.value || "").trim() || (sigObj.public_key_base64 || "");
+        if (!isNonEmptyString(pkB64)) return { error: "missing public key (provide vf-pk or signature.public_key_base64)" };
+
+        let pkBytes;
+        try { pkBytes = nacl.util.decodeBase64(pkB64); }
+        catch (_) { return { error: "public key base64 invalid" }; }
+        if (!(pkBytes instanceof Uint8Array) || pkBytes.length !== 32) {
+          return { error: "public key must be 32 bytes (Base64)" };
+        }
+
+        // rebuild unsigned canonical JSON used for signing
+        const unsignedObj = sanitizeDocForUnsignedCanonical(doc);
+        const unsignedText = JSON.stringify(unsignedObj, null, 2);
+
+        // sha of unsigned (for audit)
+        const unsignedSha = await sha256HexFromText(unsignedText);
+        if (!unsignedSha) return { error: "crypto.subtle unavailable (SHA-256 not supported)" };
+
+        let okSig = false;
+        try {
+          okSig = verifyDetachedBase64(pkBytes, unsignedText, sigObj.value);
+        } catch (_) {
+          okSig = false;
+        }
+
+        return {
+          kind,
+          signed_over: signedOver,
+          signature_b64: sigObj.value,
+          pubkey_b64: pkB64,
+          unsigned_sha256: unsignedSha,
+          ok: okSig
+        };
+      }
+
+      // EVENTS
+      els.btnDerive.addEventListener("click", () => { deriveKeysFromInput(); });
+      els.btnClearKeys.addEventListener("click", () => { clearKeys(); });
 
       els.btnGenerate.addEventListener("click", async () => {
         setText(els.copyMsg, "—");
 
-        const out = await buildPack();
+        if (!state.keys.skBytes || !state.keys.pkBytes) {
+          fail("issuer key not set");
+          setText(els.msg, "FAIL-CLOSED: inserisci la private key e deriva la public key.");
+          return;
+        }
+
+        const out = await buildSignedPack();
         if (out.error) {
           fail(out.error);
           setText(els.msg, "FAIL-CLOSED: " + out.error);
@@ -485,6 +808,7 @@
         state.packManifest = out.packManifest;
         state.entryBlock = out.entryBlock;
         state.sha = out.sha;
+        state.sig = out.sig;
 
         setText(els.outTs, out.ts);
         setText(els.outEntryBlock, out.entryBlock);
@@ -494,11 +818,15 @@
         setText(els.outShaEntry, out.sha.entry || "—");
         setText(els.outShaManifest, out.sha.manifest || "—");
 
-        ok("pack generated (local-first, manifest bound)");
-        setText(els.msg, "OK: pack generato. Ora appendi l’entry nel registry e fai VERIFY.");
+        setText(els.outSigCert, out.sig.cert || "—");
+        setText(els.outSigReceipt, out.sig.receipt || "—");
+        setText(els.outSigManifest, out.sig.manifest || "—");
+
+        ok("pack generated (ED25519 signed)");
+        setText(els.msg, "OK: pack firmato generato. Ora appendi l’entry nel registry e fai VERIFY.");
       });
 
-      els.btnReset.addEventListener("click", resetAll);
+      els.btnReset.addEventListener("click", () => { resetPack(); });
 
       els.btnDlCert.addEventListener("click", () => {
         if (!state.issuerCertificate) return;
@@ -526,8 +854,48 @@
         setText(els.copyMsg, ok ? "Copiato negli appunti." : "Clipboard non disponibile: copia manualmente dal blocco.");
       });
 
-      // Init
-      resetAll();
+      els.btnVerifyOffline.addEventListener("click", async () => {
+        const res = await offlineVerify();
+        if (res.error) {
+          setText(els.vfMsg, "FAIL-CLOSED: " + res.error);
+          setText(els.vfStatus, "INVALID");
+          setText(els.vfKind, "—");
+          setText(els.vfOver, "—");
+          setText(els.vfSig, "—");
+          setText(els.vfPkUsed, "—");
+          setText(els.vfUnsignedSha, "—");
+          return;
+        }
+
+        setText(els.vfKind, res.kind);
+        setText(els.vfOver, res.signed_over);
+        setText(els.vfSig, res.signature_b64);
+        setText(els.vfPkUsed, res.pubkey_b64);
+        setText(els.vfUnsignedSha, res.unsigned_sha256);
+
+        if (!res.ok) {
+          setText(els.vfStatus, "INVALID");
+          setText(els.vfMsg, "FAIL-CLOSED: signature verify FAILED (altered / wrong key / non-canonical).");
+        } else {
+          setText(els.vfStatus, "VALID (signature OK)");
+          setText(els.vfMsg, "OK: firma verificata. Documento integro rispetto al contenuto unsigned canonico.");
+        }
+      });
+
+      els.btnVerifyClear.addEventListener("click", () => { resetVerify(); });
+
+      // INIT
+      resetPack();
+      resetVerify();
+      clearKeys();
+
+      if (!assertEd25519Ready()) {
+        setText(els.keyMsg, "FAIL-CLOSED: libreria ED25519 non caricata.");
+        setText(els.vfMsg, "FAIL-CLOSED: libreria ED25519 non caricata.");
+      } else {
+        setText(els.keyMsg, "Inserisci la private key Base64 e deriva la public key.");
+        setText(els.vfMsg, "Incolla un JSON firmato e verifica offline.");
+      }
     })();
   </script>
 </body>
