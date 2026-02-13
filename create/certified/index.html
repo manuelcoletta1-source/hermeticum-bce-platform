@@ -1,243 +1,534 @@
-2) FILE
-
-Path: create/certified/index.html
-
-COMMIT
-
-git add create/certified/index.html
-git commit -m "feat(certified): post-payment certified pack generator (issuer certificate + operational receipt + release + registry entry)"
-git push
-
-FILE COMPLETO (incolla tutto)
-
 <!doctype html>
 <html lang="it">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CERTIFIED — Post-payment Pack</title>
-  <meta name="description" content="Generatore Certified Pack post-pagamento: IPR_RELEASE + ISSUER_CERTIFICATE + OPERATIONAL_RECEIPT + REGISTRY_ENTRY. UE-first, audit-first, fail-closed, hash-only. VAT pending assignment." />
+
+  <title>CERTIFIED — IPR · Certified Pack (issuer + receipt + manifest, fail-closed)</title>
+  <meta name="description" content="Rilascio Certified Pack IPR: issuer certificate + operational receipt + pack manifest + registry entry hash-only. Local-first, audit-first, fail-closed. Nessuna custodia pubblica di dati personali." />
+
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
+
 <body>
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
+
+    <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CERTIFIED · POST-PAYMENT · ISSUER ACT</div>
-      <h1 class="hbce-hero__title">Rilascio Certified Pack</h1>
+      <div class="hbce-hero__kicker">CERTIFIED PACK · ISSUER + RECEIPT + MANIFEST · HASH-ONLY · LOCAL-FIRST</div>
+
+      <h1 class="hbce-hero__title">Rilascio Certified Pack IPR (post-pagamento).</h1>
+
       <p class="hbce-hero__lead">
-        Questa pagina genera il pacchetto ufficiale <strong>dopo pagamento</strong>:
-        <code>IPR_RELEASE.json</code> + <code>ISSUER_CERTIFICATE.json</code> + <code>OPERATIONAL_RECEIPT.json</code> + <code>REGISTRY_ENTRY.json</code>.
-        Output locale. Nessuna custodia identità.
+        Questa pagina genera un <strong>Certified Pack</strong> in modalità <strong>local-first</strong>:
+        i file vengono creati nel browser e scaricati sul dispositivo.
+        <br />
+        Il registry pubblico resta <strong>hash-only</strong> (<strong>nickname + payload_sha256 + timestamp</strong>).
+        <br />
+        Regola: <strong>senza registry + verify → INVALID</strong> (<strong>fail-closed</strong>).
       </p>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/">CREATE hub</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/wizard/">Wizard (Draft)</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">Pricing</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
+      </div>
+
       <p class="hbce-note">
-        Nota UE: l’issuer opera con <strong>P.IVA in assegnazione</strong> (VAT pending assignment). La ricevuta è “operativa”, non fattura fiscale.
+        Policy: <strong>UE-first</strong> · <strong>audit-first</strong> · <strong>fail-closed</strong> ·
+        <strong>hash-only</strong> · <strong>append-only</strong> · <strong>GDPR-min</strong> · <strong>no public data custody</strong>
       </p>
     </section>
 
+    <!-- EXPLAIN -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Input (post-pagamento)</h2>
-      <div class="hbce-card">
-        <div class="hbce-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
-          <div>
-            <label class="hbce-label"><strong>Nickname (pubblico)</strong></label>
-            <input id="nickname" class="hbce-input" placeholder="Es. Manuel Coletta / JOKER-C2 / METAEXCHANGE" />
-            <div class="hbce-note" style="margin-top:.35rem;">Deve coincidere con l’entry registry che pubblicherai.</div>
-          </div>
+      <h2>Cosa genera il Certified Pack (v1.1)</h2>
 
-          <div>
-            <label class="hbce-label"><strong>payload_sha256 (64 hex)</strong></label>
-            <input id="hash" class="hbce-input" placeholder="Es. 71ffa5e9..." />
-            <div class="hbce-note" style="margin-top:.35rem;">È l’hash del file canonico (IPR_CANON.json) generato dal wizard.</div>
-          </div>
-
-          <div>
-            <label class="hbce-label"><strong>Package</strong></label>
-            <select id="pkg" class="hbce-input">
-              <option value="BASE_19">BASE_19 — SOFT</option>
-              <option value="EU_CERT">EU_CERT — HARD (±2 min)</option>
-            </select>
-            <div class="hbce-note" style="margin-top:.35rem;">EU_CERT abilita metrologia HARD. BASE_19 = SOFT.</div>
-          </div>
-
-          <div>
-            <label class="hbce-label"><strong>Amount (EUR)</strong></label>
-            <input id="amount" class="hbce-input" value="19.00" />
-            <div class="hbce-note" style="margin-top:.35rem;">Importo del pacchetto acquistato.</div>
-          </div>
-
-          <div>
-            <label class="hbce-label"><strong>PAYMENT_ID</strong></label>
-            <input id="paymentId" class="hbce-input" placeholder="Es. STRIPE_xxx / PAYPAL_xxx / BONIFICO_xxx" />
-            <div class="hbce-note" style="margin-top:.35rem;">Riferimento pagamento (provider o interno).</div>
-          </div>
-
-          <div>
-            <label class="hbce-label"><strong>Certificate ID (seriale)</strong></label>
-            <input id="certId" class="hbce-input" placeholder="Es. HBCE-CERT-000001" />
-            <div class="hbce-note" style="margin-top:.35rem;">Seriale certificazione. Se vuoto → auto “HBCE-CERT-PENDING”.</div>
-          </div>
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>File inclusi</h3>
+          <ul class="hbce-list">
+            <li><strong>IPR_ISSUER_CERTIFICATE.json</strong> — attestazione emittente (metadati minimi)</li>
+            <li><strong>IPR_OPERATIONAL_RECEIPT.json</strong> — ricevuta operativa (riferimenti + hash)</li>
+            <li><strong>REGISTRY_ENTRY.json</strong> — entry hash-only pronta per append</li>
+            <li><strong>PACK_MANIFEST.json</strong> — manifest con SHA-256 di tutti i file (evidence-grade)</li>
+          </ul>
+          <p class="hbce-note">
+            Nota: il registry pubblico resta hash-only. Il manifest serve per provare integrità del pack offline.
+          </p>
         </div>
 
-        <div class="hbce-actions" style="margin-top:1rem;">
-          <button class="hbce-btn hbce-btn--primary" id="btn">GENERA PACK</button>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <div class="hbce-card">
+          <h3>Validità (non negoziabile)</h3>
+          <ul class="hbce-list">
+            <li>Il pack è <strong>rilasciato</strong> → tu possiedi i file</li>
+            <li>Il pack è <strong>VALID</strong> solo se l’entry è in registry e la verify trova match</li>
+            <li>Se manca match → <strong>INVALID</strong> (fail-closed)</li>
+          </ul>
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">Status</a>
+          </div>
         </div>
-
-        <div id="out" style="margin-top:1rem;"></div>
       </div>
     </section>
 
+    <!-- FORM -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Issuer</h2>
-      <div class="hbce-card">
-        <p class="hbce-card__text">
-          <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong><br />
-          <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong><br />
-          VAT: <strong>PENDING_ASSIGNMENT</strong> · EU-first · Audit-first · Fail-closed · Hash-only · Append-only · No identity custody
-        </p>
+      <h2>Dati minimi (issuer)</h2>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>Input richiesti</h3>
+
+          <label class="hbce-label" for="nick">Nickname pubblico (no dati sensibili)</label>
+          <input class="hbce-input" id="nick" type="text" placeholder="es. ManuHell" autocomplete="off" />
+
+          <label class="hbce-label" for="hash">payload_sha256 (64 hex)</label>
+          <input class="hbce-input" id="hash" type="text" placeholder="es. 1db2ab1f... (64 caratteri)" autocomplete="off" />
+
+          <label class="hbce-label" for="payref">Payment reference / invoice ref (opzionale ma consigliato)</label>
+          <input class="hbce-input" id="payref" type="text" placeholder="es. INV-2026-0001 / TX / CRO / note" autocomplete="off" />
+
+          <label class="hbce-label" for="notes">Note operative (opzionale)</label>
+          <input class="hbce-input" id="notes" type="text" placeholder="es. modulo acquistato / livello / contesto" autocomplete="off" />
+
+          <div class="hbce-actions" style="margin-top:12px;">
+            <button class="hbce-btn" id="btn-generate" type="button">Genera Certified Pack</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btn-reset" type="button">Reset</button>
+          </div>
+
+          <p class="hbce-note" id="msg">
+            Il sistema valida i campi. Se non rispettano il formato → FAIL-CLOSED.
+          </p>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Output (download + integrità)</h3>
+
+          <ul class="hbce-list">
+            <li><strong>Status:</strong> <span id="out-status">—</span></li>
+            <li><strong>Timestamp (ISO):</strong> <span id="out-ts">—</span></li>
+            <li><strong>Registry entry:</strong> <span id="out-entry-ready">—</span></li>
+            <li><strong>Cert SHA-256:</strong> <span id="out-sha-cert">—</span></li>
+            <li><strong>Receipt SHA-256:</strong> <span id="out-sha-receipt">—</span></li>
+            <li><strong>Entry SHA-256:</strong> <span id="out-sha-entry">—</span></li>
+            <li><strong>Manifest SHA-256:</strong> <span id="out-sha-manifest">—</span></li>
+          </ul>
+
+          <div class="hbce-actions">
+            <button class="hbce-btn hbce-btn--ghost" id="btn-dl-cert" type="button" disabled>Download IPR_ISSUER_CERTIFICATE.json</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btn-dl-receipt" type="button" disabled>Download IPR_OPERATIONAL_RECEIPT.json</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btn-dl-entry" type="button" disabled>Download REGISTRY_ENTRY.json</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btn-dl-manifest" type="button" disabled>Download PACK_MANIFEST.json</button>
+          </div>
+
+          <p class="hbce-note">
+            Dopo append in registry: vai su <strong>Verify</strong> e controlla che risulti VALID.
+          </p>
+        </div>
       </div>
     </section>
+
+    <!-- COPY BLOCK -->
+    <section class="hbce-section">
+      <h2>Blocco pronto da appendere nel registry (hash-only)</h2>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>Registry entry (copy/paste)</h3>
+          <p class="hbce-note">
+            Copia questo blocco e appendilo in <code>registry/registry.json → entries[]</code>.
+            Il registry è append-only.
+          </p>
+
+          <pre class="hbce-code" id="out-entry-block">—</pre>
+
+          <div class="hbce-actions">
+            <button class="hbce-btn hbce-btn--ghost" id="btn-copy" type="button" disabled>Copia blocco</button>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Apri registry</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Apri verify</a>
+          </div>
+
+          <p class="hbce-note" id="copy-msg">—</p>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Fail-closed: errori tipici</h3>
+          <ul class="hbce-list">
+            <li>hash non valido (non 64 hex) → FAIL-CLOSED</li>
+            <li>nickname troppo corto/lungo o con caratteri non ammessi → FAIL-CLOSED</li>
+            <li>entry non inserita nel registry → VERIFY non può passare</li>
+            <li>registry JSON incoerente → STATUS/VERIFY falliscono</li>
+          </ul>
+          <p class="hbce-note">
+            Mezzo livello extra: il <strong>PACK_MANIFEST</strong> consente audit offline dell’integrità del pack.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SYSTEM ENTRANCES -->
+    <section class="hbce-section">
+      <h2>Ingressi di sistema</h2>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/activate/">ACTIVATE</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/">CREATE</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/receipt/">RECEIPT</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">STATUS</a>
+      </div>
+
+      <p class="hbce-note">
+        HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br />
+        HERMETICUM B.C.E. S.r.l.<br />
+        UE-first · audit-first · fail-closed · hash-only · append-only
+      </p>
+    </section>
+
   </main>
 
   <div data-hbce="footer"></div>
 
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
   <script>
     (function () {
-      const isHex64 = (h) => /^[a-f0-9]{64}$/i.test(String(h || "").trim());
+      const $ = (id) => document.getElementById(id);
 
-      function dl(filename, obj) {
-        const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" });
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = filename;
-        a.click();
-        URL.revokeObjectURL(a.href);
+      const els = {
+        nick: $("nick"),
+        hash: $("hash"),
+        payref: $("payref"),
+        notes: $("notes"),
+        msg: $("msg"),
+
+        outStatus: $("out-status"),
+        outTs: $("out-ts"),
+        outEntryReady: $("out-entry-ready"),
+
+        outShaCert: $("out-sha-cert"),
+        outShaReceipt: $("out-sha-receipt"),
+        outShaEntry: $("out-sha-entry"),
+        outShaManifest: $("out-sha-manifest"),
+
+        outEntryBlock: $("out-entry-block"),
+        copyMsg: $("copy-msg"),
+
+        btnGenerate: $("btn-generate"),
+        btnReset: $("btn-reset"),
+
+        btnDlCert: $("btn-dl-cert"),
+        btnDlReceipt: $("btn-dl-receipt"),
+        btnDlEntry: $("btn-dl-entry"),
+        btnDlManifest: $("btn-dl-manifest"),
+
+        btnCopy: $("btn-copy"),
+      };
+
+      let state = {
+        ts: null,
+        issuerCertificate: null,
+        operationalReceipt: null,
+        registryEntry: null,
+        packManifest: null,
+        entryBlock: null,
+        sha: {
+          cert: null,
+          receipt: null,
+          entry: null,
+          manifest: null,
+        }
+      };
+
+      function setText(el, v) { if (el) el.textContent = v; }
+
+      function isNonEmptyString(x) {
+        return typeof x === "string" && x.trim().length > 0;
       }
 
-      function esc(s){return String(s||"").replace(/[&<>"']/g,(c)=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));}
+      function isHex64(x) {
+        return typeof x === "string" && /^[a-f0-9]{64}$/i.test(x.trim());
+      }
 
-      const $ = (id) => document.getElementById(id);
-      const $out = $("out");
+      // Nickname policy: safe, readable, no whitespace, no "@".
+      // Keep it strict to avoid accidental personal data.
+      function isValidNickname(n) {
+        if (!isNonEmptyString(n)) return false;
+        const s = n.trim();
+        if (s.length < 3 || s.length > 32) return false;
+        if (/\s/.test(s)) return false;
+        if (/@/.test(s)) return false;
+        // allow: letters, numbers, underscore, dash, dot
+        if (!/^[A-Za-z0-9_.-]+$/.test(s)) return false;
+        return true;
+      }
 
-      $("btn").addEventListener("click", () => {
-        const nickname = String($("nickname").value || "").trim();
-        const hash = String($("hash").value || "").trim().toLowerCase();
-        const pkg = String($("pkg").value || "BASE_19").trim();
-        const amount = String($("amount").value || "").trim();
-        const paymentId = String($("paymentId").value || "").trim();
-        const certId = String($("certId").value || "").trim() || "HBCE-CERT-PENDING";
+      function isoNow() {
+        return new Date().toISOString();
+      }
 
-        if (!nickname || !hash || !amount || !paymentId) {
-          $out.innerHTML = `<div class="hbce-card__text"><strong>Errore:</strong> compila nickname, payload_sha256, amount, payment_id.</div>`;
-          return;
-        }
-        if (!isHex64(hash)) {
-          $out.innerHTML = `<div class="hbce-card__text"><strong>Errore:</strong> payload_sha256 deve essere 64 hex.</div>`;
-          return;
-        }
+      function disableOutputs() {
+        els.btnDlCert.disabled = true;
+        els.btnDlReceipt.disabled = true;
+        els.btnDlEntry.disabled = true;
+        els.btnDlManifest.disabled = true;
+        els.btnCopy.disabled = true;
+      }
 
-        const ts = new Date().toISOString();
+      function fail(reason) {
+        setText(els.outStatus, "FAIL-CLOSED — " + reason);
+        setText(els.outEntryReady, "NO");
+        disableOutputs();
+      }
 
-        const ipr_release = {
-          proto: "HBCE-IPR-RELEASE-v2",
-          kind: "IPR_RELEASE",
-          issuer: "HERMETICUM B.C.E. S.r.l.",
-          jurisdiction: "EU",
-          mode: "PERMISSIONLESS",
-          package: pkg,
-          policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","NO_IDENTITY_CUSTODY"],
-          nickname: nickname,
-          timestamp: ts,
-          payload_sha256: hash,
-          note: "Certified release (post-payment)."
+      function ok(msg) {
+        setText(els.outStatus, "OK — " + msg);
+        setText(els.outEntryReady, "YES");
+        els.btnDlCert.disabled = false;
+        els.btnDlReceipt.disabled = false;
+        els.btnDlEntry.disabled = false;
+        els.btnDlManifest.disabled = false;
+        els.btnCopy.disabled = false;
+      }
+
+      function downloadJson(filename, obj) {
+        const text = JSON.stringify(obj, null, 2);
+        const blob = new Blob([text], { type: "application/json;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      async function sha256HexFromText(text) {
+        if (!window.crypto || !window.crypto.subtle) return null;
+        const enc = new TextEncoder();
+        const buf = enc.encode(text);
+        const hashBuf = await crypto.subtle.digest("SHA-256", buf);
+        const hashArr = Array.from(new Uint8Array(hashBuf));
+        return hashArr.map(b => b.toString(16).padStart(2, "0")).join("");
+      }
+
+      async function sha256HexFromJson(obj) {
+        const text = JSON.stringify(obj, null, 2);
+        return await sha256HexFromText(text);
+      }
+
+      async function buildPack() {
+        const nickname = (els.nick.value || "").trim();
+        const payload_sha256 = (els.hash.value || "").trim().toLowerCase();
+        const payment_ref = (els.payref.value || "").trim();
+        const notes = (els.notes.value || "").trim();
+
+        if (!isValidNickname(nickname)) return { error: "nickname invalid (3–32, no spaces, allowed: A-Z a-z 0-9 _ . -)" };
+        if (!isHex64(payload_sha256)) return { error: "payload_sha256 invalid (expected 64 hex)" };
+
+        const ts = isoNow();
+
+        const issuer = {
+          legal_name: "HERMETICUM B.C.E. S.r.l.",
+          hallmark: "HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA",
+          policy: ["UE-first", "audit-first", "fail-closed", "hash-only", "append-only", "GDPR-min", "no public data custody"],
+          portal: "/hermeticum-bce-platform/",
         };
 
-        const issuer_certificate = {
-          proto: "HBCE-ISSUER-CERT-v1",
-          kind: "OPERATIONAL_IDENTITY_CERTIFICATE",
-          issuer: {
-            legal_name: "HERMETICUM B.C.E. S.r.l.",
-            jurisdiction: "EU (Italy)",
-            vat_status: "PENDING_ASSIGNMENT",
-            status: "ACTIVE_OPERATIONAL_ENTITY"
+        const issuerCertificate = {
+          proto: "HBCE-CERTIFICATE-v1",
+          kind: "IPR_ISSUER_CERTIFICATE",
+          issued_at: ts,
+          issuer,
+          subject: { nickname, payload_sha256 },
+          attestation: {
+            statement: "Certified Pack generated under HBCE policy. Validity is fail-closed and requires registry match.",
+            validity_rule: "VALID iff (file integrity OK) AND (payload_sha256 present in registry entries[])",
           },
-          certificate: {
-            id: certId,
-            type: "IPR_OPERATIONAL_RELEASE",
-            timestamp: ts,
-            validity: "INDEFINITE",
-            revocable: false
+          references: {
+            registry_url: "/hermeticum-bce-platform/registry/registry.json",
+            verify_url: "/hermeticum-bce-platform/verify/",
           },
-          subject: {
-            nickname: nickname,
-            ipr_hash: hash
-          },
-          service: {
-            type: "Operational Identity Issuance",
-            package: pkg,
-            network_status: "ACTIVE"
-          },
-          policy: ["UE_FIRST","HASH_ONLY","NO_IDENTITY_CUSTODY","APPEND_ONLY","AUDIT_FIRST"],
-          verification: {
-            registry: "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/registry/",
-            verify: "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/verify/?h=" + hash
-          },
-          issuer_signature: "HBCE_ED25519_SIGNATURE"
+          signature: null
         };
 
-        const operational_receipt = {
+        const operationalReceipt = {
           proto: "HBCE-RECEIPT-v1",
-          kind: "OPERATIONAL_SERVICE_RECEIPT",
-          issuer: {
-            legal_name: "HERMETICUM B.C.E. S.r.l.",
-            vat_status: "PENDING_ASSIGNMENT",
-            jurisdiction: "EU"
-          },
+          kind: "IPR_OPERATIONAL_RECEIPT",
+          issued_at: ts,
+          issuer: { legal_name: issuer.legal_name, hallmark: issuer.hallmark },
+          subject: { nickname, payload_sha256 },
           transaction: {
-            service: "IPR Operational Identity Issuance",
-            package: pkg,
-            amount: amount,
-            currency: "EUR",
-            timestamp: ts,
-            payment_method: "DIGITAL",
-            payment_id: paymentId
+            payment_ref: payment_ref || null,
+            notes: notes || null,
           },
-          linked_ipr: {
-            nickname: nickname,
-            payload_sha256: hash
-          },
-          note: "Operational digital service. VAT number pending assignment (EU).",
-          issuer_signature: "HBCE_ED25519_SIGNATURE"
+          policy: issuer.policy,
+          fail_closed: true,
+          next_steps: [
+            "Append REGISTRY_ENTRY.json into registry/registry.json → entries[]",
+            "Run VERIFY and confirm status VALID",
+          ],
+          signature: null
         };
 
-        const registry_entry = {
-          nickname: nickname,
-          payload_sha256: hash,
-          timestamp: ts
+        const registryEntry = { nickname, payload_sha256, timestamp: ts };
+        const entryBlock = JSON.stringify(registryEntry, null, 2);
+
+        // Evidence-grade: hashes of each file + a manifest that binds them together.
+        const cert_sha256 = await sha256HexFromJson(issuerCertificate);
+        const receipt_sha256 = await sha256HexFromJson(operationalReceipt);
+        const entry_sha256 = await sha256HexFromJson(registryEntry);
+
+        if (!cert_sha256 || !receipt_sha256 || !entry_sha256) {
+          return { error: "crypto.subtle unavailable (SHA-256 not supported in this browser)" };
+        }
+
+        const packManifest = {
+          proto: "HBCE-PACK-MANIFEST-v1",
+          kind: "CERTIFIED_PACK_MANIFEST",
+          issued_at: ts,
+          issuer: { legal_name: issuer.legal_name, hallmark: issuer.hallmark },
+          policy: issuer.policy,
+          subject: { nickname, payload_sha256 },
+          files: [
+            { name: "IPR_ISSUER_CERTIFICATE.json", sha256: cert_sha256 },
+            { name: "IPR_OPERATIONAL_RECEIPT.json", sha256: receipt_sha256 },
+            { name: "REGISTRY_ENTRY.json", sha256: entry_sha256 }
+          ],
+          validity_rule: "VALID iff (all file hashes match manifest) AND (payload_sha256 present in registry entries[])",
+          signature: null
         };
 
-        dl("IPR_RELEASE.json", ipr_release);
-        dl("ISSUER_CERTIFICATE.json", issuer_certificate);
-        dl("OPERATIONAL_RECEIPT.json", operational_receipt);
-        dl("REGISTRY_ENTRY.json", registry_entry);
+        const manifest_sha256 = await sha256HexFromJson(packManifest);
 
-        $out.innerHTML = `
-          <div class="hbce-card__text">
-            <strong>Certified Pack generato.</strong><br/>
-            File: <code>IPR_RELEASE.json</code>, <code>ISSUER_CERTIFICATE.json</code>, <code>OPERATIONAL_RECEIPT.json</code>, <code>REGISTRY_ENTRY.json</code><br/>
-            Verify: <a href="/hermeticum-bce-platform/verify/?h=${esc(hash)}">/verify/?h=${esc(hash)}</a><br/>
-            <div class="hbce-note" style="margin-top:.5rem;">
-              Prossimo passo: appendi <code>REGISTRY_ENTRY.json</code> nel registry append-only e verifica.
-            </div>
-          </div>
-        `;
+        return {
+          ts,
+          issuerCertificate,
+          operationalReceipt,
+          registryEntry,
+          packManifest,
+          entryBlock,
+          sha: {
+            cert: cert_sha256,
+            receipt: receipt_sha256,
+            entry: entry_sha256,
+            manifest: manifest_sha256
+          }
+        };
+      }
+
+      function resetAll() {
+        els.nick.value = "";
+        els.hash.value = "";
+        els.payref.value = "";
+        els.notes.value = "";
+
+        state = {
+          ts: null,
+          issuerCertificate: null,
+          operationalReceipt: null,
+          registryEntry: null,
+          packManifest: null,
+          entryBlock: null,
+          sha: { cert: null, receipt: null, entry: null, manifest: null }
+        };
+
+        setText(els.outStatus, "—");
+        setText(els.outTs, "—");
+        setText(els.outEntryReady, "—");
+
+        setText(els.outShaCert, "—");
+        setText(els.outShaReceipt, "—");
+        setText(els.outShaEntry, "—");
+        setText(els.outShaManifest, "—");
+
+        setText(els.outEntryBlock, "—");
+        setText(els.copyMsg, "—");
+        setText(els.msg, "Il sistema valida i campi. Se non rispettano il formato → FAIL-CLOSED.");
+
+        disableOutputs();
+      }
+
+      async function copyToClipboard(text) {
+        if (!navigator.clipboard || !navigator.clipboard.writeText) return false;
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch (_) {
+          return false;
+        }
+      }
+
+      els.btnGenerate.addEventListener("click", async () => {
+        setText(els.copyMsg, "—");
+
+        const out = await buildPack();
+        if (out.error) {
+          fail(out.error);
+          setText(els.msg, "FAIL-CLOSED: " + out.error);
+          return;
+        }
+
+        state.ts = out.ts;
+        state.issuerCertificate = out.issuerCertificate;
+        state.operationalReceipt = out.operationalReceipt;
+        state.registryEntry = out.registryEntry;
+        state.packManifest = out.packManifest;
+        state.entryBlock = out.entryBlock;
+        state.sha = out.sha;
+
+        setText(els.outTs, out.ts);
+        setText(els.outEntryBlock, out.entryBlock);
+
+        setText(els.outShaCert, out.sha.cert || "—");
+        setText(els.outShaReceipt, out.sha.receipt || "—");
+        setText(els.outShaEntry, out.sha.entry || "—");
+        setText(els.outShaManifest, out.sha.manifest || "—");
+
+        ok("pack generated (local-first, manifest bound)");
+        setText(els.msg, "OK: pack generato. Ora appendi l’entry nel registry e fai VERIFY.");
       });
+
+      els.btnReset.addEventListener("click", resetAll);
+
+      els.btnDlCert.addEventListener("click", () => {
+        if (!state.issuerCertificate) return;
+        downloadJson("IPR_ISSUER_CERTIFICATE.json", state.issuerCertificate);
+      });
+
+      els.btnDlReceipt.addEventListener("click", () => {
+        if (!state.operationalReceipt) return;
+        downloadJson("IPR_OPERATIONAL_RECEIPT.json", state.operationalReceipt);
+      });
+
+      els.btnDlEntry.addEventListener("click", () => {
+        if (!state.registryEntry) return;
+        downloadJson("REGISTRY_ENTRY.json", state.registryEntry);
+      });
+
+      els.btnDlManifest.addEventListener("click", () => {
+        if (!state.packManifest) return;
+        downloadJson("PACK_MANIFEST.json", state.packManifest);
+      });
+
+      els.btnCopy.addEventListener("click", async () => {
+        if (!state.entryBlock) return;
+        const ok = await copyToClipboard(state.entryBlock);
+        setText(els.copyMsg, ok ? "Copiato negli appunti." : "Clipboard non disponibile: copia manualmente dal blocco.");
+      });
+
+      // Init
+      resetAll();
     })();
   </script>
 </body>
 </html>
-```0
