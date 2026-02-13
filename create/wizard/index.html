@@ -3,180 +3,86 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <title>CREATE (Client Wizard) — IPR Base Europeo</title>
-  <meta name="description" content="Wizard client-side per generare IPR Release (privato) e Registry Entry (pubblico hash-only). UE-first, audit-first, fail-closed, GDPR-min." />
-
+  <title>CREATE — IPR (Cliente)</title>
+  <meta name="description" content="Crea IPR release file (privato) e registry entry (pubblico hash-only). Nessun hash inserito a mano." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
-
 <body>
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
-
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CREATE · CLIENT WIZARD · LOCAL-ONLY</div>
-      <h1 class="hbce-hero__title">Crea IPR (cliente) — senza hash manuale</h1>
+      <div class="hbce-hero__kicker">CREATE · CLIENT WIZARD</div>
+      <h1 class="hbce-hero__title">Crea IPR (cliente)</h1>
       <p class="hbce-hero__lead">
-        Compila i dati. Il browser calcola <strong>payload_sha256</strong> e genera:
-        <strong>IPR_RELEASE.json</strong> (privato) + <strong>REGISTRY_ENTRY.json</strong> (pubblico minimizzato).
-        <br />
-        Regola: se il registry non contiene l’hash → <strong>INVALID</strong> (fail-closed).
-      </p>
-
-      <div class="hbce-actions">
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/">CREATE (operator)</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-      </div>
-
-      <p class="hbce-note">
-        Privacy: questo wizard gira <strong>localmente</strong>. Non carica dati su server.
-        Pubblico (registry) = <strong>name + hash + timestamp</strong>. Il resto resta nel file privato cliente.
+        Inserisci i dati minimi. Il sistema genera automaticamente:
+        <strong>IPR_RELEASE</strong> (privato) + <strong>REGISTRY_ENTRY</strong> (pubblico hash-only).
+        <br/>Regola: se non va nel registry → INVALID (fail-closed).
       </p>
     </section>
 
     <section class="hbce-section">
-      <h2>Dati cliente (input)</h2>
+      <h2>Dati minimi</h2>
 
       <div class="hbce-grid">
         <div class="hbce-card">
-          <h3>Identità (minimo)</h3>
+          <label><strong>Nome e Cognome (pubblico)</strong></label><br/>
+          <input id="name" style="width:100%;padding:10px;" placeholder="Es. Manuel Coletta" />
 
-          <div class="hbce-form">
-            <label class="hbce-label" for="firstName">Nome *</label>
-            <input class="hbce-input" id="firstName" type="text" autocomplete="given-name" placeholder="Mario" />
+          <div style="height:10px;"></div>
 
-            <label class="hbce-label" for="lastName">Cognome *</label>
-            <input class="hbce-input" id="lastName" type="text" autocomplete="family-name" placeholder="Rossi" />
+          <label><strong>Tipo entità</strong> (facoltativo)</label><br/>
+          <select id="entityType" style="width:100%;padding:10px;">
+            <option value="HUMAN">HUMAN</option>
+            <option value="ORG">ORG</option>
+            <option value="AI">AI</option>
+            <option value="AUTONOMOUS_SYSTEM">AUTONOMOUS_SYSTEM</option>
+          </select>
 
-            <label class="hbce-label" for="entityType">Tipo entità *</label>
-            <select class="hbce-input" id="entityType">
-              <option value="HUMAN" selected>HUMAN</option>
-              <option value="ORG">ORG</option>
-              <option value="AI">AI</option>
-              <option value="AUTONOMOUS_SYSTEM">AUTONOMOUS_SYSTEM</option>
-            </select>
+          <div style="height:10px;"></div>
 
-            <label class="hbce-label" for="country">Paese (ISO 3166-1 alpha-2) *</label>
-            <input class="hbce-input" id="country" type="text" maxlength="2" placeholder="IT" />
+          <label><strong>Note private</strong> (restano nel release, non pubbliche)</label><br/>
+          <textarea id="privateNotes" style="width:100%;padding:10px;min-height:90px;" placeholder="Facoltativo (non va nel registry)"></textarea>
 
-            <p class="hbce-note">
-              * = richiesto per creare un IPR Base. Il resto è facoltativo (GDPR-min).
-            </p>
+          <div style="height:14px;"></div>
+
+          <div class="hbce-actions">
+            <button class="hbce-btn" id="btnGenerate" type="button">Genera &amp; Rilascia file</button>
           </div>
+
+          <p class="hbce-note">
+            Pubblico: <strong>name + payload_sha256 + timestamp</strong>. Privato: payload completo consegnato al cliente.
+          </p>
         </div>
 
         <div class="hbce-card">
-          <h3>Dati UE (facoltativi)</h3>
-
-          <div class="hbce-form">
-            <label class="hbce-label" for="birthDate">Data di nascita (YYYY-MM-DD)</label>
-            <input class="hbce-input" id="birthDate" type="text" placeholder="1988-02-05" />
-
-            <label class="hbce-label" for="docType">Documento (tipo)</label>
-            <select class="hbce-input" id="docType">
-              <option value="" selected>—</option>
-              <option value="CIE">CIE</option>
-              <option value="PASSPORT">PASSPORT</option>
-              <option value="ID_CARD">ID_CARD</option>
-              <option value="DRIVING_LICENSE">DRIVING_LICENSE</option>
-            </select>
-
-            <label class="hbce-label" for="docNumber">Documento (numero)</label>
-            <input class="hbce-input" id="docNumber" type="text" placeholder="CA19311XQ" />
-
-            <label class="hbce-label" for="taxId">Codice fiscale / Tax ID</label>
-            <input class="hbce-input" id="taxId" type="text" placeholder="RSSMRA..." />
-
-            <p class="hbce-note">
-              Questi campi restano nel file privato <strong>IPR_RELEASE.json</strong>.
-              Nel registry pubblico non vanno.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="hbce-section">
-      <h2>Output (auto)</h2>
-
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>Stato</h3>
+          <h3>Output</h3>
           <ul class="hbce-list">
-            <li><strong>Timestamp:</strong> <span id="outTimestamp">—</span></li>
-            <li><strong>Name (public):</strong> <span id="outName">—</span></li>
+            <li><strong>Timestamp:</strong> <span id="outTs">—</span></li>
             <li><strong>payload_sha256:</strong> <span id="outHash">—</span></li>
           </ul>
-
           <div class="hbce-actions">
-            <button class="hbce-btn" id="btnGenerate" type="button">Genera IPR</button>
-            <button class="hbce-btn hbce-btn--ghost" id="btnReset" type="button">Reset</button>
+            <button class="hbce-btn" id="btnDownloadRelease" type="button" disabled>Download IPR_RELEASE (privato)</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btnDownloadEntry" type="button" disabled>Download REGISTRY_ENTRY (pubblico)</button>
           </div>
-
-          <p class="hbce-note">
-            Fail-closed: se mancano i campi richiesti o SHA-256 non disponibile → non genera.
-          </p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>REGISTRY_ENTRY.json (pubblico minimizzato)</h3>
-          <p class="hbce-note">
-            Questo blocco è quello da appendere in <code>registry/registry.json → entries[]</code>.
-            Pubblico = <strong>name + payload_sha256 + timestamp</strong>.
-          </p>
-
-          <pre class="hbce-pre"><code id="outRegistryEntry">{}</code></pre>
-
-          <div class="hbce-actions">
-            <button class="hbce-btn hbce-btn--ghost" id="btnCopyRegistry" type="button">Copy</button>
-            <button class="hbce-btn hbce-btn--ghost" id="btnDownloadRegistry" type="button">Download</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>IPR_RELEASE.json (privato cliente)</h3>
-          <p class="hbce-note">
-            Contiene il payload (anche i campi facoltativi), hash e timestamp.
-            Questo file si consegna al cliente. Non va pubblicato.
-          </p>
-
-          <pre class="hbce-pre"><code id="outRelease">{}</code></pre>
-
-          <div class="hbce-actions">
-            <button class="hbce-btn hbce-btn--ghost" id="btnCopyRelease" type="button">Copy</button>
-            <button class="hbce-btn hbce-btn--ghost" id="btnDownloadRelease" type="button">Download</button>
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Prossimo passo (operatore)</h3>
-          <ol class="hbce-list">
-            <li>Operatore prende <strong>REGISTRY_ENTRY.json</strong></li>
-            <li>Appende in <code>registry/registry.json</code> (append-only)</li>
-            <li>Il cliente usa <strong>VERIFY</strong> con il suo <strong>IPR_RELEASE.json</strong></li>
-          </ol>
-          <div class="hbce-actions">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Apri REGISTRY</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Apri VERIFY</a>
-          </div>
-          <p class="hbce-note">
-            Se l’hash non è presente nel registry → INVALID (fail-closed).
-          </p>
+          <pre class="hbce-pre"><code id="preview">—</code></pre>
         </div>
       </div>
     </section>
 
     <section class="hbce-section">
-      <p class="hbce-note">
-        HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br />
-        HERMETICUM B.C.E. S.r.l.<br />
-        UE-first · audit-first · fail-closed · hash-only · append-only · GDPR-min
-      </p>
+      <h2>Prossimo passo</h2>
+      <div class="hbce-card">
+        <p>
+          1) Consegni <strong>IPR_RELEASE</strong> al cliente.<br/>
+          2) Append nel registry con <strong>REGISTRY_ENTRY</strong> (hash-only).<br/>
+          3) Il cliente va su <strong>VERIFY</strong> e ottiene <strong>VALID</strong> + scarica il <strong>CERTIFICATO</strong>.
+        </p>
+        <div class="hbce-actions">
+          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Apri Registry</a>
+          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Apri Verify</a>
+        </div>
+      </div>
     </section>
 
   </main>
@@ -187,126 +93,14 @@
     (function () {
       const $ = (id) => document.getElementById(id);
 
-      const fields = {
-        firstName: $("firstName"),
-        lastName: $("lastName"),
-        entityType: $("entityType"),
-        country: $("country"),
-        birthDate: $("birthDate"),
-        docType: $("docType"),
-        docNumber: $("docNumber"),
-        taxId: $("taxId")
-      };
+      function isNonEmptyString(x){ return typeof x === "string" && x.trim().length > 0; }
 
-      const out = {
-        ts: $("outTimestamp"),
-        name: $("outName"),
-        hash: $("outHash"),
-        registry: $("outRegistryEntry"),
-        release: $("outRelease")
-      };
-
-      const btn = {
-        gen: $("btnGenerate"),
-        reset: $("btnReset"),
-        copyReg: $("btnCopyRegistry"),
-        dlReg: $("btnDownloadRegistry"),
-        copyRel: $("btnCopyRelease"),
-        dlRel: $("btnDownloadRelease")
-      };
-
-      function nowISO() {
-        return new Date().toISOString();
+      function safeNameForFile(name){
+        return String(name||"IPR").trim().replace(/\s+/g,"_").replace(/[^a-zA-Z0-9_\-]/g,"");
       }
 
-      function normalizeISO2(v) {
-        const x = String(v || "").trim().toUpperCase();
-        return /^[A-Z]{2}$/.test(x) ? x : "";
-      }
-
-      function nonEmpty(v) {
-        return typeof v === "string" && v.trim().length > 0;
-      }
-
-      function safeTrim(v) {
-        return String(v || "").trim();
-      }
-
-      function makeFullName(firstName, lastName) {
-        const fn = safeTrim(firstName);
-        const ln = safeTrim(lastName);
-        return (fn + " " + ln).trim().replace(/\s+/g, " ");
-      }
-
-      function buildPayload(ts) {
-        const firstName = safeTrim(fields.firstName.value);
-        const lastName = safeTrim(fields.lastName.value);
-        const entityType = safeTrim(fields.entityType.value || "HUMAN");
-        const country = normalizeISO2(fields.country.value);
-
-        // required check
-        if (!nonEmpty(firstName) || !nonEmpty(lastName) || !nonEmpty(country) || !nonEmpty(entityType)) {
-          return { ok: false, reason: "campi richiesti mancanti" };
-        }
-
-        const name = makeFullName(firstName, lastName);
-
-        // OPTIONAL fields (kept private in release file)
-        const payload = {
-          proto: "HBCE-IPR-RELEASE-v1",
-          kind: "IPR_EU_BASE_RELEASE",
-          policy: ["UE_FIRST", "AUDIT_FIRST", "FAIL_CLOSED", "HASH_ONLY", "APPEND_ONLY", "GDPR_MIN"],
-          subject: {
-            entity_type: entityType,
-            name: name,
-            country: country
-          },
-          private_fields: {
-            birth_date: safeTrim(fields.birthDate.value) || null,
-            doc_type: safeTrim(fields.docType.value) || null,
-            doc_number: safeTrim(fields.docNumber.value) || null,
-            tax_id: safeTrim(fields.taxId.value) || null
-          },
-          timestamp: ts
-        };
-
-        // strip empty optionals to reduce footprint
-        Object.keys(payload.private_fields).forEach((k) => {
-          if (payload.private_fields[k] === null || payload.private_fields[k] === "") delete payload.private_fields[k];
-        });
-        if (Object.keys(payload.private_fields).length === 0) delete payload.private_fields;
-
-        return { ok: true, name, payload };
-      }
-
-      async function sha256HexFromText(text) {
-        if (!window.crypto || !crypto.subtle) return null;
-        const enc = new TextEncoder();
-        const buf = enc.encode(text);
-        const hashBuf = await crypto.subtle.digest("SHA-256", buf);
-        const hashArr = Array.from(new Uint8Array(hashBuf));
-        return hashArr.map(b => b.toString(16).padStart(2, "0")).join("");
-      }
-
-      function pretty(obj) {
-        return JSON.stringify(obj, null, 2);
-      }
-
-      function setText(el, v) {
-        if (el) el.textContent = v;
-      }
-
-      async function copyText(text) {
-        try {
-          await navigator.clipboard.writeText(text);
-          return true;
-        } catch (_) {
-          return false;
-        }
-      }
-
-      function downloadJSON(filename, obj) {
-        const blob = new Blob([pretty(obj)], { type: "application/json;charset=utf-8" });
+      function downloadText(filename, text, mime){
+        const blob = new Blob([text], { type: mime || "application/octet-stream" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
@@ -317,100 +111,85 @@
         URL.revokeObjectURL(url);
       }
 
-      function failClosed(reason) {
-        setText(out.ts, "—");
-        setText(out.name, "—");
-        setText(out.hash, "—");
-        setText(out.registry, "{}");
-        setText(out.release, "{}");
-        alert("FAIL-CLOSED — " + reason);
+      async function sha256HexFromText(text){
+        const enc = new TextEncoder();
+        const buf = enc.encode(text);
+        const hashBuf = await crypto.subtle.digest("SHA-256", buf);
+        const hashArr = Array.from(new Uint8Array(hashBuf));
+        return hashArr.map(b => b.toString(16).padStart(2,"0")).join("");
       }
 
-      async function generate() {
-        const ts = nowISO();
-        const built = buildPayload(ts);
-        if (!built.ok) return failClosed(built.reason);
+      let lastReleaseJson = null;
+      let lastEntryJson = null;
 
-        const payloadText = pretty(built.payload);
-        const hash = await sha256HexFromText(payloadText);
-        if (!hash) return failClosed("SHA-256 non disponibile (browser non supportato)");
+      $("btnGenerate").onclick = async () => {
+        const name = ($("name").value || "").trim();
+        const entityType = $("entityType").value;
+        const privateNotes = ($("privateNotes").value || "").trim();
 
-        const registryEntry = {
-          name: built.name,                  // PUBLIC: Nome Cognome
-          payload_sha256: hash,              // PUBLIC: hash del payload privato
-          timestamp: ts                      // PUBLIC: timestamp
+        if (!isNonEmptyString(name)) {
+          alert("Inserisci Nome e Cognome.");
+          return;
+        }
+
+        const ts = new Date().toISOString();
+
+        // payload = ciò che viene hashato e verificato (puoi estenderlo, ma resti coerente nel tempo)
+        const payload = {
+          proto: "HBCE-IPR-RELEASE-v1",
+          kind: "IPR_RELEASE_FILE",
+          policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","GDPR_MIN","NO_PUBLIC_DATA_CUSTODY"],
+          subject: {
+            name,
+            entity_type: entityType
+          },
+          issued_at: ts,
+          private_fields: {
+            notes: privateNotes || null
+          }
         };
 
-        const release = {
-          proto: "HBCE-IPR-RELEASE-FILE-v1",
-          kind: "IPR_EU_BASE_FILE",
+        const payloadText = JSON.stringify(payload);
+        const payload_sha256 = await sha256HexFromText(payloadText);
+
+        lastReleaseJson = {
+          proto: "HBCE-IPR-RELEASE-v1",
+          kind: "IPR_RELEASE_FILE",
+          name,
           timestamp: ts,
-          name: built.name,
-          payload_sha256: hash,
-          payload: built.payload
+          payload_sha256,
+          payload
         };
 
-        setText(out.ts, ts);
-        setText(out.name, built.name);
-        setText(out.hash, hash);
-        setText(out.registry, pretty(registryEntry));
-        setText(out.release, pretty(release));
+        lastEntryJson = {
+          name,
+          payload_sha256,
+          timestamp: ts,
+          entity_type: entityType,
+          status: "ACTIVE"
+        };
 
-        // attach latest objects for buttons
-        window.__hbce_latest = { registryEntry, release };
-      }
+        $("outTs").textContent = ts;
+        $("outHash").textContent = payload_sha256;
+        $("preview").textContent =
+          "IPR_RELEASE (privato):\n" + JSON.stringify(lastReleaseJson, null, 2) +
+          "\n\nREGISTRY_ENTRY (pubblico):\n" + JSON.stringify(lastEntryJson, null, 2);
 
-      function reset() {
-        fields.firstName.value = "";
-        fields.lastName.value = "";
-        fields.entityType.value = "HUMAN";
-        fields.country.value = "IT";
-        fields.birthDate.value = "";
-        fields.docType.value = "";
-        fields.docNumber.value = "";
-        fields.taxId.value = "";
+        $("btnDownloadRelease").disabled = false;
+        $("btnDownloadEntry").disabled = false;
+      };
 
-        setText(out.ts, "—");
-        setText(out.name, "—");
-        setText(out.hash, "—");
-        setText(out.registry, "{}");
-        setText(out.release, "{}");
-        window.__hbce_latest = null;
-      }
+      $("btnDownloadRelease").onclick = () => {
+        if (!lastReleaseJson) return;
+        const fname = "IPR_RELEASE_" + safeNameForFile(lastReleaseJson.name) + ".json";
+        downloadText(fname, JSON.stringify(lastReleaseJson, null, 2), "application/json;charset=utf-8");
+      };
 
-      btn.gen.addEventListener("click", generate);
-      btn.reset.addEventListener("click", reset);
-
-      btn.copyReg.addEventListener("click", async () => {
-        const x = window.__hbce_latest && window.__hbce_latest.registryEntry;
-        if (!x) return failClosed("genera prima l’IPR");
-        const ok = await copyText(pretty(x));
-        if (!ok) alert("Copy non disponibile su questo browser");
-      });
-
-      btn.copyRel.addEventListener("click", async () => {
-        const x = window.__hbce_latest && window.__hbce_latest.release;
-        if (!x) return failClosed("genera prima l’IPR");
-        const ok = await copyText(pretty(x));
-        if (!ok) alert("Copy non disponibile su questo browser");
-      });
-
-      btn.dlReg.addEventListener("click", () => {
-        const x = window.__hbce_latest && window.__hbce_latest.registryEntry;
-        if (!x) return failClosed("genera prima l’IPR");
-        const safeName = (x.name || "client").replace(/[^a-z0-9]+/gi, "_").replace(/^_+|_+$/g, "");
-        downloadJSON("REGISTRY_ENTRY_" + safeName + ".json", x);
-      });
-
-      btn.dlRel.addEventListener("click", () => {
-        const x = window.__hbce_latest && window.__hbce_latest.release;
-        if (!x) return failClosed("genera prima l’IPR");
-        const safeName = (x.name || "client").replace(/[^a-z0-9]+/gi, "_").replace(/^_+|_+$/g, "");
-        downloadJSON("IPR_RELEASE_" + safeName + ".json", x);
-      });
-
-      // sensible defaults
-      if (!fields.country.value) fields.country.value = "IT";
+      $("btnDownloadEntry").onclick = () => {
+        if (!lastEntryJson) return;
+        const fname = "REGISTRY_ENTRY_" + safeNameForFile(lastEntryJson.name) + ".json";
+        downloadText(fname, JSON.stringify(lastEntryJson, null, 2), "application/json;charset=utf-8");
+      };
     })();
   </script>
 </body>
