@@ -143,7 +143,7 @@
             <li><strong>Status:</strong> <span id="hbce-registry-status">Checking…</span></li>
             <li><strong>Entries:</strong> <span id="hbce-entries-count">—</span></li>
             <li><strong>Last timestamp:</strong> <span id="hbce-last-ts">—</span></li>
-            <li><strong>Last nickname:</strong> <span id="hbce-last-nick">—</span></li>
+            <li><strong>Last name:</strong> <span id="hbce-last-name">—</span></li>
             <li><strong>Registry SHA-256:</strong> <span id="hbce-registry-sha256">—</span></li>
           </ul>
 
@@ -205,7 +205,7 @@
             <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry</a>
           </div>
           <p class="hbce-note">
-            Pubblico: nickname + payload_sha256 + timestamp. Nessuna custodia pubblica di dati personali.
+            Pubblico: <strong>nome e cognome</strong> + payload_sha256 + timestamp. Nessuna custodia pubblica di dati personali.
           </p>
         </div>
 
@@ -357,17 +357,6 @@
 
       <div class="hbce-grid">
         <div class="hbce-card">
-          <h3>Termini essenziali (UE-ready)</h3>
-          <ul class="hbce-list">
-            <li><strong>Licenze:</strong> moduli = software + capacità operative</li>
-            <li><strong>Entry:</strong> accesso diretto (IPR Base)</li>
-            <li><strong>Operator / Node:</strong> accesso selettivo (application + approval)</li>
-            <li><strong>GDPR-min:</strong> registry pubblico hash-only (no public data custody)</li>
-            <li><strong>Prezzi:</strong> indicazioni base; IVA/termini definiti in fase di rilascio/licenza</li>
-          </ul>
-        </div>
-
-        <div class="hbce-card">
           <h3>Responsabilità</h3>
           <p>
             I moduli non eliminano la responsabilità biologica: la rendono <strong>operativa</strong>, <strong>attribuibile</strong> e
@@ -375,51 +364,16 @@
           </p>
           <p class="hbce-note">In assenza di verifica: fail-closed. Nessuna esecuzione “silente”.</p>
         </div>
-      </div>
-    </section>
-
-    <!-- PATHS -->
-    <section class="hbce-section">
-      <h2>Percorsi operativi (spendi → ottieni → fai)</h2>
-
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>1) Entry — Esistenza operativa</h3>
-          <p><strong>49€</strong> → IPR Base Europeo</p>
-          <p>Ottieni: baseline verificabile · Fai: entri in modalità VALID (solo se verificato)</p>
-        </div>
 
         <div class="hbce-card">
-          <h3>2) AI personale operativa</h3>
-          <p><strong>49€ + 420€</strong> → IPR + AI JOKER</p>
-          <p>Ottieni: workflow AI attribuibili · Fai: output/procedure verificabili</p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>3) Operatore IPR (selettivo)</h3>
-          <p><strong>49€ + 950€</strong> → IPR + UNEBDO+OPC</p>
-          <p>Ottieni: candidatura ruolo · Fai: operi come operatore solo se approvato</p>
-          <div class="hbce-actions">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operators/">Apply</a>
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <h3>4) Economia di rete</h3>
-          <p><strong>+ 780€</strong> → MetaExchange</p>
-          <p>Ottieni: scambio servizi/pack · Fai: ecosistema economico operativo tra nodi</p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>5) Scala territoriale (selettivo)</h3>
-          <p><strong>+ 1.400€</strong> → CyberGlobal</p>
-          <p>Ottieni: governance distribuita · Fai: coordinamento e replicazione rete</p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>6) Sistemi fisici (industria/R&amp;D)</h3>
-          <p><strong>+ 2.387€</strong> → IoSpace</p>
-          <p>Ottieni: identità per unità autonome · Fai: mission log auditabile per sistemi fisici</p>
+          <h3>Nota pubblica (GDPR-min)</h3>
+          <p>
+            Il registry è pubblico e append-only. Contiene solo entry minimizzate:
+            <strong>nome e cognome</strong> + <strong>payload_sha256</strong> + <strong>timestamp</strong>.
+          </p>
+          <p class="hbce-note">
+            Se vuoi ridurre esposizione: usa iniziali o forma abbreviata (policy di rilascio).
+          </p>
         </div>
       </div>
     </section>
@@ -583,20 +537,25 @@
         if (entries.length === 0) {
           pass("registry valid (0 entries)");
           setText("hbce-last-ts", "—");
-          setText("hbce-last-nick", "—");
+          setText("hbce-last-name", "—");
           return;
         }
 
         const last = entries[entries.length - 1];
 
-        const okNick = isNonEmptyString(last.nickname);
+        // backward compatible:
+        // new field: name (Nome Cognome)
+        // old field: nickname
+        const nameValue = isNonEmptyString(last.name) ? last.name : (isNonEmptyString(last.nickname) ? last.nickname : null);
+
+        const okName = isNonEmptyString(nameValue);
         const okHash = isHex64(last.payload_sha256);
         const okTs = isISODateString(last.timestamp);
 
-        setText("hbce-last-nick", okNick ? last.nickname : "—");
+        setText("hbce-last-name", okName ? nameValue : "—");
         setText("hbce-last-ts", okTs ? last.timestamp : "—");
 
-        if (!okNick || !okHash || !okTs) {
+        if (!okName || !okHash || !okTs) {
           fail("last entry missing/invalid required fields");
           return;
         }
