@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>OPERATOR PACK — HARD (Cross-link Enforced)</title>
-  <meta name="description" content="Evidence Pack HARD HBCE: enforcement cross-link (ticket/receipt/release/entry/cert), operator_id mandatory, PACK_MANIFEST + PACK_CHAIN. Fail-closed." />
+  <title>OPERATOR PACK — HARD v2 (Chained + Signature Placeholder)</title>
+  <meta name="description" content="Evidence Pack HARD HBCE: cross-link enforced, operator_id mandatory, auto prev_chain (local append-only), PACK_MANIFEST + PACK_CHAIN + signature placeholder. Fail-closed." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
@@ -14,35 +14,67 @@
   <main class="hbce-container hbce-main">
 
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">HARD MODE · CROSS-LINK · OPERATOR-ID · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">Evidence Pack Builder (HARD)</h1>
+      <div class="hbce-hero__kicker">HARD MODE v2 · CHAINED · SIGNATURE PLACEHOLDER · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Evidence Pack Builder (HARD v2)</h1>
       <p class="hbce-hero__lead">
-        Questo builder rifiuta qualsiasi incoerenza: <strong>ticket_id</strong>, <strong>payload_sha256</strong>, riferimenti certificate,
-        e operator identity. Se un link non torna → <strong>FAIL-CLOSED</strong>.
+        Enforce totale: <strong>payload_sha256</strong> allineati, <strong>ticket_id</strong> coerenti (se presenti),
+        <strong>operator_id</strong> obbligatorio. In più: <strong>chain append-only locale</strong> (prev_chain auto) + placeholder firma.
       </p>
       <p class="hbce-note">
-        Output: <strong>PACK_MANIFEST.json</strong> + <strong>PACK_CHAIN.json</strong> (hash del manifest).
+        Output: <strong>PACK_MANIFEST.json</strong> + <strong>PACK_CHAIN.json</strong>. La chain salva l’hash del manifest e collega al precedente pack (local).
       </p>
     </section>
 
     <section class="hbce-section">
-      <h2>Operator identity (mandatory)</h2>
+      <h2>Operator identity + Chain control</h2>
 
       <div class="hbce-grid">
         <div class="hbce-card">
-          <h3>operator_id</h3>
+          <h3>operator_id (mandatory)</h3>
           <input id="operator_id" style="width:100%;padding:10px;" placeholder="Es. HBCE-OP-IT-PIEMONTE-TORINO-0001" />
           <p class="hbce-note">
-            Non è un dato personale pubblico. È un identificatore operativo interno.
+            Identificatore operativo (non pubblico). HARD blocca se vuoto.
           </p>
 
-          <h3 style="margin-top:14px;">policy (hard)</h3>
+          <h3 style="margin-top:14px;">Chain (locale)</h3>
           <ul class="hbce-list">
-            <li>Required: release + entry + certificate</li>
-            <li>Enforce: release.hash == entry.hash == certificate.subject.hash</li>
-            <li>Enforce ticket chain se ticket/receipt presenti</li>
-            <li>Enforce operator_id non vuoto</li>
+            <li><strong>prev_chain_sha256 (auto):</strong> <span id="prevChain">—</span></li>
+            <li><strong>last_chain_sha256 (saved):</strong> <span id="lastChain">—</span></li>
           </ul>
+          <div class="hbce-actions">
+            <button class="hbce-btn hbce-btn--ghost" id="btnClearChain" type="button">CLEAR CHAIN (local)</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btnExportChainLog" type="button">EXPORT CHAIN LOG</button>
+          </div>
+          <p class="hbce-note">
+            Append-only locale: ogni pack salva l’hash chain e diventa il “prev” del prossimo.
+          </p>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Signature placeholder</h3>
+          <p class="hbce-note">
+            Placeholder per futura firma (es. ED25519) senza cambiare schema in seguito.
+          </p>
+
+          <label><strong>signature_mode</strong></label><br />
+          <select id="sig_mode" style="width:100%;padding:10px;">
+            <option value="NONE">NONE</option>
+            <option value="ED25519_PLACEHOLDER">ED25519_PLACEHOLDER</option>
+          </select>
+
+          <div style="height:10px;"></div>
+
+          <label><strong>public_key (optional)</strong></label><br />
+          <input id="sig_pub" style="width:100%;padding:10px;" placeholder="base64/hex (facoltativo)" />
+
+          <div style="height:10px;"></div>
+
+          <label><strong>signature (optional)</strong></label><br />
+          <input id="sig_value" style="width:100%;padding:10px;" placeholder="firma (facoltativo)" />
+
+          <p class="hbce-note">
+            HARD non richiede la firma: la struttura c’è già.
+          </p>
         </div>
 
         <div class="hbce-card">
@@ -135,7 +167,7 @@
         <div class="hbce-card">
           <h3>Output</h3>
           <div class="hbce-actions">
-            <button class="hbce-btn" id="btnBuild" type="button">BUILD (HARD)</button>
+            <button class="hbce-btn" id="btnBuild" type="button">BUILD (HARD v2)</button>
             <button class="hbce-btn hbce-btn--ghost" id="btnDlManifest" type="button" disabled>Download PACK_MANIFEST.json</button>
             <button class="hbce-btn hbce-btn--ghost" id="btnDlChain" type="button" disabled>Download PACK_CHAIN.json</button>
           </div>
@@ -144,10 +176,12 @@
             <li><strong>Status:</strong> <span id="status">—</span></li>
             <li><strong>Pack ID:</strong> <span id="packId">—</span></li>
             <li><strong>Created at:</strong> <span id="createdAt">—</span></li>
+            <li><strong>manifest_sha256:</strong> <span id="manifestSha">—</span></li>
+            <li><strong>chain_sha256 (saved):</strong> <span id="chainSha">—</span></li>
           </ul>
 
           <p class="hbce-note">
-            Fail-closed: nessun download se non passa tutte le verifiche HARD.
+            HARD: nessun download se non passa. Dopo BUILD salva la chain in locale.
           </p>
         </div>
 
@@ -170,6 +204,10 @@
 <script>
 (function(){
   const $ = (id) => document.getElementById(id);
+
+  // --- Local storage keys (append-only local chain log)
+  const CHAIN_LAST_KEY = "HBCE_PACK_CHAIN_LAST_SHA256_V1";
+  const CHAIN_LOG_KEY  = "HBCE_PACK_CHAIN_LOG_V1"; // array of {chain_sha256, pack_id, created_at, manifest_sha256}
 
   function setText(id, v){ const el = $(id); if(el) el.textContent = v; }
   function isNonEmptyString(x){ return typeof x === "string" && x.trim().length > 0; }
@@ -212,6 +250,52 @@
     return `HBCE-PACK-${ts}-${rnd}`;
   }
 
+  function getLastChainSha(){
+    try { return localStorage.getItem(CHAIN_LAST_KEY) || null; }
+    catch(_) { return null; }
+  }
+
+  function setLastChainSha(sha){
+    try { localStorage.setItem(CHAIN_LAST_KEY, sha); }
+    catch(_) {}
+  }
+
+  function loadChainLog(){
+    try{
+      const raw = localStorage.getItem(CHAIN_LOG_KEY);
+      if(!raw) return [];
+      const obj = JSON.parse(raw);
+      return Array.isArray(obj) ? obj : [];
+    }catch(_){ return []; }
+  }
+
+  function appendChainLog(entry){
+    const log = loadChainLog();
+    log.push(entry);
+    try { localStorage.setItem(CHAIN_LOG_KEY, JSON.stringify(log)); } catch(_) {}
+  }
+
+  function refreshChainUI(){
+    const last = getLastChainSha();
+    setText("lastChain", last ? last : "—");
+    setText("prevChain", last ? last : "—");
+  }
+
+  $("btnClearChain").addEventListener("click", () => {
+    try{
+      localStorage.removeItem(CHAIN_LAST_KEY);
+      localStorage.removeItem(CHAIN_LOG_KEY);
+    }catch(_){}
+    refreshChainUI();
+    setText("chainSha","—");
+  });
+
+  $("btnExportChainLog").addEventListener("click", () => {
+    const log = loadChainLog();
+    const ts = new Date().toISOString().replace(/[:.]/g,"-");
+    downloadText(`HBCE_PACK_CHAIN_LOG_${ts}.json`, JSON.stringify(log, null, 2), "application/json;charset=utf-8");
+  });
+
   const slots = {
     ticket:   { input:"f_ticket",  det:"d_ticket",  hash:"h_ticket",  obj:null, text:null, sha:null, kind:null },
     receipt:  { input:"f_receipt", det:"d_receipt", hash:"h_receipt", obj:null, text:null, sha:null, kind:null },
@@ -228,6 +312,7 @@
     if(!f){
       s.obj=null; s.text=null; s.sha=null; s.kind=null;
       setText(s.det,"—"); setText(s.hash,"—");
+      refreshDerived();
       return;
     }
 
@@ -235,6 +320,7 @@
     catch(_){
       s.obj=null; s.sha=null; s.kind=null;
       setText(s.det,"FAIL — cannot read"); setText(s.hash,"—");
+      refreshDerived();
       return;
     }
 
@@ -245,6 +331,7 @@
     catch(_){
       s.obj=null; s.kind=null;
       setText(s.det,"FAIL — invalid JSON"); setText(s.hash, s.sha || "—");
+      refreshDerived();
       return;
     }
 
@@ -261,8 +348,8 @@
 
   function refreshDerived(){
     // ticket_id surfaces
-    const ticket_id = slots.ticket.obj ? (slots.ticket.obj.ticket_id || (slots.ticket.obj.ticket && slots.ticket.obj.ticket.ticket_id)) : null;
-    const receipt_id = slots.receipt.obj ? (slots.receipt.obj.ticket_id || (slots.receipt.obj.payload && slots.receipt.obj.payload.ticket_id)) : null;
+    const ticket_id = slots.ticket.obj ? (slots.ticket.obj.ticket_id || null) : null;
+    const receipt_id = slots.receipt.obj ? (slots.receipt.obj.ticket_id || (slots.receipt.obj.payload && slots.receipt.obj.payload.ticket_id) || null) : null;
 
     setText("t_ticket_id", ticket_id ? String(ticket_id) : "—");
     setText("t_receipt_id", receipt_id ? String(receipt_id) : "—");
@@ -288,7 +375,7 @@
     // cert
     const crt = slots.cert.obj;
     const crtName = crt && crt.subject ? (crt.subject.name || null) : (readPublicName(crt) || null);
-    const crtHash = crt && crt.subject ? crt.subject.payload_sha256 : null;
+    const crtHash = (crt && crt.subject && crt.subject.payload_sha256) ? crt.subject.payload_sha256 : null;
     const crtTicket = crt ? (crt.ticket_id || (crt.subject && crt.subject.ticket_id) || null) : null;
 
     setText("t_cert_name", crtName ? String(crtName).trim() : "—");
@@ -300,7 +387,6 @@
     const cnt = (r && Array.isArray(r.entries)) ? r.entries.length : null;
     setText("t_reg_count", (cnt === null) ? "—" : String(cnt));
 
-    // cross-link status
     computeCrossLink();
   }
 
@@ -308,7 +394,6 @@
     const opId = ($("operator_id").value || "").trim();
     const opOk = isNonEmptyString(opId);
     setText("x_operator", opOk ? "OK" : "FAIL");
-    if(!opOk) setText("x_note", "operator_id mancante: HARD mode blocca.");
 
     // payload chain
     const rel = slots.release.obj;
@@ -356,11 +441,9 @@
         if(ticketOk && String(ticket_id) !== String(receipt_id)) { ticketOk = false; treasons.push("ticket_id mismatch ticket vs receipt"); }
       }
 
-      // if release claims a ticket_id, enforce
       const relTicket = slots.release.obj ? (slots.release.obj.ticket_id || (slots.release.obj.payload && slots.release.obj.payload.ticket_id) || null) : null;
       if(ticketOk && relTicket && String(relTicket) !== String(ticket_id)) { ticketOk = false; treasons.push("release.ticket_id != ticket.ticket_id"); }
 
-      // if cert claims a ticket_id, enforce
       const crtTicket = slots.cert.obj ? (slots.cert.obj.ticket_id || (slots.cert.obj.subject && slots.cert.obj.subject.ticket_id) || null) : null;
       if(ticketOk && crtTicket && String(crtTicket) !== String(ticket_id)) { ticketOk = false; treasons.push("cert.ticket_id != ticket.ticket_id"); }
     }
@@ -385,6 +468,8 @@
     setText("status", "FAIL-CLOSED — " + reason);
     setText("packId","—");
     setText("createdAt","—");
+    setText("manifestSha","—");
+    setText("chainSha","—");
     setText("preview","—");
     setText("previewChain","—");
     $("btnDlManifest").disabled = true;
@@ -445,6 +530,11 @@
     const createdAt = new Date().toISOString();
     const packId = genPackId();
 
+    // signature placeholder
+    const sigMode = ($("sig_mode").value || "NONE").trim();
+    const sigPub  = ($("sig_pub").value || "").trim();
+    const sigVal  = ($("sig_value").value || "").trim();
+
     function fileMeta(label, key){
       const s = slots[key];
       const inp = $(s.input);
@@ -471,7 +561,7 @@
 
     lastManifest = {
       proto: "HBCE-PACK_MANIFEST-v1",
-      kind: "EVIDENCE_PACK_MANIFEST_HARD",
+      kind: "EVIDENCE_PACK_MANIFEST_HARD_V2",
       policy: [
         "UE_FIRST",
         "AUDIT_FIRST",
@@ -497,12 +587,21 @@
         registry_sha256: registrySnapshotSha,
         entries: (registrySnapshotCount === null ? null : registrySnapshotCount)
       },
+      signature: {
+        mode: sigMode,
+        public_key: isNonEmptyString(sigPub) ? sigPub : null,
+        signature: isNonEmptyString(sigVal) ? sigVal : null,
+        note: "Placeholder for external signing (e.g., ED25519)."
+      },
       files,
-      note: "HARD manifest enforces cross-link integrity across artifacts. Reproducible by recalculating file hashes and re-running VERIFY."
+      note: "HARD v2: cross-link enforced + local chain + signature placeholder. Reproducible by recalculating hashes and re-running VERIFY."
     };
 
     const manifestJson = JSON.stringify(lastManifest, null, 2);
     const manifestSha = await sha256HexFromText(manifestJson);
+
+    // local chain prev
+    const prevChainSha = getLastChainSha();
 
     lastChain = {
       proto: "HBCE-PACK_CHAIN-v1",
@@ -512,23 +611,39 @@
       created_at: createdAt,
       operator_id: opId,
       manifest_sha256: manifestSha,
-      prev_chain_sha256: null,
-      note: "Chain object references the manifest hash. For append-only chaining, set prev_chain_sha256 to previous pack chain hash."
+      prev_chain_sha256: prevChainSha,
+      note: "Auto prev_chain_sha256 from local storage. Append-only local chain."
     };
 
     const chainJson = JSON.stringify(lastChain, null, 2);
+    const chainSha = await sha256HexFromText(chainJson);
 
-    ok("HARD checks passed. Pack ready.");
+    // save chain as last + log
+    setLastChainSha(chainSha);
+    appendChainLog({
+      chain_sha256: chainSha,
+      pack_id: packId,
+      created_at: createdAt,
+      manifest_sha256: manifestSha,
+      prev_chain_sha256: prevChainSha
+    });
+
+    ok("HARD v2 checks passed. Pack + chain ready (chain saved).");
     setText("packId", packId);
     setText("createdAt", createdAt);
+    setText("manifestSha", manifestSha);
+    setText("chainSha", chainSha);
     setText("preview", manifestJson);
     setText("previewChain", chainJson);
+
+    refreshChainUI();
+    setText("prevChain", chainSha); // next prev is current saved
 
     $("btnDlManifest").disabled = false;
     $("btnDlChain").disabled = false;
 
     $("btnDlManifest").onclick = () => {
-      const fn = `PACK_MANIFEST_HARD_${safeNameForFile(name)}_${String(relHash).slice(0,12)}.json`;
+      const fn = `PACK_MANIFEST_HARD_V2_${safeNameForFile(name)}_${String(relHash).slice(0,12)}.json`;
       downloadText(fn, manifestJson, "application/json;charset=utf-8");
     };
 
@@ -542,16 +657,15 @@
   setText("status","—");
   setText("packId","—");
   setText("createdAt","—");
+  setText("manifestSha","—");
+  setText("chainSha","—");
   setText("preview","—");
   setText("previewChain","—");
-  setText("x_payload","—");
-  setText("x_ticket","—");
-  setText("x_operator","—");
-  setText("x_note","—");
+
   $("btnDlManifest").disabled = true;
   $("btnDlChain").disabled = true;
 
-  // initial derived
+  refreshChainUI();
   refreshDerived();
 })();
 </script>
