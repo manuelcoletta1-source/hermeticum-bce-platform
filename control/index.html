@@ -3,8 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CONTROL — Ecosystem Control Panel</title>
-  <meta name="description" content="Pannello di controllo Hermeticum: accesso ai flussi canonici (emit/verify/registry), governance/standard, strumenti (anchor, ip verification) e stato ecosistema." />
+  <title>HERMETICUM — CONTROL (Precondizione di esecuzione)</title>
+
+  <meta name="description"
+        content="Control stack: precondizione di esecuzione, policy ex-ante (OPC) e fail-closed. Tabella azioni critiche e requisiti IPR/Policy/Evidence. UE-first, audit-first, hash-only, append-only." />
+
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
@@ -13,159 +16,190 @@
 
   <main class="hbce-container hbce-main">
 
+    <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CONTROL · ECOSYSTEM PANEL</div>
-      <h1 class="hbce-hero__title">Control Panel</h1>
+      <div class="hbce-hero__kicker">CONTROL · EX-ANTE · FAIL-CLOSED</div>
+
+      <h1 class="hbce-hero__title">Precondizione di esecuzione (control stack)</h1>
+
       <p class="hbce-hero__lead">
-        Pannello operativo dell’infrastruttura: routing ai flussi canonici e agli strumenti.
-        Modalità: <strong>UE-first</strong>, <strong>audit-first</strong>, <strong>fail-closed</strong>, <strong>hash-only</strong>, <strong>append-only</strong>.
+        In HERMETICUM una operazione critica è eseguibile solo se esiste una catena minima verificabile:
+        <strong>IPR valido</strong> + <strong>policy ex-ante</strong> + <strong>prova minimizzata</strong>.
+        <br>
+        Se una parte manca → <strong>INVALID</strong> (fail-closed).
       </p>
 
-      <div class="hbce-actions" style="margin-top:1.25rem;">
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">EMIT</a>
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--ghost" href="/infrastructure/">Infrastructure</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/status/">Status</a>
+        <a class="hbce-btn" href="/verify/">Verify</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/registry/">Registry</a>
       </div>
 
-      <p class="hbce-note" style="margin-top:1rem;">
-        Fail-closed: se la verifica non è possibile → l’operazione è bloccata. Nessuna eccezione.
+      <p class="hbce-note">
+        Policy: <strong>UE-first</strong> · <strong>audit-first</strong> · <strong>fail-closed</strong> · <strong>hash-only</strong> · <strong>append-only</strong>
       </p>
     </section>
 
+    <!-- DEFINIZIONE -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Core Operations</h2>
-      <div class="hbce-grid hbce-grid--4">
-        <div class="hbce-card">
-          <h3 class="hbce-h3">Emit (Wizard)</h3>
-          <p class="hbce-card__text">Emissione IPR local-first. Output: release + certificate + registry entry.</p>
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">OPEN</a>
-        </div>
-        <div class="hbce-card">
-          <h3 class="hbce-h3">Verify</h3>
-          <p class="hbce-card__text">Verifica pubblica: integrità file + match registry (fail-closed).</p>
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">OPEN</a>
-        </div>
-        <div class="hbce-card">
-          <h3 class="hbce-h3">Registry</h3>
-          <p class="hbce-card__text">Registro pubblico append-only (hash-only).</p>
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/registry/">OPEN</a>
-        </div>
-        <div class="hbce-card">
-          <h3 class="hbce-h3">Emissioni</h3>
-          <p class="hbce-card__text">Feed emissioni (registry-driven).</p>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/emissioni/">OPEN</a>
-        </div>
-      </div>
+      <h2>Definizione</h2>
 
-      <div class="hbce-card" style="margin-top:1rem;">
-        <p class="hbce-card__text">
-          Nota metrologica: per flussi con finestra HARD attiva, l’append deve avvenire entro
-          <strong>±2 minuti</strong> dal timestamp di emissione. Fuori finestra → INVALID (fail-closed).
-        </p>
-      </div>
-    </section>
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>Cos’è la “precondizione”</h3>
+          <p>
+            Una precondizione è un vincolo tecnico che deve essere verificato
+            <strong>prima</strong> che un’azione venga eseguita.
+            L’azione non viene “interpretata”: viene <strong>bloccata</strong> se non conforme.
+          </p>
+          <p class="hbce-note">
+            In pratica: sposti la responsabilità da “post-mortem” a <strong>preventiva</strong>.
+          </p>
+        </div>
 
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Governance & Standard</h2>
-      <div class="hbce-grid hbce-grid--4">
         <div class="hbce-card">
-          <h3 class="hbce-h3">IPR Standard (EU)</h3>
-          <p class="hbce-card__text">Standard tecnico minimo: hash-only, append-only, fail-closed.</p>
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/standard/ipr/">OPEN</a>
-        </div>
-        <div class="hbce-card">
-          <h3 class="hbce-h3">Governance</h3>
-          <p class="hbce-card__text">Policy core: UE-first, audit-first, no custody.</p>
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/governance/">OPEN</a>
-        </div>
-        <div class="hbce-card">
-          <h3 class="hbce-h3">Normative Mapping</h3>
-          <p class="hbce-card__text">Mappatura normativa UE (non-equivalence esplicitata).</p>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/normative/">OPEN</a>
-        </div>
-        <div class="hbce-card">
-          <h3 class="hbce-h3">Security</h3>
-          <p class="hbce-card__text">Postura sicurezza e disclosure policy.</p>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/security/">OPEN</a>
-        </div>
-      </div>
-
-      <div class="hbce-grid hbce-grid--3" style="margin-top:1rem;">
-        <div class="hbce-card">
-          <h3 class="hbce-h3">Privacy (GDPR-min)</h3>
-          <p class="hbce-card__text">Minimizzazione dati: hash-only, local-first, no custody.</p>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/privacy/">OPEN</a>
-        </div>
-        <div class="hbce-card">
-          <h3 class="hbce-h3">Terms</h3>
-          <p class="hbce-card__text">Termini d’uso infrastruttura (fail-closed e responsabilità).</p>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/terms/">OPEN</a>
-        </div>
-        <div class="hbce-card">
-          <h3 class="hbce-h3">Docs</h3>
-          <p class="hbce-card__text">Hub documentazione tecnica.</p>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/docs/">OPEN</a>
+          <h3>Perché è diverso da audit classico</h3>
+          <ul class="hbce-list">
+            <li>Audit classico: controlli dopo (forense)</li>
+            <li>Precondizione: controlli prima (ex-ante)</li>
+            <li>Audit classico: spesso narrativo</li>
+            <li>Precondizione: deterministico (PASS/FAIL)</li>
+          </ul>
         </div>
       </div>
     </section>
 
+    <!-- CATENA MINIMA -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Tools</h2>
-      <div class="hbce-grid hbce-grid--4">
+      <h2>Catena minima (ex-ante)</h2>
+
+      <div class="hbce-grid">
         <div class="hbce-card">
-          <h3 class="hbce-h3">Anchor Builder</h3>
-          <p class="hbce-card__text">Builder client-side per IPFS/Ethereum/Bitcoin (manual mode).</p>
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/anchor/">OPEN</a>
+          <h3>1) Identità (IPR)</h3>
+          <p>Origine operativa persistente. Deve risultare <strong>VALID</strong> in verifica pubblica.</p>
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--ghost" href="/verify/">Verifica IPR</a>
+          </div>
         </div>
+
         <div class="hbce-card">
-          <h3 class="hbce-h3">IP Verification</h3>
-          <p class="hbce-card__text">Prova hash-only della presenza di rete (GDPR-min, local-first).</p>
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/ip-verification/">OPEN</a>
+          <h3>2) Policy ex-ante (OPC)</h3>
+          <p>
+            Una policy definisce <strong>cosa è autorizzabile</strong> e <strong>in quali condizioni</strong>.
+            Nessuna autorizzazione retroattiva.
+          </p>
         </div>
+
         <div class="hbce-card">
-          <h3 class="hbce-h3">Status</h3>
-          <p class="hbce-card__text">Stato ecosistema e health osservato.</p>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/status/">OPEN</a>
+          <h3>3) Prova minimizzata</h3>
+          <p>
+            Il registry pubblico custodisce solo prove <strong>hash-only</strong>:
+            <strong>nickname + hash + timestamp</strong>.
+          </p>
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--ghost" href="/registry/">Apri registry</a>
+          </div>
         </div>
+
         <div class="hbce-card">
-          <h3 class="hbce-h3">Map</h3>
-          <p class="hbce-card__text">Directory ecosistema (routing).</p>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/map/">OPEN</a>
+          <h3>Esito</h3>
+          <p class="hbce-note">
+            Se IPR/Policy/Proof combaciano → <strong>PASS</strong><br>
+            Se qualcosa manca → <strong>FAIL-CLOSED</strong>
+          </p>
         </div>
       </div>
     </section>
 
+    <!-- TABELLA AZIONI CRITICHE -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Ecosystem Root</h2>
+      <h2>Tabella azioni critiche (schema operativo)</h2>
+      <p class="hbce-note">
+        Esempi di azioni: non sono “feature”, sono classi operative.
+        La regola è sempre la stessa: senza precondizione verificabile → INVALID.
+      </p>
+
       <div class="hbce-card">
-        <p class="hbce-card__text">
-          Root dichiarata dell’ecosistema (append-only): <strong>ECOSYSTEM_ROOT.json</strong>.
-          Definisce roots (human/ai) e nodi software attivi.
-        </p>
-        <div class="hbce-actions" style="margin-top:.75rem;">
-          <a class="hbce-btn" href="/hermeticum-bce-platform/ECOSYSTEM_ROOT.json">OPEN ROOT</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/manifest/">OPEN MANIFEST</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/ecosystem/">ECOSYSTEM</a>
+        <div style="overflow:auto">
+          <table style="width:100%; border-collapse:collapse">
+            <thead>
+              <tr>
+                <th style="text-align:left; padding:10px; border-bottom:1px solid rgba(255,255,255,.15)">Azione critica</th>
+                <th style="text-align:left; padding:10px; border-bottom:1px solid rgba(255,255,255,.15)">Richiede IPR</th>
+                <th style="text-align:left; padding:10px; border-bottom:1px solid rgba(255,255,255,.15)">Richiede policy ex-ante</th>
+                <th style="text-align:left; padding:10px; border-bottom:1px solid rgba(255,255,255,.15)">Richiede prova minimizzata</th>
+                <th style="text-align:left; padding:10px; border-bottom:1px solid rgba(255,255,255,.15)">Esito</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Firma/atto tecnico (PA/azienda)</td>
+                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
+                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
+                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
+                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)"><strong>PASS/FAIL</strong></td>
+              </tr>
+
+              <tr>
+                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Esecuzione comando AI agentica</td>
+                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
+                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
+                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
+                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)"><strong>PASS/FAIL</strong></td>
+              </tr>
+
+              <tr>
+                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Operazione su infrastruttura critica (energia)</td>
+                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
+                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
+                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
+                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)"><strong>PASS/FAIL</strong></td>
+              </tr>
+
+              <tr>
+                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Movimento sistema autonomo (robot/veicolo)</td>
+                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì (derivato)</td>
+                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
+                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
+                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)"><strong>PASS/FAIL</strong></td>
+              </tr>
+
+              <tr>
+                <td style="padding:10px;">Accesso a dati sensibili (sanità)</td>
+                <td style="padding:10px;">Sì</td>
+                <td style="padding:10px;">Sì</td>
+                <td style="padding:10px;">Sì</td>
+                <td style="padding:10px;"><strong>PASS/FAIL</strong></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <p class="hbce-note" style="margin-top:.75rem;">
-          Nota: il layer pubblico resta hash-only. Nessuna custodia identità completa.
-        </p>
       </div>
     </section>
 
+    <!-- CHECK OPERATIVO -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Issuer</h2>
-      <div class="hbce-card">
-        <p class="hbce-card__text">
-          Hallmark: <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong><br/>
-          Società: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong>
-        </p>
+      <h2>Check operativo (pubblico)</h2>
+      <p class="hbce-note">
+        Il primo check è sempre lo stesso: l’identità deve essere verificabile e presente nel registry.
+        Questo è ciò che rende la precondizione “reale”.
+      </p>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn" href="/verify/">Esegui VERIFY</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/status/">Apri STATUS</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/registry/">Apri REGISTRY</a>
       </div>
+
+      <p class="hbce-note">
+        HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br>
+        HERMETICUM B.C.E. S.r.l.
+      </p>
     </section>
 
   </main>
 
   <div data-hbce="footer"></div>
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </body>
 </html>
