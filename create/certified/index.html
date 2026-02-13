@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>CERTIFIED — IPR · Certified Pack (ED25519 signed + offline verify, fail-closed)</title>
-  <meta name="description" content="Rilascio Certified Pack IPR: certificate + receipt + manifest + registry entry hash-only, con firme ED25519 e verifica offline. Local-first, audit-first, fail-closed." />
+  <title>CERTIFIED — IPR · Signed Pack + Offline Verifier Kit (ED25519, SHA-256, fail-closed)</title>
+  <meta name="description" content="Certified Pack IPR: certificate+receipt+manifest signed ED25519 + registry entry hash-only. Offline verifier kit: signature verify + SHA-256 file check vs manifest. Fail-closed." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
@@ -24,16 +24,16 @@
 
     <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CERTIFIED PACK · ED25519 SIGNED · OFFLINE VERIFY · FAIL-CLOSED</div>
+      <div class="hbce-hero__kicker">CERTIFIED PACK · ED25519 SIGNED · OFFLINE VERIFIER KIT · FAIL-CLOSED</div>
 
-      <h1 class="hbce-hero__title">Rilascio Certified Pack IPR (firmato + verificabile offline).</h1>
+      <h1 class="hbce-hero__title">Certified Pack IPR (sign + verify offline, livello “nucleare”).</h1>
 
       <p class="hbce-hero__lead">
         Generazione <strong>local-first</strong> (browser → download) + <strong>firme ED25519</strong> su Certificate/Receipt/Manifest.
         <br />
-        Il registry pubblico resta <strong>hash-only</strong> (<strong>nickname + payload_sha256 + timestamp</strong>).
+        Verifica offline: <strong>signature verify</strong> + <strong>SHA-256 dei file</strong> confrontati con il manifest (drag&amp;drop).
         <br />
-        Regola: <strong>senza registry + verify → INVALID</strong> (<strong>fail-closed</strong>).
+        Regola: <strong>se non prova → INVALID</strong> (<strong>fail-closed</strong>).
       </p>
 
       <div class="hbce-actions">
@@ -51,7 +51,7 @@
 
     <!-- ISSUER KEYS -->
     <section class="hbce-section">
-      <h2>Issuer keys (ED25519) — obbligatorie (fail-closed)</h2>
+      <h2>Issuer keys (ED25519) — per firmare (fail-closed)</h2>
 
       <div class="hbce-grid">
         <div class="hbce-card">
@@ -86,9 +86,9 @@
       </div>
     </section>
 
-    <!-- PACK -->
+    <!-- PACK GENERATOR -->
     <section class="hbce-section">
-      <h2>Certified Pack (firmato)</h2>
+      <h2>Genera Certified Pack (firmato)</h2>
 
       <div class="hbce-grid">
         <div class="hbce-card">
@@ -185,15 +185,14 @@
       </div>
     </section>
 
-    <!-- OFFLINE VERIFY (MILITARE) -->
+    <!-- OFFLINE VERIFY -->
     <section class="hbce-section">
       <h2>VERIFY SIGNATURE (offline) — modalità “militare”</h2>
 
       <p class="hbce-note">
-        Qui non ci interessa “chi lo dice”. Ci interessa: <strong>la firma verifica o no</strong>.
-        Incolla un JSON firmato (Certificate/Receipt/Manifest). La pagina ricostruisce il contenuto unsigned e verifica ED25519.
+        Incolla un JSON firmato (Certificate/Receipt/Manifest). La pagina ricostruisce il contenuto unsigned canonico e verifica ED25519.
         <br />
-        Regola: <strong>se non verifica → FAIL-CLOSED</strong>.
+        Regola: <strong>se non verifica → INVALID</strong>.
       </p>
 
       <div class="hbce-grid">
@@ -212,7 +211,7 @@
           <textarea class="hbce-input" id="vf-json" rows="10" placeholder='Incolla qui il JSON firmato…'></textarea>
 
           <label class="hbce-label" for="vf-pk">Public key (Base64) — opzionale</label>
-          <input class="hbce-input" id="vf-pk" type="text" placeholder="Se vuoto, usa la key del documento.signature.public_key_base64" autocomplete="off" />
+          <input class="hbce-input" id="vf-pk" type="text" placeholder="Se vuoto, usa doc.signature.public_key_base64" autocomplete="off" />
 
           <div class="hbce-actions" style="margin-top:12px;">
             <button class="hbce-btn" id="btn-verify-offline" type="button">Verifica firma</button>
@@ -234,35 +233,94 @@
           </ul>
 
           <p class="hbce-note">
-            Se la firma passa, il documento è integro rispetto al contenuto unsigned canonico.
-            Se fallisce: alterato / chiave sbagliata / formato non canonico → <strong>INVALID</strong>.
+            Firma OK ⇒ documento integro rispetto al contenuto unsigned canonico.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PACK VERIFIER KIT (DRAG & DROP) -->
+    <section class="hbce-section">
+      <h2>PACK VERIFIER KIT (offline) — drag&amp;drop (SHA-256 vs manifest)</h2>
+
+      <p class="hbce-note">
+        Questo è il “kit operatore”: carichi <strong>PACK_MANIFEST.json</strong> e poi trascini dentro i file.
+        Il sistema calcola SHA-256 dei file e confronta con <code>manifest.files[]</code>.
+        <br />
+        Regola: <strong>se un file non matcha → INVALID</strong>.
+      </p>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>1) Carica manifest</h3>
+
+          <label class="hbce-label" for="pv-manifest-file">PACK_MANIFEST.json (file)</label>
+          <input class="hbce-input" id="pv-manifest-file" type="file" accept="application/json" />
+
+          <label class="hbce-label" for="pv-manifest-text">oppure incolla manifest (JSON)</label>
+          <textarea class="hbce-input" id="pv-manifest-text" rows="8" placeholder='Incolla qui PACK_MANIFEST.json…'></textarea>
+
+          <div class="hbce-actions" style="margin-top:12px;">
+            <button class="hbce-btn" id="btn-pv-load-manifest" type="button">Carica manifest</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btn-pv-clear-manifest" type="button">Pulisci</button>
+          </div>
+
+          <ul class="hbce-list">
+            <li><strong>Manifest status:</strong> <span id="pv-manifest-status">—</span></li>
+            <li><strong>Manifest signature:</strong> <span id="pv-manifest-sig">—</span></li>
+            <li><strong>Manifest pubkey:</strong> <span id="pv-manifest-pk">—</span></li>
+            <li><strong>Files attesi:</strong> <span id="pv-expected-count">—</span></li>
+          </ul>
+
+          <p class="hbce-note" id="pv-msg">—</p>
+        </div>
+
+        <div class="hbce-card">
+          <h3>2) Trascina i file qui</h3>
+
+          <div id="pv-dropzone" class="hbce-card" style="border:1px dashed currentColor; padding:18px; border-radius:12px;">
+            <p class="hbce-note" style="margin:0 0 10px 0;">
+              Drag &amp; drop: <strong>IPR_ISSUER_CERTIFICATE.json</strong>, <strong>IPR_OPERATIONAL_RECEIPT.json</strong>, <strong>REGISTRY_ENTRY.json</strong>
+              (e altri se li aggiungi nel manifest).
+            </p>
+            <p class="hbce-note" style="margin:0;">
+              Oppure seleziona: <input id="pv-files" type="file" multiple accept=".json,application/json" />
+            </p>
+          </div>
+
+          <div class="hbce-actions" style="margin-top:12px;">
+            <button class="hbce-btn" id="btn-pv-verify" type="button" disabled>Verifica pack</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btn-pv-reset" type="button">Reset file</button>
+          </div>
+
+          <ul class="hbce-list">
+            <li><strong>Pack status:</strong> <span id="pv-pack-status">—</span></li>
+            <li><strong>Loaded files:</strong> <span id="pv-loaded-count">—</span></li>
+            <li><strong>Missing expected:</strong> <span id="pv-missing">—</span></li>
+          </ul>
+
+          <p class="hbce-note">
+            Se il manifest è valido e tutti i file matchano, il pack è integro offline.
           </p>
         </div>
       </div>
 
       <div class="hbce-grid">
         <div class="hbce-card">
-          <h3>Bonus audit: verifica “manifest ↔ file hash” (manuale)</h3>
-          <p class="hbce-note">
-            Se vuoi chiudere il cerchio: verifica che i SHA-256 nel manifest coincidano con i file.
-            <br />
-            (Operativo) Calcoli sha256 dei file e confronti con <code>manifest.files[]</code>.
-          </p>
-          <ul class="hbce-list">
-            <li>Manifest passa firma → autentico</li>
-            <li>Hash file corrispondono → pack integro</li>
-            <li>Registry match → VALID pubblico (fail-closed)</li>
-          </ul>
+          <h3>Dettaglio confronto</h3>
+          <pre class="hbce-code" id="pv-report">—</pre>
         </div>
 
         <div class="hbce-card">
-          <h3>Fail-closed rules (riassunto)</h3>
+          <h3>Regola finale (tripla chiusura)</h3>
           <ul class="hbce-list">
-            <li>Signature verify FAIL → INVALID</li>
-            <li>Manifest verify FAIL → INVALID</li>
-            <li>Hash mismatch (manifest vs file) → INVALID</li>
-            <li>Registry no match → INVALID</li>
+            <li><strong>Signature OK</strong> (offline) → autenticità del manifest/documento</li>
+            <li><strong>SHA-256 match</strong> (file vs manifest) → integrità del pack</li>
+            <li><strong>Registry match</strong> (public verify) → VALID pubblico (fail-closed)</li>
           </ul>
+          <p class="hbce-note">
+            “Militare” significa: ogni livello può fallire da solo e bloccare tutto.
+          </p>
         </div>
       </div>
     </section>
@@ -296,6 +354,7 @@
       const $ = (id) => document.getElementById(id);
 
       const els = {
+        // keys
         sk: $("sk"),
         pkB64: $("pk-b64"),
         pkHex: $("pk-hex"),
@@ -303,36 +362,33 @@
         btnDerive: $("btn-derive"),
         btnClearKeys: $("btn-clear-keys"),
 
+        // generator input
         nick: $("nick"),
         hash: $("hash"),
         payref: $("payref"),
         notes: $("notes"),
         msg: $("msg"),
 
+        // generator output
         outStatus: $("out-status"),
         outTs: $("out-ts"),
         outEntryReady: $("out-entry-ready"),
-
         outShaCert: $("out-sha-cert"),
         outShaReceipt: $("out-sha-receipt"),
         outShaEntry: $("out-sha-entry"),
         outShaManifest: $("out-sha-manifest"),
-
         outSigCert: $("out-sig-cert"),
         outSigReceipt: $("out-sig-receipt"),
         outSigManifest: $("out-sig-manifest"),
-
         outEntryBlock: $("out-entry-block"),
         copyMsg: $("copy-msg"),
 
         btnGenerate: $("btn-generate"),
         btnReset: $("btn-reset"),
-
         btnDlCert: $("btn-dl-cert"),
         btnDlReceipt: $("btn-dl-receipt"),
         btnDlEntry: $("btn-dl-entry"),
         btnDlManifest: $("btn-dl-manifest"),
-
         btnCopy: $("btn-copy"),
 
         // offline verify
@@ -348,10 +404,32 @@
         vfSig: $("vf-sig"),
         vfPkUsed: $("vf-pk-used"),
         vfUnsignedSha: $("vf-unsigned-sha"),
+
+        // pack verifier
+        pvManifestFile: $("pv-manifest-file"),
+        pvManifestText: $("pv-manifest-text"),
+        btnPvLoadManifest: $("btn-pv-load-manifest"),
+        btnPvClearManifest: $("btn-pv-clear-manifest"),
+        pvManifestStatus: $("pv-manifest-status"),
+        pvManifestSig: $("pv-manifest-sig"),
+        pvManifestPk: $("pv-manifest-pk"),
+        pvExpectedCount: $("pv-expected-count"),
+        pvMsg: $("pv-msg"),
+
+        pvDropzone: $("pv-dropzone"),
+        pvFiles: $("pv-files"),
+        btnPvVerify: $("btn-pv-verify"),
+        btnPvReset: $("btn-pv-reset"),
+        pvPackStatus: $("pv-pack-status"),
+        pvLoadedCount: $("pv-loaded-count"),
+        pvMissing: $("pv-missing"),
+        pvReport: $("pv-report"),
       };
 
       let state = {
         keys: { skBytes: null, pkBytes: null, pkB64: null, pkHex: null },
+
+        // generator
         ts: null,
         issuerCertificate: null,
         operationalReceipt: null,
@@ -360,6 +438,14 @@
         entryBlock: null,
         sha: { cert: null, receipt: null, entry: null, manifest: null },
         sig: { cert: null, receipt: null, manifest: null },
+
+        // verifier
+        verifier: {
+          manifest: null,
+          expected: new Map(), // name -> sha256
+          files: new Map(),    // name -> { sha256, size, type }
+          lastReport: null
+        }
       };
 
       function setText(el, v) { if (el) el.textContent = v; }
@@ -378,65 +464,31 @@
 
       function isoNow() { return new Date().toISOString(); }
 
-      function disableOutputs() {
-        els.btnDlCert.disabled = true;
-        els.btnDlReceipt.disabled = true;
-        els.btnDlEntry.disabled = true;
-        els.btnDlManifest.disabled = true;
-        els.btnCopy.disabled = true;
-      }
-      function enableOutputs() {
-        els.btnDlCert.disabled = false;
-        els.btnDlReceipt.disabled = false;
-        els.btnDlEntry.disabled = false;
-        els.btnDlManifest.disabled = false;
-        els.btnCopy.disabled = false;
-      }
-
-      function fail(reason) {
-        setText(els.outStatus, "FAIL-CLOSED — " + reason);
-        setText(els.outEntryReady, "NO");
-        disableOutputs();
-      }
-      function ok(msg) {
-        setText(els.outStatus, "OK — " + msg);
-        setText(els.outEntryReady, "YES");
-        enableOutputs();
-      }
-
-      function downloadJson(filename, obj) {
-        const text = JSON.stringify(obj, null, 2);
-        const blob = new Blob([text], { type: "application/json;charset=utf-8" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-      }
-
-      async function sha256HexFromText(text) {
-        if (!window.crypto || !window.crypto.subtle) return null;
-        const enc = new TextEncoder();
-        const buf = enc.encode(text);
-        const hashBuf = await crypto.subtle.digest("SHA-256", buf);
-        const hashArr = Array.from(new Uint8Array(hashBuf));
-        return hashArr.map(b => b.toString(16).padStart(2, "0")).join("");
-      }
-
-      async function sha256HexFromJson(obj) {
-        const text = JSON.stringify(obj, null, 2);
-        return await sha256HexFromText(text);
+      function assertEd25519Ready() {
+        return !!(window.nacl && window.nacl.sign && window.nacl.util);
       }
 
       function bytesToHex(bytes) {
         return Array.from(bytes).map(b => b.toString(16).padStart(2, "0")).join("");
       }
 
-      function assertEd25519Ready() {
-        return !!(window.nacl && window.nacl.sign && window.nacl.util);
+      async function sha256HexFromArrayBuffer(buf) {
+        if (!window.crypto || !window.crypto.subtle) return null;
+        const hashBuf = await crypto.subtle.digest("SHA-256", buf);
+        const hashArr = Array.from(new Uint8Array(hashBuf));
+        return hashArr.map(b => b.toString(16).padStart(2, "0")).join("");
+      }
+
+      async function sha256HexFromText(text) {
+        if (!window.crypto || !window.crypto.subtle) return null;
+        const enc = new TextEncoder();
+        const buf = enc.encode(text);
+        return await sha256HexFromArrayBuffer(buf);
+      }
+
+      async function sha256HexFromJson(obj) {
+        const text = JSON.stringify(obj, null, 2);
+        return await sha256HexFromText(text);
       }
 
       function parseSkBase64ToBytes(skB64) {
@@ -468,11 +520,15 @@
       }
 
       function sanitizeDocForUnsignedCanonical(docObj) {
-        // Canonical: same method used in signing: JSON.stringify(obj, null, 2) with signature field = null.
-        // We preserve all fields except signature object replaced with null.
         const clone = JSON.parse(JSON.stringify(docObj));
         clone.signature = null;
         return clone;
+      }
+
+      function getSignatureObject(doc) {
+        if (!doc || typeof doc !== "object") return null;
+        if (!doc.signature || typeof doc.signature !== "object") return null;
+        return doc.signature;
       }
 
       function deduceKind(doc) {
@@ -481,10 +537,136 @@
         return null;
       }
 
-      function getSignatureObject(doc) {
-        if (!doc || typeof doc !== "object") return null;
-        if (!doc.signature || typeof doc.signature !== "object") return null;
-        return doc.signature;
+      function disableOutputs() {
+        els.btnDlCert.disabled = true;
+        els.btnDlReceipt.disabled = true;
+        els.btnDlEntry.disabled = true;
+        els.btnDlManifest.disabled = true;
+        els.btnCopy.disabled = true;
+      }
+
+      function enableOutputs() {
+        els.btnDlCert.disabled = false;
+        els.btnDlReceipt.disabled = false;
+        els.btnDlEntry.disabled = false;
+        els.btnDlManifest.disabled = false;
+        els.btnCopy.disabled = false;
+      }
+
+      function fail(reason) {
+        setText(els.outStatus, "FAIL-CLOSED — " + reason);
+        setText(els.outEntryReady, "NO");
+        disableOutputs();
+      }
+
+      function ok(msg) {
+        setText(els.outStatus, "OK — " + msg);
+        setText(els.outEntryReady, "YES");
+        enableOutputs();
+      }
+
+      function downloadJson(filename, obj) {
+        const text = JSON.stringify(obj, null, 2);
+        const blob = new Blob([text], { type: "application/json;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      async function copyToClipboard(text) {
+        if (!navigator.clipboard || !navigator.clipboard.writeText) return false;
+        try { await navigator.clipboard.writeText(text); return true; }
+        catch (_) { return false; }
+      }
+
+      function clearKeys() {
+        state.keys.skBytes = null;
+        state.keys.pkBytes = null;
+        state.keys.pkB64 = null;
+        state.keys.pkHex = null;
+        els.sk.value = "";
+        setText(els.pkB64, "—");
+        setText(els.pkHex, "—");
+        setText(els.keyMsg, "Chiave rimossa dalla RAM.");
+      }
+
+      function deriveKeysFromInput() {
+        if (!assertEd25519Ready()) {
+          setText(els.keyMsg, "FAIL-CLOSED: libreria ED25519 non caricata.");
+          return false;
+        }
+
+        const parsed = parseSkBase64ToBytes(els.sk.value || "");
+        if (parsed.error) {
+          setText(els.keyMsg, "FAIL-CLOSED: " + parsed.error);
+          return false;
+        }
+
+        const skBytes = parsed.bytes;
+        const pkBytes = derivePkFromSk(skBytes);
+
+        state.keys.skBytes = skBytes;
+        state.keys.pkBytes = pkBytes;
+        state.keys.pkB64 = nacl.util.encodeBase64(pkBytes);
+        state.keys.pkHex = bytesToHex(pkBytes);
+
+        setText(els.pkB64, state.keys.pkB64);
+        setText(els.pkHex, state.keys.pkHex);
+        setText(els.keyMsg, "OK: public key derivata. Pronto a firmare.");
+        return true;
+      }
+
+      function resetGenerator() {
+        els.nick.value = "";
+        els.hash.value = "";
+        els.payref.value = "";
+        els.notes.value = "";
+
+        state.ts = null;
+        state.issuerCertificate = null;
+        state.operationalReceipt = null;
+        state.registryEntry = null;
+        state.packManifest = null;
+        state.entryBlock = null;
+        state.sha = { cert: null, receipt: null, entry: null, manifest: null };
+        state.sig = { cert: null, receipt: null, manifest: null };
+
+        setText(els.outStatus, "—");
+        setText(els.outTs, "—");
+        setText(els.outEntryReady, "—");
+
+        setText(els.outShaCert, "—");
+        setText(els.outShaReceipt, "—");
+        setText(els.outShaEntry, "—");
+        setText(els.outShaManifest, "—");
+
+        setText(els.outSigCert, "—");
+        setText(els.outSigReceipt, "—");
+        setText(els.outSigManifest, "—");
+
+        setText(els.outEntryBlock, "—");
+        setText(els.copyMsg, "—");
+
+        setText(els.msg, "Requisiti: ED25519 key valida + nickname valido + hash valido. Se manca qualcosa → FAIL-CLOSED.");
+        disableOutputs();
+      }
+
+      function resetOfflineVerify() {
+        setText(els.vfMsg, "—");
+        setText(els.vfStatus, "—");
+        setText(els.vfKind, "—");
+        setText(els.vfOver, "—");
+        setText(els.vfSig, "—");
+        setText(els.vfPkUsed, "—");
+        setText(els.vfUnsignedSha, "—");
+        els.vfJson.value = "";
+        els.vfPk.value = "";
+        els.vfType.value = "auto";
       }
 
       async function buildSignedPack() {
@@ -548,10 +730,7 @@
         const cert_sha256 = await sha256HexFromJson(issuerCertificate);
         const receipt_sha256 = await sha256HexFromJson(operationalReceipt);
         const entry_sha256 = await sha256HexFromJson(registryEntry);
-
-        if (!cert_sha256 || !receipt_sha256 || !entry_sha256) {
-          return { error: "crypto.subtle unavailable (SHA-256 not supported in this browser)" };
-        }
+        if (!cert_sha256 || !receipt_sha256 || !entry_sha256) return { error: "crypto.subtle unavailable (SHA-256 not supported)" };
 
         const packManifest = {
           proto: "HBCE-PACK-MANIFEST-v1",
@@ -569,9 +748,6 @@
           signature: null
         };
 
-        const manifest_sha256 = await sha256HexFromJson(packManifest);
-        if (!manifest_sha256) return { error: "manifest sha256 failed" };
-
         const certTextUnsigned = JSON.stringify(issuerCertificate, null, 2);
         const receiptTextUnsigned = JSON.stringify(operationalReceipt, null, 2);
         const manifestTextUnsigned = JSON.stringify(packManifest, null, 2);
@@ -587,7 +763,6 @@
           signed_over: "canonical_json_pretty_v1",
           value: sigCert
         };
-
         operationalReceipt.signature = {
           alg: "ED25519",
           encoding: "base64",
@@ -595,7 +770,6 @@
           signed_over: "canonical_json_pretty_v1",
           value: sigReceipt
         };
-
         packManifest.signature = {
           alg: "ED25519",
           encoding: "base64",
@@ -604,6 +778,7 @@
           value: sigManifest
         };
 
+        // signed hashes (stronger)
         const cert_sha256_signed = await sha256HexFromJson(issuerCertificate);
         const receipt_sha256_signed = await sha256HexFromJson(operationalReceipt);
         const manifest_sha256_signed = await sha256HexFromJson(packManifest);
@@ -625,98 +800,6 @@
         };
       }
 
-      async function copyToClipboard(text) {
-        if (!navigator.clipboard || !navigator.clipboard.writeText) return false;
-        try { await navigator.clipboard.writeText(text); return true; }
-        catch (_) { return false; }
-      }
-
-      function resetPack() {
-        els.nick.value = "";
-        els.hash.value = "";
-        els.payref.value = "";
-        els.notes.value = "";
-
-        state.ts = null;
-        state.issuerCertificate = null;
-        state.operationalReceipt = null;
-        state.registryEntry = null;
-        state.packManifest = null;
-        state.entryBlock = null;
-        state.sha = { cert: null, receipt: null, entry: null, manifest: null };
-        state.sig = { cert: null, receipt: null, manifest: null };
-
-        setText(els.outStatus, "—");
-        setText(els.outTs, "—");
-        setText(els.outEntryReady, "—");
-
-        setText(els.outShaCert, "—");
-        setText(els.outShaReceipt, "—");
-        setText(els.outShaEntry, "—");
-        setText(els.outShaManifest, "—");
-
-        setText(els.outSigCert, "—");
-        setText(els.outSigReceipt, "—");
-        setText(els.outSigManifest, "—");
-
-        setText(els.outEntryBlock, "—");
-        setText(els.copyMsg, "—");
-
-        setText(els.msg, "Requisiti: ED25519 key valida + nickname valido + hash valido. Se manca qualcosa → FAIL-CLOSED.");
-        disableOutputs();
-      }
-
-      function resetVerify() {
-        setText(els.vfMsg, "—");
-        setText(els.vfStatus, "—");
-        setText(els.vfKind, "—");
-        setText(els.vfOver, "—");
-        setText(els.vfSig, "—");
-        setText(els.vfPkUsed, "—");
-        setText(els.vfUnsignedSha, "—");
-        els.vfJson.value = "";
-        els.vfPk.value = "";
-        els.vfType.value = "auto";
-      }
-
-      function clearKeys() {
-        state.keys.skBytes = null;
-        state.keys.pkBytes = null;
-        state.keys.pkB64 = null;
-        state.keys.pkHex = null;
-        els.sk.value = "";
-        setText(els.pkB64, "—");
-        setText(els.pkHex, "—");
-        setText(els.keyMsg, "Chiave rimossa dalla RAM.");
-      }
-
-      function deriveKeysFromInput() {
-        if (!assertEd25519Ready()) {
-          setText(els.keyMsg, "FAIL-CLOSED: libreria ED25519 non caricata.");
-          return false;
-        }
-
-        const parsed = parseSkBase64ToBytes(els.sk.value || "");
-        if (parsed.error) {
-          setText(els.keyMsg, "FAIL-CLOSED: " + parsed.error);
-          return false;
-        }
-
-        const skBytes = parsed.bytes;
-        const pkBytes = derivePkFromSk(skBytes);
-
-        state.keys.skBytes = skBytes;
-        state.keys.pkBytes = pkBytes;
-        state.keys.pkB64 = nacl.util.encodeBase64(pkBytes);
-        state.keys.pkHex = bytesToHex(pkBytes);
-
-        setText(els.pkB64, state.keys.pkB64);
-        setText(els.pkHex, state.keys.pkHex);
-        setText(els.keyMsg, "OK: public key derivata. Pronto a firmare.");
-        return true;
-      }
-
-      // OFFLINE VERIFY (militare)
       async function offlineVerify() {
         if (!assertEd25519Ready()) return { error: "ed25519 library not loaded" };
 
@@ -734,18 +817,16 @@
         const kind = deduceKind(doc);
         if (!kind) return { error: "missing kind" };
 
-        // optional: enforce kind selection
         const forced = els.vfType.value;
         if (forced !== "auto" && kind !== forced) {
           return { error: "kind mismatch (selected " + forced + " but doc.kind is " + kind + ")" };
         }
 
-        const signedOver = sigObj.signed_over || "—";
+        const signedOver = sigObj.signed_over || "";
         if (signedOver !== "canonical_json_pretty_v1") {
           return { error: "unsupported signed_over (expected canonical_json_pretty_v1)" };
         }
 
-        // choose pubkey: input overrides, else signature.public_key_base64
         const pkB64 = (els.vfPk.value || "").trim() || (sigObj.public_key_base64 || "");
         if (!isNonEmptyString(pkB64)) return { error: "missing public key (provide vf-pk or signature.public_key_base64)" };
 
@@ -756,20 +837,15 @@
           return { error: "public key must be 32 bytes (Base64)" };
         }
 
-        // rebuild unsigned canonical JSON used for signing
         const unsignedObj = sanitizeDocForUnsignedCanonical(doc);
         const unsignedText = JSON.stringify(unsignedObj, null, 2);
 
-        // sha of unsigned (for audit)
         const unsignedSha = await sha256HexFromText(unsignedText);
         if (!unsignedSha) return { error: "crypto.subtle unavailable (SHA-256 not supported)" };
 
         let okSig = false;
-        try {
-          okSig = verifyDetachedBase64(pkBytes, unsignedText, sigObj.value);
-        } catch (_) {
-          okSig = false;
-        }
+        try { okSig = verifyDetachedBase64(pkBytes, unsignedText, sigObj.value); }
+        catch (_) { okSig = false; }
 
         return {
           kind,
@@ -781,7 +857,192 @@
         };
       }
 
-      // EVENTS
+      // -------- PACK VERIFIER KIT --------
+
+      function pvResetAll() {
+        state.verifier.manifest = null;
+        state.verifier.expected = new Map();
+        state.verifier.files = new Map();
+        state.verifier.lastReport = null;
+
+        els.pvManifestFile.value = "";
+        els.pvManifestText.value = "";
+
+        setText(els.pvManifestStatus, "—");
+        setText(els.pvManifestSig, "—");
+        setText(els.pvManifestPk, "—");
+        setText(els.pvExpectedCount, "—");
+        setText(els.pvMsg, "—");
+
+        setText(els.pvPackStatus, "—");
+        setText(els.pvLoadedCount, "—");
+        setText(els.pvMissing, "—");
+        setText(els.pvReport, "—");
+
+        els.btnPvVerify.disabled = true;
+      }
+
+      function pvResetFilesOnly() {
+        state.verifier.files = new Map();
+        state.verifier.lastReport = null;
+        setText(els.pvPackStatus, "—");
+        setText(els.pvLoadedCount, "—");
+        setText(els.pvMissing, "—");
+        setText(els.pvReport, "—");
+      }
+
+      async function pvLoadManifestFromText(raw) {
+        if (!isNonEmptyString(raw)) return { error: "manifest empty" };
+        let man;
+        try { man = JSON.parse(raw); } catch (_) { return { error: "manifest JSON invalid" }; }
+        return await pvLoadManifestObject(man);
+      }
+
+      async function pvLoadManifestObject(man) {
+        // schema checks (fail-closed)
+        if (!man || typeof man !== "object") return { error: "manifest invalid" };
+        if (man.kind !== "CERTIFIED_PACK_MANIFEST") return { error: "manifest kind mismatch" };
+        if (!Array.isArray(man.files) || man.files.length === 0) return { error: "manifest.files missing/empty" };
+
+        // signature verify of manifest (fail-closed)
+        const sigObj = getSignatureObject(man);
+        if (!sigObj || !isNonEmptyString(sigObj.value)) return { error: "manifest missing signature" };
+        if (sigObj.signed_over !== "canonical_json_pretty_v1") return { error: "manifest signed_over unsupported" };
+        const pkB64 = sigObj.public_key_base64 || (man.issuer && man.issuer.ed25519_public_key_base64) || "";
+        if (!isNonEmptyString(pkB64)) return { error: "manifest missing public key" };
+
+        if (!assertEd25519Ready()) return { error: "ed25519 library not loaded" };
+
+        let pkBytes;
+        try { pkBytes = nacl.util.decodeBase64(pkB64); } catch (_) { return { error: "manifest public key base64 invalid" }; }
+        if (!(pkBytes instanceof Uint8Array) || pkBytes.length !== 32) return { error: "manifest public key must be 32 bytes" };
+
+        const unsignedObj = sanitizeDocForUnsignedCanonical(man);
+        const unsignedText = JSON.stringify(unsignedObj, null, 2);
+
+        const okSig = verifyDetachedBase64(pkBytes, unsignedText, sigObj.value);
+        if (!okSig) return { error: "manifest signature verify FAILED" };
+
+        // Build expected map
+        const expected = new Map();
+        for (const f of man.files) {
+          if (!f || typeof f !== "object") return { error: "manifest.files entry invalid" };
+          if (!isNonEmptyString(f.name)) return { error: "manifest.files missing name" };
+          if (!isHex64(String(f.sha256 || "").trim())) return { error: "manifest.files sha256 invalid for " + f.name };
+          expected.set(String(f.name).trim(), String(f.sha256).trim().toLowerCase());
+        }
+
+        state.verifier.manifest = man;
+        state.verifier.expected = expected;
+
+        setText(els.pvManifestStatus, "OK (signature VALID)");
+        setText(els.pvManifestSig, sigObj.value);
+        setText(els.pvManifestPk, pkB64);
+        setText(els.pvExpectedCount, String(expected.size));
+        setText(els.pvMsg, "Manifest caricato e verificato (firma OK). Ora carica i file del pack.");
+
+        // enable verify if files present later
+        els.btnPvVerify.disabled = false;
+
+        return { ok: true, expectedCount: expected.size };
+      }
+
+      async function pvReadFileAsArrayBuffer(file) {
+        return await new Promise((resolve, reject) => {
+          const r = new FileReader();
+          r.onerror = () => reject(new Error("read error"));
+          r.onload = () => resolve(r.result);
+          r.readAsArrayBuffer(file);
+        });
+      }
+
+      async function pvAddFiles(fileList) {
+        if (!fileList || fileList.length === 0) return;
+
+        // store sha256 for each file by name (fail-closed for duplicates: last wins but reported)
+        for (const file of fileList) {
+          const name = file.name || "unnamed";
+          const buf = await pvReadFileAsArrayBuffer(file);
+          const sha = await sha256HexFromArrayBuffer(buf);
+          if (!sha) {
+            setText(els.pvPackStatus, "FAIL-CLOSED — SHA-256 not available");
+            return;
+          }
+          state.verifier.files.set(name, { sha256: sha, size: file.size, type: file.type || "application/octet-stream" });
+        }
+
+        setText(els.pvLoadedCount, String(state.verifier.files.size));
+        pvUpdateMissing();
+        setText(els.pvPackStatus, "FILES LOADED (not verified yet)");
+      }
+
+      function pvUpdateMissing() {
+        if (!state.verifier.expected || state.verifier.expected.size === 0) {
+          setText(els.pvMissing, "—");
+          return;
+        }
+        const missing = [];
+        for (const name of state.verifier.expected.keys()) {
+          if (!state.verifier.files.has(name)) missing.push(name);
+        }
+        setText(els.pvMissing, missing.length ? missing.join(", ") : "NONE");
+      }
+
+      function pvCompare() {
+        if (!state.verifier.manifest) return { error: "manifest not loaded" };
+        if (!state.verifier.expected || state.verifier.expected.size === 0) return { error: "expected map empty" };
+
+        const report = {
+          status: "UNKNOWN",
+          expected_count: state.verifier.expected.size,
+          loaded_count: state.verifier.files.size,
+          missing: [],
+          mismatched: [],
+          matched: [],
+          extras: []
+        };
+
+        for (const name of state.verifier.expected.keys()) {
+          const exp = state.verifier.expected.get(name);
+          const got = state.verifier.files.get(name);
+          if (!got) {
+            report.missing.push({ name, expected_sha256: exp });
+            continue;
+          }
+          if ((got.sha256 || "").toLowerCase() !== exp.toLowerCase()) {
+            report.mismatched.push({ name, expected_sha256: exp, got_sha256: got.sha256 });
+          } else {
+            report.matched.push({ name, sha256: exp });
+          }
+        }
+
+        for (const [name, info] of state.verifier.files.entries()) {
+          if (!state.verifier.expected.has(name)) {
+            report.extras.push({ name, sha256: info.sha256 });
+          }
+        }
+
+        const okAll = report.missing.length === 0 && report.mismatched.length === 0;
+        report.status = okAll ? "VALID (pack integrity OK)" : "INVALID (pack integrity FAIL)";
+
+        return { ok: okAll, report };
+      }
+
+      function pvRenderReport(res) {
+        if (res.error) {
+          setText(els.pvPackStatus, "FAIL-CLOSED — " + res.error);
+          setText(els.pvReport, "—");
+          return;
+        }
+        const r = res.report;
+        setText(els.pvPackStatus, r.status);
+        setText(els.pvLoadedCount, String(r.loaded_count));
+        pvUpdateMissing();
+        setText(els.pvReport, JSON.stringify(r, null, 2));
+      }
+
+      // -------- Events wiring --------
+
       els.btnDerive.addEventListener("click", () => { deriveKeysFromInput(); });
       els.btnClearKeys.addEventListener("click", () => { clearKeys(); });
 
@@ -826,23 +1087,20 @@
         setText(els.msg, "OK: pack firmato generato. Ora appendi l’entry nel registry e fai VERIFY.");
       });
 
-      els.btnReset.addEventListener("click", () => { resetPack(); });
+      els.btnReset.addEventListener("click", () => { resetGenerator(); });
 
       els.btnDlCert.addEventListener("click", () => {
         if (!state.issuerCertificate) return;
         downloadJson("IPR_ISSUER_CERTIFICATE.json", state.issuerCertificate);
       });
-
       els.btnDlReceipt.addEventListener("click", () => {
         if (!state.operationalReceipt) return;
         downloadJson("IPR_OPERATIONAL_RECEIPT.json", state.operationalReceipt);
       });
-
       els.btnDlEntry.addEventListener("click", () => {
         if (!state.registryEntry) return;
         downloadJson("REGISTRY_ENTRY.json", state.registryEntry);
       });
-
       els.btnDlManifest.addEventListener("click", () => {
         if (!state.packManifest) return;
         downloadJson("PACK_MANIFEST.json", state.packManifest);
@@ -882,19 +1140,84 @@
         }
       });
 
-      els.btnVerifyClear.addEventListener("click", () => { resetVerify(); });
+      els.btnVerifyClear.addEventListener("click", () => { resetOfflineVerify(); });
+
+      // Pack verifier: load manifest
+      els.btnPvLoadManifest.addEventListener("click", async () => {
+        // priority: file, else textarea
+        let raw = (els.pvManifestText.value || "").trim();
+
+        if (els.pvManifestFile.files && els.pvManifestFile.files.length > 0) {
+          const f = els.pvManifestFile.files[0];
+          try {
+            const buf = await pvReadFileAsArrayBuffer(f);
+            raw = new TextDecoder().decode(buf);
+            els.pvManifestText.value = raw;
+          } catch (_) {
+            setText(els.pvManifestStatus, "FAIL-CLOSED");
+            setText(els.pvMsg, "FAIL-CLOSED: cannot read manifest file");
+            return;
+          }
+        }
+
+        const res = await pvLoadManifestFromText(raw);
+        if (res.error) {
+          setText(els.pvManifestStatus, "FAIL-CLOSED");
+          setText(els.pvManifestSig, "—");
+          setText(els.pvManifestPk, "—");
+          setText(els.pvExpectedCount, "—");
+          setText(els.pvMsg, "FAIL-CLOSED: " + res.error);
+          els.btnPvVerify.disabled = true;
+          return;
+        }
+      });
+
+      els.btnPvClearManifest.addEventListener("click", () => {
+        pvResetAll();
+      });
+
+      // Pack verifier: dropzone
+      function prevent(e) { e.preventDefault(); e.stopPropagation(); }
+
+      ["dragenter", "dragover", "dragleave", "drop"].forEach((evt) => {
+        els.pvDropzone.addEventListener(evt, prevent, false);
+      });
+
+      els.pvDropzone.addEventListener("drop", async (e) => {
+        const dt = e.dataTransfer;
+        if (!dt || !dt.files) return;
+        await pvAddFiles(dt.files);
+      });
+
+      els.pvFiles.addEventListener("change", async (e) => {
+        const files = e.target.files;
+        if (!files) return;
+        await pvAddFiles(files);
+      });
+
+      els.btnPvReset.addEventListener("click", () => {
+        pvResetFilesOnly();
+      });
+
+      els.btnPvVerify.addEventListener("click", () => {
+        const res = pvCompare();
+        pvRenderReport(res);
+      });
 
       // INIT
-      resetPack();
-      resetVerify();
+      resetGenerator();
+      resetOfflineVerify();
+      pvResetAll();
       clearKeys();
 
       if (!assertEd25519Ready()) {
         setText(els.keyMsg, "FAIL-CLOSED: libreria ED25519 non caricata.");
         setText(els.vfMsg, "FAIL-CLOSED: libreria ED25519 non caricata.");
+        setText(els.pvMsg, "FAIL-CLOSED: libreria ED25519 non caricata (manifest verify blocca).");
       } else {
         setText(els.keyMsg, "Inserisci la private key Base64 e deriva la public key.");
         setText(els.vfMsg, "Incolla un JSON firmato e verifica offline.");
+        setText(els.pvMsg, "Carica un PACK_MANIFEST firmato. Poi carica i file e verifica integrità.");
       }
     })();
   </script>
