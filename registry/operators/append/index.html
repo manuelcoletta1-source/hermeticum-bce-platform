@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>APPEND — Operator Registry</title>
+  <meta name="description" content="Tool operativo per generare entry hash-only e appenderle al registry pubblico operatori certificati. UE-first, audit-first, fail-closed, append-only." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">APPEND TOOL · Operator Registry</div>
+      <h1 class="hbce-hero__title">Append operatore certificato</h1>
+      <p class="hbce-hero__lead">
+        Genera una entry <strong>hash-only</strong> pronta da appendere a <code>registry/operators.json</code>.
+        Nessuna custodia dati personali pubblici. Modello: <strong>append-only</strong> · <strong>fail-closed</strong>.
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-grid hbce-grid--3">
+        <article class="hbce-card">
+          <div class="hbce-card__title">Target</div>
+          <div class="hbce-note">
+            File: <code>registry/operators.json</code><br/>
+            Viewer: <a href="/hermeticum-bce-platform/registry/operators/">/registry/operators/</a>
+          </div>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__title">Policy</div>
+          <ul class="hbce-list">
+            <li>HASH_ONLY</li>
+            <li>APPEND_ONLY</li>
+            <li>FAIL_CLOSED</li>
+            <li>NO_PUBLIC_DATA_CUSTODY</li>
+          </ul>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__title">Verify</div>
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/operators/">REGISTRY</a>
+          </div>
+          <div class="hbce-note">La validità è deterministica: match → VALID.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-kicker">Input minimizzato</div>
+      <h2 class="hbce-h2">Dati operativi (non personali)</h2>
+
+      <div class="hbce-card">
+        <div class="hbce-grid hbce-grid--2">
+          <div>
+            <label class="hbce-label" for="nickname">Nickname operativo</label>
+            <input class="hbce-input" id="nickname" placeholder="es. Operator-IT-PIE-0001" />
+            <div class="hbce-note">No nome/cognome, no email. Solo alias operativo.</div>
+          </div>
+
+          <div>
+            <label class="hbce-label" for="territory">Territorio (codice)</label>
+            <input class="hbce-input" id="territory" placeholder="es. IT-PIE-Torino" />
+            <div class="hbce-note">Codice operativo territoriale (minimizzato).</div>
+          </div>
+
+          <div style="grid-column: 1 / -1;">
+            <label class="hbce-label" for="sha256">operator_sha256</label>
+            <input class="hbce-input" id="sha256" placeholder="sha256 del pack / payload operatore" />
+            <div class="hbce-note">
+              Questo è l’unico identificatore tecnico richiesto (hash-only).
+            </div>
+          </div>
+        </div>
+
+        <div class="hbce-actions" style="margin-top:12px;">
+          <button class="hbce-btn" id="gen">Genera entry</button>
+          <button class="hbce-btn hbce-btn--ghost" id="copy" disabled>Copia blocco</button>
+        </div>
+
+        <div class="hbce-note" id="status" style="margin-top:10px;">Pronto.</div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-kicker">Output</div>
+      <h2 class="hbce-h2">Blocco da appendere (entries[])</h2>
+
+      <div class="hbce-card">
+        <pre class="hbce-pre" id="out" style="white-space:pre-wrap; word-break:break-word;">—</pre>
+        <div class="hbce-note">
+          Incolla questo oggetto dentro <code>registry/operators.json → entries[]</code> (append-only).
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-footnote">
+        <p><strong>Fail-closed:</strong> se l’entry non rispetta lo schema minimo → non viene generata.</p>
+        <p><strong>Pubblico:</strong> hash-only. Nessuna custodia dati personali pubblici.</p>
+      </div>
+    </section>
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    const nickname = $("nickname");
+    const territory = $("territory");
+    const sha256 = $("sha256");
+    const out = $("out");
+    const status = $("status");
+    const btnGen = $("gen");
+    const btnCopy = $("copy");
+
+    function setStatus(msg){ status.textContent = msg; }
+
+    function isHex64(s){
+      return /^[a-f0-9]{64}$/i.test(String(s || "").trim());
+    }
+
+    function fail(msg){
+      out.textContent = "—";
+      btnCopy.disabled = true;
+      setStatus("FAIL-CLOSED — " + msg);
+    }
+
+    function nowISO(){
+      return new Date().toISOString();
+    }
+
+    function buildEntry(){
+      const nn = String(nickname.value || "").trim();
+      const tr = String(territory.value || "").trim();
+      const hs = String(sha256.value || "").trim();
+
+      if(!nn) return fail("nickname mancante");
+      if(!tr) return fail("territory mancante");
+      if(!isHex64(hs)) return fail("operator_sha256 non valido (serve sha256 hex 64)");
+
+      const entry = {
+        nickname: nn,
+        territory: tr,
+        operator_sha256: hs.toLowerCase(),
+        timestamp: nowISO(),
+        status: "ACTIVE"
+      };
+
+      const pretty = JSON.stringify(entry, null, 2);
+      out.textContent = pretty;
+      btnCopy.disabled = false;
+      setStatus("OK — entry pronta da appendere (append-only).");
+    }
+
+    async function copyOut(){
+      try{
+        await navigator.clipboard.writeText(out.textContent);
+        setStatus("Copiato. Incolla in registry/operators.json → entries[] (append-only).");
+      } catch(e){
+        setStatus("Copia non disponibile. Copia manualmente il blocco.");
+      }
+    }
+
+    btnGen.addEventListener("click", buildEntry);
+    btnCopy.addEventListener("click", copyOut);
+  </script>
+</body>
+</html>
