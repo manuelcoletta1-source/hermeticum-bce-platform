@@ -133,10 +133,6 @@
     setText("hbce-status", "OK — " + msg);
   }
 
-  // --- Registry interpretation (append-only) ---
-  // We compute "effective status" by reading STATUS_UPDATE events.
-  // Matching uses payload_sha256 only; identity shown is name (preferred) else nickname (legacy).
-
   function getPublicIdentity(e){
     if(e && typeof e === "object"){
       if(isNonEmptyString(e.name)) return String(e.name).trim();
@@ -150,12 +146,10 @@
   }
 
   function isIPREntry(e){
-    // an "entry" in the classic sense: has payload_sha256 + timestamp
     return e && typeof e === "object" && isHex64(e.payload_sha256) && isNonEmptyString(e.timestamp) && !isStatusEvent(e);
   }
 
   function buildEffectiveStatusMap(entries){
-    // map: payload_sha256 -> status
     const m = Object.create(null);
 
     for(const e of entries){
@@ -167,8 +161,6 @@
 
       if(!isHex64(ref) || !isNonEmptyString(ts)) continue;
 
-      // last-write-wins by timestamp lexicographic is OK for ISO8601;
-      // but to be safe, we compare Date parsing and fallback lexicographic.
       const prev = m[ref];
       if(!prev){
         m[ref] = { status: st, timestamp: ts };
@@ -188,10 +180,8 @@
     const sha = String(entry.payload_sha256 || "").trim().toLowerCase();
     const ev = statusMap[sha];
     if(ev && ev.status){
-      // SUPERSEDED or REVOKED etc
       return ev.status;
     }
-    // fallback: entry.status if present else ACTIVE
     const st = String(entry.status || "").trim().toUpperCase();
     return st || "ACTIVE";
   }
@@ -274,11 +264,10 @@
     URL.revokeObjectURL(url);
   }
 
-  // State
   let registryJson = null;
   let registrySha = null;
   let rowsAll = [];
-  let viewMode = "ACTIVE"; // ACTIVE | ALL
+  let viewMode = "ACTIVE";
   let statusMap = null;
 
   function applyFilters(){
@@ -341,7 +330,6 @@
     const entries = registryJson.entries;
     setText("hbce-raw-count", String(entries.length));
 
-    // last raw
     if(entries.length){
       const last = entries[entries.length - 1];
       const lastId = getPublicIdentity(last);
@@ -352,16 +340,13 @@
       setText("hbce-last-ts", "—");
     }
 
-    // build status map from events
     statusMap = buildEffectiveStatusMap(entries);
 
-    // build rows from IPR entries only
     rowsAll = entries
       .filter(isIPREntry)
       .map(e => normalizeRow(e, statusMap));
 
     pass("registry valid");
-
     setDisabled("hbce-export", false);
     applyFilters();
   }
