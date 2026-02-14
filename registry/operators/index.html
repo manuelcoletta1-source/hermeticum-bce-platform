@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OPERATOR REGISTRY — Certified (public)</title>
+  <meta name="description" content="Registro pubblico append-only degli operatori IPR certificati: ricerca, conteggio, export e link a VERIFY. UE-first, audit-first, fail-closed, hash-only." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">OPERATOR REGISTRY · Append-only · Public</div>
+      <h1 class="hbce-hero__title">Operatori certificati (registro pubblico)</h1>
+      <p class="hbce-hero__lead">
+        Questo registro pubblica solo prove minimizzate: <strong>nickname operativo + hash + timestamp</strong>.
+        Nessun dato personale pubblico. Modello: <strong>hash-only</strong>, <strong>append-only</strong>, <strong>fail-closed</strong>.
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-grid hbce-grid--3">
+        <article class="hbce-card">
+          <div class="hbce-card__title">Stato registry</div>
+          <div id="hbceStatus" class="hbce-note">Caricamento…</div>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__title">Operatori</div>
+          <div class="hbce-price" id="hbceCount">—</div>
+          <div class="hbce-card__meta">entries (append-only)</div>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__title">Azioni</div>
+          <div class="hbce-actions">
+            <a class="hbce-btn" id="hbceExport" href="#">Export JSON</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+          </div>
+          <div class="hbce-note">Per verificare un operatore: usa l’hash riportato qui e verifica.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-kicker">Ricerca</div>
+      <h2 class="hbce-h2">Cerca un operatore</h2>
+      <div class="hbce-card">
+        <label class="hbce-label" for="q">Nickname / hash / territorio</label>
+        <input class="hbce-input" id="q" type="search" placeholder="es. ManuHell, 1db2ab..., Torino, IT-PIE…" />
+        <div class="hbce-note">Cercabile solo su campi non sensibili (hash-only + metadati operativi).</div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-kicker">Elenco</div>
+      <h2 class="hbce-h2">Entries</h2>
+
+      <div class="hbce-card">
+        <div style="overflow:auto;">
+          <table class="hbce-table" id="tbl">
+            <thead>
+              <tr>
+                <th>timestamp</th>
+                <th>nickname</th>
+                <th>territorio</th>
+                <th>operator_sha256</th>
+                <th>status</th>
+                <th>verify</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+        <div class="hbce-note">
+          Policy: nessuna custodia dati personali pubblici. Solo hash + metadati operativi minimizzati.
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-footnote">
+        <p><strong>Validità:</strong> deterministica (match nel registry → VALID). In assenza di match → INVALID.</p>
+        <p><strong>Fail-closed:</strong> se il registry è invalido/non leggibile → la pagina non mostra risultati.</p>
+      </div>
+    </section>
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <script>
+    const REGISTRY_URL = "/hermeticum-bce-platform/registry/operators.json";
+
+    const elStatus = document.getElementById("hbceStatus");
+    const elCount  = document.getElementById("hbceCount");
+    const elRows   = document.getElementById("rows");
+    const elQ      = document.getElementById("q");
+    const elExport = document.getElementById("hbceExport");
+
+    function failClosed(msg){
+      elStatus.textContent = "FAIL-CLOSED — " + msg;
+      elStatus.className = "hbce-note";
+      elCount.textContent = "—";
+      elRows.innerHTML = "";
+    }
+
+    function okStatus(msg){
+      elStatus.textContent = msg;
+      elStatus.className = "hbce-note";
+    }
+
+    function safeStr(v){ return (v === null || v === undefined) ? "" : String(v); }
+
+    function matchesQuery(entry, q){
+      if(!q) return true;
+      const hay = [
+        entry.nickname,
+        entry.territory,
+        entry.operator_sha256,
+        entry.status,
+        entry.timestamp
+      ].map(safeStr).join(" ").toLowerCase();
+      return hay.includes(q.toLowerCase());
+    }
+
+    function render(entries, q){
+      const filtered = entries.filter(e => matchesQuery(e, q));
+      elCount.textContent = String(entries.length);
+
+      elRows.innerHTML = filtered.map(e => {
+        const ts = safeStr(e.timestamp);
+        const nn = safeStr(e.nickname);
+        const tr = safeStr(e.territory);
+        const hs = safeStr(e.operator_sha256);
+        const st = safeStr(e.status || "ACTIVE");
+        const vlink = "/hermeticum-bce-platform/verify/?sha256=" + encodeURIComponent(hs);
+
+        return `
+          <tr>
+            <td>${ts}</td>
+            <td>${nn}</td>
+            <td>${tr}</td>
+            <td><code>${hs}</code></td>
+            <td>${st}</td>
+            <td><a href="${vlink}">verify</a></td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    async function main(){
+      try{
+        const r = await fetch(REGISTRY_URL, { cache: "no-store" });
+        if(!r.ok) return failClosed("registry fetch error");
+        const j = await r.json();
+
+        // Fail-closed checks
+        if(!j || j.proto !== "HBCE-REGISTRY-OPERATORS-v1") return failClosed("proto mismatch");
+        if(!Array.isArray(j.entries)) return failClosed("entries invalid");
+
+        // Minimal schema validation (hash-only)
+        const bad = j.entries.some(e =>
+          !e || typeof e !== "object" ||
+          !e.nickname || !e.operator_sha256 || !e.timestamp
+        );
+        if(bad) return failClosed("entry schema invalid");
+
+        okStatus("OK — registry valid");
+        elExport.href = REGISTRY_URL;
+
+        render(j.entries, "");
+        elQ.addEventListener("input", () => render(j.entries, elQ.value.trim()));
+      } catch(err){
+        failClosed("exception");
+      }
+    }
+    main();
+  </script>
+</body>
+</html>
