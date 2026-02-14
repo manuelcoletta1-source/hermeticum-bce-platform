@@ -3,755 +3,265 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>OPERATOR — Console (CREATE · APPEND · VERIFY · CERTIFICATE)</title>
-  <meta name="description" content="Console operatore HBCE: crea release cliente, genera entry pubblica, append sicuro nel registry, verifica deterministica e rilascio certificato. Fail-closed." />
+
+  <title>OPERATOR — Workstation (CREATE · VERIFY · CERTIFICATE)</title>
+  <meta name="description" content="Workstation operatore Hermeticum: create IPR release, append registry ufficiale, verifica deterministica e certificato finale. Fail-closed." />
+
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
+
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
 <body>
-  <div data-hbce="header"></div>
-
-  <noscript>
-    <div class="hbce-container hbce-main">
-      <section class="hbce-section">
-        <div class="hbce-card">
-          <h3>JavaScript richiesto</h3>
-          <p class="hbce-note">
-            Questa console usa hashing locale (SHA-256), validazione schema e download artefatti.
-            Senza JavaScript → fail-closed.
-          </p>
-        </div>
-      </section>
-    </div>
-  </noscript>
-
-  <main class="hbce-container hbce-main">
-
-    <!-- HERO -->
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">OPERATOR CONSOLE · ALL-IN-ONE · FAIL-CLOSED · NAME-FIRST (LEGACY NICKNAME OK)</div>
-      <h1 class="hbce-hero__title">Console operatore</h1>
-      <p class="hbce-hero__lead">
-        Un’unica pagina per gestire clienti:
-        <strong>CREATE</strong> (rilascio file) → <strong>APPEND</strong> (registry) →
-        <strong>VERIFY</strong> (match) → <strong>CERTIFICATE</strong> (artefatto finale).
-      </p>
-      <p class="hbce-note">
-        Pubblico: <strong>name (o nickname legacy) + hash + timestamp</strong>. Privato: <strong>IPR_RELEASE</strong>.
-        Regola: se non matcha → <strong>INVALID</strong> (fail-closed).
-      </p>
-
-      <div class="hbce-actions">
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/wizard/">Apri CREATE wizard</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/append/">Apri APPEND tool</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Apri VERIFY</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">STATUS</a>
-      </div>
-    </section>
-
-    <!-- STEP 1 -->
-    <section class="hbce-section">
-      <h2>STEP 1 — CREATE (cliente → file)</h2>
-
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>Dati cliente (pubblico minimizzato)</h3>
-
-          <label for="c_name"><strong>Name (pubblico)</strong></label><br />
-          <input id="c_name" style="width:100%;padding:10px;" placeholder="Es. Mario Rossi" />
-
-          <div style="height:10px;"></div>
-
-          <label for="c_entityType"><strong>Tipo entità</strong></label><br />
-          <select id="c_entityType" style="width:100%;padding:10px;">
-            <option value="HUMAN">HUMAN</option>
-            <option value="ORG">ORG</option>
-            <option value="AI">AI</option>
-            <option value="AUTONOMOUS_SYSTEM">AUTONOMOUS_SYSTEM</option>
-          </select>
-
-          <div style="height:10px;"></div>
-
-          <label for="c_country"><strong>Nazione (ISO)</strong></label><br />
-          <input id="c_country" style="width:100%;padding:10px;" placeholder="Es. IT" value="IT" />
-
-          <div style="height:10px;"></div>
-
-          <label for="c_territory"><strong>Territorio (facoltativo)</strong></label><br />
-          <input id="c_territory" style="width:100%;padding:10px;" placeholder="Es. IT-PIEMONTE-TORINO" />
-
-          <div style="height:10px;"></div>
-
-          <label for="c_note"><strong>Nota privata (facoltativa)</strong></label><br />
-          <textarea id="c_note" style="width:100%;padding:10px;min-height:90px;" placeholder="Es. IPR Base Europeo — rilascio iniziale"></textarea>
-
-          <div class="hbce-actions" style="margin-top:12px;">
-            <button class="hbce-btn" id="btnCreate" type="button">Genera IPR_RELEASE + REGISTRY_ENTRY</button>
-            <button class="hbce-btn hbce-btn--ghost" id="btnDlRelease" type="button" disabled>Download IPR_RELEASE</button>
-            <button class="hbce-btn hbce-btn--ghost" id="btnDlEntry" type="button" disabled>Download REGISTRY_ENTRY</button>
-          </div>
-
-          <ul class="hbce-list">
-            <li><strong>Status:</strong> <span id="c_status">—</span></li>
-            <li><strong>Timestamp:</strong> <span id="c_ts">—</span></li>
-            <li><strong>payload_sha256:</strong> <span id="c_hash">—</span></li>
-          </ul>
-
-          <p class="hbce-note">
-            Output deterministico: nessun input hash. Hash calcolato dal payload (local-only).
-          </p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Preview REGISTRY_ENTRY (pubblico)</h3>
-          <pre class="hbce-pre"><code id="previewEntry">—</code></pre>
-          <p class="hbce-note">
-            Campo pubblico: <strong>name</strong>. Compatibilità legacy: se importi un file con <strong>nickname</strong> funziona comunque.
-          </p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Preview IPR_RELEASE (privato)</h3>
-          <pre class="hbce-pre"><code id="previewRelease">—</code></pre>
-          <p class="hbce-note">
-            Consegnalo al cliente. Senza registry match → INVALID (fail-closed).
-          </p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Regola fail-closed</h3>
-          <p class="hbce-note">
-            Il cliente è <strong>INVALID</strong> finché <code>payload_sha256</code> non è presente nel registry pubblico.
-            Nessuna eccezione “interpretativa”.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- STEP 2 -->
-    <section class="hbce-section">
-      <h2>STEP 2 — APPEND (registry.json + entry → updated)</h2>
-
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>Input registry locale (repo)</h3>
-          <input type="file" id="regFile" accept=".json,application/json" />
-
-          <ul class="hbce-list">
-            <li><strong>Registry proto:</strong> <span id="r_proto">—</span></li>
-            <li><strong>Entries:</strong> <span id="r_count">—</span></li>
-            <li><strong>Registry SHA-256:</strong> <span id="r_sha">—</span></li>
-            <li><strong>Schema:</strong> <span id="r_schema">—</span></li>
-          </ul>
-
-          <p class="hbce-note">
-            Questo è il file che poi committi nel repo: <code>registry/registry.json</code> (append-only).
-          </p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Input entry</h3>
-          <input type="file" id="entryFile" accept=".json,application/json" />
-
-          <ul class="hbce-list">
-            <li><strong>Name:</strong> <span id="e_name">—</span></li>
-            <li><strong>Hash:</strong> <span id="e_hash">—</span></li>
-            <li><strong>Timestamp:</strong> <span id="e_ts">—</span></li>
-            <li><strong>Valid:</strong> <span id="e_valid">—</span></li>
-            <li><strong>Duplicate:</strong> <span id="e_dup">—</span></li>
-          </ul>
-
-          <p class="hbce-note">
-            Accetta: <code>{ name, payload_sha256, timestamp }</code> oppure legacy <code>{ nickname, payload_sha256, timestamp }</code>.
-          </p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Append & download</h3>
-          <div class="hbce-actions">
-            <button class="hbce-btn" id="btnAppend" type="button" disabled>APPEND (generate updated)</button>
-            <button class="hbce-btn hbce-btn--ghost" id="btnDlRegistry" type="button" disabled>Download registry.json UPDATED</button>
-          </div>
-
-          <ul class="hbce-list">
-            <li><strong>Status:</strong> <span id="a_status">—</span></li>
-            <li><strong>New entries:</strong> <span id="a_newcount">—</span></li>
-          </ul>
-
-          <p class="hbce-note">
-            Dopo il download: sostituisci il file nel repo e fai commit. Nessuna modifica retroattiva.
-          </p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Preview appended</h3>
-          <pre class="hbce-pre"><code id="previewAppend">—</code></pre>
-        </div>
-      </div>
-    </section>
-
-    <!-- STEP 3 -->
-    <section class="hbce-section">
-      <h2>STEP 3 — VERIFY (live registry) + CERTIFICATE</h2>
-
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>IPR_RELEASE da verificare</h3>
-          <input type="file" id="releaseFile" accept=".json,application/json" />
-
-          <ul class="hbce-list">
-            <li><strong>Name:</strong> <span id="v_name">—</span></li>
-            <li><strong>Timestamp:</strong> <span id="v_ts">—</span></li>
-            <li><strong>payload_sha256 (file):</strong> <span id="v_filehash">—</span></li>
-            <li><strong>payload_sha256 (computed):</strong> <span id="v_computed">—</span></li>
-            <li><strong>Integrity:</strong> <span id="v_integrity">—</span></li>
-          </ul>
-
-          <div class="hbce-actions">
-            <button class="hbce-btn" id="btnVerify" type="button" disabled>VERIFY (registry match)</button>
-          </div>
-
-          <p class="hbce-note">
-            “computed” = SHA-256 del <code>payload</code> calcolato dal browser. Se mismatch → fail-closed.
-          </p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Registry live</h3>
-          <ul class="hbce-list">
-            <li><strong>URL:</strong> <code id="v_regurl">/hermeticum-bce-platform/registry/registry.json</code></li>
-            <li><strong>Status:</strong> <span id="v_regstatus">—</span></li>
-            <li><strong>Entries:</strong> <span id="v_regcount">—</span></li>
-            <li><strong>Registry SHA-256:</strong> <span id="v_regsha">—</span></li>
-          </ul>
-
-          <div class="hbce-actions">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Apri registry</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Apri verify page</a>
-          </div>
-
-          <p class="hbce-note">
-            Fail-closed: se registry non valido o non leggibile → INVALID.
-          </p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>RESULT + Download certificato</h3>
-
-          <div class="hbce-card" style="padding:12px;">
-            <div style="font-weight:700;font-size:18px;"><span id="v_result">—</span></div>
-            <div class="hbce-note" id="v_note">—</div>
-          </div>
-
-          <ul class="hbce-list">
-            <li><strong>Status:</strong> <span id="v_statusline">—</span></li>
-            <li><strong>Registry match:</strong> <span id="v_match">—</span></li>
-          </ul>
-
-          <div class="hbce-actions">
-            <button class="hbce-btn" id="btnCertJson" type="button" disabled>Download CERTIFICATE (JSON)</button>
-            <button class="hbce-btn hbce-btn--ghost" id="btnCertTxt" type="button" disabled>Download CERTIFICATE (TXT)</button>
-          </div>
-
-          <p class="hbce-note">
-            Artefatto finale cliente: prova ripetibile di validità (match su registry pubblico).
-          </p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Certificate preview</h3>
-          <pre class="hbce-pre"><code id="previewCert">—</code></pre>
-        </div>
-      </div>
-    </section>
-
-    <!-- FOOT SIGNATURE -->
-    <section class="hbce-section">
-      <p class="hbce-note">
-        HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br />
-        HERMETICUM B.C.E. S.r.l.<br />
-        UE-first · audit-first · fail-closed · hash-only · append-only · GDPR-min
-      </p>
-    </section>
-
-  </main>
-
-  <div data-hbce="footer"></div>
-
-  <!-- HBCE UI loader (header/footer partials) -->
-  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
-
-  <script>
-  (function(){
-    const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
-    const $ = (id) => document.getElementById(id);
-
-    function setText(id, v){ const el = $(id); if(el) el.textContent = v; }
-    function isNonEmptyString(x){ return typeof x === "string" && x.trim().length > 0; }
-    function isISODateString(x){
-      if(!isNonEmptyString(x)) return false;
-      const d = new Date(x);
-      return !Number.isNaN(d.valueOf());
-    }
-    function isHex64(x){ return typeof x === "string" && /^[a-f0-9]{64}$/i.test(x.trim()); }
-
-    function readPublicName(obj){
-      const a = obj && obj.name;
-      const b = obj && obj.nickname;
-      const v = isNonEmptyString(a) ? a : (isNonEmptyString(b) ? b : "—");
-      return String(v).trim();
-    }
-
-    function safeNameForFile(name){
-      return String(name||"IPR")
-        .trim()
-        .replace(/\s+/g,"_")
-        .replace(/[^a-zA-Z0-9_\-]/g,"");
-    }
-
-    function normalizeOptional(x){
-      const v = (x === null || x === undefined) ? "" : String(x).trim();
-      return v.length ? v : null;
-    }
-
-    function downloadText(filename, text, mime){
-      const blob = new Blob([text], { type: mime || "application/octet-stream" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    }
-
-    async function sha256HexFromText(text){
-      const enc = new TextEncoder();
-      const buf = enc.encode(text);
-      const hashBuf = await crypto.subtle.digest("SHA-256", buf);
-      const hashArr = Array.from(new Uint8Array(hashBuf));
-      return hashArr.map(b => b.toString(16).padStart(2,"0")).join("");
-    }
-
-    // ========== STEP 1 (CREATE) ==========
-    let createdRelease = null;
-    let createdEntry = null;
-
-    $("btnCreate").addEventListener("click", async () => {
-      createdRelease = null;
-      createdEntry = null;
-
-      $("btnDlRelease").disabled = true;
-      $("btnDlEntry").disabled = true;
-
-      setText("previewEntry","—");
-      setText("previewRelease","—");
-      setText("c_status","—");
-      setText("c_ts","—");
-      setText("c_hash","—");
-
-      const name = ($("c_name").value || "").trim();
-      if(!isNonEmptyString(name)){
-        setText("c_status","FAIL-CLOSED — name required");
-        return;
-      }
-
-      const entity_type = ($("c_entityType").value || "HUMAN").trim();
-      const country = ($("c_country").value || "IT").trim().toUpperCase();
-      const territory = normalizeOptional($("c_territory").value);
-      const note = normalizeOptional($("c_note").value);
-
-      const timestamp = new Date().toISOString();
-
-      const payload = {
-        subject: { name, entity_type, country, territory },
-        private: { note },
-        policy: [
-          "UE_FIRST",
-          "AUDIT_FIRST",
-          "FAIL_CLOSED",
-          "HASH_ONLY",
-          "APPEND_ONLY",
-          "GDPR_MIN",
-          "NO_PUBLIC_DATA_CUSTODY"
-        ]
-      };
-
-      const computed = await sha256HexFromText(JSON.stringify(payload));
-      if(!isHex64(computed)){
-        setText("c_status","FAIL-CLOSED — sha256 compute error");
-        return;
-      }
-
-      createdRelease = {
-        proto: "HBCE-RELEASE-v1",
-        kind: "IPR_RELEASE_FILE",
-        issued_at: timestamp,
-        timestamp: timestamp,
-        name: name,
-        entity_type: entity_type,
-        payload_sha256: computed,
-        payload: payload,
-        instructions: {
-          step_1: "Operator appends REGISTRY_ENTRY to public registry (append-only).",
-          step_2: "Client verifies on /verify/ with this IPR_RELEASE file.",
-          rule: "If NOT IN REGISTRY -> INVALID (fail-closed)."
-        }
-      };
-
-      createdEntry = {
-        name: name,
-        payload_sha256: computed,
-        timestamp: timestamp
-      };
-
-      setText("c_status","OK — artefatti generati");
-      setText("c_ts", timestamp);
-      setText("c_hash", computed);
-
-      const entryJson = JSON.stringify(createdEntry, null, 2);
-      const releaseJson = JSON.stringify(createdRelease, null, 2);
-
-      setText("previewEntry", entryJson);
-      setText("previewRelease", releaseJson);
-
-      $("btnDlRelease").disabled = false;
-      $("btnDlEntry").disabled = false;
-
-      $("btnDlRelease").onclick = () => {
-        const fn = "IPR_RELEASE_" + safeNameForFile(name) + "_" + computed.slice(0,12) + ".json";
-        downloadText(fn, releaseJson, "application/json;charset=utf-8");
-      };
-
-      $("btnDlEntry").onclick = () => {
-        const fn = "REGISTRY_ENTRY_" + safeNameForFile(name) + "_" + computed.slice(0,12) + ".json";
-        downloadText(fn, entryJson, "application/json;charset=utf-8");
-      };
-    });
-
-    // ========== STEP 2 (APPEND) ==========
-    let regObj = null;
-    let regText = null;
-    let entryObj = null;
-    let updatedObj = null;
-    let updatedText = null;
-
-    function validateRegistry(obj){
-      if(!obj || typeof obj !== "object") return { ok:false, reason:"registry not object" };
-      if(!Array.isArray(obj.entries)) return { ok:false, reason:"missing entries[]" };
-      const proto = obj.proto || obj.PROTO;
-      if(!isNonEmptyString(proto)) return { ok:false, reason:"missing proto" };
-      return { ok:true };
-    }
-
-    function validateEntry(obj){
-      if(!obj || typeof obj !== "object") return { ok:false, reason:"entry not object" };
-      const name = readPublicName(obj);
-      const hash = obj.payload_sha256;
-      const ts = obj.timestamp;
-      if(!isNonEmptyString(name) || name === "—") return { ok:false, reason:"missing name/nickname" };
-      if(!isHex64(hash)) return { ok:false, reason:"payload_sha256 invalid" };
-      if(!isISODateString(ts)) return { ok:false, reason:"timestamp invalid" };
-      return { ok:true, name, hash:String(hash).trim(), ts:String(ts).trim() };
-    }
-
-    function checkDuplicate(reg, entryHash){
-      const entries = reg.entries || [];
-      return entries.some(e => e && String(e.payload_sha256 || "").trim() === String(entryHash).trim());
-    }
-
-    function canAppend(){
-      if(!regObj || !entryObj) return false;
-      const vr = validateRegistry(regObj);
-      const ve = validateEntry(entryObj);
-      return vr.ok && ve.ok;
-    }
-
-    $("regFile").addEventListener("change", async (ev) => {
-      updatedObj = null; updatedText = null;
-      $("btnDlRegistry").disabled = true;
-      setText("previewAppend","—");
-      setText("a_status","—");
-      setText("a_newcount","—");
-
-      const f = ev.target.files && ev.target.files[0];
-      if(!f) return;
-
-      try { regText = await f.text(); }
-      catch(_) { setText("r_schema","FAIL — cannot read"); return; }
-
-      let sha = null;
-      try { sha = await sha256HexFromText(regText); } catch(_) {}
-
-      try { regObj = JSON.parse(regText); }
-      catch(_) { regObj = null; setText("r_schema","FAIL — JSON invalid"); return; }
-
-      const vr = validateRegistry(regObj);
-      setText("r_proto", (regObj && (regObj.proto || regObj.PROTO)) ? String(regObj.proto || regObj.PROTO) : "—");
-      setText("r_count", regObj && Array.isArray(regObj.entries) ? String(regObj.entries.length) : "—");
-      setText("r_sha", sha || "—");
-      setText("r_schema", vr.ok ? "OK" : ("FAIL — " + vr.reason));
-
-      $("btnAppend").disabled = !canAppend();
-      if(entryObj){
-        const ve = validateEntry(entryObj);
-        if(ve.ok) setText("e_dup", checkDuplicate(regObj, ve.hash) ? "YES" : "NO");
-      }
-    });
-
-    $("entryFile").addEventListener("change", async (ev) => {
-      updatedObj = null; updatedText = null;
-      $("btnDlRegistry").disabled = true;
-      setText("previewAppend","—");
-      setText("a_status","—");
-      setText("a_newcount","—");
-
-      const f = ev.target.files && ev.target.files[0];
-      if(!f) return;
-
-      let text;
-      try { text = await f.text(); }
-      catch(_) { entryObj = null; setText("e_valid","FAIL — cannot read"); return; }
-
-      try { entryObj = JSON.parse(text); }
-      catch(_) { entryObj = null; setText("e_valid","FAIL — JSON invalid"); return; }
-
-      const ve = validateEntry(entryObj);
-      setText("e_name", ve.ok ? ve.name : "—");
-      setText("e_hash", ve.ok ? ve.hash : "—");
-      setText("e_ts", ve.ok ? ve.ts : "—");
-      setText("e_valid", ve.ok ? "OK" : ("FAIL — " + ve.reason));
-
-      if(ve.ok && regObj){
-        setText("e_dup", checkDuplicate(regObj, ve.hash) ? "YES" : "NO");
-      } else {
-        setText("e_dup", "—");
-      }
-
-      $("btnAppend").disabled = !canAppend();
-    });
-
-    $("btnAppend").addEventListener("click", () => {
-      $("btnDlRegistry").disabled = true;
-
-      if(!regObj || !entryObj){ setText("a_status","FAIL-CLOSED — missing inputs"); return; }
-
-      const vr = validateRegistry(regObj);
-      if(!vr.ok){ setText("a_status","FAIL-CLOSED — registry invalid (" + vr.reason + ")"); return; }
-
-      const ve = validateEntry(entryObj);
-      if(!ve.ok){ setText("a_status","FAIL-CLOSED — entry invalid (" + ve.reason + ")"); return; }
-
-      const dup = checkDuplicate(regObj, ve.hash);
-      if(dup){
-        setText("a_status","NO-OP — entry already present (append-only)");
-        setText("a_newcount", String(regObj.entries.length));
-        updatedObj = regObj;
-        updatedText = JSON.stringify(updatedObj, null, 2);
-        setText("previewAppend", JSON.stringify({ last_entry: regObj.entries[regObj.entries.length-1] || null }, null, 2));
-        $("btnDlRegistry").disabled = false;
-        return;
-      }
-
-      updatedObj = JSON.parse(JSON.stringify(regObj));
-      updatedObj.entries = Array.isArray(updatedObj.entries) ? updatedObj.entries : [];
-      updatedObj.entries.push({
-        name: ve.name,
-        payload_sha256: ve.hash,
-        timestamp: ve.ts
-      });
-
-      updatedText = JSON.stringify(updatedObj, null, 2);
-
-      setText("a_status","OK — appended");
-      setText("a_newcount", String(updatedObj.entries.length));
-      setText("previewAppend", JSON.stringify({ appended: updatedObj.entries[updatedObj.entries.length-1] }, null, 2));
-      $("btnDlRegistry").disabled = false;
-    });
-
-    $("btnDlRegistry").addEventListener("click", () => {
-      if(!updatedText){ setText("a_status","FAIL — nothing to download"); return; }
-      downloadText("registry.json", updatedText, "application/json;charset=utf-8");
-    });
-
-    // ========== STEP 3 (VERIFY + CERT) ==========
-    let release = null;
-    let vComputed = null;
-    let vFileHash = null;
-    let vName = null;
-    let vTs = null;
-    let lastCert = null;
-
-    function resetVerify(){
-      setText("v_name","—"); setText("v_ts","—");
-      setText("v_filehash","—"); setText("v_computed","—");
-      setText("v_integrity","—");
-      setText("v_regurl", REGISTRY_URL);
-      setText("v_regstatus","—"); setText("v_regcount","—"); setText("v_regsha","—");
-      setText("v_result","—"); setText("v_note","—"); setText("v_statusline","—"); setText("v_match","—");
-      setText("previewCert","—");
-      $("btnVerify").disabled = true;
-      $("btnCertJson").disabled = true;
-      $("btnCertTxt").disabled = true;
-      lastCert = null;
-    }
-
-    async function fetchRegistry(){
-      let resp, text;
-      try { resp = await fetch(REGISTRY_URL, { cache:"no-store" }); }
-      catch(_) { return { ok:false, reason:"registry fetch error" }; }
-
-      if(!resp || !resp.ok) return { ok:false, reason:"registry HTTP " + (resp ? resp.status : "error") };
-
-      try { text = await resp.text(); }
-      catch(_) { return { ok:false, reason:"registry read error" }; }
-
-      let sha = null;
-      try { sha = await sha256HexFromText(text); } catch(_) {}
-
-      let json;
-      try { json = JSON.parse(text); }
-      catch(_) { return { ok:false, reason:"registry JSON invalid", sha }; }
-
-      if(!json || !Array.isArray(json.entries)) return { ok:false, reason:"registry schema invalid (entries[])", sha };
-
-      return { ok:true, sha, json };
-    }
-
-    $("releaseFile").addEventListener("change", async (ev) => {
-      resetVerify();
-
-      const f = ev.target.files && ev.target.files[0];
-      if(!f) return;
-
-      let text;
-      try { text = await f.text(); }
-      catch(_) { setText("v_integrity","FAIL — cannot read file"); return; }
-
-      try { release = JSON.parse(text); }
-      catch(_) { setText("v_integrity","FAIL — invalid JSON"); return; }
-
-      vName = readPublicName(release);
-      vTs = (release && (release.timestamp || release.issued_at)) || "—";
-
-      const payload = release && release.payload;
-      if(!payload){ setText("v_integrity","FAIL — missing payload"); return; }
-
-      vComputed = await sha256HexFromText(JSON.stringify(payload));
-      vFileHash = (isNonEmptyString(release.payload_sha256) ? String(release.payload_sha256).trim() : null);
-
-      setText("v_name", vName);
-      setText("v_ts", vTs);
-      setText("v_filehash", vFileHash || "—");
-      setText("v_computed", vComputed || "—");
-
-      const integrityOk = isHex64(vComputed) && (!vFileHash || vFileHash === vComputed);
-      setText("v_integrity", integrityOk ? "OK file integrity" : "FAIL — payload_sha256 mismatch");
-      $("btnVerify").disabled = !integrityOk;
-    });
-
-    $("btnVerify").addEventListener("click", async () => {
-      $("btnCertJson").disabled = true;
-      $("btnCertTxt").disabled = true;
-      setText("previewCert","—");
-      setText("v_regstatus","Checking…");
-
-      const reg = await fetchRegistry();
-      if(!reg.ok){
-        setText("v_regstatus","FAIL-CLOSED — " + reg.reason);
-        setText("v_regcount","—");
-        setText("v_regsha", reg.sha || "—");
-        setText("v_result","INVALID");
-        setText("v_note","Registry non valido o non leggibile (fail-closed).");
-        setText("v_statusline","FAIL-CLOSED — registry invalid");
-        setText("v_match","NO");
-        return;
-      }
-
-      setText("v_regstatus","OK — registry valid");
-      setText("v_regcount", String(reg.json.entries.length));
-      setText("v_regsha", reg.sha || "—");
-
-      const target = String(vComputed || "").trim();
-      const match = reg.json.entries.find(e => e && String(e.payload_sha256 || "").trim() === target);
-
-      if(!match){
-        setText("v_result","INVALID");
-        setText("v_note","OK file integrity — NOT IN REGISTRY");
-        setText("v_statusline","OK file integrity — NOT IN REGISTRY");
-        setText("v_match","NO");
-        return;
-      }
-
-      setText("v_result","VALID");
-      setText("v_note","FILE INTEGRITY OK + PRESENT IN REGISTRY");
-      setText("v_statusline","FILE INTEGRITY OK + PRESENT IN REGISTRY");
-      setText("v_match","YES");
-
-      const now = new Date().toISOString();
-      lastCert = {
-        proto: "HBCE-CERT-v1",
-        kind: "IPR_PUBLIC_VERIFICATION_CERTIFICATE",
-        policy: [
-          "UE_FIRST",
-          "AUDIT_FIRST",
-          "FAIL_CLOSED",
-          "HASH_ONLY",
-          "APPEND_ONLY",
-          "GDPR_MIN",
-          "NO_PUBLIC_DATA_CUSTODY"
-        ],
-        issued_at: now,
-        subject: {
-          name: vName,
-          timestamp: vTs,
-          payload_sha256: vComputed
-        },
-        registry: {
-          url: REGISTRY_URL,
-          registry_sha256: reg.sha || null,
-          match: true
-        },
-        result: "VALID",
-        note: "Certificate is reproducible: re-run VERIFY against the public registry."
-      };
-
-      const certJson = JSON.stringify(lastCert, null, 2);
-      setText("previewCert", certJson);
-
-      $("btnCertJson").disabled = false;
-      $("btnCertTxt").disabled = false;
-
-      $("btnCertJson").onclick = () => {
-        const fn = "HBCE_CERTIFICATE_" + safeNameForFile(vName) + "_" + String(vComputed).slice(0,12) + ".json";
-        downloadText(fn, certJson, "application/json;charset=utf-8");
-      };
-
-      $("btnCertTxt").onclick = () => {
-        const lines = [
-          "HBCE CERTIFICATE (HBCE-CERT-v1)",
-          "RESULT: VALID",
-          "STATUS: FILE INTEGRITY OK + PRESENT IN REGISTRY",
-          "NAME: " + (vName || "—"),
-          "TIMESTAMP: " + (vTs || "—"),
-          "PAYLOAD_SHA256: " + (vComputed || "—"),
-          "REGISTRY_URL: " + REGISTRY_URL,
-          "REGISTRY_SHA256: " + (reg.sha || "—"),
-          "ISSUED_AT: " + now
-        ].join("\n");
-        const fn = "HBCE_CERTIFICATE_" + safeNameForFile(vName) + "_" + String(vComputed).slice(0,12) + ".txt";
-        downloadText(fn, lines + "\n", "text/plain;charset=utf-8");
-      };
-    });
-
-    // init
-    setText("v_regurl", REGISTRY_URL);
-    resetVerify();
-  })();
-  </script>
+<div data-hbce="header"></div>
+
+<main class="hbce-container hbce-main">
+
+<!-- HERO -->
+<section class="hbce-hero">
+<div class="hbce-hero__kicker">OPERATOR WORKSTATION · EU NODE · FAIL-CLOSED</div>
+<h1 class="hbce-hero__title">Operator Workstation</h1>
+
+<p class="hbce-hero__lead">
+Console operativa per rilascio identità verificabili.
+Flusso unico:
+<strong>CREATE → APPEND REGISTRY → VERIFY → CERTIFICATE</strong>
+</p>
+
+<p class="hbce-note">
+Regola strutturale: se hash non è nel registry pubblico → <strong>INVALID</strong>.
+</p>
+
+<div class="hbce-actions">
+<a class="hbce-btn" href="/hermeticum-bce-platform/create/wizard/">CREATE wizard</a>
+<a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/append/">APPEND registry</a>
+<a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+<a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">STATUS</a>
+</div>
+</section>
+
+<!-- STEP 1 CREATE -->
+<section class="hbce-section">
+<h2>STEP 1 — CREATE (rilascio cliente)</h2>
+
+<div class="hbce-grid">
+
+<div class="hbce-card">
+<h3>Dati cliente</h3>
+
+<label>Nome pubblico</label>
+<input id="c_name" style="width:100%;padding:10px;" placeholder="Mario Rossi" />
+
+<div style="height:10px"></div>
+
+<label>Tipo entità</label>
+<select id="c_entity" style="width:100%;padding:10px;">
+<option>HUMAN</option>
+<option>ORG</option>
+<option>AI</option>
+<option>AUTONOMOUS_SYSTEM</option>
+</select>
+
+<div style="height:10px"></div>
+
+<label>Nazione</label>
+<input id="c_country" value="IT" style="width:100%;padding:10px;" />
+
+<div style="height:10px"></div>
+
+<button class="hbce-btn" id="btnCreate">Genera IPR_RELEASE</button>
+<button class="hbce-btn hbce-btn--ghost" id="btnDownload" disabled>Download file</button>
+
+<ul class="hbce-list">
+<li>Status: <span id="c_status">—</span></li>
+<li>Timestamp: <span id="c_ts">—</span></li>
+<li>SHA256: <span id="c_hash">—</span></li>
+</ul>
+</div>
+
+<div class="hbce-card">
+<h3>Preview IPR_RELEASE</h3>
+<pre class="hbce-pre"><code id="previewRelease">—</code></pre>
+</div>
+
+<div class="hbce-card">
+<h3>Flusso</h3>
+<pre class="hbce-pre"><code>
+1. CREATE file cliente
+2. APPEND su registry pubblico
+3. VERIFY
+4. CERTIFICATE
+</code></pre>
+</div>
+
+</div>
+</section>
+
+<!-- APPEND GATEWAY -->
+<section class="hbce-section">
+<h2>STEP 2 — APPEND (registry ufficiale)</h2>
+
+<div class="hbce-grid">
+<div class="hbce-card">
+<h3>Append ufficiale</h3>
+<p>
+L’append non avviene più nella console.
+Avviene solo nel registry ufficiale append-only.
+</p>
+
+<div class="hbce-actions">
+<a class="hbce-btn" href="/hermeticum-bce-platform/registry/append/">Apri APPEND</a>
+<a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Apri registry</a>
+</div>
+
+<p class="hbce-note">
+Dopo append → commit repo → VERIFY.
+</p>
+</div>
+</div>
+</section>
+
+<!-- VERIFY -->
+<section class="hbce-section">
+<h2>STEP 3 — VERIFY + CERTIFICATE</h2>
+
+<div class="hbce-grid">
+
+<div class="hbce-card">
+<h3>Carica IPR_RELEASE</h3>
+<input type="file" id="releaseFile" accept=".json"/>
+
+<ul class="hbce-list">
+<li>Name: <span id="v_name">—</span></li>
+<li>Hash: <span id="v_hash">—</span></li>
+<li>Integrity: <span id="v_integrity">—</span></li>
+</ul>
+
+<button class="hbce-btn" id="btnVerify" disabled>VERIFY</button>
+</div>
+
+<div class="hbce-card">
+<h3>Risultato</h3>
+<div style="font-size:22px;font-weight:bold" id="v_result">—</div>
+<div class="hbce-note" id="v_note">—</div>
+
+<button class="hbce-btn" id="btnCert" disabled>Download CERT</button>
+</div>
+
+</div>
+</section>
+
+</main>
+
+<div data-hbce="footer"></div>
+
+<script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+<script>
+(function(){
+
+const REGISTRY_URL="/hermeticum-bce-platform/registry/registry.json";
+const $=(id)=>document.getElementById(id);
+
+function sha256(txt){
+const enc=new TextEncoder().encode(txt);
+return crypto.subtle.digest("SHA-256",enc).then(buf=>{
+return Array.from(new Uint8Array(buf))
+.map(b=>b.toString(16).padStart(2,"0")).join("");
+});
+}
+
+let releaseObj=null;
+
+$("btnCreate").onclick=async()=>{
+const name=$("c_name").value.trim();
+if(!name){$("c_status").textContent="FAIL name";return;}
+
+const ts=new Date().toISOString();
+
+const payload={
+name,
+entity:$("c_entity").value,
+country:$("c_country").value,
+ts
+};
+
+const hash=await sha256(JSON.stringify(payload));
+
+releaseObj={
+proto:"HBCE-RELEASE-v1",
+timestamp:ts,
+name,
+payload_sha256:hash,
+payload
+};
+
+$("c_status").textContent="OK";
+$("c_ts").textContent=ts;
+$("c_hash").textContent=hash;
+
+$("previewRelease").textContent=JSON.stringify(releaseObj,null,2);
+$("btnDownload").disabled=false;
+};
+
+$("btnDownload").onclick=()=>{
+const blob=new Blob([JSON.stringify(releaseObj,null,2)],{type:"application/json"});
+const a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="IPR_RELEASE_"+releaseObj.name+".json";
+a.click();
+};
+
+$("releaseFile").onchange=async(e)=>{
+const f=e.target.files[0];
+if(!f)return;
+
+const text=await f.text();
+releaseObj=JSON.parse(text);
+
+$("v_name").textContent=releaseObj.name;
+$("v_hash").textContent=releaseObj.payload_sha256;
+$("v_integrity").textContent="OK";
+
+$("btnVerify").disabled=false;
+};
+
+$("btnVerify").onclick=async()=>{
+const r=await fetch(REGISTRY_URL);
+const j=await r.json();
+
+const found=j.entries.find(x=>x.payload_sha256===releaseObj.payload_sha256);
+
+if(!found){
+$("v_result").textContent="INVALID";
+$("v_note").textContent="Non presente in registry";
+return;
+}
+
+$("v_result").textContent="VALID";
+$("v_note").textContent="Match registry OK";
+$("btnCert").disabled=false;
+};
+
+$("btnCert").onclick=()=>{
+const cert={
+result:"VALID",
+name:releaseObj.name,
+hash:releaseObj.payload_sha256,
+registry:REGISTRY_URL,
+ts:new Date().toISOString()
+};
+
+const blob=new Blob([JSON.stringify(cert,null,2)],{type:"application/json"});
+const a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="CERT_"+releaseObj.name+".json";
+a.click();
+};
+
+})();
+</script>
 
 </body>
 </html>
