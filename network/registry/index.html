@@ -1,305 +1,118 @@
 <!doctype html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-  <title>Certified Operators Registry — Append-only (UE)</title>
-  <meta name="description" content="Registry pubblico operatori certificati (UE): append-only, hash-only, verifica deterministica. Nessuna custodia dati personali. Fail-closed by design." />
+<title>Certified Operators Registry — UE</title>
+<meta name="description" content="Registro pubblico operatori certificati UE. Append-only. Hash-only. Fail-closed."/>
 
-  <meta name="robots" content="index,follow" />
-  <meta name="theme-color" content="#0b0f14" />
-
-  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/network/registry/" />
-  <meta property="og:title" content="Certified Operators Registry — Append-only (UE)" />
-  <meta property="og:description" content="Public registry of certified operators: hash-only, append-only, deterministic verification (fail-closed)." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/network/registry/" />
-
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
-  <style>
-    /* small local helpers (keep hbce.css as base) */
-    .hbce-kv { display:grid; grid-template-columns: 160px 1fr; gap:.5rem 1rem; }
-    .hbce-kv div { padding:.2rem 0; }
-    .hbce-table { width:100%; border-collapse: collapse; }
-    .hbce-table th, .hbce-table td { text-align:left; padding:.6rem .7rem; border-bottom:1px solid rgba(255,255,255,.08); vertical-align: top; }
-    .hbce-table th { font-weight:600; }
-    .hbce-input { width:100%; padding:.7rem .8rem; border-radius: 12px; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.03); color: inherit; }
-    .hbce-badge { display:inline-block; padding:.2rem .5rem; border-radius: 999px; border:1px solid rgba(255,255,255,.16); font-size:.85rem; }
-    .hbce-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-  </style>
+<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css"/>
 </head>
 
 <body>
-  <div data-hbce="header"></div>
+<div data-hbce="header"></div>
 
-  <main class="hbce-container hbce-main">
+<main class="hbce-container hbce-main">
 
-    <!-- HERO -->
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CERTIFIED OPERATORS · PUBLIC PROOF · APPEND-ONLY</div>
-      <h1 class="hbce-hero__title">Certified Operators Registry</h1>
-      <p class="hbce-hero__lead">
-        Registry pubblico (hash-only) degli operatori certificati.
-        Serve a rendere verificabile <strong>chi può operare</strong> nella rete.
-        <br />
-        Regola: <strong>se non verificabile → INVALID</strong> (fail-closed).
-      </p>
+<section class="hbce-hero">
+<div class="hbce-hero__kicker">EU OPERATOR NETWORK · APPEND ONLY</div>
+<h1 class="hbce-hero__title">Certified Operators Registry</h1>
 
-      <div class="hbce-actions">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/network/">Network</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/lavora-con-noi/">Diventa Operatore</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">Status</a>
-      </div>
+<p class="hbce-hero__lead">
+Registro pubblico degli operatori certificati della rete.
+Solo prove hash-only.
+<br>
+Regola: <strong>se non verificabile → INVALID</strong>
+</p>
 
-      <p class="hbce-note">
-        UE-first · audit-first · fail-closed · hash-only · append-only · GDPR-min · no public data custody
-      </p>
-    </section>
+<div class="hbce-actions">
+<a class="hbce-btn" href="/hermeticum-bce-platform/network/">Network</a>
+<a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
+<a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/lavora-con-noi/">Diventa operatore</a>
+</div>
 
-    <!-- STATUS -->
-    <section class="hbce-section">
-      <h2>Stato registry (fail-closed)</h2>
+<p class="hbce-note">
+UE-first · audit-first · fail-closed · hash-only · append-only
+</p>
+</section>
 
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <div class="hbce-kv">
-            <div><strong>Status</strong></div><div><span id="hbce-op-status" class="hbce-badge">Checking…</span></div>
-            <div><strong>Entries</strong></div><div><span id="hbce-op-count">—</span></div>
-            <div><strong>Last timestamp</strong></div><div><span id="hbce-op-last-ts">—</span></div>
-            <div><strong>Last label</strong></div><div><span id="hbce-op-last-label">—</span></div>
-            <div><strong>Registry SHA-256</strong></div><div class="hbce-mono"><span id="hbce-op-reg-sha">—</span></div>
-          </div>
+<section class="hbce-section">
+<h2>Operatori certificati</h2>
 
-          <p class="hbce-note" style="margin-top:.8rem;">
-            Source: <span class="hbce-mono" id="hbce-op-reg-url">/hermeticum-bce-platform/network/registry/operators.json</span>
-          </p>
-        </div>
+<div class="hbce-card">
+<table class="hbce-table" style="width:100%">
+<thead>
+<tr>
+<th>Label</th>
+<th>Territorio</th>
+<th>Hash IPR</th>
+<th>Timestamp</th>
+</tr>
+</thead>
+<tbody id="registry-body">
+<tr><td colspan="4">Caricamento…</td></tr>
+</tbody>
+</table>
 
-        <div class="hbce-card">
-          <h3>Ricerca</h3>
-          <p class="hbce-note">Filtra per label / paese / hash (client-side).</p>
-          <input id="hbce-op-q" class="hbce-input" placeholder="Cerca… (es. Italy, Torino, hash, label)" />
-          <div class="hbce-actions" style="margin-top:.8rem;">
-            <button class="hbce-btn" id="hbce-op-clear" type="button">Reset</button>
-            <a class="hbce-btn hbce-btn--ghost" id="hbce-op-download" href="/hermeticum-bce-platform/network/registry/operators.json">Apri JSON</a>
-          </div>
-          <p class="hbce-note" style="margin-top:.8rem;">
-            Pubblico = hash-only. I dettagli operativi restano nei file privati dell’operatore (no custody pubblica).
-          </p>
-        </div>
-      </div>
-    </section>
+<p class="hbce-note" style="margin-top:10px;">
+Dati pubblici minimi: label + territorio + hash + timestamp.
+Nessun dato personale.
+</p>
 
-    <!-- TABLE -->
-    <section class="hbce-section">
-      <h2>Elenco operatori certificati</h2>
+</div>
+</section>
 
-      <div class="hbce-card">
-        <div style="overflow:auto;">
-          <table class="hbce-table" aria-label="Certified operators list">
-            <thead>
-              <tr>
-                <th>Label</th>
-                <th>Territorio</th>
-                <th>IPR hash</th>
-                <th>Timestamp</th>
-              </tr>
-            </thead>
-            <tbody id="hbce-op-tbody">
-              <tr>
-                <td colspan="4" class="hbce-note">Caricamento…</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+<section class="hbce-section">
+<div class="hbce-footnote">
+<p>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</p>
+<p>HERMETICUM B.C.E. S.r.l.</p>
+</div>
+</section>
 
-        <p class="hbce-note" style="margin-top:.9rem;">
-          Schema pubblico minimo: <strong>label + country/region/city + payload_sha256 + timestamp</strong>.
-          Se un record non è completo o è invalido: FAIL-CLOSED.
-        </p>
-      </div>
-    </section>
+</main>
 
-    <!-- NOTE -->
-    <section class="hbce-section">
-      <h2>Note operative</h2>
-      <div class="hbce-card">
-        <ul class="hbce-list">
-          <li><strong>Append-only:</strong> gli operatori certificati vengono aggiunti, mai riscritti retroattivamente.</li>
-          <li><strong>Hash-only:</strong> nessun dato personale pubblico.</li>
-          <li><strong>Validità:</strong> il fatto di essere qui è una prova minimizzata di legittimità operativa.</li>
-          <li><strong>Fail-closed:</strong> se il registry è invalido/non leggibile → nessuna autorità operativa derivabile.</li>
-        </ul>
-        <div class="hbce-actions" style="margin-top:.8rem;">
-          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/terms/">Terms</a>
-          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/privacy/">Privacy</a>
-          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/governance/">Governance</a>
-        </div>
-      </div>
-    </section>
+<div data-hbce="footer"></div>
+<script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 
-    <!-- FIRMA -->
-    <section class="hbce-section">
-      <div class="hbce-footnote">
-        <p>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</p>
-        <p>HERMETICUM B.C.E. S.r.l.</p>
-      </div>
-    </section>
+<script>
+(async function(){
 
-  </main>
+const url="/hermeticum-bce-platform/network/registry/operators.json";
+const body=document.getElementById("registry-body");
 
-  <div data-hbce="footer"></div>
-  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+try{
+const r=await fetch(url+"?t="+Date.now());
+if(!r.ok) throw new Error("registry non leggibile");
 
-  <!-- Registry viewer logic (fail-closed) -->
-  <script>
-    (function () {
-      const REG_URL = "/hermeticum-bce-platform/network/registry/operators.json";
-      const $ = (id) => document.getElementById(id);
+const data=await r.json();
 
-      function setText(id, v) { const el = $(id); if (el) el.textContent = v; }
-      function setBadgeOk(msg) { const el = $("hbce-op-status"); if (el) { el.textContent = "OK — " + msg; } }
-      function setBadgeFail(reason) { const el = $("hbce-op-status"); if (el) { el.textContent = "FAIL-CLOSED — " + reason; } }
+if(!data.entries){throw new Error("schema invalido");}
 
-      function isNonEmptyString(x){ return typeof x === "string" && x.trim().length > 0; }
-      function isHex64(x){ return typeof x === "string" && /^[a-f0-9]{64}$/i.test(x.trim()); }
-      function isISODateString(x){ if (!isNonEmptyString(x)) return false; const d = new Date(x); return !Number.isNaN(d.valueOf()); }
+if(data.entries.length===0){
+body.innerHTML="<tr><td colspan='4'>Nessun operatore ancora registrato</td></tr>";
+return;
+}
 
-      async function sha256HexFromText(text) {
-        if (!window.crypto || !window.crypto.subtle) return null;
-        const enc = new TextEncoder();
-        const buf = enc.encode(text);
-        const hashBuf = await crypto.subtle.digest("SHA-256", buf);
-        const hashArr = Array.from(new Uint8Array(hashBuf));
-        return hashArr.map(b => b.toString(16).padStart(2, "0")).join("");
-      }
+body.innerHTML="";
 
-      function normalizeTerritory(e) {
-        const c = isNonEmptyString(e.country) ? e.country.trim() : "";
-        const r = isNonEmptyString(e.region) ? e.region.trim() : "";
-        const y = isNonEmptyString(e.city) ? e.city.trim() : "";
-        const parts = [y, r, c].filter(Boolean);
-        return parts.length ? parts.join(" — ") : "—";
-      }
+data.entries.forEach(e=>{
+const tr=document.createElement("tr");
+tr.innerHTML=`
+<td>${e.label||""}</td>
+<td>${(e.city||"")+" "+(e.region||"")+" "+(e.country||"")}</td>
+<td style="font-family:monospace">${e.payload_sha256||""}</td>
+<td style="font-family:monospace">${e.timestamp||""}</td>
+`;
+body.appendChild(tr);
+});
 
-      function rowHtml(e) {
-        const label = isNonEmptyString(e.label) ? e.label.trim() : "—";
-        const terr = normalizeTerritory(e);
-        const h = isNonEmptyString(e.payload_sha256) ? e.payload_sha256.trim() : "—";
-        const ts = isNonEmptyString(e.timestamp) ? e.timestamp.trim() : "—";
-        return (
-          "<tr>" +
-            "<td>" + escapeHtml(label) + "</td>" +
-            "<td>" + escapeHtml(terr) + "</td>" +
-            "<td class='hbce-mono'>" + escapeHtml(h) + "</td>" +
-            "<td class='hbce-mono'>" + escapeHtml(ts) + "</td>" +
-          "</tr>"
-        );
-      }
+}catch(err){
+body.innerHTML="<tr><td colspan='4'>FAIL-CLOSED — registry non valido</td></tr>";
+}
 
-      function escapeHtml(s) {
-        return String(s).replace(/[&<>"']/g, (m) => ({
-          "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
-        }[m]));
-      }
+})();
+</script>
 
-      function fail(reason) {
-        setBadgeFail(reason);
-        const tb = $("hbce-op-tbody");
-        if (tb) tb.innerHTML = "<tr><td colspan='4' class='hbce-note'>FAIL-CLOSED — " + escapeHtml(reason) + "</td></tr>";
-      }
-
-      function validateSchema(json) {
-        if (!json || !Array.isArray(json.entries)) return "schema invalid (entries[])";
-        for (let i = 0; i < json.entries.length; i++) {
-          const e = json.entries[i];
-          const okLabel = isNonEmptyString(e && e.label);
-          const okHash = isHex64(e && e.payload_sha256);
-          const okTs = isISODateString(e && e.timestamp);
-          const okCountry = isNonEmptyString(e && e.country); // minimo UE
-          if (!okLabel || !okHash || !okTs || !okCountry) return "entry[" + i + "] missing/invalid required fields";
-        }
-        return null;
-      }
-
-      let cache = [];
-      function render(list) {
-        const tb = $("hbce-op-tbody");
-        if (!tb) return;
-        if (!list.length) {
-          tb.innerHTML = "<tr><td colspan='4' class='hbce-note'>Nessun risultato.</td></tr>";
-          return;
-        }
-        tb.innerHTML = list.map(rowHtml).join("");
-      }
-
-      function applyFilter(q) {
-        const s = String(q || "").toLowerCase().trim();
-        if (!s) return cache;
-        return cache.filter(e => {
-          const terr = normalizeTerritory(e).toLowerCase();
-          const label = String(e.label || "").toLowerCase();
-          const hash = String(e.payload_sha256 || "").toLowerCase();
-          return label.includes(s) || terr.includes(s) || hash.includes(s);
-        });
-      }
-
-      async function run() {
-        setText("hbce-op-reg-url", REG_URL);
-
-        let resp, text;
-        try { resp = await fetch(REG_URL, { cache: "no-store" }); }
-        catch (_) { fail("registry fetch error"); return; }
-
-        if (!resp || !resp.ok) { fail("registry HTTP " + (resp ? resp.status : "error")); return; }
-
-        try { text = await resp.text(); }
-        catch (_) { fail("registry read error"); return; }
-
-        try {
-          const hex = await sha256HexFromText(text);
-          if (hex) setText("hbce-op-reg-sha", hex);
-        } catch (_) {}
-
-        let json;
-        try { json = JSON.parse(text); }
-        catch (_) { fail("registry JSON invalid"); return; }
-
-        const schemaErr = validateSchema(json);
-        if (schemaErr) { fail(schemaErr); return; }
-
-        cache = json.entries.slice();
-        setText("hbce-op-count", String(cache.length));
-
-        if (cache.length === 0) {
-          setText("hbce-op-last-ts", "—");
-          setText("hbce-op-last-label", "—");
-          setBadgeOk("registry valid (0 entries)");
-          render([]);
-          return;
-        }
-
-        const last = cache[cache.length - 1];
-        setText("hbce-op-last-ts", last.timestamp);
-        setText("hbce-op-last-label", last.label);
-        setBadgeOk("registry valid");
-
-        render(cache);
-
-        const q = $("hbce-op-q");
-        if (q) {
-          q.addEventListener("input", () => render(applyFilter(q.value)));
-        }
-        const clear = $("hbce-op-clear");
-        if (clear && q) {
-          clear.addEventListener("click", () => { q.value = ""; render(cache); });
-        }
-      }
-
-      run();
-    })();
-  </script>
 </body>
 </html>
