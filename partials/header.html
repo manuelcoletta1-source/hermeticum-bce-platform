@@ -1,101 +1,19 @@
 <header class="hbce-header">
   <div class="hbce-container hbce-header__inner">
     <a class="hbce-brand" href="/hermeticum-bce-platform/">
-      <span class="hbce-brand__name">HERMETICUM</span>
-      <span class="hbce-brand__tag">IPR · UE-first</span>
+      <span class="hbce-brand__title">HERMETICUM</span>
+      <span class="hbce-brand__sub">IPR · EU Operational Identity</span>
     </a>
 
-    <nav class="hbce-nav" aria-label="Navigazione principale">
-      <a class="hbce-nav__link" href="/hermeticum-bce-platform/activate/">Attiva</a>
-      <a class="hbce-nav__link" href="/hermeticum-bce-platform/create/">Crea</a>
-      <a class="hbce-nav__link" href="/hermeticum-bce-platform/verify/">Verifica</a>
-      <a class="hbce-nav__link" href="/hermeticum-bce-platform/registry/">Registry</a>
-      <a class="hbce-nav__link" href="/hermeticum-bce-platform/pricing/">Prezzi</a>
-      <a class="hbce-nav__link" href="/hermeticum-bce-platform/what-is-ipr/">Cos’è IPR</a>
-      <a class="hbce-nav__link" href="/hermeticum-bce-platform/research/">Research</a>
+    <nav class="hbce-nav" aria-label="Primary">
+      <a href="/hermeticum-bce-platform/eu/">EU</a>
+      <a href="/hermeticum-bce-platform/eu-pilot/">Pilot</a>
+      <a href="/hermeticum-bce-platform/create/">Create</a>
+      <a href="/hermeticum-bce-platform/verify/">Verify</a>
+      <a href="/hermeticum-bce-platform/registry/">Registry</a>
+      <a href="/hermeticum-bce-platform/status/">Status</a>
+      <a href="/hermeticum-bce-platform/enterprise/">Enterprise</a>
+      <a href="/hermeticum-bce-platform/research/">Research</a>
     </nav>
-
-    <!-- Language selector (EU languages) -->
-    <div class="hbce-lang" style="display:flex; align-items:center; gap:10px; margin-left:auto;">
-      <label class="hbce-sr-only" for="hbce-lang-top">Lingua</label>
-      <select id="hbce-lang-top" class="hbce-input" style="max-width: 190px;">
-        <option value="it">IT</option>
-        <option value="en">EN</option>
-        <option value="bg">BG</option>
-        <option value="cs">CS</option>
-        <option value="da">DA</option>
-        <option value="de">DE</option>
-        <option value="el">EL</option>
-        <option value="es">ES</option>
-        <option value="et">ET</option>
-        <option value="fi">FI</option>
-        <option value="fr">FR</option>
-        <option value="ga">GA</option>
-        <option value="hr">HR</option>
-        <option value="hu">HU</option>
-        <option value="lt">LT</option>
-        <option value="lv">LV</option>
-        <option value="mt">MT</option>
-        <option value="nl">NL</option>
-        <option value="pl">PL</option>
-        <option value="pt">PT</option>
-        <option value="ro">RO</option>
-        <option value="sk">SK</option>
-        <option value="sl">SL</option>
-        <option value="sv">SV</option>
-      </select>
-
-      <button id="hbce-lang-top-apply" class="hbce-btn hbce-btn--ghost" type="button" style="padding: 8px 10px;">
-        OK
-      </button>
-    </div>
   </div>
-
-  <script>
-    (function () {
-      const KNOWN = new Set(["it","en","bg","cs","da","de","el","es","et","fi","fr","ga","hr","hu","lt","lv","mt","nl","pl","pt","ro","sk","sl","sv"]);
-
-      function getLangFromUrl() {
-        const u = new URL(window.location.href);
-        const q = (u.searchParams.get("lang") || "").toLowerCase();
-        return KNOWN.has(q) ? q : null;
-      }
-
-      function getStored() {
-        try {
-          const v = (localStorage.getItem("hbce_lang") || "").toLowerCase();
-          return KNOWN.has(v) ? v : null;
-        } catch (_) { return null; }
-      }
-
-      function setStored(lang) {
-        try { localStorage.setItem("hbce_lang", lang); } catch (_) {}
-      }
-
-      function apply(lang) {
-        lang = (lang || "it").toLowerCase();
-        if (!KNOWN.has(lang)) lang = "it";
-        setStored(lang);
-        document.documentElement.lang = lang;
-
-        // Keep navigation safe: use query param until localized directories exist.
-        const u = new URL(window.location.href);
-        u.searchParams.set("lang", lang);
-        window.location.href = u.toString();
-      }
-
-      const select = document.getElementById("hbce-lang-top");
-      const btn = document.getElementById("hbce-lang-top-apply");
-
-      const initial = getLangFromUrl() || getStored() || "it";
-      document.documentElement.lang = initial;
-      if (select) select.value = initial;
-
-      if (btn && select) {
-        btn.addEventListener("click", function () {
-          apply(select.value);
-        });
-      }
-    })();
-  </script>
 </header>
