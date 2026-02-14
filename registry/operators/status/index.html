@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>STATUS — Operatore certificato</title>
+  <meta name="description" content="Status page deterministica per operatori certificati: match su registry (hash-only), fail-closed, UE-first." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">OPERATOR STATUS · Deterministic</div>
+      <h1 class="hbce-hero__title">Stato operatore certificato</h1>
+      <p class="hbce-hero__lead">
+        Verifica deterministica su registry pubblico <strong>hash-only</strong>.
+        In assenza di match → <strong>INVALID</strong>. In caso di errore → <strong>FAIL-CLOSED</strong>.
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-grid hbce-grid--3">
+        <article class="hbce-card">
+          <div class="hbce-card__title">Input</div>
+          <div class="hbce-note">
+            Cerca per <strong>nickname</strong> o <strong>sha256</strong>.
+          </div>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__title">Registry</div>
+          <div class="hbce-note">
+            <a href="/hermeticum-bce-platform/registry/operators/">Apri registry operatori</a><br/>
+            <code id="regUrl">registry/operators.json</code>
+          </div>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__title">Verify</div>
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--ghost" id="verifyLink" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+          </div>
+          <div class="hbce-note">Match → VALID (deterministico).</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-kicker">Ricerca</div>
+      <h2 class="hbce-h2">Trova operatore</h2>
+
+      <div class="hbce-card">
+        <label class="hbce-label" for="q">Nickname o operator_sha256</label>
+        <input class="hbce-input" id="q" type="search" placeholder="es. Operator-IT-PIE-0001 oppure 64-hex sha256" />
+        <div class="hbce-actions" style="margin-top:12px;">
+          <button class="hbce-btn" id="run">Verifica</button>
+          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/operators/append/">APPEND TOOL</a>
+          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/operators/receipt/">RECEIPT</a>
+        </div>
+        <div class="hbce-note" id="statusMsg" style="margin-top:10px;">Pronto.</div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-kicker">Risultato</div>
+      <h2 class="hbce-h2">Esito deterministico</h2>
+
+      <div class="hbce-grid hbce-grid--2">
+        <article class="hbce-card">
+          <div class="hbce-card__title">STATUS</div>
+          <div class="hbce-price" id="resultStatus">—</div>
+          <div class="hbce-card__meta" id="resultReason">—</div>
+          <div class="hbce-note" id="resultPolicy">
+            Policy: HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · NO_PUBLIC_DATA_CUSTODY
+          </div>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__title">Entry</div>
+          <pre class="hbce-pre" id="resultEntry" style="white-space:pre-wrap; word-break:break-word;">—</pre>
+          <div class="hbce-note">
+            Se VALID: questa entry è presente nel registry pubblico (append-only).
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-footnote">
+        <p><strong>Pubblico:</strong> hash-only. Nessuna custodia dati personali pubblici.</p>
+        <p><strong>Fail-closed:</strong> se il registry non è valido o non leggibile → nessun risultato operativo.</p>
+      </div>
+    </section>
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <script>
+    const REGISTRY_URL = "/hermeticum-bce-platform/registry/operators.json";
+
+    const $ = (id) => document.getElementById(id);
+    const q = $("q");
+    const run = $("run");
+    const statusMsg = $("statusMsg");
+    const resultStatus = $("resultStatus");
+    const resultReason = $("resultReason");
+    const resultEntry = $("resultEntry");
+    const verifyLink = $("verifyLink");
+    const regUrl = $("regUrl");
+
+    regUrl.textContent = REGISTRY_URL;
+
+    function setMsg(t){ statusMsg.textContent = t; }
+
+    function failClosed(reason){
+      resultStatus.textContent = "FAIL-CLOSED";
+      resultReason.textContent = reason;
+      resultEntry.textContent = "—";
+      verifyLink.href = "/hermeticum-bce-platform/verify/";
+      setMsg("FAIL-CLOSED — " + reason);
+    }
+
+    function invalid(reason){
+      resultStatus.textContent = "INVALID";
+      resultReason.textContent = reason;
+      resultEntry.textContent = "—";
+      verifyLink.href = "/hermeticum-bce-platform/verify/";
+      setMsg("INVALID — " + reason);
+    }
+
+    function valid(entry){
+      resultStatus.textContent = "VALID";
+      resultReason.textContent = "match trovato nel registry operatori";
+      resultEntry.textContent = JSON.stringify(entry, null, 2);
+      verifyLink.href = "/hermeticum-bce-platform/verify/?sha256=" + encodeURIComponent(entry.operator_sha256);
+      setMsg("VALID — operatore presente nel registry.");
+    }
+
+    function isHex64(s){ return /^[a-f0-9]{64}$/i.test(String(s||"").trim()); }
+
+    function getParam(name){
+      const u = new URL(window.location.href);
+      return (u.searchParams.get(name) || "").trim();
+    }
+
+    function normalizeQuery(){
+      // Supporta ?sha256=... oppure ?q=...
+      const byHash = getParam("sha256");
+      const byQ = getParam("q");
+      const v = byHash || byQ || q.value || "";
+      return v.trim();
+    }
+
+    function setUrlParams(value){
+      const u = new URL(window.location.href);
+      u.searchParams.set("q", value);
+      u.searchParams.delete("sha256");
+      window.history.replaceState({}, "", u.toString());
+    }
+
+    async function loadRegistry(){
+      const r = await fetch(REGISTRY_URL, { cache: "no-store" });
+      if(!r.ok) throw new Error("fetch error");
+      const j = await r.json();
+
+      // fail-closed minimal checks
+      if(!j || j.proto !== "HBCE-REGISTRY-OPERATORS-v1") throw new Error("proto mismatch");
+      if(!Array.isArray(j.entries)) throw new Error("entries invalid");
+
+      const bad = j.entries.some(e =>
+        !e || typeof e !== "object" || !e.nickname || !e.operator_sha256 || !e.timestamp
+      );
+      if(bad) throw new Error("entry schema invalid");
+
+      return j.entries;
+    }
+
+    function matchEntry(entries, query){
+      const qq = String(query || "").trim();
+      if(!qq) return null;
+
+      if(isHex64(qq)){
+        const h = qq.toLowerCase();
+        return entries.find(e => String(e.operator_sha256 || "").toLowerCase() === h) || null;
+      }
+
+      const nick = qq.toLowerCase();
+      return entries.find(e => String(e.nickname || "").toLowerCase() === nick) || null;
+    }
+
+    async function verifyNow(){
+      const query = normalizeQuery();
+      if(!query) return invalid("input mancante (nickname o sha256)");
+
+      // aggiorna URL
+      q.value = query;
+      setUrlParams(query);
+
+      try{
+        setMsg("Caricamento registry…");
+        const entries = await loadRegistry();
+
+        const entry = matchEntry(entries, query);
+        if(!entry) return invalid("nessun match nel registry");
+
+        return valid(entry);
+      } catch(e){
+        return failClosed(e.message || "exception");
+      }
+    }
+
+    run.addEventListener("click", verifyNow);
+    q.addEventListener("keydown", (ev) => {
+      if(ev.key === "Enter") verifyNow();
+    });
+
+    // auto-run se param presente
+    const auto = getParam("sha256") || getParam("q");
+    if(auto){
+      q.value = auto;
+      verifyNow();
+    }
+  </script>
+</body>
+</html>
+const slink = "/hermeticum-bce-platform/registry/operators/status/?sha256=" + encodeURIComponent(hs);
+...
+<td><a href="${slink}">status</a></td>
