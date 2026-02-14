@@ -1,0 +1,38 @@
+{
+  "proto": "HBCE-REGISTRY-v1",
+  "kind": "CERTIFIED_OPERATORS_REGISTRY",
+  "policy": [
+    "UE_FIRST",
+    "AUDIT_FIRST",
+    "FAIL_CLOSED",
+    "HASH_ONLY",
+    "APPEND_ONLY",
+    "NO_PUBLIC_DATA_CUSTODY",
+    "GDPR_MIN"
+  ],
+  "description": "Registry pubblico (hash-only) degli operatori certificati. Append-only. Nessuna custodia di dati personali. La validità operativa deriva da verificabilità deterministica e policy fail-closed.",
+  "schema": {
+    "required": [
+      "label",
+      "country",
+      "payload_sha256",
+      "timestamp"
+    ],
+    "optional": [
+      "region",
+      "city",
+      "role",
+      "level",
+      "issuer",
+      "notes"
+    ],
+    "rules": [
+      "entries[] MUST be append-only",
+      "payload_sha256 MUST be 64 hex chars",
+      "timestamp MUST be ISO-8601",
+      "country MUST be non-empty (EU member-state or EU territory label)",
+      "no personal data fields allowed"
+    ]
+  },
+  "entries": []
+}
