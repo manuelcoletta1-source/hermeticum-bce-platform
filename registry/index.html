@@ -5,7 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <title>REGISTRY — Append-only (public)</title>
-  <meta name="description" content="Viewer del registry append-only: ricerca, conteggio, export e link a VERIFY. UE-first, audit-first, fail-closed, hash-only, GDPR-min." />
+  <meta name="description" content="Viewer del registry append-only: ricerca, conteggio, export e link a VERIFY. UI interpreta STATUS_UPDATE per status effettivo (ACTIVE/SUPERSEDED/REVOKED). UE-first, audit-first, fail-closed." />
+
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
 
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
@@ -16,61 +19,61 @@
   <main class="hbce-container hbce-main">
 
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">REGISTRY · Append-only · Public · HASH-ONLY</div>
+      <div class="hbce-hero__kicker">REGISTRY · Append-only · Public · Hash-only</div>
       <h1 class="hbce-hero__title">Registro pubblico (append-only)</h1>
       <p class="hbce-hero__lead">
-        Questo registry pubblica solo prove minimizzate: <strong>name</strong> (Nome Cognome) + <strong>payload_sha256</strong> + <strong>timestamp</strong>.
+        Questo registro pubblica solo prove minimizzate: <strong>name|nickname + hash + timestamp</strong>.
+        Nessuna custodia pubblica di dati personali.
         <br />
-        Nessuna custodia pubblica di dati personali (GDPR-min). Se il registry non è leggibile o non è coerente → <strong>FAIL-CLOSED</strong>.
+        Viewer <strong>fail-closed</strong>: se il registry non è leggibile o non è valido → non mostra dati.
       </p>
-
-      <div class="hbce-actions">
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/wizard/">CREATE (client)</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/">CREATE (operator)</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">STATUS</a>
-      </div>
-
       <p class="hbce-note">
-        Compatibilità: entry legacy possono avere <code>nickname</code>. Il viewer le mostra come <strong>name</strong>.
+        Policy: <strong>UE-first</strong> · <strong>audit-first</strong> · <strong>fail-closed</strong> ·
+        <strong>hash-only</strong> · <strong>append-only</strong> · <strong>GDPR-min</strong> · <strong>no public data custody</strong>
       </p>
     </section>
 
     <section class="hbce-section">
-      <h2>Registry health</h2>
+      <h2>Stato</h2>
 
       <div class="hbce-grid">
         <div class="hbce-card">
-          <h3>Live</h3>
+          <h3>Health (live)</h3>
           <ul class="hbce-list">
             <li><strong>Status:</strong> <span id="hbce-status">Checking…</span></li>
-            <li><strong>Entries:</strong> <span id="hbce-count">—</span></li>
-            <li><strong>Last timestamp:</strong> <span id="hbce-last-ts">—</span></li>
-            <li><strong>Last name:</strong> <span id="hbce-last-name">—</span></li>
-            <li><strong>Registry SHA-256:</strong> <span id="hbce-sha">—</span></li>
+            <li><strong>Entries (raw):</strong> <span id="hbce-raw-count">—</span></li>
+            <li><strong>Entries (effective ACTIVE):</strong> <span id="hbce-active-count">—</span></li>
+            <li><strong>Last timestamp (raw):</strong> <span id="hbce-last-ts">—</span></li>
+            <li><strong>Last identity (raw):</strong> <span id="hbce-last-id">—</span></li>
+            <li><strong>Registry SHA-256:</strong> <span id="hbce-reg-sha">—</span></li>
           </ul>
 
           <p class="hbce-note">
-            Source: <code id="hbce-url">/hermeticum-bce-platform/registry/registry.json</code>
+            Source: <code id="hbce-reg-url">/hermeticum-bce-platform/registry/registry.json</code>
           </p>
+
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">STATUS</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/append/">Append tool</a>
+          </div>
         </div>
 
         <div class="hbce-card">
-          <h3>Ricerca</h3>
-          <div class="hbce-form">
-            <label class="hbce-label" for="q">Query (name / hash)</label>
-            <input class="hbce-input" id="q" type="text" placeholder="Mario Rossi oppure 1db2ab..." />
+          <h3>Filtri</h3>
 
-            <div class="hbce-actions">
-              <button class="hbce-btn" id="btnSearch" type="button">Cerca</button>
-              <button class="hbce-btn hbce-btn--ghost" id="btnClear" type="button">Pulisci</button>
-              <button class="hbce-btn hbce-btn--ghost" id="btnExport" type="button">Export (filtered)</button>
-            </div>
+          <label class="hbce-label">Cerca (name/nickname/hash)</label>
+          <input class="hbce-input" id="hbce-q" placeholder="Es: Manuel Coletta oppure 4ffea45b..." />
 
-            <p class="hbce-note">
-              La ricerca è locale (nel browser). Non invia query.
-            </p>
+          <div class="hbce-actions" style="margin-top:12px;">
+            <button class="hbce-btn" id="hbce-toggle-mode" type="button">Mostra: ACTIVE (effective)</button>
+            <button class="hbce-btn hbce-btn--ghost" id="hbce-export" type="button" disabled>Export (JSON)</button>
           </div>
+
+          <p class="hbce-note" id="hbce-mode-note">
+            Modalità default: mostra solo entries con status effettivo <strong>ACTIVE</strong>.
+            Gli stati vengono calcolati interpretando eventi <code>STATUS_UPDATE</code> (append-only).
+          </p>
         </div>
       </div>
     </section>
@@ -79,310 +82,293 @@
       <h2>Entries</h2>
 
       <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>Lista (filtrabile)</h3>
-          <p class="hbce-note">
-            Colonne: <strong>name</strong> (fallback nickname) · <strong>payload_sha256</strong> · <strong>timestamp</strong>.
-          </p>
-
-          <div class="hbce-table-wrap">
-            <table class="hbce-table" id="tbl">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Name</th>
-                  <th>payload_sha256</th>
-                  <th>timestamp</th>
-                  <th>verify</th>
-                </tr>
-              </thead>
-              <tbody id="tbody">
-                <tr><td colspan="5">Loading…</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-          <p class="hbce-note">
-            Append-only: questo viewer non modifica nulla.
-          </p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Entry (raw)</h3>
-          <p class="hbce-note">
-            Seleziona una riga per vedere il JSON completo.
-          </p>
-          <pre class="hbce-pre"><code id="raw">—</code></pre>
-          <div class="hbce-actions">
-            <button class="hbce-btn hbce-btn--ghost" id="btnCopyRaw" type="button">Copy</button>
+        <div class="hbce-card" style="grid-column: 1 / -1;">
+          <div id="hbce-list" class="hbce-stack">
+            <p class="hbce-note">Caricamento…</p>
           </div>
         </div>
       </div>
-    </section>
-
-    <section class="hbce-section">
-      <p class="hbce-note">
-        HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br />
-        HERMETICUM B.C.E. S.r.l.<br />
-        UE-first · audit-first · fail-closed · hash-only · append-only · GDPR-min
-      </p>
     </section>
 
   </main>
 
   <div data-hbce="footer"></div>
 
-  <script>
-    (function () {
-      const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
+<script>
+(function(){
+  const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
+  const $ = (id) => document.getElementById(id);
 
-      const $ = (id) => document.getElementById(id);
+  function setText(id,v){ const el=$(id); if(el) el.textContent = v; }
+  function setDisabled(id,v){ const el=$(id); if(el) el.disabled = !!v; }
+  function escapeHtml(s){
+    return String(s||"")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
 
-      const el = {
-        url: $("hbce-url"),
-        status: $("hbce-status"),
-        count: $("hbce-count"),
-        lastTs: $("hbce-last-ts"),
-        lastName: $("hbce-last-name"),
-        sha: $("hbce-sha"),
-        q: $("q"),
-        btnSearch: $("btnSearch"),
-        btnClear: $("btnClear"),
-        btnExport: $("btnExport"),
-        tbody: $("tbody"),
-        raw: $("raw"),
-        btnCopyRaw: $("btnCopyRaw"),
-        table: $("tbl")
-      };
+  function isNonEmptyString(x){ return typeof x === "string" && x.trim().length > 0; }
+  function isHex64(x){ return typeof x === "string" && /^[a-f0-9]{64}$/i.test(x.trim()); }
 
-      let allEntries = [];
-      let filtered = [];
+  async function sha256HexFromText(text){
+    if(!crypto || !crypto.subtle) return null;
+    const enc = new TextEncoder();
+    const buf = enc.encode(text);
+    const hashBuf = await crypto.subtle.digest("SHA-256", buf);
+    const hashArr = Array.from(new Uint8Array(hashBuf));
+    return hashArr.map(b => b.toString(16).padStart(2,"0")).join("");
+  }
 
-      function setText(target, value) {
-        if (target) target.textContent = value;
+  function fail(reason){
+    setText("hbce-status", "FAIL-CLOSED — " + reason);
+    const list = $("hbce-list");
+    list.innerHTML = `<p class="hbce-note"><strong>FAIL-CLOSED</strong>: ${escapeHtml(reason)}</p>`;
+    setDisabled("hbce-export", true);
+  }
+
+  function pass(msg){
+    setText("hbce-status", "OK — " + msg);
+  }
+
+  // --- Registry interpretation (append-only) ---
+  // We compute "effective status" by reading STATUS_UPDATE events.
+  // Matching uses payload_sha256 only; identity shown is name (preferred) else nickname (legacy).
+
+  function getPublicIdentity(e){
+    if(e && typeof e === "object"){
+      if(isNonEmptyString(e.name)) return String(e.name).trim();
+      if(isNonEmptyString(e.nickname)) return String(e.nickname).trim();
+    }
+    return "—";
+  }
+
+  function isStatusEvent(e){
+    return e && typeof e === "object" && String(e.record_type || "").toUpperCase() === "STATUS_UPDATE";
+  }
+
+  function isIPREntry(e){
+    // an "entry" in the classic sense: has payload_sha256 + timestamp
+    return e && typeof e === "object" && isHex64(e.payload_sha256) && isNonEmptyString(e.timestamp) && !isStatusEvent(e);
+  }
+
+  function buildEffectiveStatusMap(entries){
+    // map: payload_sha256 -> status
+    const m = Object.create(null);
+
+    for(const e of entries){
+      if(!isStatusEvent(e)) continue;
+
+      const ref = String(e.ref_payload_sha256 || "").trim().toLowerCase();
+      const st = String(e.status || "").trim().toUpperCase();
+      const ts = e.timestamp;
+
+      if(!isHex64(ref) || !isNonEmptyString(ts)) continue;
+
+      // last-write-wins by timestamp lexicographic is OK for ISO8601;
+      // but to be safe, we compare Date parsing and fallback lexicographic.
+      const prev = m[ref];
+      if(!prev){
+        m[ref] = { status: st, timestamp: ts };
+        continue;
       }
 
-      function nonEmpty(x) {
-        return typeof x === "string" && x.trim().length > 0;
-      }
+      const a = new Date(prev.timestamp).valueOf();
+      const b = new Date(ts).valueOf();
+      const pickNew = (!Number.isNaN(b) && !Number.isNaN(a)) ? (b >= a) : (String(ts) >= String(prev.timestamp));
+      if(pickNew) m[ref] = { status: st, timestamp: ts };
+    }
 
-      function isISODateString(x) {
-        if (!nonEmpty(x)) return false;
-        const d = new Date(x);
-        return !Number.isNaN(d.valueOf());
-      }
+    return m;
+  }
 
-      function isHex64(x) {
-        return typeof x === "string" && /^[a-f0-9]{64}$/i.test(x.trim());
-      }
+  function getEffectiveStatus(entry, statusMap){
+    const sha = String(entry.payload_sha256 || "").trim().toLowerCase();
+    const ev = statusMap[sha];
+    if(ev && ev.status){
+      // SUPERSEDED or REVOKED etc
+      return ev.status;
+    }
+    // fallback: entry.status if present else ACTIVE
+    const st = String(entry.status || "").trim().toUpperCase();
+    return st || "ACTIVE";
+  }
 
-      function readName(entry) {
-        const a = entry && entry.name;
-        const b = entry && entry.nickname; // legacy
-        const v = nonEmpty(a) ? a : (nonEmpty(b) ? b : "");
-        return v.trim();
-      }
+  function normalizeRow(entry, statusMap){
+    const sha = String(entry.payload_sha256).trim().toLowerCase();
+    const ts = String(entry.timestamp || "").trim();
+    const id = getPublicIdentity(entry);
+    const entityType = String(entry.entity_type || "").trim() || "—";
+    const st = getEffectiveStatus(entry, statusMap);
 
-      function pretty(obj) {
-        return JSON.stringify(obj, null, 2);
-      }
+    return {
+      sha,
+      timestamp: ts,
+      identity: id,
+      entity_type: entityType,
+      status: st
+    };
+  }
 
-      async function sha256HexFromText(text) {
-        if (!window.crypto || !crypto.subtle) return null;
-        const enc = new TextEncoder();
-        const buf = enc.encode(text);
-        const hashBuf = await crypto.subtle.digest("SHA-256", buf);
-        const hashArr = Array.from(new Uint8Array(hashBuf));
-        return hashArr.map(b => b.toString(16).padStart(2, "0")).join("");
-      }
+  function matchesQuery(row, q){
+    if(!q) return true;
+    const qq = q.toLowerCase().trim();
+    if(!qq) return true;
+    return (
+      row.sha.includes(qq) ||
+      row.timestamp.toLowerCase().includes(qq) ||
+      row.identity.toLowerCase().includes(qq) ||
+      row.entity_type.toLowerCase().includes(qq) ||
+      row.status.toLowerCase().includes(qq)
+    );
+  }
 
-      function fail(reason) {
-        setText(el.status, "FAIL-CLOSED — " + reason);
-      }
+  function renderList(rows){
+    const list = $("hbce-list");
+    if(!rows.length){
+      list.innerHTML = `<p class="hbce-note">Nessuna entry in questa vista.</p>`;
+      return;
+    }
 
-      function pass(msg) {
-        setText(el.status, "OK — " + msg);
-      }
+    const html = rows.map(r => {
+      const verifyLink = `/hermeticum-bce-platform/verify/`;
+      const badge = r.status === "ACTIVE" ? "ACTIVE" : r.status;
+      const badgeClass = r.status === "ACTIVE" ? "hbce-badge" : "hbce-badge hbce-badge--ghost";
 
-      function renderTable(rows) {
-        if (!el.tbody) return;
+      return `
+        <div class="hbce-card" style="margin:0 0 10px 0;">
+          <div class="hbce-kv">
+            <div><strong>${escapeHtml(r.identity)}</strong></div>
+            <div class="${badgeClass}" style="display:inline-block; padding:4px 10px; border-radius:999px; margin-top:6px;">
+              ${escapeHtml(badge)}
+            </div>
+          </div>
 
-        if (!rows || rows.length === 0) {
-          el.tbody.innerHTML = '<tr><td colspan="5">No results</td></tr>';
-          return;
-        }
+          <ul class="hbce-list" style="margin-top:10px;">
+            <li><strong>timestamp:</strong> ${escapeHtml(r.timestamp)}</li>
+            <li><strong>payload_sha256:</strong> <code>${escapeHtml(r.sha)}</code></li>
+            <li><strong>entity_type:</strong> ${escapeHtml(r.entity_type)}</li>
+          </ul>
 
-        el.tbody.innerHTML = "";
-        rows.forEach((e, idx) => {
-          const name = readName(e) || "—";
-          const hash = (e && e.payload_sha256) ? String(e.payload_sha256) : "—";
-          const ts = (e && e.timestamp) ? String(e.timestamp) : "—";
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--ghost" href="${verifyLink}">Vai a VERIFY</a>
+          </div>
+        </div>
+      `;
+    }).join("");
 
-          const tr = document.createElement("tr");
-          tr.style.cursor = "pointer";
+    list.innerHTML = html;
+  }
 
-          const verifyHref = "/hermeticum-bce-platform/verify/";
-          tr.innerHTML = `
-            <td>${idx + 1}</td>
-            <td>${escapeHtml(name)}</td>
-            <td><code>${escapeHtml(hash)}</code></td>
-            <td>${escapeHtml(ts)}</td>
-            <td><a class="hbce-link" href="${verifyHref}">open</a></td>
-          `;
+  function downloadJson(filename, obj){
+    const blob = new Blob([JSON.stringify(obj, null, 2)], { type:"application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
 
-          tr.addEventListener("click", () => {
-            setText(el.raw, pretty(e));
-            // highlight selected row
-            Array.from(el.tbody.querySelectorAll("tr")).forEach(r => r.classList.remove("hbce-row-selected"));
-            tr.classList.add("hbce-row-selected");
-          });
+  // State
+  let registryJson = null;
+  let registrySha = null;
+  let rowsAll = [];
+  let viewMode = "ACTIVE"; // ACTIVE | ALL
+  let statusMap = null;
 
-          el.tbody.appendChild(tr);
-        });
-      }
+  function applyFilters(){
+    const q = $("hbce-q").value || "";
+    const filtered = rowsAll
+      .filter(r => viewMode === "ALL" ? true : (r.status === "ACTIVE"))
+      .filter(r => matchesQuery(r, q));
 
-      function escapeHtml(s) {
-        return String(s)
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;")
-          .replace(/'/g, "&#039;");
-      }
+    setText("hbce-active-count", String(rowsAll.filter(r => r.status === "ACTIVE").length));
+    renderList(filtered);
+  }
 
-      function applyFilter() {
-        const q = String(el.q.value || "").trim().toLowerCase();
-        if (!q) {
-          filtered = allEntries.slice();
-          renderTable(filtered);
-          return;
-        }
+  $("hbce-q").addEventListener("input", applyFilters);
 
-        filtered = allEntries.filter((e) => {
-          const nm = readName(e).toLowerCase();
-          const hs = (e && e.payload_sha256) ? String(e.payload_sha256).toLowerCase() : "";
-          const ts = (e && e.timestamp) ? String(e.timestamp).toLowerCase() : "";
-          return nm.includes(q) || hs.includes(q) || ts.includes(q);
-        });
+  $("hbce-toggle-mode").addEventListener("click", () => {
+    viewMode = (viewMode === "ACTIVE") ? "ALL" : "ACTIVE";
+    $("hbce-toggle-mode").textContent = (viewMode === "ACTIVE") ? "Mostra: ACTIVE (effective)" : "Mostra: ALL (raw+events)";
+    setText("hbce-mode-note",
+      viewMode === "ACTIVE"
+        ? "Modalità default: mostra solo entries con status effettivo ACTIVE. STATUS_UPDATE (append-only) può marcare SUPERSEDED/REVOKED."
+        : "Modalità ALL: mostra tutte le entries IPR (anche SUPERSEDED/REVOKED). STATUS_UPDATE non viene listato come entry IPR, ma influisce sullo status effettivo."
+    );
+    applyFilters();
+  });
 
-        renderTable(filtered);
-      }
+  $("hbce-export").addEventListener("click", () => {
+    if(!registryJson) return;
+    const exportObj = {
+      exported_at: new Date().toISOString(),
+      registry_url: REGISTRY_URL,
+      registry_sha256: registrySha,
+      view_mode: viewMode,
+      entries_effective: rowsAll
+    };
+    downloadJson("HBCE_REGISTRY_EXPORT.json", exportObj);
+  });
 
-      async function exportFiltered() {
-        const obj = {
-          proto: "HBCE-REGISTRY-EXPORT-v1",
-          kind: "REGISTRY_EXPORT",
-          source: REGISTRY_URL,
-          exported_at: new Date().toISOString(),
-          count: filtered.length,
-          entries: filtered
-        };
-        const blob = new Blob([pretty(obj)], { type: "application/json;charset=utf-8" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "REGISTRY_EXPORT_" + filtered.length + ".json";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-      }
+  async function run(){
+    setText("hbce-reg-url", REGISTRY_URL);
 
-      async function copyRaw() {
-        const text = el.raw && el.raw.textContent ? el.raw.textContent : "";
-        if (!text || text === "—") return alert("Seleziona prima un’entry");
-        try {
-          await navigator.clipboard.writeText(text);
-        } catch (_) {
-          alert("Copy non disponibile su questo browser");
-        }
-      }
+    let resp, text;
+    try { resp = await fetch(REGISTRY_URL, { cache:"no-store" }); }
+    catch(_) { return fail("registry fetch error"); }
 
-      async function loadRegistry() {
-        setText(el.url, REGISTRY_URL);
+    if(!resp || !resp.ok) return fail("registry HTTP " + (resp ? resp.status : "error"));
 
-        let resp, text;
-        try {
-          resp = await fetch(REGISTRY_URL, { cache: "no-store" });
-        } catch (_) {
-          fail("registry fetch error");
-          return;
-        }
+    try { text = await resp.text(); }
+    catch(_) { return fail("registry read error"); }
 
-        if (!resp || !resp.ok) {
-          fail("registry HTTP " + (resp ? resp.status : "error"));
-          return;
-        }
+    try { registrySha = await sha256HexFromText(text); }
+    catch(_) { registrySha = null; }
 
-        try {
-          text = await resp.text();
-        } catch (_) {
-          fail("registry read error");
-          return;
-        }
+    if(registrySha) setText("hbce-reg-sha", registrySha);
 
-        try {
-          const hex = await sha256HexFromText(text);
-          if (hex) setText(el.sha, hex);
-        } catch (_) {}
+    try { registryJson = JSON.parse(text); }
+    catch(_) { return fail("registry JSON invalid"); }
 
-        let json;
-        try {
-          json = JSON.parse(text);
-        } catch (_) {
-          fail("registry JSON invalid");
-          return;
-        }
+    if(!registryJson || !Array.isArray(registryJson.entries)) return fail("registry schema invalid (entries[])");
 
-        if (!json || !Array.isArray(json.entries)) {
-          fail("registry schema invalid (entries[])");
-          return;
-        }
+    const entries = registryJson.entries;
+    setText("hbce-raw-count", String(entries.length));
 
-        allEntries = json.entries.slice();
-        setText(el.count, String(allEntries.length));
+    // last raw
+    if(entries.length){
+      const last = entries[entries.length - 1];
+      const lastId = getPublicIdentity(last);
+      setText("hbce-last-id", lastId);
+      setText("hbce-last-ts", (last && last.timestamp) ? String(last.timestamp) : "—");
+    } else {
+      setText("hbce-last-id", "—");
+      setText("hbce-last-ts", "—");
+    }
 
-        if (allEntries.length === 0) {
-          pass("registry valid (0 entries)");
-          setText(el.lastTs, "—");
-          setText(el.lastName, "—");
-          filtered = [];
-          renderTable(filtered);
-          return;
-        }
+    // build status map from events
+    statusMap = buildEffectiveStatusMap(entries);
 
-        const last = allEntries[allEntries.length - 1];
-        const lastName = readName(last);
-        const okName = nonEmpty(lastName);
-        const okHash = isHex64(last && last.payload_sha256);
-        const okTs = isISODateString(last && last.timestamp);
+    // build rows from IPR entries only
+    rowsAll = entries
+      .filter(isIPREntry)
+      .map(e => normalizeRow(e, statusMap));
 
-        setText(el.lastName, okName ? lastName : "—");
-        setText(el.lastTs, okTs ? last.timestamp : "—");
+    pass("registry valid");
 
-        if (!okName || !okHash || !okTs) {
-          fail("last entry missing/invalid required fields");
-          return;
-        }
+    setDisabled("hbce-export", false);
+    applyFilters();
+  }
 
-        pass("registry valid");
-        filtered = allEntries.slice();
-        renderTable(filtered);
-      }
+  run();
+})();
+</script>
 
-      el.btnSearch.addEventListener("click", applyFilter);
-      el.q.addEventListener("input", () => applyFilter());
-      el.btnClear.addEventListener("click", () => {
-        el.q.value = "";
-        applyFilter();
-      });
-      el.btnExport.addEventListener("click", exportFiltered);
-      el.btnCopyRaw.addEventListener("click", copyRaw);
-
-      // init
-      setText(el.raw, "—");
-      loadRegistry();
-    })();
-  </script>
 </body>
 </html>
