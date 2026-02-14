@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Link Audit — M1</title>
+  <meta name="description" content="Audit link interno: rileva riferimenti a entry/register/phase-1/gate e segnala link rotti su pagine core." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">TOOLS · LINK AUDIT</div>
+      <h1 class="hbce-hero__title">Link Audit (M1)</h1>
+      <p class="hbce-hero__lead">
+        Scansiona un set di pagine core e segnala:
+        link verso ingressi declassati e link rotti (HTTP != 200).
+      </p>
+      <div class="hbce-actions">
+        <button class="hbce-btn" id="run">Esegui audit</button>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/sitemap/">Sitemap UE</a>
+      </div>
+      <p class="hbce-note">
+        Nota: audit “curato”, non crawling totale. Target: pagine core UE.
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Risultati</h2>
+      <div class="hbce-card">
+        <pre id="out" style="white-space:pre-wrap; margin:0;">Pronto.</pre>
+      </div>
+    </section>
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <script>
+    (function () {
+      const PAGES = [
+        "/hermeticum-bce-platform/",
+        "/hermeticum-bce-platform/eu/",
+        "/hermeticum-bce-platform/eu-pilot/",
+        "/hermeticum-bce-platform/sitemap/",
+        "/hermeticum-bce-platform/create/",
+        "/hermeticum-bce-platform/create/receipt/",
+        "/hermeticum-bce-platform/registry/",
+        "/hermeticum-bce-platform/registry/append/",
+        "/hermeticum-bce-platform/verify/",
+        "/hermeticum-bce-platform/status/",
+        "/hermeticum-bce-platform/enterprise/",
+        "/hermeticum-bce-platform/control/",
+        "/hermeticum-bce-platform/infrastructure/",
+        "/hermeticum-bce-platform/research/",
+        "/hermeticum-bce-platform/horizon/",
+        "/hermeticum-bce-platform/lavora-con-noi/",
+        "/hermeticum-bce-platform/operator/"
+      ];
+
+      const BAD_PATTERNS = [
+        "/hermeticum-bce-platform/entry/",
+        "/hermeticum-bce-platform/register/",
+        "/hermeticum-bce-platform/phase-1/",
+        "/hermeticum-bce-platform/gate/"
+      ];
+
+      const $out = () => document.getElementById("out");
+      const log = (s) => { $out().textContent += s + "\n"; };
+
+      async function fetchText(url) {
+        const res = await fetch(url, { cache: "no-store" });
+        return { ok: res.ok, status: res.status, text: await res.text() };
+      }
+
+      function extractLinks(html, baseUrl) {
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        const as = Array.from(doc.querySelectorAll("a[href]"));
+        const links = as.map(a => a.getAttribute("href")).filter(Boolean);
+        // normalize relative links
+        return links.map(h => {
+          if (h.startsWith("http://") || h.startsWith("https://") || h.startsWith("mailto:")) return h;
+          if (h.startsWith("#")) return baseUrl + h;
+          if (h.startsWith("/")) return h;
+          // relative: resolve against base path
+          const u = new URL(baseUrl, location.origin);
+          const resolved = new URL(h, u);
+          return resolved.pathname + resolved.search + resolved.hash;
+        });
+      }
+
+      function isInternal(path) {
+        return typeof path === "string" && path.startsWith("/hermeticum-bce-platform/");
+      }
+
+      async function run() {
+        $out().textContent = "Link Audit M1 — START\n\n";
+        log("Pages: " + PAGES.length);
+        log("Bad patterns: " + BAD_PATTERNS.join(", "));
+        log("");
+
+        const broken = [];
+        const badRefs = [];
+
+        for (const page of PAGES) {
+          log("== " + page);
+          let r;
+          try {
+            r = await fetchText(page);
+          } catch (e) {
+            broken.push({ page, url: page, status: "FETCH_ERROR" });
+            log("  ! fetch error");
+            continue;
+          }
+
+          if (!r.ok) {
+            broken.push({ page, url: page, status: r.status });
+            log("  ! page not ok: " + r.status);
+            continue;
+          }
+
+          const links = extractLinks(r.text, page).filter(isInternal);
+          const uniq = Array.from(new Set(links));
+
+          // bad pattern detection
+          for (const u of uniq) {
+            for (const bad of BAD_PATTERNS) {
+              if (u.startsWith(bad)) badRefs.push({ page, link: u });
+            }
+          }
+
+          // spot-check internal link health (only a limited subset to avoid hammering)
+          const sample = uniq.slice(0, 30);
+          for (const u of sample) {
+            try {
+              const resp = await fetch(u, { method: "HEAD", cache: "no-store" });
+              if (!resp.ok) broken.push({ page, url: u, status: resp.status });
+            } catch (_) {
+              // some GH pages may not support HEAD reliably
+            }
+          }
+
+          log("  links found: " + uniq.length);
+          log("");
+        }
+
+        log("=== BAD REFERENCES (declass entrypoints) ===");
+        if (badRefs.length === 0) log("OK — none.");
+        else badRefs.forEach(x => log("- " + x.page + " -> " + x.link));
+
+        log("\n=== BROKEN (best-effort) ===");
+        if (broken.length === 0) log("OK — none detected.");
+        else broken.forEach(x => log("- " + x.page + " :: " + x.url + " [" + x.status + "]"));
+
+        log("\nLink Audit M1 — END");
+      }
+
+      document.getElementById("run").addEventListener("click", run);
+    })();
+  </script>
+</body>
+</html>
