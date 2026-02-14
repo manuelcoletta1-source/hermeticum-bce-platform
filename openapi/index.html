@@ -2,96 +2,206 @@
 <html lang="it">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>OpenAPI — IPR Precheck (ex-ante)</title>
-  <meta name="description" content="Specifica OpenAPI per il precheck ex-ante (fail-closed) basato su Identity Primary Record (IPR)." />
-  <link rel="stylesheet" href="../assets/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>OpenAPI — Accesso e integrazione (UE)</title>
+  <meta name="description" content="OpenAPI: modello azienda capability-based. Integrazione su IPR con precheck-before-action, verify deterministico, hash-only e registry append-only. UE-first, audit-first, fail-closed, GDPR-min." />
+
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/openapi/" />
+  <meta property="og:title" content="OpenAPI — IPR Integration (UE)" />
+  <meta property="og:description" content="Capability-based OpenAPI integration: precheck-before-action, deterministic verify, append-only registry." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/openapi/" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
 <body>
-  <header class="topbar">
-    <div class="container">
-      <a class="brand" href="../index.html">HERMETICUM B.C.E.</a>
-      <nav class="nav">
-        <a href="../ipr/index.html">IPR</a>
-        <a href="../verify/index.html">Verify</a>
-        <a href="../gate/index.html">Gate</a>
-        <a href="../datacenter/index.html">DataCenter</a>
-        <a class="active" href="./index.html">OpenAPI</a>
-        <a href="../use-cases/index.html">Use Cases</a>
-        <a href="../status/index.html">Status</a>
-        <a href="../governance/index.html">Governance</a>
-      </nav>
-    </div>
-  </header>
+  <div data-hbce="header"></div>
 
-  <main class="container">
-    <h1>OpenAPI</h1>
+  <main class="hbce-container hbce-main">
 
-    <p class="lead">
-      Questo endpoint va chiamato <strong>prima</strong> di ogni azione critica.
-      Se non esiste prova verificabile ex-ante → <strong>FAIL</strong> (fail-closed).
-    </p>
-
-    <section class="card">
-      <h2>Schema operativo (mini)</h2>
-      <pre class="code">Azione proposta -> POST /precheck -> PASS (esegui) | FAIL (blocca)
-FAIL sempre in assenza di prova verificabile ex-ante</pre>
-    </section>
-
-    <section class="card">
-      <h2>Endpoint minimo</h2>
-      <p><code>POST /precheck</code></p>
-
-      <h3>Esempio request</h3>
-      <pre class="code">{
-  "action_hash": "sha256:abcdef123456",
-  "ipr_ref": "IPR-UE:xxxxxxxxxxxxxxxxxxxxxxxx",
-  "timestamp": "2026-02-04T16:41:12+01:00"
-}</pre>
-
-      <h3>Esempio response (FAIL)</h3>
-      <pre class="code">{
-  "status": "FAIL",
-  "reason_code": "IPR_NOT_VERIFIABLE",
-  "mode": "fail-closed"
-}</pre>
-
-      <h3>Esempio response (PASS)</h3>
-      <pre class="code">{
-  "status": "PASS",
-  "evidence_hash": "sha256:...",
-  "mode": "fail-closed"
-}</pre>
-    </section>
-
-    <section class="card">
-      <h2>Specifica OpenAPI (YAML)</h2>
-      <ul>
-        <li>
-          YAML (raw):
-          <a href="https://raw.githubusercontent.com/manuelcoletta1-source/ipr-precheck-api/main/openapi.yaml" target="_blank" rel="noopener">
-            openapi.yaml
-          </a>
-        </li>
-        <li>
-          Repo:
-          <a href="https://github.com/manuelcoletta1-source/ipr-precheck-api" target="_blank" rel="noopener">
-            ipr-precheck-api
-          </a>
-        </li>
-      </ul>
-      <p class="hint">
-        Il portale espone la spec. L’esecuzione è condizionata dall’IPR (ex-ante).
+    <!-- HERO -->
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">OPEN API COMPANY · PRECHECK-BEFORE-ACTION · AUDIT-FIRST</div>
+      <h1 class="hbce-hero__title">OpenAPI</h1>
+      <p class="hbce-hero__lead">
+        Modello aziendale per capability: integrazioni semplici, regole dure.
+        <br />
+        Qualunque integrazione deve rispettare: <strong>precheck</strong> → <strong>proof</strong> → <strong>verify</strong>.
+        <br />
+        Regola: <strong>se non verificabile → INVALID</strong> (fail-closed).
       </p>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/create/">Create</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/modules/">Modules</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">Pricing</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/sitemap/">Sitemap UE</a>
+      </div>
+
+      <p class="hbce-note">
+        UE-first · audit-first · fail-closed · hash-only · append-only · GDPR-min · no public data custody
+      </p>
+    </section>
+
+    <!-- CHE COSA È -->
+    <section class="hbce-section">
+      <h2>Cos’è (in pratica)</h2>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>API come contratto operativo</h3>
+          <p>
+            Le “API” qui non sono solo endpoint: sono un contratto di operatività verificabile.
+            Prima di eseguire un’azione in un sistema (software, AI, robotica), l’identità operativa deve essere verificata.
+          </p>
+        </div>
+
+        <div class="hbce-card">
+          <h3>IPR come chiave</h3>
+          <p>
+            IPR è un identificatore operativo: come codice fiscale / IBAN / numero documento, ma per <strong>operatività digitale</strong>.
+            Serve a rendere attribuibili e opponibili nel tempo workflow e azioni.
+          </p>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Hash-only + append-only</h3>
+          <p>
+            Il portale pubblico pubblica prove minimizzate (hash-only) su un registry append-only.
+            Nessuna custodia pubblica di dati personali.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FLOW -->
+    <section class="hbce-section">
+      <h2>Flusso minimo di integrazione (canonico)</h2>
+
+      <div class="hbce-card">
+        <p>
+          Un solo flow: <strong>CREATE → RECEIPT → APPEND → VERIFY</strong>.
+          Le integrazioni devono sempre poter richiamare VERIFY come precondizione di esecuzione.
+        </p>
+
+        <div class="hbce-actions">
+          <a class="hbce-btn" href="/hermeticum-bce-platform/create/">CREATE</a>
+          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/receipt/">RECEIPT</a>
+          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/append/">APPEND</a>
+          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        </div>
+
+        <p class="hbce-note" style="margin-top:.75rem;">
+          Fail-closed: se VERIFY non è eseguibile o non c’è match → l’azione non deve partire.
+        </p>
+      </div>
+    </section>
+
+    <!-- PATTERN -->
+    <section class="hbce-section">
+      <h2>Pattern “precheck-before-action” (UE)</h2>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>1) Precheck</h3>
+          <ul class="hbce-list">
+            <li>leggi l’IPR/hash (input)</li>
+            <li>verifica integrità (hash calcolato localmente)</li>
+            <li>verifica match nel registry (VERIFY)</li>
+          </ul>
+        </div>
+
+        <div class="hbce-card">
+          <h3>2) Action</h3>
+          <ul class="hbce-list">
+            <li>esegui solo se VALID</li>
+            <li>registra evidenza minimizzata (proof)</li>
+            <li>mantieni coerenza temporale</li>
+          </ul>
+        </div>
+
+        <div class="hbce-card">
+          <h3>3) Proof</h3>
+          <ul class="hbce-list">
+            <li>hash, timestamp, reference</li>
+            <li>evidenza verificabile da terze parti</li>
+            <li>nessun dato personale pubblicato</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAPABILITIES -->
+    <section class="hbce-section">
+      <h2>Capacità (cosa integri davvero)</h2>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>AI / Workflow</h3>
+          <p>Attribuzione output AI e procedure ripetibili con evidenze verificabili.</p>
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/ai-joker-c2/">AI JOKER</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify output</a>
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Rete operatori</h3>
+          <p>Emissioni e procedure in rete: operatori, nodi, coordinamento e governance.</p>
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operator/">Workstation</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/network/">Network</a>
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Sistemi autonomi</h3>
+          <p>Identità operativa per macchine: log missione auditabile e attribuzione verificabile.</p>
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/iospace/">IoSpace</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/use-cases/">Use-cases</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- POLICY -->
+    <section class="hbce-section">
+      <h2>Regole UE (minime)</h2>
+
+      <div class="hbce-card">
+        <ul class="hbce-list">
+          <li><strong>Non custodire dati personali pubblici:</strong> prove hash-only</li>
+          <li><strong>Append-only:</strong> nessuna retroattività nel registry</li>
+          <li><strong>Fail-closed:</strong> assenza di prova = blocco</li>
+          <li><strong>Audit-first:</strong> ogni claim deve essere verificabile</li>
+          <li><strong>Determinismo:</strong> stessi input → stesso risultato</li>
+        </ul>
+
+        <p class="hbce-note" style="margin-top:.75rem;">
+          Nota: questa pagina è “operativa” come specifica di integrazione, non come documentazione di endpoint REST.
+          Endpoint formali verranno pubblicati quando il gateway sarà connesso al backend/servizi.
+        </p>
+      </div>
+    </section>
+
+    <!-- FIRMA -->
+    <section class="hbce-section">
+      <div class="hbce-footnote">
+        <p>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</p>
+        <p>HERMETICUM B.C.E. S.r.l.</p>
+      </div>
     </section>
 
   </main>
 
-  <footer class="footer">
-    <div class="container">
-      <p>Non cambio chi decide. Cambio quando un’azione è ammessa.</p>
-    </div>
-  </footer>
+  <div data-hbce="footer"></div>
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </body>
 </html>
