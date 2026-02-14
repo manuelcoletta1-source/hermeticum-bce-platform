@@ -2,106 +2,42 @@
 <html lang="it">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <base href="/hermeticum-bce-platform/" />
-
-  <title>Gate — JOKER PASS/FAIL (ex-ante)</title>
-  <meta name="description" content="JOKER Gate: interfaccia metrologica ex-ante che restituisce PASS/FAIL prima dell’esecuzione. Fail-closed, audit-first, hash-only, no data custody." />
-
-  <link rel="stylesheet" href="../assets/hbce.css" />
-  <style>
-    .hbce-wrap{max-width:980px;margin:0 auto;padding:28px 18px}
-    .hbce-top{border-bottom:1px solid rgba(255,255,255,.12);padding:18px}
-    .hbce-top__inner{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-    .hbce-brand__name{font-weight:800;letter-spacing:.3px}
-    .hbce-brand__sub{opacity:.82}
-    .hbce-nav a{margin-right:10px;text-decoration:none;opacity:.9}
-    .hbce-nav a:hover{text-decoration:underline;opacity:1}
-    .hbce-banner{margin:16px 0;padding:10px 12px;border:1px solid rgba(255,255,255,.14);border-radius:14px}
-    .hbce-hr{border:0;height:1px;background:rgba(255,255,255,.12);margin:22px 0}
-    .hbce-muted{opacity:.82}
-    .hbce-footer{border-top:1px solid rgba(255,255,255,.12);padding:18px;opacity:.9}
-    .hbce-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-    .hbce-btn{display:inline-block;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.18);text-decoration:none;font-weight:600}
-    .hbce-btn:hover{border-color:rgba(255,255,255,.35)}
-    code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gate — Metrologia PASS/FAIL (non ingresso)</title>
+  <meta name="description" content="Gate: controllo metrologico PASS/FAIL. Non è un ingresso operativo. Percorso canonico: CREATE→RECEIPT→APPEND→VERIFY." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
-
 <body>
-  <header class="hbce-top">
-    <div class="hbce-top__inner">
-      <div>
-        <div class="hbce-brand__name">HERMETICUM</div>
-        <div class="hbce-brand__sub">Gate · Misura ex-ante PASS/FAIL</div>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">METROLOGICAL GATE · PASS/FAIL</div>
+      <h1 class="hbce-hero__title">Gate (non ingresso)</h1>
+      <p class="hbce-hero__lead">
+        Questa pagina è un <strong>controllo</strong> (PASS/FAIL), non un onboarding.
+        L’emissione IPR segue il percorso canonico.
+      </p>
+      <div class="hbce-actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/create/">Vai a CREATE</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">STATUS</a>
       </div>
+      <p class="hbce-note">UE-first · audit-first · fail-closed · hash-only · append-only</p>
+    </section>
 
-      <nav class="hbce-nav" aria-label="Navigazione">
-        <a href="../">Home</a>
-        <a href="../architecture/">Architecture</a>
-        <a href="../modules/">IPR Stack</a>
-        <a href="./">Gate</a>
-        <a href="../datacenter/">DataCenter</a>
-        <a href="../use-cases/">Use-Cases</a>
-        <a href="../governance/">Governance</a>
-        <a href="../verify/">Verify</a>
-      </nav>
-    </div>
-  </header>
-
-  <main class="hbce-wrap">
-    <div class="hbce-banner">
-      <strong>PUBLIC PILOT</strong> · NO DATA CUSTODY · HASH-ONLY · FAIL-CLOSED · AUDIT-FIRST
-    </div>
-
-    <h1>JOKER = interfaccia metrologica ex-ante</h1>
-
-    <p>
-      JOKER è l’interfaccia metrologica dell’infrastruttura HERMETICUM.
-      Misura ex-ante le condizioni minime di ammissibilità di un’azione e restituisce un esito deterministico:
-      <code>PASS</code> oppure <code>FAIL</code>.
-    </p>
-
-    <p class="hbce-muted">
-      Non è un’autorità. Non decide nel merito. Non custodisce identità.
-      Non introduce sorveglianza. Opera come misura tecnica prima dell’esecuzione.
-    </p>
-
-    <div class="hbce-cta">
-      <a class="hbce-btn" href="../verify/">Verifica</a>
-      <a class="hbce-btn" href="../openapi/">OpenAPI</a>
-      <a class="hbce-btn" href="../datacenter/">Esecuzione</a>
-    </div>
-
-    <hr class="hbce-hr" />
-
-    <h2>Esito</h2>
-    <ul>
-      <li><strong>PASS</strong> → esecuzione ammessa</li>
-      <li><strong>FAIL</strong> → esecuzione bloccata (fail-closed)</li>
-    </ul>
-
-    <h2>Regola unica</h2>
-    <p>
-      In assenza di prova ex-ante → <strong>FAIL</strong> → nessuna esecuzione.
-    </p>
-
-    <hr class="hbce-hr" />
-
-    <h2>Firma</h2>
-    <p>
-      <strong>HERMETICUM – BLINDATA · COMPUTABILE · EVOLUTIVA</strong><br />
-      <strong>HERMETICUM B.C.E. S.r.l.</strong><br />
-      Torino · Unione Europea
-    </p>
+    <section class="hbce-section">
+      <div class="hbce-card">
+        <h3>Regola</h3>
+        <p>
+          Se il controllo non può essere eseguito in modo verificabile, il sistema deve fallire in chiusura:
+          <strong>FAIL-CLOSED</strong>.
+        </p>
+      </div>
+    </section>
   </main>
 
-  <footer class="hbce-footer">
-    <div class="hbce-muted">
-      Portale pubblico — informativo e valutativo. Nessun effetto giuridico automatico.
-    </div>
-  </footer>
-
-  <script src="../assets/hbce.js" defer></script>
+  <div data-hbce="footer"></div>
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </body>
 </html>
