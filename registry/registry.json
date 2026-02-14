@@ -11,18 +11,28 @@
     "NO_PUBLIC_DATA_CUSTODY"
   ],
   "description": "Registro pubblico append-only. Pubblica solo prove minimizzate (name|nickname + hash + timestamp). Nessuna custodia pubblica di dati personali. Verifica deterministica: se non matcha -> INVALID (fail-closed).",
+
   "schema": {
     "entry_required": ["payload_sha256", "timestamp"],
     "entry_public_identity": ["name"],
     "entry_legacy_allowed": ["nickname"],
     "entry_optional": ["entity_type", "status"],
+
+    "event_record_types": ["STATUS_UPDATE"],
+    "event_required": ["record_type", "ref_payload_sha256", "status", "timestamp"],
+    "event_optional": ["note"],
+
     "constraints": {
       "payload_sha256": "64-hex sha256",
+      "ref_payload_sha256": "64-hex sha256",
       "timestamp": "ISO 8601",
-      "name": "public display name (Nome Cognome or approved abbreviated form)"
+      "name": "public display name (Nome Cognome or approved abbreviated form)",
+      "status": "ACTIVE|SUPERSEDED|REVOKED"
     },
-    "compatibility": "UI renders entry.name if present else entry.nickname (legacy). Matching uses payload_sha256 only."
+
+    "compatibility": "UI renders entry.name if present else entry.nickname (legacy). Matching uses payload_sha256 only. STATUS_UPDATE is append-only and may change effective status of a referenced hash in UI."
   },
+
   "entries": [
     {
       "nickname": "AI_JOKER_C2",
@@ -46,7 +56,14 @@
       "timestamp": "2026-02-13T20:16:23.915Z",
       "entity_type": "HUMAN",
       "status": "ACTIVE"
-    }
+    },
 
+    {
+      "record_type": "STATUS_UPDATE",
+      "ref_payload_sha256": "426639d86a26e623ac7184d1beadac74e3ddb5b07f4b6466e46b5dbc6b851195",
+      "status": "SUPERSEDED",
+      "timestamp": "2026-02-14T00:00:00Z",
+      "note": "Superseded by newer Manuel Coletta IPR hash (append-only)."
+    }
   ]
 }
