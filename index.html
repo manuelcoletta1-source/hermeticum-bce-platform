@@ -10,7 +10,7 @@
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
 
-  <!-- Canonical / OG (condivisione e posizionamento istituzionale) -->
+  <!-- Canonical / OG -->
   <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/" />
   <meta property="og:title" content="HERMETICUM — European Operational Identity (IPR)" />
   <meta property="og:description" content="European operational identity infrastructure: pre-execution verification, audit replication, fail-closed. UE-first, hash-only, append-only, GDPR-min." />
@@ -29,7 +29,7 @@
         <div class="hbce-card">
           <h3>JavaScript richiesto</h3>
           <p class="hbce-note">
-            JavaScript è necessario per STATUS (controllo fail-closed) e per alcune funzioni operative.
+            JavaScript è necessario per STATUS (controllo fail-closed) e per alcune funzioni operative (hash + verify).
           </p>
         </div>
       </section>
@@ -38,7 +38,7 @@
 
   <main class="hbce-container hbce-main">
 
-    <!-- LANGUAGE ENTRYPOINT (placeholder routing: querystring) -->
+    <!-- LANGUAGE ENTRYPOINT (light i18n entry only) -->
     <section class="hbce-section" style="padding-top: 0;">
       <div class="hbce-actions" style="justify-content:flex-end; gap:.35rem;">
         <a class="hbce-btn hbce-btn--ghost" href="?lang=it" aria-label="Italiano">IT</a>
@@ -48,7 +48,7 @@
         <a class="hbce-btn hbce-btn--ghost" href="?lang=es" aria-label="Español">ES</a>
       </div>
       <p class="hbce-note" style="margin-top:.35rem; text-align:right;">
-        Switch lingua: attivo come entrypoint. Localizzazione completa: in rollout.
+        Switch lingua: entrypoint attivo. Localizzazione completa: rollout progressivo.
       </p>
     </section>
 
@@ -67,12 +67,13 @@
         Regola: <strong>se non è verificabile → INVALID</strong> (<strong>fail-closed</strong>).
       </p>
 
+      <!-- PRIMARY CTA (refactor: base + operator chained) -->
       <div class="hbce-actions">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Attiva IPR Base Europeo</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/wizard/">Crea IPR (cliente)</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/create/">Crea IPR Base EU</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/operator/">Crea IPR Operatore EU</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verifica pubblica</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/deep-tech/">EU Deep-Tech</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">STATUS</a>
       </div>
 
       <p class="hbce-note">
@@ -111,35 +112,83 @@
       </div>
     </section>
 
-    <!-- OPERATIONAL FLOW -->
+    <!-- ACCESS: BASE + OPERATOR (CHAINED) -->
     <section class="hbce-section">
-      <h2>Flusso operativo (il minimo indispensabile)</h2>
+      <h2>Accesso operativo (Base → Operatore, chained)</h2>
 
       <div class="hbce-grid">
         <div class="hbce-card">
-          <h3>Pipeline: CREATE → REGISTRY → VERIFY → CERTIFICATE</h3>
+          <h3>1) IPR Base EU — Entry</h3>
+          <p class="hbce-note">
+            Baseline tecnica. Senza Base <strong>VALID</strong> non esiste nessun livello successivo.
+          </p>
+          <ul class="hbce-list">
+            <li><strong>Artefatti:</strong> IPR_RELEASE (privato) + REGISTRY_ENTRY (pubblico)</li>
+            <li><strong>Validità:</strong> match su registry pubblico (hash-only)</li>
+            <li><strong>Regola:</strong> se non matcha → INVALID (fail-closed)</li>
+          </ul>
+          <div class="hbce-actions">
+            <a class="hbce-btn" href="/hermeticum-bce-platform/create/">CREA BASE</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/append/">APPEND</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <h3>2) IPR Operatore EU — License (requires Base VALID)</h3>
+          <p class="hbce-note">
+            L’operatore è una <strong>licenza</strong> collegata alla Base dell’operatore.
+            Se la Base non è in registry → <strong>BLOCK</strong>.
+          </p>
+          <ul class="hbce-list">
+            <li><strong>Input obbligatorio:</strong> IPR_RELEASE Base dell’operatore</li>
+            <li><strong>Check 1:</strong> integrità SHA-256(payload)</li>
+            <li><strong>Check 2:</strong> match Base nel registry pubblico</li>
+            <li><strong>Output:</strong> OPERATOR_LICENSE (privato) + REGISTRY_ENTRY (pubblico)</li>
+          </ul>
+          <div class="hbce-actions">
+            <a class="hbce-btn" href="/hermeticum-bce-platform/create/operator/">CREA OPERATORE</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operator/">WORKSTATION</a>
+          </div>
+        </div>
+      </div>
+
+      <p class="hbce-note">
+        Decisione–Costo–Traccia–Tempo: la <strong>traccia</strong> (registry match) è la condizione di esistenza operativa.
+        Il pagamento verrà messo come gate prima del rilascio (non prima della verifica).
+      </p>
+    </section>
+
+    <!-- OPERATIONAL FLOW (refactor: no "cliente") -->
+    <section class="hbce-section">
+      <h2>Flusso operativo (meccanica minima)</h2>
+
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>Pipeline: CREATE → RECEIPT → REGISTRY(APPEND) → VERIFY</h3>
           <p>
-            <strong>CREATE</strong> rilascia il file al cliente (IPR_RELEASE).
-            <strong>REGISTRY</strong> pubblica una prova minimizzata (hash-only).
-            <strong>VERIFY</strong> calcola lo SHA-256 del payload e cerca match nel registry.
-            Se matcha → <strong>VALID</strong> e viene rilasciato il <strong>CERTIFICATO</strong>.
+            <strong>CREATE</strong> genera il payload e calcola SHA-256 localmente (no custody).
+            <strong>RECEIPT</strong> produce una entry hash-only pronta da appendere.
+            <strong>REGISTRY</strong> (append-only) rende pubblica la prova minimizzata.
+            <strong>VERIFY</strong> determina <strong>VALID / INVALID</strong>.
           </p>
 
           <div class="hbce-actions">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/create/wizard/">1 — CREATE</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">2 — REGISTRY</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">3 — VERIFY (+ Certificato)</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/create/">1 — CREATE</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/receipt/">2 — RECEIPT</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/append/">3 — APPEND</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">4 — VERIFY</a>
           </div>
 
           <p class="hbce-note">
-            Pubblico: <strong>nickname (o name) + hash + timestamp</strong>. Privato: <strong>file cliente</strong>.
+            Pubblico: <strong>name/nickname + hash + timestamp</strong>. Privato: <strong>release/license file</strong>.
           </p>
         </div>
 
         <div class="hbce-card">
           <h3>Live health (registry)</h3>
           <p class="hbce-note">
-            Questo check legge <code>registry/registry.json</code> dal browser.
+            Questo check legge <code>registry/registry.json</code>.
             Se non è leggibile o non è coerente → <strong>FAIL-CLOSED</strong>.
           </p>
 
@@ -163,67 +212,33 @@
       </div>
     </section>
 
-    <!-- ENTRY -->
-    <section class="hbce-section">
-      <h2>Ingresso minimo (Entry)</h2>
-
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>IPR Base Europeo — 49€</h3>
-          <p><strong>Cos’è:</strong> baseline tecnica verificabile (VALID/INVALID deterministico).</p>
-
-          <ul class="hbce-list">
-            <li><strong>A chi serve:</strong> cittadino · lavoratore · azienda · PA</li>
-            <li><strong>Cosa abilita:</strong> esistenza operativa verificabile</li>
-            <li><strong>Cosa fai:</strong> entri in modalità “VALID” solo se match</li>
-            <li><strong>Artefatti:</strong> IPR_RELEASE (privato) + REGISTRY_ENTRY (pubblico)</li>
-          </ul>
-
-          <div class="hbce-actions">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Attiva</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verifica</a>
-          </div>
-
-          <p class="hbce-note">
-            Prezzi base: IVA/termini definiti in fase di rilascio/licenza.
-          </p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Cosa NON è (per evitare equivoci)</h3>
-          <ul class="hbce-list">
-            <li>Non è un data-vault</li>
-            <li>Non è un KYC pubblico</li>
-            <li>Non è un profilo social</li>
-            <li>Non è “fiducia”: è <strong>verifica</strong></li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- OPERATOR NETWORK -->
+    <!-- OPERATOR NETWORK (refactor: remove broken /operators/) -->
     <section class="hbce-section">
       <h2>Hermeticum Operator Network (UE)</h2>
 
       <div class="hbce-grid">
         <div class="hbce-card">
-          <h3>Rete operativa federabile</h3>
+          <h3>Rete operativa federabile (chain-first)</h3>
           <p>
             La rete Operator consente attivazioni, verifiche, rilascio moduli e operatività B2B/B2G.
-            È una struttura <strong>replicabile</strong>: quartiere → città → regione → nazione → UE.
+            Struttura replicabile: quartiere → città → regione → nazione → UE.
           </p>
 
           <ul class="hbce-list">
-            <li><strong>Entry (open):</strong> IPR Base</li>
-            <li><strong>Operator (selettivo):</strong> abilitazione lavoro + rilascio</li>
-            <li><strong>Node / Coordinator (alta selezione):</strong> gestione rete territoriale</li>
+            <li><strong>Entry:</strong> IPR Base EU (open)</li>
+            <li><strong>Operator:</strong> IPR Operatore EU (chained, Base VALID obbligatoria)</li>
+            <li><strong>Node / Coordinator:</strong> livelli superiori (policy + audit)</li>
           </ul>
 
           <div class="hbce-actions">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operators/">Apply — Operator Network</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/create/operator/">Crea Operatore EU</a>
             <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/map/">MAP</a>
             <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/control/">CONTROL</a>
           </div>
+
+          <p class="hbce-note">
+            Pagamenti: gate prima del rilascio. Catena tecnica: non negoziabile.
+          </p>
         </div>
 
         <div class="hbce-card">
@@ -235,18 +250,17 @@
           </ul>
 
           <p class="hbce-note">
-            La selezione protegge l’infrastruttura: ruoli alti richiedono requisiti e audit.
+            Selezione e audit proteggono l’infrastruttura: ruoli alti richiedono requisiti.
           </p>
         </div>
       </div>
     </section>
 
-    <!-- MODULES -->
+    <!-- MODULES (kept, but no client wording) -->
     <section class="hbce-section">
-      <h2>Moduli operativi (le “card”)</h2>
+      <h2>Moduli operativi (licenze / capabilities)</h2>
       <p class="hbce-note">
-        I moduli sono <strong>licenze software</strong> e capacità operative.
-        Ogni modulo definisce: <strong>a chi serve</strong>, <strong>cosa abilita</strong>, <strong>che operatività sblocca</strong>.
+        I moduli sono <strong>licenze software</strong> e capacità operative. Ogni modulo definisce: a chi serve, cosa abilita, che operatività sblocca.
       </p>
 
       <div class="hbce-grid">
@@ -276,15 +290,15 @@
 
         <div class="hbce-card">
           <h3>UNEBDO + OPC — 950€</h3>
-          <p><strong>Funzione:</strong> kit lavoro. Minimo tecnico per essere operatore e rilasciare IPR (se approvato).</p>
+          <p><strong>Funzione:</strong> kit lavoro operativo. Minimo tecnico per lavoro operativo in rete (policy-driven).</p>
           <ul class="hbce-list">
             <li><strong>A chi serve:</strong> operatori, nodi, strutture territoriali</li>
-            <li><strong>Cosa abilita:</strong> procedura di rilascio + controllo ex-ante</li>
-            <li><strong>Cosa fai:</strong> gestisci clienti: create → registry → verify → certificato</li>
-            <li><strong>Nota:</strong> abilitazione rilascio = <strong>selettiva</strong> (application + approval)</li>
+            <li><strong>Cosa abilita:</strong> procedure + controllo ex-ante</li>
+            <li><strong>Cosa fai:</strong> create → receipt → append → verify → certificate</li>
+            <li><strong>Nota:</strong> livelli operativi superiori richiedono audit</li>
           </ul>
           <div class="hbce-actions">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/operator/">OPERATOR CONSOLE</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/operator/">WORKSTATION</a>
             <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/append/">APPEND TOOL</a>
           </div>
         </div>
@@ -295,7 +309,7 @@
           <ul class="hbce-list">
             <li><strong>A chi serve:</strong> reti di operatori, enterprise, consorzi</li>
             <li><strong>Cosa abilita:</strong> catalogo servizi/pack verificabili</li>
-            <li><strong>Cosa fai:</strong> vendi servizi certificati (non solo attivazioni)</li>
+            <li><strong>Cosa fai:</strong> scambio/erogazione servizi certificati</li>
           </ul>
         </div>
 
@@ -305,7 +319,7 @@
           <ul class="hbce-list">
             <li><strong>A chi serve:</strong> coordinatori, reti nazionali, B2G/B2B</li>
             <li><strong>Cosa abilita:</strong> replicazione rete + controllo operativo</li>
-            <li><strong>Cosa fai:</strong> gestisci nodi e pilot multi-territorio</li>
+            <li><strong>Cosa fai:</strong> gestione nodi e pilot multi-territorio</li>
           </ul>
           <div class="hbce-actions">
             <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/control/">CONTROL</a>
@@ -317,7 +331,7 @@
           <h3>IOSPACE — 2.387€</h3>
           <p><strong>Funzione:</strong> identità per unità autonome fisiche: robotica, droni, veicoli, energia, spazio.</p>
           <ul class="hbce-list">
-            <li><strong>A chi serve:</strong> industria, difesa digitale, infrastrutture critiche, R&amp;D</li>
+            <li><strong>A chi serve:</strong> industria, infrastrutture critiche, R&amp;D</li>
             <li><strong>Cosa abilita:</strong> attribuzione macchina + mission log auditabile</li>
             <li><strong>Cosa fai:</strong> pacchetti B2B/B2G su sistemi autonomi</li>
           </ul>
@@ -329,7 +343,7 @@
           <h3>Termini essenziali</h3>
           <ul class="hbce-list">
             <li><strong>Entry:</strong> accesso diretto (IPR Base)</li>
-            <li><strong>Operator/Node:</strong> accesso selettivo (application + approval)</li>
+            <li><strong>Operatore:</strong> accesso chained (Base VALID obbligatoria)</li>
             <li><strong>Pubblico:</strong> hash-only (no public data custody)</li>
             <li><strong>Validità:</strong> deterministica (match → VALID)</li>
           </ul>
@@ -346,86 +360,7 @@
       </div>
     </section>
 
-    <!-- PATHS -->
-    <section class="hbce-section">
-      <h2>Percorsi (spendi → ottieni → fai)</h2>
-
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>1) Entry — Esistenza operativa</h3>
-          <p><strong>49€</strong> → IPR Base Europeo</p>
-          <p class="hbce-note">Ottieni: baseline verificabile · Fai: entri in VALID solo se match</p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>2) AI personale operativa</h3>
-          <p><strong>49€ + 420€</strong> → IPR + AI JOKER</p>
-          <p class="hbce-note">Ottieni: workflow attribuibili · Fai: output/procedure verificabili</p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>3) Lavoro — Operatore IPR (selettivo)</h3>
-          <p><strong>49€ + 950€</strong> → IPR + UNEBDO+OPC</p>
-          <p class="hbce-note">Ottieni: candidatura ruolo · Fai: rilasci IPR (solo se approvato)</p>
-          <div class="hbce-actions">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operators/">Apply</a>
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <h3>4) Economia di rete</h3>
-          <p><strong>+ 780€</strong> → MetaExchange</p>
-          <p class="hbce-note">Ottieni: network servizi · Fai: scambio pacchetti verificabili</p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>5) Scala territoriale (selettivo)</h3>
-          <p><strong>+ 1.400€</strong> → CyberGlobal</p>
-          <p class="hbce-note">Ottieni: governance distribuita · Fai: coordinamento rete nodi</p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>6) Sistemi fisici (industria/R&amp;D)</h3>
-          <p><strong>+ 2.387€</strong> → IoSpace</p>
-          <p class="hbce-note">Ottieni: identità per unità autonome · Fai: mission log auditabile</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- FULL STACK -->
-    <section class="hbce-section">
-      <h2>Stack completo (vetrina)</h2>
-
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>IPR completo — 6.666€</h3>
-          <p>
-            Configurazione totale: identità operativa + AI collegata + continuità evolutiva +
-            kit lavoro + rete + scala UE + sistemi autonomi fisici.
-          </p>
-          <p class="hbce-note">
-            Componenti: IPR (49) + AI JOKER (420) + NEUROLOOP (680) + UNEBDO+OPC (950) +
-            METAEXCHANGE (780) + CYBERGLOBAL (1.400) + IOSPACE (2.387)
-          </p>
-          <p class="hbce-note">Pilot: IT · Piemonte · Torino (Origin Node)</p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Integrità (non negoziabile)</h3>
-          <p class="hbce-note">
-            Se manca un passaggio o un hash non è presente nel registry → <strong>INVALID</strong> (fail-closed).
-          </p>
-          <div class="hbce-actions">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/create/wizard/">CREATE</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operator/">OPERATOR</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SYSTEM ENTRANCES -->
+    <!-- SYSTEM ENTRANCES (refactor: remove obsolete/broken) -->
     <section class="hbce-section">
       <h2>Ingressi di sistema</h2>
 
@@ -436,21 +371,18 @@
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/partners/">PARTNERS</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/press/">PRESS</a>
 
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/activate/">ACTIVATE</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/wizard/">CREATE</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/">CREATE BASE</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/operator/">CREATE OPERATOR</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/append/">REGISTRY APPEND</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">STATUS</a>
 
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operator/">OPERATOR</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/append/">REGISTRY APPEND</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operator/queue/">RECEIPT + QUEUE</a>
-
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operator/">WORKSTATION</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/control/">CONTROL</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/map/">MAP</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/positioning/">POSITIONING</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/infrastructure/">INFRASTRUCTURE</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/enterprise/">ENTERPRISE</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/deep-tech/">EU DEEP-TECH</a>
       </div>
 
       <p class="hbce-note">
@@ -475,7 +407,7 @@
 
   <div data-hbce="footer"></div>
 
-  <!-- HBCE UI loader (header/footer partials) -->
+  <!-- HBCE UI loader -->
   <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 
   <!-- Registry health (fail-closed) -->
