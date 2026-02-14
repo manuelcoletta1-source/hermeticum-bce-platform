@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RECEIPT — Certified Operator</title>
+  <meta name="description" content="Generatore receipt hash-only per certificazione Operatore IPR. UE-first, audit-first, fail-closed, hash-only." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">RECEIPT · Operator Certification</div>
+      <h1 class="hbce-hero__title">Certified Operator Receipt</h1>
+      <p class="hbce-hero__lead">
+        Genera una ricevuta <strong>hash-only</strong> per certificare un operatore.
+        La receipt è consegnabile all’operatore e usabile come prova minimizzata.
+        Modello: <strong>fail-closed</strong> · <strong>no public data custody</strong>.
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-grid hbce-grid--3">
+        <article class="hbce-card">
+          <div class="hbce-card__title">Flusso</div>
+          <ul class="hbce-list">
+            <li>1) Genera receipt (questa pagina)</li>
+            <li>2) Usa l’hash in APPEND TOOL</li>
+            <li>3) Appendi in <code>registry/operators.json</code></li>
+            <li>4) Verify deterministico</li>
+          </ul>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__title">Link</div>
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/operators/">REGISTRY</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/operators/append/">APPEND TOOL</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+          </div>
+          <div class="hbce-note">Validità: match → VALID. In assenza: fail-closed.</div>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__title">Policy</div>
+          <ul class="hbce-list">
+            <li>HASH_ONLY</li>
+            <li>FAIL_CLOSED</li>
+            <li>APPEND_ONLY (registry)</li>
+            <li>NO_PUBLIC_DATA_CUSTODY</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-kicker">Input minimizzato</div>
+      <h2 class="hbce-h2">Dati operativi (non personali)</h2>
+
+      <div class="hbce-card">
+        <div class="hbce-grid hbce-grid--2">
+          <div>
+            <label class="hbce-label" for="issuer">Issuer (operatore/ente certificante)</label>
+            <input class="hbce-input" id="issuer" placeholder="es. HERMETICUM B.C.E. S.r.l." />
+            <div class="hbce-note">Chi emette la certificazione.</div>
+          </div>
+
+          <div>
+            <label class="hbce-label" for="operator_nickname">Nickname operatore</label>
+            <input class="hbce-input" id="operator_nickname" placeholder="es. Operator-IT-PIE-0001" />
+            <div class="hbce-note">Alias operativo (no dati personali).</div>
+          </div>
+
+          <div>
+            <label class="hbce-label" for="territory">Territorio (codice)</label>
+            <input class="hbce-input" id="territory" placeholder="es. IT-PIE-Torino" />
+            <div class="hbce-note">Metadato operativo minimizzato.</div>
+          </div>
+
+          <div>
+            <label class="hbce-label" for="operator_payload_sha256">operator_payload_sha256</label>
+            <input class="hbce-input" id="operator_payload_sha256" placeholder="sha256 hex (64)" />
+            <div class="hbce-note">Hash del pack/payload operatore (identificatore tecnico).</div>
+          </div>
+
+          <div style="grid-column: 1 / -1;">
+            <label class="hbce-label" for="note">Nota operativa (opzionale, non sensibile)</label>
+            <input class="hbce-input" id="note" placeholder="es. Certified Operator IPR · Level 3" />
+            <div class="hbce-note">Non inserire email, indirizzi, nomi civili.</div>
+          </div>
+        </div>
+
+        <div class="hbce-actions" style="margin-top:12px;">
+          <button class="hbce-btn" id="gen">Genera receipt</button>
+          <button class="hbce-btn hbce-btn--ghost" id="copy" disabled>Copia receipt</button>
+        </div>
+
+        <div class="hbce-note" id="status" style="margin-top:10px;">Pronto.</div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-kicker">Output</div>
+      <h2 class="hbce-h2">Receipt (hash-only)</h2>
+
+      <div class="hbce-card">
+        <div class="hbce-grid hbce-grid--2">
+          <div>
+            <div class="hbce-card__title">receipt_sha256</div>
+            <div class="hbce-note"><code id="receipt_hash">—</code></div>
+            <div class="hbce-actions" style="margin-top:10px;">
+              <a class="hbce-btn hbce-btn--ghost" id="verify_link" href="/hermeticum-bce-platform/verify/">Apri VERIFY</a>
+            </div>
+            <div class="hbce-note">Usa questo hash come <code>operator_sha256</code> nel registry operatori.</div>
+          </div>
+          <div>
+            <div class="hbce-card__title">Blocco JSON</div>
+            <pre class="hbce-pre" id="out" style="white-space:pre-wrap; word-break:break-word;">—</pre>
+          </div>
+        </div>
+
+        <div class="hbce-note">
+          La receipt è una prova minimizzata: non sostituisce i documenti civili. Rende l’operatività attribuibile e verificabile.
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-footnote">
+        <p><strong>Fail-closed:</strong> se lo schema minimo non è rispettato → nessuna receipt generata.</p>
+        <p><strong>Privacy:</strong> hash-only, nessun dato personale pubblico.</p>
+      </div>
+    </section>
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    const issuer = $("issuer");
+    const operatorNickname = $("operator_nickname");
+    const territory = $("territory");
+    const payloadSha = $("operator_payload_sha256");
+    const note = $("note");
+
+    const status = $("status");
+    const out = $("out");
+    const receiptHashEl = $("receipt_hash");
+    const verifyLink = $("verify_link");
+    const btnGen = $("gen");
+    const btnCopy = $("copy");
+
+    function setStatus(msg){ status.textContent = msg; }
+    function isHex64(s){ return /^[a-f0-9]{64}$/i.test(String(s || "").trim()); }
+
+    function fail(msg){
+      out.textContent = "—";
+      receiptHashEl.textContent = "—";
+      verifyLink.href = "/hermeticum-bce-platform/verify/";
+      btnCopy.disabled = true;
+      setStatus("FAIL-CLOSED — " + msg);
+    }
+
+    function nowISO(){ return new Date().toISOString(); }
+
+    // Minimal SHA-256 implementation (WebCrypto) for deterministic receipt hash
+    async function sha256Hex(text){
+      const enc = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", enc);
+      const bytes = Array.from(new Uint8Array(buf));
+      return bytes.map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    async function buildReceipt(){
+      const iss = String(issuer.value || "").trim();
+      const nn  = String(operatorNickname.value || "").trim();
+      const tr  = String(territory.value || "").trim();
+      const ps  = String(payloadSha.value || "").trim().toLowerCase();
+      const nt  = String(note.value || "").trim();
+
+      if(!iss) return fail("issuer mancante");
+      if(!nn)  return fail("nickname operatore mancante");
+      if(!tr)  return fail("territory mancante");
+      if(!isHex64(ps)) return fail("operator_payload_sha256 non valido (serve sha256 hex 64)");
+
+      const receipt = {
+        proto: "HBCE-RECEIPT-OPERATOR-v1",
+        kind: "HBCE_CERTIFIED_OPERATOR_RECEIPT",
+        policy: ["HASH_ONLY", "FAIL_CLOSED", "NO_PUBLIC_DATA_CUSTODY"],
+        issuer: iss,
+        operator: {
+          nickname: nn,
+          territory: tr,
+          operator_payload_sha256: ps
+        },
+        note: nt || undefined,
+        timestamp: nowISO()
+      };
+
+      // Canonicalize without undefined
+      const canonical = JSON.stringify(receipt, (k, v) => (v === undefined ? undefined : v), 2);
+      const rh = await sha256Hex(canonical);
+
+      receipt.receipt_sha256 = rh;
+
+      const finalJson = JSON.stringify(receipt, null, 2);
+      out.textContent = finalJson;
+
+      receiptHashEl.textContent = rh;
+      verifyLink.href = "/hermeticum-bce-platform/verify/?sha256=" + encodeURIComponent(rh);
+
+      btnCopy.disabled = false;
+      setStatus("OK — receipt generata. Usa receipt_sha256 nel registry operatori (append-only).");
+    }
+
+    async function copyReceipt(){
+      try{
+        await navigator.clipboard.writeText(out.textContent);
+        setStatus("Copiato. Consegna la receipt e usa receipt_sha256 per append in registry/operators.json.");
+      }catch(e){
+        setStatus("Copia non disponibile. Copia manualmente il JSON.");
+      }
+    }
+
+    btnGen.addEventListener("click", () => { buildReceipt(); });
+    btnCopy.addEventListener("click", () => { copyReceipt(); });
+  </script>
+</body>
+</html>
+<a class="hbce-btn" href="/hermeticum-bce-platform/registry/operators/receipt/">RECEIPT</a>
