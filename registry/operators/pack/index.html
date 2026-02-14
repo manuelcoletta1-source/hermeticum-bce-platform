@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PACK — Certified Operator Manifest</title>
+  <meta name="description" content="Generatore PACK_MANIFEST per Operatore certificato: hash-only, verificabile, pronto per registry operatori. UE-first, audit-first, fail-closed." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">PACK MANIFEST · Operator Certification</div>
+      <h1 class="hbce-hero__title">Certified Operator PACK_MANIFEST</h1>
+      <p class="hbce-hero__lead">
+        Genera un <strong>PACK_MANIFEST</strong> canonico (JSON) per un operatore certificato.
+        L’hash del pack è la chiave pubblica da usare nel registry operatori (hash-only).
+        Modello: <strong>append-only</strong> · <strong>fail-closed</strong> · <strong>no public data custody</strong>.
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-grid hbce-grid--3">
+        <article class="hbce-card">
+          <div class="hbce-card__title">Flusso operativo</div>
+          <ul class="hbce-list">
+            <li>1) Genera PACK_MANIFEST (questa pagina)</li>
+            <li>2) Ottieni <code>pack_sha256</code></li>
+            <li>3) Appendi nel registry operatori (operator_sha256 = pack_sha256)</li>
+            <li>4) Status/Verify deterministici</li>
+          </ul>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__title">Link</div>
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/operators/">REGISTRY</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/operators/status/">STATUS</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/operators/append/">APPEND</a>
+          </div>
+          <div class="hbce-note">Validità: match → VALID. Errori → FAIL-CLOSED.</div>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__title">Policy</div>
+          <ul class="hbce-list">
+            <li>HASH_ONLY</li>
+            <li>FAIL_CLOSED</li>
+            <li>NO_PUBLIC_DATA_CUSTODY</li>
+            <li>APPEND_ONLY (registry)</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-kicker">Input</div>
+      <h2 class="hbce-h2">Dati minimizzati (no dati personali)</h2>
+
+      <div class="hbce-card">
+        <div class="hbce-grid hbce-grid--2">
+          <div>
+            <label class="hbce-label" for="issuer">Issuer</label>
+            <input class="hbce-input" id="issuer" placeholder="es. HERMETICUM B.C.E. S.r.l." />
+            <div class="hbce-note">Chi certifica/produce il pack.</div>
+          </div>
+
+          <div>
+            <label class="hbce-label" for="operator_nickname">Nickname operatore</label>
+            <input class="hbce-input" id="operator_nickname" placeholder="es. Operator-IT-PIE-0001" />
+            <div class="hbce-note">Alias operativo (pubblicabile).</div>
+          </div>
+
+          <div>
+            <label class="hbce-label" for="territory">Territorio (codice)</label>
+            <input class="hbce-input" id="territory" placeholder="es. IT-PIE-Torino" />
+            <div class="hbce-note">Metadato operativo minimizzato.</div>
+          </div>
+
+          <div>
+            <label class="hbce-label" for="level">Livello operativo</label>
+            <select class="hbce-input" id="level">
+              <option value="L3_OPERATOR">L3_OPERATOR</option>
+              <option value="L4_NODE">L4_NODE</option>
+              <option value="L5_ENTERPRISE">L5_ENTERPRISE</option>
+            </select>
+            <div class="hbce-note">Classificazione interna (non personale).</div>
+          </div>
+
+          <div style="grid-column: 1 / -1;">
+            <label class="hbce-label" for="modules">Moduli attivati (uno per riga)</label>
+            <textarea class="hbce-input" id="modules" rows="6" placeholder="AI_JOKER&#10;NEUROLOOP&#10;UNEBDO&#10;OPC&#10;METAEXCHANGE"></textarea>
+            <div class="hbce-note">Solo nomi moduli (no licenze sensibili pubbliche).</div>
+          </div>
+
+          <div style="grid-column: 1 / -1;">
+            <label class="hbce-label" for="receipts">Receipt SHA256 (uno per riga, opzionale)</label>
+            <textarea class="hbce-input" id="receipts" rows="5" placeholder="sha256hex64..."></textarea>
+            <div class="hbce-note">Se hai generato receipt (es. Certified Operator Receipt), metti qui gli hash.</div>
+          </div>
+
+          <div style="grid-column: 1 / -1;">
+            <label class="hbce-label" for="evidence">Evidence URLs (uno per riga, opzionale)</label>
+            <textarea class="hbce-input" id="evidence" rows="4" placeholder="https://... (solo link pubblici non personali)"></textarea>
+            <div class="hbce-note">Solo prove pubbliche non sensibili (es. pagine verify/status).</div>
+          </div>
+        </div>
+
+        <div class="hbce-actions" style="margin-top:12px;">
+          <button class="hbce-btn" id="gen">Genera PACK_MANIFEST</button>
+          <button class="hbce-btn hbce-btn--ghost" id="copy" disabled>Copia JSON</button>
+          <button class="hbce-btn hbce-btn--ghost" id="dl" disabled>Scarica file</button>
+        </div>
+
+        <div class="hbce-note" id="msg" style="margin-top:10px;">Pronto.</div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-kicker">Output</div>
+      <h2 class="hbce-h2">Manifest + hash canonico</h2>
+
+      <div class="hbce-grid hbce-grid--2">
+        <article class="hbce-card">
+          <div class="hbce-card__title">pack_sha256</div>
+          <div class="hbce-note"><code id="packHash">—</code></div>
+          <div class="hbce-note">
+            Usa questo hash come <code>operator_sha256</code> nel registry operatori (append-only).
+          </div>
+          <div class="hbce-actions" style="margin-top:12px;">
+            <a class="hbce-btn hbce-btn--ghost" id="statusLink" href="/hermeticum-bce-platform/registry/operators/status/">Apri STATUS</a>
+            <a class="hbce-btn hbce-btn--ghost" id="verifyLink" href="/hermeticum-bce-platform/verify/">Apri VERIFY</a>
+          </div>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__title">PACK_MANIFEST.json</div>
+          <pre class="hbce-pre" id="out" style="white-space:pre-wrap; word-break:break-word;">—</pre>
+          <div class="hbce-note">Conserva questo file: è la prova canonica del pack.</div>
+        </article>
+      </div>
+
+      <div class="hbce-footnote">
+        <p><strong>Fail-closed:</strong> se input non valido → nessun manifest generato.</p>
+        <p><strong>Privacy:</strong> non inserire dati personali (nomi civili, email, indirizzi, doc).</p>
+      </div>
+    </section>
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    const issuer = $("issuer");
+    const operatorNickname = $("operator_nickname");
+    const territory = $("territory");
+    const level = $("level");
+    const modules = $("modules");
+    const receipts = $("receipts");
+    const evidence = $("evidence");
+
+    const msg = $("msg");
+    const out = $("out");
+    const packHash = $("packHash");
+    const statusLink = $("statusLink");
+    const verifyLink = $("verifyLink");
+
+    const btnGen = $("gen");
+    const btnCopy = $("copy");
+    const btnDl = $("dl");
+
+    let lastJson = "";
+    let lastFileName = "PACK_MANIFEST.json";
+
+    function setMsg(t){ msg.textContent = t; }
+    function isHex64(s){ return /^[a-f0-9]{64}$/i.test(String(s||"").trim()); }
+
+    function fail(reason){
+      out.textContent = "—";
+      packHash.textContent = "—";
+      statusLink.href = "/hermeticum-bce-platform/registry/operators/status/";
+      verifyLink.href = "/hermeticum-bce-platform/verify/";
+      btnCopy.disabled = true;
+      btnDl.disabled = true;
+      lastJson = "";
+      setMsg("FAIL-CLOSED — " + reason);
+    }
+
+    function linesToArray(text){
+      return String(text||"")
+        .split("\n")
+        .map(s => s.trim())
+        .filter(Boolean);
+    }
+
+    function nowISO(){ return new Date().toISOString(); }
+
+    async function sha256Hex(text){
+      const enc = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", enc);
+      const bytes = Array.from(new Uint8Array(buf));
+      return bytes.map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    async function generate(){
+      const iss = String(issuer.value||"").trim();
+      const nn  = String(operatorNickname.value||"").trim();
+      const tr  = String(territory.value||"").trim();
+      const lv  = String(level.value||"").trim();
+
+      if(!iss) return fail("issuer mancante");
+      if(!nn)  return fail("nickname mancante");
+      if(!tr)  return fail("territory mancante");
+      if(!lv)  return fail("level mancante");
+
+      const mods = linesToArray(modules.value);
+      if(mods.length === 0) return fail("modules vuoto (inserisci almeno 1 modulo)");
+
+      const recs = linesToArray(receipts.value);
+      const badRec = recs.some(h => !isHex64(h));
+      if(badRec) return fail("receipt sha256 non valido (serve hex64)");
+
+      const evs = linesToArray(evidence.value);
+
+      const manifest = {
+        proto: "HBCE-PACK-MANIFEST-v1",
+        kind: "HBCE_CERTIFIED_OPERATOR_PACK",
+        policy: ["HASH_ONLY", "FAIL_CLOSED", "NO_PUBLIC_DATA_CUSTODY"],
+        issuer: iss,
+        operator: {
+          nickname: nn,
+          territory: tr,
+          level: lv
+        },
+        modules: mods,
+        receipts_sha256: recs.length ? recs.map(h => h.toLowerCase()) : [],
+        evidence_urls: evs.length ? evs : [],
+        timestamp: nowISO()
+      };
+
+      // canonical JSON
+      const canonical = JSON.stringify(manifest, null, 2);
+      const h = await sha256Hex(canonical);
+
+      manifest.pack_sha256 = h;
+
+      const finalJson = JSON.stringify(manifest, null, 2);
+      out.textContent = finalJson;
+      packHash.textContent = h;
+
+      statusLink.href = "/hermeticum-bce-platform/registry/operators/status/?sha256=" + encodeURIComponent(h);
+      verifyLink.href  = "/hermeticum-bce-platform/verify/?sha256=" + encodeURIComponent(h);
+
+      lastJson = finalJson;
+      lastFileName = `PACK_MANIFEST__${nn}__${tr}__${h.slice(0,8)}.json`;
+
+      btnCopy.disabled = false;
+      btnDl.disabled = false;
+
+      setMsg("OK — PACK_MANIFEST generato. Usa pack_sha256 nel registry operatori (append-only).");
+    }
+
+    async function copyJson(){
+      try{
+        await navigator.clipboard.writeText(lastJson);
+        setMsg("Copiato. Ora: APPEND TOOL → operator_sha256 = pack_sha256.");
+      }catch(e){
+        setMsg("Copia non disponibile. Copia manualmente il JSON.");
+      }
+    }
+
+    function downloadJson(){
+      try{
+        const blob = new Blob([lastJson], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = lastFileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        setMsg("Scaricato: " + lastFileName);
+      }catch(e){
+        setMsg("Download non disponibile. Copia il JSON e salvalo manualmente.");
+      }
+    }
+
+    btnGen.addEventListener("click", generate);
+    btnCopy.addEventListener("click", copyJson);
+    btnDl.addEventListener("click", downloadJson);
+  </script>
+</body>
+</html>
+<a class="hbce-btn" href="/hermeticum-bce-platform/registry/operators/pack/">PACK</a>
