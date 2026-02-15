@@ -1,205 +1,150 @@
 <!doctype html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HERMETICUM — CONTROL (Precondizione di esecuzione)</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 
-  <meta name="description"
-        content="Control stack: precondizione di esecuzione, policy ex-ante (OPC) e fail-closed. Tabella azioni critiche e requisiti IPR/Policy/Evidence. UE-first, audit-first, hash-only, append-only." />
+<title>HBCE CONTROL — European Network Control Room</title>
+<meta name="description" content="HBCE European Infrastructure Control Room. Stato rete, nodi attivi, integrità ledger, espansione UE."/>
+<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css"/>
 
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+<style>
+/* cyberbank control look */
+body{
+  background:#070b14;
+}
+.control-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:18px;
+}
+.control-card{
+  background:#0b1220;
+  border:1px solid rgba(0,255,200,0.25);
+  border-radius:14px;
+  padding:18px;
+  box-shadow:0 0 25px rgba(0,255,200,0.08);
+}
+.control-title{
+  font-size:14px;
+  color:#00ffd5;
+  letter-spacing:.12em;
+  margin-bottom:6px;
+}
+.control-value{
+  font-size:28px;
+  font-weight:700;
+}
+.control-pass{color:#00ff88;}
+.control-fail{color:#ff3b3b;}
+.node-line{
+  padding:6px 0;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  font-size:14px;
+}
+.node-line span{opacity:.7;}
+</style>
 </head>
 
 <body>
-  <div data-hbce="header"></div>
+<div data-hbce="header"></div>
 
-  <main class="hbce-container hbce-main">
+<main class="hbce-container hbce-main">
 
-    <!-- HERO -->
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CONTROL · EX-ANTE · FAIL-CLOSED</div>
+<section class="hbce-hero">
+<div class="hbce-hero__kicker">HBCE · CONTROL ROOM · EU INFRASTRUCTURE</div>
+<h1 class="hbce-hero__title">European Network Control</h1>
+<p class="hbce-hero__lead">
+Plancia operativa rete IPR europea.  
+Verifica integrità, nodi attivi, coordinamento infrastrutturale.
+</p>
+</section>
 
-      <h1 class="hbce-hero__title">Precondizione di esecuzione (control stack)</h1>
+<section class="control-grid">
 
-      <p class="hbce-hero__lead">
-        In HERMETICUM una operazione critica è eseguibile solo se esiste una catena minima verificabile:
-        <strong>IPR valido</strong> + <strong>policy ex-ante</strong> + <strong>prova minimizzata</strong>.
-        <br>
-        Se una parte manca → <strong>INVALID</strong> (fail-closed).
-      </p>
+<div class="control-card">
+<div class="control-title">NETWORK STATUS</div>
+<div class="control-value control-pass" id="netStatus">SYNC</div>
+<div class="hbce-muted">ledger coerente</div>
+</div>
 
-      <div class="hbce-actions">
-        <a class="hbce-btn hbce-btn--ghost" href="/infrastructure/">Infrastructure</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/status/">Status</a>
-        <a class="hbce-btn" href="/verify/">Verify</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/registry/">Registry</a>
-      </div>
+<div class="control-card">
+<div class="control-title">TOTAL NODES</div>
+<div class="control-value" id="totalNodes">—</div>
+<div class="hbce-muted">rete europea attiva</div>
+</div>
 
-      <p class="hbce-note">
-        Policy: <strong>UE-first</strong> · <strong>audit-first</strong> · <strong>fail-closed</strong> · <strong>hash-only</strong> · <strong>append-only</strong>
-      </p>
-    </section>
+<div class="control-card">
+<div class="control-title">ITALY REGIONS</div>
+<div class="control-value" id="italyNodes">—</div>
+<div class="hbce-muted">nodi regionali</div>
+</div>
 
-    <!-- DEFINIZIONE -->
-    <section class="hbce-section">
-      <h2>Definizione</h2>
+<div class="control-card">
+<div class="control-title">EU CAPITALS</div>
+<div class="control-value" id="euNodes">—</div>
+<div class="hbce-muted">nodi nazionali</div>
+</div>
 
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>Cos’è la “precondizione”</h3>
-          <p>
-            Una precondizione è un vincolo tecnico che deve essere verificato
-            <strong>prima</strong> che un’azione venga eseguita.
-            L’azione non viene “interpretata”: viene <strong>bloccata</strong> se non conforme.
-          </p>
-          <p class="hbce-note">
-            In pratica: sposti la responsabilità da “post-mortem” a <strong>preventiva</strong>.
-          </p>
-        </div>
+<div class="control-card">
+<div class="control-title">AI COORDINATION</div>
+<div class="control-value">JOKER-C2</div>
+<div class="hbce-muted">cybernetic coordination</div>
+</div>
 
-        <div class="hbce-card">
-          <h3>Perché è diverso da audit classico</h3>
-          <ul class="hbce-list">
-            <li>Audit classico: controlli dopo (forense)</li>
-            <li>Precondizione: controlli prima (ex-ante)</li>
-            <li>Audit classico: spesso narrativo</li>
-            <li>Precondizione: deterministico (PASS/FAIL)</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+<div class="control-card">
+<div class="control-title">ROOT NODE</div>
+<div class="control-value">IPR-ROOT</div>
+<div class="hbce-muted">European issuer</div>
+</div>
 
-    <!-- CATENA MINIMA -->
-    <section class="hbce-section">
-      <h2>Catena minima (ex-ante)</h2>
+</section>
 
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>1) Identità (IPR)</h3>
-          <p>Origine operativa persistente. Deve risultare <strong>VALID</strong> in verifica pubblica.</p>
-          <div class="hbce-actions">
-            <a class="hbce-btn hbce-btn--ghost" href="/verify/">Verifica IPR</a>
-          </div>
-        </div>
+<section class="hbce-card" style="margin-top:22px;">
+<div class="hbce-card__header">
+<h2 class="hbce-card__title">Active Infrastructure Nodes</h2>
+<p class="hbce-card__subtitle">Estratti dal ledger append-only</p>
+</div>
 
-        <div class="hbce-card">
-          <h3>2) Policy ex-ante (OPC)</h3>
-          <p>
-            Una policy definisce <strong>cosa è autorizzabile</strong> e <strong>in quali condizioni</strong>.
-            Nessuna autorizzazione retroattiva.
-          </p>
-        </div>
+<div class="hbce-card__content">
+<div id="nodeList">caricamento…</div>
+</div>
+</section>
 
-        <div class="hbce-card">
-          <h3>3) Prova minimizzata</h3>
-          <p>
-            Il registry pubblico custodisce solo prove <strong>hash-only</strong>:
-            <strong>nickname + hash + timestamp</strong>.
-          </p>
-          <div class="hbce-actions">
-            <a class="hbce-btn hbce-btn--ghost" href="/registry/">Apri registry</a>
-          </div>
-        </div>
+</main>
 
-        <div class="hbce-card">
-          <h3>Esito</h3>
-          <p class="hbce-note">
-            Se IPR/Policy/Proof combaciano → <strong>PASS</strong><br>
-            Se qualcosa manca → <strong>FAIL-CLOSED</strong>
-          </p>
-        </div>
-      </div>
-    </section>
+<div data-hbce="footer"></div>
+<script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 
-    <!-- TABELLA AZIONI CRITICHE -->
-    <section class="hbce-section">
-      <h2>Tabella azioni critiche (schema operativo)</h2>
-      <p class="hbce-note">
-        Esempi di azioni: non sono “feature”, sono classi operative.
-        La regola è sempre la stessa: senza precondizione verificabile → INVALID.
-      </p>
+<script>
+async function load(){
+  const res = await fetch("/hermeticum-bce-platform/network/operators-ledger.json",{cache:"no-store"});
+  const j = await res.json();
+  const rec = j.records || [];
 
-      <div class="hbce-card">
-        <div style="overflow:auto">
-          <table style="width:100%; border-collapse:collapse">
-            <thead>
-              <tr>
-                <th style="text-align:left; padding:10px; border-bottom:1px solid rgba(255,255,255,.15)">Azione critica</th>
-                <th style="text-align:left; padding:10px; border-bottom:1px solid rgba(255,255,255,.15)">Richiede IPR</th>
-                <th style="text-align:left; padding:10px; border-bottom:1px solid rgba(255,255,255,.15)">Richiede policy ex-ante</th>
-                <th style="text-align:left; padding:10px; border-bottom:1px solid rgba(255,255,255,.15)">Richiede prova minimizzata</th>
-                <th style="text-align:left; padding:10px; border-bottom:1px solid rgba(255,255,255,.15)">Esito</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Firma/atto tecnico (PA/azienda)</td>
-                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
-                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
-                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
-                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)"><strong>PASS/FAIL</strong></td>
-              </tr>
+  let total=0;
+  let it=0;
+  let eu=0;
+  let html="";
 
-              <tr>
-                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Esecuzione comando AI agentica</td>
-                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
-                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
-                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
-                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)"><strong>PASS/FAIL</strong></td>
-              </tr>
+  rec.forEach(r=>{
+    if(r.record_type!=="OPERATOR_ADDED") return;
+    total++;
 
-              <tr>
-                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Operazione su infrastruttura critica (energia)</td>
-                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
-                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
-                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
-                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)"><strong>PASS/FAIL</strong></td>
-              </tr>
+    if(r.country==="Italy" && r.region!=="National Capital") it++;
+    if(r.country!=="Italy" && r.region==="National Capital") eu++;
 
-              <tr>
-                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Movimento sistema autonomo (robot/veicolo)</td>
-                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì (derivato)</td>
-                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
-                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)">Sì</td>
-                <td style="padding:10px; border-bottom:1px solid rgba(255,255,255,.08)"><strong>PASS/FAIL</strong></td>
-              </tr>
+    html += `<div class="node-line">${r.operator_name} — <span>${r.country} / ${r.city}</span></div>`;
+  });
 
-              <tr>
-                <td style="padding:10px;">Accesso a dati sensibili (sanità)</td>
-                <td style="padding:10px;">Sì</td>
-                <td style="padding:10px;">Sì</td>
-                <td style="padding:10px;">Sì</td>
-                <td style="padding:10px;"><strong>PASS/FAIL</strong></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+  document.getElementById("totalNodes").textContent = total;
+  document.getElementById("italyNodes").textContent = it;
+  document.getElementById("euNodes").textContent = eu;
+  document.getElementById("nodeList").innerHTML = html || "nessun nodo";
+}
 
-    <!-- CHECK OPERATIVO -->
-    <section class="hbce-section">
-      <h2>Check operativo (pubblico)</h2>
-      <p class="hbce-note">
-        Il primo check è sempre lo stesso: l’identità deve essere verificabile e presente nel registry.
-        Questo è ciò che rende la precondizione “reale”.
-      </p>
+load();
+</script>
 
-      <div class="hbce-actions">
-        <a class="hbce-btn" href="/verify/">Esegui VERIFY</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/status/">Apri STATUS</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/registry/">Apri REGISTRY</a>
-      </div>
-
-      <p class="hbce-note">
-        HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br>
-        HERMETICUM B.C.E. S.r.l.
-      </p>
-    </section>
-
-  </main>
-
-  <div data-hbce="footer"></div>
 </body>
 </html>
