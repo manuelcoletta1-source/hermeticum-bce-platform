@@ -1,0 +1,80 @@
+{
+  "proto": "HBCE-OPERATORS-NETWORK-v1",
+  "kind": "EU_OPERATOR_NETWORK_LEDGER",
+  "network": "EU",
+  "mode": "APPEND_ONLY",
+  "root_coordinator": "Manuel Coletta",
+  "root_payload_sha256": "1de300e4d826719c9a8708c8dfb2a8e943f19c3d324816b220f149f008ba481b",
+  "issuer": "HERMETICUM B.C.E. S.r.l.",
+
+  "policy": [
+    "UE_FIRST",
+    "AUDIT_FIRST",
+    "FAIL_CLOSED",
+    "APPEND_ONLY",
+    "HASH_ONLY",
+    "GDPR_MIN",
+    "NO_PUBLIC_DATA_CUSTODY"
+  ],
+
+  "description": "Ledger rete operatori europei IPR. Definisce coordinatori nazionali, operatori regionali e nodi attivi. Nessun dato personale completo: solo hash licenze e stato operativo.",
+
+  "structure": {
+    "max_per_country": 10,
+    "max_per_region": 10,
+    "roles": [
+      "ROOT_COORDINATOR",
+      "NATIONAL_COORDINATOR",
+      "REGIONAL_OPERATOR",
+      "ISSUER_OPERATOR"
+    ]
+  },
+
+  "schema": {
+    "record_required": [
+      "record_type",
+      "timestamp",
+      "operator_name",
+      "operator_payload_sha256",
+      "country",
+      "role",
+      "status"
+    ],
+    "record_optional": [
+      "region",
+      "city",
+      "parent_operator_sha256",
+      "note"
+    ],
+    "record_types": [
+      "OPERATOR_ADDED",
+      "OPERATOR_STATUS_UPDATE",
+      "ROLE_UPDATE"
+    ],
+    "status_allowed": [
+      "ACTIVE",
+      "SUSPENDED",
+      "REVOKED"
+    ],
+    "constraints": {
+      "operator_payload_sha256": "64-hex sha256 lowercase",
+      "parent_operator_sha256": "64-hex sha256 lowercase",
+      "timestamp": "ISO8601"
+    }
+  },
+
+  "records": [
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T00:00:00Z",
+      "operator_name": "Manuel Coletta",
+      "operator_payload_sha256": "1de300e4d826719c9a8708c8dfb2a8e943f19c3d324816b220f149f008ba481b",
+      "country": "Italy",
+      "region": "Piemonte",
+      "city": "Torino",
+      "role": "ROOT_COORDINATOR",
+      "status": "ACTIVE",
+      "note": "First European root issuer node"
+    }
+  ]
+}
