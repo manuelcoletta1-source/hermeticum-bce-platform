@@ -4,7 +4,6 @@
   "network": "EU",
   "mode": "APPEND_ONLY_PUBLIC_LEDGER",
   "issuer": "HERMETICUM B.C.E. S.r.l.",
-
   "policy": [
     "HASH_ONLY",
     "APPEND_ONLY",
@@ -14,16 +13,13 @@
     "GDPR_MIN",
     "NO_PUBLIC_DATA_CUSTODY"
   ],
-
   "description": "Registro pubblico append-only europeo. Pubblica solo prove minimizzate (name + payload_sha256 + timestamp). Nessuna custodia pubblica di dati personali. Se SHA256 non presente -> INVALID (fail-closed).",
-
   "rules": {
     "public_data": "HASH_ONLY",
     "write_mode": "MANUAL_APPEND_ONLY",
     "verification": "DETERMINISTIC_SHA256_MATCH",
     "failure_mode": "FAIL_CLOSED"
   },
-
   "schema": {
     "entry_required": [
       "payload_sha256",
@@ -42,7 +38,6 @@
       "timestamp": "ISO8601"
     }
   },
-
   "lifecycle": {
     "states": [
       "ACTIVE",
@@ -54,22 +49,20 @@
       "STATUS_UPDATE"
     ]
   },
-
   "verification": {
     "rule": "SHA256(file_canonico) MUST_MATCH registry.entries[].payload_sha256",
     "valid_result": "VALID",
     "invalid_result": "INVALID",
     "certificate": "HBCE_CERTIFICATE"
   },
-
   "entries": [
     {
       "entity_type": "OPERATOR",
       "name": "Manuel Coletta",
-      "payload_sha256": "1de300e4d826",
-      "timestamp": "2026-02-15T00:00:00Z",
+      "payload_sha256": "1de300e4d826719c9a8708c8dfb2a8e943f19c3d324816b220f149f008ba481b",
+      "timestamp": "2026-02-14T13:34:15.225Z",
       "status": "ACTIVE",
-      "note": "Operator license entry (hash-only). Replace payload_sha256 with full 64-hex SHA256 of canonical operator release file."
+      "note": "proto=HBCE-OPERATOR-v1; kind=IPR_OPERATOR_LICENSE; base=4ffea45b96cf"
     }
   ]
 }
