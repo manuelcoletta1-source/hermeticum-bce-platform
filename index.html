@@ -2,105 +2,332 @@
 <html lang="it">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HERMETICUM — EU Operational Identity Infrastructure</title>
-  <meta name="description" content="Porta unica BCE-style per identità operativa UE: IPR Base fiscale, operatori UE, registry hash-only e verify fail-closed." />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>HBCE — Banca Cibernetica Europea · Prezzi & Moduli</title>
+  <meta name="description" content="HBCE: Banca Cibernetica Europea del dato operativo. Prezzi (IPR Base UE, Licenza Operatore UE, Kit Software) e moduli. UE-first, audit-first, fail-closed, hash-only, append-only, GDPR-min." />
+
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
-  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <style>
+    /* European CyberBank layer (UE-first) */
+    body{ background:#070b14; }
+
+    .ecb-wrap{ max-width:1120px; margin:0 auto; }
+
+    .ecb-panel{
+      background:
+        radial-gradient(900px 420px at 18% 20%, rgba(0,255,200,0.14), rgba(0,0,0,0) 60%),
+        radial-gradient(700px 360px at 78% 30%, rgba(140,120,255,0.10), rgba(0,0,0,0) 55%),
+        linear-gradient(180deg, rgba(11,18,32,0.96), rgba(11,18,32,0.72));
+      border:1px solid rgba(0,255,200,0.18);
+      border-radius:18px;
+      padding:26px;
+      box-shadow:0 0 34px rgba(0,255,200,0.06);
+    }
+
+    .ecb-kicker{
+      color:#00ffd5;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      font-size:12px;
+      margin-bottom:10px;
+      opacity:.95;
+    }
+
+    .ecb-title{
+      font-size:44px;
+      line-height:1.04;
+      margin:0 0 12px;
+    }
+
+    .ecb-lead{
+      opacity:.90;
+      font-size:18px;
+      margin:0;
+      max-width:980px;
+    }
+
+    .ecb-badges{ margin-top:12px; display:flex; flex-wrap:wrap; gap:10px; }
+    .ecb-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 12px;
+      border-radius:999px;
+      border:1px solid rgba(0,255,200,0.30);
+      background:rgba(0,255,200,0.06);
+      color:#00ffd5;
+      font-size:12px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      opacity:.95;
+      white-space:nowrap;
+    }
+    .ecb-dot{
+      width:7px; height:7px; border-radius:50%;
+      background:#00ffd5;
+      box-shadow:0 0 14px rgba(0,255,200,0.65);
+      flex:0 0 auto;
+    }
+
+    .ecb-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+      gap:16px;
+      margin-top:16px;
+    }
+
+    .ecb-card{
+      background:#0b1220;
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:16px;
+      padding:18px;
+      box-shadow:0 0 18px rgba(0,255,200,0.03);
+    }
+
+    .ecb-label{
+      color:#00ffd5;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      font-size:12px;
+      margin-bottom:10px;
+      opacity:.95;
+    }
+
+    .ecb-price{
+      font-size:34px;
+      font-weight:950;
+      line-height:1.03;
+      margin:0 0 6px;
+      color:#eaf2ff;
+    }
+
+    .ecb-sub{
+      margin:0;
+      opacity:.82;
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .ecb-lines{ margin-top:12px; }
+    .ecb-line{
+      padding:10px 0;
+      border-bottom:1px solid rgba(255,255,255,0.06);
+      font-size:14px;
+      opacity:.92;
+    }
+    .ecb-line:last-child{ border-bottom:none; }
+
+    .ecb-note{
+      opacity:.78;
+      font-size:13px;
+      margin-top:12px;
+    }
+
+    .ecb-mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:12px;
+      opacity:.92;
+    }
+
+    .ecb-split{
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      gap:16px;
+      margin-top:16px;
+    }
+    @media (max-width: 900px){
+      .ecb-split{ grid-template-columns:1fr; }
+    }
+
+    .ecb-callout{
+      background:#0b1220;
+      border:1px solid rgba(0,255,200,0.18);
+      border-radius:16px;
+      padding:18px;
+      box-shadow:0 0 22px rgba(0,255,200,0.05);
+    }
+
+    .ecb-mini-title{
+      font-weight:900;
+      margin:0 0 8px;
+      font-size:16px;
+      letter-spacing:.02em;
+    }
+
+    .ecb-mini{
+      opacity:.82;
+      font-size:13px;
+      line-height:1.45;
+      margin:0;
+    }
+  </style>
 </head>
+
 <body>
   <div data-hbce="header"></div>
 
-  <main class="hbce-container hbce-main">
+  <main class="hbce-container hbce-main ecb-wrap">
 
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">EU OPERATIONAL IDENTITY · BCE-STYLE · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">EU Operational Identity Infrastructure</h1>
-      <p class="hbce-hero__lead">
-        Identità operativa europea con verifica deterministica.
-        <strong>Pubblico: hash-only</strong>. <strong>Privato: file reale</strong>.
-        Se non c’è match nel registry → <strong>INVALID</strong> (fail-closed).
+    <!-- HERO -->
+    <section class="ecb-panel">
+      <div class="ecb-kicker">HBCE · BANCA CIBERNETICA EUROPEA · INFRASTRUTTURA DEL DATO OPERATIVO</div>
+      <h1 class="ecb-title">Prezzi & Moduli</h1>
+      <p class="ecb-lead">
+        Emissione di <strong>Identità Operativa UE</strong> (IPR), licenze operatore e moduli verticali.
+        Verifica deterministica in browser (<strong>PASS/FAIL</strong>) con registri <strong>append-only</strong> e prove <strong>hash-only</strong>.
       </p>
 
-      <div class="hbce-row" style="margin-top:18px">
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/activate/">OPEN EU GATEWAY (ACTIVATE)</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/docs/">DOCS</a>
+      <div class="ecb-badges" aria-label="Policy">
+        <span class="ecb-badge"><span class="ecb-dot"></span>UE-first</span>
+        <span class="ecb-badge"><span class="ecb-dot"></span>Audit-first</span>
+        <span class="ecb-badge"><span class="ecb-dot"></span>Fail-closed</span>
+        <span class="ecb-badge"><span class="ecb-dot"></span>Hash-only</span>
+        <span class="ecb-badge"><span class="ecb-dot"></span>Append-only</span>
+        <span class="ecb-badge"><span class="ecb-dot"></span>GDPR-min</span>
+      </div>
+
+      <div class="hbce-actions" style="margin-top:14px;">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/base/">Crea IPR Base UE</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/create/operator/">Licenza Operatore UE</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verifica (PASS/FAIL)</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/control/">Control Room</a>
+      </div>
+
+      <div class="ecb-note">
+        Policy tecnica: <span class="ecb-mono">UE_FIRST · AUDIT_FIRST · FAIL_CLOSED · HASH_ONLY · APPEND_ONLY · GDPR_MIN · NO_PUBLIC_DATA_CUSTODY</span>
       </div>
     </section>
 
-    <section class="hbce-grid">
+    <!-- PRICING CARDS -->
+    <section class="ecb-grid" style="margin-top:18px;">
 
-      <div class="hbce-card hbce-card--6">
-        <h2>1) IPR Base (EU / Fiscale)</h2>
-        <p>
-          Identità primaria fiscale (bank-grade: CIE/passaporto/CF).
-          Produce un <strong>file reale</strong> (cliente) + una <strong>entry hash-only</strong> (registry pubblico).
+      <article class="ecb-card">
+        <div class="ecb-label">IPR BASE UE</div>
+        <div class="ecb-price">€ 49</div>
+        <p class="ecb-sub">
+          Identità operativa “base” (fiscale/legale): release + receipt + entry registry.
+          Da qui si derivano identità secondarie (robotica, servizi, moduli).
         </p>
-        <div class="hbce-row">
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/base/">CREATE IPR BASE</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <div class="ecb-lines">
+          <div class="ecb-line"><strong>Output</strong>: <span class="ecb-mono">HBCE_IPR_RELEASE__*.json</span></div>
+          <div class="ecb-line"><strong>Receipt</strong>: <span class="ecb-mono">HBCE_RECEIPT__*.json</span></div>
+          <div class="ecb-line"><strong>Registry</strong>: entry da incollare (append-only)</div>
         </div>
-      </div>
+        <div class="hbce-actions" style="margin-top:12px;">
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/base/">Attiva</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Registry</a>
+        </div>
+      </article>
 
-      <div class="hbce-card hbce-card--6">
-        <h2>2) Operatore UE (Licenza)</h2>
-        <p>
-          Emissione gated: <strong>CONFIRM → PAY → ISSUE</strong>.
-          Nessuna conferma nel registry → stop (fail-closed).
+      <article class="ecb-card">
+        <div class="ecb-label">LICENZA OPERATORE UE</div>
+        <div class="ecb-price">€ 2.500</div>
+        <p class="ecb-sub">
+          Ingresso in rete operatori: emissione licenza verificabile + ruolo/stato governabile append-only.
+          Un operatore emette e verifica identità per terzi.
         </p>
-        <div class="hbce-row">
-          <a class="hbce-btn" href="/hermeticum-bce-platform/create/operator/">CREATE OPERATOR</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/lavora-con-noi/">ONBOARDING</a>
+        <div class="ecb-lines">
+          <div class="ecb-line"><strong>Output</strong>: <span class="ecb-mono">HBCE_OPERATOR_LICENSE__*.json</span></div>
+          <div class="ecb-line"><strong>Ledger</strong>: entry da appendere (append-only)</div>
+          <div class="ecb-line"><strong>Status</strong>: ACTIVE / SUSPENDED / REVOKED</div>
         </div>
-      </div>
+        <div class="hbce-actions" style="margin-top:12px;">
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/operator/">Richiedi</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/network/">Network</a>
+        </div>
+      </article>
 
-      <div class="hbce-card hbce-card--6">
-        <h2>3) Registry pubblico</h2>
-        <p>
-          Append-only. Pubblica solo prove minimizzate: <strong>hash + timestamp</strong>.
-          Nessuna custodia pubblica di dati personali (GDPR-min).
+      <article class="ecb-card">
+        <div class="ecb-label">KIT SOFTWARE (OPERATOR)</div>
+        <div class="ecb-price">€ 7.500</div>
+        <p class="ecb-sub">
+          Kit operativo per erogazione professionale: strumenti, procedure, template, compliance e audit pack.
+          Pensato per B2B/B2G.
         </p>
-        <div class="hbce-row">
-          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">OPEN REGISTRY</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/registry.json">OPEN registry.json</a>
+        <div class="ecb-lines">
+          <div class="ecb-line"><strong>Scope</strong>: emissione + verifica + processi</div>
+          <div class="ecb-line"><strong>Audit</strong>: checklist + evidenze</div>
+          <div class="ecb-line"><strong>Ops</strong>: playbook e standard operativi</div>
         </div>
-      </div>
+        <div class="hbce-actions" style="margin-top:12px;">
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/catalog/">Catalogo</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/manual/">Manuale</a>
+        </div>
+      </article>
 
-      <div class="hbce-card hbce-card--6">
-        <h2>4) Verify (fail-closed)</h2>
-        <p>
-          Carica un file reale. Il sistema calcola SHA256 canonico e richiede match nel registry.
-          Match → certificato. Nessun match → INVALID.
+      <article class="ecb-card">
+        <div class="ecb-label">MODULI (ADD-ON)</div>
+        <div class="ecb-price">Su richiesta</div>
+        <p class="ecb-sub">
+          Moduli verticali per casi d’uso dove l’identità deve essere una <strong>precondizione di esecuzione</strong>:
+          infrastrutture critiche, industria, PA, sistemi autonomi.
         </p>
-        <div class="hbce-row">
-          <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">OPEN VERIFY</a>
+        <div class="ecb-lines">
+          <div class="ecb-line"><strong>Datacenter / Metrologic</strong>: responsabilità workload</div>
+          <div class="ecb-line"><strong>Robotica</strong>: catena umano → macchina</div>
+          <div class="ecb-line"><strong>Energy</strong>: ruoli e accessi su impianti</div>
         </div>
-      </div>
+        <div class="hbce-actions" style="margin-top:12px;">
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/modules/">Moduli</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/use-cases/">Use-cases</a>
+        </div>
+      </article>
 
-      <div class="hbce-card">
-        <h2>Regole (UE-first)</h2>
-        <div class="hbce-kv">
-          <div class="k">public</div><div class="v">hash-only registry (no personal data)</div>
-          <div class="k">integrity</div><div class="v">deterministic SHA256 canonicalization</div>
-          <div class="k">mode</div><div class="v">append-only evidence</div>
-          <div class="k">verification</div><div class="v">fail-closed (missing match ⇒ INVALID)</div>
-          <div class="k">custody</div><div class="v">no public custody of personal data</div>
+    </section>
+
+    <div class="ecb-note" style="margin-top:12px;">
+      Prezzi indicativi (IVA esclusa se applicabile). Canale istituzionale/B2G: ordine via PEC + emissione controllata + audit pack.
+    </div>
+
+    <!-- OPERATIVE SUMMARY -->
+    <section class="ecb-split">
+
+      <section class="hbce-card">
+        <div class="hbce-card__header">
+          <h2 class="hbce-card__title">Cosa fanno i moduli</h2>
+          <p class="hbce-card__subtitle">Ogni modulo applica IPR come “gate” operativo (precheck-before-exec).</p>
+        </div>
+        <div class="hbce-card__content">
+          <div class="ecb-lines">
+            <div class="ecb-line"><strong>Datacenter / Metrologic</strong> — identifica workload, owner, autorizzazioni e audit. Riduce ambiguità: chi esegue cosa, quando, con quale autorizzazione.</div>
+            <div class="ecb-line"><strong>Robotica</strong> — genera identità per robot e sistemi autonomi derivati dall’IPR umano. Traccia responsabilità e consensi.</div>
+            <div class="ecb-line"><strong>Energy</strong> — controlla ruoli e operazioni su infrastrutture critiche: accesso, comandi, manutenzione, audit post-evento.</div>
+            <div class="ecb-line"><strong>Space</strong> — identità operativa per comandi remoti, flotte e nodi orbitali; l’ambiente non tollera ambiguità.</div>
+            <div class="ecb-line"><strong>PA / B2G</strong> — corridoi istituzionali per adozione: operatori, policy, verifiche, audit e governance append-only.</div>
+            <div class="ecb-line"><strong>UNEBDO / OPC</strong> — conferme e opponibilità: dispositivi giuridico-computabili per processi tracciati.</div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="ecb-callout">
+        <h3 class="ecb-mini-title">Attivazione in 3 passi</h3>
+        <p class="ecb-mini">
+          Procedura operativa “fail-closed”: se un elemento manca, l’identità non è valida.
+        </p>
+        <div class="ecb-lines" style="margin-top:10px;">
+          <div class="ecb-line"><strong>1) Create</strong> — generi file (release/licenza) + entry da appendere.</div>
+          <div class="ecb-line"><strong>2) Append</strong> — incolli entry nel registry/ledger (append-only).</div>
+          <div class="ecb-line"><strong>3) Verify</strong> — PASS/FAIL deterministico + certificato.</div>
         </div>
 
-        <div class="hbce-row" style="margin-top:14px">
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/activate/">GO TO ACTIVATE</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/what-is-ipr/">WHAT IS IPR</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/governance/">GOVERNANCE</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/security/">SECURITY</a>
+        <div class="hbce-actions" style="margin-top:12px;">
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/buy/">Acquisto</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/contact/">Contatti</a>
         </div>
-      </div>
+
+        <div class="ecb-note" style="margin-top:10px;">
+          PEC: <span class="ecb-mono">hermeticum@pec.it</span><br/>
+          PEC personale: <span class="ecb-mono">manuelcoletta@domiciliodigitale.com</span>
+        </div>
+      </aside>
 
     </section>
 
   </main>
 
   <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </body>
 </html>
