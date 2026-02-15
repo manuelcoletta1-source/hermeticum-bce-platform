@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CREATE — IPR Base (EU)</title>
-  <meta name="description" content="Wizard client-side per generare IPR Base UE: IPR_RELEASE + REGISTRY_ENTRY + RECEIPT. Hash-only, append-only, fail-closed." />
+  <title>CREATE — IPR Base (EU / Fiscal)</title>
+  <meta name="description" content="Wizard bank-grade per IPR Base fiscale: dati identità (CIE/Passaporto/CF) nel file reale; pubblico = hash-only. Fail-closed." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
   <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
   <script defer src="/hermeticum-bce-platform/assets/hbce-crypto.js"></script>
@@ -14,60 +14,137 @@
 
   <main class="hbce-container hbce-main">
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CREATE · IPR BASE UE · CLIENT-SIDE</div>
-      <h1 class="hbce-hero__title">Crea IPR Base (EU)</h1>
+      <div class="hbce-hero__kicker">EU FISCAL IDENTITY · BANK-GRADE DATA · PUBLIC HASH-ONLY</div>
+      <h1 class="hbce-hero__title">Crea IPR Base (Fiscal)</h1>
       <p class="hbce-hero__lead">
-        Generazione locale: nessun dato inviato al server. Output: <strong>IPR_RELEASE</strong>, <strong>REGISTRY_ENTRY</strong>, <strong>RECEIPT</strong>.
-        Poi append manuale nel registry → verify.
+        Questo IPR Base è il nodo fiscale/primario: da qui possono essere derivati IPR secondari (robotici, autonomi, sistemi).
+        I dati “bancari” restano <strong>solo nel file reale</strong> scaricato dal cliente. Nel registry pubblico entra solo <strong>hash + timestamp</strong>.
       </p>
+      <div class="hbce-row" style="margin-top:14px">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">ACTIVATE</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+      </div>
     </section>
 
     <section class="hbce-grid">
       <div class="hbce-card hbce-card--6">
-        <h2>Dati minimi (pubblicazione hash-only)</h2>
+        <h2>Dati anagrafici (bank-grade)</h2>
 
         <div class="hbce-field">
-          <label for="name">Name (pubblico opzionale; consigliato solo se necessario)</label>
-          <input id="name" class="hbce-input" placeholder="Nome Cognome (opzionale)" />
-          <div class="hbce-help">Se vuoi massima minimizzazione, lascia vuoto. L’entry pubblica può essere solo hash+timestamp.</div>
+          <label for="fullName">Nome e Cognome (obbligatorio)</label>
+          <input id="fullName" class="hbce-input" placeholder="Nome Cognome" />
         </div>
 
         <div class="hbce-field">
-          <label for="nickname">Nickname (legacy opzionale)</label>
+          <label for="nickname">Nickname (opzionale)</label>
           <input id="nickname" class="hbce-input" placeholder="es. ManuHell (opzionale)" />
         </div>
 
         <div class="hbce-field">
-          <label for="entityType">Entity type</label>
-          <select id="entityType" class="hbce-select">
-            <option value="HUMAN">HUMAN</option>
-            <option value="AI">AI</option>
-            <option value="SYSTEM">SYSTEM</option>
-            <option value="ROBOT">ROBOT</option>
+          <label for="dob">Data di nascita (obbligatoria)</label>
+          <input id="dob" class="hbce-input" type="date" />
+        </div>
+
+        <div class="hbce-field">
+          <label for="pob">Luogo di nascita (obbligatorio)</label>
+          <input id="pob" class="hbce-input" placeholder="Comune / Stato" />
+        </div>
+
+        <div class="hbce-field">
+          <label for="citizenship">Cittadinanza (obbligatoria)</label>
+          <input id="citizenship" class="hbce-input" placeholder="es. IT" />
+        </div>
+
+        <div class="hbce-field">
+          <label for="taxId">Codice fiscale / Tax ID (obbligatorio)</label>
+          <input id="taxId" class="hbce-input" placeholder="es. CLTMNL..." />
+        </div>
+
+        <h3 style="margin-top:16px">Documento (CIE / Passaporto)</h3>
+
+        <div class="hbce-field">
+          <label for="docType">Tipo documento (obbligatorio)</label>
+          <select id="docType" class="hbce-select">
+            <option value="CIE">CIE (Carta d’Identità Elettronica)</option>
+            <option value="PASSPORT">Passaporto</option>
+            <option value="OTHER">Altro</option>
           </select>
         </div>
 
         <div class="hbce-field">
-          <label for="country">Jurisdiction</label>
-          <select id="country" class="hbce-select">
-            <option value="EU">EU</option>
-            <option value="IT">IT</option>
-            <option value="FR">FR</option>
-            <option value="DE">DE</option>
-            <option value="ES">ES</option>
-            <option value="NL">NL</option>
-            <option value="PL">PL</option>
-            <option value="SE">SE</option>
-            <option value="RO">RO</option>
-            <option value="OTHER">OTHER</option>
+          <label for="docNumber">Numero documento (obbligatorio)</label>
+          <input id="docNumber" class="hbce-input" placeholder="es. CA123..." />
+        </div>
+
+        <div class="hbce-field">
+          <label for="docIssuer">Ente emittente (obbligatorio)</label>
+          <input id="docIssuer" class="hbce-input" placeholder="es. Comune di ... / Stato ..." />
+        </div>
+
+        <div class="hbce-field">
+          <label for="docCountry">Paese emissione (obbligatorio)</label>
+          <input id="docCountry" class="hbce-input" placeholder="es. IT" />
+        </div>
+
+        <div class="hbce-field">
+          <label for="docExpiry">Scadenza documento (obbligatorio)</label>
+          <input id="docExpiry" class="hbce-input" type="date" />
+        </div>
+
+        <h3 style="margin-top:16px">Residenza (bank-grade)</h3>
+
+        <div class="hbce-field">
+          <label for="addrLine">Indirizzo (obbligatorio)</label>
+          <input id="addrLine" class="hbce-input" placeholder="Via / numero civico" />
+        </div>
+
+        <div class="hbce-field">
+          <label for="city">Città (obbligatorio)</label>
+          <input id="city" class="hbce-input" placeholder="Città" />
+        </div>
+
+        <div class="hbce-field">
+          <label for="zip">CAP (obbligatorio)</label>
+          <input id="zip" class="hbce-input" placeholder="CAP" />
+        </div>
+
+        <div class="hbce-field">
+          <label for="country">Paese (obbligatorio)</label>
+          <input id="country" class="hbce-input" placeholder="es. IT" />
+        </div>
+
+        <h3 style="margin-top:16px">Contatti</h3>
+
+        <div class="hbce-field">
+          <label for="email">Email (obbligatoria)</label>
+          <input id="email" class="hbce-input" type="email" placeholder="nome@dominio" />
+        </div>
+
+        <div class="hbce-field">
+          <label for="phone">Telefono (opzionale)</label>
+          <input id="phone" class="hbce-input" placeholder="+39 ..." />
+        </div>
+
+        <div class="hbce-field">
+          <label for="kycLevel">KYC level (dichiarativo)</label>
+          <select id="kycLevel" class="hbce-select">
+            <option value="BANK_GRADE">BANK_GRADE (data provided)</option>
+            <option value="BASIC">BASIC</option>
           </select>
-          <div class="hbce-help">Puoi lasciare EU per default.</div>
+          <div class="hbce-help">
+            Il livello è una dichiarazione nel file. La validazione documentale reale può essere eseguita dall’operatore (processo separato).
+          </div>
         </div>
 
         <div class="hbce-row">
           <button id="btnGen" class="hbce-btn hbce-btn--primary">GENERATE FILES</button>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">OPEN REGISTRY</a>
           <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">OPEN VERIFY</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">OPEN REGISTRY</a>
+        </div>
+
+        <div class="hbce-help" style="margin-top:12px">
+          Pubblico: solo hash. Privato: i dati restano nel file reale scaricato (client-side).
         </div>
       </div>
 
@@ -78,7 +155,7 @@
         <div class="hbce-kv" id="kv"></div>
 
         <div class="hbce-field">
-          <label>REGISTRY_ENTRY (incolla in entries[])</label>
+          <label>REGISTRY_ENTRY (hash-only pubblico)</label>
           <pre id="entry" class="hbce-textarea" style="white-space:pre-wrap"></pre>
         </div>
 
@@ -88,8 +165,10 @@
           <button id="copyEntry" class="hbce-btn" disabled>COPY REGISTRY_ENTRY</button>
         </div>
 
+        <pre id="raw" class="hbce-textarea" style="margin-top:12px; white-space:pre-wrap"></pre>
+
         <div class="hbce-help">
-          Regola operativa: dopo emissione, append nel registry e verifica. Se manca match → INVALID (fail-closed).
+          Regola: dopo append in registry → VERIFY. Se manca match → INVALID (fail-closed).
         </div>
       </div>
     </section>
@@ -98,13 +177,11 @@
   <div data-hbce="footer"></div>
 
   <script>
-    let RELEASE = null;
-    let RECEIPT = null;
-    let ENTRY = null;
+    let RELEASE=null, RECEIPT=null, ENTRY=null;
 
-    function setKV(map){
-      const kv = document.getElementById("kv");
-      kv.innerHTML = "";
+    function kvSet(map){
+      const kv=document.getElementById("kv");
+      kv.innerHTML="";
       for(const [k,v] of Object.entries(map)){
         const a=document.createElement("div"); a.className="k"; a.textContent=k;
         const b=document.createElement("div"); b.className="v"; b.textContent=v;
@@ -112,85 +189,125 @@
       }
     }
 
+    function req(id){
+      const el = document.getElementById(id);
+      const v = (el.value||"").trim();
+      if(!v) throw new Error("Missing required field: " + id);
+      return v;
+    }
+
     document.getElementById("btnGen").onclick = async () => {
-      const name = document.getElementById("name").value.trim();
-      const nickname = document.getElementById("nickname").value.trim();
-      const entity_type = document.getElementById("entityType").value;
-      const jurisdiction = document.getElementById("country").value;
+      try{
+        const ts = HBCE.nowISO();
 
-      const ts = HBCE.nowISO();
+        const fullName = req("fullName");
+        const nickname = (document.getElementById("nickname").value||"").trim() || undefined;
+        const dob = req("dob");
+        const pob = req("pob");
+        const citizenship = req("citizenship");
+        const taxId = req("taxId").toUpperCase();
 
-      // IPR_RELEASE (non pubblico; file consegnato al soggetto)
-      RELEASE = {
-        proto: "HBCE-IPR-v1",
-        kind: "IPR_RELEASE_FILE",
-        issuer: "HERMETICUM B.C.E. S.r.l.",
-        jurisdiction,
-        policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","GDPR_MIN","NO_PUBLIC_DATA_CUSTODY"],
-        subject: {
-          entity_type,
-          name: name || "—",
-          nickname: nickname || undefined
-        },
-        issued_at: ts
-      };
+        const docType = document.getElementById("docType").value;
+        const docNumber = req("docNumber").toUpperCase();
+        const docIssuer = req("docIssuer");
+        const docCountry = req("docCountry").toUpperCase();
+        const docExpiry = req("docExpiry");
 
-      // SHA256 canonico del release (stabile)
-      const payload_sha256 = await HBCE.sha256String(HBCE.stableStringify(RELEASE));
+        const addrLine = req("addrLine");
+        const city = req("city");
+        const zip = req("zip");
+        const country = req("country").toUpperCase();
 
-      // Registry entry (pubblica, minimizzata)
-      ENTRY = {
-        entity_type,
-        name: name || undefined,
-        nickname: nickname || undefined,
-        payload_sha256,
-        timestamp: ts,
-        status: "ACTIVE"
-      };
+        const email = req("email").toLowerCase();
+        const phone = (document.getElementById("phone").value||"").trim() || undefined;
+        const kycLevel = document.getElementById("kycLevel").value;
 
-      // Receipt (operativo)
-      RECEIPT = {
-        proto: "HBCE-RECEIPT-v1",
-        kind: "IPR_EU_BASE_RECEIPT",
-        policy: ["HASH_ONLY","FAIL_CLOSED"],
-        issuer: "HERMETICUM B.C.E. S.r.l.",
-        timestamp: ts,
-        payload_sha256,
-        registry_url: "/hermeticum-bce-platform/registry/registry.json",
-        note: "Append REGISTRY_ENTRY into registry.json entries[]. Then run VERIFY. Missing match => INVALID (fail-closed)."
-      };
+        // FILE REALE (privato): contiene dati bank-grade
+        RELEASE = {
+          proto: "HBCE-IPR-FISCAL-v1",
+          kind: "IPR_BASE_FISCAL_RELEASE_FILE",
+          issuer: "HERMETICUM B.C.E. S.r.l.",
+          jurisdiction: "EU",
+          policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","GDPR_MIN","NO_PUBLIC_DATA_CUSTODY"],
+          subject: {
+            entity_type: "HUMAN",
+            name: fullName,
+            nickname: nickname
+          },
+          identity: {
+            kyc_level: kycLevel,
+            tax_id: taxId,
+            birth: { date: dob, place: pob, citizenship: citizenship },
+            document: { type: docType, number: docNumber, issuer: docIssuer, country: docCountry, expiry: docExpiry },
+            residence: { line: addrLine, city: city, zip: zip, country: country },
+            contact: { email: email, phone: phone }
+          },
+          issued_at: ts
+        };
 
-      document.getElementById("badge").className = "hbce-badge hbce-badge--ok";
-      document.getElementById("badge").textContent = "Generated — ready to append";
+        // SHA256 canonico del file reale
+        const payload_sha256 = await HBCE.sha256String(HBCE.stableStringify(RELEASE));
 
-      setKV({
-        "issued_at": ts,
-        "payload_sha256": payload_sha256,
-        "issuer": "HERMETICUM B.C.E. S.r.l.",
-        "jurisdiction": jurisdiction,
-        "entity_type": entity_type
-      });
+        // ENTRY pubblica hash-only (minimizzata)
+        ENTRY = {
+          payload_sha256,
+          timestamp: ts,
+          entity_type: "HUMAN",
+          status: "ACTIVE"
+        };
 
-      document.getElementById("entry").textContent = JSON.stringify(ENTRY, null, 2);
+        // RECEIPT operativo
+        RECEIPT = {
+          proto: "HBCE-RECEIPT-v1",
+          kind: "IPR_EU_FISCAL_RECEIPT",
+          policy: ["HASH_ONLY","FAIL_CLOSED"],
+          issuer: "HERMETICUM B.C.E. S.r.l.",
+          timestamp: ts,
+          payload_sha256,
+          registry_url: "/hermeticum-bce-platform/registry/registry.json",
+          note: "Public registry contains hash-only. Append REGISTRY_ENTRY into entries[] then run VERIFY. Missing match => INVALID (fail-closed)."
+        };
 
-      document.getElementById("dlRelease").disabled = false;
-      document.getElementById("dlReceipt").disabled = false;
-      document.getElementById("copyEntry").disabled = false;
+        document.getElementById("badge").className = "hbce-badge hbce-badge--ok";
+        document.getElementById("badge").textContent = "Generated — private release + public hash entry";
 
-      document.getElementById("dlRelease").onclick = () => {
-        const fn = `HBCE_IPR_RELEASE__${payload_sha256.slice(0,12)}.json`;
-        HBCE.download(fn, JSON.stringify(RELEASE,null,2));
-      };
+        kvSet({
+          "issued_at": ts,
+          "payload_sha256": payload_sha256,
+          "subject": fullName,
+          "tax_id": taxId,
+          "doc_type": docType,
+          "doc_number": docNumber
+        });
 
-      document.getElementById("dlReceipt").onclick = () => {
-        const fn = `HBCE_RECEIPT__${payload_sha256.slice(0,12)}.json`;
-        HBCE.download(fn, JSON.stringify(RECEIPT,null,2));
-      };
+        document.getElementById("entry").textContent = JSON.stringify(ENTRY, null, 2);
+        document.getElementById("raw").textContent = JSON.stringify({ release_preview: { ...RELEASE, identity: { ...RELEASE.identity, contact: { email: email, phone: phone ? "***" : undefined } } } }, null, 2);
 
-      document.getElementById("copyEntry").onclick = async () => {
-        await navigator.clipboard.writeText(JSON.stringify(ENTRY, null, 2));
-        alert("REGISTRY_ENTRY copied. Paste into registry.json → entries[]. Commit.");
-      };
+        document.getElementById("dlRelease").disabled = false;
+        document.getElementById("dlReceipt").disabled = false;
+        document.getElementById("copyEntry").disabled = false;
+
+        document.getElementById("dlRelease").onclick = () => {
+          const fn = `HBCE_IPR_FISCAL_RELEASE__${payload_sha256.slice(0,12)}.json`;
+          HBCE.download(fn, JSON.stringify(RELEASE,null,2));
+        };
+
+        document.getElementById("dlReceipt").onclick = () => {
+          const fn = `HBCE_RECEIPT__${payload_sha256.slice(0,12)}.json`;
+          HBCE.download(fn, JSON.stringify(RECEIPT,null,2));
+        };
+
+        document.getElementById("copyEntry").onclick = async () => {
+          await navigator.clipboard.writeText(JSON.stringify(ENTRY,null,2));
+          alert("REGISTRY_ENTRY copied. Paste into registry.json → entries[]. Commit.");
+        };
+
+      }catch(e){
+        const badge = document.getElementById("badge");
+        badge.className = "hbce-badge hbce-badge--bad";
+        badge.textContent = "FAIL — missing/invalid fields";
+        document.getElementById("raw").textContent = String(e);
+      }
     };
   </script>
 </body>
