@@ -1,0 +1,51 @@
+{
+  "proto": "HBCE-ISSUER-LEDGER-v1",
+  "kind": "ISSUER_INTERNAL_LEDGER",
+  "network": "EU",
+  "mode": "APPEND_ONLY",
+  "issuer": "HERMETICUM B.C.E. S.r.l.",
+
+  "policy": [
+    "UE_FIRST",
+    "AUDIT_FIRST",
+    "FAIL_CLOSED",
+    "HASH_ONLY",
+    "APPEND_ONLY",
+    "GDPR_MIN",
+    "NO_PUBLIC_DATA_CUSTODY"
+  ],
+
+  "description": "Ledger interno multi-operatore per emissioni IPR. Append-only. Non contiene PII completa: solo riferimenti minimizzati + hash dei file rilasciati. Serve per audit, billing, governance e scalabilità UE.",
+
+  "schema": {
+    "record_required": [
+      "record_type",
+      "timestamp",
+      "issuer_operator_payload_sha256",
+      "subject_payload_sha256",
+      "registry_entry_payload_sha256"
+    ],
+    "record_optional": [
+      "order_ref",
+      "payment_status",
+      "amount_eur",
+      "vat_mode",
+      "note"
+    ],
+    "record_types": [
+      "IPR_BASE_ISSUED",
+      "OPERATOR_LICENSE_ISSUED",
+      "STATUS_UPDATE"
+    ],
+    "constraints": {
+      "issuer_operator_payload_sha256": "64-hex sha256 lowercase",
+      "subject_payload_sha256": "64-hex sha256 lowercase",
+      "registry_entry_payload_sha256": "64-hex sha256 lowercase",
+      "timestamp": "ISO8601"
+    }
+  },
+
+  "records": [
+
+  ]
+}
