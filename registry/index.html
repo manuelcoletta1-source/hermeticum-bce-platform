@@ -3,102 +3,125 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>REGISTRY — Append-only (public)</title>
-  <meta name="description" content="Viewer registry append-only: conta entries, ricerca e copia JSON. UE-first, audit-first, fail-closed, hash-only." />
+  <title>REGISTRY — Public Append-Only (EU)</title>
+  <meta name="description" content="Registro pubblico hash-only. Verifica deterministica: se SHA256 non presente → INVALID (fail-closed)." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
   <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
-  <script defer src="/hermeticum-bce-platform/assets/hbce-crypto.js"></script>
 </head>
 <body>
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
+
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">REGISTRY · APPEND-ONLY · PUBLIC · HASH-ONLY</div>
+      <div class="hbce-hero__kicker">PUBLIC REGISTRY · APPEND-ONLY · HASH-ONLY</div>
       <h1 class="hbce-hero__title">Registro pubblico</h1>
       <p class="hbce-hero__lead">
-        Questo registry contiene solo prove minimizzate: <strong>payload_sha256 + timestamp</strong> (+ name/nickname se necessario).
-        Nessuna custodia pubblica di dati personali. Se la prova non è presente → <strong>INVALID</strong> (fail-closed).
+        Registro append-only pubblico.  
+        Contiene solo <strong>hash crittografici + timestamp</strong>.  
+        Nessun dato personale custodito.  
+        Se un file non matcha qui → <strong>INVALID</strong> (fail-closed).
       </p>
-      <div class="hbce-row" style="margin-top:16px">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/registry.json">OPEN registry.json</a>
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">OPEN VERIFY</a>
+
+      <div class="hbce-row" style="margin-top:18px">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/activate/">ACTIVATE</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/create/base/">CREATE BASE</a>
       </div>
     </section>
 
     <section class="hbce-grid">
+
       <div class="hbce-card hbce-card--6">
-        <h2>Status</h2>
-        <div id="status" class="hbce-badge hbce-badge--warn">Loading…</div>
-        <div class="hbce-kv" id="kv" style="margin-top:12px"></div>
+        <h2>Stato registry</h2>
+        <div id="status" class="hbce-badge hbce-badge--warn">Checking…</div>
+
+        <div class="hbce-kv" id="stats" style="margin-top:12px"></div>
+
+        <div class="hbce-row" style="margin-top:14px">
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/registry.json">OPEN registry.json</a>
+          <button id="refresh" class="hbce-btn">REFRESH</button>
+        </div>
       </div>
 
       <div class="hbce-card hbce-card--6">
-        <h2>Search</h2>
-        <div class="hbce-field">
-          <label for="q">payload_sha256</label>
-          <input id="q" class="hbce-input" placeholder="64-hex sha256" />
+        <h2>Come appendere una entry</h2>
+        <ol class="hbce-help">
+          <li>Apri <code>registry.json</code> su GitHub</li>
+          <li>Incolla la nuova entry dentro <code>entries[]</code></li>
+          <li>Commit</li>
+          <li>Esegui VERIFY</li>
+        </ol>
+        <div class="hbce-help">
+          Se la SHA256 non è presente nel registry → file non valido (fail-closed).
         </div>
-        <div class="hbce-row">
-          <button class="hbce-btn hbce-btn--primary" id="btnFind">Find</button>
-          <button class="hbce-btn" id="btnClear">Clear</button>
-        </div>
-        <pre class="hbce-textarea" id="out" style="margin-top:12px; white-space:pre-wrap"></pre>
       </div>
 
       <div class="hbce-card">
-        <h2>Append rule</h2>
-        <p class="hbce-help">
-          GitHub Pages non scrive sul server: l’append è manuale.
-          Apri <code>registry/registry.json</code> in GitHub, incolla l’entry in <code>entries[]</code>, commit. Fine.
-        </p>
+        <h2>Ultime entries</h2>
+        <div id="entries"></div>
       </div>
+
     </section>
   </main>
 
   <div data-hbce="footer"></div>
 
   <script>
-    const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
+    const REGISTRY_URL="/hermeticum-bce-platform/registry/registry.json";
 
-    function kvRow(k,v){
-      const a=document.createElement("div"); a.className="k"; a.textContent=k;
-      const b=document.createElement("div"); b.className="v"; b.textContent=v;
-      return [a,b];
-    }
+    async function load(){
+      const status=document.getElementById("status");
+      const stats=document.getElementById("stats");
+      const entriesDiv=document.getElementById("entries");
 
-    async function main(){
-      const status = document.getElementById("status");
-      const kv = document.getElementById("kv");
-      const out = document.getElementById("out");
+      status.className="hbce-badge hbce-badge--warn";
+      status.textContent="Loading…";
+      stats.innerHTML="";
+      entriesDiv.innerHTML="";
+
       try{
-        const reg = await HBCE.fetchJson(REGISTRY_URL);
-        status.className = "hbce-badge hbce-badge--ok";
-        status.textContent = "OK — registry loaded";
+        const res=await fetch(REGISTRY_URL+"?t="+Date.now());
+        const json=await res.json();
 
-        kv.innerHTML = "";
-        kv.append(...kvRow("proto", reg.proto || "—"));
-        kv.append(...kvRow("entries", String((reg.entries||[]).length)));
-        const regSha = await HBCE.sha256String(HBCE.stableStringify(reg));
-        kv.append(...kvRow("registry_sha256", regSha));
+        const arr=json.entries||[];
+        const count=arr.length;
 
-        document.getElementById("btnFind").onclick = () => {
-          const q = (document.getElementById("q").value||"").trim().toLowerCase();
-          if(!q){ out.textContent = ""; return; }
-          const hit = (reg.entries||[]).find(e => (e.payload_sha256||"").toLowerCase() === q);
-          out.textContent = hit ? JSON.stringify(hit,null,2) : "NOT FOUND (fail-closed expectation)";
-        };
-        document.getElementById("btnClear").onclick = () => {
-          document.getElementById("q").value="";
-          out.textContent="";
-        };
-      }catch(e){
-        status.className = "hbce-badge hbce-badge--bad";
-        status.textContent = "FAIL — registry unavailable";
-        out.textContent = String(e);
+        status.className="hbce-badge hbce-badge--ok";
+        status.textContent="REGISTRY OK";
+
+        stats.innerHTML=`
+          <div class="k">entries</div><div class="v">${count}</div>
+          <div class="k">mode</div><div class="v">append-only</div>
+          <div class="k">public data</div><div class="v">hash-only</div>
+        `;
+
+        const last=arr.slice().reverse().slice(0,20);
+
+        last.forEach(e=>{
+          const card=document.createElement("div");
+          card.className="hbce-card";
+          card.style.marginTop="10px";
+          card.innerHTML=`
+            <div class="hbce-kv">
+              <div class="k">entity</div><div class="v">${e.entity_type||"-"}</div>
+              <div class="k">name</div><div class="v">${e.name||"-"}</div>
+              <div class="k">sha256</div><div class="v">${(e.payload_sha256||"").slice(0,24)}...</div>
+              <div class="k">timestamp</div><div class="v">${e.timestamp||"-"}</div>
+            </div>
+          `;
+          entriesDiv.appendChild(card);
+        });
+
+      }catch(err){
+        status.className="hbce-badge hbce-badge--bad";
+        status.textContent="REGISTRY ERROR";
+        stats.innerHTML=`<div class="v">${String(err)}</div>`;
       }
     }
-    main();
+
+    document.getElementById("refresh").onclick=load;
+    load();
   </script>
 </body>
 </html>
