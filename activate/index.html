@@ -4,58 +4,52 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ACTIVATE — Canonical Gateway</title>
-  <meta name="description" content="Gateway di attivazione: nessun flusso alternativo. Emissione IPR solo via wizard canonico → done → registry → verify. UE-first, audit-first, fail-closed." />
+  <meta name="description" content="Gateway canonico: create → registry append → verify (fail-closed). UE-first, audit-first, hash-only, append-only." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </head>
 <body>
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
-
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">ACTIVATE · Controlled Gateway</div>
+      <div class="hbce-hero__kicker">ACTIVATE · CONTROLLED FLOW · FAIL-CLOSED</div>
       <h1 class="hbce-hero__title">Attivazione IPR</h1>
       <p class="hbce-hero__lead">
-        Qui non esistono percorsi alternativi: l’attivazione passa dal flusso canonico di emissione.
-        Pubblico: <strong>hash-only</strong>. Registro: <strong>append-only</strong>. Esito: <strong>fail-closed</strong>.
+        Flusso canonico unico: generi localmente l’IPR, applichi la prova minimizzata nel registry append-only e verifichi pubblicamente.
+        Se manca il match nel registry → <strong>INVALID</strong> (fail-closed).
       </p>
-      <p class="hbce-note">
-        Regola metrologica HARD: dopo generazione, append nel registry entro <strong>±2 minuti</strong>. Fuori finestra → blocco CI.
-      </p>
-
-      <div class="hbce-actions" style="margin-top:1rem;">
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">OPEN WIZARD</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/pricing/">PRICING</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+      <div class="hbce-row" style="margin-top:16px">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/base/">OPEN CREATE IPR BASE</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">OPEN REGISTRY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">OPEN VERIFY</a>
       </div>
     </section>
 
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Cosa succede (in 4 step)</h2>
-      <div class="hbce-card">
-        <ol class="hbce-list">
-          <li><strong>Wizard</strong>: genera localmente e scarica i file (IPR_RELEASE, ISSUER_CERTIFICATE, REGISTRY_ENTRY).</li>
-          <li><strong>Done</strong>: mostra hash/timestamp e guida operativa (countdown HARD).</li>
-          <li><strong>Registry</strong>: append hash-only nel registro pubblico append-only.</li>
-          <li><strong>Verify</strong>: VALID solo se integrità + match registry (altrimenti INVALID).</li>
-        </ol>
+    <section class="hbce-grid">
+      <div class="hbce-card hbce-card--6">
+        <h2>Step 1 — Create</h2>
+        <p>Genera <strong>IPR_RELEASE</strong> + <strong>REGISTRY_ENTRY</strong>. Tutto lato client.</p>
+      </div>
+      <div class="hbce-card hbce-card--6">
+        <h2>Step 2 — Registry append</h2>
+        <p>Appendi la prova <strong>hash-only</strong> nel registry pubblico <code>registry/registry.json</code>.</p>
+      </div>
+      <div class="hbce-card hbce-card--6">
+        <h2>Step 3 — Verify</h2>
+        <p>Carica l’IPR_RELEASE su VERIFY: se matcha → VALID + certificate scaricabile.</p>
+      </div>
+      <div class="hbce-card hbce-card--6">
+        <h2>Operator flow</h2>
+        <p>Licenza operatore: genera OPERATOR_LICENSE + registry entry. Poi verify identico.</p>
+        <div class="hbce-row">
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/operator/">CREATE OPERATOR LICENSE</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/operator/">READ OPERATOR MODEL</a>
+        </div>
       </div>
     </section>
-
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Issuer</h2>
-      <div class="hbce-card">
-        <p class="hbce-card__text">
-          Certificazione emissione: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong><br/>
-          Hallmark: <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong>
-        </p>
-      </div>
-    </section>
-
   </main>
 
   <div data-hbce="footer"></div>
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </body>
 </html>
