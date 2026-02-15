@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CREATE OPERATOR — IPR Operator License (requires VALID IPR Base)</title>
-  <meta name="description" content="Crea IPR Operator License solo se l'IPR Base dell'operatore è VALID nel registry pubblico. Fail-closed, hash-only, append-only." />
+  <title>CREATE OPERATOR — Licenza Operatore IPR (richiede IPR Base VALID)</title>
+  <meta name="description" content="Crea licenza Operatore IPR solo se l'IPR Base dell'operatore è VALID nel registry pubblico. Fail-closed, hash-only, append-only." />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
@@ -17,11 +17,11 @@
 
     <section class="hbce-hero">
       <div class="hbce-hero__kicker">CREATE · OPERATOR LICENSE · FAIL-CLOSED · CHAINED</div>
-      <h1 class="hbce-hero__title">Create IPR Operator (License)</h1>
+      <h1 class="hbce-hero__title">Crea Operatore (Licenza)</h1>
       <p class="hbce-hero__lead">
-        Questo wizard rilascia una <strong>Operator License</strong> solo se esiste una catena verificabile:
+        Questo wizard rilascia una <strong>Licenza Operatore</strong> solo se esiste una catena verificabile:
         <strong>IPR Base (operatore) → VALID nel registry</strong>.
-        Nessun Base VALID → <strong>BLOCK</strong>.
+        Se manca la traccia pubblica → <strong>BLOCK</strong> (fail-closed).
       </p>
       <p class="hbce-note">
         Decisione–Costo–Traccia–Tempo: senza traccia (registry match) non esiste decisione operativa. Fail-closed.
@@ -39,9 +39,9 @@
       <h2>Prerequisito non negoziabile</h2>
       <div class="hbce-card">
         <ul class="hbce-list">
-          <li><strong>Input:</strong> IPR_RELEASE dell’operatore (Base Europeo)</li>
-          <li><strong>Check 1 (Integrità):</strong> SHA-256(payload) deve combaciare con payload_sha256 del file</li>
-          <li><strong>Check 2 (Traccia pubblica):</strong> payload_sha256 deve essere presente in <code>registry/registry.json</code></li>
+          <li><strong>Input:</strong> file <code>IPR_RELEASE</code> dell’operatore (Base)</li>
+          <li><strong>Check 1 (Integrità):</strong> <code>SHA-256(canonical(payload))</code> deve combaciare con <code>payload_sha256</code> del file</li>
+          <li><strong>Check 2 (Traccia pubblica):</strong> <code>payload_sha256</code> deve essere presente in <code>registry/registry.json</code></li>
           <li><strong>Se manca uno dei due:</strong> <strong>BLOCK</strong> (fail-closed)</li>
         </ul>
       </div>
@@ -66,11 +66,11 @@
           </ul>
 
           <div class="hbce-actions">
-            <button class="hbce-btn" id="btnCheckRegistry" type="button" disabled>CHECK REGISTRY (Base must be VALID)</button>
+            <button class="hbce-btn" id="btnCheckRegistry" type="button" disabled>CHECK REGISTRY (Base deve essere VALID)</button>
           </div>
 
           <p class="hbce-note">
-            Computed = SHA-256 di <code>payload</code> calcolato localmente nel browser (no custody).
+            Computed = SHA-256 di <code>canonical(payload)</code> calcolato localmente nel browser (no custody).
           </p>
         </div>
 
@@ -98,7 +98,7 @@
 
     <!-- STEP 2: ISSUE OPERATOR LICENSE -->
     <section class="hbce-section">
-      <h2>STEP 2 — Crea Operator License (solo se Base = VALID)</h2>
+      <h2>STEP 2 — Crea Licenza Operatore (solo se Base = VALID)</h2>
 
       <div class="hbce-grid">
         <div class="hbce-card">
@@ -123,7 +123,7 @@
           </ul>
 
           <div class="hbce-actions">
-            <button class="hbce-btn" id="btnIssue" type="button" disabled>ISSUE OPERATOR LICENSE + REGISTRY ENTRY</button>
+            <button class="hbce-btn" id="btnIssue" type="button" disabled>ISSUE LICENSE + REGISTRY ENTRY</button>
             <button class="hbce-btn hbce-btn--ghost" id="btnDlLicense" type="button" disabled>Download LICENSE</button>
             <button class="hbce-btn hbce-btn--ghost" id="btnDlOpEntry" type="button" disabled>Download REGISTRY_ENTRY</button>
           </div>
@@ -134,7 +134,7 @@
           </ul>
 
           <p class="hbce-note">
-            Nota: pagamento verrà messo come gate prima di “ISSUE”. Qui stiamo fissando la meccanica (Decisione–Traccia).
+            Nota: il gate pagamento verrà messo prima di “ISSUE”. Qui fissiamo la meccanica (Decisione–Traccia).
           </p>
         </div>
 
@@ -174,7 +174,6 @@
   function setText(id, v){ const el = $(id); if(el) el.textContent = v; }
 
   function isNonEmptyString(x){ return typeof x === "string" && x.trim().length > 0; }
-  function isISODateString(x){ if(!isNonEmptyString(x)) return false; const d = new Date(x); return !Number.isNaN(d.valueOf()); }
   function isHex64(x){ return typeof x === "string" && /^[a-f0-9]{64}$/i.test(String(x).trim()); }
 
   function readPublicName(obj){
@@ -188,6 +187,22 @@
     return String(name||"IPR").trim().replace(/\s+/g,"_").replace(/[^a-zA-Z0-9_\-]/g,"");
   }
 
+  // Canonical stringify: ordina le chiavi in modo deterministico (evita mismatch casuali)
+  function canonicalize(value){
+    if (value === null || value === undefined) return null;
+    if (Array.isArray(value)) return value.map(canonicalize);
+    if (typeof value === "object"){
+      const out = {};
+      Object.keys(value).sort().forEach(k => {
+        const v = value[k];
+        if (v === undefined) return;
+        out[k] = canonicalize(v);
+      });
+      return out;
+    }
+    return value;
+  }
+
   async function sha256HexFromText(text){
     const enc = new TextEncoder();
     const buf = enc.encode(text);
@@ -196,24 +211,30 @@
     return hashArr.map(b => b.toString(16).padStart(2,"0")).join("");
   }
 
+  async function sha256HexFromObject(obj){
+    const canon = canonicalize(obj);
+    const txt = JSON.stringify(canon);
+    return sha256HexFromText(txt);
+  }
+
   async function fetchRegistry(){
     let resp, text;
     try { resp = await fetch(REGISTRY_URL, { cache:"no-store" }); }
-    catch(_) { return { ok:false, reason:"registry fetch error" }; }
+    catch(_) { return { ok:false, reason:"errore fetch registry" }; }
 
-    if(!resp || !resp.ok) return { ok:false, reason:"registry HTTP " + (resp ? resp.status : "error") };
+    if(!resp || !resp.ok) return { ok:false, reason:"HTTP " + (resp ? resp.status : "errore") };
 
     try { text = await resp.text(); }
-    catch(_) { return { ok:false, reason:"registry read error" }; }
+    catch(_) { return { ok:false, reason:"errore lettura registry" }; }
 
     let sha = null;
     try { sha = await sha256HexFromText(text); } catch(_) {}
 
     let json;
     try { json = JSON.parse(text); }
-    catch(_) { return { ok:false, reason:"registry JSON invalid", sha }; }
+    catch(_) { return { ok:false, reason:"JSON registry invalido", sha }; }
 
-    if(!json || !Array.isArray(json.entries)) return { ok:false, reason:"registry schema invalid (entries[])", sha };
+    if(!json || !Array.isArray(json.entries)) return { ok:false, reason:"schema registry invalido (entries[])", sha };
 
     return { ok:true, sha, json };
   }
@@ -264,11 +285,11 @@
 
     let text;
     try { text = await f.text(); }
-    catch(_) { setText("b_integrity","FAIL — cannot read file"); return; }
+    catch(_) { setText("b_integrity","FAIL — impossibile leggere il file"); return; }
 
     let json;
     try { json = JSON.parse(text); }
-    catch(_) { setText("b_integrity","FAIL — invalid JSON"); return; }
+    catch(_) { setText("b_integrity","FAIL — JSON non valido"); return; }
 
     baseRelease = json;
 
@@ -286,24 +307,24 @@
 
     // Strict checks
     if(!payload || typeof payload !== "object"){
-      setText("b_integrity","FAIL — missing payload");
+      setText("b_integrity","FAIL — payload mancante");
       return;
     }
     if(!isHex64(fileHash)){
-      setText("b_integrity","FAIL — payload_sha256 missing/invalid");
+      setText("b_integrity","FAIL — payload_sha256 mancante/non valido");
       return;
     }
 
     try {
-      baseComputed = await sha256HexFromText(JSON.stringify(payload));
+      baseComputed = await sha256HexFromObject(payload);
       setText("b_computed", baseComputed || "—");
     } catch(_) {
-      setText("b_integrity","FAIL — sha256 compute error");
+      setText("b_integrity","FAIL — errore calcolo SHA-256");
       return;
     }
 
-    baseIntegrityOk = isHex64(baseComputed) && baseComputed === fileHash;
-    setText("b_integrity", baseIntegrityOk ? "OK file integrity" : "FAIL — mismatch computed vs file");
+    baseIntegrityOk = isHex64(baseComputed) && baseComputed.toLowerCase() === fileHash.toLowerCase();
+    setText("b_integrity", baseIntegrityOk ? "OK — integrità file" : "FAIL — mismatch computed vs file");
     $("btnCheckRegistry").disabled = !baseIntegrityOk;
   });
 
@@ -320,7 +341,7 @@
     $("btnIssue").disabled = true;
 
     if(!baseIntegrityOk || !isHex64(baseComputed)){
-      setText("reg_status","FAIL-CLOSED — base integrity not OK");
+      setText("reg_status","FAIL-CLOSED — integrità base non OK");
       return;
     }
 
@@ -332,17 +353,16 @@
     }
 
     baseRegistrySha = reg.sha || null;
-    setText("reg_status","OK — registry valid");
+    setText("reg_status","OK — registry valido");
     setText("reg_count", String(reg.json.entries.length));
     setText("reg_sha", reg.sha || "—");
 
-    const target = String(baseComputed).trim();
-    const match = reg.json.entries.find(e => e && String(e.payload_sha256 || "").trim() === target);
+    const target = String(baseComputed).trim().toLowerCase();
+    const match = reg.json.entries.find(e => e && String(e.payload_sha256 || "").trim().toLowerCase() === target);
 
     baseRegistryOk = !!match;
-    setText("reg_match", baseRegistryOk ? "YES (BASE VALID)" : "NO (BASE NOT IN REGISTRY)");
+    setText("reg_match", baseRegistryOk ? "YES (BASE VALID)" : "NO (BASE NON PRESENTE)");
 
-    // Gate issuance
     $("btnIssue").disabled = !(baseIntegrityOk && baseRegistryOk);
   });
 
@@ -351,8 +371,19 @@
     const nodes = document.querySelectorAll(".op_scope");
     const out = [];
     nodes.forEach(n => { if(n && n.checked) out.push(String(n.value)); });
-    // fail-closed: at least one scope
     return out;
+  }
+
+  function downloadText(filename, text, mime){
+    const blob = new Blob([text], { type: mime || "application/octet-stream" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
   }
 
   $("btnIssue").addEventListener("click", async () => {
@@ -367,40 +398,33 @@
     setText("previewOpEntry","—");
 
     if(!(baseIntegrityOk && baseRegistryOk)){
-      setText("op_status","FAIL-CLOSED — base is not VALID");
+      setText("op_status","FAIL-CLOSED — Base non VALID");
       return;
     }
 
     const opName = readPublicName(baseRelease);
     if(!isNonEmptyString(opName) || opName === "—"){
-      setText("op_status","FAIL-CLOSED — operator name missing");
+      setText("op_status","FAIL-CLOSED — nome operatore mancante");
       return;
     }
 
     const level = String($("op_level").value || "OPERATOR").trim();
     const scope = selectedScope();
     if(!scope.length){
-      setText("op_status","FAIL-CLOSED — empty scope");
+      setText("op_status","FAIL-CLOSED — scope vuoto");
       return;
     }
 
     const issued_at = new Date().toISOString();
 
-    // Decision–Costo–Traccia–Tempo (mechanics):
-    // decision: issuing license
-    // cost: pricing gate later (placeholder)
-    // trace: base hash + registry sha + issuance hash
-    // time: timestamps everywhere
+    // Payload deterministico licenza operatore
     const payload = {
       operator: {
         name: opName,
         base_payload_sha256: String(baseComputed).trim(),
         base_registry_sha256: baseRegistrySha || null
       },
-      license: {
-        level,
-        scope
-      },
+      license: { level, scope },
       policy: [
         "UE_FIRST",
         "AUDIT_FIRST",
@@ -417,15 +441,11 @@
     };
 
     let opHash;
-    try {
-      opHash = await sha256HexFromText(JSON.stringify(payload));
-    } catch(_) {
-      setText("op_status","FAIL-CLOSED — operator sha256 compute error");
-      return;
-    }
+    try { opHash = await sha256HexFromObject(payload); }
+    catch(_) { setText("op_status","FAIL-CLOSED — errore calcolo hash licenza"); return; }
 
     if(!isHex64(opHash)){
-      setText("op_status","FAIL-CLOSED — operator hash invalid");
+      setText("op_status","FAIL-CLOSED — hash licenza non valido");
       return;
     }
 
@@ -440,7 +460,7 @@
       payload,
       payment: {
         status: "PENDING",
-        note: "Payment gate will be enforced before issuance in production."
+        note: "Payment gate verrà imposto prima di ISSUE in produzione."
       }
     };
 
@@ -451,7 +471,7 @@
       kind: "IPR_OPERATOR_LICENSE"
     };
 
-    setText("op_status","OK — operator artifacts generated (append required)");
+    setText("op_status","OK — artefatti generati (append richiesto)");
     setText("op_hash", opHash);
 
     const licJson = JSON.stringify(operatorLicense, null, 2);
@@ -474,17 +494,6 @@
     };
   });
 
-  function downloadText(filename, text, mime){
-    const blob = new Blob([text], { type: mime || "application/octet-stream" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  }
 })();
 </script>
 
