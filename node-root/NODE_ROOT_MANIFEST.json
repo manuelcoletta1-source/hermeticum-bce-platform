@@ -1,0 +1,78 @@
+{
+  "proto": "HBCE-NODE-ROOT-v1",
+  "kind": "EU_ROOT_ISSUER_NODE_MANIFEST",
+  "jurisdiction": "EU",
+  "mode": "PERMISSIONLESS",
+  "issuer": "HERMETICUM B.C.E. S.r.l.",
+  "hallmark": "HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA",
+
+  "policy": [
+    "UE_FIRST",
+    "AUDIT_FIRST",
+    "FAIL_CLOSED",
+    "HASH_ONLY",
+    "APPEND_ONLY",
+    "GDPR_MIN",
+    "NO_PUBLIC_DATA_CUSTODY",
+    "NO_IDENTITY_CUSTODY"
+  ],
+
+  "node": {
+    "node_id": "HBCE-EU-NODE-IT-ROOT-0001",
+    "country": "Italy",
+    "region": "Piemonte",
+    "city": "Torino",
+    "role": "ROOT_ISSUER_NODE",
+    "status": "ACTIVE",
+    "activated_at": "2026-02-15T00:00:00Z"
+  },
+
+  "root_operator": {
+    "name": "Manuel Coletta",
+    "operator_payload_sha256": "1de300e4d826719c9a8708c8dfb2a8e943f19c3d324816b220f149f008ba481b",
+    "operator_license_kind": "IPR_OPERATOR_LICENSE",
+    "operator_license_proto": "HBCE-OPERATOR-v1"
+  },
+
+  "anchors": {
+    "ipfs": "bafkreidhv73vqrxoweog33ls3rnwrgyicio234pcuks6mnep76yh56pj5q",
+    "btc": "9eeb29b67f4a649d563b95560fda5ddaa84777b13515f936837fc93d28554b45",
+    "evm": "0xf65eb314a1edd392fc15fcd9c65d22060ca39cbac04fcfcb48b978062500a7eff"
+  },
+
+  "capabilities": {
+    "can_issue": [
+      "IPR_BASE_FISCAL_FILE",
+      "IPR_OPERATOR_LICENSE"
+    ],
+    "can_verify": [
+      "IPR_BASE_FISCAL_FILE",
+      "IPR_OPERATOR_LICENSE"
+    ],
+    "can_register": [
+      "REGISTRY_APPEND_HASH_ONLY",
+      "NETWORK_OPERATOR_RECORD_APPEND_ONLY",
+      "ISSUER_LEDGER_APPEND_ONLY"
+    ],
+    "can_coordinate": [
+      "EU_OPERATOR_NETWORK"
+    ]
+  },
+
+  "paths": {
+    "activate": "/hermeticum-bce-platform/activate/",
+    "issuer_console": "/hermeticum-bce-platform/issuer/",
+    "registry": "/hermeticum-bce-platform/registry/",
+    "verify": "/hermeticum-bce-platform/verify/",
+    "network": "/hermeticum-bce-platform/network/",
+    "issuer_ledger": "/hermeticum-bce-platform/ledger/issuer-ledger.json",
+    "operators_ledger": "/hermeticum-bce-platform/network/operators-ledger.json"
+  },
+
+  "validation": {
+    "rule": "OPERATOR_SHA256 MUST_MATCH registry.entries[].payload_sha256 (fail-closed)",
+    "public_proof": "HBCE_CERTIFICATE"
+  },
+
+  "notes": "Questo manifest dichiara il nodo radice di emissione UE (Italia). Nessuna custodia pubblica di dati personali: solo hash e prove minimizzate."
+}
