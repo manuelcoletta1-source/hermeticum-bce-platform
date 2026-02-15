@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>NETWORK — EU Operator Network</title>
-  <meta name="description" content="Rete operatori UE (append-only). Vista pubblica minimizzata: ruoli, stato, hash licenze. UE-first, GDPR-min, fail-closed." />
+  <meta name="description" content="Rete operatori UE (append-only). Vista minimizzata: ruoli, stato, hash licenze. Governance ex-post: sospensione/revoca via record append-only." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
   <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </head>
@@ -14,15 +14,16 @@
   <main class="hbce-container hbce-main">
 
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">EU NETWORK · OPERATORS · APPEND-ONLY</div>
+      <div class="hbce-hero__kicker">EU NETWORK · OPERATORS · APPEND-ONLY · EX-POST GOVERNANCE</div>
       <h1 class="hbce-hero__title">Rete Operatori UE</h1>
       <p class="hbce-hero__lead">
-        Ledger di rete (append-only). Pubblica solo metadati minimizzati: ruolo, paese/regione, stato e hash licenza.
-        Nessuna custodia pubblica di dati personali (GDPR-min).
+        Ledger append-only. Stato e ruolo si aggiornano solo aggiungendo record.
+        <strong>SUSPENDED</strong>/<strong>REVOKED</strong> sono atti di governance ex-post: niente edit retroattivo.
       </p>
       <div class="hbce-row" style="margin-top:16px">
         <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">ACTIVATE</a>
         <a class="hbce-btn" href="/hermeticum-bce-platform/issuer/">ISSUER</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/join-operator/">JOIN OPERATOR</a>
         <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
       </div>
     </section>
@@ -43,13 +44,19 @@
         <h2>Regole rete</h2>
         <div class="hbce-kv" id="rules" style="margin-top:12px"></div>
         <div class="hbce-help" style="margin-top:10px">
-          Nota: questo ledger è append-only. Modifiche retroattive non ammesse: si aggiunge un record di STATUS/ROLE_UPDATE.
+          Governance ex-post: per sospendere/revocare un operatore si aggiunge un record <code>OPERATOR_STATUS_UPDATE</code>.
+          Per cambiare ruolo: <code>ROLE_UPDATE</code>. Sempre append-only.
         </div>
       </div>
 
       <div class="hbce-card">
-        <h2>Operatori (vista)</h2>
+        <h2>Operatori (stato attuale)</h2>
         <div id="list"></div>
+      </div>
+
+      <div class="hbce-card">
+        <h2>Timeline governance (ultimi record)</h2>
+        <div id="timeline"></div>
       </div>
 
     </section>
@@ -83,15 +90,29 @@
       return s.slice(0,16)+"…"+s.slice(-8);
     }
 
+    function badgeForStatus(st){
+      if(st==="ACTIVE") return "hbce-badge hbce-badge--ok";
+      if(st==="SUSPENDED") return "hbce-badge hbce-badge--warn";
+      return "hbce-badge hbce-badge--bad";
+    }
+
+    function badgeForRecordType(t){
+      if(t==="OPERATOR_ADDED") return "hbce-badge hbce-badge--ok";
+      if(t==="ROLE_UPDATE") return "hbce-badge hbce-badge--warn";
+      if(t==="OPERATOR_STATUS_UPDATE") return "hbce-badge hbce-badge--danger";
+      return "hbce-badge";
+    }
+
     async function load(){
       const status=document.getElementById("status");
       const stats=document.getElementById("stats");
       const rules=document.getElementById("rules");
       const list=document.getElementById("list");
+      const timeline=document.getElementById("timeline");
 
       status.className="hbce-badge hbce-badge--warn";
       status.textContent="Loading…";
-      stats.innerHTML=""; rules.innerHTML=""; list.innerHTML="";
+      stats.innerHTML=""; rules.innerHTML=""; list.innerHTML=""; timeline.innerHTML="";
 
       try{
         const res=await fetch(LEDGER_URL+"?t="+Date.now());
@@ -104,8 +125,8 @@
         kvSet(stats,{
           "proto": data.proto||"—",
           "records": String(records.length),
-          "root_coordinator": data.root_coordinator||"—",
-          "root_payload_sha256": shortHash(data.root_payload_sha256),
+          "root_coordinator": data.root?.root_coordinator || "—",
+          "root_sha256": shortHash(data.root?.root_operator_payload_sha256),
           "mode": data.mode||"—"
         });
 
@@ -113,56 +134,82 @@
         kvSet(rules,{
           "max_per_country": String(st.max_per_country ?? "—"),
           "max_per_region": String(st.max_per_region ?? "—"),
-          "roles": (st.roles||[]).join(", ") || "—"
+          "roles": (st.roles||[]).join(", ") || "—",
+          "status_allowed": (st.status_allowed||[]).join(", ") || "—"
         });
 
-        // Build latest state per operator hash
-        const byHash=new Map();
-        for(const r of records){
-          const h=(r.operator_payload_sha256||"").toLowerCase();
-          if(!h) continue;
-          if(!byHash.has(h)){
-            byHash.set(h,{
-              operator_name:r.operator_name||"—",
+        // Build state per operator hash (last-wins by timestamp)
+        const state=new Map();
+
+        function touch(h){
+          if(!state.has(h)){
+            state.set(h,{
+              operator_name:"—",
               operator_payload_sha256:h,
-              country:r.country||"—",
-              region:r.region||"",
-              city:r.city||"",
-              role:r.role||"—",
-              status:r.status||"—",
-              timestamp:r.timestamp||"—",
-              parent:r.parent_operator_sha256||""
+              country:"—",
+              region:"",
+              city:"",
+              role:"—",
+              status:"—",
+              timestamp:"—",
+              parent:""
             });
-          }else{
-            const cur=byHash.get(h);
-            // last-wins by timestamp string (ISO)
-            if(String(r.timestamp||"") >= String(cur.timestamp||"")){
+          }
+          return state.get(h);
+        }
+
+        for(const r of records){
+          const t=String(r.record_type||"");
+          const ts=String(r.timestamp||"");
+          if(t==="OPERATOR_ADDED"){
+            const h=(r.operator_payload_sha256||"").toLowerCase();
+            if(!h) continue;
+            const cur=touch(h);
+            if(ts >= String(cur.timestamp||"")){
               cur.operator_name=r.operator_name||cur.operator_name;
               cur.country=r.country||cur.country;
               cur.region=r.region||cur.region;
               cur.city=r.city||cur.city;
               cur.role=r.role||cur.role;
               cur.status=r.status||cur.status;
-              cur.timestamp=r.timestamp||cur.timestamp;
+              cur.timestamp=ts;
               cur.parent=r.parent_operator_sha256||cur.parent;
+            }
+          }
+
+          if(t==="ROLE_UPDATE"){
+            const h=(r.target_operator_sha256||"").toLowerCase();
+            if(!h) continue;
+            const cur=touch(h);
+            if(ts >= String(cur.timestamp||"")){
+              cur.role=r.new_role||cur.role;
+              cur.timestamp=ts;
+            }
+          }
+
+          if(t==="OPERATOR_STATUS_UPDATE"){
+            const h=(r.target_operator_sha256||"").toLowerCase();
+            if(!h) continue;
+            const cur=touch(h);
+            if(ts >= String(cur.timestamp||"")){
+              cur.status=r.new_status||cur.status;
+              cur.timestamp=ts;
             }
           }
         }
 
-        const arr=[...byHash.values()].sort((a,b)=> (a.role||"").localeCompare(b.role||"") || (a.country||"").localeCompare(b.country||""));
+        const arr=[...state.values()].sort((a,b)=> (a.role||"").localeCompare(b.role||"") || (a.country||"").localeCompare(b.country||""));
 
         arr.forEach(o=>{
           const card=el("div","hbce-card","");
           card.style.marginTop="10px";
-          const badgeCls = (o.status==="ACTIVE") ? "hbce-badge hbce-badge--ok"
-                        : (o.status==="SUSPENDED") ? "hbce-badge hbce-badge--warn"
-                        : "hbce-badge hbce-badge--bad";
 
-          card.appendChild(el("div","hbce-row",`
-            <span class="${badgeCls}">${o.status}</span>
+          const header=el("div","hbce-row",`
+            <span class="${badgeForStatus(o.status)}">${o.status}</span>
             <span class="hbce-badge">${o.role}</span>
             <span class="hbce-badge">${o.country}${o.region?(" / "+o.region):""}${o.city?(" / "+o.city):""}</span>
-          `));
+          `);
+          card.appendChild(header);
 
           const kv=el("div","hbce-kv","");
           kvSet(kv,{
@@ -174,6 +221,51 @@
           card.appendChild(kv);
 
           list.appendChild(card);
+        });
+
+        // Timeline (last 20 records)
+        const last = records.slice(-20).reverse();
+        last.forEach(r=>{
+          const t=String(r.record_type||"—");
+          const card=el("div","hbce-card","");
+          card.style.marginTop="10px";
+
+          const bcls = badgeForRecordType(t);
+          const head=el("div","hbce-row",`
+            <span class="${bcls}">${t}</span>
+            <span class="hbce-badge">${String(r.timestamp||"—")}</span>
+          `);
+          card.appendChild(head);
+
+          const kv=el("div","hbce-kv","");
+          const map={};
+
+          if(t==="OPERATOR_ADDED"){
+            map["operator_name"]=r.operator_name||"—";
+            map["operator_payload_sha256"]=r.operator_payload_sha256||"—";
+            map["role"]=r.role||"—";
+            map["status"]=r.status||"—";
+            map["country"]=r.country||"—";
+          }
+
+          if(t==="ROLE_UPDATE"){
+            map["target_operator_sha256"]=r.target_operator_sha256||"—";
+            map["new_role"]=r.new_role||"—";
+            map["decided_by_sha256"]=r.decided_by_sha256||"—";
+            map["note"]=r.note||"—";
+          }
+
+          if(t==="OPERATOR_STATUS_UPDATE"){
+            map["target_operator_sha256"]=r.target_operator_sha256||"—";
+            map["new_status"]=r.new_status||"—";
+            map["reason"]=r.reason||"—";
+            map["decided_by_sha256"]=r.decided_by_sha256||"—";
+          }
+
+          kvSet(kv,map);
+          card.appendChild(kv);
+
+          timeline.appendChild(card);
         });
 
       }catch(e){
