@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>APPROVE — Operatore UE (Central Bank)</title>
+  <meta name="description" content="Console approvazione operatore: Gate root operator (registry match) → conferma pagamento → emette licenza FINAL ACTIVE → genera REGISTRY_ENTRY + NETWORK_RECORD (append-only)." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+  <script defer src="/hermeticum-bce-platform/assets/hbce-crypto.js"></script>
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">CENTRAL BANK APPROVAL · FAIL-CLOSED · APPEND-ONLY</div>
+      <h1 class="hbce-hero__title">Approve Operator UE</h1>
+      <p class="hbce-hero__lead">
+        Questa console è riservata al <strong>root issuer node</strong>. Flusso: Gate (root operator presente in registry) → carica PENDING →
+        conferma pagamento → emette licenza FINAL (ACTIVE) → genera entry pronta per registry e record pronto per network ledger.
+      </p>
+      <div class="hbce-row" style="margin-top:16px">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/join-operator/">JOIN OPERATOR</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/network/">NETWORK</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+      </div>
+    </section>
+
+    <section class="hbce-grid">
+
+      <!-- GATE -->
+      <div class="hbce-card hbce-card--6">
+        <h2>1) GATE — Root operator (obbligatorio)</h2>
+        <p class="hbce-help">
+          Carica la tua licenza operatore reale. Il sistema calcola SHA256 canonico e richiede match nel registry pubblico.
+          Se non matcha → tutto bloccato (fail-closed).
+        </p>
+
+        <div class="hbce-field">
+          <label for="rootFile">Root Operator License (JSON)</label>
+          <input id="rootFile" class="hbce-input" type="file" accept="application/json,.json" />
+        </div>
+
+        <div class="hbce-row">
+          <button id="btnGate" class="hbce-btn hbce-btn--primary">RUN GATE</button>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/registry.json">OPEN registry.json</a>
+        </div>
+
+        <div id="gateBadge" class="hbce-badge hbce-badge--warn" style="margin-top:12px">Locked…</div>
+        <div class="hbce-kv" id="gateKV" style="margin-top:12px"></div>
+        <pre id="gateRaw" class="hbce-textarea" style="margin-top:12px; white-space:pre-wrap"></pre>
+      </div>
+
+      <!-- INPUT PENDING -->
+      <div class="hbce-card hbce-card--6">
+        <h2>2) Input — Licenza PENDING (candidato)</h2>
+        <p class="hbce-help">
+          Carica il file <code>HBCE_OPERATOR_LICENSE_PEND__*.json</code> generato da <code>/join-operator/</code>.
+          Verrà trasformato in licenza FINAL (ACTIVE) dopo conferma pagamento.
+        </p>
+
+        <div class="hbce-field">
+          <label for="pendFile">Operator License PENDING (JSON)</label>
+          <input id="pendFile" class="hbce-input" type="file" accept="application/json,.json" />
+        </div>
+
+        <div class="hbce-field">
+          <label>Payment status</label>
+          <select id="payStatus" class="hbce-select" disabled>
+            <option value="CONFIRMED">CONFIRMED</option>
+          </select>
+        </div>
+
+        <div class="hbce-field">
+          <label>Payment reference (manuale)</label>
+          <input id="payRef" class="hbce-input" placeholder="CRO/TRN/ID bonifico / ricevuta" disabled />
+        </div>
+
+        <div class="hbce-row">
+          <button id="btnApprove" class="hbce-btn hbce-btn--ok" disabled>APPROVE + ISSUE FINAL</button>
+        </div>
+
+        <div id="appBadge" class="hbce-badge hbce-badge--warn" style="margin-top:12px">Waiting…</div>
+        <div class="hbce-kv" id="appKV" style="margin-top:12px"></div>
+      </div>
+
+      <!-- OUTPUTS -->
+      <div class="hbce-card">
+        <h2>3) Output — append-ready</h2>
+        <p class="hbce-help">
+          Tutti gli output sono deterministici e pronti per append manuale (GitHub Pages non scrive server-side).
+          Passi: 1) append entry nel registry → commit. 2) append record nel network ledger → commit. 3) verify.
+        </p>
+
+        <div class="hbce-grid" style="margin-top:12px">
+
+          <div class="hbce-card hbce-card--6" style="margin-top:0">
+            <h3>OPERATOR_LICENSE FINAL (ACTIVE)</h3>
+            <pre id="finalOut" class="hbce-textarea" style="white-space:pre-wrap"></pre>
+            <div class="hbce-row" style="margin-top:12px">
+              <button id="dlFinal" class="hbce-btn hbce-btn--primary" disabled>DOWNLOAD FINAL LICENSE</button>
+            </div>
+          </div>
+
+          <div class="hbce-card hbce-card--6" style="margin-top:0">
+            <h3>REGISTRY_ENTRY (incolla in entries[])</h3>
+            <pre id="entryOut" class="hbce-textarea" style="white-space:pre-wrap"></pre>
+            <div class="hbce-row" style="margin-top:12px">
+              <button id="copyEntry" class="hbce-btn" disabled>COPY ENTRY</button>
+              <button id="dlEntry" class="hbce-btn" disabled>DOWNLOAD ENTRY</button>
+            </div>
+          </div>
+
+          <div class="hbce-card hbce-card--6" style="margin-top:0">
+            <h3>NETWORK_RECORD — OPERATOR_ADDED</h3>
+            <pre id="netAddOut" class="hbce-textarea" style="white-space:pre-wrap"></pre>
+            <div class="hbce-row" style="margin-top:12px">
+              <button id="copyNetAdd" class="hbce-btn" disabled>COPY RECORD</button>
+              <button id="dlNetAdd" class="hbce-btn" disabled>DOWNLOAD RECORD</button>
+            </div>
+          </div>
+
+          <div class="hbce-card hbce-card--6" style="margin-top:0">
+            <h3>Nota operativa</h3>
+            <pre id="opsNote" class="hbce-textarea" style="white-space:pre-wrap"></pre>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+
+  <script>
+    const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
+    const NETWORK_LEDGER_URL = "/hermeticum-bce-platform/network/operators-ledger.json";
+
+    let GATE = { ok:false, root_operator_sha256:null, root_operator_name:"—" };
+    let PENDING=null, FINAL=null, ENTRY=null, NET_ADD=null;
+
+    function kvSet(elId, map){
+      const kv=document.getElementById(elId);
+      kv.innerHTML="";
+      for(const [k,v] of Object.entries(map)){
+        const a=document.createElement("div"); a.className="k"; a.textContent=k;
+        const b=document.createElement("div"); b.className="v"; b.textContent=v;
+        kv.append(a,b);
+      }
+    }
+
+    function setBadge(id, cls, text){
+      const b=document.getElementById(id);
+      b.className = cls;
+      b.textContent = text;
+    }
+
+    function lockAll(){
+      document.getElementById("payStatus").disabled=true;
+      document.getElementById("payRef").disabled=true;
+      document.getElementById("btnApprove").disabled=true;
+
+      document.getElementById("finalOut").textContent="";
+      document.getElementById("entryOut").textContent="";
+      document.getElementById("netAddOut").textContent="";
+      document.getElementById("opsNote").textContent="";
+
+      document.getElementById("dlFinal").disabled=true;
+      document.getElementById("copyEntry").disabled=true;
+      document.getElementById("dlEntry").disabled=true;
+      document.getElementById("copyNetAdd").disabled=true;
+      document.getElementById("dlNetAdd").disabled=true;
+
+      setBadge("appBadge","hbce-badge hbce-badge--warn","Waiting…");
+      kvSet("appKV",{});
+    }
+
+    function unlockApproval(){
+      document.getElementById("payStatus").disabled=false;
+      document.getElementById("payRef").disabled=false;
+      document.getElementById("btnApprove").disabled=false;
+      setBadge("appBadge","hbce-badge hbce-badge--ok","Ready — load PENDING and approve");
+    }
+
+    document.getElementById("btnGate").onclick = async () => {
+      const badge = document.getElementById("gateBadge");
+      const raw = document.getElementById("gateRaw");
+      raw.textContent="";
+      kvSet("gateKV",{});
+      GATE = { ok:false, root_operator_sha256:null, root_operator_name:"—" };
+      lockAll();
+
+      const f = document.getElementById("rootFile").files?.[0];
+      if(!f){
+        badge.className="hbce-badge hbce-badge--bad";
+        badge.textContent="FAIL — no root operator file";
+        return;
+      }
+
+      try{
+        const obj = JSON.parse(await f.text());
+
+        const root_name =
+          (obj?.operator?.name) ? obj.operator.name :
+          (obj?.name) ? obj.name :
+          (obj?.subject?.name) ? obj.subject.name :
+          "—";
+
+        const root_sha256 = await HBCE.sha256String(HBCE.stableStringify(obj));
+        const reg = await HBCE.fetchJson(REGISTRY_URL);
+        const match = (reg.entries||[]).some(e => (e.payload_sha256||"").toLowerCase() === root_sha256.toLowerCase());
+
+        GATE = { ok: !!match, root_operator_sha256: root_sha256, root_operator_name: root_name };
+
+        kvSet("gateKV",{
+          "root_operator_name": root_name,
+          "root_operator_sha256": root_sha256,
+          "registry_match": String(match),
+          "registry_url": REGISTRY_URL
+        });
+
+        raw.textContent = JSON.stringify({
+          proto:"HBCE-APPROVE-GATE-v1",
+          result: match ? "PASS" : "FAIL",
+          policy:["FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","GDPR_MIN"],
+          root_operator_sha256: root_sha256,
+          registry_url: REGISTRY_URL
+        }, null, 2);
+
+        badge.className = match ? "hbce-badge hbce-badge--ok" : "hbce-badge hbce-badge--bad";
+        badge.textContent = match ? "GATE PASS — root operator present in registry" : "GATE FAIL — no registry match (fail-closed)";
+
+        if(match) unlockApproval();
+        else lockAll();
+
+      }catch(e){
+        badge.className="hbce-badge hbce-badge--bad";
+        badge.textContent="FAIL — gate error";
+        raw.textContent=String(e);
+        lockAll();
+      }
+    };
+
+    document.getElementById("btnApprove").onclick = async () => {
+      if(!GATE.ok){
+        alert("Fail-closed: root gate not passed.");
+        return;
+      }
+
+      const f = document.getElementById("pendFile").files?.[0];
+      if(!f){
+        alert("Carica la licenza PENDING.");
+        return;
+      }
+
+      const payRef = (document.getElementById("payRef").value||"").trim();
+      if(!payRef){
+        alert("Inserisci payment reference (CRO/TRN/ID).");
+        return;
+      }
+
+      try{
+        PENDING = JSON.parse(await f.text());
+
+        // minimal validation
+        if((PENDING?.status||"") !== "PENDING" && (PENDING?.payment?.status||"") !== "PENDING"){
+          if(!confirm("Il file non sembra PENDING. Continuare comunque?")) return;
+        }
+
+        const ts = HBCE.nowISO();
+
+        // Build FINAL
+        FINAL = JSON.parse(JSON.stringify(PENDING));
+        FINAL.status = "ACTIVE";
+        FINAL.payment = FINAL.payment || {};
+        FINAL.payment.status = "CONFIRMED";
+        FINAL.payment.reference = payRef;
+        FINAL.approved_at = ts;
+
+        FINAL.approved_by = {
+          root_operator_name: GATE.root_operator_name,
+          root_operator_payload_sha256: GATE.root_operator_sha256
+        };
+
+        // canonical sha256 of FINAL
+        const final_sha256 = await HBCE.sha256String(HBCE.stableStringify(FINAL));
+        FINAL.payload_sha256 = final_sha256;
+
+        // Registry entry (hash-only)
+        const opName =
+          (FINAL?.operator?.name) ? FINAL.operator.name :
+          (FINAL?.name) ? FINAL.name :
+          "—";
+
+        ENTRY = {
+          entity_type: "OPERATOR",
+          name: opName,
+          payload_sha256: final_sha256,
+          timestamp: ts,
+          status: "ACTIVE",
+          note: `approved_by=${(GATE.root_operator_sha256||"").slice(0,12)}; proto=${FINAL.proto||"—"}; kind=${FINAL.kind||"—"}`
+        };
+
+        // Network record append-only
+        const country = FINAL?.operator?.country || FINAL?.country || "—";
+        const region = FINAL?.operator?.region || FINAL?.region || null;
+        const city = FINAL?.operator?.city || FINAL?.city || null;
+        const role = FINAL?.operator?.role || FINAL?.role || "REGIONAL_OPERATOR";
+
+        NET_ADD = {
+          record_type: "OPERATOR_ADDED",
+          timestamp: ts,
+          operator_name: opName,
+          operator_payload_sha256: final_sha256,
+          country: country,
+          region: region,
+          city: city,
+          role: role,
+          status: "ACTIVE",
+          parent_operator_sha256: GATE.root_operator_sha256,
+          order_ref: FINAL?.order_ref || null,
+          payment_status: "CONFIRMED",
+          note: "Approved by root issuer node (manual approval). Append-only."
+        };
+
+        kvSet("appKV",{
+          "approved_at": ts,
+          "operator_name": opName,
+          "final_payload_sha256": final_sha256,
+          "role": role,
+          "country": country,
+          "payment": "CONFIRMED",
+          "network_ledger_url": NETWORK_LEDGER_URL
+        });
+
+        document.getElementById("finalOut").textContent = JSON.stringify(FINAL, null, 2);
+        document.getElementById("entryOut").textContent = JSON.stringify(ENTRY, null, 2);
+        document.getElementById("netAddOut").textContent = JSON.stringify(NET_ADD, null, 2);
+
+        document.getElementById("opsNote").textContent =
+`NEXT (manual append):
+1) REGISTRY: open ${REGISTRY_URL}
+   paste ENTRY into entries[] and commit (append-only).
+2) NETWORK: open ${NETWORK_LEDGER_URL}
+   paste NET_ADD into records[] and commit (append-only).
+3) VERIFY: go to /verify/ and generate certificate VALID for FINAL license (match required).
+Fail-closed: if registry match missing → INVALID.`;
+
+        // enable downloads/copy
+        document.getElementById("dlFinal").disabled=false;
+        document.getElementById("copyEntry").disabled=false;
+        document.getElementById("dlEntry").disabled=false;
+        document.getElementById("copyNetAdd").disabled=false;
+        document.getElementById("dlNetAdd").disabled=false;
+
+        document.getElementById("dlFinal").onclick = () => {
+          const fn = `HBCE_OPERATOR_LICENSE__FINAL__${final_sha256.slice(0,12)}.json`;
+          HBCE.download(fn, JSON.stringify(FINAL, null, 2));
+        };
+
+        document.getElementById("copyEntry").onclick = async () => {
+          await navigator.clipboard.writeText(JSON.stringify(ENTRY, null, 2));
+          alert("REGISTRY_ENTRY copied. Paste into registry.json entries[] and commit.");
+        };
+
+        document.getElementById("dlEntry").onclick = () => {
+          const fn = `REGISTRY_ENTRY_OPERATOR__${final_sha256.slice(0,12)}.json`;
+          HBCE.download(fn, JSON.stringify(ENTRY, null, 2));
+        };
+
+        document.getElementById("copyNetAdd").onclick = async () => {
+          await navigator.clipboard.writeText(JSON.stringify(NET_ADD, null, 2));
+          alert("NETWORK_RECORD copied. Paste into operators-ledger.json records[] and commit.");
+        };
+
+        document.getElementById("dlNetAdd").onclick = () => {
+          const fn = `NETWORK_RECORD__OPERATOR_ADDED__${final_sha256.slice(0,12)}.json`;
+          HBCE.download(fn, JSON.stringify(NET_ADD, null, 2));
+        };
+
+        setBadge("appBadge","hbce-badge hbce-badge--ok","Approved — FINAL + entry + network record ready");
+
+      }catch(e){
+        setBadge("appBadge","hbce-badge hbce-badge--bad","ERROR — approval failed");
+        document.getElementById("opsNote").textContent = String(e);
+      }
+    };
+
+    // initial
+    setBadge("gateBadge","hbce-badge hbce-badge--warn","Locked…");
+    lockAll();
+  </script>
+</body>
+</html>
