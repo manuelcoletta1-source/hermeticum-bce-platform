@@ -3,380 +3,167 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VERIFY — Public Verification (IPR)</title>
-  <meta name="description" content="Verifica deterministica IPR: integrità file + match in registry pubblico. Fail-closed. Se VALID rilascia certificato (HBCE-CERT-v1)." />
+  <title>VERIFY — Fail-closed</title>
+  <meta name="description" content="Verifica deterministica: integrità file + match nel registry. Se match => VALID + certificate scaricabile." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+  <script defer src="/hermeticum-bce-platform/assets/hbce-crypto.js"></script>
 </head>
-
 <body>
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
-
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">VERIFY · DETERMINISTIC · FAIL-CLOSED · CERTIFICATE</div>
-      <h1 class="hbce-hero__title">Verifica pubblica (IPR)</h1>
+      <div class="hbce-hero__kicker">VERIFY · INTEGRITY + REGISTRY MATCH · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Verifica IPR / License</h1>
       <p class="hbce-hero__lead">
-        Carica il file <strong>IPR_RELEASE</strong>. Il browser calcola lo <strong>SHA-256</strong> del <code>payload</code>
-        e cerca match nel <strong>registry append-only</strong>.
-        <br />
-        Se matcha → <strong>VALID</strong> e viene rilasciato il <strong>certificato</strong>.
-      </p>
-      <p class="hbce-note">
-        Regola: <strong>se non è verificabile → INVALID</strong> (fail-closed). Pubblico: hash-only.
+        Carica un file <strong>IPR_RELEASE</strong> o <strong>OPERATOR_LICENSE</strong>. Il sistema calcola SHA256 canonico e cerca match nel registry pubblico.
+        Se manca il match → <strong>INVALID</strong>.
       </p>
     </section>
 
-    <section class="hbce-section">
-      <h2>Input</h2>
-
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>1) IPR_RELEASE (cliente)</h3>
-          <input type="file" id="releaseFile" accept=".json,application/json" />
-
-          <ul class="hbce-list">
-            <li><strong>Name:</strong> <span id="subName">—</span></li>
-            <li><strong>Timestamp:</strong> <span id="subTs">—</span></li>
-            <li><strong>payload_sha256 (file):</strong> <span id="fileHash">—</span></li>
-            <li><strong>payload_sha256 (computed):</strong> <span id="computedHash">—</span></li>
-            <li><strong>Integrity:</strong> <span id="integrity">—</span></li>
-          </ul>
-
-          <div class="hbce-actions">
-            <button class="hbce-btn" id="btnVerify" type="button" disabled>Verifica (registry match)</button>
-          </div>
-
-          <p class="hbce-note">
-            “computed” = SHA-256 calcolato dal browser sul <code>payload</code> del file.
-          </p>
+    <section class="hbce-grid">
+      <div class="hbce-card hbce-card--6">
+        <h2>Upload</h2>
+        <div class="hbce-field">
+          <label for="file">File JSON</label>
+          <input id="file" class="hbce-input" type="file" accept="application/json,.json" />
+        </div>
+        <div class="hbce-row">
+          <button id="btnVerify" class="hbce-btn hbce-btn--primary">RUN VERIFY</button>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">OPEN REGISTRY</a>
         </div>
 
-        <div class="hbce-card">
-          <h3>2) Registry (public)</h3>
-
-          <ul class="hbce-list">
-            <li><strong>Registry URL:</strong> <code id="regUrl">/hermeticum-bce-platform/registry/registry.json</code></li>
-            <li><strong>Registry status:</strong> <span id="regStatus">—</span></li>
-            <li><strong>Entries:</strong> <span id="regCount">—</span></li>
-            <li><strong>Registry SHA-256:</strong> <span id="regSha">—</span></li>
-          </ul>
-
-          <div class="hbce-actions">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Apri registry</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/append/">Append tool</a>
-          </div>
-
-          <p class="hbce-note">
-            Fail-closed: se il registry non è leggibile o non è valido → INVALID.
-          </p>
+        <div class="hbce-help">
+          Source of truth: <code>/registry/registry.json</code>. Nessun match = INVALID (fail-closed).
         </div>
       </div>
-    </section>
 
-    <section class="hbce-section">
-      <h2>Esito</h2>
+      <div class="hbce-card hbce-card--6">
+        <h2>Result</h2>
+        <div id="badge" class="hbce-badge hbce-badge--warn">Waiting…</div>
 
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>RESULT</h3>
+        <div class="hbce-kv" id="kv"></div>
 
-          <div class="hbce-card" style="padding:12px;">
-            <div style="font-weight:700;font-size:18px;">
-              <span id="result">—</span>
-            </div>
-            <div class="hbce-note" id="resultNote">—</div>
-          </div>
-
-          <ul class="hbce-list">
-            <li><strong>Status:</strong> <span id="statusLine">—</span></li>
-            <li><strong>Name:</strong> <span id="outName">—</span></li>
-            <li><strong>Timestamp:</strong> <span id="outTs">—</span></li>
-            <li><strong>payload_sha256 (file):</strong> <span id="outFileHash">—</span></li>
-            <li><strong>payload_sha256 (computed):</strong> <span id="outComputedHash">—</span></li>
-            <li><strong>Registry match:</strong> <span id="outMatch">—</span></li>
-          </ul>
-
-          <div class="hbce-actions">
-            <button class="hbce-btn" id="btnDlCertJson" type="button" disabled>Download CERTIFICATE (JSON)</button>
-            <button class="hbce-btn hbce-btn--ghost" id="btnDlCertTxt" type="button" disabled>Download CERTIFICATE (TXT)</button>
-          </div>
-
-          <p class="hbce-note">
-            Il certificato è l’artefatto finale per il cliente: lega la validità al registry in modo ripetibile.
-          </p>
+        <div class="hbce-row">
+          <button id="dlCert" class="hbce-btn hbce-btn--ok" disabled>DOWNLOAD CERTIFICATE.json</button>
+          <button id="dlCertTxt" class="hbce-btn" disabled>DOWNLOAD CERTIFICATE.txt</button>
         </div>
 
-        <div class="hbce-card">
-          <h3>Certificate preview</h3>
-          <pre class="hbce-pre"><code id="certPreview">—</code></pre>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Audit note</h3>
-          <p class="hbce-note">
-            Matching usa solo <code>payload_sha256</code>. La UI mostra <code>name</code> se presente, altrimenti <code>nickname</code> (legacy).
-          </p>
-          <p class="hbce-note">
-            Nessuna custodia pubblica di dati personali: il registry espone solo prove minimizzate.
-          </p>
-        </div>
+        <pre id="raw" class="hbce-textarea" style="margin-top:12px; white-space:pre-wrap"></pre>
       </div>
     </section>
-
   </main>
 
   <div data-hbce="footer"></div>
 
-<script>
-(function () {
-  const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
-  const $ = (id) => document.getElementById(id);
+  <script>
+    const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
+    let CERT=null, CERT_TXT="";
 
-  function setText(id, v){ const el = $(id); if(el) el.textContent = v; }
-
-  function isNonEmptyString(x){ return typeof x === "string" && x.trim().length > 0; }
-  function isISODateString(x){
-    if(!isNonEmptyString(x)) return false;
-    const d = new Date(x);
-    return !Number.isNaN(d.valueOf());
-  }
-  function isHex64(x){ return typeof x === "string" && /^[a-f0-9]{64}$/i.test(x.trim()); }
-
-  function downloadText(filename, text, mime){
-    const blob = new Blob([text], { type: mime || "application/octet-stream" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  }
-
-  async function sha256HexFromText(text){
-    const enc = new TextEncoder();
-    const buf = enc.encode(text);
-    const hashBuf = await crypto.subtle.digest("SHA-256", buf);
-    const hashArr = Array.from(new Uint8Array(hashBuf));
-    return hashArr.map(b => b.toString(16).padStart(2,"0")).join("");
-  }
-
-  function readPublicName(obj){
-    const a = obj && obj.name;
-    const b = obj && obj.nickname;
-    const v = isNonEmptyString(a) ? a : (isNonEmptyString(b) ? b : "—");
-    return String(v).trim();
-  }
-
-  function safeNameForFile(name){
-    return String(name||"IPR").trim().replace(/\s+/g,"_").replace(/[^a-zA-Z0-9_\-]/g,"");
-  }
-
-  async function fetchRegistry(){
-    setText("regUrl", REGISTRY_URL);
-
-    let resp, text;
-    try { resp = await fetch(REGISTRY_URL, { cache: "no-store" }); }
-    catch (_) { return { ok:false, reason:"registry fetch error" }; }
-
-    if(!resp || !resp.ok) return { ok:false, reason:"registry HTTP " + (resp ? resp.status : "error") };
-
-    try { text = await resp.text(); }
-    catch (_) { return { ok:false, reason:"registry read error" }; }
-
-    let sha = null;
-    try { sha = await sha256HexFromText(text); } catch(_) {}
-
-    let json;
-    try { json = JSON.parse(text); }
-    catch (_) { return { ok:false, reason:"registry JSON invalid", sha }; }
-
-    if(!json || !Array.isArray(json.entries)) return { ok:false, reason:"registry schema invalid (entries[])", sha };
-
-    return { ok:true, sha, json };
-  }
-
-  // STATE
-  let release = null;
-  let computedHash = null;
-  let fileHash = null;
-  let subName = null;
-  let subTs = null;
-
-  let lastCertificate = null;
-
-  function resetResult(){
-    setText("result","—");
-    setText("resultNote","—");
-    setText("statusLine","—");
-    setText("outName","—");
-    setText("outTs","—");
-    setText("outFileHash","—");
-    setText("outComputedHash","—");
-    setText("outMatch","—");
-    setText("certPreview","—");
-    $("btnDlCertJson").disabled = true;
-    $("btnDlCertTxt").disabled = true;
-    lastCertificate = null;
-  }
-
-  $("releaseFile").addEventListener("change", async (ev) => {
-    resetResult();
-    $("btnVerify").disabled = true;
-
-    const f = ev.target.files && ev.target.files[0];
-    if(!f) return;
-
-    let text;
-    try { text = await f.text(); }
-    catch(_) { setText("integrity","FAIL — cannot read file"); return; }
-
-    try { release = JSON.parse(text); }
-    catch(_) { setText("integrity","FAIL — invalid JSON"); return; }
-
-    subName = readPublicName(release);
-    subTs = (release && (release.timestamp || release.issued_at)) || "—";
-
-    const payload = release && release.payload;
-    if(!payload){
-      setText("integrity","FAIL — missing payload");
-      setText("subName", subName);
-      setText("subTs", subTs);
-      return;
+    function setKV(map){
+      const kv=document.getElementById("kv");
+      kv.innerHTML="";
+      for(const [k,v] of Object.entries(map)){
+        const a=document.createElement("div"); a.className="k"; a.textContent=k;
+        const b=document.createElement("div"); b.className="v"; b.textContent=v;
+        kv.append(a,b);
+      }
     }
 
-    computedHash = await sha256HexFromText(JSON.stringify(payload));
-    fileHash = (isNonEmptyString(release.payload_sha256) ? String(release.payload_sha256).trim() : null);
+    document.getElementById("btnVerify").onclick = async () => {
+      const badge = document.getElementById("badge");
+      const raw = document.getElementById("raw");
+      const f = document.getElementById("file").files?.[0];
+      CERT=null; CERT_TXT="";
+      document.getElementById("dlCert").disabled=true;
+      document.getElementById("dlCertTxt").disabled=true;
 
-    setText("subName", subName);
-    setText("subTs", subTs);
-    setText("fileHash", fileHash || "—");
-    setText("computedHash", computedHash || "—");
+      if(!f){
+        badge.className="hbce-badge hbce-badge--bad";
+        badge.textContent="INVALID — no file";
+        return;
+      }
 
-    const integrityOk = isHex64(computedHash) && (!fileHash || fileHash === computedHash);
-    setText("integrity", integrityOk ? "OK file integrity" : "FAIL — payload_sha256 mismatch");
-    $("btnVerify").disabled = !integrityOk;
-  });
+      try{
+        const text = await f.text();
+        const obj = JSON.parse(text);
 
-  async function runVerify(){
-    resetResult();
+        // Canonical sha256 from stable stringify of parsed JSON (not raw text)
+        const payload_sha256 = await HBCE.sha256String(HBCE.stableStringify(obj));
 
-    // 1) registry
-    setText("regStatus","Checking…");
-    const reg = await fetchRegistry();
+        // Load registry and compute registry sha
+        const reg = await HBCE.fetchJson(REGISTRY_URL);
+        const registry_sha256 = await HBCE.sha256String(HBCE.stableStringify(reg));
 
-    if(!reg.ok){
-      setText("regStatus","FAIL-CLOSED — " + reg.reason);
-      setText("regCount","—");
-      setText("regSha", reg.sha || "—");
+        // Find match
+        const match = (reg.entries||[]).some(e => (e.payload_sha256||"").toLowerCase() === payload_sha256.toLowerCase());
 
-      setText("result","INVALID");
-      setText("resultNote","Registry non valido o non leggibile (fail-closed).");
-      setText("statusLine","FAIL-CLOSED — registry invalid");
-      setText("outName", subName || "—");
-      setText("outTs", subTs || "—");
-      setText("outFileHash", fileHash || "—");
-      setText("outComputedHash", computedHash || "—");
-      setText("outMatch","NO");
-      return;
-    }
+        const subjectName = (obj?.subject?.name) ? obj.subject.name : (obj?.operator_name ? obj.operator_name : "—");
+        const subjectTs = obj?.timestamp || obj?.issued_at || "—";
 
-    setText("regStatus","OK — registry valid");
-    setText("regCount", String(reg.json.entries.length));
-    setText("regSha", reg.sha || "—");
+        CERT = {
+          proto: "HBCE-CERT-v1",
+          kind: "IPR_PUBLIC_VERIFICATION_CERTIFICATE",
+          policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","GDPR_MIN","NO_PUBLIC_DATA_CUSTODY"],
+          issued_at: HBCE.nowISO(),
+          subject: {
+            name: subjectName || "—",
+            timestamp: subjectTs,
+            payload_sha256
+          },
+          registry: {
+            url: "/hermeticum-bce-platform/registry/registry.json",
+            registry_sha256,
+            match
+          },
+          result: match ? "VALID" : "INVALID",
+          note: "This certificate is reproducible: anyone can re-run VERIFY against the public registry."
+        };
 
-    // 2) match
-    const entries = reg.json.entries;
-    const target = String(computedHash || "").trim();
+        CERT_TXT =
+`HBCE CERTIFICATE (HBCE-CERT-v1)
+RESULT: ${CERT.result}
+STATUS: ${match ? "FILE INTEGRITY OK + PRESENT IN REGISTRY" : "FILE INTEGRITY OK + NOT PRESENT IN REGISTRY"}
+NAME: ${CERT.subject.name}
+TIMESTAMP: ${CERT.subject.timestamp}
+PAYLOAD_SHA256: ${CERT.subject.payload_sha256}
+REGISTRY_URL: ${CERT.registry.url}
+REGISTRY_SHA256: ${CERT.registry.registry_sha256}
+ISSUED_AT: ${CERT.issued_at}
+`;
 
-    const match = entries.find(e => e && String(e.payload_sha256 || "").trim() === target);
-    const isMatch = !!match;
+        badge.className = match ? "hbce-badge hbce-badge--ok" : "hbce-badge hbce-badge--bad";
+        badge.textContent = match ? "VALID — registry match true" : "INVALID — registry match false (fail-closed)";
 
-    // 3) output lines
-    setText("outName", subName || "—");
-    setText("outTs", subTs || "—");
-    setText("outFileHash", fileHash || "—");
-    setText("outComputedHash", computedHash || "—");
-    setText("outMatch", isMatch ? "YES" : "NO");
+        setKV({
+          "payload_sha256": payload_sha256,
+          "registry_sha256": registry_sha256,
+          "match": String(match),
+          "result": CERT.result
+        });
 
-    if(!isMatch){
-      setText("result","INVALID");
-      setText("resultNote","OK file integrity — NOT IN REGISTRY");
-      setText("statusLine","OK file integrity — NOT IN REGISTRY");
-      return;
-    }
+        raw.textContent = JSON.stringify(CERT, null, 2);
 
-    // VALID -> generate certificate
-    setText("result","VALID");
-    setText("resultNote","FILE INTEGRITY OK + PRESENT IN REGISTRY");
-    setText("statusLine","FILE INTEGRITY OK + PRESENT IN REGISTRY");
+        if(match){
+          document.getElementById("dlCert").disabled=false;
+          document.getElementById("dlCertTxt").disabled=false;
 
-    const now = new Date().toISOString();
-
-    lastCertificate = {
-      proto: "HBCE-CERT-v1",
-      kind: "IPR_PUBLIC_VERIFICATION_CERTIFICATE",
-      policy: [
-        "UE_FIRST",
-        "AUDIT_FIRST",
-        "FAIL_CLOSED",
-        "HASH_ONLY",
-        "APPEND_ONLY",
-        "GDPR_MIN",
-        "NO_PUBLIC_DATA_CUSTODY"
-      ],
-      issued_at: now,
-      subject: {
-        name: subName,
-        timestamp: subTs,
-        payload_sha256: computedHash
-      },
-      registry: {
-        url: REGISTRY_URL,
-        registry_sha256: reg.sha || null,
-        match: true
-      },
-      result: "VALID",
-      note: "This certificate is reproducible: anyone can re-run VERIFY against the public registry."
+          document.getElementById("dlCert").onclick=()=>{
+            const fn=`HBCE_CERTIFICATE__${payload_sha256.slice(0,12)}.json`;
+            HBCE.download(fn, JSON.stringify(CERT,null,2));
+          };
+          document.getElementById("dlCertTxt").onclick=()=>{
+            const fn=`HBCE_CERTIFICATE__${payload_sha256.slice(0,12)}.txt`;
+            HBCE.download(fn, CERT_TXT, "text/plain");
+          };
+        }
+      }catch(e){
+        badge.className="hbce-badge hbce-badge--bad";
+        badge.textContent="FAIL — verify error";
+        raw.textContent = String(e);
+      }
     };
-
-    const certJson = JSON.stringify(lastCertificate, null, 2);
-    setText("certPreview", certJson);
-
-    $("btnDlCertJson").disabled = false;
-    $("btnDlCertTxt").disabled = false;
-
-    $("btnDlCertJson").onclick = () => {
-      const fn = "HBCE_CERTIFICATE_" + safeNameForFile(subName) + "_" + String(computedHash).slice(0,12) + ".json";
-      downloadText(fn, certJson, "application/json;charset=utf-8");
-    };
-
-    $("btnDlCertTxt").onclick = () => {
-      const lines = [
-        "HBCE CERTIFICATE (HBCE-CERT-v1)",
-        "RESULT: VALID",
-        "STATUS: FILE INTEGRITY OK + PRESENT IN REGISTRY",
-        "NAME: " + (subName || "—"),
-        "TIMESTAMP: " + (subTs || "—"),
-        "PAYLOAD_SHA256: " + (computedHash || "—"),
-        "REGISTRY_URL: " + REGISTRY_URL,
-        "REGISTRY_SHA256: " + (reg.sha || "—"),
-        "ISSUED_AT: " + now
-      ].join("\n");
-      const fn = "HBCE_CERTIFICATE_" + safeNameForFile(subName) + "_" + String(computedHash).slice(0,12) + ".txt";
-      downloadText(fn, lines + "\n", "text/plain;charset=utf-8");
-    };
-  }
-
-  $("btnVerify").addEventListener("click", runVerify);
-
-  // init
-  setText("regUrl", REGISTRY_URL);
-  resetResult();
-})();
-</script>
-
+  </script>
 </body>
 </html>
