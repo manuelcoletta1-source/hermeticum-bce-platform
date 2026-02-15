@@ -1,11 +1,15 @@
 {
-  "proto": "HBCE-OPERATORS-NETWORK-v1",
+  "proto": "HBCE-OPERATORS-NETWORK-v2",
   "kind": "EU_OPERATOR_NETWORK_LEDGER",
   "network": "EU",
   "mode": "APPEND_ONLY",
-  "root_coordinator": "Manuel Coletta",
-  "root_payload_sha256": "1de300e4d826719c9a8708c8dfb2a8e943f19c3d324816b220f149f008ba481b",
   "issuer": "HERMETICUM B.C.E. S.r.l.",
+
+  "root": {
+    "root_coordinator": "Manuel Coletta",
+    "root_operator_payload_sha256": "1de300e4d826719c9a8708c8dfb2a8e943f19c3d324816b220f149f008ba481b",
+    "root_node_id": "HBCE-EU-NODE-IT-ROOT-0001"
+  },
 
   "policy": [
     "UE_FIRST",
@@ -17,7 +21,7 @@
     "NO_PUBLIC_DATA_CUSTODY"
   ],
 
-  "description": "Ledger rete operatori europei IPR. Definisce coordinatori nazionali, operatori regionali e nodi attivi. Nessun dato personale completo: solo hash licenze e stato operativo.",
+  "description": "Ledger rete operatori europei IPR. Append-only. Pubblica solo metadati minimizzati: ruolo, paese/regione, stato e hash licenza. Governance ex-post: sospensione/revoca tramite record OPERATOR_STATUS_UPDATE (mai edit retroattivo).",
 
   "structure": {
     "max_per_country": 10,
@@ -27,39 +31,65 @@
       "NATIONAL_COORDINATOR",
       "REGIONAL_OPERATOR",
       "ISSUER_OPERATOR"
-    ]
-  },
-
-  "schema": {
-    "record_required": [
-      "record_type",
-      "timestamp",
-      "operator_name",
-      "operator_payload_sha256",
-      "country",
-      "role",
-      "status"
-    ],
-    "record_optional": [
-      "region",
-      "city",
-      "parent_operator_sha256",
-      "note"
-    ],
-    "record_types": [
-      "OPERATOR_ADDED",
-      "OPERATOR_STATUS_UPDATE",
-      "ROLE_UPDATE"
     ],
     "status_allowed": [
       "ACTIVE",
       "SUSPENDED",
       "REVOKED"
+    ]
+  },
+
+  "schema": {
+    "record_types": [
+      "OPERATOR_ADDED",
+      "ROLE_UPDATE",
+      "OPERATOR_STATUS_UPDATE"
     ],
+
+    "record_required_base": [
+      "record_type",
+      "timestamp"
+    ],
+
+    "record_required_by_type": {
+      "OPERATOR_ADDED": [
+        "operator_name",
+        "operator_payload_sha256",
+        "country",
+        "role",
+        "status"
+      ],
+
+      "ROLE_UPDATE": [
+        "target_operator_sha256",
+        "new_role",
+        "decided_by_sha256"
+      ],
+
+      "OPERATOR_STATUS_UPDATE": [
+        "target_operator_sha256",
+        "new_status",
+        "decided_by_sha256",
+        "reason"
+      ]
+    },
+
+    "record_optional_common": [
+      "region",
+      "city",
+      "parent_operator_sha256",
+      "note",
+      "order_ref",
+      "payment_status"
+    ],
+
     "constraints": {
       "operator_payload_sha256": "64-hex sha256 lowercase",
+      "target_operator_sha256": "64-hex sha256 lowercase",
       "parent_operator_sha256": "64-hex sha256 lowercase",
-      "timestamp": "ISO8601"
+      "decided_by_sha256": "64-hex sha256 lowercase",
+      "timestamp": "ISO8601",
+      "new_status": "ACTIVE|SUSPENDED|REVOKED"
     }
   },
 
