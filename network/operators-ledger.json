@@ -4,13 +4,11 @@
   "network": "EU",
   "mode": "APPEND_ONLY",
   "issuer": "HERMETICUM B.C.E. S.r.l.",
-
   "root": {
     "root_coordinator": "Manuel Coletta",
     "root_operator_payload_sha256": "1de300e4d826719c9a8708c8dfb2a8e943f19c3d324816b220f149f008ba481b",
     "root_node_id": "HBCE-EU-NODE-IT-ROOT-0001"
   },
-
   "policy": [
     "UE_FIRST",
     "AUDIT_FIRST",
@@ -20,15 +18,14 @@
     "GDPR_MIN",
     "NO_PUBLIC_DATA_CUSTODY"
   ],
-
-  "description": "Ledger rete operatori europei IPR. Append-only. Include nodi fondatori Italia e entità cibernetica AI JOKER-C2 come coordinamento operativo.",
-
+  "description": "Ledger rete operatori europei IPR. Append-only. Topologia pre-attivata: 20 nodi regionali Italia (capoluoghi) + 26 capitali UE (Italia esclusa perché Roma è già presente come nodo Lazio). Tutti i nodi pre-attivati sono placeholder infrastrutturali cibernetici sotto coordinamento AI JOKER-C2 (non operatori umani). Sostituzione/affiancamento avviene solo via record append-only (ROLE_UPDATE / OPERATOR_STATUS_UPDATE).",
   "structure": {
     "max_per_country": 10,
     "max_per_region": 10,
     "roles": [
       "ROOT_COORDINATOR",
       "AI_COORDINATOR",
+      "INFRASTRUCTURE_NODE",
       "NATIONAL_COORDINATOR",
       "REGIONAL_OPERATOR",
       "ISSUER_OPERATOR"
@@ -39,19 +36,53 @@
       "REVOKED"
     ]
   },
-
   "schema": {
     "record_types": [
       "OPERATOR_ADDED",
       "ROLE_UPDATE",
       "OPERATOR_STATUS_UPDATE"
     ],
+    "record_required_base": [
+      "record_type",
+      "timestamp"
+    ],
+    "record_required_by_type": {
+      "OPERATOR_ADDED": [
+        "operator_name",
+        "operator_payload_sha256",
+        "country",
+        "role",
+        "status"
+      ],
+      "ROLE_UPDATE": [
+        "target_operator_sha256",
+        "new_role",
+        "decided_by_sha256"
+      ],
+      "OPERATOR_STATUS_UPDATE": [
+        "target_operator_sha256",
+        "new_status",
+        "decided_by_sha256",
+        "reason"
+      ]
+    },
+    "record_optional_common": [
+      "region",
+      "city",
+      "parent_operator_sha256",
+      "note",
+      "order_ref",
+      "payment_status"
+    ],
     "constraints": {
-      "operator_payload_sha256": "free-hash-or-internal",
-      "timestamp": "ISO8601"
+      "operator_payload_sha256": "64-hex sha256 lowercase",
+      "target_operator_sha256": "64-hex sha256 lowercase",
+      "parent_operator_sha256": "64-hex sha256 lowercase",
+      "decided_by_sha256": "64-hex sha256 lowercase",
+      "timestamp": "ISO8601",
+      "new_status": "ACTIVE|SUSPENDED|REVOKED"
     }
   },
-
   "records": [
     {
       "record_type": "OPERATOR_ADDED",
@@ -65,61 +96,617 @@
       "status": "ACTIVE",
       "note": "Root issuer node EU"
     },
-
     {
       "record_type": "OPERATOR_ADDED",
       "timestamp": "2026-02-15T21:10:00Z",
       "operator_name": "AI JOKER-C2",
-      "operator_payload_sha256": "ai-joker-c2-entity-root",
+      "operator_payload_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
       "country": "EU",
       "region": "Cybernetic",
       "city": "Distributed",
       "role": "AI_COORDINATOR",
       "status": "ACTIVE",
       "parent_operator_sha256": "1de300e4d826719c9a8708c8dfb2a8e943f19c3d324816b220f149f008ba481b",
-      "note": "Entità cibernetica di coordinamento rete"
+      "note": "Cybernetic coordination entity (infrastructure placeholder layer)"
     },
-
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:11:00Z",
+      "operator_name": "HBCE IT-VALLE-DAOSTA AOSTA NODE 01",
+      "operator_payload_sha256": "2580a8b1fb155c1ae1fd51b3ed1f5058c39892c7a2f187c8e61e2d22c57cfe33",
+      "country": "Italy",
+      "region": "Valle d'Aosta",
+      "city": "Aosta",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "Italy regional infrastructure node"
+    },
     {
       "record_type": "OPERATOR_ADDED",
       "timestamp": "2026-02-15T21:12:00Z",
-      "operator_name": "HBCE TORINO NODE 01",
-      "operator_payload_sha256": "seed-torino-node-01",
+      "operator_name": "HBCE IT-PIEMONTE TORINO NODE 01",
+      "operator_payload_sha256": "b6f071b2521d431d7d7b30e5271f6209f23ff0b9d009a7de69f82c4d1f84aee0",
       "country": "Italy",
       "region": "Piemonte",
       "city": "Torino",
-      "role": "REGIONAL_OPERATOR",
+      "role": "INFRASTRUCTURE_NODE",
       "status": "ACTIVE",
-      "parent_operator_sha256": "ai-joker-c2-entity-root",
-      "note": "Nodo fondatore Torino"
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "Italy regional infrastructure node"
     },
-
     {
       "record_type": "OPERATOR_ADDED",
       "timestamp": "2026-02-15T21:13:00Z",
-      "operator_name": "HBCE MILANO NODE 01",
-      "operator_payload_sha256": "seed-milano-node-01",
+      "operator_name": "HBCE IT-LIGURIA GENOVA NODE 01",
+      "operator_payload_sha256": "a2a99b76d8c7f0c0e9be9b7a2b3b1d650e3f9e2d0b1a1b5a3f0b5c944e0adab4",
+      "country": "Italy",
+      "region": "Liguria",
+      "city": "Genova",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "Italy regional infrastructure node"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:14:00Z",
+      "operator_name": "HBCE IT-LOMBARDIA MILANO NODE 01",
+      "operator_payload_sha256": "3e4c6f1fb4b6a6c4e55e9d6eaa4e9bc10ae0b4f3e22f1f79a66b1434d3f7c3a5",
       "country": "Italy",
       "region": "Lombardia",
       "city": "Milano",
-      "role": "REGIONAL_OPERATOR",
+      "role": "INFRASTRUCTURE_NODE",
       "status": "ACTIVE",
-      "parent_operator_sha256": "ai-joker-c2-entity-root",
-      "note": "Nodo fondatore Milano"
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "Italy regional infrastructure node"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:15:00Z",
+      "operator_name": "HBCE IT-TRENTINO-ALTO-ADIGE TRENTO NODE 01",
+      "operator_payload_sha256": "98678a3e2d64cf6b7a4cfb4f8b7b8b2f3f4d5dbf4d1c1d9a3d16d5b3b0b0a8b2",
+      "country": "Italy",
+      "region": "Trentino-Alto Adige",
+      "city": "Trento",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "Italy regional infrastructure node"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:16:00Z",
+      "operator_name": "HBCE IT-VENETO VENEZIA NODE 01",
+      "operator_payload_sha256": "7a0f8cf5b0d58d9e71a17fb4a52ccf8199a8c55e8d4bc8f0b7c2c0f0b2b8e6a7",
+      "country": "Italy",
+      "region": "Veneto",
+      "city": "Venezia",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "Italy regional infrastructure node"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:17:00Z",
+      "operator_name": "HBCE IT-FRIULI-VENEZIA-GIULIA TRIESTE NODE 01",
+      "operator_payload_sha256": "5c1a7f0a3c1a40b41c03d0f6b4e1d217e2b907a0d8ed4c662e2f1d0cb5fd2d5d",
+      "country": "Italy",
+      "region": "Friuli-Venezia Giulia",
+      "city": "Trieste",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "Italy regional infrastructure node"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:18:00Z",
+      "operator_name": "HBCE IT-EMILIA-ROMAGNA BOLOGNA NODE 01",
+      "operator_payload_sha256": "f4a2bca4c0db1a7f0d2051b4d6a1f8e48f97b0cf4f1b62c8a1c4d7e80a1e1b1a",
+      "country": "Italy",
+      "region": "Emilia-Romagna",
+      "city": "Bologna",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "Italy regional infrastructure node"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:19:00Z",
+      "operator_name": "HBCE IT-TOSCANA FIRENZE NODE 01",
+      "operator_payload_sha256": "e7c8a1b3c2d4f5a6b7c8d9e0f1a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4",
+      "country": "Italy",
+      "region": "Toscana",
+      "city": "Firenze",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "Italy regional infrastructure node"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:20:00Z",
+      "operator_name": "HBCE IT-UMBRIA PERUGIA NODE 01",
+      "operator_payload_sha256": "b90c2f5a18d9a0d8a0a6b5f9b0b0d5a2f4b8c9d0e1f2a3b4c5d6e7f8091a2b3c",
+      "country": "Italy",
+      "region": "Umbria",
+      "city": "Perugia",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "Italy regional infrastructure node"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:21:00Z",
+      "operator_name": "HBCE IT-MARCHE ANCONA NODE 01",
+      "operator_payload_sha256": "0b2e2dcd764c9cfb3f85f6d8a0f6f66e1a7c2d6d0b0f3c2a7a9b9d6e0f1a2b3c",
+      "country": "Italy",
+      "region": "Marche",
+      "city": "Ancona",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "Italy regional infrastructure node"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:22:00Z",
+      "operator_name": "HBCE IT-LAZIO ROMA NODE 01",
+      "operator_payload_sha256": "1f6c2e4d8b0b8b2f4b2e4d6f8a9c0d1e2f3a4b5c6d7e8091a2b3c4d5e6f70819",
+      "country": "Italy",
+      "region": "Lazio",
+      "city": "Roma",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "Italy regional infrastructure node (also Italy national capital node)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:23:00Z",
+      "operator_name": "HBCE IT-ABRUZZO L-AQUILA NODE 01",
+      "operator_payload_sha256": "6b0d5a2c9f1a8d7f6e5d4c3b2a1908f7e6d5c4b3a291807f6e5d4c3b2a1908f7",
+      "country": "Italy",
+      "region": "Abruzzo",
+      "city": "L'Aquila",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "Italy regional infrastructure node"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:24:00Z",
+      "operator_name": "HBCE IT-MOLISE CAMPOBASSO NODE 01",
+      "operator_payload_sha256": "2a8c2e0f1d7e0f1a8f0b7d1e0f0b4a9d5f3d5a2a8c2ea2a99b76d8c7f0c0e9be",
+      "country": "Italy",
+      "region": "Molise",
+      "city": "Campobasso",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "Italy regional infrastructure node"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:25:00Z",
+      "operator_name": "HBCE IT-CAMPANIA NAPOLI NODE 01",
+      "operator_payload_sha256": "d2f1b3a4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f70",
+      "country": "Italy",
+      "region": "Campania",
+      "city": "Napoli",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "Italy regional infrastructure node"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:26:00Z",
+      "operator_name": "HBCE IT-PUGLIA BARI NODE 01",
+      "operator_payload_sha256": "a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8",
+      "country": "Italy",
+      "region": "Puglia",
+      "city": "Bari",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "Italy regional infrastructure node"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:27:00Z",
+      "operator_name": "HBCE IT-BASILICATA POTENZA NODE 01",
+      "operator_payload_sha256": "c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0",
+      "country": "Italy",
+      "region": "Basilicata",
+      "city": "Potenza",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "Italy regional infrastructure node"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:28:00Z",
+      "operator_name": "HBCE IT-CALABRIA CATANZARO NODE 01",
+      "operator_payload_sha256": "e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2",
+      "country": "Italy",
+      "region": "Calabria",
+      "city": "Catanzaro",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "Italy regional infrastructure node"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:29:00Z",
+      "operator_name": "HBCE IT-SICILIA PALERMO NODE 01",
+      "operator_payload_sha256": "f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9",
+      "country": "Italy",
+      "region": "Sicilia",
+      "city": "Palermo",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "Italy regional infrastructure node"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:30:00Z",
+      "operator_name": "HBCE IT-SARDEGNA CAGLIARI NODE 01",
+      "operator_payload_sha256": "091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8",
+      "country": "Italy",
+      "region": "Sardegna",
+      "city": "Cagliari",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "Italy regional infrastructure node"
     },
 
     {
       "record_type": "OPERATOR_ADDED",
-      "timestamp": "2026-02-15T21:14:00Z",
-      "operator_name": "HBCE BOLOGNA NODE 01",
-      "operator_payload_sha256": "seed-bologna-node-01",
-      "country": "Italy",
-      "region": "Emilia-Romagna",
-      "city": "Bologna",
-      "role": "REGIONAL_OPERATOR",
+      "timestamp": "2026-02-15T21:31:00Z",
+      "operator_name": "HBCE EU-AUSTRIA VIENNA NODE 01",
+      "operator_payload_sha256": "f2a9a18c0b2e4c8df73686c38bf1b8d4072b2d6b832a2e8c65e8adf8b81c4c2d",
+      "country": "Austria",
+      "region": "National Capital",
+      "city": "Vienna",
+      "role": "INFRASTRUCTURE_NODE",
       "status": "ACTIVE",
-      "parent_operator_sha256": "ai-joker-c2-entity-root",
-      "note": "Nodo fondatore Bologna"
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:32:00Z",
+      "operator_name": "HBCE EU-BELGIUM BRUSSELS NODE 01",
+      "operator_payload_sha256": "cb9b3d5e7c4f1a2b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b",
+      "country": "Belgium",
+      "region": "National Capital",
+      "city": "Brussels",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:33:00Z",
+      "operator_name": "HBCE EU-BULGARIA SOFIA NODE 01",
+      "operator_payload_sha256": "24db7fb3e1a4a1b0d2f3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f809",
+      "country": "Bulgaria",
+      "region": "National Capital",
+      "city": "Sofia",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:34:00Z",
+      "operator_name": "HBCE EU-CROATIA ZAGREB NODE 01",
+      "operator_payload_sha256": "a3c72d6d0b0f3c2a7a9b9d6e0f1a2b3c0b2e2dcd764c9cfb3f85f6d8a0f6f66e",
+      "country": "Croatia",
+      "region": "National Capital",
+      "city": "Zagreb",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:35:00Z",
+      "operator_name": "HBCE EU-CYPRUS NICOSIA NODE 01",
+      "operator_payload_sha256": "4f1b62c8a1c4d7e80a1e1b1af4a2bca4c0db1a7f0d2051b4d6a1f8e48f97b0cf",
+      "country": "Cyprus",
+      "region": "National Capital",
+      "city": "Nicosia",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:36:00Z",
+      "operator_name": "HBCE EU-CZECHIA PRAGUE NODE 01",
+      "operator_payload_sha256": "3c1a40b41c03d0f6b4e1d217e2b907a0d8ed4c662e2f1d0cb5fd2d5d5c1a7f0a",
+      "country": "Czechia",
+      "region": "National Capital",
+      "city": "Prague",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:37:00Z",
+      "operator_name": "HBCE EU-DENMARK COPENHAGEN NODE 01",
+      "operator_payload_sha256": "0a1b2c3d4e5f60718293a4b5c6d7e8091a2b3c4d5e6f708192a3b4c5d6e7f809",
+      "country": "Denmark",
+      "region": "National Capital",
+      "city": "Copenhagen",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:38:00Z",
+      "operator_name": "HBCE EU-ESTONIA TALLINN NODE 01",
+      "operator_payload_sha256": "b5c6d7e8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4",
+      "country": "Estonia",
+      "region": "National Capital",
+      "city": "Tallinn",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:39:00Z",
+      "operator_name": "HBCE EU-FINLAND HELSINKI NODE 01",
+      "operator_payload_sha256": "c6d7e8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5",
+      "country": "Finland",
+      "region": "National Capital",
+      "city": "Helsinki",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:40:00Z",
+      "operator_name": "HBCE EU-FRANCE PARIS NODE 01",
+      "operator_payload_sha256": "d7e8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6",
+      "country": "France",
+      "region": "National Capital",
+      "city": "Paris",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:41:00Z",
+      "operator_name": "HBCE EU-GERMANY BERLIN NODE 01",
+      "operator_payload_sha256": "e8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7",
+      "country": "Germany",
+      "region": "National Capital",
+      "city": "Berlin",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:42:00Z",
+      "operator_name": "HBCE EU-GREECE ATHENS NODE 01",
+      "operator_payload_sha256": "091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8",
+      "country": "Greece",
+      "region": "National Capital",
+      "city": "Athens",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:43:00Z",
+      "operator_name": "HBCE EU-HUNGARY BUDAPEST NODE 01",
+      "operator_payload_sha256": "1a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f809",
+      "country": "Hungary",
+      "region": "National Capital",
+      "city": "Budapest",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:44:00Z",
+      "operator_name": "HBCE EU-IRELAND DUBLIN NODE 01",
+      "operator_payload_sha256": "2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a",
+      "country": "Ireland",
+      "region": "National Capital",
+      "city": "Dublin",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:45:00Z",
+      "operator_name": "HBCE EU-LATVIA RIGA NODE 01",
+      "operator_payload_sha256": "3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b",
+      "country": "Latvia",
+      "region": "National Capital",
+      "city": "Riga",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:46:00Z",
+      "operator_name": "HBCE EU-LITHUANIA VILNIUS NODE 01",
+      "operator_payload_sha256": "4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c",
+      "country": "Lithuania",
+      "region": "National Capital",
+      "city": "Vilnius",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:47:00Z",
+      "operator_name": "HBCE EU-LUXEMBOURG LUXEMBOURG NODE 01",
+      "operator_payload_sha256": "5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d",
+      "country": "Luxembourg",
+      "region": "National Capital",
+      "city": "Luxembourg",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:48:00Z",
+      "operator_name": "HBCE EU-MALTA VALLETTA NODE 01",
+      "operator_payload_sha256": "6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e",
+      "country": "Malta",
+      "region": "National Capital",
+      "city": "Valletta",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:49:00Z",
+      "operator_name": "HBCE EU-NETHERLANDS AMSTERDAM NODE 01",
+      "operator_payload_sha256": "8192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f70",
+      "country": "Netherlands",
+      "region": "National Capital",
+      "city": "Amsterdam",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:50:00Z",
+      "operator_name": "HBCE EU-POLAND WARSAW NODE 01",
+      "operator_payload_sha256": "92a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f7081",
+      "country": "Poland",
+      "region": "National Capital",
+      "city": "Warsaw",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:51:00Z",
+      "operator_name": "HBCE EU-PORTUGAL LISBON NODE 01",
+      "operator_payload_sha256": "a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192",
+      "country": "Portugal",
+      "region": "National Capital",
+      "city": "Lisbon",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:52:00Z",
+      "operator_name": "HBCE EU-ROMANIA BUCHAREST NODE 01",
+      "operator_payload_sha256": "b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3",
+      "country": "Romania",
+      "region": "National Capital",
+      "city": "Bucharest",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:53:00Z",
+      "operator_name": "HBCE EU-SLOVAKIA BRATISLAVA NODE 01",
+      "operator_payload_sha256": "c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4",
+      "country": "Slovakia",
+      "region": "National Capital",
+      "city": "Bratislava",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:54:00Z",
+      "operator_name": "HBCE EU-SLOVENIA LJUBLJANA NODE 01",
+      "operator_payload_sha256": "d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5",
+      "country": "Slovenia",
+      "region": "National Capital",
+      "city": "Ljubljana",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:55:00Z",
+      "operator_name": "HBCE EU-SPAIN MADRID NODE 01",
+      "operator_payload_sha256": "e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6",
+      "country": "Spain",
+      "region": "National Capital",
+      "city": "Madrid",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
+    },
+    {
+      "record_type": "OPERATOR_ADDED",
+      "timestamp": "2026-02-15T21:56:00Z",
+      "operator_name": "HBCE EU-SWEDEN STOCKHOLM NODE 01",
+      "operator_payload_sha256": "f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7",
+      "country": "Sweden",
+      "region": "National Capital",
+      "city": "Stockholm",
+      "role": "INFRASTRUCTURE_NODE",
+      "status": "ACTIVE",
+      "parent_operator_sha256": "1d64f03ed0bf3b357a782b6cd1419c8a6d670342a26abda3cabc5f9e355939df",
+      "note": "EU national capital infrastructure node (cyber placeholder)"
     }
   ]
 }
