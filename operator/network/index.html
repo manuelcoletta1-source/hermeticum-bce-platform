@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Operator Network — Hermeticum B.C.E.</title>
+  <meta name="description" content="European and national IPR Operator Network: initial coverage plan (1 per Italian region, 1 per EU country). EU-first, audit-first." />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <!-- HERO -->
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">NETWORK · TERRITORIAL NODES · CONTROLLED ACCESS</div>
+      <h1 class="hbce-hero__title">Operator Network</h1>
+      <p class="hbce-hero__lead">
+        Piano di copertura iniziale per la rete operatori IPR: <strong>1 operatore per regione italiana</strong> e
+        <strong>1 operatore per nazione UE</strong> (fase fondativa). Espansione progressiva dopo stabilizzazione operativa.
+      </p>
+
+      <div class="hbce-cta-row">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/operator/apply/">Apply as operator</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operator/pricing/">Licensing tiers</a>
+      </div>
+    </section>
+
+    <!-- PRINCIPLES -->
+    <section class="hbce-section">
+      <h2>Network rules</h2>
+      <ul class="hbce-list">
+        <li><strong>Controlled scarcity</strong>: accesso iniziale limitato per garantire qualità e audit posture.</li>
+        <li><strong>Territorial accountability</strong>: ogni nodo dichiara territorio e capacità operativa.</li>
+        <li><strong>Audit-first</strong>: operazioni verificabili, tracciabili, coerenti con UE-first.</li>
+        <li><strong>Public registry hash-only</strong>: nessuna custodia pubblica di dati personali.</li>
+      </ul>
+    </section>
+
+    <!-- ITALY -->
+    <section class="hbce-section">
+      <h2>Italy — regional nodes (phase 1)</h2>
+      <p>
+        Obiettivo operativo: <strong>1 operatore per regione</strong> nella fase fondativa.
+        Ogni regione può essere marcata come <em>Open</em> (disponibile) o <em>Assigned</em> (occupata).
+      </p>
+
+      <div class="hbce-card">
+        <div class="hbce-toolbar">
+          <input class="hbce-input" id="itSearch" type="search" placeholder="Search region (e.g., Piemonte)..." />
+          <select class="hbce-input" id="itFilter">
+            <option value="all">All</option>
+            <option value="open">Open</option>
+            <option value="assigned">Assigned</option>
+          </select>
+        </div>
+
+        <div class="hbce-table-wrap">
+          <table class="hbce-table" id="itTable">
+            <thead>
+              <tr>
+                <th>Region</th>
+                <th>Status</th>
+                <th>Node type</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody><!-- populated by JS --></tbody>
+          </table>
+        </div>
+
+        <p style="margin-top:12px;">
+          Status “Assigned” indica che la regione è già coperta (non implica dati pubblici dell’operatore).
+          La copertura può espandersi in fase successiva.
+        </p>
+      </div>
+    </section>
+
+    <!-- EU -->
+    <section class="hbce-section">
+      <h2>European Union — national nodes (phase 1)</h2>
+      <p>
+        Obiettivo operativo: <strong>1 operatore per nazione UE</strong> nella fase fondativa.
+        Espansione successiva per copertura B2G e filiere B2B.
+      </p>
+
+      <div class="hbce-card">
+        <div class="hbce-toolbar">
+          <input class="hbce-input" id="euSearch" type="search" placeholder="Search country (e.g., Germany)..." />
+          <select class="hbce-input" id="euFilter">
+            <option value="all">All</option>
+            <option value="open">Open</option>
+            <option value="assigned">Assigned</option>
+          </select>
+        </div>
+
+        <div class="hbce-table-wrap">
+          <table class="hbce-table" id="euTable">
+            <thead>
+              <tr>
+                <th>Country</th>
+                <th>Status</th>
+                <th>Node type</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody><!-- populated by JS --></tbody>
+          </table>
+        </div>
+
+        <p style="margin-top:12px;">
+          Nota: questa lista è una roadmap operativa. I dettagli dei nodi non sono pubblicati qui.
+        </p>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="hbce-section hbce-cta-final">
+      <h2>Claim a territory</h2>
+      <p>
+        Se un territorio è “Open”, puoi candidarti come operatore.  
+        Accesso iniziale limitato: valutazione capability + territorio + compliance.
+      </p>
+      <div class="hbce-cta-row">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/operator/apply/">Start application</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operator/">Back to operator</a>
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce.js"></script>
+
+  <script>
+    (function () {
+      // Status values:
+      // - "open": territory available
+      // - "assigned": already covered (no public operator data shown here)
+      const IT_REGIONS = [
+        "Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia",
+        "Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia",
+        "Toscana","Trentino-Alto Adige/Südtirol","Umbria","Valle d'Aosta/Vallée d'Aoste","Veneto"
+      ].map(name => ({ name, status: "open", type: "Regional operator" }));
+
+      const EU_COUNTRIES = [
+        "Austria","Belgium","Bulgaria","Croatia","Cyprus","Czechia","Denmark","Estonia","Finland","France",
+        "Germany","Greece","Hungary","Ireland","Italy","Latvia","Lithuania","Luxembourg","Malta",
+        "Netherlands","Poland","Portugal","Romania","Slovakia","Slovenia","Spain","Sweden"
+      ].map(name => ({ name, status: "open", type: "National operator" }));
+
+      function $(id) { return document.getElementById(id); }
+      function esc(s) {
+        return String(s || "").replace(/[&<>"']/g, (c) => ({
+          "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+        }[c]));
+      }
+
+      function pill(status) {
+        const label = status === "assigned" ? "Assigned" : "Open";
+        const cls = status === "assigned" ? "hbce-pill hbce-pill--muted" : "hbce-pill";
+        return `<span class="${cls}">${label}</span>`;
+      }
+
+      function action(status) {
+        if (status === "assigned") {
+          return `<span class="hbce-muted">Not available</span>`;
+        }
+        return `<a class="hbce-link" href="/hermeticum-bce-platform/operator/apply/">Apply</a>`;
+      }
+
+      function render(tableId, data, q, filter) {
+        const tbody = $(tableId).querySelector("tbody");
+        const query = (q || "").trim().toLowerCase();
+        const f = filter || "all";
+
+        const rows = data
+          .filter(x => !query || x.name.toLowerCase().includes(query))
+          .filter(x => f === "all" ? true : x.status === f)
+          .map(x => `
+            <tr>
+              <td>${esc(x.name)}</td>
+              <td>${pill(x.status)}</td>
+              <td>${esc(x.type)}</td>
+              <td>${action(x.status)}</td>
+            </tr>
+          `)
+          .join("");
+
+        tbody.innerHTML = rows || `<tr><td colspan="4" class="hbce-muted">No results.</td></tr>`;
+      }
+
+      // Initial render
+      render("itTable", IT_REGIONS, "", "all");
+      render("euTable", EU_COUNTRIES, "", "all");
+
+      // Search + filter handlers
+      $("itSearch").addEventListener("input", () => render("itTable", IT_REGIONS, $("itSearch").value, $("itFilter").value));
+      $("itFilter").addEventListener("change", () => render("itTable", IT_REGIONS, $("itSearch").value, $("itFilter").value));
+
+      $("euSearch").addEventListener("input", () => render("euTable", EU_COUNTRIES, $("euSearch").value, $("euFilter").value));
+      $("euFilter").addEventListener("change", () => render("euTable", EU_COUNTRIES, $("euSearch").value, $("euFilter").value));
+    })();
+  </script>
+</body>
+</html>
