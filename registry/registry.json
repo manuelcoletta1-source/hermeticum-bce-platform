@@ -1,6 +1,10 @@
 {
-  "proto": "HBCE-REGISTRY-v1",
+  "proto": "HBCE-REGISTRY-v2",
   "kind": "IPR_PUBLIC_REGISTRY",
+  "network": "EU",
+  "mode": "APPEND_ONLY_PUBLIC_LEDGER",
+  "issuer": "HERMETICUM B.C.E. S.r.l.",
+
   "policy": [
     "HASH_ONLY",
     "APPEND_ONLY",
@@ -10,15 +14,55 @@
     "GDPR_MIN",
     "NO_PUBLIC_DATA_CUSTODY"
   ],
-  "description": "Registro pubblico append-only. Pubblica solo prove minimizzate (name|nickname + hash + timestamp). Nessuna custodia pubblica di dati personali. Verifica deterministica: se non matcha -> INVALID (fail-closed).",
+
+  "description": "Registro pubblico append-only europeo. Pubblica solo prove minimizzate (name + payload_sha256 + timestamp). Nessuna custodia pubblica di dati personali. Se SHA256 non presente -> INVALID (fail-closed).",
+
+  "rules": {
+    "public_data": "HASH_ONLY",
+    "write_mode": "MANUAL_APPEND_ONLY",
+    "verification": "DETERMINISTIC_SHA256_MATCH",
+    "failure_mode": "FAIL_CLOSED"
+  },
+
   "schema": {
-    "entry_required": ["payload_sha256", "timestamp"],
-    "entry_public_identity": ["name"],
-    "entry_legacy_allowed": ["nickname"],
-    "entry_optional": ["entity_type", "status", "note"],
+    "entry_required": [
+      "payload_sha256",
+      "timestamp"
+    ],
+    "entry_public_identity": [
+      "name"
+    ],
+    "entry_optional": [
+      "entity_type",
+      "status",
+      "note"
+    ],
     "constraints": {
-      "payload_sha256": "64-hex sha256"
+      "payload_sha256": "64-hex sha256 lowercase",
+      "timestamp": "ISO8601"
     }
   },
-  "entries": []
+
+  "lifecycle": {
+    "states": [
+      "ACTIVE",
+      "REVOKED",
+      "SUSPENDED"
+    ],
+    "events": [
+      "ISSUED",
+      "STATUS_UPDATE"
+    ]
+  },
+
+  "verification": {
+    "rule": "SHA256(file_canonico) MUST_MATCH registry.entries[].payload_sha256",
+    "valid_result": "VALID",
+    "invalid_result": "INVALID",
+    "certificate": "HBCE_CERTIFICATE"
+  },
+
+  "entries": [
+
+  ]
 }
