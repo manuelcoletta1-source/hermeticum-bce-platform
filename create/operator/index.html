@@ -3,499 +3,167 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CREATE OPERATOR — Licenza Operatore IPR (richiede IPR Base VALID)</title>
-  <meta name="description" content="Crea licenza Operatore IPR solo se l'IPR Base dell'operatore è VALID nel registry pubblico. Fail-closed, hash-only, append-only." />
-  <meta name="robots" content="index,follow" />
-  <meta name="theme-color" content="#0b0f14" />
+  <title>CREATE — Operator License (EU)</title>
+  <meta name="description" content="Generatore licenza operatore UE: HBCE-OPERATOR-v1 + registry entry. Hash-only, append-only, fail-closed." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+  <script defer src="/hermeticum-bce-platform/assets/hbce-crypto.js"></script>
 </head>
-
 <body>
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
-
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CREATE · OPERATOR LICENSE · FAIL-CLOSED · CHAINED</div>
-      <h1 class="hbce-hero__title">Crea Operatore (Licenza)</h1>
+      <div class="hbce-hero__kicker">CREATE · IPR OPERATOR UE · COORDINATOR MODEL</div>
+      <h1 class="hbce-hero__title">Crea Licenza Operatore</h1>
       <p class="hbce-hero__lead">
-        Questo wizard rilascia una <strong>Licenza Operatore</strong> solo se esiste una catena verificabile:
-        <strong>IPR Base (operatore) → VALID nel registry</strong>.
-        Se manca la traccia pubblica → <strong>BLOCK</strong> (fail-closed).
+        Genera localmente <strong>HBCE-OPERATOR-v1</strong> + entry per registry. Poi append e verify come per IPR base.
       </p>
-      <p class="hbce-note">
-        Decisione–Costo–Traccia–Tempo: senza traccia (registry match) non esiste decisione operativa. Fail-closed.
-      </p>
-
-      <div class="hbce-actions">
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operator/">Operator Workstation</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/append/">Registry APPEND</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-      </div>
     </section>
 
-    <!-- STEP 0: REQUIREMENTS -->
-    <section class="hbce-section">
-      <h2>Prerequisito non negoziabile</h2>
-      <div class="hbce-card">
-        <ul class="hbce-list">
-          <li><strong>Input:</strong> file <code>IPR_RELEASE</code> dell’operatore (Base)</li>
-          <li><strong>Check 1 (Integrità):</strong> <code>SHA-256(canonical(payload))</code> deve combaciare con <code>payload_sha256</code> del file</li>
-          <li><strong>Check 2 (Traccia pubblica):</strong> <code>payload_sha256</code> deve essere presente in <code>registry/registry.json</code></li>
-          <li><strong>Se manca uno dei due:</strong> <strong>BLOCK</strong> (fail-closed)</li>
-        </ul>
-      </div>
-    </section>
+    <section class="hbce-grid">
+      <div class="hbce-card hbce-card--6">
+        <h2>Parametri operatore</h2>
 
-    <!-- STEP 1: LOAD BASE RELEASE -->
-    <section class="hbce-section">
-      <h2>STEP 1 — Carica IPR Base (operatore)</h2>
-
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>Upload IPR_RELEASE (Base)</h3>
-          <input type="file" id="baseReleaseFile" accept=".json,application/json" />
-
-          <ul class="hbce-list">
-            <li><strong>Name:</strong> <span id="b_name">—</span></li>
-            <li><strong>Entity:</strong> <span id="b_entity">—</span></li>
-            <li><strong>Issued at:</strong> <span id="b_ts">—</span></li>
-            <li><strong>payload_sha256 (file):</strong> <span id="b_filehash">—</span></li>
-            <li><strong>payload_sha256 (computed):</strong> <span id="b_computed">—</span></li>
-            <li><strong>Integrity:</strong> <span id="b_integrity">—</span></li>
-          </ul>
-
-          <div class="hbce-actions">
-            <button class="hbce-btn" id="btnCheckRegistry" type="button" disabled>CHECK REGISTRY (Base deve essere VALID)</button>
-          </div>
-
-          <p class="hbce-note">
-            Computed = SHA-256 di <code>canonical(payload)</code> calcolato localmente nel browser (no custody).
-          </p>
+        <div class="hbce-field">
+          <label for="opName">Operator name</label>
+          <input id="opName" class="hbce-input" value="manuel coletta" />
         </div>
 
-        <div class="hbce-card">
-          <h3>Registry live</h3>
-          <ul class="hbce-list">
-            <li><strong>URL:</strong> <code id="reg_url">/hermeticum-bce-platform/registry/registry.json</code></li>
-            <li><strong>Status:</strong> <span id="reg_status">—</span></li>
-            <li><strong>Entries:</strong> <span id="reg_count">—</span></li>
-            <li><strong>Registry SHA-256:</strong> <span id="reg_sha">—</span></li>
-            <li><strong>Base match:</strong> <span id="reg_match">—</span></li>
-          </ul>
-
-          <div class="hbce-actions">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Apri registry viewer</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/append/">Apri append tool</a>
-          </div>
-
-          <p class="hbce-note">
-            Fail-closed: se registry non leggibile o schema non valido → BLOCK.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- STEP 2: ISSUE OPERATOR LICENSE -->
-    <section class="hbce-section">
-      <h2>STEP 2 — Crea Licenza Operatore (solo se Base = VALID)</h2>
-
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>Scope operativo (capabilities)</h3>
-
-          <label><strong>Livello</strong></label><br />
-          <select id="op_level" style="width:100%;padding:10px;">
-            <option value="OPERATOR">OPERATOR</option>
-            <option value="NODE">NODE</option>
+        <div class="hbce-field">
+          <label for="level">License level</label>
+          <select id="level" class="hbce-select">
             <option value="COORDINATOR">COORDINATOR</option>
+            <option value="OPERATOR">OPERATOR</option>
           </select>
-
-          <div style="height:10px;"></div>
-
-          <label><strong>Scope</strong></label>
-          <ul class="hbce-list">
-            <li><label><input type="checkbox" class="op_scope" value="CREATE" checked /> CREATE</label></li>
-            <li><label><input type="checkbox" class="op_scope" value="RECEIPT" checked /> RECEIPT</label></li>
-            <li><label><input type="checkbox" class="op_scope" value="REGISTRY_APPEND" checked /> REGISTRY_APPEND</label></li>
-            <li><label><input type="checkbox" class="op_scope" value="VERIFY" checked /> VERIFY</label></li>
-            <li><label><input type="checkbox" class="op_scope" value="CERTIFICATE" checked /> CERTIFICATE</label></li>
-          </ul>
-
-          <div class="hbce-actions">
-            <button class="hbce-btn" id="btnIssue" type="button" disabled>ISSUE LICENSE + REGISTRY ENTRY</button>
-            <button class="hbce-btn hbce-btn--ghost" id="btnDlLicense" type="button" disabled>Download LICENSE</button>
-            <button class="hbce-btn hbce-btn--ghost" id="btnDlOpEntry" type="button" disabled>Download REGISTRY_ENTRY</button>
-          </div>
-
-          <ul class="hbce-list">
-            <li><strong>Status:</strong> <span id="op_status">—</span></li>
-            <li><strong>Operator payload_sha256:</strong> <span id="op_hash">—</span></li>
-          </ul>
-
-          <p class="hbce-note">
-            Nota: il gate pagamento verrà messo prima di “ISSUE”. Qui fissiamo la meccanica (Decisione–Traccia).
-          </p>
         </div>
 
-        <div class="hbce-card">
-          <h3>Preview LICENSE (privato)</h3>
-          <pre class="hbce-pre"><code id="previewLicense">—</code></pre>
+        <div class="hbce-field">
+          <label for="territory">Territory (stringa libera)</label>
+          <input id="territory" class="hbce-input" placeholder="es. IT-PIEMONTE / EU-ITALY / EU-FRANCE" />
         </div>
 
-        <div class="hbce-card">
-          <h3>Preview REGISTRY_ENTRY (pubblico)</h3>
-          <pre class="hbce-pre"><code id="previewOpEntry">—</code></pre>
-          <p class="hbce-note">
-            Questo è l’unico artefatto pubblico: <strong>name + hash + timestamp</strong>.
-          </p>
+        <div class="hbce-field">
+          <label for="baseSha">operator_base_payload_sha256 (se esiste)</label>
+          <input id="baseSha" class="hbce-input" placeholder="64-hex sha256 (opzionale)" />
+          <div class="hbce-help">Se non lo hai, lascia vuoto. Lo puoi agganciare quando la base è definita.</div>
+        </div>
+
+        <div class="hbce-row">
+          <button id="btnGen" class="hbce-btn hbce-btn--primary">GENERATE LICENSE</button>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">OPEN REGISTRY</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">OPEN VERIFY</a>
+        </div>
+      </div>
+
+      <div class="hbce-card hbce-card--6">
+        <h2>Output</h2>
+        <div id="badge" class="hbce-badge hbce-badge--warn">Not generated</div>
+
+        <div class="hbce-kv" id="kv"></div>
+
+        <div class="hbce-field">
+          <label>REGISTRY_ENTRY (incolla in entries[])</label>
+          <pre id="entry" class="hbce-textarea" style="white-space:pre-wrap"></pre>
+        </div>
+
+        <div class="hbce-row">
+          <button id="dlLicense" class="hbce-btn hbce-btn--ok" disabled>DOWNLOAD OPERATOR_LICENSE.json</button>
+          <button id="copyEntry" class="hbce-btn" disabled>COPY REGISTRY_ENTRY</button>
         </div>
       </div>
     </section>
-
-    <section class="hbce-section">
-      <p class="hbce-note">
-        HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br />
-        HERMETICUM B.C.E. S.r.l.<br />
-        UE-first · audit-first · fail-closed · hash-only · append-only · GDPR-min
-      </p>
-    </section>
-
   </main>
 
   <div data-hbce="footer"></div>
-  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 
-<script>
-(function(){
-  const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
-  const $ = (id) => document.getElementById(id);
+  <script>
+    let LICENSE=null, ENTRY=null;
 
-  function setText(id, v){ const el = $(id); if(el) el.textContent = v; }
+    function setKV(map){
+      const kv=document.getElementById("kv");
+      kv.innerHTML="";
+      for(const [k,v] of Object.entries(map)){
+        const a=document.createElement("div"); a.className="k"; a.textContent=k;
+        const b=document.createElement("div"); b.className="v"; b.textContent=v;
+        kv.append(a,b);
+      }
+    }
 
-  function isNonEmptyString(x){ return typeof x === "string" && x.trim().length > 0; }
-  function isHex64(x){ return typeof x === "string" && /^[a-f0-9]{64}$/i.test(String(x).trim()); }
+    document.getElementById("btnGen").onclick = async () => {
+      const operator_name = (document.getElementById("opName").value||"").trim().toLowerCase();
+      const level = document.getElementById("level").value;
+      const territory = (document.getElementById("territory").value||"").trim() || "EU";
+      const baseSha = (document.getElementById("baseSha").value||"").trim().toLowerCase() || undefined;
 
-  function readPublicName(obj){
-    const a = obj && obj.name;
-    const b = obj && obj.nickname; // legacy
-    const v = isNonEmptyString(a) ? a : (isNonEmptyString(b) ? b : "—");
-    return String(v).trim();
-  }
+      const ts = HBCE.nowISO();
 
-  function safeNameForFile(name){
-    return String(name||"IPR").trim().replace(/\s+/g,"_").replace(/[^a-zA-Z0-9_\-]/g,"");
-  }
+      LICENSE = {
+        proto: "HBCE-OPERATOR-v1",
+        kind: "IPR_OPERATOR_LICENSE",
+        issued_at: ts,
+        timestamp: ts,
+        operator_name,
+        operator_base_payload_sha256: baseSha,
+        payload: {
+          operator: {
+            name: operator_name,
+            base_payload_sha256: baseSha,
+            territory
+          },
+          license: {
+            level,
+            scope: ["CREATE","RECEIPT","REGISTRY_APPEND","VERIFY","CERTIFICATE"]
+          },
+          policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","GDPR_MIN","NO_PUBLIC_DATA_CUSTODY"],
+          constraints: {
+            requires_operator_base_valid: !!baseSha,
+            fails_closed_on_missing_registry_match: true
+          }
+        },
+        payment: {
+          status: "PENDING",
+          note: "Payment gate will be enforced before issuance in production."
+        }
+      };
 
-  // Canonical stringify: ordina le chiavi in modo deterministico (evita mismatch casuali)
-  function canonicalize(value){
-    if (value === null || value === undefined) return null;
-    if (Array.isArray(value)) return value.map(canonicalize);
-    if (typeof value === "object"){
-      const out = {};
-      Object.keys(value).sort().forEach(k => {
-        const v = value[k];
-        if (v === undefined) return;
-        out[k] = canonicalize(v);
+      const payload_sha256 = await HBCE.sha256String(HBCE.stableStringify(LICENSE));
+      LICENSE.payload_sha256 = payload_sha256;
+
+      ENTRY = {
+        entity_type: "OPERATOR",
+        name: operator_name,
+        payload_sha256,
+        timestamp: ts,
+        status: "ACTIVE",
+        note: `territory=${territory}; level=${level}`
+      };
+
+      document.getElementById("badge").className="hbce-badge hbce-badge--ok";
+      document.getElementById("badge").textContent="Generated — ready to append";
+
+      setKV({
+        "issued_at": ts,
+        "payload_sha256": payload_sha256,
+        "operator_name": operator_name,
+        "level": level,
+        "territory": territory
       });
-      return out;
-    }
-    return value;
-  }
 
-  async function sha256HexFromText(text){
-    const enc = new TextEncoder();
-    const buf = enc.encode(text);
-    const hashBuf = await crypto.subtle.digest("SHA-256", buf);
-    const hashArr = Array.from(new Uint8Array(hashBuf));
-    return hashArr.map(b => b.toString(16).padStart(2,"0")).join("");
-  }
+      document.getElementById("entry").textContent = JSON.stringify(ENTRY,null,2);
 
-  async function sha256HexFromObject(obj){
-    const canon = canonicalize(obj);
-    const txt = JSON.stringify(canon);
-    return sha256HexFromText(txt);
-  }
+      document.getElementById("dlLicense").disabled=false;
+      document.getElementById("copyEntry").disabled=false;
 
-  async function fetchRegistry(){
-    let resp, text;
-    try { resp = await fetch(REGISTRY_URL, { cache:"no-store" }); }
-    catch(_) { return { ok:false, reason:"errore fetch registry" }; }
-
-    if(!resp || !resp.ok) return { ok:false, reason:"HTTP " + (resp ? resp.status : "errore") };
-
-    try { text = await resp.text(); }
-    catch(_) { return { ok:false, reason:"errore lettura registry" }; }
-
-    let sha = null;
-    try { sha = await sha256HexFromText(text); } catch(_) {}
-
-    let json;
-    try { json = JSON.parse(text); }
-    catch(_) { return { ok:false, reason:"JSON registry invalido", sha }; }
-
-    if(!json || !Array.isArray(json.entries)) return { ok:false, reason:"schema registry invalido (entries[])", sha };
-
-    return { ok:true, sha, json };
-  }
-
-  // ===== STATE
-  let baseRelease = null;
-  let baseComputed = null;
-  let baseIntegrityOk = false;
-  let baseRegistryOk = false;
-  let baseRegistrySha = null;
-
-  let operatorLicense = null;
-  let operatorEntry = null;
-
-  function hardReset(){
-    baseRelease = null;
-    baseComputed = null;
-    baseIntegrityOk = false;
-    baseRegistryOk = false;
-    baseRegistrySha = null;
-
-    operatorLicense = null;
-    operatorEntry = null;
-
-    setText("b_name","—"); setText("b_entity","—"); setText("b_ts","—");
-    setText("b_filehash","—"); setText("b_computed","—"); setText("b_integrity","—");
-
-    setText("reg_url", REGISTRY_URL);
-    setText("reg_status","—"); setText("reg_count","—"); setText("reg_sha","—"); setText("reg_match","—");
-
-    $("btnCheckRegistry").disabled = true;
-    $("btnIssue").disabled = true;
-    $("btnDlLicense").disabled = true;
-    $("btnDlOpEntry").disabled = true;
-
-    setText("op_status","—"); setText("op_hash","—");
-    setText("previewLicense","—"); setText("previewOpEntry","—");
-  }
-
-  hardReset();
-
-  // ===== STEP 1: Load Base Release
-  $("baseReleaseFile").addEventListener("change", async (ev) => {
-    hardReset();
-
-    const f = ev.target.files && ev.target.files[0];
-    if(!f) return;
-
-    let text;
-    try { text = await f.text(); }
-    catch(_) { setText("b_integrity","FAIL — impossibile leggere il file"); return; }
-
-    let json;
-    try { json = JSON.parse(text); }
-    catch(_) { setText("b_integrity","FAIL — JSON non valido"); return; }
-
-    baseRelease = json;
-
-    const name = readPublicName(baseRelease);
-    const entity = (baseRelease && baseRelease.entity_type) ? String(baseRelease.entity_type) : "—";
-    const ts = (baseRelease && (baseRelease.timestamp || baseRelease.issued_at)) ? String(baseRelease.timestamp || baseRelease.issued_at) : "—";
-
-    const fileHash = (baseRelease && baseRelease.payload_sha256) ? String(baseRelease.payload_sha256).trim() : null;
-    const payload = baseRelease && baseRelease.payload;
-
-    setText("b_name", name);
-    setText("b_entity", entity);
-    setText("b_ts", ts);
-    setText("b_filehash", fileHash || "—");
-
-    // Strict checks
-    if(!payload || typeof payload !== "object"){
-      setText("b_integrity","FAIL — payload mancante");
-      return;
-    }
-    if(!isHex64(fileHash)){
-      setText("b_integrity","FAIL — payload_sha256 mancante/non valido");
-      return;
-    }
-
-    try {
-      baseComputed = await sha256HexFromObject(payload);
-      setText("b_computed", baseComputed || "—");
-    } catch(_) {
-      setText("b_integrity","FAIL — errore calcolo SHA-256");
-      return;
-    }
-
-    baseIntegrityOk = isHex64(baseComputed) && baseComputed.toLowerCase() === fileHash.toLowerCase();
-    setText("b_integrity", baseIntegrityOk ? "OK — integrità file" : "FAIL — mismatch computed vs file");
-    $("btnCheckRegistry").disabled = !baseIntegrityOk;
-  });
-
-  // ===== STEP 1b: Registry check
-  $("btnCheckRegistry").addEventListener("click", async () => {
-    baseRegistryOk = false;
-    baseRegistrySha = null;
-
-    setText("reg_status","Checking…");
-    setText("reg_count","—");
-    setText("reg_sha","—");
-    setText("reg_match","—");
-
-    $("btnIssue").disabled = true;
-
-    if(!baseIntegrityOk || !isHex64(baseComputed)){
-      setText("reg_status","FAIL-CLOSED — integrità base non OK");
-      return;
-    }
-
-    const reg = await fetchRegistry();
-    if(!reg.ok){
-      setText("reg_status","FAIL-CLOSED — " + reg.reason);
-      setText("reg_sha", reg.sha || "—");
-      return;
-    }
-
-    baseRegistrySha = reg.sha || null;
-    setText("reg_status","OK — registry valido");
-    setText("reg_count", String(reg.json.entries.length));
-    setText("reg_sha", reg.sha || "—");
-
-    const target = String(baseComputed).trim().toLowerCase();
-    const match = reg.json.entries.find(e => e && String(e.payload_sha256 || "").trim().toLowerCase() === target);
-
-    baseRegistryOk = !!match;
-    setText("reg_match", baseRegistryOk ? "YES (BASE VALID)" : "NO (BASE NON PRESENTE)");
-
-    $("btnIssue").disabled = !(baseIntegrityOk && baseRegistryOk);
-  });
-
-  // ===== STEP 2: Issue Operator License
-  function selectedScope(){
-    const nodes = document.querySelectorAll(".op_scope");
-    const out = [];
-    nodes.forEach(n => { if(n && n.checked) out.push(String(n.value)); });
-    return out;
-  }
-
-  function downloadText(filename, text, mime){
-    const blob = new Blob([text], { type: mime || "application/octet-stream" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  }
-
-  $("btnIssue").addEventListener("click", async () => {
-    $("btnDlLicense").disabled = true;
-    $("btnDlOpEntry").disabled = true;
-    operatorLicense = null;
-    operatorEntry = null;
-
-    setText("op_status","—");
-    setText("op_hash","—");
-    setText("previewLicense","—");
-    setText("previewOpEntry","—");
-
-    if(!(baseIntegrityOk && baseRegistryOk)){
-      setText("op_status","FAIL-CLOSED — Base non VALID");
-      return;
-    }
-
-    const opName = readPublicName(baseRelease);
-    if(!isNonEmptyString(opName) || opName === "—"){
-      setText("op_status","FAIL-CLOSED — nome operatore mancante");
-      return;
-    }
-
-    const level = String($("op_level").value || "OPERATOR").trim();
-    const scope = selectedScope();
-    if(!scope.length){
-      setText("op_status","FAIL-CLOSED — scope vuoto");
-      return;
-    }
-
-    const issued_at = new Date().toISOString();
-
-    // Payload deterministico licenza operatore
-    const payload = {
-      operator: {
-        name: opName,
-        base_payload_sha256: String(baseComputed).trim(),
-        base_registry_sha256: baseRegistrySha || null
-      },
-      license: { level, scope },
-      policy: [
-        "UE_FIRST",
-        "AUDIT_FIRST",
-        "FAIL_CLOSED",
-        "HASH_ONLY",
-        "APPEND_ONLY",
-        "GDPR_MIN",
-        "NO_PUBLIC_DATA_CUSTODY"
-      ],
-      constraints: {
-        requires_operator_base_valid: true,
-        fails_closed_on_missing_registry_match: true
-      }
+      document.getElementById("dlLicense").onclick=()=>{
+        const fn=`HBCE_OPERATOR_LICENSE__${payload_sha256.slice(0,12)}.json`;
+        HBCE.download(fn, JSON.stringify(LICENSE,null,2));
+      };
+      document.getElementById("copyEntry").onclick=async()=>{
+        await navigator.clipboard.writeText(JSON.stringify(ENTRY,null,2));
+        alert("REGISTRY_ENTRY copied. Paste into registry.json → entries[]. Commit.");
+      };
     };
-
-    let opHash;
-    try { opHash = await sha256HexFromObject(payload); }
-    catch(_) { setText("op_status","FAIL-CLOSED — errore calcolo hash licenza"); return; }
-
-    if(!isHex64(opHash)){
-      setText("op_status","FAIL-CLOSED — hash licenza non valido");
-      return;
-    }
-
-    operatorLicense = {
-      proto: "HBCE-OPERATOR-v1",
-      kind: "IPR_OPERATOR_LICENSE",
-      issued_at,
-      timestamp: issued_at,
-      operator_name: opName,
-      operator_base_payload_sha256: String(baseComputed).trim(),
-      payload_sha256: opHash,
-      payload,
-      payment: {
-        status: "PENDING",
-        note: "Payment gate verrà imposto prima di ISSUE in produzione."
-      }
-    };
-
-    operatorEntry = {
-      name: opName,
-      payload_sha256: opHash,
-      timestamp: issued_at,
-      kind: "IPR_OPERATOR_LICENSE"
-    };
-
-    setText("op_status","OK — artefatti generati (append richiesto)");
-    setText("op_hash", opHash);
-
-    const licJson = JSON.stringify(operatorLicense, null, 2);
-    const entJson = JSON.stringify(operatorEntry, null, 2);
-
-    setText("previewLicense", licJson);
-    setText("previewOpEntry", entJson);
-
-    $("btnDlLicense").disabled = false;
-    $("btnDlOpEntry").disabled = false;
-
-    $("btnDlLicense").onclick = () => {
-      const fn = "HBCE_OPERATOR_LICENSE_" + safeNameForFile(opName) + "_" + opHash.slice(0,12) + ".json";
-      downloadText(fn, licJson, "application/json;charset=utf-8");
-    };
-
-    $("btnDlOpEntry").onclick = () => {
-      const fn = "REGISTRY_ENTRY_OPERATOR_" + safeNameForFile(opName) + "_" + opHash.slice(0,12) + ".json";
-      downloadText(fn, entJson, "application/json;charset=utf-8");
-    };
-  });
-
-})();
-</script>
-
+  </script>
 </body>
 </html>
