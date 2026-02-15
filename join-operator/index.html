@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JOIN — Operatore UE (997€)</title>
+  <meta name="description" content="Ingresso rete operatori UE. Richiesta → Order → Licenza PENDING → approvazione manuale → emissione licenza → append network ledger." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+  <script defer src="/hermeticum-bce-platform/assets/hbce-crypto.js"></script>
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">OPERATOR ONBOARDING · CYBERBANK · MANUAL APPROVAL</div>
+      <h1 class="hbce-hero__title">Join Operator UE — 997€</h1>
+      <p class="hbce-hero__lead">
+        Richiesta ingresso nella rete operatori. Questo portale genera: richiesta JSON, ordine pagamento, e una licenza operatore
+        in stato <strong>PENDING</strong>. L’attivazione è <strong>manuale</strong> (stile banca centrale): dopo conferma e pagamento, l’issuer emette la licenza finale.
+      </p>
+
+      <div class="hbce-row" style="margin-top:16px">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/network/">NETWORK</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/issuer/">ISSUER</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/contact/">CONTACT</a>
+      </div>
+    </section>
+
+    <section class="hbce-grid">
+
+      <div class="hbce-card hbce-card--6">
+        <h2>1) Dati richiesta (operatore)</h2>
+
+        <div class="hbce-field">
+          <label>Nome e Cognome</label>
+          <input id="name" class="hbce-input" placeholder="Nome Cognome" />
+        </div>
+
+        <div class="hbce-field">
+          <label>Email</label>
+          <input id="email" class="hbce-input" placeholder="email" />
+        </div>
+
+        <div class="hbce-field">
+          <label>Telefono</label>
+          <input id="phone" class="hbce-input" placeholder="+39…" />
+        </div>
+
+        <div class="hbce-field">
+          <label>Paese</label>
+          <input id="country" class="hbce-input" placeholder="Italy" />
+        </div>
+
+        <div class="hbce-field">
+          <label>Regione (se Italia)</label>
+          <input id="region" class="hbce-input" placeholder="Piemonte" />
+        </div>
+
+        <div class="hbce-field">
+          <label>Città</label>
+          <input id="city" class="hbce-input" placeholder="Torino" />
+        </div>
+
+        <div class="hbce-field">
+          <label>Ruolo richiesto</label>
+          <select id="role" class="hbce-select">
+            <option value="REGIONAL_OPERATOR">REGIONAL_OPERATOR</option>
+            <option value="NATIONAL_COORDINATOR">NATIONAL_COORDINATOR</option>
+            <option value="ISSUER_OPERATOR">ISSUER_OPERATOR</option>
+          </select>
+        </div>
+
+        <div class="hbce-field">
+          <label>Motivazione (breve)</label>
+          <input id="reason" class="hbce-input" placeholder="Perché vuoi entrare nella rete?" />
+        </div>
+
+        <div class="hbce-row">
+          <button id="btnGen" class="hbce-btn hbce-btn--primary">GENERATE REQUEST</button>
+        </div>
+
+        <div id="badge" class="hbce-badge hbce-badge--warn" style="margin-top:12px">Waiting…</div>
+      </div>
+
+      <div class="hbce-card hbce-card--6">
+        <h2>2) Output (da inviare)</h2>
+
+        <div class="hbce-field">
+          <label>OPERATOR_REQUEST.json</label>
+          <pre id="reqOut" class="hbce-textarea" style="white-space:pre-wrap"></pre>
+        </div>
+
+        <div class="hbce-field">
+          <label>ORDER_REQUEST.txt</label>
+          <pre id="orderOut" class="hbce-textarea" style="white-space:pre-wrap"></pre>
+        </div>
+
+        <div class="hbce-field">
+          <label>OPERATOR_LICENSE_PEND.json (PENDING)</label>
+          <pre id="licOut" class="hbce-textarea" style="white-space:pre-wrap"></pre>
+        </div>
+
+        <div class="hbce-row">
+          <button id="dlReq" class="hbce-btn hbce-btn--ok" disabled>DOWNLOAD REQUEST</button>
+          <button id="dlOrder" class="hbce-btn" disabled>DOWNLOAD ORDER</button>
+          <button id="dlLic" class="hbce-btn" disabled>DOWNLOAD PENDING LICENSE</button>
+          <button id="copyAll" class="hbce-btn" disabled>COPY ALL</button>
+        </div>
+      </div>
+
+      <div class="hbce-card">
+        <h2>3) Processo (manual approval)</h2>
+        <ol class="hbce-help">
+          <li>Il candidato genera REQUEST + ORDER + LICENSE PENDING.</li>
+          <li>Invia via PEC/email all’issuer (con order_ref e prova pagamento).</li>
+          <li>L’issuer conferma pagamento e genera LICENSE FINAL (issuer console / emissione operatore).</li>
+          <li>Append: registry entry + network ledger record.</li>
+          <li>Verify: certificate VALID.</li>
+        </ol>
+      </div>
+
+    </section>
+  </main>
+
+  <div data-hbce="footer"></div>
+
+  <script>
+    const FEE_EUR = 997;
+    const ROOT_NODE = {
+      root_name: "Manuel Coletta",
+      root_operator_payload_sha256: "1de300e4d826719c9a8708c8dfb2a8e943f19c3d324816b220f149f008ba481b",
+      node_id: "HBCE-EU-NODE-IT-ROOT-0001",
+      issuer: "HERMETICUM B.C.E. S.r.l."
+    };
+
+    let REQ=null, ORDER_TXT="", LIC=null;
+
+    function setBadge(ok, text){
+      const b=document.getElementById("badge");
+      b.className = ok ? "hbce-badge hbce-badge--ok" : "hbce-badge hbce-badge--warn";
+      b.textContent = text;
+    }
+
+    document.getElementById("btnGen").onclick = async () => {
+      const name=(document.getElementById("name").value||"").trim();
+      const email=(document.getElementById("email").value||"").trim();
+      const phone=(document.getElementById("phone").value||"").trim();
+      const country=(document.getElementById("country").value||"").trim();
+      const region=(document.getElementById("region").value||"").trim();
+      const city=(document.getElementById("city").value||"").trim();
+      const role=document.getElementById("role").value;
+      const reason=(document.getElementById("reason").value||"").trim();
+
+      if(!name || !email || !country || !city){
+        alert("Obbligatori: Nome, Email, Paese, Città.");
+        return;
+      }
+
+      const ts = HBCE.nowISO();
+      const order_ref = `OP-JOIN-${ts.replace(/[:.]/g,"").slice(0,15)}`;
+
+      REQ = {
+        proto: "HBCE-OPERATOR-REQUEST-v1",
+        kind: "EU_OPERATOR_JOIN_REQUEST",
+        jurisdiction: "EU",
+        issuer: ROOT_NODE.issuer,
+        timestamp: ts,
+        fee_eur: FEE_EUR,
+        requested_role: role,
+        applicant: {
+          name,
+          email,
+          phone: phone || null,
+          country,
+          region: region || null,
+          city
+        },
+        reason: reason || null,
+        parent_root: {
+          node_id: ROOT_NODE.node_id,
+          root_name: ROOT_NODE.root_name,
+          root_operator_payload_sha256: ROOT_NODE.root_operator_payload_sha256
+        },
+        status: "SUBMITTED"
+      };
+
+      const req_sha256 = await HBCE.sha256String(HBCE.stableStringify(REQ));
+      REQ.request_sha256 = req_sha256;
+      REQ.order_ref = order_ref;
+
+      ORDER_TXT =
+`HBCE OPERATOR JOIN — ORDER REQUEST
+Issuer: ${ROOT_NODE.issuer}
+Root node: ${ROOT_NODE.node_id}
+Root operator sha256: ${ROOT_NODE.root_operator_payload_sha256}
+
+ORDER_REF: ${order_ref}
+FEE_EUR: ${FEE_EUR}
+APPLICANT: ${name}
+EMAIL: ${email}
+COUNTRY/CITY: ${country} / ${city}
+REQUEST_SHA256: ${req_sha256}
+
+PAYMENT:
+- Status: PENDING
+- Method: manual (PEC / bank transfer / invoice path)
+- Note: licensing is activated only after confirmation (manual approval).
+
+POLICY:
+UE-first · audit-first · fail-closed · hash-only public registry · append-only ledgers · GDPR-min
+`;
+
+      LIC = {
+        proto: "HBCE-OPERATOR-v1",
+        kind: "IPR_OPERATOR_LICENSE",
+        jurisdiction: "EU",
+        issuer: ROOT_NODE.issuer,
+        policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","GDPR_MIN","NO_PUBLIC_DATA_CUSTODY"],
+        timestamp: ts,
+        status: "PENDING",
+        order_ref,
+        fee_eur: FEE_EUR,
+        request_sha256: req_sha256,
+        parent_operator_payload_sha256: ROOT_NODE.root_operator_payload_sha256,
+        operator: {
+          name,
+          country,
+          region: region || null,
+          city,
+          role
+        },
+        payment: {
+          status: "PENDING"
+        },
+        note: "PENDING license. Activation requires manual approval + payment confirmation by root issuer node."
+      };
+
+      const lic_sha256 = await HBCE.sha256String(HBCE.stableStringify(LIC));
+      LIC.payload_sha256 = lic_sha256;
+
+      document.getElementById("reqOut").textContent = JSON.stringify(REQ,null,2);
+      document.getElementById("orderOut").textContent = ORDER_TXT;
+      document.getElementById("licOut").textContent = JSON.stringify(LIC,null,2);
+
+      document.getElementById("dlReq").disabled=false;
+      document.getElementById("dlOrder").disabled=false;
+      document.getElementById("dlLic").disabled=false;
+      document.getElementById("copyAll").disabled=false;
+
+      document.getElementById("dlReq").onclick = ()=>HBCE.download(`HBCE_OPERATOR_REQUEST__${req_sha256.slice(0,12)}.json`, JSON.stringify(REQ,null,2));
+      document.getElementById("dlOrder").onclick = ()=>HBCE.download(`HBCE_ORDER_REQUEST__${order_ref}.txt`, ORDER_TXT, "text/plain");
+      document.getElementById("dlLic").onclick = ()=>HBCE.download(`HBCE_OPERATOR_LICENSE_PEND__${lic_sha256.slice(0,12)}.json`, JSON.stringify(LIC,null,2));
+
+      document.getElementById("copyAll").onclick = async ()=>{
+        const blob =
+`--- OPERATOR_REQUEST.json ---
+${JSON.stringify(REQ,null,2)}
+
+--- ORDER_REQUEST.txt ---
+${ORDER_TXT}
+
+--- OPERATOR_LICENSE_PEND.json ---
+${JSON.stringify(LIC,null,2)}
+`;
+        await navigator.clipboard.writeText(blob);
+        alert("Copied.");
+      };
+
+      setBadge(true, "Generated — request + order + pending license ready");
+    };
+
+    setBadge(false, "Waiting…");
+  </script>
+</body>
+</html>
