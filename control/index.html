@@ -1,150 +1,241 @@
 <!doctype html>
 <html lang="it">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
 
-<title>HBCE CONTROL — European Network Control Room</title>
-<meta name="description" content="HBCE European Infrastructure Control Room. Stato rete, nodi attivi, integrità ledger, espansione UE."/>
-<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css"/>
+  <title>HBCE CONTROL — European Network Control Room</title>
+  <meta name="description" content="HBCE European Infrastructure Control Room. Stato rete, nodi attivi, integrità ledger, espansione UE."/>
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css"/>
 
-<style>
-/* cyberbank control look */
-body{
-  background:#070b14;
-}
-.control-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:18px;
-}
-.control-card{
-  background:#0b1220;
-  border:1px solid rgba(0,255,200,0.25);
-  border-radius:14px;
-  padding:18px;
-  box-shadow:0 0 25px rgba(0,255,200,0.08);
-}
-.control-title{
-  font-size:14px;
-  color:#00ffd5;
-  letter-spacing:.12em;
-  margin-bottom:6px;
-}
-.control-value{
-  font-size:28px;
-  font-weight:700;
-}
-.control-pass{color:#00ff88;}
-.control-fail{color:#ff3b3b;}
-.node-line{
-  padding:6px 0;
-  border-bottom:1px solid rgba(255,255,255,0.05);
-  font-size:14px;
-}
-.node-line span{opacity:.7;}
-</style>
+  <style>
+    /* HBCE CONTROL — cyberbank */
+    body{
+      background:#070b14;
+    }
+    .control-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:18px;
+    }
+    .control-card{
+      background:#0b1220;
+      border:1px solid rgba(0,255,200,0.25);
+      border-radius:14px;
+      padding:18px;
+      box-shadow:0 0 25px rgba(0,255,200,0.08);
+    }
+    .control-title{
+      font-size:12px;
+      color:#00ffd5;
+      letter-spacing:.16em;
+      margin-bottom:6px;
+      text-transform:uppercase;
+    }
+    .control-value{
+      font-size:28px;
+      font-weight:800;
+      line-height:1.05;
+      color:#eaf2ff;
+    }
+    .control-pass{ color:#00ff88; }
+    .control-fail{ color:#ff3b3b; }
+    .control-warn{ color:#ffd24a; }
+
+    .node-line{
+      padding:8px 0;
+      border-bottom:1px solid rgba(255,255,255,0.06);
+      font-size:14px;
+    }
+    .node-line span{ opacity:.72; }
+    .node-line:last-child{ border-bottom:none; }
+
+    .hbce-muted{ opacity:.78; }
+    .hbce-mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+    }
+  </style>
 </head>
 
 <body>
-<div data-hbce="header"></div>
+  <div data-hbce="header"></div>
 
-<main class="hbce-container hbce-main">
+  <main class="hbce-container hbce-main">
 
-<section class="hbce-hero">
-<div class="hbce-hero__kicker">HBCE · CONTROL ROOM · EU INFRASTRUCTURE</div>
-<h1 class="hbce-hero__title">European Network Control</h1>
-<p class="hbce-hero__lead">
-Plancia operativa rete IPR europea.  
-Verifica integrità, nodi attivi, coordinamento infrastrutturale.
-</p>
-</section>
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">HBCE · CONTROL ROOM · EU INFRASTRUCTURE</div>
+      <h1 class="hbce-hero__title">European Network Control</h1>
+      <p class="hbce-hero__lead">
+        Plancia operativa rete IPR europea. Stato rete, contatori, nodi attivi e protocollo di espansione.
+      </p>
 
-<section class="control-grid">
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/network/" rel="noopener">Apri NETWORK verifier</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/network/operators-ledger.json" target="_blank" rel="noopener">Apri ledger JSON</a>
+      </div>
+    </section>
 
-<div class="control-card">
-<div class="control-title">NETWORK STATUS</div>
-<div class="control-value control-pass" id="netStatus">SYNC</div>
-<div class="hbce-muted">ledger coerente</div>
-</div>
+    <section class="control-grid">
 
-<div class="control-card">
-<div class="control-title">TOTAL NODES</div>
-<div class="control-value" id="totalNodes">—</div>
-<div class="hbce-muted">rete europea attiva</div>
-</div>
+      <div class="control-card">
+        <div class="control-title">Network Status</div>
+        <div class="control-value control-warn" id="netStatus">CHECKING</div>
+        <div class="hbce-muted" id="netStatusNote">verifica in corso…</div>
+      </div>
 
-<div class="control-card">
-<div class="control-title">ITALY REGIONS</div>
-<div class="control-value" id="italyNodes">—</div>
-<div class="hbce-muted">nodi regionali</div>
-</div>
+      <div class="control-card">
+        <div class="control-title">EU Network Expansion</div>
+        <div class="control-value control-pass" id="expansionStatus">EXPANDING</div>
+        <div class="hbce-muted">target: <span class="hbce-mono">270</span> operatori europei</div>
+      </div>
 
-<div class="control-card">
-<div class="control-title">EU CAPITALS</div>
-<div class="control-value" id="euNodes">—</div>
-<div class="hbce-muted">nodi nazionali</div>
-</div>
+      <div class="control-card">
+        <div class="control-title">Total Nodes</div>
+        <div class="control-value" id="totalNodes">—</div>
+        <div class="hbce-muted">records OPERATOR_ADDED</div>
+      </div>
 
-<div class="control-card">
-<div class="control-title">AI COORDINATION</div>
-<div class="control-value">JOKER-C2</div>
-<div class="hbce-muted">cybernetic coordination</div>
-</div>
+      <div class="control-card">
+        <div class="control-title">Italy Regions</div>
+        <div class="control-value" id="italyNodes">—</div>
+        <div class="hbce-muted">nodi regionali</div>
+      </div>
 
-<div class="control-card">
-<div class="control-title">ROOT NODE</div>
-<div class="control-value">IPR-ROOT</div>
-<div class="hbce-muted">European issuer</div>
-</div>
+      <div class="control-card">
+        <div class="control-title">EU Capitals</div>
+        <div class="control-value" id="euNodes">—</div>
+        <div class="hbce-muted">nodi nazionali</div>
+      </div>
 
-</section>
+      <div class="control-card">
+        <div class="control-title">AI Coordination</div>
+        <div class="control-value">JOKER-C2</div>
+        <div class="hbce-muted">cybernetic coordination layer</div>
+      </div>
 
-<section class="hbce-card" style="margin-top:22px;">
-<div class="hbce-card__header">
-<h2 class="hbce-card__title">Active Infrastructure Nodes</h2>
-<p class="hbce-card__subtitle">Estratti dal ledger append-only</p>
-</div>
+      <div class="control-card">
+        <div class="control-title">Root Node</div>
+        <div class="control-value">IPR-ROOT</div>
+        <div class="hbce-muted">European issuer</div>
+      </div>
 
-<div class="hbce-card__content">
-<div id="nodeList">caricamento…</div>
-</div>
-</section>
+      <div class="control-card">
+        <div class="control-title">Ledger Source</div>
+        <div class="control-value hbce-mono" style="font-size:16px;">/network/operators-ledger.json</div>
+        <div class="hbce-muted">append-only · hash-only</div>
+      </div>
 
-</main>
+    </section>
 
-<div data-hbce="footer"></div>
-<script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+    <section class="hbce-card" style="margin-top:22px;">
+      <div class="hbce-card__header">
+        <h2 class="hbce-card__title">Expansion Protocol</h2>
+        <p class="hbce-card__subtitle">Distribuzione progressiva rete operatori UE</p>
+      </div>
 
-<script>
-async function load(){
-  const res = await fetch("/hermeticum-bce-platform/network/operators-ledger.json",{cache:"no-store"});
-  const j = await res.json();
-  const rec = j.records || [];
+      <div class="hbce-card__content">
+        <div class="node-line">Italia: rete regionale completa (capoluoghi)</div>
+        <div class="node-line">UE: capitali nazionali pre-attive (placeholder infrastrutturali)</div>
+        <div class="node-line">Operatori reali: emissione licenza + append ledger (append-only)</div>
+        <div class="node-line">Stato: <span class="control-pass"><strong>EXPANDING</strong></span></div>
+      </div>
+    </section>
 
-  let total=0;
-  let it=0;
-  let eu=0;
-  let html="";
+    <section class="hbce-card" style="margin-top:22px;">
+      <div class="hbce-card__header">
+        <h2 class="hbce-card__title">Active Infrastructure Nodes</h2>
+        <p class="hbce-card__subtitle">Estratti dal ledger append-only</p>
+      </div>
 
-  rec.forEach(r=>{
-    if(r.record_type!=="OPERATOR_ADDED") return;
-    total++;
+      <div class="hbce-card__content">
+        <div id="nodeList" class="hbce-muted">caricamento…</div>
+      </div>
+    </section>
 
-    if(r.country==="Italy" && r.region!=="National Capital") it++;
-    if(r.country!=="Italy" && r.region==="National Capital") eu++;
+  </main>
 
-    html += `<div class="node-line">${r.operator_name} — <span>${r.country} / ${r.city}</span></div>`;
-  });
+  <div data-hbce="footer"></div>
 
-  document.getElementById("totalNodes").textContent = total;
-  document.getElementById("italyNodes").textContent = it;
-  document.getElementById("euNodes").textContent = eu;
-  document.getElementById("nodeList").innerHTML = html || "nessun nodo";
-}
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+  <script>
+    // Minimal deterministic check (cheap sanity):
+    // - ledger fetch OK
+    // - must contain at least one ROOT record for Manuel Coletta
+    // This is NOT the full hash verifier (that's /network/).
+    async function loadLedger(){
+      const res = await fetch("/hermeticum-bce-platform/network/operators-ledger.json", { cache:"no-store" });
+      if(!res.ok) throw new Error("ledger fetch failed");
+      return await res.json();
+    }
 
-load();
-</script>
+    function setStatus(kind, text, note){
+      const el = document.getElementById("netStatus");
+      const nt = document.getElementById("netStatusNote");
+      el.textContent = text;
+      el.classList.remove("control-pass","control-fail","control-warn");
+      el.classList.add(kind === "pass" ? "control-pass" : kind === "fail" ? "control-fail" : "control-warn");
+      nt.textContent = note || "";
+    }
 
+    async function run(){
+      setStatus("warn","CHECKING","verifica in corso…");
+
+      let j;
+      try{
+        j = await loadLedger();
+      }catch(e){
+        setStatus("fail","FAIL","ledger non raggiungibile o non valido");
+        document.getElementById("nodeList").textContent = "FAIL — impossibile caricare il ledger.";
+        return;
+      }
+
+      const rec = Array.isArray(j.records) ? j.records : [];
+      const ops = rec.filter(r => r && r.record_type === "OPERATOR_ADDED");
+
+      let total = 0, it = 0, eu = 0;
+      let html = "";
+      let hasRoot = false;
+
+      for(const r of ops){
+        total++;
+
+        const country = (r.country || "").trim();
+        const region  = (r.region || "").trim();
+        const city    = (r.city || "").trim();
+        const name    = (r.operator_name || "").trim();
+
+        if(name === "Manuel Coletta") hasRoot = true;
+
+        if(country === "Italy" && region && region !== "National Capital") it++;
+        if(country !== "Italy" && region === "National Capital") eu++;
+
+        html += `<div class="node-line">${escapeHtml(name)} — <span>${escapeHtml(country)} / ${escapeHtml(city)}</span></div>`;
+      }
+
+      document.getElementById("totalNodes").textContent = String(total);
+      document.getElementById("italyNodes").textContent = String(it);
+      document.getElementById("euNodes").textContent = String(eu);
+
+      document.getElementById("nodeList").innerHTML = html || "nessun nodo";
+
+      if(!hasRoot){
+        setStatus("fail","FAIL","manca ROOT (Manuel Coletta) nel ledger OPERATOR_ADDED");
+      }else{
+        setStatus("pass","SYNC","ledger coerente (sanity check). Verifica completa: /network/");
+      }
+    }
+
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    run();
+  </script>
 </body>
 </html>
