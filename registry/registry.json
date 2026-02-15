@@ -1,42 +1,24 @@
 {
   "proto": "HBCE-REGISTRY-v1",
-  "kind": "APPEND_ONLY_REGISTRY",
+  "kind": "IPR_PUBLIC_REGISTRY",
   "policy": [
-    "UE_FIRST",
-    "AUDIT_FIRST",
-    "FAIL_CLOSED",
     "HASH_ONLY",
     "APPEND_ONLY",
+    "FAIL_CLOSED",
+    "UE_FIRST",
+    "AUDIT_FIRST",
     "GDPR_MIN",
     "NO_PUBLIC_DATA_CUSTODY"
   ],
-  "entries": [
-    {
-      "name": "manuel coletta",
-      "payload_sha256": "37596f4b5a1185e026b0d2d5571b2a0aa7e7ff602109442f2eeccf70b3ac8485",
-      "timestamp": "2026-02-07T20:30:45.738Z"
-    },
-    {
-      "name": "ManuHell",
-      "payload_sha256": "8f28737a0b8d5468199eb92dcd68b664e7fc3662ddfe0dc87aaf680e1ff7545d",
-      "timestamp": "2026-02-09T00:00:00.000Z"
-    },
-    {
-      "name": "manuel coletta",
-      "payload_sha256": "1db2ab1f17e58b96412795cd0451e2a3ac558a99f12e76e82b2f963c94478d00",
-      "timestamp": "2026-02-10T19:05:30.849Z"
-    },
-    {
-      "name": "manuel coletta",
-      "payload_sha256": "4ffea45b96cfbe2b67a378ee3feb37c9ae9cb862b29dea5388e7748776f054c6",
-      "timestamp": "2026-02-13T20:16:23.915Z",
-      "kind": "IPR_BASE_EU"
-    },
-    {
-      "name": "manuel coletta",
-      "payload_sha256": "1de300e4d826719c9a8708c8dfb2a8e943f19c3d324816b220f149f008ba481b",
-      "timestamp": "2026-02-14T13:34:15.225Z",
-      "kind": "IPR_OPERATOR_LICENSE"
+  "description": "Registro pubblico append-only. Pubblica solo prove minimizzate (name|nickname + hash + timestamp). Nessuna custodia pubblica di dati personali. Verifica deterministica: se non matcha -> INVALID (fail-closed).",
+  "schema": {
+    "entry_required": ["payload_sha256", "timestamp"],
+    "entry_public_identity": ["name"],
+    "entry_legacy_allowed": ["nickname"],
+    "entry_optional": ["entity_type", "status", "note"],
+    "constraints": {
+      "payload_sha256": "64-hex sha256"
     }
-  ]
+  },
+  "entries": []
 }
