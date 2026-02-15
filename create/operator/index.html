@@ -14,7 +14,7 @@
 
   <main class="hbce-container hbce-main">
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CREATE · OPERATOR UE · CONFIRM → PAY → ISSUE (FAIL-CLOSED)</div>
+      <div class="hbce-hero__kicker">BCE-STYLE · OPERATOR UE · CONFIRM → PAY → ISSUE (FAIL-CLOSED)</div>
       <h1 class="hbce-hero__title">Crea IPR Operatore (Licenza UE)</h1>
       <p class="hbce-hero__lead">
         Flusso UE: <strong>1) Conferma</strong> (carica un file reale IPR Base e verifica match nel registry) →
@@ -34,7 +34,7 @@
       <div class="hbce-card hbce-card--6">
         <h2>STEP 1 — Conferma (obbligatoria)</h2>
         <p class="hbce-help">
-          Carica il file reale <strong>IPR Base</strong> dell’operatore (es. <code>HBCE_IPR_RELEASE__*.json</code>).
+          Carica il file reale <strong>IPR Base fiscale</strong> (es. <code>HBCE_IPR_FISCAL_RELEASE__*.json</code>).
           Il sistema calcola SHA256 canonico e cerca match nel registry pubblico. Se non c’è match → non si emette nulla.
         </p>
 
@@ -100,7 +100,7 @@
 
             <div class="hbce-field">
               <label for="opName">Operator name</label>
-              <input id="opName" class="hbce-input" placeholder="Nome operatore (es. Manuel Coletta / azienda)" />
+              <input id="opName" class="hbce-input" placeholder="Nome operatore (persona/azienda)" />
             </div>
 
             <div class="hbce-field">
@@ -153,7 +153,6 @@
   <script>
     const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
 
-    // State
     let CONFIRM = { ok:false, base_payload_sha256:null, base_subject_name:"—", base_timestamp:"—" };
     let ORDER_TXT = "";
     let RELEASE=null, RECEIPT=null, ENTRY=null;
@@ -200,7 +199,6 @@
 
     document.getElementById("payStatus").addEventListener("change", refreshGates);
 
-    // STEP 1: Confirm
     document.getElementById("btnConfirm").onclick = async () => {
       const badge = document.getElementById("confirmBadge");
       const raw = document.getElementById("confirmRaw");
@@ -212,12 +210,12 @@
       document.getElementById("dlOrder").disabled = true;
       document.getElementById("copyOrder").disabled = true;
       document.getElementById("orderText").textContent = "";
-      document.getElementById("btnIssue").disabled = true;
       lockIssuance("Issuance locked…");
 
       if(!f){
         badge.className="hbce-badge hbce-badge--bad";
         badge.textContent="FAIL — no file";
+        refreshGates();
         return;
       }
 
@@ -225,14 +223,16 @@
         const text = await f.text();
         const obj = JSON.parse(text);
 
-        // Canonical hash from stable stringify of parsed JSON
         const base_payload_sha256 = await HBCE.sha256String(HBCE.stableStringify(obj));
 
-        // Registry + match
         const reg = await HBCE.fetchJson(REGISTRY_URL);
         const match = (reg.entries||[]).some(e => (e.payload_sha256||"").toLowerCase() === base_payload_sha256.toLowerCase());
 
-        const base_subject_name = (obj?.subject?.name) ? obj.subject.name : (obj?.subject?.nickname ? obj.subject.nickname : "—");
+        const base_subject_name =
+          (obj?.subject?.name) ? obj.subject.name :
+          (obj?.subject?.nickname) ? obj.subject.nickname :
+          "—";
+
         const base_timestamp = obj?.issued_at || obj?.timestamp || "—";
 
         CONFIRM = { ok: !!match, base_payload_sha256, base_subject_name, base_timestamp };
@@ -245,7 +245,7 @@
         });
 
         raw.textContent = JSON.stringify({
-          confirm: "HBCE-OPERATOR-CONFIRM-v1",
+          proto: "HBCE-OPERATOR-CONFIRM-v1",
           result: match ? "PASS" : "FAIL",
           policy: ["FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","GDPR_MIN"],
           base_payload_sha256,
@@ -256,7 +256,6 @@
         badge.className = match ? "hbce-badge hbce-badge--ok" : "hbce-badge hbce-badge--bad";
         badge.textContent = match ? "CONFIRMED — registry match true" : "REJECTED — registry match false (fail-closed)";
 
-        // Enable order generation if confirmed
         if(match){
           buildOrderText();
           document.getElementById("dlOrder").disabled = false;
@@ -300,7 +299,7 @@ MANDATORY_CONFIRMATION (BASE IPR):
 - confirmation: ${CONFIRM.ok ? "PASS" : "FAIL"}
 
 NOTE:
-This order is traceable. Issuance is gated: CONFIRM must PASS and payment must be CONFIRMED.
+Issuance is gated: CONFIRM must PASS and payment must be CONFIRMED.
 `;
 
       document.getElementById("orderText").textContent = ORDER_TXT;
@@ -317,13 +316,13 @@ This order is traceable. Issuance is gated: CONFIRM must PASS and payment must b
       const fn = `HBCE_ORDER_REQUEST__${(CONFIRM.base_payload_sha256||"").slice(0,12)}.txt`;
       HBCE.download(fn, ORDER_TXT, "text/plain");
     };
+
     document.getElementById("copyOrder").onclick = async () => {
       buildOrderText();
       await navigator.clipboard.writeText(ORDER_TXT);
       alert("ORDER_REQUEST copied. Send via PEC with payment proof, then set PAYMENT_STATUS=CONFIRMED.");
     };
 
-    // STEP 3: Issue (gated)
     document.getElementById("btnIssue").onclick = async () => {
       const pay = document.getElementById("payStatus").value;
       if(!CONFIRM.ok){
@@ -338,6 +337,7 @@ This order is traceable. Issuance is gated: CONFIRM must PASS and payment must b
       const operator_name = (document.getElementById("opName").value||"").trim();
       const level = document.getElementById("level").value;
       const territory = (document.getElementById("territory").value||"").trim() || "EU";
+
       if(!operator_name){
         alert("Operator name required.");
         return;
@@ -345,7 +345,6 @@ This order is traceable. Issuance is gated: CONFIRM must PASS and payment must b
 
       const ts = HBCE.nowISO();
 
-      // File reale licenza (release)
       RELEASE = {
         proto: "HBCE-OPERATOR-RELEASE-v1",
         kind: "IPR_OPERATOR_RELEASE_FILE",
@@ -357,24 +356,18 @@ This order is traceable. Issuance is gated: CONFIRM must PASS and payment must b
           registry_url: REGISTRY_URL,
           match: true
         },
-        operator: {
-          name: operator_name,
-          territory
-        },
+        operator: { name: operator_name, territory },
         license: {
           level,
           scope: ["CREATE","RECEIPT","REGISTRY_APPEND","VERIFY","CERTIFICATE"]
         },
-        payment: {
-          status: "CONFIRMED"
-        },
+        payment: { status: "CONFIRMED" },
         issued_at: ts
       };
 
       const payload_sha256 = await HBCE.sha256String(HBCE.stableStringify(RELEASE));
       RELEASE.payload_sha256 = payload_sha256;
 
-      // Entry pubblica hash-only
       ENTRY = {
         entity_type: "OPERATOR",
         name: operator_name,
@@ -384,7 +377,6 @@ This order is traceable. Issuance is gated: CONFIRM must PASS and payment must b
         note: `territory=${territory}; level=${level}; base=${(CONFIRM.base_payload_sha256||"").slice(0,12)}`
       };
 
-      // Receipt operativo
       RECEIPT = {
         proto: "HBCE-RECEIPT-v1",
         kind: "IPR_OPERATOR_RECEIPT",
@@ -409,7 +401,6 @@ This order is traceable. Issuance is gated: CONFIRM must PASS and payment must b
       document.getElementById("entry").textContent = JSON.stringify(ENTRY, null, 2);
       document.getElementById("issueRaw").textContent = JSON.stringify({ release: RELEASE, receipt: RECEIPT }, null, 2);
 
-      // Enable downloads
       document.getElementById("dlRelease").disabled = false;
       document.getElementById("dlReceipt").disabled = false;
       document.getElementById("copyEntry").disabled = false;
@@ -418,10 +409,12 @@ This order is traceable. Issuance is gated: CONFIRM must PASS and payment must b
         const fn = `HBCE_OPERATOR_RELEASE__${payload_sha256.slice(0,12)}.json`;
         HBCE.download(fn, JSON.stringify(RELEASE, null, 2));
       };
+
       document.getElementById("dlReceipt").onclick = () => {
         const fn = `HBCE_OPERATOR_RECEIPT__${payload_sha256.slice(0,12)}.json`;
         HBCE.download(fn, JSON.stringify(RECEIPT, null, 2));
       };
+
       document.getElementById("copyEntry").onclick = async () => {
         await navigator.clipboard.writeText(JSON.stringify(ENTRY, null, 2));
         alert("REGISTRY_ENTRY copied. Paste into registry.json → entries[]. Commit. Then run VERIFY to generate certificate.");
@@ -432,7 +425,6 @@ This order is traceable. Issuance is gated: CONFIRM must PASS and payment must b
       badge.textContent = "Issued — release + receipt + registry entry ready";
     };
 
-    // Initialize gates
     lockIssuance("Issuance locked — run confirmation first.");
     refreshGates();
   </script>
