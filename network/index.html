@@ -3,102 +3,188 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>IPR NETWORK — European Operational Grid</title>
-  <meta name="description" content="Rete operativa IPR europea. Attivazione nodi territoriali e operatori fondatori. Struttura in distribuzione." />
+  <title>NETWORK — EU Operator Network</title>
+  <meta name="description" content="Rete operatori UE (append-only). Vista pubblica minimizzata: ruoli, stato, hash licenze. UE-first, GDPR-min, fail-closed." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </head>
-
 <body>
-<div data-hbce="header"></div>
+  <div data-hbce="header"></div>
 
-<main class="hbce-container hbce-main">
+  <main class="hbce-container hbce-main">
 
-<section class="hbce-hero">
-<div class="hbce-hero__kicker">IPR EUROPEAN NETWORK · CENTRAL COMMAND</div>
-<h1 class="hbce-hero__title">Rete operativa IPR europea</h1>
-<p class="hbce-hero__lead">
-Attivazione progressiva dei nodi territoriali collegati al nodo centrale.
-Selezione operatori fondatori in corso.
-</p>
-</section>
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">EU NETWORK · OPERATORS · APPEND-ONLY</div>
+      <h1 class="hbce-hero__title">Rete Operatori UE</h1>
+      <p class="hbce-hero__lead">
+        Ledger di rete (append-only). Pubblica solo metadati minimizzati: ruolo, paese/regione, stato e hash licenza.
+        Nessuna custodia pubblica di dati personali (GDPR-min).
+      </p>
+      <div class="hbce-row" style="margin-top:16px">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">ACTIVATE</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/issuer/">ISSUER</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+      </div>
+    </section>
 
-<section class="hbce-card">
-<h2>Nodo centrale originario</h2>
-<p>
-Barriera di Milano — Torino — Piemonte — Italia — Unione Europea.
-</p>
-<p>
-Da questo nodo viene attivata la distribuzione territoriale iniziale della rete operativa IPR.
-</p>
-</section>
+    <section class="hbce-grid">
 
-<section class="hbce-card">
-<h2>Struttura iniziale rete</h2>
+      <div class="hbce-card hbce-card--6">
+        <h2>Stato ledger</h2>
+        <div id="status" class="hbce-badge hbce-badge--warn">Checking…</div>
+        <div class="hbce-kv" id="stats" style="margin-top:12px"></div>
+        <div class="hbce-row" style="margin-top:14px">
+          <a class="hbce-btn" href="/hermeticum-bce-platform/network/operators-ledger.json">OPEN operators-ledger.json</a>
+          <button id="refresh" class="hbce-btn">REFRESH</button>
+        </div>
+      </div>
 
-<h3>Italia</h3>
-<ul>
-<li>1 operatore per ogni regione</li>
-<li>Totale previsto: 19 operatori regionali</li>
-<li>Collegamento diretto al nodo centrale</li>
-</ul>
+      <div class="hbce-card hbce-card--6">
+        <h2>Regole rete</h2>
+        <div class="hbce-kv" id="rules" style="margin-top:12px"></div>
+        <div class="hbce-help" style="margin-top:10px">
+          Nota: questo ledger è append-only. Modifiche retroattive non ammesse: si aggiunge un record di STATUS/ROLE_UPDATE.
+        </div>
+      </div>
 
-<h3>Unione Europea</h3>
-<ul>
-<li>1 operatore per ogni Stato membro UE</li>
-<li>Totale previsto: 27 operatori nazionali</li>
-<li>Collegamento diretto al nodo centrale europeo</li>
-</ul>
+      <div class="hbce-card">
+        <h2>Operatori (vista)</h2>
+        <div id="list"></div>
+      </div>
 
-</section>
+    </section>
+  </main>
 
-<section class="hbce-card">
-<h2>Attivazione operatore territoriale</h2>
+  <div data-hbce="footer"></div>
 
-<p>Per essere abilitati come operatore:</p>
+  <script>
+    const LEDGER_URL="/hermeticum-bce-platform/network/operators-ledger.json";
 
-<ul>
-<li>IPR BASE EU attivo</li>
-<li>Dati territoriali registrati</li>
-<li>Nazione</li>
-<li>Regione</li>
-<li>Città</li>
-<li>Zona operativa</li>
-<li>Conferma collegamento al nodo centrale</li>
-</ul>
+    function el(tag, cls, html){
+      const x=document.createElement(tag);
+      if(cls) x.className=cls;
+      if(html!==undefined) x.innerHTML=html;
+      return x;
+    }
 
-<p>
-Dopo conferma l’identità viene registrata come operatore territoriale attivo.
-</p>
+    function kvSet(target, map){
+      target.innerHTML="";
+      for(const [k,v] of Object.entries(map)){
+        const a=el("div","k"); a.textContent=k;
+        const b=el("div","v"); b.textContent=v;
+        target.append(a,b);
+      }
+    }
 
-</section>
+    function shortHash(h){
+      if(!h) return "—";
+      const s=String(h);
+      if(s.length<=24) return s;
+      return s.slice(0,16)+"…"+s.slice(-8);
+    }
 
-<section class="hbce-card">
-<h2>Funzione operatori fondatori</h2>
+    async function load(){
+      const status=document.getElementById("status");
+      const stats=document.getElementById("stats");
+      const rules=document.getElementById("rules");
+      const list=document.getElementById("list");
 
-<ul>
-<li>Attivazione IPR nel territorio</li>
-<li>Registrazione identità operative</li>
-<li>Distribuzione software certificati</li>
-<li>Creazione rete locale</li>
-<li>Connessione diretta con il centro</li>
-<li>Storico operativo certificato</li>
-</ul>
+      status.className="hbce-badge hbce-badge--warn";
+      status.textContent="Loading…";
+      stats.innerHTML=""; rules.innerHTML=""; list.innerHTML="";
 
-</section>
+      try{
+        const res=await fetch(LEDGER_URL+"?t="+Date.now());
+        const data=await res.json();
 
-<section class="hbce-card">
-<h2>Stato rete</h2>
+        const records=data.records||[];
+        status.className="hbce-badge hbce-badge--ok";
+        status.textContent="NETWORK LEDGER OK";
 
-<p>
-Selezione operatori fondatori in corso.<br>
-Accesso consentito esclusivamente a identità con IPR attivo.
-</p>
+        kvSet(stats,{
+          "proto": data.proto||"—",
+          "records": String(records.length),
+          "root_coordinator": data.root_coordinator||"—",
+          "root_payload_sha256": shortHash(data.root_payload_sha256),
+          "mode": data.mode||"—"
+        });
 
-</section>
+        const st=data.structure||{};
+        kvSet(rules,{
+          "max_per_country": String(st.max_per_country ?? "—"),
+          "max_per_region": String(st.max_per_region ?? "—"),
+          "roles": (st.roles||[]).join(", ") || "—"
+        });
 
-</main>
+        // Build latest state per operator hash
+        const byHash=new Map();
+        for(const r of records){
+          const h=(r.operator_payload_sha256||"").toLowerCase();
+          if(!h) continue;
+          if(!byHash.has(h)){
+            byHash.set(h,{
+              operator_name:r.operator_name||"—",
+              operator_payload_sha256:h,
+              country:r.country||"—",
+              region:r.region||"",
+              city:r.city||"",
+              role:r.role||"—",
+              status:r.status||"—",
+              timestamp:r.timestamp||"—",
+              parent:r.parent_operator_sha256||""
+            });
+          }else{
+            const cur=byHash.get(h);
+            // last-wins by timestamp string (ISO)
+            if(String(r.timestamp||"") >= String(cur.timestamp||"")){
+              cur.operator_name=r.operator_name||cur.operator_name;
+              cur.country=r.country||cur.country;
+              cur.region=r.region||cur.region;
+              cur.city=r.city||cur.city;
+              cur.role=r.role||cur.role;
+              cur.status=r.status||cur.status;
+              cur.timestamp=r.timestamp||cur.timestamp;
+              cur.parent=r.parent_operator_sha256||cur.parent;
+            }
+          }
+        }
 
-<div data-hbce="footer"></div>
-<script src="/hermeticum-bce-platform/assets/hbce.js"></script>
+        const arr=[...byHash.values()].sort((a,b)=> (a.role||"").localeCompare(b.role||"") || (a.country||"").localeCompare(b.country||""));
+
+        arr.forEach(o=>{
+          const card=el("div","hbce-card","");
+          card.style.marginTop="10px";
+          const badgeCls = (o.status==="ACTIVE") ? "hbce-badge hbce-badge--ok"
+                        : (o.status==="SUSPENDED") ? "hbce-badge hbce-badge--warn"
+                        : "hbce-badge hbce-badge--bad";
+
+          card.appendChild(el("div","hbce-row",`
+            <span class="${badgeCls}">${o.status}</span>
+            <span class="hbce-badge">${o.role}</span>
+            <span class="hbce-badge">${o.country}${o.region?(" / "+o.region):""}${o.city?(" / "+o.city):""}</span>
+          `));
+
+          const kv=el("div","hbce-kv","");
+          kvSet(kv,{
+            "operator_name": o.operator_name,
+            "operator_payload_sha256": o.operator_payload_sha256,
+            "parent_operator_sha256": o.parent ? o.parent : "—",
+            "last_update": o.timestamp
+          });
+          card.appendChild(kv);
+
+          list.appendChild(card);
+        });
+
+      }catch(e){
+        status.className="hbce-badge hbce-badge--bad";
+        status.textContent="NETWORK LEDGER ERROR";
+        stats.innerHTML=`<div class="v">${String(e)}</div>`;
+      }
+    }
+
+    document.getElementById("refresh").onclick=load;
+    load();
+  </script>
 </body>
 </html>
