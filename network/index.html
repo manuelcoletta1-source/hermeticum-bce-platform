@@ -1,282 +1,271 @@
+
 <!doctype html>
 <html lang="it">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>NETWORK — EU Operator Network</title>
-  <meta name="description" content="Rete operatori UE (append-only). Vista minimizzata: ruoli, stato, hash licenze. Governance ex-post: sospensione/revoca via record append-only." />
+
+  <title>NETWORK — Operators Ledger (EU)</title>
+  <meta name="description" content="HBCE Operators Network Ledger: auditabile, append-only, hash-only. Controllo integrità in-browser (PASS/FAIL)." />
+
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
-  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </head>
+
 <body>
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
 
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">EU NETWORK · OPERATORS · APPEND-ONLY · EX-POST GOVERNANCE</div>
-      <h1 class="hbce-hero__title">Rete Operatori UE</h1>
+      <div class="hbce-hero__kicker">NETWORK · Operators Ledger · APPEND-ONLY · HASH-ONLY</div>
+      <h1 class="hbce-hero__title">Rete operatori (EU) — Controllo integrità</h1>
       <p class="hbce-hero__lead">
-        Ledger append-only. Stato e ruolo si aggiornano solo aggiungendo record.
-        <strong>SUSPENDED</strong>/<strong>REVOKED</strong> sono atti di governance ex-post: niente edit retroattivo.
+        Questa pagina verifica in browser la coerenza del ledger <code>network/operators-ledger.json</code>
+        usando la regola deterministica <code>network/HASH_RULES.md</code>.
+        Risultato: <strong>PASS/FAIL</strong> riproducibile da chiunque.
       </p>
-      <div class="hbce-row" style="margin-top:16px">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">ACTIVATE</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/issuer/">ISSUER</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/join-operator/">JOIN OPERATOR</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/network/operators-ledger.json" target="_blank" rel="noopener">Apri ledger JSON</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/network/HASH_RULES.md" target="_blank" rel="noopener">Apri HASH_RULES</a>
       </div>
     </section>
 
-    <section class="hbce-grid">
+    <section class="hbce-card" style="margin-top:16px;">
+      <div class="hbce-card__header">
+        <h2 class="hbce-card__title">Stato rete</h2>
+        <p class="hbce-card__subtitle">Controllo deterministico: se qualcosa non torna → FAIL.</p>
+      </div>
 
-      <div class="hbce-card hbce-card--6">
-        <h2>Stato ledger</h2>
-        <div id="status" class="hbce-badge hbce-badge--warn">Checking…</div>
-        <div class="hbce-kv" id="stats" style="margin-top:12px"></div>
-        <div class="hbce-row" style="margin-top:14px">
-          <a class="hbce-btn" href="/hermeticum-bce-platform/network/operators-ledger.json">OPEN operators-ledger.json</a>
-          <button id="refresh" class="hbce-btn">REFRESH</button>
+      <div class="hbce-card__content">
+        <div id="statusBox" class="hbce-alert hbce-alert--info">
+          Caricamento ledger…
         </div>
-      </div>
 
-      <div class="hbce-card hbce-card--6">
-        <h2>Regole rete</h2>
-        <div class="hbce-kv" id="rules" style="margin-top:12px"></div>
-        <div class="hbce-help" style="margin-top:10px">
-          Governance ex-post: per sospendere/revocare un operatore si aggiunge un record <code>OPERATOR_STATUS_UPDATE</code>.
-          Per cambiare ruolo: <code>ROLE_UPDATE</code>. Sempre append-only.
+        <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
+          <div class="hbce-metric">
+            <div class="hbce-metric__label">Records</div>
+            <div class="hbce-metric__value" id="mRecords">—</div>
+          </div>
+          <div class="hbce-metric">
+            <div class="hbce-metric__label">PASS</div>
+            <div class="hbce-metric__value" id="mPass">—</div>
+          </div>
+          <div class="hbce-metric">
+            <div class="hbce-metric__label">FAIL</div>
+            <div class="hbce-metric__value" id="mFail">—</div>
+          </div>
         </div>
-      </div>
 
-      <div class="hbce-card">
-        <h2>Operatori (stato attuale)</h2>
-        <div id="list"></div>
-      </div>
+        <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
+          <div class="hbce-metric">
+            <div class="hbce-metric__label">Italia — nodi regionali</div>
+            <div class="hbce-metric__value" id="mItalyRegions">—</div>
+          </div>
+          <div class="hbce-metric">
+            <div class="hbce-metric__label">UE — capitali</div>
+            <div class="hbce-metric__value" id="mEUCaps">—</div>
+          </div>
+          <div class="hbce-metric">
+            <div class="hbce-metric__label">Ruoli distinti</div>
+            <div class="hbce-metric__value" id="mRoles">—</div>
+          </div>
+        </div>
 
-      <div class="hbce-card">
-        <h2>Timeline governance (ultimi record)</h2>
-        <div id="timeline"></div>
-      </div>
+        <div class="hbce-divider" style="margin:16px 0;"></div>
 
+        <div class="hbce-actions" style="gap:10px;">
+          <button class="hbce-btn hbce-btn--primary" id="btnRun">Esegui verifica</button>
+          <button class="hbce-btn" id="btnCopyFail" disabled>Copia elenco FAIL</button>
+        </div>
+
+        <p class="hbce-muted" style="margin-top:10px;">
+          Regola hash applicata:
+          <code>HBCE|OPERATOR|v1|{name}|{country}|{region}|{city}|{role}|PARENT={parent_or_-}</code>
+          → SHA-256 (hex lowercase).
+        </p>
+      </div>
     </section>
+
+    <section class="hbce-card" style="margin-top:16px;">
+      <div class="hbce-card__header">
+        <h2 class="hbce-card__title">Dettaglio verifica (OPERATOR_ADDED)</h2>
+        <p class="hbce-card__subtitle">Solo record OPERATOR_ADDED: ogni hash deve essere ricalcolabile e identico.</p>
+      </div>
+
+      <div class="hbce-card__content" style="overflow:auto;">
+        <table class="hbce-table" id="tbl">
+          <thead>
+            <tr>
+              <th>Result</th>
+              <th>Operator</th>
+              <th>Country</th>
+              <th>Region</th>
+              <th>City</th>
+              <th>Role</th>
+              <th>Expected SHA256</th>
+              <th>Recorded SHA256</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="8" class="hbce-muted">Premi “Esegui verifica”.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
   </main>
 
   <div data-hbce="footer"></div>
 
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
   <script>
-    const LEDGER_URL="/hermeticum-bce-platform/network/operators-ledger.json";
-
-    function el(tag, cls, html){
-      const x=document.createElement(tag);
-      if(cls) x.className=cls;
-      if(html!==undefined) x.innerHTML=html;
-      return x;
+    // ---------- crypto helpers ----------
+    async function sha256Hex(str) {
+      const enc = new TextEncoder();
+      const buf = enc.encode(str);
+      const digest = await crypto.subtle.digest("SHA-256", buf);
+      const bytes = new Uint8Array(digest);
+      let hex = "";
+      for (const b of bytes) hex += b.toString(16).padStart(2, "0");
+      return hex;
     }
 
-    function kvSet(target, map){
-      target.innerHTML="";
-      for(const [k,v] of Object.entries(map)){
-        const a=el("div","k"); a.textContent=k;
-        const b=el("div","v"); b.textContent=v;
-        target.append(a,b);
+    function canonicalInput(rec) {
+      const parent = (rec.parent_operator_sha256 && String(rec.parent_operator_sha256).trim()) ? String(rec.parent_operator_sha256).trim() : "-";
+      const operatorName = String(rec.operator_name || "").trim();
+      const country = String(rec.country || "").trim();
+      const region = String(rec.region || "").trim();
+      const city = String(rec.city || "").trim();
+      const role = String(rec.role || "").trim();
+      return `HBCE|OPERATOR|v1|${operatorName}|${country}|${region}|${city}|${role}|PARENT=${parent}`;
+    }
+
+    function setStatus(kind, text) {
+      const box = document.getElementById("statusBox");
+      box.className = "hbce-alert " + (kind === "pass" ? "hbce-alert--success" : kind === "fail" ? "hbce-alert--danger" : "hbce-alert--info");
+      box.textContent = text;
+    }
+
+    function td(text, cls) {
+      const el = document.createElement("td");
+      if (cls) el.className = cls;
+      el.textContent = text;
+      return el;
+    }
+
+    // ---------- main ----------
+    let lastFailList = [];
+
+    async function loadLedger() {
+      const res = await fetch("/hermeticum-bce-platform/network/operators-ledger.json", { cache: "no-store" });
+      if (!res.ok) throw new Error("Impossibile caricare operators-ledger.json");
+      return await res.json();
+    }
+
+    function metricsFromRecords(records) {
+      const roles = new Set();
+      let itRegions = 0;
+      let euCaps = 0;
+
+      for (const r of records) {
+        if (r.record_type !== "OPERATOR_ADDED") continue;
+        roles.add(r.role || "");
+        const c = (r.country || "").trim();
+        const region = (r.region || "").trim();
+
+        if (c === "Italy" && region && region !== "National Capital") itRegions++;
+        if (c !== "Italy" && region === "National Capital") euCaps++;
       }
+
+      return { rolesCount: roles.size, itRegions, euCaps };
     }
 
-    function shortHash(h){
-      if(!h) return "—";
-      const s=String(h);
-      if(s.length<=24) return s;
-      return s.slice(0,16)+"…"+s.slice(-8);
-    }
+    async function run() {
+      setStatus("info", "Verifica in corso…");
+      document.getElementById("btnCopyFail").disabled = true;
+      lastFailList = [];
 
-    function badgeForStatus(st){
-      if(st==="ACTIVE") return "hbce-badge hbce-badge--ok";
-      if(st==="SUSPENDED") return "hbce-badge hbce-badge--warn";
-      return "hbce-badge hbce-badge--bad";
-    }
+      const tbody = document.getElementById("tbody");
+      tbody.innerHTML = "";
 
-    function badgeForRecordType(t){
-      if(t==="OPERATOR_ADDED") return "hbce-badge hbce-badge--ok";
-      if(t==="ROLE_UPDATE") return "hbce-badge hbce-badge--warn";
-      if(t==="OPERATOR_STATUS_UPDATE") return "hbce-badge hbce-badge--danger";
-      return "hbce-badge";
-    }
+      let ledger;
+      try {
+        ledger = await loadLedger();
+      } catch (e) {
+        setStatus("fail", String(e.message || e));
+        tbody.innerHTML = `<tr><td colspan="8" class="hbce-muted">FAIL — ledger non leggibile.</td></tr>`;
+        return;
+      }
 
-    async function load(){
-      const status=document.getElementById("status");
-      const stats=document.getElementById("stats");
-      const rules=document.getElementById("rules");
-      const list=document.getElementById("list");
-      const timeline=document.getElementById("timeline");
+      const records = Array.isArray(ledger.records) ? ledger.records : [];
+      const ops = records.filter(r => r && r.record_type === "OPERATOR_ADDED");
 
-      status.className="hbce-badge hbce-badge--warn";
-      status.textContent="Loading…";
-      stats.innerHTML=""; rules.innerHTML=""; list.innerHTML=""; timeline.innerHTML="";
+      // Metrics (high level)
+      document.getElementById("mRecords").textContent = String(ops.length);
+      const m = metricsFromRecords(ops);
+      document.getElementById("mItalyRegions").textContent = String(m.itRegions);
+      document.getElementById("mEUCaps").textContent = String(m.euCaps);
+      document.getElementById("mRoles").textContent = String(m.rolesCount);
 
-      try{
-        const res=await fetch(LEDGER_URL+"?t="+Date.now());
-        const data=await res.json();
+      let pass = 0, fail = 0;
 
-        const records=data.records||[];
-        status.className="hbce-badge hbce-badge--ok";
-        status.textContent="NETWORK LEDGER OK";
+      for (const rec of ops) {
+        const input = canonicalInput(rec);
+        const expected = await sha256Hex(input);
+        const recorded = String(rec.operator_payload_sha256 || "").trim().toLowerCase();
 
-        kvSet(stats,{
-          "proto": data.proto||"—",
-          "records": String(records.length),
-          "root_coordinator": data.root?.root_coordinator || "—",
-          "root_sha256": shortHash(data.root?.root_operator_payload_sha256),
-          "mode": data.mode||"—"
-        });
+        const ok = (expected === recorded);
 
-        const st=data.structure||{};
-        kvSet(rules,{
-          "max_per_country": String(st.max_per_country ?? "—"),
-          "max_per_region": String(st.max_per_region ?? "—"),
-          "roles": (st.roles||[]).join(", ") || "—",
-          "status_allowed": (st.status_allowed||[]).join(", ") || "—"
-        });
+        const tr = document.createElement("tr");
+        tr.appendChild(td(ok ? "PASS" : "FAIL", ok ? "hbce-badge hbce-badge--success" : "hbce-badge hbce-badge--danger"));
+        tr.appendChild(td(String(rec.operator_name || "").trim()));
+        tr.appendChild(td(String(rec.country || "").trim()));
+        tr.appendChild(td(String(rec.region || "").trim()));
+        tr.appendChild(td(String(rec.city || "").trim()));
+        tr.appendChild(td(String(rec.role || "").trim()));
+        tr.appendChild(td(expected, "hbce-mono"));
+        tr.appendChild(td(recorded || "(missing)", "hbce-mono"));
 
-        // Build state per operator hash (last-wins by timestamp)
-        const state=new Map();
+        tbody.appendChild(tr);
 
-        function touch(h){
-          if(!state.has(h)){
-            state.set(h,{
-              operator_name:"—",
-              operator_payload_sha256:h,
-              country:"—",
-              region:"",
-              city:"",
-              role:"—",
-              status:"—",
-              timestamp:"—",
-              parent:""
-            });
-          }
-          return state.get(h);
-        }
-
-        for(const r of records){
-          const t=String(r.record_type||"");
-          const ts=String(r.timestamp||"");
-          if(t==="OPERATOR_ADDED"){
-            const h=(r.operator_payload_sha256||"").toLowerCase();
-            if(!h) continue;
-            const cur=touch(h);
-            if(ts >= String(cur.timestamp||"")){
-              cur.operator_name=r.operator_name||cur.operator_name;
-              cur.country=r.country||cur.country;
-              cur.region=r.region||cur.region;
-              cur.city=r.city||cur.city;
-              cur.role=r.role||cur.role;
-              cur.status=r.status||cur.status;
-              cur.timestamp=ts;
-              cur.parent=r.parent_operator_sha256||cur.parent;
-            }
-          }
-
-          if(t==="ROLE_UPDATE"){
-            const h=(r.target_operator_sha256||"").toLowerCase();
-            if(!h) continue;
-            const cur=touch(h);
-            if(ts >= String(cur.timestamp||"")){
-              cur.role=r.new_role||cur.role;
-              cur.timestamp=ts;
-            }
-          }
-
-          if(t==="OPERATOR_STATUS_UPDATE"){
-            const h=(r.target_operator_sha256||"").toLowerCase();
-            if(!h) continue;
-            const cur=touch(h);
-            if(ts >= String(cur.timestamp||"")){
-              cur.status=r.new_status||cur.status;
-              cur.timestamp=ts;
-            }
-          }
-        }
-
-        const arr=[...state.values()].sort((a,b)=> (a.role||"").localeCompare(b.role||"") || (a.country||"").localeCompare(b.country||""));
-
-        arr.forEach(o=>{
-          const card=el("div","hbce-card","");
-          card.style.marginTop="10px";
-
-          const header=el("div","hbce-row",`
-            <span class="${badgeForStatus(o.status)}">${o.status}</span>
-            <span class="hbce-badge">${o.role}</span>
-            <span class="hbce-badge">${o.country}${o.region?(" / "+o.region):""}${o.city?(" / "+o.city):""}</span>
-          `);
-          card.appendChild(header);
-
-          const kv=el("div","hbce-kv","");
-          kvSet(kv,{
-            "operator_name": o.operator_name,
-            "operator_payload_sha256": o.operator_payload_sha256,
-            "parent_operator_sha256": o.parent ? o.parent : "—",
-            "last_update": o.timestamp
+        if (ok) pass++;
+        else {
+          fail++;
+          lastFailList.push({
+            operator_name: rec.operator_name || "",
+            country: rec.country || "",
+            region: rec.region || "",
+            city: rec.city || "",
+            role: rec.role || "",
+            expected_sha256: expected,
+            recorded_sha256: recorded || ""
           });
-          card.appendChild(kv);
+        }
+      }
 
-          list.appendChild(card);
-        });
+      document.getElementById("mPass").textContent = String(pass);
+      document.getElementById("mFail").textContent = String(fail);
 
-        // Timeline (last 20 records)
-        const last = records.slice(-20).reverse();
-        last.forEach(r=>{
-          const t=String(r.record_type||"—");
-          const card=el("div","hbce-card","");
-          card.style.marginTop="10px";
-
-          const bcls = badgeForRecordType(t);
-          const head=el("div","hbce-row",`
-            <span class="${bcls}">${t}</span>
-            <span class="hbce-badge">${String(r.timestamp||"—")}</span>
-          `);
-          card.appendChild(head);
-
-          const kv=el("div","hbce-kv","");
-          const map={};
-
-          if(t==="OPERATOR_ADDED"){
-            map["operator_name"]=r.operator_name||"—";
-            map["operator_payload_sha256"]=r.operator_payload_sha256||"—";
-            map["role"]=r.role||"—";
-            map["status"]=r.status||"—";
-            map["country"]=r.country||"—";
-          }
-
-          if(t==="ROLE_UPDATE"){
-            map["target_operator_sha256"]=r.target_operator_sha256||"—";
-            map["new_role"]=r.new_role||"—";
-            map["decided_by_sha256"]=r.decided_by_sha256||"—";
-            map["note"]=r.note||"—";
-          }
-
-          if(t==="OPERATOR_STATUS_UPDATE"){
-            map["target_operator_sha256"]=r.target_operator_sha256||"—";
-            map["new_status"]=r.new_status||"—";
-            map["reason"]=r.reason||"—";
-            map["decided_by_sha256"]=r.decided_by_sha256||"—";
-          }
-
-          kvSet(kv,map);
-          card.appendChild(kv);
-
-          timeline.appendChild(card);
-        });
-
-      }catch(e){
-        status.className="hbce-badge hbce-badge--bad";
-        status.textContent="NETWORK LEDGER ERROR";
-        stats.innerHTML=`<div class="v">${String(e)}</div>`;
+      if (fail === 0) {
+        setStatus("pass", "PASS — ledger coerente. Tutti gli operator_payload_sha256 sono verificabili con HASH_RULES.");
+      } else {
+        setStatus("fail", `FAIL — trovati ${fail} record OPERATOR_ADDED non coerenti. Ledger da correggere (append-only: aggiungi record correttivi o rigenera file).`);
+        document.getElementById("btnCopyFail").disabled = false;
       }
     }
 
-    document.getElementById("refresh").onclick=load;
-    load();
+    async function copyFail() {
+      const txt = JSON.stringify({ fails: lastFailList }, null, 2);
+      await navigator.clipboard.writeText(txt);
+      setStatus("info", `Elenco FAIL copiato (${lastFailList.length} record).`);
+    }
+
+    document.getElementById("btnRun").addEventListener("click", run);
+    document.getElementById("btnCopyFail").addEventListener("click", copyFail);
+
+    // Auto-run once
+    run();
   </script>
 </body>
 </html>
