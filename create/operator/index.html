@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CREATE — Operator License (EU)</title>
-  <meta name="description" content="Generatore licenza operatore UE: HBCE-OPERATOR-v1 + registry entry. Hash-only, append-only, fail-closed." />
+  <title>CREATE — IPR Operator (EU)</title>
+  <meta name="description" content="Creazione operatore UE con conferma via file reale (IPR Base), pagamento (manuale tracciabile) ed emissione licenza. Fail-closed, hash-only, append-only." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
   <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
   <script defer src="/hermeticum-bce-platform/assets/hbce-crypto.js"></script>
@@ -14,74 +14,152 @@
 
   <main class="hbce-container hbce-main">
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CREATE · IPR OPERATOR UE · COORDINATOR MODEL</div>
-      <h1 class="hbce-hero__title">Crea Licenza Operatore</h1>
+      <div class="hbce-hero__kicker">CREATE · OPERATOR UE · CONFIRM → PAY → ISSUE (FAIL-CLOSED)</div>
+      <h1 class="hbce-hero__title">Crea IPR Operatore (Licenza UE)</h1>
       <p class="hbce-hero__lead">
-        Genera localmente <strong>HBCE-OPERATOR-v1</strong> + entry per registry. Poi append e verify come per IPR base.
+        Flusso UE: <strong>1) Conferma</strong> (carica un file reale IPR Base e verifica match nel registry) →
+        <strong>2) Pagamento</strong> (ordine tracciabile) → <strong>3) Emissione</strong> (rilascio licenza operatore).
+        Se la conferma non matcha nel registry → <strong>STOP</strong> (fail-closed).
       </p>
+      <div class="hbce-row" style="margin-top:16px">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">ACTIVATE</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+      </div>
     </section>
 
     <section class="hbce-grid">
+
+      <!-- STEP 1 -->
       <div class="hbce-card hbce-card--6">
-        <h2>Parametri operatore</h2>
+        <h2>STEP 1 — Conferma (obbligatoria)</h2>
+        <p class="hbce-help">
+          Carica il file reale <strong>IPR Base</strong> dell’operatore (es. <code>HBCE_IPR_RELEASE__*.json</code>).
+          Il sistema calcola SHA256 canonico e cerca match nel registry pubblico. Se non c’è match → non si emette nulla.
+        </p>
 
         <div class="hbce-field">
-          <label for="opName">Operator name</label>
-          <input id="opName" class="hbce-input" value="manuel coletta" />
+          <label for="baseFile">IPR Base — Release file (JSON)</label>
+          <input id="baseFile" class="hbce-input" type="file" accept="application/json,.json" />
+        </div>
+
+        <div class="hbce-row">
+          <button id="btnConfirm" class="hbce-btn hbce-btn--primary">RUN CONFIRM</button>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/registry.json">OPEN registry.json</a>
+        </div>
+
+        <div id="confirmBadge" class="hbce-badge hbce-badge--warn" style="margin-top:12px">Waiting confirmation…</div>
+
+        <div class="hbce-kv" id="confirmKV" style="margin-top:12px"></div>
+
+        <pre id="confirmRaw" class="hbce-textarea" style="margin-top:12px; white-space:pre-wrap"></pre>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="hbce-card hbce-card--6">
+        <h2>STEP 2 — Pagamento (ordine tracciabile)</h2>
+        <p class="hbce-help">
+          GitHub Pages non gestisce pagamenti. Qui generiamo un <strong>ordine</strong> (file testo) con riferimenti verificabili (hash)
+          da inviare via PEC. Dopo pagamento confermato, si procede a emissione (step 3).
+        </p>
+
+        <div class="hbce-field">
+          <label for="orderRef">Order reference (opzionale)</label>
+          <input id="orderRef" class="hbce-input" placeholder="es. ORD-2026-0001" />
         </div>
 
         <div class="hbce-field">
-          <label for="level">License level</label>
-          <select id="level" class="hbce-select">
-            <option value="COORDINATOR">COORDINATOR</option>
-            <option value="OPERATOR">OPERATOR</option>
+          <label for="payStatus">Payment status (manuale)</label>
+          <select id="payStatus" class="hbce-select">
+            <option value="PENDING">PENDING</option>
+            <option value="CONFIRMED">CONFIRMED</option>
           </select>
-        </div>
-
-        <div class="hbce-field">
-          <label for="territory">Territory (stringa libera)</label>
-          <input id="territory" class="hbce-input" placeholder="es. IT-PIEMONTE / EU-ITALY / EU-FRANCE" />
-        </div>
-
-        <div class="hbce-field">
-          <label for="baseSha">operator_base_payload_sha256 (se esiste)</label>
-          <input id="baseSha" class="hbce-input" placeholder="64-hex sha256 (opzionale)" />
-          <div class="hbce-help">Se non lo hai, lascia vuoto. Lo puoi agganciare quando la base è definita.</div>
+          <div class="hbce-help">Imposta CONFIRMED solo dopo che tu hai verificato pagamento.</div>
         </div>
 
         <div class="hbce-row">
-          <button id="btnGen" class="hbce-btn hbce-btn--primary">GENERATE LICENSE</button>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">OPEN REGISTRY</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">OPEN VERIFY</a>
+          <button id="dlOrder" class="hbce-btn" disabled>DOWNLOAD ORDER_REQUEST.txt</button>
+          <button id="copyOrder" class="hbce-btn" disabled>COPY ORDER TEXT</button>
+        </div>
+
+        <pre id="orderText" class="hbce-textarea" style="margin-top:12px; white-space:pre-wrap"></pre>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="hbce-card">
+        <h2>STEP 3 — Emissione Licenza (gated)</h2>
+        <p class="hbce-help">
+          Disponibile solo se:
+          <strong>CONFIRM = match true</strong> e <strong>payment status = CONFIRMED</strong>.
+          Output: <strong>OPERATOR_RELEASE</strong> (file reale), <strong>RECEIPT</strong>, <strong>REGISTRY_ENTRY</strong> (hash-only pubblico).
+        </p>
+
+        <div class="hbce-grid" style="margin-top:12px">
+          <div class="hbce-card hbce-card--6" style="margin-top:0">
+            <h3>Parametri licenza</h3>
+
+            <div class="hbce-field">
+              <label for="opName">Operator name</label>
+              <input id="opName" class="hbce-input" placeholder="Nome operatore (es. Manuel Coletta / azienda)" />
+            </div>
+
+            <div class="hbce-field">
+              <label for="level">License level</label>
+              <select id="level" class="hbce-select">
+                <option value="COORDINATOR">COORDINATOR</option>
+                <option value="OPERATOR">OPERATOR</option>
+              </select>
+            </div>
+
+            <div class="hbce-field">
+              <label for="territory">Territory</label>
+              <input id="territory" class="hbce-input" placeholder="es. IT-PIEMONTE / EU-FRANCE / EU-ITALY" />
+            </div>
+
+            <div class="hbce-row">
+              <button id="btnIssue" class="hbce-btn hbce-btn--primary" disabled>ISSUE OPERATOR LICENSE</button>
+              <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+              <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+            </div>
+
+            <div id="issueBadge" class="hbce-badge hbce-badge--warn" style="margin-top:12px">Issuance locked…</div>
+            <div class="hbce-kv" id="issueKV" style="margin-top:12px"></div>
+          </div>
+
+          <div class="hbce-card hbce-card--6" style="margin-top:0">
+            <h3>Output</h3>
+
+            <div class="hbce-field">
+              <label>REGISTRY_ENTRY (incolla in entries[])</label>
+              <pre id="entry" class="hbce-textarea" style="white-space:pre-wrap"></pre>
+            </div>
+
+            <div class="hbce-row">
+              <button id="dlRelease" class="hbce-btn hbce-btn--ok" disabled>DOWNLOAD OPERATOR_RELEASE.json</button>
+              <button id="dlReceipt" class="hbce-btn" disabled>DOWNLOAD RECEIPT.json</button>
+              <button id="copyEntry" class="hbce-btn" disabled>COPY REGISTRY_ENTRY</button>
+            </div>
+
+            <pre id="issueRaw" class="hbce-textarea" style="margin-top:12px; white-space:pre-wrap"></pre>
+          </div>
         </div>
       </div>
 
-      <div class="hbce-card hbce-card--6">
-        <h2>Output</h2>
-        <div id="badge" class="hbce-badge hbce-badge--warn">Not generated</div>
-
-        <div class="hbce-kv" id="kv"></div>
-
-        <div class="hbce-field">
-          <label>REGISTRY_ENTRY (incolla in entries[])</label>
-          <pre id="entry" class="hbce-textarea" style="white-space:pre-wrap"></pre>
-        </div>
-
-        <div class="hbce-row">
-          <button id="dlLicense" class="hbce-btn hbce-btn--ok" disabled>DOWNLOAD OPERATOR_LICENSE.json</button>
-          <button id="copyEntry" class="hbce-btn" disabled>COPY REGISTRY_ENTRY</button>
-        </div>
-      </div>
     </section>
   </main>
 
   <div data-hbce="footer"></div>
 
   <script>
-    let LICENSE=null, ENTRY=null;
+    const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
 
-    function setKV(map){
-      const kv=document.getElementById("kv");
+    // State
+    let CONFIRM = { ok:false, base_payload_sha256:null, base_subject_name:"—", base_timestamp:"—" };
+    let ORDER_TXT = "";
+    let RELEASE=null, RECEIPT=null, ENTRY=null;
+
+    function kvSet(elId, map){
+      const kv=document.getElementById(elId);
       kv.innerHTML="";
       for(const [k,v] of Object.entries(map)){
         const a=document.createElement("div"); a.className="k"; a.textContent=k;
@@ -90,80 +168,273 @@
       }
     }
 
-    document.getElementById("btnGen").onclick = async () => {
-      const operator_name = (document.getElementById("opName").value||"").trim().toLowerCase();
+    function lockIssuance(reason){
+      const badge = document.getElementById("issueBadge");
+      badge.className="hbce-badge hbce-badge--warn";
+      badge.textContent = reason || "Issuance locked…";
+      document.getElementById("btnIssue").disabled = true;
+      document.getElementById("dlRelease").disabled = true;
+      document.getElementById("dlReceipt").disabled = true;
+      document.getElementById("copyEntry").disabled = true;
+      document.getElementById("entry").textContent = "";
+      document.getElementById("issueRaw").textContent = "";
+    }
+
+    function refreshGates(){
+      const pay = document.getElementById("payStatus").value;
+      const canIssue = (CONFIRM.ok === true) && (pay === "CONFIRMED");
+      document.getElementById("btnIssue").disabled = !canIssue;
+
+      if(!CONFIRM.ok){
+        lockIssuance("Issuance locked — confirmation missing (fail-closed).");
+        return;
+      }
+      if(pay !== "CONFIRMED"){
+        lockIssuance("Issuance locked — payment not confirmed.");
+        return;
+      }
+      const badge = document.getElementById("issueBadge");
+      badge.className="hbce-badge hbce-badge--ok";
+      badge.textContent="Issuance unlocked — ready to issue.";
+    }
+
+    document.getElementById("payStatus").addEventListener("change", refreshGates);
+
+    // STEP 1: Confirm
+    document.getElementById("btnConfirm").onclick = async () => {
+      const badge = document.getElementById("confirmBadge");
+      const raw = document.getElementById("confirmRaw");
+      const f = document.getElementById("baseFile").files?.[0];
+
+      CONFIRM = { ok:false, base_payload_sha256:null, base_subject_name:"—", base_timestamp:"—" };
+      raw.textContent = "";
+      kvSet("confirmKV", {});
+      document.getElementById("dlOrder").disabled = true;
+      document.getElementById("copyOrder").disabled = true;
+      document.getElementById("orderText").textContent = "";
+      document.getElementById("btnIssue").disabled = true;
+      lockIssuance("Issuance locked…");
+
+      if(!f){
+        badge.className="hbce-badge hbce-badge--bad";
+        badge.textContent="FAIL — no file";
+        return;
+      }
+
+      try{
+        const text = await f.text();
+        const obj = JSON.parse(text);
+
+        // Canonical hash from stable stringify of parsed JSON
+        const base_payload_sha256 = await HBCE.sha256String(HBCE.stableStringify(obj));
+
+        // Registry + match
+        const reg = await HBCE.fetchJson(REGISTRY_URL);
+        const match = (reg.entries||[]).some(e => (e.payload_sha256||"").toLowerCase() === base_payload_sha256.toLowerCase());
+
+        const base_subject_name = (obj?.subject?.name) ? obj.subject.name : (obj?.subject?.nickname ? obj.subject.nickname : "—");
+        const base_timestamp = obj?.issued_at || obj?.timestamp || "—";
+
+        CONFIRM = { ok: !!match, base_payload_sha256, base_subject_name, base_timestamp };
+
+        kvSet("confirmKV", {
+          "base_payload_sha256": base_payload_sha256,
+          "registry_match": String(match),
+          "base_subject": base_subject_name,
+          "base_timestamp": base_timestamp
+        });
+
+        raw.textContent = JSON.stringify({
+          confirm: "HBCE-OPERATOR-CONFIRM-v1",
+          result: match ? "PASS" : "FAIL",
+          policy: ["FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","GDPR_MIN"],
+          base_payload_sha256,
+          registry_url: REGISTRY_URL,
+          note: match ? "Confirmed. Proceed to payment and issuance." : "Not present in registry. Fail-closed: cannot issue operator license."
+        }, null, 2);
+
+        badge.className = match ? "hbce-badge hbce-badge--ok" : "hbce-badge hbce-badge--bad";
+        badge.textContent = match ? "CONFIRMED — registry match true" : "REJECTED — registry match false (fail-closed)";
+
+        // Enable order generation if confirmed
+        if(match){
+          buildOrderText();
+          document.getElementById("dlOrder").disabled = false;
+          document.getElementById("copyOrder").disabled = false;
+        }
+
+        refreshGates();
+      }catch(e){
+        badge.className="hbce-badge hbce-badge--bad";
+        badge.textContent="FAIL — confirm error";
+        raw.textContent = String(e);
+        refreshGates();
+      }
+    };
+
+    function buildOrderText(){
+      const orderRef = (document.getElementById("orderRef").value||"").trim() || "—";
       const level = document.getElementById("level").value;
       const territory = (document.getElementById("territory").value||"").trim() || "EU";
-      const baseSha = (document.getElementById("baseSha").value||"").trim().toLowerCase() || undefined;
+      const opName = (document.getElementById("opName").value||"").trim() || "—";
+      const pay = document.getElementById("payStatus").value;
+
+      ORDER_TXT =
+`HBCE ORDER REQUEST (OPERATOR LICENSE)
+Issuer: HERMETICUM B.C.E. S.r.l.
+Policy: UE-first · audit-first · fail-closed · hash-only · append-only · GDPR-min
+
+ORDER_REF: ${orderRef}
+PAYMENT_STATUS: ${pay}
+
+REQUESTED_LICENSE:
+- operator_name: ${opName}
+- level: ${level}
+- territory: ${territory}
+
+MANDATORY_CONFIRMATION (BASE IPR):
+- base_payload_sha256: ${CONFIRM.base_payload_sha256 || "—"}
+- base_subject: ${CONFIRM.base_subject_name || "—"}
+- base_timestamp: ${CONFIRM.base_timestamp || "—"}
+- registry_url: ${REGISTRY_URL}
+- confirmation: ${CONFIRM.ok ? "PASS" : "FAIL"}
+
+NOTE:
+This order is traceable. Issuance is gated: CONFIRM must PASS and payment must be CONFIRMED.
+`;
+
+      document.getElementById("orderText").textContent = ORDER_TXT;
+    }
+
+    document.getElementById("orderRef").addEventListener("input", ()=> { if(CONFIRM.ok) buildOrderText(); });
+    document.getElementById("opName").addEventListener("input", ()=> { if(CONFIRM.ok) buildOrderText(); });
+    document.getElementById("level").addEventListener("change", ()=> { if(CONFIRM.ok) buildOrderText(); });
+    document.getElementById("territory").addEventListener("input", ()=> { if(CONFIRM.ok) buildOrderText(); });
+    document.getElementById("payStatus").addEventListener("change", ()=> { if(CONFIRM.ok) buildOrderText(); });
+
+    document.getElementById("dlOrder").onclick = () => {
+      buildOrderText();
+      const fn = `HBCE_ORDER_REQUEST__${(CONFIRM.base_payload_sha256||"").slice(0,12)}.txt`;
+      HBCE.download(fn, ORDER_TXT, "text/plain");
+    };
+    document.getElementById("copyOrder").onclick = async () => {
+      buildOrderText();
+      await navigator.clipboard.writeText(ORDER_TXT);
+      alert("ORDER_REQUEST copied. Send via PEC with payment proof, then set PAYMENT_STATUS=CONFIRMED.");
+    };
+
+    // STEP 3: Issue (gated)
+    document.getElementById("btnIssue").onclick = async () => {
+      const pay = document.getElementById("payStatus").value;
+      if(!CONFIRM.ok){
+        alert("Fail-closed: confirmation missing. Cannot issue.");
+        return;
+      }
+      if(pay !== "CONFIRMED"){
+        alert("Payment not confirmed. Cannot issue.");
+        return;
+      }
+
+      const operator_name = (document.getElementById("opName").value||"").trim();
+      const level = document.getElementById("level").value;
+      const territory = (document.getElementById("territory").value||"").trim() || "EU";
+      if(!operator_name){
+        alert("Operator name required.");
+        return;
+      }
 
       const ts = HBCE.nowISO();
 
-      LICENSE = {
-        proto: "HBCE-OPERATOR-v1",
-        kind: "IPR_OPERATOR_LICENSE",
-        issued_at: ts,
-        timestamp: ts,
-        operator_name,
-        operator_base_payload_sha256: baseSha,
-        payload: {
-          operator: {
-            name: operator_name,
-            base_payload_sha256: baseSha,
-            territory
-          },
-          license: {
-            level,
-            scope: ["CREATE","RECEIPT","REGISTRY_APPEND","VERIFY","CERTIFICATE"]
-          },
-          policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","GDPR_MIN","NO_PUBLIC_DATA_CUSTODY"],
-          constraints: {
-            requires_operator_base_valid: !!baseSha,
-            fails_closed_on_missing_registry_match: true
-          }
+      // File reale licenza (release)
+      RELEASE = {
+        proto: "HBCE-OPERATOR-RELEASE-v1",
+        kind: "IPR_OPERATOR_RELEASE_FILE",
+        issuer: "HERMETICUM B.C.E. S.r.l.",
+        jurisdiction: "EU",
+        policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","GDPR_MIN","NO_PUBLIC_DATA_CUSTODY"],
+        confirmation: {
+          base_payload_sha256: CONFIRM.base_payload_sha256,
+          registry_url: REGISTRY_URL,
+          match: true
+        },
+        operator: {
+          name: operator_name,
+          territory
+        },
+        license: {
+          level,
+          scope: ["CREATE","RECEIPT","REGISTRY_APPEND","VERIFY","CERTIFICATE"]
         },
         payment: {
-          status: "PENDING",
-          note: "Payment gate will be enforced before issuance in production."
-        }
+          status: "CONFIRMED"
+        },
+        issued_at: ts
       };
 
-      const payload_sha256 = await HBCE.sha256String(HBCE.stableStringify(LICENSE));
-      LICENSE.payload_sha256 = payload_sha256;
+      const payload_sha256 = await HBCE.sha256String(HBCE.stableStringify(RELEASE));
+      RELEASE.payload_sha256 = payload_sha256;
 
+      // Entry pubblica hash-only
       ENTRY = {
         entity_type: "OPERATOR",
         name: operator_name,
         payload_sha256,
         timestamp: ts,
         status: "ACTIVE",
-        note: `territory=${territory}; level=${level}`
+        note: `territory=${territory}; level=${level}; base=${(CONFIRM.base_payload_sha256||"").slice(0,12)}`
       };
 
-      document.getElementById("badge").className="hbce-badge hbce-badge--ok";
-      document.getElementById("badge").textContent="Generated — ready to append";
+      // Receipt operativo
+      RECEIPT = {
+        proto: "HBCE-RECEIPT-v1",
+        kind: "IPR_OPERATOR_RECEIPT",
+        policy: ["HASH_ONLY","FAIL_CLOSED"],
+        issuer: "HERMETICUM B.C.E. S.r.l.",
+        timestamp: ts,
+        payload_sha256,
+        registry_url: REGISTRY_URL,
+        payment: { status: "CONFIRMED" },
+        note: "Append REGISTRY_ENTRY into registry.json entries[]. Then run VERIFY. Missing match => INVALID (fail-closed)."
+      };
 
-      setKV({
+      kvSet("issueKV", {
         "issued_at": ts,
         "payload_sha256": payload_sha256,
         "operator_name": operator_name,
         "level": level,
-        "territory": territory
+        "territory": territory,
+        "confirmed_base_sha": CONFIRM.base_payload_sha256
       });
 
-      document.getElementById("entry").textContent = JSON.stringify(ENTRY,null,2);
+      document.getElementById("entry").textContent = JSON.stringify(ENTRY, null, 2);
+      document.getElementById("issueRaw").textContent = JSON.stringify({ release: RELEASE, receipt: RECEIPT }, null, 2);
 
-      document.getElementById("dlLicense").disabled=false;
-      document.getElementById("copyEntry").disabled=false;
+      // Enable downloads
+      document.getElementById("dlRelease").disabled = false;
+      document.getElementById("dlReceipt").disabled = false;
+      document.getElementById("copyEntry").disabled = false;
 
-      document.getElementById("dlLicense").onclick=()=>{
-        const fn=`HBCE_OPERATOR_LICENSE__${payload_sha256.slice(0,12)}.json`;
-        HBCE.download(fn, JSON.stringify(LICENSE,null,2));
+      document.getElementById("dlRelease").onclick = () => {
+        const fn = `HBCE_OPERATOR_RELEASE__${payload_sha256.slice(0,12)}.json`;
+        HBCE.download(fn, JSON.stringify(RELEASE, null, 2));
       };
-      document.getElementById("copyEntry").onclick=async()=>{
-        await navigator.clipboard.writeText(JSON.stringify(ENTRY,null,2));
-        alert("REGISTRY_ENTRY copied. Paste into registry.json → entries[]. Commit.");
+      document.getElementById("dlReceipt").onclick = () => {
+        const fn = `HBCE_OPERATOR_RECEIPT__${payload_sha256.slice(0,12)}.json`;
+        HBCE.download(fn, JSON.stringify(RECEIPT, null, 2));
       };
+      document.getElementById("copyEntry").onclick = async () => {
+        await navigator.clipboard.writeText(JSON.stringify(ENTRY, null, 2));
+        alert("REGISTRY_ENTRY copied. Paste into registry.json → entries[]. Commit. Then run VERIFY to generate certificate.");
+      };
+
+      const badge = document.getElementById("issueBadge");
+      badge.className = "hbce-badge hbce-badge--ok";
+      badge.textContent = "Issued — release + receipt + registry entry ready";
     };
+
+    // Initialize gates
+    lockIssuance("Issuance locked — run confirmation first.");
+    refreshGates();
   </script>
 </body>
 </html>
