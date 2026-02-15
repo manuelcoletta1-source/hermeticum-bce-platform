@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ISSUER — Emissione IPR (EU)</title>
+  <meta name="description" content="Emissione reale IPR Base fiscale per clienti UE. Gate: operatore deve matchare nel registry (fail-closed). Output: file reale + receipt + registry entry." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+  <script defer src="/hermeticum-bce-platform/assets/hbce-crypto.js"></script>
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">ISSUER · REAL EMISSION · BANK-GRADE · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Issuer Console — Emissione IPR Base (EU)</h1>
+      <p class="hbce-hero__lead">
+        Gate operativo: prima carichi la tua licenza operatore e il sistema richiede match nel registry.
+        Solo dopo si sblocca l’emissione IPR per clienti reali.
+      </p>
+      <div class="hbce-row" style="margin-top:16px">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">ACTIVATE</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+      </div>
+    </section>
+
+    <section class="hbce-grid">
+
+      <!-- GATE -->
+      <div class="hbce-card hbce-card--6">
+        <h2>GATE — Operatore registrato (obbligatorio)</h2>
+        <p class="hbce-help">
+          Carica la tua licenza operatore (file reale). Il sistema calcola SHA256 canonico e richiede match nel registry.
+          Nessun match → emissione bloccata (fail-closed).
+        </p>
+
+        <div class="hbce-field">
+          <label for="opFile">Operator License / Release (JSON)</label>
+          <input id="opFile" class="hbce-input" type="file" accept="application/json,.json" />
+        </div>
+
+        <div class="hbce-row">
+          <button id="btnGate" class="hbce-btn hbce-btn--primary">RUN GATE</button>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/registry.json">OPEN registry.json</a>
+        </div>
+
+        <div id="gateBadge" class="hbce-badge hbce-badge--warn" style="margin-top:12px">Locked…</div>
+
+        <div class="hbce-kv" id="gateKV" style="margin-top:12px"></div>
+
+        <pre id="gateRaw" class="hbce-textarea" style="margin-top:12px; white-space:pre-wrap"></pre>
+      </div>
+
+      <!-- ORDER / PAYMENT -->
+      <div class="hbce-card hbce-card--6">
+        <h2>Pagamento (traccia minima)</h2>
+        <p class="hbce-help">
+          Backend assente (GitHub Pages). Il pagamento resta un atto tracciato manualmente. Qui generi un
+          <strong>ORDER_REQUEST</strong> da inviare via PEC con riferimento hash e dati minimizzati.
+        </p>
+
+        <div class="hbce-field">
+          <label for="orderRef">Order reference</label>
+          <input id="orderRef" class="hbce-input" placeholder="es. ORD-2026-0009" />
+        </div>
+
+        <div class="hbce-field">
+          <label for="payStatus">Payment status (manuale)</label>
+          <select id="payStatus" class="hbce-select">
+            <option value="PENDING">PENDING</option>
+            <option value="CONFIRMED">CONFIRMED</option>
+          </select>
+        </div>
+
+        <div class="hbce-row">
+          <button id="dlOrder" class="hbce-btn" disabled>DOWNLOAD ORDER_REQUEST.txt</button>
+          <button id="copyOrder" class="hbce-btn" disabled>COPY ORDER TEXT</button>
+        </div>
+
+        <pre id="orderText" class="hbce-textarea" style="margin-top:12px; white-space:pre-wrap"></pre>
+      </div>
+
+      <!-- ISSUE -->
+      <div class="hbce-card">
+        <h2>EMISSIONE — IPR Base fiscale (cliente)</h2>
+        <p class="hbce-help">
+          Dati bank-grade (stile banca). Il file reale resta al cliente. Nel registry pubblico va solo SHA256.
+          Emissione consentita solo con Gate PASS.
+        </p>
+
+        <div class="hbce-grid" style="margin-top:12px">
+
+          <div class="hbce-card hbce-card--6" style="margin-top:0">
+            <h3>Dati cliente (bank-grade)</h3>
+
+            <div class="hbce-field">
+              <label>Nome</label>
+              <input id="c_nome" class="hbce-input" placeholder="Nome" />
+            </div>
+
+            <div class="hbce-field">
+              <label>Cognome</label>
+              <input id="c_cognome" class="hbce-input" placeholder="Cognome" />
+            </div>
+
+            <div class="hbce-field">
+              <label>Nickname (opzionale)</label>
+              <input id="c_nick" class="hbce-input" placeholder="Nickname operativo" />
+            </div>
+
+            <div class="hbce-field">
+              <label>Codice fiscale / Tax ID</label>
+              <input id="c_cf" class="hbce-input" placeholder="Codice fiscale" />
+            </div>
+
+            <div class="hbce-field">
+              <label>Documento</label>
+              <select id="c_doc" class="hbce-select">
+                <option value="CIE">Carta d’identità (CIE)</option>
+                <option value="PASSAPORTO">Passaporto</option>
+                <option value="ALTRO">Altro</option>
+              </select>
+            </div>
+
+            <div class="hbce-field">
+              <label>Numero documento</label>
+              <input id="c_docnum" class="hbce-input" placeholder="Numero documento" />
+            </div>
+
+            <div class="hbce-field">
+              <label>Data di nascita (YYYY-MM-DD)</label>
+              <input id="c_birthdate" class="hbce-input" placeholder="1988-02-05" />
+            </div>
+
+            <div class="hbce-field">
+              <label>Luogo di nascita</label>
+              <input id="c_birthplace" class="hbce-input" placeholder="Città (Provincia), Paese" />
+            </div>
+
+            <div class="hbce-field">
+              <label>Residenza (indirizzo sintetico)</label>
+              <input id="c_res" class="hbce-input" placeholder="Città, Regione, Stato" />
+            </div>
+
+            <div class="hbce-field">
+              <label>Email</label>
+              <input id="c_email" class="hbce-input" placeholder="email" />
+            </div>
+
+            <div class="hbce-field">
+              <label>Telefono (opzionale)</label>
+              <input id="c_phone" class="hbce-input" placeholder="+39…" />
+            </div>
+
+            <div class="hbce-row">
+              <button id="btnIssue" class="hbce-btn hbce-btn--primary" disabled>ISSUE IPR BASE (CLIENT)</button>
+              <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+              <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+            </div>
+
+            <div id="issueBadge" class="hbce-badge hbce-badge--warn" style="margin-top:12px">Issuance locked…</div>
+            <div class="hbce-kv" id="issueKV" style="margin-top:12px"></div>
+          </div>
+
+          <div class="hbce-card hbce-card--6" style="margin-top:0">
+            <h3>Output</h3>
+
+            <div class="hbce-field">
+              <label>REGISTRY_ENTRY (incolla in entries[])</label>
+              <pre id="entry" class="hbce-textarea" style="white-space:pre-wrap"></pre>
+            </div>
+
+            <div class="hbce-row">
+              <button id="dlRelease" class="hbce-btn hbce-btn--ok" disabled>DOWNLOAD IPR_FISCAL_RELEASE.json</button>
+              <button id="dlReceipt" class="hbce-btn" disabled>DOWNLOAD RECEIPT.json</button>
+              <button id="copyEntry" class="hbce-btn" disabled>COPY ENTRY</button>
+            </div>
+
+            <pre id="issueRaw" class="hbce-textarea" style="margin-top:12px; white-space:pre-wrap"></pre>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <div data-hbce="footer"></div>
+
+  <script>
+    const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
+
+    let GATE = { ok:false, operator_name:"—", operator_payload_sha256:null, operator_kind:"—", operator_proto:"—" };
+    let ORDER_TXT = "";
+    let RELEASE=null, RECEIPT=null, ENTRY=null;
+
+    function kvSet(elId, map){
+      const kv=document.getElementById(elId);
+      kv.innerHTML="";
+      for(const [k,v] of Object.entries(map)){
+        const a=document.createElement("div"); a.className="k"; a.textContent=k;
+        const b=document.createElement("div"); b.className="v"; b.textContent=v;
+        kv.append(a,b);
+      }
+    }
+
+    function lockAll(reason){
+      document.getElementById("btnIssue").disabled=true;
+      document.getElementById("dlOrder").disabled=true;
+      document.getElementById("copyOrder").disabled=true;
+      document.getElementById("dlRelease").disabled=true;
+      document.getElementById("dlReceipt").disabled=true;
+      document.getElementById("copyEntry").disabled=true;
+      document.getElementById("entry").textContent="";
+      document.getElementById("issueRaw").textContent="";
+      document.getElementById("orderText").textContent="";
+      document.getElementById("issueBadge").className="hbce-badge hbce-badge--warn";
+      document.getElementById("issueBadge").textContent = reason || "Issuance locked…";
+    }
+
+    function unlockIssuer(){
+      document.getElementById("btnIssue").disabled=false;
+      document.getElementById("dlOrder").disabled=false;
+      document.getElementById("copyOrder").disabled=false;
+      document.getElementById("issueBadge").className="hbce-badge hbce-badge--ok";
+      document.getElementById("issueBadge").textContent="Issuer unlocked — ready to issue client IPR.";
+      buildOrderText();
+    }
+
+    function buildOrderText(){
+      const orderRef = (document.getElementById("orderRef").value||"").trim() || "—";
+      const pay = document.getElementById("payStatus").value;
+
+      ORDER_TXT =
+`HBCE ORDER REQUEST (IPR BASE ISSUANCE)
+Issuer: HERMETICUM B.C.E. S.r.l.
+Policy: UE-first · audit-first · fail-closed · hash-only · append-only · GDPR-min
+
+ORDER_REF: ${orderRef}
+PAYMENT_STATUS: ${pay}
+
+ISSUER (OPERATOR GATE):
+- operator_name: ${GATE.operator_name || "—"}
+- operator_payload_sha256: ${GATE.operator_payload_sha256 || "—"}
+- operator_kind: ${GATE.operator_kind || "—"}
+- operator_proto: ${GATE.operator_proto || "—"}
+- registry_url: ${REGISTRY_URL}
+- gate: ${GATE.ok ? "PASS" : "FAIL"}
+
+NOTE:
+Issuance is allowed only if OPERATOR gate PASS.
+Public registry stores hash-only entry. Client keeps the real file offline.
+`;
+      document.getElementById("orderText").textContent = ORDER_TXT;
+    }
+
+    document.getElementById("orderRef").addEventListener("input", ()=>{ if(GATE.ok) buildOrderText(); });
+    document.getElementById("payStatus").addEventListener("change", ()=>{ if(GATE.ok) buildOrderText(); });
+
+    document.getElementById("dlOrder").onclick = () => {
+      if(!GATE.ok) return;
+      buildOrderText();
+      const fn = `HBCE_ORDER_REQUEST__${(GATE.operator_payload_sha256||"").slice(0,12)}.txt`;
+      HBCE.download(fn, ORDER_TXT, "text/plain");
+    };
+
+    document.getElementById("copyOrder").onclick = async () => {
+      if(!GATE.ok) return;
+      buildOrderText();
+      await navigator.clipboard.writeText(ORDER_TXT);
+      alert("ORDER_REQUEST copied.");
+    };
+
+    document.getElementById("btnGate").onclick = async () => {
+      const badge = document.getElementById("gateBadge");
+      const raw = document.getElementById("gateRaw");
+      const f = document.getElementById("opFile").files?.[0];
+
+      raw.textContent="";
+      kvSet("gateKV", {});
+      GATE = { ok:false, operator_name:"—", operator_payload_sha256:null, operator_kind:"—", operator_proto:"—" };
+      lockAll("Issuance locked — run operator gate first.");
+
+      if(!f){
+        badge.className="hbce-badge hbce-badge--bad";
+        badge.textContent="FAIL — no operator file";
+        return;
+      }
+
+      try{
+        const text = await f.text();
+        const obj = JSON.parse(text);
+
+        const operator_proto = obj?.proto || "—";
+        const operator_kind = obj?.kind || "—";
+        const operator_name =
+          (obj?.operator?.name) ? obj.operator.name :
+          (obj?.name) ? obj.name :
+          (obj?.subject?.name) ? obj.subject.name :
+          "—";
+
+        const operator_payload_sha256 = await HBCE.sha256String(HBCE.stableStringify(obj));
+
+        const reg = await HBCE.fetchJson(REGISTRY_URL);
+        const match = (reg.entries||[]).some(e => (e.payload_sha256||"").toLowerCase() === operator_payload_sha256.toLowerCase());
+
+        GATE = { ok: !!match, operator_name, operator_payload_sha256, operator_kind, operator_proto };
+
+        kvSet("gateKV", {
+          "operator_name": operator_name,
+          "operator_payload_sha256": operator_payload_sha256,
+          "registry_match": String(match),
+          "operator_proto": operator_proto,
+          "operator_kind": operator_kind,
+          "registry_url": REGISTRY_URL
+        });
+
+        raw.textContent = JSON.stringify({
+          proto: "HBCE-ISSUER-GATE-v1",
+          result: match ? "PASS" : "FAIL",
+          policy: ["FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","GDPR_MIN"],
+          operator_payload_sha256,
+          registry_url: REGISTRY_URL,
+          note: match ? "Issuer unlocked." : "Operator not present in registry. Fail-closed."
+        }, null, 2);
+
+        badge.className = match ? "hbce-badge hbce-badge--ok" : "hbce-badge hbce-badge--bad";
+        badge.textContent = match ? "GATE PASS — operator present in registry" : "GATE FAIL — no registry match (fail-closed)";
+
+        if(match) unlockIssuer();
+        else lockAll("Issuance locked — operator gate FAIL.");
+
+      }catch(e){
+        badge.className="hbce-badge hbce-badge--bad";
+        badge.textContent="FAIL — gate error";
+        raw.textContent = String(e);
+        lockAll("Issuance locked — gate error.");
+      }
+    };
+
+    document.getElementById("btnIssue").onclick = async () => {
+      if(!GATE.ok){
+        alert("Fail-closed: operator gate not passed.");
+        return;
+      }
+
+      const nome = (document.getElementById("c_nome").value||"").trim();
+      const cognome = (document.getElementById("c_cognome").value||"").trim();
+      const nick = (document.getElementById("c_nick").value||"").trim();
+      const cf = (document.getElementById("c_cf").value||"").trim();
+      const doc = document.getElementById("c_doc").value;
+      const docnum = (document.getElementById("c_docnum").value||"").trim();
+      const birth_date = (document.getElementById("c_birthdate").value||"").trim();
+      const birth_place = (document.getElementById("c_birthplace").value||"").trim();
+      const residenza = (document.getElementById("c_res").value||"").trim();
+      const email = (document.getElementById("c_email").value||"").trim();
+      const phone = (document.getElementById("c_phone").value||"").trim();
+      const payment_status = document.getElementById("payStatus").value;
+
+      if(!nome || !cognome || !cf){
+        alert("Nome, cognome e codice fiscale sono obbligatori.");
+        return;
+      }
+
+      const ts = HBCE.nowISO();
+
+      RELEASE = {
+        proto: "HBCE-IPR-FISCAL-v1",
+        kind: "IPR_BASE_FISCAL_FILE",
+        issuer: "HERMETICUM B.C.E. S.r.l.",
+        jurisdiction: "EU",
+        policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","GDPR_MIN","NO_PUBLIC_DATA_CUSTODY"],
+        issued_by: {
+          operator_name: GATE.operator_name,
+          operator_payload_sha256: GATE.operator_payload_sha256
+        },
+        subject: {
+          nome,
+          cognome,
+          nickname: nick || null,
+          codice_fiscale: cf,
+          documento: doc,
+          numero_documento: docnum || null,
+          data_nascita: birth_date || null,
+          luogo_nascita: birth_place || null,
+          residenza: residenza || null,
+          email: email || null,
+          telefono: phone || null
+        },
+        payment: { status: payment_status },
+        issued_at: ts
+      };
+
+      const payload_sha256 = await HBCE.sha256String(HBCE.stableStringify(RELEASE));
+      RELEASE.payload_sha256 = payload_sha256;
+
+      ENTRY = {
+        entity_type: "IPR_BASE",
+        name: `${nome} ${cognome}`,
+        payload_sha256,
+        timestamp: ts,
+        status: "ACTIVE",
+        note: `issued_by=${(GATE.operator_payload_sha256||"").slice(0,12)}; proto=${RELEASE.proto}; kind=${RELEASE.kind}`
+      };
+
+      RECEIPT = {
+        proto: "HBCE-RECEIPT-v1",
+        kind: "IPR_BASE_RECEIPT",
+        policy: ["HASH_ONLY","FAIL_CLOSED"],
+        issuer: "HERMETICUM B.C.E. S.r.l.",
+        timestamp: ts,
+        payload_sha256,
+        registry_url: REGISTRY_URL,
+        payment: { status: payment_status },
+        note: "Append REGISTRY_ENTRY into registry.json entries[]. Then run VERIFY. Missing match => INVALID (fail-closed)."
+      };
+
+      kvSet("issueKV", {
+        "issued_at": ts,
+        "client": `${nome} ${cognome}`,
+        "payload_sha256": payload_sha256,
+        "payment_status": payment_status,
+        "issued_by_operator": GATE.operator_payload_sha256
+      });
+
+      document.getElementById("entry").textContent = JSON.stringify(ENTRY, null, 2);
+      document.getElementById("issueRaw").textContent = JSON.stringify({ release: RELEASE, receipt: RECEIPT }, null, 2);
+
+      document.getElementById("dlRelease").disabled = false;
+      document.getElementById("dlReceipt").disabled = false;
+      document.getElementById("copyEntry").disabled = false;
+
+      document.getElementById("dlRelease").onclick = () => {
+        const fn = `HBCE_IPR_FISCAL_RELEASE__${payload_sha256.slice(0,12)}.json`;
+        HBCE.download(fn, JSON.stringify(RELEASE, null, 2));
+      };
+
+      document.getElementById("dlReceipt").onclick = () => {
+        const fn = `HBCE_RECEIPT__${payload_sha256.slice(0,12)}.json`;
+        HBCE.download(fn, JSON.stringify(RECEIPT, null, 2));
+      };
+
+      document.getElementById("copyEntry").onclick = async () => {
+        await navigator.clipboard.writeText(JSON.stringify(ENTRY, null, 2));
+        alert("REGISTRY_ENTRY copied. Paste into registry.json → entries[]. Commit. Then run VERIFY.");
+      };
+
+      document.getElementById("issueBadge").className = "hbce-badge hbce-badge--ok";
+      document.getElementById("issueBadge").textContent = "Issued — client release + receipt + registry entry ready";
+    };
+
+    lockAll("Issuance locked — run operator gate first.");
+  </script>
+</body>
+</html>
