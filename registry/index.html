@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>Registry pubblico — Registro della Banca Cibernetica Europea · HERMETICUM</title>
-  <meta name="description" content="Registro pubblico append-only (hash-only) della Banca Cibernetica Europea. Verifica deterministica: senza match nel registry → INVALID (fail-closed). HBCE S.r.l." />
+  <title>REGISTRY — Append-only (public) | HBCE S.r.l.</title>
+  <meta name="description" content="Registro pubblico append-only (HASH-ONLY) della rete Hermeticum, sviluppata da HBCE S.r.l. Ricerca, filtri, conteggi e export. UE-first, audit-first, fail-closed." />
 
   <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/registry/" />
   <meta name="robots" content="index,follow" />
@@ -21,131 +21,474 @@
 
     <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">REGISTRY · APPEND-ONLY · HASH-ONLY · PUBLIC</div>
-      <h1 class="hbce-hero__title">Registro pubblico (Banca Cibernetica Europea)</h1>
+      <div class="hbce-hero__kicker">REGISTRY · APPEND-ONLY · HASH-ONLY · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Registro pubblico (append-only)</h1>
       <p class="hbce-hero__lead">
-        Il Registry pubblico è l’albo verificabile della rete Hermeticum: contiene solo <strong>prove minimizzate</strong>
-        (hash + timestamp, eventualmente nickname) in modalità <strong>append-only</strong>.
-        Serve per una cosa sola: rendere deterministica la verifica degli IPR.
+        Questo registry pubblica solo prove minimizzate (<strong>HASH-ONLY</strong>).
+        Nessuna custodia pubblica di dati personali. La lettura è <strong>fail-closed</strong>:
+        se il registry non è valido → operatività bloccata.
       </p>
 
-      <div class="hbce-card hbce-card--subtle" style="margin-top:14px;">
-        <div class="hbce-card__title">Regola di validità (fail-closed)</div>
-        <p class="hbce-card__text">
-          <strong>VALID IPR</strong> = integrità file OK <strong>+</strong> match presente nel Registry.<br/>
-          Se manca il match → <strong>INVALID</strong>. La banca opera solo con identità verificabili.
-        </p>
-      </div>
+      <p class="hbce-note" style="margin-top:12px;">
+        Servizio sviluppato e gestito da <strong>HBCE S.r.l.</strong> · policy: UE-first, audit-first, append-only.
+      </p>
 
-      <div class="hbce-actions" style="margin-top:16px;">
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/create/">CREATE IPR</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Attiva IPR</a>
+      <div class="hbce-actions" style="margin-top:12px;">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Attiva IPR Base</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/operator/">Attiva IPR Operatore</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/root/">Root</a>
       </div>
     </section>
 
-    <!-- WHAT IT CONTAINS -->
+    <!-- CONTROLS -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Cosa contiene e cosa non contiene</h2>
-
-      <div class="hbce-grid hbce-grid--2" style="margin-top:12px;">
-        <div class="hbce-card">
-          <div class="hbce-card__title">Contiene (pubblico)</div>
-          <ul class="hbce-list">
-            <li><strong>payload_sha256</strong> (hash del file/payload)</li>
-            <li><strong>timestamp</strong> (data/ora di registrazione)</li>
-            <li><strong>nickname</strong> (opzionale, se previsto dal flusso)</li>
-          </ul>
-          <p class="hbce-card__text">
-            Questi elementi sono sufficienti per la verifica deterministica e la coerenza della rete.
-          </p>
-        </div>
-
-        <div class="hbce-card">
-          <div class="hbce-card__title">Non contiene (mai pubblico)</div>
-          <ul class="hbce-list">
-            <li>dati personali completi</li>
-            <li>documenti, foto, numeri, indirizzi</li>
-            <li>credenziali o chiavi private</li>
-            <li>contenuti sensibili</li>
-          </ul>
-          <p class="hbce-card__text">
-            Il Registry non è una banca dati personale: è un registro di prove minimizzate (<strong>hash-only</strong>).
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- VIEWER / OPERATIONS -->
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Operazioni disponibili</h2>
-      <p class="hbce-text">
-        Questa pagina è il punto di consultazione del Registry. Le operazioni tipiche:
-        ricerca per hash/nickname, conteggio entries, export e collegamento diretto a VERIFY.
-      </p>
-
-      <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
-        <div class="hbce-card">
-          <div class="hbce-card__title">Ricerca</div>
-          <p class="hbce-card__text">
-            Cerca un match per <strong>payload_sha256</strong> o nickname (se presente). Se non trovi match, l’IPR non è operativo.
-          </p>
-        </div>
-        <div class="hbce-card">
-          <div class="hbce-card__title">Export</div>
-          <p class="hbce-card__text">
-            Esporta l’elenco per audit e controllo interno. Il Registry è append-only: le entries non vengono riscritte.
-          </p>
-        </div>
-        <div class="hbce-card">
-          <div class="hbce-card__title">Collegamento a VERIFY</div>
-          <p class="hbce-card__text">
-            La verifica è deterministica: <strong>integrità + match</strong>. VERIFY traduce il risultato in VALID/INVALID.
-          </p>
-        </div>
-      </div>
-
-      <div class="hbce-actions" style="margin-top:14px;">
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">Vai a VERIFY</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/create/">Rigenera IPR</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/operator/">Area Operatore</a>
-      </div>
-    </section>
-
-    <!-- REGISTRY VIEWER SLOT -->
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Viewer del Registry</h2>
-      <p class="hbce-text">
-        Se nel tuo progetto è presente un viewer JS, questa sezione è lo spazio “neutro” dove può renderizzare:
-        tabella entries, ricerca, conteggio e export.
-      </p>
+      <h2 class="hbce-h2">Viewer registry</h2>
 
       <div class="hbce-card">
-        <div class="hbce-card__title">Pannello Registry</div>
-        <p class="hbce-card__text">
-          Viewer in caricamento o non disponibile in questa build.
-          In ogni caso, il Registry rimane la fonte pubblica di riferimento per la validità (fail-closed).
-        </p>
+        <div class="hbce-card__body">
 
-        <!-- Slot opzionale per script/app esistenti -->
-        <div id="hbce-registry-viewer" style="margin-top:12px;"></div>
+          <div class="hbce-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;">
+            <div class="hbce-card" style="margin:0;">
+              <div class="hbce-card__body">
+                <div class="hbce-note">Totale entries</div>
+                <div style="font-size:24px; font-weight:800;" id="countAll">—</div>
+              </div>
+            </div>
+
+            <div class="hbce-card" style="margin:0;">
+              <div class="hbce-card__body">
+                <div class="hbce-note">IPR Base (HUMAN)</div>
+                <div style="font-size:24px; font-weight:800;" id="countBase">—</div>
+              </div>
+            </div>
+
+            <div class="hbce-card" style="margin:0;">
+              <div class="hbce-card__body">
+                <div class="hbce-note">Operator License</div>
+                <div style="font-size:24px; font-weight:800;" id="countOp">—</div>
+              </div>
+            </div>
+
+            <div class="hbce-card" style="margin:0;">
+              <div class="hbce-card__body">
+                <div class="hbce-note">Ultimo timestamp</div>
+                <div style="font-size:14px; font-weight:700;" id="lastTs">—</div>
+              </div>
+            </div>
+          </div>
+
+          <hr style="opacity:.15; margin:16px 0;" />
+
+          <div class="hbce-grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; align-items:end;">
+            <label class="hbce-field">
+              <span class="hbce-label">Ricerca</span>
+              <input class="hbce-input" id="q" placeholder="nome, operator_nickname, hash (parziale), status…" />
+              <span class="hbce-note">Ricerca client-side nel registry caricato.</span>
+            </label>
+
+            <label class="hbce-field">
+              <span class="hbce-label">Filtro tipo</span>
+              <select class="hbce-input" id="typeFilter">
+                <option value="all">Tutti</option>
+                <option value="base">IPR Base (HUMAN)</option>
+                <option value="operator">Operator License</option>
+              </select>
+            </label>
+
+            <label class="hbce-field">
+              <span class="hbce-label">Ordina</span>
+              <select class="hbce-input" id="sortBy">
+                <option value="newest">Più recenti</option>
+                <option value="oldest">Più vecchi</option>
+              </select>
+            </label>
+
+            <div class="hbce-actions" style="gap:10px;">
+              <button class="hbce-btn hbce-btn--primary" id="reloadBtn" type="button">Ricarica</button>
+              <button class="hbce-btn" id="exportBtn" type="button">Export JSON</button>
+            </div>
+          </div>
+
+          <div id="failBox" class="hbce-card" style="margin-top:14px; display:none;">
+            <div class="hbce-card__body">
+              <div class="hbce-note">FAIL-CLOSED</div>
+              <pre class="hbce-pre" id="failPre" style="margin:0; white-space:pre-wrap;"></pre>
+            </div>
+          </div>
+
+        </div>
       </div>
     </section>
 
-    <!-- INSTITUTIONAL NOTE -->
+    <!-- TABLE -->
     <section class="hbce-section">
-      <div class="hbce-card hbce-card--subtle">
-        <div class="hbce-card__title">Nota istituzionale</div>
-        <p class="hbce-card__text">
-          Il Registry pubblico è parte strutturale della <strong>Banca Cibernetica Europea</strong>.
-          La governance operativa è gestita da <strong>HBCE S.r.l.</strong> in logica UE-first.
-        </p>
+      <h2 class="hbce-h2">Entries</h2>
+
+      <div class="hbce-card">
+        <div class="hbce-card__body" style="overflow:auto;">
+          <table class="hbce-table" style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr>
+                <th style="text-align:left; padding:10px;">Tipo</th>
+                <th style="text-align:left; padding:10px;">Identità</th>
+                <th style="text-align:left; padding:10px;">Status</th>
+                <th style="text-align:left; padding:10px;">payload_sha256</th>
+                <th style="text-align:left; padding:10px;">ref_base_sha256</th>
+                <th style="text-align:left; padding:10px;">Timestamp</th>
+                <th style="text-align:left; padding:10px;">Azioni</th>
+              </tr>
+            </thead>
+            <tbody id="rows">
+              <tr><td colspan="7" style="padding:12px;" class="hbce-note">Caricamento…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <p class="hbce-note" style="margin-top:10px;">
+        Nota: questo viewer non modifica nulla. Il registry è append-only e la pubblicazione è HASH-ONLY.
+      </p>
+    </section>
+
+    <!-- DRAWER -->
+    <section class="hbce-section" id="drawer" style="display:none;">
+      <h2 class="hbce-h2">Dettaglio entry</h2>
+      <div class="hbce-card">
+        <div class="hbce-card__body">
+          <div class="hbce-actions" style="margin-bottom:10px;">
+            <button class="hbce-btn hbce-btn--primary" id="copyOne" type="button">Copia JSON</button>
+            <button class="hbce-btn" id="closeDrawer" type="button">Chiudi</button>
+          </div>
+          <pre class="hbce-pre" id="drawerPre" style="margin:0; max-height:420px; overflow:auto; white-space:pre;"></pre>
+        </div>
       </div>
     </section>
 
   </main>
 
   <div data-hbce="footer"></div>
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js" defer></script>
+
+  <script>
+    const REGISTRY_PATH = "/hermeticum-bce-platform/registry/registry.json";
+
+    const countAll = document.getElementById("countAll");
+    const countBase = document.getElementById("countBase");
+    const countOp = document.getElementById("countOp");
+    const lastTs = document.getElementById("lastTs");
+
+    const q = document.getElementById("q");
+    const typeFilter = document.getElementById("typeFilter");
+    const sortBy = document.getElementById("sortBy");
+
+    const reloadBtn = document.getElementById("reloadBtn");
+    const exportBtn = document.getElementById("exportBtn");
+
+    const rows = document.getElementById("rows");
+
+    const failBox = document.getElementById("failBox");
+    const failPre = document.getElementById("failPre");
+
+    const drawer = document.getElementById("drawer");
+    const drawerPre = document.getElementById("drawerPre");
+    const copyOne = document.getElementById("copyOne");
+    const closeDrawer = document.getElementById("closeDrawer");
+
+    let registryRaw = null;
+    let entries = [];
+    let drawerJson = "";
+
+    function isHex64(s) {
+      return typeof s === "string" && /^[0-9a-f]{64}$/i.test(s.trim());
+    }
+
+    function normalize(s) {
+      return (s || "").toString().trim();
+    }
+
+    function safeLower(s) {
+      return normalize(s).toLowerCase();
+    }
+
+    function entryType(e) {
+      // Operator: record_type === OPERATOR_LICENSE OR has ref_payload_sha256/operator_nickname
+      if (!e || typeof e !== "object") return "unknown";
+      if (safeLower(e.record_type) === "operator_license") return "operator";
+      if (normalize(e.operator_nickname)) return "operator";
+      if (isHex64(e.ref_payload_sha256)) return "operator";
+      // Base: entity_type HUMAN (common in your schema)
+      if (safeLower(e.entity_type) === "human") return "base";
+      // Fallback: treat as base if has name and no operator markers
+      if (normalize(e.name) && !normalize(e.operator_nickname)) return "base";
+      return "unknown";
+    }
+
+    function formatTypeLabel(t) {
+      if (t === "base") return "IPR Base";
+      if (t === "operator") return "Operator License";
+      return "Other";
+    }
+
+    function showFail(msg) {
+      failBox.style.display = "block";
+      failPre.textContent = msg;
+      rows.innerHTML = '<tr><td colspan="7" style="padding:12px;" class="hbce-note">FAIL-CLOSED — registry non disponibile</td></tr>';
+    }
+
+    function hideFail() {
+      failBox.style.display = "none";
+      failPre.textContent = "";
+    }
+
+    function setCounters(list) {
+      countAll.textContent = String(list.length);
+
+      const base = list.filter(e => entryType(e) === "base").length;
+      const op = list.filter(e => entryType(e) === "operator").length;
+
+      countBase.textContent = String(base);
+      countOp.textContent = String(op);
+
+      const ts = list
+        .map(e => normalize(e.timestamp))
+        .filter(Boolean)
+        .sort()
+        .slice(-1)[0] || "—";
+      lastTs.textContent = ts;
+    }
+
+    function matchesQuery(e, query) {
+      if (!query) return true;
+      const ql = query.toLowerCase();
+
+      const fields = [
+        e.name,
+        e.operator_nickname,
+        e.status,
+        e.entity_type,
+        e.record_type,
+        e.payload_sha256,
+        e.ref_payload_sha256,
+        e.timestamp
+      ].map(x => normalize(x)).filter(Boolean);
+
+      return fields.some(x => x.toLowerCase().includes(ql));
+    }
+
+    function applyFilters() {
+      const query = normalize(q.value);
+      const tf = typeFilter.value;
+      const sb = sortBy.value;
+
+      let list = entries.slice();
+
+      // filter by type
+      if (tf === "base") list = list.filter(e => entryType(e) === "base");
+      if (tf === "operator") list = list.filter(e => entryType(e) === "operator");
+
+      // search
+      if (query) list = list.filter(e => matchesQuery(e, query));
+
+      // sort by timestamp
+      list.sort((a, b) => {
+        const ta = normalize(a.timestamp);
+        const tb = normalize(b.timestamp);
+        if (sb === "oldest") return ta.localeCompare(tb);
+        return tb.localeCompare(ta);
+      });
+
+      renderRows(list);
+      setCounters(entries); // counters always show global (not filtered)
+    }
+
+    function shortHash(h) {
+      const s = normalize(h);
+      if (s.length <= 16) return s || "—";
+      return s.slice(0, 10) + "…" + s.slice(-6);
+    }
+
+    async function copyToClipboard(text, btn) {
+      try {
+        await navigator.clipboard.writeText(text);
+        const old = btn.textContent;
+        btn.textContent = "Copiato ✓";
+        setTimeout(() => (btn.textContent = old), 1400);
+      } catch (e) {
+        const old = btn.textContent;
+        btn.textContent = "Errore copia";
+        setTimeout(() => (btn.textContent = old), 1400);
+      }
+    }
+
+    function openDrawer(obj) {
+      drawerJson = JSON.stringify(obj, null, 2);
+      drawerPre.textContent = drawerJson;
+      drawer.style.display = "block";
+      drawer.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function closeDrawerFn() {
+      drawer.style.display = "none";
+      drawerPre.textContent = "";
+      drawerJson = "";
+    }
+
+    closeDrawer.addEventListener("click", closeDrawerFn);
+    copyOne.addEventListener("click", () => {
+      if (!drawerJson) return;
+      copyToClipboard(drawerJson, copyOne);
+    });
+
+    function renderRows(list) {
+      if (!Array.isArray(list) || list.length === 0) {
+        rows.innerHTML = '<tr><td colspan="7" style="padding:12px;" class="hbce-note">Nessun risultato.</td></tr>';
+        return;
+      }
+
+      rows.innerHTML = "";
+
+      for (const e of list) {
+        const t = entryType(e);
+
+        const tr = document.createElement("tr");
+
+        const tdType = document.createElement("td");
+        tdType.style.padding = "10px";
+        tdType.textContent = formatTypeLabel(t);
+
+        const tdId = document.createElement("td");
+        tdId.style.padding = "10px";
+        tdId.textContent = normalize(e.operator_nickname) || normalize(e.name) || "—";
+
+        const tdStatus = document.createElement("td");
+        tdStatus.style.padding = "10px";
+        tdStatus.textContent = normalize(e.status) || "—";
+
+        const tdHash = document.createElement("td");
+        tdHash.style.padding = "10px";
+        tdHash.textContent = shortHash(e.payload_sha256);
+
+        const tdRef = document.createElement("td");
+        tdRef.style.padding = "10px";
+        tdRef.textContent = shortHash(e.ref_payload_sha256);
+
+        const tdTs = document.createElement("td");
+        tdTs.style.padding = "10px";
+        tdTs.textContent = normalize(e.timestamp) || "—";
+
+        const tdAct = document.createElement("td");
+        tdAct.style.padding = "10px";
+
+        const btnView = document.createElement("button");
+        btnView.className = "hbce-btn";
+        btnView.type = "button";
+        btnView.textContent = "Dettagli";
+        btnView.addEventListener("click", () => openDrawer(e));
+
+        const btnCopyHash = document.createElement("button");
+        btnCopyHash.className = "hbce-btn";
+        btnCopyHash.type = "button";
+        btnCopyHash.textContent = "Copia hash";
+        btnCopyHash.style.marginLeft = "8px";
+        btnCopyHash.addEventListener("click", () => {
+          const h = normalize(e.payload_sha256);
+          if (!h) return;
+          copyToClipboard(h, btnCopyHash);
+        });
+
+        const aVerify = document.createElement("a");
+        aVerify.className = "hbce-btn";
+        aVerify.style.marginLeft = "8px";
+        aVerify.href = "/hermeticum-bce-platform/verify/";
+        aVerify.textContent = "VERIFY";
+        aVerify.title = "Apri VERIFY e incolla l’hash";
+
+        tdAct.appendChild(btnView);
+        tdAct.appendChild(btnCopyHash);
+        tdAct.appendChild(aVerify);
+
+        tr.appendChild(tdType);
+        tr.appendChild(tdId);
+        tr.appendChild(tdStatus);
+        tr.appendChild(tdHash);
+        tr.appendChild(tdRef);
+        tr.appendChild(tdTs);
+        tr.appendChild(tdAct);
+
+        rows.appendChild(tr);
+      }
+    }
+
+    function downloadJson(filename, obj) {
+      const json = JSON.stringify(obj, null, 2);
+      const blob = new Blob([json], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 250);
+    }
+
+    exportBtn.addEventListener("click", () => {
+      if (!registryRaw) return;
+      downloadJson("registry.export.json", registryRaw);
+    });
+
+    function validateRegistrySchema(obj) {
+      if (!obj || typeof obj !== "object") return "Schema invalido: non è un oggetto JSON.";
+      if (!Array.isArray(obj.entries)) return "Schema invalido: manca entries[] (fail-closed).";
+      // minimal check for each entry
+      for (const e of obj.entries) {
+        if (!e || typeof e !== "object") return "Schema invalido: entry non-oggetto (fail-closed).";
+        if (!normalize(e.timestamp)) return "Schema invalido: entry senza timestamp (fail-closed).";
+        if (!isHex64(e.payload_sha256)) return "Schema invalido: payload_sha256 non valido (fail-closed).";
+      }
+      return "";
+    }
+
+    async function loadRegistry() {
+      hideFail();
+      rows.innerHTML = '<tr><td colspan="7" style="padding:12px;" class="hbce-note">Caricamento…</td></tr>';
+
+      registryRaw = null;
+      entries = [];
+
+      let obj;
+      try {
+        const res = await fetch(REGISTRY_PATH, { cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        obj = await res.json();
+      } catch (e) {
+        showFail(
+          "BLOCK — impossibile leggere registry.json (fail-closed)\n" +
+          "path: " + REGISTRY_PATH + "\n" +
+          "errore: " + (e && e.message ? e.message : String(e))
+        );
+        return;
+      }
+
+      const schemaErr = validateRegistrySchema(obj);
+      if (schemaErr) {
+        showFail("BLOCK — " + schemaErr + "\npath: " + REGISTRY_PATH);
+        return;
+      }
+
+      registryRaw = obj;
+      entries = obj.entries.slice();
+
+      applyFilters();
+    }
+
+    reloadBtn.addEventListener("click", loadRegistry);
+    q.addEventListener("input", applyFilters);
+    typeFilter.addEventListener("change", applyFilters);
+    sortBy.addEventListener("change", applyFilters);
+
+    // Boot
+    loadRegistry();
+  </script>
 </body>
 </html>
