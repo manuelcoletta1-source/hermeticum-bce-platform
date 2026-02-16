@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>VERIFY — Verifica Identità IPR (HBCE)</title>
-  <meta name="description" content="Sportello VERIFY: verifica identità operativa IPR. Fail-closed: senza match nel registry pubblico → NON OPERATIVO. Audit-first, hash-only, append-only." />
+  <title>VERIFY — Sportello di verifica IPR (HBCE)</title>
+  <meta name="description" content="Sportello VERIFY HBCE: verifica identità operativa IPR con match nel registry pubblico. Fail-closed, audit-first, hash-only, append-only." />
 
   <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/verify/" />
   <meta name="robots" content="index,follow" />
@@ -22,28 +22,29 @@
     <!-- HERO -->
     <section class="hbce-hero">
       <div class="hbce-hero__kicker">VERIFY · EU OPERATIONAL DESK</div>
-      <h1 class="hbce-hero__title">VERIFY — Sportello di verifica IPR</h1>
+      <h1 class="hbce-hero__title">VERIFY — Verifica identità IPR</h1>
       <p class="hbce-hero__lead">
-        Carica il tuo file IPR e avvia la verifica.
-        Il sistema è <strong>fail-closed</strong>: senza match nel registry pubblico → <strong>NON OPERATIVO</strong>.
+        Carica il file IPR. La verifica è <strong>deterministica</strong> e <strong>fail-closed</strong>:
+        senza match nel registry pubblico → <strong>NON OPERATIVO</strong>.
       </p>
 
       <div class="hbce-card hbce-card--subtle" style="margin-top:14px;">
-        <div class="hbce-card__title">Requisito</div>
+        <div class="hbce-card__title">Privacy</div>
         <p class="hbce-card__text">
-          Verifica disponibile solo per file IPR rilasciati dalla piattaforma. Nessuna custodia pubblica di dati personali.
+          Il calcolo hash avviene localmente nel browser. Il registry pubblico espone solo prove minimizzate (hash-only).
         </p>
       </div>
     </section>
 
     <!-- VERIFY PANEL -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Carica file IPR</h2>
+      <h2 class="hbce-h2">Sportello</h2>
 
       <div class="hbce-card">
-        <div class="hbce-card__title">Seleziona il file</div>
+        <div class="hbce-card__title">Input</div>
         <p class="hbce-card__text">
-          Formato: <strong>.json</strong> (release IPR). Il calcolo hash avviene localmente nel browser.
+          Seleziona un file <strong>IPR release</strong> (.json). Il sistema calcola lo SHA-256 del <strong>payload</strong>
+          e cerca match nel registry append-only.
         </p>
 
         <div class="hbce-actions" style="margin-top:12px;">
@@ -55,17 +56,50 @@
 
         <div class="hbce-card hbce-card--subtle" style="margin-top:14px;">
           <div class="hbce-card__title">Stato</div>
-          <p id="hbceVerifyStatus" class="hbce-card__text">
-            In attesa di file.
-          </p>
+          <p id="hbceVerifyStatus" class="hbce-card__text">In attesa di file.</p>
         </div>
 
         <div id="hbceVerifyOutput" class="hbce-card" style="margin-top:14px; display:none;">
           <div class="hbce-card__title">Esito</div>
-          <p class="hbce-card__text" id="hbceVerifyResult"></p>
-          <div class="hbce-actions" style="margin-top:10px;">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Attiva IPR</a>
+
+          <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
+            <div class="hbce-card">
+              <div class="hbce-card__title">Status</div>
+              <p class="hbce-card__text" id="hbceOutStatus">—</p>
+            </div>
+            <div class="hbce-card">
+              <div class="hbce-card__title">Identità</div>
+              <p class="hbce-card__text" id="hbceOutName">—</p>
+            </div>
+            <div class="hbce-card">
+              <div class="hbce-card__title">Timestamp</div>
+              <p class="hbce-card__text" id="hbceOutTime">—</p>
+            </div>
+          </div>
+
+          <div class="hbce-card hbce-card--subtle" style="margin-top:12px;">
+            <div class="hbce-card__title">Hash (SHA-256)</div>
+            <p class="hbce-card__text" style="word-break:break-all;">
+              <strong>computed</strong>: <span id="hbceOutComputed">—</span><br/>
+              <strong>declared</strong>: <span id="hbceOutDeclared">—</span><br/>
+              <strong>integrity</strong>: <span id="hbceOutIntegrity">—</span><br/>
+              <strong>registry match</strong>: <span id="hbceOutMatch">—</span>
+            </p>
+          </div>
+
+          <div class="hbce-card hbce-card--subtle" style="margin-top:12px;">
+            <div class="hbce-card__title">Registry</div>
+            <p class="hbce-card__text">
+              URL: <code>/hermeticum-bce-platform/registry/registry.json</code><br/>
+              entries: <span id="hbceOutEntries">—</span><br/>
+              registry SHA-256: <span id="hbceOutRegSha">—</span>
+            </p>
+          </div>
+
+          <div class="hbce-actions" style="margin-top:12px;">
+            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/activate/">Attiva IPR</a>
             <a class="hbce-btn" href="/hermeticum-bce-platform/infrastructure/">Infrastructure</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/operator/">Area Operatore</a>
           </div>
         </div>
       </div>
@@ -77,35 +111,26 @@
       <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
         <div class="hbce-card">
           <div class="hbce-card__title">Fail-closed</div>
-          <p class="hbce-card__text">
-            Assenza match nel registry → identità non operativa.
-          </p>
+          <p class="hbce-card__text">Se non è verificabile → non operativo.</p>
         </div>
         <div class="hbce-card">
           <div class="hbce-card__title">Hash-only</div>
-          <p class="hbce-card__text">
-            La verifica usa hash deterministici. Nessun dato personale pubblicato.
-          </p>
+          <p class="hbce-card__text">Matching basato su hash deterministico del payload.</p>
         </div>
         <div class="hbce-card">
           <div class="hbce-card__title">Audit-first</div>
-          <p class="hbce-card__text">
-            Tracciabilità e verifica ripetibile da terzi.
-          </p>
+          <p class="hbce-card__text">Ripetibile e verificabile da terzi.</p>
         </div>
       </div>
-    </section>
 
-    <!-- LINKS (SECONDARY) -->
-    <section class="hbce-section">
-      <div class="hbce-card hbce-card--subtle">
+      <div class="hbce-card hbce-card--subtle" style="margin-top:14px;">
         <div class="hbce-card__title">Accesso tecnico</div>
         <p class="hbce-card__text">
-          Registry pubblico e audit sono disponibili come strumenti di controllo. Non sono richiesti per l’uso ordinario.
+          Registry e audit sono strumenti di controllo (non richiesti per l’uso ordinario).
         </p>
         <div class="hbce-actions" style="margin-top:10px;">
-          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Registry</a>
           <a class="hbce-btn" href="/hermeticum-bce-platform/audit/">Audit</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Registry</a>
           <a class="hbce-btn" href="/hermeticum-bce-platform/security/">Security</a>
         </div>
       </div>
@@ -115,59 +140,72 @@
 
   <div data-hbce="footer"></div>
 
-  <!-- Minimal client-side verify glue.
-       Assumes existing verify logic is available via hbce-ui / existing scripts.
-       If not present, this will still behave as a clean UI shell. -->
+  <!-- Core UI loader (header/footer) -->
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js" defer></script>
+  <!-- VERIFY engine -->
+  <script src="/hermeticum-bce-platform/assets/hbce-verify.js" defer></script>
+
+  <!-- Page controller -->
   <script>
     (function () {
-      const fileInput = document.getElementById('hbceVerifyFile');
-      const btn = document.getElementById('hbceVerifyBtn');
-      const status = document.getElementById('hbceVerifyStatus');
-      const out = document.getElementById('hbceVerifyOutput');
-      const result = document.getElementById('hbceVerifyResult');
+      const fileInput = document.getElementById("hbceVerifyFile");
+      const btn = document.getElementById("hbceVerifyBtn");
+      const status = document.getElementById("hbceVerifyStatus");
 
-      function setStatus(t){ status.textContent = t; }
-      function showResult(t){
-        result.textContent = t;
-        out.style.display = 'block';
-      }
+      const out = document.getElementById("hbceVerifyOutput");
+      const oStatus = document.getElementById("hbceOutStatus");
+      const oName = document.getElementById("hbceOutName");
+      const oTime = document.getElementById("hbceOutTime");
+      const oComputed = document.getElementById("hbceOutComputed");
+      const oDeclared = document.getElementById("hbceOutDeclared");
+      const oIntegrity = document.getElementById("hbceOutIntegrity");
+      const oMatch = document.getElementById("hbceOutMatch");
+      const oEntries = document.getElementById("hbceOutEntries");
+      const oRegSha = document.getElementById("hbceOutRegSha");
 
-      btn.addEventListener('click', async () => {
+      function setStatus(t) { status.textContent = t; }
+      function show() { out.style.display = "block"; }
+      function hide() { out.style.display = "none"; }
+
+      btn.addEventListener("click", async () => {
         const f = fileInput.files && fileInput.files[0];
         if (!f) {
-          setStatus('Seleziona un file IPR (.json) per avviare VERIFY.');
+          setStatus("Seleziona un file IPR (.json) per avviare VERIFY.");
           return;
         }
 
-        setStatus('Verifica in corso (local) ...');
-        out.style.display = 'none';
+        hide();
+        setStatus("VERIFY in corso (local, deterministic) ...");
 
         try {
-          // If your platform already exposes a verifier function, call it here.
-          // Example expected API:
-          //   window.hbceVerifyFile(file) -> { ok: boolean, payload_sha256: string, registry_match: boolean }
-          if (typeof window.hbceVerifyFile === 'function') {
-            const res = await window.hbceVerifyFile(f);
-            if (res && res.ok && res.registry_match) {
-              setStatus('VALID — match nel registry pubblico.');
-              showResult('VALID — Identità operativa verificata. Operatività attiva.');
-            } else {
-              setStatus('NON OPERATIVO — nessun match nel registry (fail-closed).');
-              showResult('NON OPERATIVO — Verifica fallita (fail-closed).');
-            }
-          } else {
-            // UI shell fallback: instruct user.
-            setStatus('Modulo VERIFY pronto. Logica di verifica non collegata in questa pagina.');
-            showResult('Caricamento completato. Collegare la funzione di verifica (hbceVerifyFile) per esito automatico.');
+          if (typeof window.hbceVerifyFile !== "function") {
+            setStatus("Motore VERIFY non caricato (hbce-verify.js).");
+            return;
           }
+
+          const res = await window.hbceVerifyFile(f);
+
+          const valid = !!(res && res.payload_sha256 && res.registry_match);
+          oStatus.textContent = valid ? "VALID — OPERATIVO" : "NON OPERATIVO (fail-closed)";
+          oName.textContent = res.name || "—";
+          oTime.textContent = res.timestamp || "—";
+
+          oComputed.textContent = res.payload_sha256?.computed || "—";
+          oDeclared.textContent = res.payload_sha256?.declared || "—";
+          oIntegrity.textContent = (res.payload_sha256?.integrity_ok ? "OK" : "MISMATCH");
+          oMatch.textContent = res.registry_match ? "MATCH" : "NO MATCH";
+
+          oEntries.textContent = String(res.registry?.entries ?? "—");
+          oRegSha.textContent = res.registry?.registry_sha256 || "—";
+
+          setStatus(valid ? "VALID — match nel registry pubblico." : "NON OPERATIVO — nessun match nel registry (fail-closed).");
+          show();
         } catch (e) {
-          setStatus('Errore durante VERIFY.');
-          showResult('Errore tecnico: impossibile completare la verifica.');
+          const msg = (e && e.detail) ? e.detail : "Errore tecnico durante VERIFY.";
+          setStatus(msg);
         }
       });
     })();
   </script>
-
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js" defer></script>
 </body>
 </html>
