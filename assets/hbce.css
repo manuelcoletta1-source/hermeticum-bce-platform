@@ -1,5 +1,6 @@
 /* ===============================
    HBCE CORE STYLE — HERMETICUM
+   (platform canonical: /hermeticum-bce-platform/assets/hbce.css)
    =============================== */
 
 :root{
@@ -20,6 +21,7 @@ html,body{
 }
 
 a{ color:var(--accent); }
+a:hover{ opacity: .95; }
 
 .hbce-container{
   width:92%;
@@ -37,8 +39,8 @@ a{ color:var(--accent); }
 
 /* SECTIONS */
 .hbce-section{ margin:50px 0; }
-.hbce-h2{ font-size:1.6em; margin-bottom:10px; }
-.hbce-text{ opacity:.9; }
+.hbce-h2{ font-size:1.6em; margin:0 0 10px 0; }
+.hbce-text{ opacity:.9; line-height:1.55; }
 
 /* GRID */
 .hbce-grid{
@@ -71,11 +73,34 @@ a{ color:var(--accent); }
   line-height:1.4;
 }
 
+/* META / BADGES */
+.hbce-meta{ display:flex; flex-wrap:wrap; gap:10px; }
+.hbce-badge{
+  border:1px solid var(--line);
+  padding:4px 8px;
+  border-radius:8px;
+  font-size:.8em;
+  opacity:.85;
+}
+.hbce-badge a{
+  color:var(--text);
+  text-decoration:none;
+  opacity:.9;
+}
+.hbce-badge a:hover{ opacity:1; }
+
 /* PRICE */
 .hbce-price{
-  font-size:1.1em;
-  margin-top:8px;
+  font-size:1.05em;
+  margin-top:10px;
 }
+
+/* LISTS */
+.hbce-list{
+  margin:10px 0 0 18px;
+  padding:0;
+}
+.hbce-list li{ margin:6px 0; opacity:.9; }
 
 /* BUTTONS */
 .hbce-actions{ display:flex; flex-wrap:wrap; gap:10px; }
@@ -87,6 +112,13 @@ a{ color:var(--accent); }
   text-decoration:none;
   color:var(--text);
   background:rgba(255,255,255,.03);
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+
+.hbce-btn:hover{
+  background:rgba(255,255,255,.05);
 }
 
 .hbce-btn--primary{
@@ -96,24 +128,20 @@ a{ color:var(--accent); }
   font-weight:700;
 }
 
-/* BADGES */
-.hbce-badge{
-  border:1px solid var(--line);
-  padding:4px 8px;
-  border-radius:8px;
-  font-size:.8em;
-  opacity:.85;
+.hbce-btn--primary:hover{
+  opacity:.95;
 }
 
 /* ===============================
-   HEADER BANCA
+   HEADER BANCA (partials/header.html)
    =============================== */
 
 .hbce-header{
   position:sticky;
   top:0;
   z-index:50;
-  background:#0b0f14;
+  background:rgba(11,15,20,.92);
+  backdrop-filter: blur(10px);
   border-bottom:1px solid var(--line);
 }
 
@@ -121,6 +149,7 @@ a{ color:var(--accent); }
   display:flex;
   align-items:center;
   justify-content:space-between;
+  gap:14px;
   padding:12px 0;
 }
 
@@ -133,20 +162,35 @@ a{ color:var(--accent); }
 }
 
 .hbce-header__brandmark{
-  background:rgba(255,255,255,.05);
-  padding:6px 10px;
-  border-radius:10px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:44px;
+  height:36px;
+  padding:0 10px;
+  border-radius:12px;
   font-weight:700;
+  letter-spacing:.06em;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.04);
+}
+
+.hbce-header__brandtext{
+  display:flex;
+  flex-direction:column;
+  line-height:1.05;
 }
 
 .hbce-header__subtitle{
-  font-size:.75em;
-  opacity:.7;
+  font-size:.85em;
+  opacity:.78;
 }
 
 .hbce-header__nav{
   display:flex;
+  align-items:center;
   gap:14px;
+  flex-wrap:wrap;
 }
 
 .hbce-header__nav a{
@@ -159,13 +203,108 @@ a{ color:var(--accent); }
 
 .hbce-header__actions{
   display:flex;
+  align-items:center;
   gap:10px;
 }
 
-/* FOOTER */
+.hbce-header__bar{
+  border-top:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.02);
+}
+
+.hbce-header__barinner{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 0;
+  flex-wrap:wrap;
+}
+
+.hbce-header__bartext{
+  margin-left:auto;
+  opacity:.8;
+  font-size:.95em;
+}
+
+/* Mobile: nascondi nav, lascia brand+CTA */
+@media (max-width: 860px){
+  .hbce-header__nav{ display:none; }
+  .hbce-header__bartext{ margin-left:0; }
+}
+
+/* ===============================
+   FOOTER (partials/footer.html)
+   =============================== */
+
 .hbce-footer{
   margin-top:60px;
   border-top:1px solid var(--line);
-  padding:30px 0;
+  padding:34px 0;
+  background:rgba(255,255,255,.01);
+}
+
+.hbce-footer__grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:18px;
+}
+
+.hbce-footer__brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.hbce-footer__brandmark{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:44px;
+  height:36px;
+  padding:0 10px;
+  border-radius:12px;
+  font-weight:700;
+  letter-spacing:.06em;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.04);
+}
+
+.hbce-footer__subtitle{ opacity:.75; font-size:.9em; }
+.hbce-footer__text{ opacity:.85; line-height:1.45; margin:10px 0; }
+
+.hbce-footer__title{
+  font-weight:700;
+  margin-bottom:10px;
+}
+
+.hbce-footer__list{
+  list-style:none;
+  padding:0;
+  margin:0;
+}
+
+.hbce-footer__list li{ margin:8px 0; }
+.hbce-footer__list a{
+  color:var(--text);
+  text-decoration:none;
   opacity:.85;
 }
+.hbce-footer__list a:hover{ opacity:1; }
+
+.hbce-footer__badges{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+.hbce-footer__note{ opacity:.85; line-height:1.45; }
+
+.hbce-footer__bottom{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-top:22px;
+  padding-top:18px;
+  border-top:1px solid var(--line);
+  flex-wrap:wrap;
+}
+
+.hbce-footer__legal{ opacity:.8; }
+.hbce-footer__cta{ display:flex; gap:10px; flex-wrap:wrap; }
