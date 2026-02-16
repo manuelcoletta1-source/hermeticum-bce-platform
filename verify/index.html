@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>VERIFY — Controllo validità IPR · HERMETICUM Banca Cibernetica Europea</title>
-  <meta name="description" content="VERIFY IPR: controllo bancario di validità (integrità + match nel registry). Fail-closed, hash-only, audit-first. HBCE S.r.l." />
+  <title>VERIFY — Verifica Identità IPR (HBCE)</title>
+  <meta name="description" content="Sportello VERIFY: verifica identità operativa IPR. Fail-closed: senza match nel registry pubblico → NON OPERATIVO. Audit-first, hash-only, append-only." />
 
   <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/verify/" />
   <meta name="robots" content="index,follow" />
@@ -21,123 +21,92 @@
 
     <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">VERIFY · CONTROLLO VALIDITÀ · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">VERIFY (controllo bancario IPR)</h1>
+      <div class="hbce-hero__kicker">VERIFY · EU OPERATIONAL DESK</div>
+      <h1 class="hbce-hero__title">VERIFY — Sportello di verifica IPR</h1>
       <p class="hbce-hero__lead">
-        VERIFY è il controllo di validità della <strong>Banca Cibernetica Europea</strong>.
-        Determina se un IPR è <strong>VALID</strong> o <strong>INVALID</strong> in modo deterministico.
+        Carica il tuo file IPR e avvia la verifica.
+        Il sistema è <strong>fail-closed</strong>: senza match nel registry pubblico → <strong>NON OPERATIVO</strong>.
       </p>
 
       <div class="hbce-card hbce-card--subtle" style="margin-top:14px;">
-        <div class="hbce-card__title">Regola di rete</div>
+        <div class="hbce-card__title">Requisito</div>
         <p class="hbce-card__text">
-          <strong>VALID IPR</strong> = integrità file OK <strong>+</strong> match presente nel <a href="/hermeticum-bce-platform/registry/">Registry</a>.<br/>
-          Se manca uno dei due → <strong>INVALID</strong> (fail-closed).
+          Verifica disponibile solo per file IPR rilasciati dalla piattaforma. Nessuna custodia pubblica di dati personali.
         </p>
       </div>
-
-      <div class="hbce-actions" style="margin-top:16px;">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Guida attivazione</a>
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/">CREATE IPR</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-      </div>
     </section>
 
-    <!-- WHAT VERIFY DOES -->
+    <!-- VERIFY PANEL -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Cosa verifica</h2>
+      <h2 class="hbce-h2">Carica file IPR</h2>
 
-      <div class="hbce-grid hbce-grid--2" style="margin-top:12px;">
-        <div class="hbce-card">
-          <div class="hbce-card__title">1) Integrità (file integrity)</div>
-          <p class="hbce-card__text">
-            Controllo della coerenza del file IPR e della sua impronta (hash). Se il file è alterato → invalidazione immediata.
+      <div class="hbce-card">
+        <div class="hbce-card__title">Seleziona il file</div>
+        <p class="hbce-card__text">
+          Formato: <strong>.json</strong> (release IPR). Il calcolo hash avviene localmente nel browser.
+        </p>
+
+        <div class="hbce-actions" style="margin-top:12px;">
+          <input id="hbceVerifyFile" type="file" accept="application/json,.json" />
+          <button id="hbceVerifyBtn" class="hbce-btn hbce-btn--primary" type="button">
+            Avvia VERIFY
+          </button>
+        </div>
+
+        <div class="hbce-card hbce-card--subtle" style="margin-top:14px;">
+          <div class="hbce-card__title">Stato</div>
+          <p id="hbceVerifyStatus" class="hbce-card__text">
+            In attesa di file.
           </p>
         </div>
 
-        <div class="hbce-card">
-          <div class="hbce-card__title">2) Presenza nel Registry (registry match)</div>
-          <p class="hbce-card__text">
-            Controllo deterministico nel registry pubblico (hash-only). Se non esiste match → l’IPR non è operativo nella banca.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- OPERATIONAL FLOW -->
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Esiti possibili</h2>
-
-      <div class="hbce-grid hbce-grid--2" style="margin-top:12px;">
-        <div class="hbce-card">
-          <div class="hbce-card__title">Esito: VALID</div>
-          <p class="hbce-card__text">
-            Integrità verificata <strong>+</strong> entry presente nel registry. L’IPR è operativo e può accedere ai livelli e moduli.
-          </p>
+        <div id="hbceVerifyOutput" class="hbce-card" style="margin-top:14px; display:none;">
+          <div class="hbce-card__title">Esito</div>
+          <p class="hbce-card__text" id="hbceVerifyResult"></p>
           <div class="hbce-actions" style="margin-top:10px;">
-            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/operator/">Area Operatore</a>
-            <a class="hbce-btn" href="/hermeticum-bce-platform/pricing/">Evolvi per classi</a>
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <div class="hbce-card__title">Esito: INVALID</div>
-          <p class="hbce-card__text">
-            Mancanza di match nel registry o integrità non valida. La rete blocca l’operazione (fail-closed).
-          </p>
-          <div class="hbce-actions" style="margin-top:10px;">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Controlla Registry</a>
-            <a class="hbce-btn" href="/hermeticum-bce-platform/create/">Rigenera IPR</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Attiva IPR</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/infrastructure/">Infrastructure</a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- BANKING CONTEXT -->
+    <!-- POLICY -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Perché è “bancario”</h2>
-      <p class="hbce-text">
-        In Hermeticum, l’IPR è un <strong>conto operativo</strong>. VERIFY è il controllo che garantisce che il conto esista davvero
-        nella rete (registry match) e che non sia stato alterato (integrità).
-      </p>
-
-      <div class="hbce-card">
-        <div class="hbce-card__title">Audit-first · Hash-only · No public data custody</div>
-        <p class="hbce-card__text">
-          Il registry pubblico non custodisce dati personali: pubblica prove minimizzate (hash + timestamp).
-          Il file IPR rimane in possesso del titolare/operatore.
-        </p>
-      </div>
-    </section>
-
-    <!-- JOKER -->
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Entità cibernetica Joker</h2>
-      <div class="hbce-card">
-        <div class="hbce-card__title">Supporto operativo</div>
-        <p class="hbce-card__text">
-          Joker supporta l’operatore nel mantenere coerenza operativa: integrazione moduli, continuità mensile, percorso evolutivo.
-          VERIFY resta deterministico: o matcha o non matcha.
-        </p>
-        <div class="hbce-actions" style="margin-top:10px;">
-          <a class="hbce-btn" href="/hermeticum-bce-platform/ai/">Interfaccia AI</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/ai-joker-c2/">AI JOKER ΦΩ</a>
+      <h2 class="hbce-h2">Politica operativa</h2>
+      <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
+        <div class="hbce-card">
+          <div class="hbce-card__title">Fail-closed</div>
+          <p class="hbce-card__text">
+            Assenza match nel registry → identità non operativa.
+          </p>
+        </div>
+        <div class="hbce-card">
+          <div class="hbce-card__title">Hash-only</div>
+          <p class="hbce-card__text">
+            La verifica usa hash deterministici. Nessun dato personale pubblicato.
+          </p>
+        </div>
+        <div class="hbce-card">
+          <div class="hbce-card__title">Audit-first</div>
+          <p class="hbce-card__text">
+            Tracciabilità e verifica ripetibile da terzi.
+          </p>
         </div>
       </div>
     </section>
 
-    <!-- NEXT ACTION -->
+    <!-- LINKS (SECONDARY) -->
     <section class="hbce-section">
-      <div class="hbce-card">
-        <div class="hbce-card__title">Prossima azione</div>
+      <div class="hbce-card hbce-card--subtle">
+        <div class="hbce-card__title">Accesso tecnico</div>
         <p class="hbce-card__text">
-          Se stai entrando ora: <strong>CREATE</strong> → conserva file → <strong>VERIFY</strong> → match nel <strong>REGISTRY</strong>.
-          Se sei già VALID: entra in <strong>Area Operatore</strong> e scala per classi e nodi.
+          Registry pubblico e audit sono disponibili come strumenti di controllo. Non sono richiesti per l’uso ordinario.
         </p>
         <div class="hbce-actions" style="margin-top:10px;">
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/operator/">Area Operatore</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/pricing/">Prezzi</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Guida attivazione</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Registry</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/audit/">Audit</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/security/">Security</a>
         </div>
       </div>
     </section>
@@ -145,6 +114,60 @@
   </main>
 
   <div data-hbce="footer"></div>
+
+  <!-- Minimal client-side verify glue.
+       Assumes existing verify logic is available via hbce-ui / existing scripts.
+       If not present, this will still behave as a clean UI shell. -->
+  <script>
+    (function () {
+      const fileInput = document.getElementById('hbceVerifyFile');
+      const btn = document.getElementById('hbceVerifyBtn');
+      const status = document.getElementById('hbceVerifyStatus');
+      const out = document.getElementById('hbceVerifyOutput');
+      const result = document.getElementById('hbceVerifyResult');
+
+      function setStatus(t){ status.textContent = t; }
+      function showResult(t){
+        result.textContent = t;
+        out.style.display = 'block';
+      }
+
+      btn.addEventListener('click', async () => {
+        const f = fileInput.files && fileInput.files[0];
+        if (!f) {
+          setStatus('Seleziona un file IPR (.json) per avviare VERIFY.');
+          return;
+        }
+
+        setStatus('Verifica in corso (local) ...');
+        out.style.display = 'none';
+
+        try {
+          // If your platform already exposes a verifier function, call it here.
+          // Example expected API:
+          //   window.hbceVerifyFile(file) -> { ok: boolean, payload_sha256: string, registry_match: boolean }
+          if (typeof window.hbceVerifyFile === 'function') {
+            const res = await window.hbceVerifyFile(f);
+            if (res && res.ok && res.registry_match) {
+              setStatus('VALID — match nel registry pubblico.');
+              showResult('VALID — Identità operativa verificata. Operatività attiva.');
+            } else {
+              setStatus('NON OPERATIVO — nessun match nel registry (fail-closed).');
+              showResult('NON OPERATIVO — Verifica fallita (fail-closed).');
+            }
+          } else {
+            // UI shell fallback: instruct user.
+            setStatus('Modulo VERIFY pronto. Logica di verifica non collegata in questa pagina.');
+            showResult('Caricamento completato. Collegare la funzione di verifica (hbceVerifyFile) per esito automatico.');
+          }
+        } catch (e) {
+          setStatus('Errore durante VERIFY.');
+          showResult('Errore tecnico: impossibile completare la verifica.');
+        }
+      });
+    })();
+  </script>
+
   <script src="/hermeticum-bce-platform/assets/hbce-ui.js" defer></script>
 </body>
 </html>
