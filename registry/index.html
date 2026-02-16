@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <title>REGISTRY — Append-only (public) | HBCE S.r.l.</title>
-  <meta name="description" content="Registro pubblico append-only (HASH-ONLY) della rete Hermeticum, sviluppata da HBCE S.r.l. Ricerca, filtri, conteggi e export. UE-first, audit-first, fail-closed." />
+  <meta name="description" content="Registro pubblico append-only (HASH-ONLY) della rete Hermeticum, sviluppata da HBCE S.r.l. Viewer con health meta, conteggi, ricerca, filtri ed export. UE-first, audit-first, fail-closed." />
 
   <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/registry/" />
   <meta name="robots" content="index,follow" />
@@ -25,7 +25,7 @@
       <h1 class="hbce-hero__title">Registro pubblico (append-only)</h1>
       <p class="hbce-hero__lead">
         Questo registry pubblica solo prove minimizzate (<strong>HASH-ONLY</strong>).
-        Nessuna custodia pubblica di dati personali. La lettura è <strong>fail-closed</strong>:
+        Nessuna custodia pubblica di dati personali. Lettura <strong>fail-closed</strong>:
         se il registry non è valido → operatività bloccata.
       </p>
 
@@ -41,13 +41,47 @@
       </div>
     </section>
 
-    <!-- CONTROLS -->
+    <!-- HEALTH + CONTROLS -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Viewer registry</h2>
+      <h2 class="hbce-h2">Health & Viewer</h2>
 
       <div class="hbce-card">
         <div class="hbce-card__body">
 
+          <!-- META HEALTH -->
+          <div class="hbce-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;">
+            <div class="hbce-card" style="margin:0;">
+              <div class="hbce-card__body">
+                <div class="hbce-note">Schema</div>
+                <div style="font-size:14px; font-weight:800;" id="metaSchema">—</div>
+              </div>
+            </div>
+
+            <div class="hbce-card" style="margin:0;">
+              <div class="hbce-card__body">
+                <div class="hbce-note">Issuer</div>
+                <div style="font-size:14px; font-weight:800;" id="metaIssuer">—</div>
+              </div>
+            </div>
+
+            <div class="hbce-card" style="margin:0;">
+              <div class="hbce-card__body">
+                <div class="hbce-note">Last update</div>
+                <div style="font-size:14px; font-weight:800;" id="metaLast">—</div>
+              </div>
+            </div>
+
+            <div class="hbce-card" style="margin:0;">
+              <div class="hbce-card__body">
+                <div class="hbce-note">Policy</div>
+                <div style="font-size:12px; font-weight:700;" id="metaPolicy">—</div>
+              </div>
+            </div>
+          </div>
+
+          <hr style="opacity:.15; margin:16px 0;" />
+
+          <!-- COUNTS -->
           <div class="hbce-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;">
             <div class="hbce-card" style="margin:0;">
               <div class="hbce-card__body">
@@ -72,7 +106,7 @@
 
             <div class="hbce-card" style="margin:0;">
               <div class="hbce-card__body">
-                <div class="hbce-note">Ultimo timestamp</div>
+                <div class="hbce-note">Ultimo timestamp (entries)</div>
                 <div style="font-size:14px; font-weight:700;" id="lastTs">—</div>
               </div>
             </div>
@@ -80,6 +114,7 @@
 
           <hr style="opacity:.15; margin:16px 0;" />
 
+          <!-- CONTROLS -->
           <div class="hbce-grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; align-items:end;">
             <label class="hbce-field">
               <span class="hbce-label">Ricerca</span>
@@ -147,7 +182,7 @@
       </div>
 
       <p class="hbce-note" style="margin-top:10px;">
-        Nota: questo viewer non modifica nulla. Il registry è append-only e la pubblicazione è HASH-ONLY.
+        Viewer read-only. Registry append-only, pubblicazione HASH-ONLY.
       </p>
     </section>
 
@@ -172,6 +207,11 @@
   <script>
     const REGISTRY_PATH = "/hermeticum-bce-platform/registry/registry.json";
 
+    const metaSchema = document.getElementById("metaSchema");
+    const metaIssuer = document.getElementById("metaIssuer");
+    const metaLast = document.getElementById("metaLast");
+    const metaPolicy = document.getElementById("metaPolicy");
+
     const countAll = document.getElementById("countAll");
     const countBase = document.getElementById("countBase");
     const countOp = document.getElementById("countOp");
@@ -183,7 +223,6 @@
 
     const reloadBtn = document.getElementById("reloadBtn");
     const exportBtn = document.getElementById("exportBtn");
-
     const rows = document.getElementById("rows");
 
     const failBox = document.getElementById("failBox");
@@ -201,24 +240,19 @@
     function isHex64(s) {
       return typeof s === "string" && /^[0-9a-f]{64}$/i.test(s.trim());
     }
-
     function normalize(s) {
       return (s || "").toString().trim();
     }
-
     function safeLower(s) {
       return normalize(s).toLowerCase();
     }
 
     function entryType(e) {
-      // Operator: record_type === OPERATOR_LICENSE OR has ref_payload_sha256/operator_nickname
       if (!e || typeof e !== "object") return "unknown";
       if (safeLower(e.record_type) === "operator_license") return "operator";
       if (normalize(e.operator_nickname)) return "operator";
       if (isHex64(e.ref_payload_sha256)) return "operator";
-      // Base: entity_type HUMAN (common in your schema)
       if (safeLower(e.entity_type) === "human") return "base";
-      // Fallback: treat as base if has name and no operator markers
       if (normalize(e.name) && !normalize(e.operator_nickname)) return "base";
       return "unknown";
     }
@@ -234,44 +268,51 @@
       failPre.textContent = msg;
       rows.innerHTML = '<tr><td colspan="7" style="padding:12px;" class="hbce-note">FAIL-CLOSED — registry non disponibile</td></tr>';
     }
-
     function hideFail() {
       failBox.style.display = "none";
       failPre.textContent = "";
     }
 
-    function setCounters(list) {
-      countAll.textContent = String(list.length);
+    function setMeta(m) {
+      const meta = (m && typeof m === "object") ? m : {};
+      metaSchema.textContent = normalize(meta.schema) || "—";
+      metaIssuer.textContent = normalize(meta.issuer) || "—";
+      metaLast.textContent = normalize(meta.last_update) || "—";
+      metaPolicy.textContent = Array.isArray(meta.policy) ? meta.policy.join(" · ") : "—";
+    }
 
-      const base = list.filter(e => entryType(e) === "base").length;
-      const op = list.filter(e => entryType(e) === "operator").length;
-
-      countBase.textContent = String(base);
-      countOp.textContent = String(op);
-
-      const ts = list
+    function computeLastTimestamp(list) {
+      return list
         .map(e => normalize(e.timestamp))
         .filter(Boolean)
         .sort()
         .slice(-1)[0] || "—";
-      lastTs.textContent = ts;
+    }
+
+    function setCountersFromMetaOrCompute(meta, list) {
+      const c = meta && meta.counts && typeof meta.counts === "object" ? meta.counts : null;
+
+      const totalMeta = c && Number.isFinite(c.total) ? c.total : null;
+      const baseMeta = c && Number.isFinite(c.ipr_base_human) ? c.ipr_base_human : null;
+      const opMeta = c && Number.isFinite(c.operator_license) ? c.operator_license : null;
+
+      const baseCalc = list.filter(e => entryType(e) === "base").length;
+      const opCalc = list.filter(e => entryType(e) === "operator").length;
+
+      countAll.textContent = String(totalMeta !== null ? totalMeta : list.length);
+      countBase.textContent = String(baseMeta !== null ? baseMeta : baseCalc);
+      countOp.textContent = String(opMeta !== null ? opMeta : opCalc);
+
+      lastTs.textContent = computeLastTimestamp(list);
     }
 
     function matchesQuery(e, query) {
       if (!query) return true;
       const ql = query.toLowerCase();
-
       const fields = [
-        e.name,
-        e.operator_nickname,
-        e.status,
-        e.entity_type,
-        e.record_type,
-        e.payload_sha256,
-        e.ref_payload_sha256,
-        e.timestamp
+        e.name, e.operator_nickname, e.status, e.entity_type, e.record_type,
+        e.payload_sha256, e.ref_payload_sha256, e.timestamp
       ].map(x => normalize(x)).filter(Boolean);
-
       return fields.some(x => x.toLowerCase().includes(ql));
     }
 
@@ -282,23 +323,17 @@
 
       let list = entries.slice();
 
-      // filter by type
       if (tf === "base") list = list.filter(e => entryType(e) === "base");
       if (tf === "operator") list = list.filter(e => entryType(e) === "operator");
-
-      // search
       if (query) list = list.filter(e => matchesQuery(e, query));
 
-      // sort by timestamp
       list.sort((a, b) => {
         const ta = normalize(a.timestamp);
         const tb = normalize(b.timestamp);
-        if (sb === "oldest") return ta.localeCompare(tb);
-        return tb.localeCompare(ta);
+        return sb === "oldest" ? ta.localeCompare(tb) : tb.localeCompare(ta);
       });
 
       renderRows(list);
-      setCounters(entries); // counters always show global (not filtered)
     }
 
     function shortHash(h) {
@@ -344,7 +379,6 @@
         rows.innerHTML = '<tr><td colspan="7" style="padding:12px;" class="hbce-note">Nessun risultato.</td></tr>';
         return;
       }
-
       rows.innerHTML = "";
 
       for (const e of list) {
@@ -401,7 +435,6 @@
         aVerify.style.marginLeft = "8px";
         aVerify.href = "/hermeticum-bce-platform/verify/";
         aVerify.textContent = "VERIFY";
-        aVerify.title = "Apri VERIFY e incolla l’hash";
 
         tdAct.appendChild(btnView);
         tdAct.appendChild(btnCopyHash);
@@ -439,8 +472,8 @@
 
     function validateRegistrySchema(obj) {
       if (!obj || typeof obj !== "object") return "Schema invalido: non è un oggetto JSON.";
+      if (!obj.meta || typeof obj.meta !== "object") return "Schema invalido: manca meta{} (fail-closed).";
       if (!Array.isArray(obj.entries)) return "Schema invalido: manca entries[] (fail-closed).";
-      // minimal check for each entry
       for (const e of obj.entries) {
         if (!e || typeof e !== "object") return "Schema invalido: entry non-oggetto (fail-closed).";
         if (!normalize(e.timestamp)) return "Schema invalido: entry senza timestamp (fail-closed).";
@@ -455,6 +488,7 @@
 
       registryRaw = null;
       entries = [];
+      setMeta(null);
 
       let obj;
       try {
@@ -479,6 +513,8 @@
       registryRaw = obj;
       entries = obj.entries.slice();
 
+      setMeta(obj.meta);
+      setCountersFromMetaOrCompute(obj.meta, entries);
       applyFilters();
     }
 
@@ -487,7 +523,6 @@
     typeFilter.addEventListener("change", applyFilters);
     sortBy.addEventListener("change", applyFilters);
 
-    // Boot
     loadRegistry();
   </script>
 </body>
