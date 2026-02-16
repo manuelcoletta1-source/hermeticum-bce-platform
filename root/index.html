@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>EU OPERATIONAL ROOT — HBCE-CORE-v3</title>
+  <meta name="description" content="Manifesto Root (genesis) della rete Hermeticum: policy, roots, anchors, verify rule e capacità operative. UE-first, audit-first, fail-closed, hash-only, append-only." />
+
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/root/" />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">EU OPERATIONAL ROOT · HBCE-CORE-v3 · APPEND-ONLY</div>
+      <h1 class="hbce-hero__title">Root Manifest (genesis) — rete Hermeticum</h1>
+      <p class="hbce-hero__lead">
+        Questo documento definisce la configurazione “root” della rete federata: policy, doppia root (umano + AI),
+        regola di verifica fail-closed e ancoraggi crittografici. È un file infrastrutturale e tecnico.
+      </p>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/root/EU_OPERATIONAL_ROOT.json" download>
+          Scarica EU_OPERATIONAL_ROOT.json
+        </a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Apri Registry</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Apri VERIFY</a>
+      </div>
+
+      <p class="hbce-note" style="margin-top:14px;">
+        Nota: “Banca cibernetica europea” è definizione infrastrutturale/tecnologica. Non è istituto bancario o finanziario.
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Regola di verifica</h2>
+      <div class="hbce-card">
+        <div class="hbce-card__body">
+          <p class="hbce-p">
+            <strong>RULE:</strong> <code>REGISTRY_MATCH &amp;&amp; ROOT_VALID ? EXECUTE : BLOCK</code>
+          </p>
+          <ul class="hbce-list">
+            <li><strong>REGISTRY_MATCH</strong>: l’identità deve avere match nel registry pubblico (hash-only).</li>
+            <li><strong>ROOT_VALID</strong>: la root deve essere coerente con policy e ancoraggi.</li>
+            <li><strong>Fail-closed</strong>: se non matcha → blocco operativo.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">EU OPERATIONAL ROOT (JSON)</h2>
+
+      <div class="hbce-card">
+        <div class="hbce-card__body">
+          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px;">
+            <button class="hbce-btn" type="button" id="copyRoot">Copia JSON</button>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/root/EU_OPERATIONAL_ROOT.json" target="_blank" rel="noopener">Apri JSON</a>
+          </div>
+
+<pre class="hbce-pre" id="rootJson" style="white-space:pre; overflow:auto; max-height:520px; margin:0;">
+{
+  "proto": "HBCE-CORE-v3",
+  "kind": "EU_OPERATIONAL_ROOT",
+  "issuer": "HERMETICUM B.C.E. S.r.l.",
+  "jurisdiction": "EU",
+  "mode": "PERMISSIONLESS",
+  "policy": [
+    "UE_FIRST",
+    "AUDIT_FIRST",
+    "FAIL_CLOSED",
+    "HASH_ONLY",
+    "APPEND_ONLY",
+    "NO_IDENTITY_CUSTODY"
+  ],
+  "roots": {
+    "human": {
+      "id": "IPR-3",
+      "nickname": "Manuel Coletta",
+      "role": "ORIGIN_OPERATOR",
+      "status": "ACTIVE"
+    },
+    "ai": {
+      "id": "IPR-AI-0001",
+      "nickname": "JOKER-C2",
+      "role": "C2_CORE",
+      "status": "ACTIVE"
+    }
+  },
+  "network": {
+    "type": "EU_OPERATOR_NETWORK",
+    "entry": "IPR_BASE_VALID",
+    "operator": "VALID_OPERATOR_LICENSE",
+    "topology": "FEDERATED",
+    "rule": "APPEND_ONLY_CHAIN"
+  },
+  "anchors": {
+    "ipfs": "bafkreidhv73vqrxoweog33ls3rnwrgyicio234pcuks6mnep76yh56pj5q",
+    "btc": "9eeb29b67f4a649d563b95560fda5ddaa84777b13515f936837fc93d28554b45",
+    "evm": "0xf65eb314a1edd392fc15fcd9c65d22060ca39cbac04fcfcb48b978062500a7eff"
+  },
+  "verify": {
+    "rule": "REGISTRY_MATCH && ROOT_VALID ? EXECUTE : BLOCK",
+    "registry": "/hermeticum-bce-platform/registry/registry.json",
+    "ecosystem": "/hermeticum-bce-platform/ECOSYSTEM_ROOT.json"
+  },
+  "capabilities": [
+    "ISSUE_BASE_IPR",
+    "ISSUE_OPERATOR",
+    "VALIDATE_NETWORK"
+  ],
+  "mutability": "APPEND_ONLY",
+  "status": "ACTIVE",
+  "epoch": "EU_NETWORK_GENESIS"
+}
+</pre>
+
+          <p class="hbce-note" style="margin-top:10px;">
+            Percorso canonico: <code>/hermeticum-bce-platform/root/EU_OPERATIONAL_ROOT.json</code>
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+
+  <script>
+    (function () {
+      const btn = document.getElementById("copyRoot");
+      const pre = document.getElementById("rootJson");
+      if (!btn || !pre) return;
+
+      btn.addEventListener("click", async () => {
+        const text = pre.textContent || "";
+        try {
+          await navigator.clipboard.writeText(text.trim());
+          btn.textContent = "Copiato ✓";
+          setTimeout(() => (btn.textContent = "Copia JSON"), 1400);
+        } catch (e) {
+          btn.textContent = "Errore copia";
+          setTimeout(() => (btn.textContent = "Copia JSON"), 1400);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
