@@ -3,209 +3,148 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VERIFY — Fail-Closed (EU)</title>
-  <meta name="description" content="Verifica deterministica: SHA256(file canonico) presente nel registry → VALID. Se manca match → INVALID (fail-closed)." />
+
+  <title>VERIFY — Controllo validità IPR · HERMETICUM Banca Cibernetica Europea</title>
+  <meta name="description" content="VERIFY IPR: controllo bancario di validità (integrità + match nel registry). Fail-closed, hash-only, audit-first. HBCE S.r.l." />
+
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/verify/" />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
-  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
-  <script defer src="/hermeticum-bce-platform/assets/hbce-crypto.js"></script>
 </head>
+
 <body>
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
+
+    <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">VERIFY · HASH-ONLY · APPEND-ONLY · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">Verifica file (deterministica)</h1>
+      <div class="hbce-hero__kicker">VERIFY · CONTROLLO VALIDITÀ · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">VERIFY (controllo bancario IPR)</h1>
       <p class="hbce-hero__lead">
-        Carica un file reale (IPR Base fiscale / Operatore). Il sistema calcola la SHA256 canonica e cerca match nel registry.
-        Match → <strong>VALID</strong> + certificato. Nessun match → <strong>INVALID</strong> (fail-closed).
+        VERIFY è il controllo di validità della <strong>Banca Cibernetica Europea</strong>.
+        Determina se un IPR è <strong>VALID</strong> o <strong>INVALID</strong> in modo deterministico.
       </p>
-      <div class="hbce-row" style="margin-top:16px">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">ACTIVATE</a>
+
+      <div class="hbce-card hbce-card--subtle" style="margin-top:14px;">
+        <div class="hbce-card__title">Regola di rete</div>
+        <p class="hbce-card__text">
+          <strong>VALID IPR</strong> = integrità file OK <strong>+</strong> match presente nel <a href="/hermeticum-bce-platform/registry/">Registry</a>.<br/>
+          Se manca uno dei due → <strong>INVALID</strong> (fail-closed).
+        </p>
+      </div>
+
+      <div class="hbce-actions" style="margin-top:16px;">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Guida attivazione</a>
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/">CREATE IPR</a>
         <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
       </div>
     </section>
 
-    <section class="hbce-grid">
-      <div class="hbce-card hbce-card--6">
-        <h2>Input</h2>
+    <!-- WHAT VERIFY DOES -->
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Cosa verifica</h2>
 
-        <div class="hbce-field">
-          <label for="file">File reale (JSON)</label>
-          <input id="file" class="hbce-input" type="file" accept="application/json,.json" />
+      <div class="hbce-grid hbce-grid--2" style="margin-top:12px;">
+        <div class="hbce-card">
+          <div class="hbce-card__title">1) Integrità (file integrity)</div>
+          <p class="hbce-card__text">
+            Controllo della coerenza del file IPR e della sua impronta (hash). Se il file è alterato → invalidazione immediata.
+          </p>
         </div>
 
-        <div class="hbce-row">
-          <button id="btnVerify" class="hbce-btn hbce-btn--primary">RUN VERIFY</button>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/registry.json">OPEN registry.json</a>
-        </div>
-
-        <div id="warn" class="hbce-badge hbce-badge--warn" style="margin-top:12px; display:none"></div>
-
-        <div class="hbce-kv" id="kv" style="margin-top:12px"></div>
-        <pre id="raw" class="hbce-textarea" style="margin-top:12px; white-space:pre-wrap"></pre>
-      </div>
-
-      <div class="hbce-card hbce-card--6">
-        <h2>Result</h2>
-        <div id="badge" class="hbce-badge hbce-badge--warn">Not verified</div>
-
-        <div class="hbce-field" style="margin-top:12px">
-          <label>HBCE_CERTIFICATE (JSON)</label>
-          <pre id="certJson" class="hbce-textarea" style="white-space:pre-wrap"></pre>
-        </div>
-
-        <div class="hbce-row">
-          <button id="dlCertJson" class="hbce-btn hbce-btn--ok" disabled>DOWNLOAD CERTIFICATE.json</button>
-          <button id="dlCertTxt" class="hbce-btn" disabled>DOWNLOAD CERTIFICATE.txt</button>
-        </div>
-
-        <div class="hbce-help">
-          Nota: il certificato è una prova riproducibile del match nel registry (hash-only).
+        <div class="hbce-card">
+          <div class="hbce-card__title">2) Presenza nel Registry (registry match)</div>
+          <p class="hbce-card__text">
+            Controllo deterministico nel registry pubblico (hash-only). Se non esiste match → l’IPR non è operativo nella banca.
+          </p>
         </div>
       </div>
     </section>
+
+    <!-- OPERATIONAL FLOW -->
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Esiti possibili</h2>
+
+      <div class="hbce-grid hbce-grid--2" style="margin-top:12px;">
+        <div class="hbce-card">
+          <div class="hbce-card__title">Esito: VALID</div>
+          <p class="hbce-card__text">
+            Integrità verificata <strong>+</strong> entry presente nel registry. L’IPR è operativo e può accedere ai livelli e moduli.
+          </p>
+          <div class="hbce-actions" style="margin-top:10px;">
+            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/operator/">Area Operatore</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/pricing/">Evolvi per classi</a>
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-card__title">Esito: INVALID</div>
+          <p class="hbce-card__text">
+            Mancanza di match nel registry o integrità non valida. La rete blocca l’operazione (fail-closed).
+          </p>
+          <div class="hbce-actions" style="margin-top:10px;">
+            <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Controlla Registry</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/create/">Rigenera IPR</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BANKING CONTEXT -->
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Perché è “bancario”</h2>
+      <p class="hbce-text">
+        In Hermeticum, l’IPR è un <strong>conto operativo</strong>. VERIFY è il controllo che garantisce che il conto esista davvero
+        nella rete (registry match) e che non sia stato alterato (integrità).
+      </p>
+
+      <div class="hbce-card">
+        <div class="hbce-card__title">Audit-first · Hash-only · No public data custody</div>
+        <p class="hbce-card__text">
+          Il registry pubblico non custodisce dati personali: pubblica prove minimizzate (hash + timestamp).
+          Il file IPR rimane in possesso del titolare/operatore.
+        </p>
+      </div>
+    </section>
+
+    <!-- JOKER -->
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Entità cibernetica Joker</h2>
+      <div class="hbce-card">
+        <div class="hbce-card__title">Supporto operativo</div>
+        <p class="hbce-card__text">
+          Joker supporta l’operatore nel mantenere coerenza operativa: integrazione moduli, continuità mensile, percorso evolutivo.
+          VERIFY resta deterministico: o matcha o non matcha.
+        </p>
+        <div class="hbce-actions" style="margin-top:10px;">
+          <a class="hbce-btn" href="/hermeticum-bce-platform/ai/">Interfaccia AI</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/ai-joker-c2/">AI JOKER ΦΩ</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEXT ACTION -->
+    <section class="hbce-section">
+      <div class="hbce-card">
+        <div class="hbce-card__title">Prossima azione</div>
+        <p class="hbce-card__text">
+          Se stai entrando ora: <strong>CREATE</strong> → conserva file → <strong>VERIFY</strong> → match nel <strong>REGISTRY</strong>.
+          Se sei già VALID: entra in <strong>Area Operatore</strong> e scala per classi e nodi.
+        </p>
+        <div class="hbce-actions" style="margin-top:10px;">
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/operator/">Area Operatore</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/pricing/">Prezzi</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Guida attivazione</a>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <div data-hbce="footer"></div>
-
-  <script>
-    const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
-
-    function kvSet(map){
-      const kv=document.getElementById("kv");
-      kv.innerHTML="";
-      for(const [k,v] of Object.entries(map)){
-        const a=document.createElement("div"); a.className="k"; a.textContent=k;
-        const b=document.createElement("div"); b.className="v"; b.textContent=v;
-        kv.append(a,b);
-      }
-    }
-
-    function showWarn(msg){
-      const w=document.getElementById("warn");
-      w.style.display="inline-flex";
-      w.textContent=msg;
-    }
-    function hideWarn(){
-      const w=document.getElementById("warn");
-      w.style.display="none";
-      w.textContent="";
-    }
-
-    document.getElementById("btnVerify").onclick = async () => {
-      const f = document.getElementById("file").files?.[0];
-      const badge = document.getElementById("badge");
-      const raw = document.getElementById("raw");
-      const certJsonEl = document.getElementById("certJson");
-      hideWarn();
-
-      badge.className="hbce-badge hbce-badge--warn";
-      badge.textContent="Verifying…";
-      raw.textContent="";
-      certJsonEl.textContent="";
-      document.getElementById("dlCertJson").disabled=true;
-      document.getElementById("dlCertTxt").disabled=true;
-
-      if(!f){
-        badge.className="hbce-badge hbce-badge--bad";
-        badge.textContent="FAIL — no file";
-        return;
-      }
-
-      try{
-        const text = await f.text();
-        const obj = JSON.parse(text);
-
-        const proto = (obj?.proto || "—");
-        const kind = (obj?.kind || "—");
-        const issued_at = (obj?.issued_at || obj?.timestamp || "—");
-
-        // Warning: fiscal files contain sensitive data
-        const p = String(proto).toUpperCase();
-        const k = String(kind).toUpperCase();
-        if(p.includes("FISCAL") || k.includes("FISCAL")){
-          showWarn("WARNING — Questo file contiene dati sensibili (bank-grade). Conserva offline e non condividerlo.");
-        }
-
-        const payload_sha256 = await HBCE.sha256String(HBCE.stableStringify(obj));
-
-        const reg = await HBCE.fetchJson(REGISTRY_URL);
-        const match = (reg.entries||[]).some(e => (e.payload_sha256||"").toLowerCase() === payload_sha256.toLowerCase());
-
-        kvSet({
-          "proto": proto,
-          "kind": kind,
-          "issued_at": issued_at,
-          "payload_sha256": payload_sha256,
-          "registry_url": REGISTRY_URL,
-          "registry_match": String(match)
-        });
-
-        raw.textContent = JSON.stringify({
-          verify: "HBCE-VERIFY-v1",
-          result: match ? "VALID" : "INVALID",
-          policy: ["FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","GDPR_MIN"],
-          payload_sha256,
-          registry_url: REGISTRY_URL,
-          timestamp: HBCE.nowISO()
-        }, null, 2);
-
-        if(!match){
-          badge.className="hbce-badge hbce-badge--bad";
-          badge.textContent="INVALID — no registry match (fail-closed)";
-          return;
-        }
-
-        const cert = {
-          proto: "HBCE-CERTIFICATE-v1",
-          kind: "HBCE_CERTIFICATE",
-          issuer: "HERMETICUM B.C.E. S.r.l.",
-          policy: ["HASH_ONLY","FAIL_CLOSED","APPEND_ONLY"],
-          verified_payload_sha256: payload_sha256,
-          registry_url: REGISTRY_URL,
-          status: "VALID",
-          issued_at: HBCE.nowISO(),
-          note: "VALID means: canonical SHA256(file) is present in registry entries[] (hash-only)."
-        };
-
-        const certTxt =
-`HBCE CERTIFICATE
-Issuer: HERMETICUM B.C.E. S.r.l.
-Status: VALID (fail-closed)
-
-verified_payload_sha256: ${payload_sha256}
-registry_url: ${REGISTRY_URL}
-issued_at: ${cert.issued_at}
-
-Operational truth:
-VALID = SHA256(canonical file) present in registry/registry.json + integrity ok.
-Missing match => INVALID (fail-closed).
-`;
-
-        certJsonEl.textContent = JSON.stringify(cert, null, 2);
-
-        badge.className="hbce-badge hbce-badge--ok";
-        badge.textContent="VALID — registry match true";
-
-        document.getElementById("dlCertJson").disabled=false;
-        document.getElementById("dlCertTxt").disabled=false;
-
-        document.getElementById("dlCertJson").onclick=()=>{
-          const fn=`HBCE_CERTIFICATE__${payload_sha256.slice(0,12)}.json`;
-          HBCE.download(fn, JSON.stringify(cert, null, 2));
-        };
-        document.getElementById("dlCertTxt").onclick=()=>{
-          const fn=`HBCE_CERTIFICATE__${payload_sha256.slice(0,12)}.txt`;
-          HBCE.download(fn, certTxt, "text/plain");
-        };
-
-      }catch(e){
-        badge.className="hbce-badge hbce-badge--bad";
-        badge.textContent="FAIL — verify error";
-        raw.textContent = String(e);
-      }
-    };
-  </script>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js" defer></script>
 </body>
 </html>
