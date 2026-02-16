@@ -1,4 +1,4 @@
-/* HBCE UI Loader — header/footer partials (repo: /partials) */
+/* HBCE UI Loader — header/footer partials (platform-local) */
 (function () {
   const BASE = "/hermeticum-bce-platform";
   const PARTIALS = `${BASE}/partials`;
@@ -12,7 +12,6 @@
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       el.innerHTML = await res.text();
     } catch (e) {
-      // Fail-closed UI philosophy: keep page usable even if partials fail
       el.innerHTML = `
         <div class="hbce-container" style="padding:10px 0;">
           <a href="${BASE}/" style="text-decoration:none;"><strong>HERMETICUM</strong></a>
