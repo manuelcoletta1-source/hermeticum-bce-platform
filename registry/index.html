@@ -3,125 +3,149 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>REGISTRY — Public Append-Only (EU)</title>
-  <meta name="description" content="Registro pubblico hash-only. Verifica deterministica: se SHA256 non presente → INVALID (fail-closed)." />
+
+  <title>Registry pubblico — Registro della Banca Cibernetica Europea · HERMETICUM</title>
+  <meta name="description" content="Registro pubblico append-only (hash-only) della Banca Cibernetica Europea. Verifica deterministica: senza match nel registry → INVALID (fail-closed). HBCE S.r.l." />
+
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/registry/" />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
-  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </head>
+
 <body>
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
 
+    <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">PUBLIC REGISTRY · APPEND-ONLY · HASH-ONLY</div>
-      <h1 class="hbce-hero__title">Registro pubblico</h1>
+      <div class="hbce-hero__kicker">REGISTRY · APPEND-ONLY · HASH-ONLY · PUBLIC</div>
+      <h1 class="hbce-hero__title">Registro pubblico (Banca Cibernetica Europea)</h1>
       <p class="hbce-hero__lead">
-        Registro append-only pubblico.  
-        Contiene solo <strong>hash crittografici + timestamp</strong>.  
-        Nessun dato personale custodito.  
-        Se un file non matcha qui → <strong>INVALID</strong> (fail-closed).
+        Il Registry pubblico è l’albo verificabile della rete Hermeticum: contiene solo <strong>prove minimizzate</strong>
+        (hash + timestamp, eventualmente nickname) in modalità <strong>append-only</strong>.
+        Serve per una cosa sola: rendere deterministica la verifica degli IPR.
       </p>
 
-      <div class="hbce-row" style="margin-top:18px">
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/activate/">ACTIVATE</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/create/base/">CREATE BASE</a>
+      <div class="hbce-card hbce-card--subtle" style="margin-top:14px;">
+        <div class="hbce-card__title">Regola di validità (fail-closed)</div>
+        <p class="hbce-card__text">
+          <strong>VALID IPR</strong> = integrità file OK <strong>+</strong> match presente nel Registry.<br/>
+          Se manca il match → <strong>INVALID</strong>. La banca opera solo con identità verificabili.
+        </p>
+      </div>
+
+      <div class="hbce-actions" style="margin-top:16px;">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/create/">CREATE IPR</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Attiva IPR</a>
       </div>
     </section>
 
-    <section class="hbce-grid">
+    <!-- WHAT IT CONTAINS -->
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Cosa contiene e cosa non contiene</h2>
 
-      <div class="hbce-card hbce-card--6">
-        <h2>Stato registry</h2>
-        <div id="status" class="hbce-badge hbce-badge--warn">Checking…</div>
+      <div class="hbce-grid hbce-grid--2" style="margin-top:12px;">
+        <div class="hbce-card">
+          <div class="hbce-card__title">Contiene (pubblico)</div>
+          <ul class="hbce-list">
+            <li><strong>payload_sha256</strong> (hash del file/payload)</li>
+            <li><strong>timestamp</strong> (data/ora di registrazione)</li>
+            <li><strong>nickname</strong> (opzionale, se previsto dal flusso)</li>
+          </ul>
+          <p class="hbce-card__text">
+            Questi elementi sono sufficienti per la verifica deterministica e la coerenza della rete.
+          </p>
+        </div>
 
-        <div class="hbce-kv" id="stats" style="margin-top:12px"></div>
+        <div class="hbce-card">
+          <div class="hbce-card__title">Non contiene (mai pubblico)</div>
+          <ul class="hbce-list">
+            <li>dati personali completi</li>
+            <li>documenti, foto, numeri, indirizzi</li>
+            <li>credenziali o chiavi private</li>
+            <li>contenuti sensibili</li>
+          </ul>
+          <p class="hbce-card__text">
+            Il Registry non è una banca dati personale: è un registro di prove minimizzate (<strong>hash-only</strong>).
+          </p>
+        </div>
+      </div>
+    </section>
 
-        <div class="hbce-row" style="margin-top:14px">
-          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/registry.json">OPEN registry.json</a>
-          <button id="refresh" class="hbce-btn">REFRESH</button>
+    <!-- VIEWER / OPERATIONS -->
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Operazioni disponibili</h2>
+      <p class="hbce-text">
+        Questa pagina è il punto di consultazione del Registry. Le operazioni tipiche:
+        ricerca per hash/nickname, conteggio entries, export e collegamento diretto a VERIFY.
+      </p>
+
+      <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
+        <div class="hbce-card">
+          <div class="hbce-card__title">Ricerca</div>
+          <p class="hbce-card__text">
+            Cerca un match per <strong>payload_sha256</strong> o nickname (se presente). Se non trovi match, l’IPR non è operativo.
+          </p>
+        </div>
+        <div class="hbce-card">
+          <div class="hbce-card__title">Export</div>
+          <p class="hbce-card__text">
+            Esporta l’elenco per audit e controllo interno. Il Registry è append-only: le entries non vengono riscritte.
+          </p>
+        </div>
+        <div class="hbce-card">
+          <div class="hbce-card__title">Collegamento a VERIFY</div>
+          <p class="hbce-card__text">
+            La verifica è deterministica: <strong>integrità + match</strong>. VERIFY traduce il risultato in VALID/INVALID.
+          </p>
         </div>
       </div>
 
-      <div class="hbce-card hbce-card--6">
-        <h2>Come appendere una entry</h2>
-        <ol class="hbce-help">
-          <li>Apri <code>registry.json</code> su GitHub</li>
-          <li>Incolla la nuova entry dentro <code>entries[]</code></li>
-          <li>Commit</li>
-          <li>Esegui VERIFY</li>
-        </ol>
-        <div class="hbce-help">
-          Se la SHA256 non è presente nel registry → file non valido (fail-closed).
-        </div>
+      <div class="hbce-actions" style="margin-top:14px;">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">Vai a VERIFY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/create/">Rigenera IPR</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/operator/">Area Operatore</a>
       </div>
+    </section>
+
+    <!-- REGISTRY VIEWER SLOT -->
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Viewer del Registry</h2>
+      <p class="hbce-text">
+        Se nel tuo progetto è presente un viewer JS, questa sezione è lo spazio “neutro” dove può renderizzare:
+        tabella entries, ricerca, conteggio e export.
+      </p>
 
       <div class="hbce-card">
-        <h2>Ultime entries</h2>
-        <div id="entries"></div>
-      </div>
+        <div class="hbce-card__title">Pannello Registry</div>
+        <p class="hbce-card__text">
+          Viewer in caricamento o non disponibile in questa build.
+          In ogni caso, il Registry rimane la fonte pubblica di riferimento per la validità (fail-closed).
+        </p>
 
+        <!-- Slot opzionale per script/app esistenti -->
+        <div id="hbce-registry-viewer" style="margin-top:12px;"></div>
+      </div>
     </section>
+
+    <!-- INSTITUTIONAL NOTE -->
+    <section class="hbce-section">
+      <div class="hbce-card hbce-card--subtle">
+        <div class="hbce-card__title">Nota istituzionale</div>
+        <p class="hbce-card__text">
+          Il Registry pubblico è parte strutturale della <strong>Banca Cibernetica Europea</strong>.
+          La governance operativa è gestita da <strong>HBCE S.r.l.</strong> in logica UE-first.
+        </p>
+      </div>
+    </section>
+
   </main>
 
   <div data-hbce="footer"></div>
-
-  <script>
-    const REGISTRY_URL="/hermeticum-bce-platform/registry/registry.json";
-
-    async function load(){
-      const status=document.getElementById("status");
-      const stats=document.getElementById("stats");
-      const entriesDiv=document.getElementById("entries");
-
-      status.className="hbce-badge hbce-badge--warn";
-      status.textContent="Loading…";
-      stats.innerHTML="";
-      entriesDiv.innerHTML="";
-
-      try{
-        const res=await fetch(REGISTRY_URL+"?t="+Date.now());
-        const json=await res.json();
-
-        const arr=json.entries||[];
-        const count=arr.length;
-
-        status.className="hbce-badge hbce-badge--ok";
-        status.textContent="REGISTRY OK";
-
-        stats.innerHTML=`
-          <div class="k">entries</div><div class="v">${count}</div>
-          <div class="k">mode</div><div class="v">append-only</div>
-          <div class="k">public data</div><div class="v">hash-only</div>
-        `;
-
-        const last=arr.slice().reverse().slice(0,20);
-
-        last.forEach(e=>{
-          const card=document.createElement("div");
-          card.className="hbce-card";
-          card.style.marginTop="10px";
-          card.innerHTML=`
-            <div class="hbce-kv">
-              <div class="k">entity</div><div class="v">${e.entity_type||"-"}</div>
-              <div class="k">name</div><div class="v">${e.name||"-"}</div>
-              <div class="k">sha256</div><div class="v">${(e.payload_sha256||"").slice(0,24)}...</div>
-              <div class="k">timestamp</div><div class="v">${e.timestamp||"-"}</div>
-            </div>
-          `;
-          entriesDiv.appendChild(card);
-        });
-
-      }catch(err){
-        status.className="hbce-badge hbce-badge--bad";
-        status.textContent="REGISTRY ERROR";
-        stats.innerHTML=`<div class="v">${String(err)}</div>`;
-      }
-    }
-
-    document.getElementById("refresh").onclick=load;
-    load();
-  </script>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js" defer></script>
 </body>
 </html>
