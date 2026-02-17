@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>EU-MAP — HERMETICUM Network Viewer (CATTIVA)</title>
-  <meta name="description" content="EU-MAP: viewer pubblico della rete HERMETICUM. Fonte: deployment/nodes.json. Modalità CATTIVA: fail-closed se esiste anche un solo nodo ACTIVE incompleto (operator/node_hash PENDING o vuoti; IT ACTIVE senza region). Gap analysis e tabella nodi. UE-first, audit-first, hash-only, append-only, fail-closed." />
+  <title>EU-MAP — HBCE (Coverage)</title>
+  <meta name="description" content="Mappa copertura HBCE: paese per paese (UE-first). Fail-closed se nodes.json non è verificabile." />
 
   <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/network/eu-map/" />
   <meta name="robots" content="index,follow" />
@@ -19,196 +19,40 @@
 
   <main class="hbce-container hbce-main">
 
-    <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">EU-MAP · NETWORK VIEWER · MODE: CATTIVA · SOURCE: deployment/nodes.json · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">EU-MAP — Rete nodi (Italia + UE)</h1>
+      <div class="hbce-hero__kicker">EU-MAP · COVERAGE · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">EU Coverage Map</h1>
       <p class="hbce-hero__lead">
-        Viewer pubblico istituzionale della rete HERMETICUM. Questa pagina legge esclusivamente
-        <code>deployment/nodes.json</code>. Modalità <strong>CATTIVA</strong>: se trova <strong>anche un solo nodo ACTIVE incoerente</strong> → blocca tutto in <strong>FAIL-CLOSED</strong>.
+        Vista “country-first” della rete. Fonte: <code>deployment/nodes.json</code>. Se incoerente → <strong>FAIL-CLOSED</strong>.
       </p>
 
       <div class="hbce-actions">
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/deployment/nodes.json" target="_blank" rel="noopener">Apri nodes.json</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/deployment/">Deployment</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/network/">Network</a>
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/network/">Torna a Network</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/deployment/nodes.json" target="_blank" rel="noopener">nodes.json</a>
       </div>
 
-      <div id="hbce_failclosed" class="hbce-card hbce-card--subtle" style="margin-top:14px; display:none;">
-        <div class="hbce-card__title">FAIL-CLOSED (CATTIVA)</div>
-        <div class="hbce-card__text" id="hbce_failclosed_msg">
-          Fonte non verificabile. Viewer bloccato.
-        </div>
-        <div class="hbce-card__text" style="margin-top:10px; opacity:.9;">
-          In modalità CATTIVA basta un <strong>ACTIVE</strong> incompleto per invalidare tutto: è un segnale di “ledger sporco”.
-        </div>
+      <div class="hbce-card hbce-card--subtle" style="margin-top:14px;">
+        <div class="hbce-card__title">Stato (runtime)</div>
+        <div id="eu_state" class="hbce-card__text">—</div>
       </div>
     </section>
 
-    <!-- ORIGIN NODE (DERIVED) -->
-    <section class="hbce-card" id="origin_panel" style="display:none;">
-      <h2 class="hbce-card__title">Origin Node (derivato)</h2>
-      <p class="hbce-card__text" style="margin-top:6px;">
-        Nodo origine calcolato dalla fonte. Se non determinabile con regole minimali → indicato come non disponibile.
-      </p>
-
-      <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
-        <div class="hbce-card hbce-card--subtle">
-          <div class="hbce-card__title">Località</div>
-          <div class="hbce-card__text">
-            <strong><span id="o_city">—</span></strong><br/>
-            <span style="opacity:.85;"><span id="o_region">—</span> · <span id="o_country">—</span></span>
-          </div>
-        </div>
-
-        <div class="hbce-card hbce-card--subtle">
-          <div class="hbce-card__title">Stato / Operatore</div>
-          <div class="hbce-card__text">
-            Stato: <strong><span id="o_status">—</span></strong><br/>
-            Operatore: <strong><span id="o_operator">—</span></strong>
-          </div>
-        </div>
-
-        <div class="hbce-card hbce-card--subtle">
-          <div class="hbce-card__title">Prova</div>
-          <div class="hbce-card__text">
-            node_hash: <code><span id="o_hash">—</span></code><br/>
-            ts: <code><span id="o_ts">—</span></code>
-          </div>
-        </div>
-      </div>
-
-      <div class="hbce-card hbce-card--subtle" style="margin-top:12px;">
-        <div class="hbce-card__title">Note</div>
-        <div class="hbce-card__text" id="o_note" style="opacity:.9;">—</div>
-      </div>
-
-      <div class="hbce-meta" style="margin-top:12px;">
-        <span class="hbce-badge">Derived</span>
-        <span class="hbce-badge">Source-of-truth: nodes.json</span>
-        <span class="hbce-badge">Fail-closed</span>
-      </div>
-    </section>
-
-    <!-- GAP ANALYSIS -->
-    <section class="hbce-card" id="gap_panel" style="margin-top:16px; display:none;">
-      <h2 class="hbce-card__title">Copertura minima — Gap analysis (CATTIVA)</h2>
-      <p class="hbce-card__text">
-        Copertura valida solo con nodi “puliti”:
-        <strong>ACTIVE</strong> + <strong>operator≠PENDING</strong> + <strong>node_hash≠PENDING</strong> (+ per IT: <strong>region</strong> obbligatoria).
-        Se esiste un ACTIVE “sporco” → tutta la pagina va in FAIL-CLOSED.
-      </p>
-
-      <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
-        <div class="hbce-card hbce-card--subtle">
-          <div class="hbce-card__title">Italia (pulito)</div>
-          <div class="hbce-card__text">
-            Regioni coperte: <strong><span id="g_it_have">—</span></strong> / <strong><span id="g_it_total">—</span></strong><br/>
-            Mancanti: <strong><span id="g_it_missing_n">—</span></strong>
-          </div>
-        </div>
-
-        <div class="hbce-card hbce-card--subtle">
-          <div class="hbce-card__title">UE-27 (pulito)</div>
-          <div class="hbce-card__text">
-            Paesi coperti: <strong><span id="g_eu_have">—</span></strong> / <strong><span id="g_eu_total">—</span></strong><br/>
-            Mancanti: <strong><span id="g_eu_missing_n">—</span></strong>
-          </div>
-        </div>
-
-        <div class="hbce-card hbce-card--subtle">
-          <div class="hbce-card__title">Stato rete</div>
-          <div class="hbce-card__text" id="g_status">—</div>
-        </div>
-      </div>
-
-      <div class="hbce-grid hbce-grid--2" style="margin-top:12px;">
-        <div class="hbce-card hbce-card--subtle">
-          <div class="hbce-card__title">Regioni IT mancanti</div>
-          <div class="hbce-card__text" id="g_it_missing_list" style="white-space:pre-wrap;">—</div>
-        </div>
-        <div class="hbce-card hbce-card--subtle">
-          <div class="hbce-card__title">Paesi UE mancanti (EU-27)</div>
-          <div class="hbce-card__text" id="g_eu_missing_list" style="white-space:pre-wrap;">—</div>
-        </div>
-      </div>
-
-      <div class="hbce-card hbce-card--subtle" style="margin-top:12px;">
-        <div class="hbce-card__title">Regola CATTIVA (fail-closed)</div>
-        <div class="hbce-card__text">
-          Se esiste <strong>anche uno</strong> di questi casi → <strong>FAIL-CLOSED</strong>:<br/>
-          • <code>status=ACTIVE</code> AND (<code>operator</code> vuoto/PENDING OR <code>node_hash</code> vuoto/PENDING)<br/>
-          • <code>status=ACTIVE</code> AND <code>country=IT</code> AND <code>region</code> vuota
-        </div>
-      </div>
-    </section>
-
-    <!-- FILTERS -->
-    <section class="hbce-card" style="margin-top:16px;">
-      <h2 class="hbce-card__title">Filtri</h2>
-      <p class="hbce-card__text">Filtri = vista. Non modifica la fonte.</p>
-
-      <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
-        <div class="hbce-card hbce-card--subtle">
-          <div class="hbce-card__title">Paese (ISO-2)</div>
-          <select id="f_country" style="width:100%; padding:10px 12px; border-radius:12px; background:rgba(255,255,255,.03); border:1px solid var(--line); color:var(--text);">
-            <option value="">Tutti</option>
-          </select>
-        </div>
-
-        <div class="hbce-card hbce-card--subtle">
-          <div class="hbce-card__title">Stato</div>
-          <select id="f_status" style="width:100%; padding:10px 12px; border-radius:12px; background:rgba(255,255,255,.03); border:1px solid var(--line); color:var(--text);">
-            <option value="">Tutti</option>
-            <option value="ACTIVE">ACTIVE</option>
-            <option value="PILOT">PILOT</option>
-            <option value="PLANNED">PLANNED</option>
-          </select>
-        </div>
-
-        <div class="hbce-card hbce-card--subtle">
-          <div class="hbce-card__title">Ricerca</div>
-          <input id="f_search" type="search" placeholder="Cerca: regione, città, node_hash, operatore…" style="width:100%; padding:10px 12px; border-radius:12px; background:rgba(255,255,255,.03); border:1px solid var(--line); color:var(--text);" />
-        </div>
-      </div>
-
-      <div class="hbce-actions" style="margin-top:12px;">
-        <button id="btn_reset" class="hbce-btn" type="button">Reset filtri</button>
-        <button id="btn_export" class="hbce-btn hbce-btn--primary" type="button">Export vista (JSON)</button>
-      </div>
-
-      <div class="hbce-card hbce-card--subtle" style="margin-top:12px;">
-        <div class="hbce-card__title">Vista corrente</div>
-        <div class="hbce-card__text">
-          Risultati: <strong><span id="c_view">—</span></strong>
-          · Fonte: <a href="/hermeticum-bce-platform/deployment/nodes.json" style="color:var(--accent);">deployment/nodes.json</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- LIST -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Nodi</h2>
-      <p class="hbce-text">Tabella derivata: ogni riga è un nodo. In modalità CATTIVA mostriamo anche “COVERAGE-OK/NO”.</p>
+      <h2 class="hbce-h2">Countries</h2>
 
       <div class="hbce-card" style="overflow:auto;">
-        <table style="width:100%; border-collapse:collapse; min-width:920px;">
+        <div class="hbce-card__title">Copertura per nazione</div>
+        <table style="width:100%; border-collapse:collapse; margin-top:10px;">
           <thead>
-            <tr style="text-align:left; border-bottom:1px solid var(--line);">
-              <th style="padding:10px;">Status</th>
-              <th style="padding:10px;">Coverage</th>
-              <th style="padding:10px;">Country</th>
-              <th style="padding:10px;">Region</th>
-              <th style="padding:10px;">City</th>
-              <th style="padding:10px;">Node hash</th>
-              <th style="padding:10px;">Operator</th>
-              <th style="padding:10px;">Timestamp</th>
-              <th style="padding:10px;">Note</th>
+            <tr style="text-align:left; border-bottom:1px solid rgba(255,255,255,.08);">
+              <th style="padding:10px;">COUNTRY</th>
+              <th style="padding:10px;">ACTIVE</th>
+              <th style="padding:10px;">PILOT</th>
+              <th style="padding:10px;">PLANNED</th>
+              <th style="padding:10px;">LAST UPDATE</th>
             </tr>
           </thead>
-          <tbody id="tb_nodes">
-            <tr><td style="padding:10px; opacity:.8;" colspan="9">Caricamento…</td></tr>
-          </tbody>
+          <tbody id="eu_tbody"></tbody>
         </table>
       </div>
     </section>
@@ -217,330 +61,7 @@
 
   <div data-hbce="footer"></div>
 
-<script>
-(function(){
-  "use strict";
-
-  const IT_REGIONS = [
-    "Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia",
-    "Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna",
-    "Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"
-  ];
-
-  const EU27 = [
-    "AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT",
-    "LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE"
-  ];
-
-  const SOURCE = "/hermeticum-bce-platform/deployment/nodes.json";
-  const el = (id)=>document.getElementById(id);
-  const uniq = (arr)=>Array.from(new Set(arr.filter(Boolean)));
-  const norm = (s)=>String(s||"").toLowerCase().trim();
-
-  let RAW = null;
-  let VIEW = [];
-
-  const failClosed = (msg)=>{
-    const box = el("hbce_failclosed");
-    const m = el("hbce_failclosed_msg");
-    if(m) m.textContent = msg || "Fonte non verificabile. Viewer bloccato.";
-    if(box) box.style.display = "block";
-
-    const op = el("origin_panel"); if(op) op.style.display = "none";
-    const gp = el("gap_panel"); if(gp) gp.style.display = "none";
-
-    const tb = el("tb_nodes");
-    if(tb) tb.innerHTML =
-      '<tr><td style="padding:10px; opacity:.9;" colspan="9"><strong>FAIL-CLOSED</strong> — modalità CATTIVA: ledger sporco / ACTIVE incoerente.</td></tr>';
-
-    const view = el("c_view"); if(view) view.textContent = "—";
-  };
-
-  function validatePayload(data){
-    if(!data || typeof data !== "object") return "JSON non valido (non object).";
-    if(!Array.isArray(data.nodes)) return "Campo nodes[] mancante o non array.";
-
-    for(let i=0;i<data.nodes.length;i++){
-      const n = data.nodes[i];
-      if(!n || typeof n !== "object") return "Nodo non valido (non object).";
-
-      const req = ["country","status","node_hash","timestamp"];
-      for(const k of req){
-        if(!(k in n)) return "Campo obbligatorio mancante in un nodo: " + k;
-        if(typeof n[k] !== "string") return "Campo non string in un nodo: " + k;
-        if(!n[k].trim()) return "Campo vuoto in un nodo: " + k;
-      }
-      if(n.country.length !== 2) return "country non ISO-2 in un nodo.";
-    }
-    return null;
-  }
-
-  function isCoverageValidNode(n){
-    if(!n || typeof n !== "object") return false;
-    if(n.status !== "ACTIVE") return false;
-
-    const op = String(n.operator || "").trim();
-    const nh = String(n.node_hash || "").trim();
-
-    if(!op || !nh) return false;
-    if(op.toUpperCase() === "PENDING") return false;
-    if(nh.toUpperCase() === "PENDING") return false;
-
-    // IT: se ACTIVE IT deve avere region
-    if(n.country === "IT"){
-      const rg = String(n.region || "").trim();
-      if(!rg) return false;
-    }
-    return true;
-  }
-
-  // CATTIVA: se esiste anche un solo ACTIVE “sporco”, chiudi tutto.
-  function detectDirtyActive(nodes){
-    const dirty = [];
-    for(const n of nodes){
-      if(!n || n.status !== "ACTIVE") continue;
-
-      const op = String(n.operator || "").trim();
-      const nh = String(n.node_hash || "").trim();
-      const rg = String(n.region || "").trim();
-
-      const badOp = (!op || op.toUpperCase()==="PENDING");
-      const badNh = (!nh || nh.toUpperCase()==="PENDING");
-      const badItRegion = (n.country==="IT" && !rg);
-
-      if(badOp || badNh || badItRegion){
-        dirty.push({
-          country: n.country,
-          region: n.region || "",
-          city: n.city || "",
-          operator: n.operator || "",
-          node_hash: n.node_hash || "",
-          timestamp: n.timestamp || ""
-        });
-      }
-    }
-    return dirty;
-  }
-
-  function pickOriginNode(nodes){
-    const activeIT = nodes.filter(n=>n.status==="ACTIVE" && n.country==="IT");
-    const isOriginHint = (n)=>{
-      const op = norm(n.operator);
-      const note = norm(n.note);
-      return (op === "root") || note.includes("origin") || note.includes("origine") || note.includes("nodo origine");
-    };
-    return activeIT.find(isOriginHint) || activeIT[0] || null;
-  }
-
-  function renderOrigin(n){
-    const panel = el("origin_panel");
-    if(!panel) return;
-
-    if(!n){
-      panel.style.display = "block";
-      el("o_city").textContent = "—";
-      el("o_region").textContent = "Origin non determinabile";
-      el("o_country").textContent = "—";
-      el("o_status").textContent = "—";
-      el("o_operator").textContent = "—";
-      el("o_hash").textContent = "—";
-      el("o_ts").textContent = "—";
-      el("o_note").textContent = "La fonte nodes.json non consente di identificare un Origin Node con regole minime.";
-      return;
-    }
-
-    panel.style.display = "block";
-    el("o_city").textContent = n.city || "—";
-    el("o_region").textContent = n.region || "—";
-    el("o_country").textContent = n.country || "—";
-    el("o_status").textContent = n.status || "—";
-    el("o_operator").textContent = n.operator || "—";
-    el("o_hash").textContent = n.node_hash || "—";
-    el("o_ts").textContent = n.timestamp || "—";
-    el("o_note").textContent = (n.note || "—");
-  }
-
-  function renderGap(nodes){
-    const gp = el("gap_panel");
-    if(!gp) return;
-
-    const cov = nodes.filter(isCoverageValidNode);
-
-    const covIT = cov.filter(n=>n.country==="IT");
-    const itRegionsCov = uniq(covIT.map(n=>String(n.region||"").trim()).filter(Boolean));
-    const itMissing = IT_REGIONS.filter(r => !itRegionsCov.includes(r));
-
-    const euCovCountries = uniq(cov.map(n=>n.country)).filter(c => EU27.includes(c));
-    const euMissing = EU27.filter(c => !euCovCountries.includes(c));
-
-    el("g_it_have").textContent = String(itRegionsCov.length);
-    el("g_it_total").textContent = String(IT_REGIONS.length);
-    el("g_it_missing_n").textContent = String(itMissing.length);
-
-    el("g_eu_have").textContent = String(euCovCountries.length);
-    el("g_eu_total").textContent = String(EU27.length);
-    el("g_eu_missing_n").textContent = String(euMissing.length);
-
-    el("g_it_missing_list").textContent = itMissing.length ? itMissing.join(", ") : "Nessuna (copertura completa, nodi puliti).";
-    el("g_eu_missing_list").textContent = euMissing.length ? euMissing.join(", ") : "Nessuna (copertura completa, nodi puliti).";
-
-    el("g_status").textContent =
-      (itMissing.length===0 && euMissing.length===0)
-        ? "Copertura minima raggiunta (CATTIVA): IT + UE-27 con nodi ACTIVE puliti."
-        : "Copertura minima non completa (CATTIVA): mancano territori con nodi ACTIVE puliti.";
-
-    gp.style.display = "block";
-  }
-
-  function esc(x){
-    return String(x ?? "").replace(/[&<>"']/g, (m)=>({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-    }[m]));
-  }
-
-  function badgeForStatus(st){
-    if(st === "ACTIVE") return '<span class="hbce-badge">ACTIVE</span>';
-    if(st === "PILOT") return '<span class="hbce-badge">PILOT</span>';
-    if(st === "PLANNED") return '<span class="hbce-badge">PLANNED</span>';
-    return '<span class="hbce-badge">UNKNOWN</span>';
-  }
-
-  function renderTable(nodes){
-    const tb = el("tb_nodes");
-    if(!tb) return;
-
-    if(!nodes.length){
-      tb.innerHTML = '<tr><td style="padding:10px; opacity:.85;" colspan="9">Nessun nodo in vista (filtri).</td></tr>';
-      return;
-    }
-
-    tb.innerHTML = nodes.map(n=>{
-      const covOK = isCoverageValidNode(n);
-      const covBadge = covOK
-        ? '<span class="hbce-badge">COVERAGE-OK</span>'
-        : '<span class="hbce-badge">COVERAGE-NO</span>';
-
-      return `
-      <tr style="border-bottom:1px solid rgba(255,255,255,.06);">
-        <td style="padding:10px;">${badgeForStatus(esc(n.status))}</td>
-        <td style="padding:10px;">${covBadge}</td>
-        <td style="padding:10px;"><strong>${esc(n.country)}</strong></td>
-        <td style="padding:10px;">${esc(n.region || "—")}</td>
-        <td style="padding:10px;">${esc(n.city || "—")}</td>
-        <td style="padding:10px;"><code style="opacity:.9;">${esc(n.node_hash)}</code></td>
-        <td style="padding:10px;">${esc(n.operator || "—")}</td>
-        <td style="padding:10px;"><code style="opacity:.85;">${esc(n.timestamp)}</code></td>
-        <td style="padding:10px; opacity:.85;">${esc(n.note || "")}</td>
-      </tr>`;
-    }).join("");
-  }
-
-  function fillCountryFilter(allNodes){
-    const countries = uniq(allNodes.map(n=>n.country)).sort();
-    const sel = el("f_country");
-    if(!sel) return;
-    sel.innerHTML = '<option value="">Tutti</option>' + countries.map(c=>`<option value="${c}">${c}</option>`).join("");
-  }
-
-  function applyFilters(){
-    if(!RAW) return;
-
-    const c = (el("f_country")?.value || "").trim();
-    const s = (el("f_status")?.value || "").trim();
-    const q = norm(el("f_search")?.value || "");
-
-    VIEW = RAW.nodes.filter(n=>{
-      if(c && n.country !== c) return false;
-      if(s && n.status !== s) return false;
-      if(q){
-        const hay = [
-          n.country, n.status, n.region, n.city, n.node_hash, n.operator, n.timestamp, n.note
-        ].map(x=>String(x||"").toLowerCase().trim()).join(" | ");
-        if(!hay.includes(q)) return false;
-      }
-      return true;
-    });
-
-    const v = el("c_view"); if(v) v.textContent = String(VIEW.length);
-    renderTable(VIEW);
-  }
-
-  function exportView(){
-    const payload = {
-      exported_at: new Date().toISOString(),
-      source: SOURCE,
-      count: VIEW.length,
-      nodes: VIEW
-    };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "hbce-eu-map-view.json";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url), 1500);
-  }
-
-  async function boot(){
-    try{
-      const res = await fetch(SOURCE, {cache:"no-store"});
-      if(!res.ok) return failClosed("HTTP non OK su nodes.json: " + res.status);
-
-      const data = await res.json();
-      const err = validatePayload(data);
-      if(err) return failClosed(err);
-
-      RAW = data;
-
-      // CATTIVA: se esiste un ACTIVE “sporco”, chiudi tutto (prima di render).
-      const dirty = detectDirtyActive(RAW.nodes);
-      if(dirty.length){
-        const d = dirty[0];
-        const msg =
-          "Trovato ACTIVE incoerente (ledger sporco) → FAIL-CLOSED. " +
-          "Esempio: " + (d.country||"—") + " / " + (d.region||"—") + " / " + (d.city||"—") +
-          " · operator=" + (d.operator||"") + " · node_hash=" + (d.node_hash||"");
-        return failClosed(msg);
-      }
-
-      // OK: ledger pulito in senso CATTIVO
-      renderOrigin(pickOriginNode(RAW.nodes));
-      renderGap(RAW.nodes);
-
-      fillCountryFilter(RAW.nodes);
-
-      ["f_country","f_status","f_search"].forEach(id=>{
-        const x = el(id);
-        if(!x) return;
-        x.addEventListener("input", applyFilters);
-        x.addEventListener("change", applyFilters);
-      });
-
-      const br = el("btn_reset");
-      if(br){
-        br.addEventListener("click", ()=>{
-          el("f_country").value = "";
-          el("f_status").value = "";
-          el("f_search").value = "";
-          applyFilters();
-        });
-      }
-
-      const be = el("btn_export");
-      if(be) be.addEventListener("click", exportView);
-
-      applyFilters();
-
-    }catch(e){
-      failClosed("Errore lettura/parsing nodes.json (fail-closed).");
-    }
-  }
-
-  boot();
-})();
-</script>
-
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js" defer></script>
+  <script defer src="/hermeticum-bce-platform/network/eu-map/eu-map.js"></script>
 </body>
 </html>
