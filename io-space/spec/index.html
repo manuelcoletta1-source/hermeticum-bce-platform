@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>IO-SPACE SPEC — Deterministic Event Certification (HBCE)</title>
+  <meta name="description" content="Specifiche IO-SPACE: certificazione eventi deterministica. Manifest canonico, hash deterministico, prova minimizzata hash-only, registro append-only, fail-closed. Requirements, failure modes, verification model. UE-first, audit-first, GDPR-min." />
+
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/io-space/spec/" />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <!-- HERO -->
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">SPECIFICATION · DETERMINISTIC VERIFY · PROOF-ONLY PUBLICATION</div>
+      <h1 class="hbce-hero__title">IO-SPACE SPEC</h1>
+      <p class="hbce-hero__lead">
+        Specifica operativa per certificazione eventi: <strong>manifest canonico</strong> → <strong>hash deterministico</strong> →
+        <strong>prova minimizzata</strong> (hash-only) → <strong>registro append-only</strong>. Se una condizione fallisce → <strong>FAIL-CLOSED</strong>.
+      </p>
+
+      <div class="hbce-meta" style="margin-top:10px;">
+        <span class="hbce-badge">APPEND-ONLY</span>
+        <span class="hbce-badge">HASH-ONLY</span>
+        <span class="hbce-badge">AUDIT-FIRST</span>
+        <span class="hbce-badge">FAIL-CLOSED</span>
+        <span class="hbce-badge">UE-FIRST</span>
+        <span class="hbce-badge">GDPR-MIN</span>
+        <span class="hbce-badge">NO PUBLIC DATA CUSTODY</span>
+      </div>
+
+      <div class="hbce-actions" style="margin-top:14px;">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/io-space/">IO-SPACE</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/io-space/use-cases/">Use Cases</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verify</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Registry</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/cod-alieno/">Cod Alieno</a>
+      </div>
+    </section>
+
+    <!-- SCOPE -->
+    <section class="hbce-section">
+      <h2 class="hbce-h2">1. Scopo</h2>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          IO-SPACE definisce un modello deterministico per rendere <strong>azioni, decisioni e transizioni di stato</strong>
+          certificabili e verificabili nel tempo. Il modello è progettato per sistemi ad alta responsabilità
+          (robotica, infrastrutture, energia, sanità, istruzione, spazio, contesti regolati).
+        </p>
+        <p class="hbce-card__text">
+          Pubblicazione: <strong>proof-only</strong>. In pubblico: solo hash e timestamp (minimizzazione). Nessuna custodia pubblica di dati operativi o personali.
+        </p>
+      </div>
+    </section>
+
+    <!-- DEFINITIONS -->
+    <section class="hbce-section">
+      <h2 class="hbce-h2">2. Definizioni</h2>
+
+      <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
+        <div class="hbce-card">
+          <div class="hbce-card__title">Event Manifest</div>
+          <div class="hbce-card__text">
+            Documento strutturato che descrive un evento in forma canonica (campi + ordine + normalizzazione).
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-card__title">event_hash</div>
+          <div class="hbce-card__text">
+            Hash deterministico derivato dal manifest canonico. Deve essere riproducibile e verificabile.
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-card__title">Proof (hash-only)</div>
+          <div class="hbce-card__text">
+            Rappresentazione pubblica minimizzata dell’evento: hash + timestamp (+ metadati non sensibili).
+          </div>
+        </div>
+      </div>
+
+      <div class="hbce-card hbce-card--subtle" style="margin-top:14px;">
+        <div class="hbce-card__title">Nota</div>
+        <div class="hbce-card__text">
+          “Verificabile” significa: un terzo può calcolare lo stesso hash partendo dallo stesso manifest canonico.
+          Se non può, non esiste opponibilità.
+        </div>
+      </div>
+    </section>
+
+    <!-- REQUIREMENTS -->
+    <section class="hbce-section">
+      <h2 class="hbce-h2">3. Requirements (obbligatori)</h2>
+
+      <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
+        <div class="hbce-card">
+          <div class="hbce-card__title">R-01 — Determinismo</div>
+          <div class="hbce-card__text">
+            Il calcolo di <strong>event_hash</strong> deve essere deterministico.
+            Stesso input canonico → stesso output.
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-card__title">R-02 — Canonicalization</div>
+          <div class="hbce-card__text">
+            Il manifest deve essere normalizzato (campi richiesti, ordine stabile, encoding stabile).
+            Nessuna ambiguità.
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-card__title">R-03 — Proof-only in pubblico</div>
+          <div class="hbce-card__text">
+            In pubblico si pubblica solo prova minimizzata (hash-only). Dati operativi e personali restano fuori dal registro pubblico.
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-card__title">R-04 — Append-only</div>
+          <div class="hbce-card__text">
+            Il registro deve essere append-only. Niente riscritture. La storia è parte della sicurezza.
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-card__title">R-05 — IPR link (quando applicabile)</div>
+          <div class="hbce-card__text">
+            Gli eventi ad alta responsabilità devono poter essere collegati a identità operative (IPR) e ruoli verificabili.
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-card__title">R-06 — Fail-closed</div>
+          <div class="hbce-card__text">
+            Se un requisito non è soddisfatto → <strong>INVALID</strong>. Non esistono “validazioni parziali”.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VERIFICATION MODEL -->
+    <section class="hbce-section">
+      <h2 class="hbce-h2">4. Modello di verifica (deterministico)</h2>
+
+      <div class="hbce-card">
+        <div class="hbce-card__title">Pipeline</div>
+        <ol class="hbce-list">
+          <li><strong>Input</strong>: event manifest (canonico).</li>
+          <li><strong>Compute</strong>: calcolo deterministico di <strong>event_hash</strong>.</li>
+          <li><strong>Compare</strong>: match con proof nel registry pubblico (hash-only) o nel ledger interno (se applicabile).</li>
+          <li><strong>Output</strong>: <strong>VALID</strong> se match. Altrimenti <strong>INVALID</strong>.</li>
+        </ol>
+
+        <div class="hbce-card__text" style="margin-top:10px;">
+          IO-SPACE non chiede fiducia. Chiede match deterministico.
+        </div>
+
+        <div class="hbce-actions" style="margin-top:12px;">
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">Apri VERIFY</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Apri Registry</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAILURE MODES -->
+    <section class="hbce-section">
+      <h2 class="hbce-h2">5. Failure modes (FAIL-CLOSED)</h2>
+
+      <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
+        <div class="hbce-card">
+          <div class="hbce-card__title">F-01 — Manifest non canonico</div>
+          <div class="hbce-card__text">
+            Campi mancanti, ordine instabile, encoding ambiguo → <strong>INVALID</strong>.
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-card__title">F-02 — Hash non matcha</div>
+          <div class="hbce-card__text">
+            event_hash calcolato ≠ proof in registry → <strong>INVALID</strong>.
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-card__title">F-03 — Fonte non leggibile</div>
+          <div class="hbce-card__text">
+            Registry/nodes source non leggibile o incoerente → <strong>INVALID</strong>.
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-card__title">F-04 — Timestamp incoerente</div>
+          <div class="hbce-card__text">
+            Timestamp mancante o non conforme al formato accettato → <strong>INVALID</strong>.
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-card__title">F-05 — Violazione minimizzazione</div>
+          <div class="hbce-card__text">
+            Tentativo di pubblicare dati sensibili nel registro pubblico → <strong>BLOCK</strong>.
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-card__title">F-06 — Identità non valida</div>
+          <div class="hbce-card__text">
+            Se richiesto link a IPR e IPR non è VALID → <strong>INVALID</strong>.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PUBLIC PROOF MODEL -->
+    <section class="hbce-section">
+      <h2 class="hbce-h2">6. Modello pubblico (proof-only)</h2>
+
+      <div class="hbce-card">
+        <div class="hbce-card__title">Principio</div>
+        <p class="hbce-card__text">
+          La superficie pubblica è minimizzata: in pubblico esiste solo la prova.
+          L’operatività reale vive fuori dal registro pubblico, ma resta verificabile tramite hash.
+        </p>
+
+        <div class="hbce-card hbce-card--subtle" style="margin-top:12px;">
+          <div class="hbce-card__title">Pubblico</div>
+          <div class="hbce-card__text">
+            hash + timestamp (+ metadati non sensibili). Niente PII. Niente payload operativi.
+          </div>
+        </div>
+
+        <div class="hbce-card hbce-card--subtle" style="margin-top:12px;">
+          <div class="hbce-card__title">Privato / Operativo</div>
+          <div class="hbce-card__text">
+            manifest completo, contesto e dati operativi custoditi da chi ha titolo. La prova pubblica rimane verificabile.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AUTHORITY -->
+    <section class="hbce-section">
+      <div class="hbce-card">
+        <div class="hbce-card__title">Autorità di certificazione (timbro)</div>
+        <p class="hbce-card__text">
+          <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong><br/>
+          <span style="opacity:.9;">HERMETICUM B.C.E. S.r.l.</span>
+        </p>
+        <div class="hbce-meta" style="margin-top:10px;">
+          <span class="hbce-badge">Certificazione tecnica</span>
+          <span class="hbce-badge">Certificazione legale</span>
+          <span class="hbce-badge">UE-FIRST</span>
+          <span class="hbce-badge">Audit-first</span>
+          <span class="hbce-badge">Fail-closed</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="hbce-section">
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/activate/">Attiva IPR</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/io-space/">IO-SPACE</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/io-space/use-cases/">Use Cases</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/network/">Network</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/future-infrastructure/">Future Infrastructure</a>
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+</body>
+</html>
