@@ -1,459 +1,95 @@
 <!doctype html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <title>Attiva IPR Operatore — Licenza operativa | HBCE S.r.l.</title>
-  <meta name="description" content="Attivazione IPR Operatore: richiede IPR Base VALID nel registry (fail-closed). Generazione Operator License Release + prova HASH-ONLY per registry. UE-first, audit-first." />
-
-  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/operator/" />
-  <meta name="robots" content="index,follow" />
-  <meta name="theme-color" content="#0b0f14" />
-
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ZONA OPERATORI — Accesso con IPR valido</title>
+<meta name="description" content="Zona Operatori: accesso solo con IPR valido verificato. Fail-closed. Hash-only. Append-only." />
+<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
 <body>
-  <div data-hbce="header"></div>
+<div data-hbce="header"></div>
 
-  <main class="hbce-container hbce-main">
+<main class="hbce-container hbce-main">
 
-    <!-- HERO -->
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">LICENZA OPERATORE · UE-FIRST · FAIL-CLOSED · REGISTRY-MATCH REQUIRED</div>
-      <h1 class="hbce-hero__title">Attiva IPR Operatore</h1>
-      <p class="hbce-hero__lead">
-        La licenza Operatore abilita creazione e coordinazione IPR. È subordinata a un IPR Base già
-        <strong>VALID</strong> nel registry pubblico. Se non c’è match → <strong>BLOCK</strong>.
-      </p>
+<section class="hbce-hero">
+  <div class="hbce-hero__kicker">OPERATOR ZONE · REQUIRE VALID IPR · FAIL-CLOSED</div>
+  <h1 class="hbce-hero__title">Zona Operatori (gated)</h1>
+  <p class="hbce-hero__lead">
+    Accesso consentito solo se l’IPR è <strong>VALID</strong> nel registry pubblico.
+    Se non verificabile → <strong>ACCESS DENIED</strong>.
+  </p>
+</section>
 
-      <p class="hbce-note" style="margin-top:12px;">
-        Servizio sviluppato e gestito da <strong>HBCE S.r.l.</strong> · policy: UE-first, audit-first, append-only · verifica: fail-closed.
-      </p>
+<section class="hbce-card">
+  <h2 class="hbce-card__title">Inserisci IPR (payload_sha256)</h2>
+  <p class="hbce-card__lead">Inserisci l’hash dell’IPR release file. Il sistema verifica e apre i moduli operatore.</p>
 
-      <div class="hbce-actions" style="margin-top:12px;">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Attiva IPR Base</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Registry</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/pricing/">Classi e livelli</a>
+  <label class="hbce-field">
+    <span class="hbce-field__label">payload_sha256</span>
+    <input id="ipr_hash" class="hbce-input" placeholder="64-hex sha256" autocomplete="off" />
+  </label>
+
+  <div class="hbce-actions" style="margin-top:14px">
+    <button id="btn_check" class="hbce-btn" type="button">Verifica & Accedi</button>
+    <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Apri VERIFY</a>
+    <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">Licenze</a>
+  </div>
+
+  <div id="status" class="hbce-callout" style="margin-top:14px">Stato: —</div>
+</section>
+
+<section id="operator_panel" class="hbce-card" style="display:none">
+  <h2 class="hbce-card__title">Console Operatore</h2>
+  <p class="hbce-card__lead">
+    Questo pannello è visibile solo dopo verifica <strong>VALID</strong>.
+    Qui si lavora: emissione IPR, eventi IO-SPACE, pacchetti nodo, mercato software.
+  </p>
+
+  <div class="hbce-grid hbce-grid--2">
+    <div class="hbce-card">
+      <h3 class="hbce-card__title">Emetti nuovi IPR</h3>
+      <p class="hbce-card__lead">Crea identità derivate. Prepari entry HASH-ONLY per append nel registry.</p>
+      <div class="hbce-actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">CREATE</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
       </div>
-    </section>
+    </div>
 
-    <!-- STEP 1 -->
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Step 1 — Inserisci Release IPR Base (obbligatorio)</h2>
-      <p class="hbce-p">
-        Incolla qui il file <strong>IPR_BASE_EU_RELEASE.json</strong> generato in /activate/.
-        La piattaforma calcola l’hash e verifica il match nel registry pubblico.
-      </p>
-
-      <div class="hbce-card">
-        <div class="hbce-card__body">
-          <label class="hbce-field" style="display:block;">
-            <span class="hbce-label">IPR Base Release JSON *</span>
-            <textarea class="hbce-input" id="baseRelease" rows="12" placeholder='Incolla qui il JSON (release)'></textarea>
-            <span class="hbce-note">
-              Fail-closed: se il JSON è invalido o non matcha nel registry → blocco.
-            </span>
-          </label>
-
-          <div class="hbce-actions" style="margin-top:12px;">
-            <button class="hbce-btn hbce-btn--primary" type="button" id="checkBtn">Verifica IPR Base (registry match)</button>
-            <button class="hbce-btn" type="button" id="clearBtn">Pulisci</button>
-          </div>
-
-          <div id="statusBox" class="hbce-card" style="margin-top:12px; display:none;">
-            <div class="hbce-card__body">
-              <div class="hbce-note">Stato verifica</div>
-              <pre class="hbce-pre" id="statusPre" style="margin:0; white-space:pre-wrap;"></pre>
-            </div>
-          </div>
-        </div>
+    <div class="hbce-card">
+      <h3 class="hbce-card__title">Eventi opponibili (IO-SPACE)</h3>
+      <p class="hbce-card__lead">Genera manifest evento + hash e produce snippet registry-ready.</p>
+      <div class="hbce-actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/io-space/">IO-SPACE</a>
       </div>
-    </section>
+    </div>
 
-    <!-- STEP 2 -->
-    <section class="hbce-section" id="operatorStep" style="display:none;">
-      <h2 class="hbce-h2">Step 2 — Dati operatore (minimi)</h2>
-      <p class="hbce-p">
-        Inserisci i dati minimi per la licenza operatore. Nessuna custodia pubblica di dati personali:
-        il registry pubblica solo prova <strong>HASH-ONLY</strong>.
-      </p>
-
-      <div class="hbce-card">
-        <div class="hbce-card__body">
-          <form id="opForm" novalidate>
-            <div class="hbce-grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px;">
-
-              <label class="hbce-field">
-                <span class="hbce-label">Operator nickname *</span>
-                <input class="hbce-input" id="opNick" required placeholder="es. ManuelColetta-OP1" />
-                <span class="hbce-note">Identificatore operativo pubblico (non sensibile).</span>
-              </label>
-
-              <label class="hbce-field">
-                <span class="hbce-label">Email operativa *</span>
-                <input class="hbce-input" id="opEmail" type="email" required placeholder="es. operazioni@dominio.tld" />
-              </label>
-
-              <label class="hbce-field">
-                <span class="hbce-label">Paese (UE) *</span>
-                <input class="hbce-input" id="opCountry" required placeholder="Italia" />
-              </label>
-
-              <label class="hbce-field">
-                <span class="hbce-label">Città operativa *</span>
-                <input class="hbce-input" id="opCity" required placeholder="Torino (TO)" />
-              </label>
-
-            </div>
-
-            <hr style="opacity:.15; margin:16px 0;" />
-
-            <label class="hbce-check" style="display:flex; gap:10px; align-items:flex-start;">
-              <input type="checkbox" id="opConsent" required />
-              <span class="hbce-p" style="margin:0;">
-                Confermo attivazione licenza operatore <strong>HBCE S.r.l.</strong> con regole:
-                <strong>REGISTRY_MATCH</strong>, <strong>FAIL-CLOSED</strong>, <strong>HASH-ONLY</strong>, <strong>APPEND-ONLY</strong>.
-              </span>
-            </label>
-
-            <div class="hbce-actions" style="margin-top:14px;">
-              <button class="hbce-btn hbce-btn--primary" type="submit">Genera Operator License (Release)</button>
-              <button class="hbce-btn" type="button" id="resetOpBtn">Reset</button>
-            </div>
-
-            <div id="opErr" class="hbce-note" style="margin-top:12px; display:none;"></div>
-          </form>
-        </div>
+    <div class="hbce-card">
+      <h3 class="hbce-card__title">Deployment Node Pack</h3>
+      <p class="hbce-card__lead">Attiva nodi regionali/nazionali: 1 operatore basta per accendere un territorio.</p>
+      <div class="hbce-actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/node-pack/">NODE-PACK</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/deployment/">MAP</a>
       </div>
-    </section>
+    </div>
 
-    <!-- OUTPUT -->
-    <section class="hbce-section" id="output" style="display:none;">
-      <h2 class="hbce-h2">Output (Operator License + prova registry)</h2>
-
-      <div class="hbce-grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px;">
-
-        <div class="hbce-card">
-          <div class="hbce-card__body">
-            <h3 class="hbce-h3" style="margin-top:0;">Operator License Release</h3>
-            <p class="hbce-p">File privato da consegnare all’operatore. Conservazione privata.</p>
-
-            <div class="hbce-actions" style="margin:10px 0;">
-              <button class="hbce-btn hbce-btn--primary" id="dlRelease" type="button">Scarica Release</button>
-              <button class="hbce-btn" id="cpRelease" type="button">Copia JSON</button>
-            </div>
-
-            <pre class="hbce-pre" id="releasePre" style="max-height:420px; overflow:auto; white-space:pre; margin:0;"></pre>
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <div class="hbce-card__body">
-            <h3 class="hbce-h3" style="margin-top:0;">Registry Entry (HASH-ONLY)</h3>
-            <p class="hbce-p">
-              Blocco minimo da appendere nel registry pubblico. Prova della licenza operatore.
-            </p>
-
-            <div class="hbce-actions" style="margin:10px 0;">
-              <button class="hbce-btn hbce-btn--primary" id="cpEntry" type="button">Copia entry</button>
-              <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Apri Registry</a>
-              <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Vai a VERIFY</a>
-            </div>
-
-            <pre class="hbce-pre" id="entryPre" style="max-height:280px; overflow:auto; white-space:pre; margin:0;"></pre>
-          </div>
-        </div>
-
+    <div class="hbce-card">
+      <h3 class="hbce-card__title">Mercato Software</h3>
+      <p class="hbce-card__lead">Livelli: studente → tecnico → ingegnere → scienziato (responsabilità crescente).</p>
+      <div class="hbce-actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/software/">SOFTWARE</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">PRICING</a>
       </div>
+    </div>
+  </div>
 
-      <p class="hbce-note" style="margin-top:12px;">
-        Fail-closed: la licenza è operativa solo se la prova è appesa nel registry e verificabile.
-      </p>
-    </section>
+</section>
 
-  </main>
+</main>
 
-  <div data-hbce="footer"></div>
+<div data-hbce="footer"></div>
 
-  <script>
-    // Operator activation page:
-    // - Paste Base Release JSON
-    // - Compute base payload_sha256
-    // - Fetch registry.json and require match (fail-closed)
-    // - If match: generate Operator License Release + registry entry
-
-    const baseReleaseTa = document.getElementById("baseRelease");
-    const checkBtn = document.getElementById("checkBtn");
-    const clearBtn = document.getElementById("clearBtn");
-    const statusBox = document.getElementById("statusBox");
-    const statusPre = document.getElementById("statusPre");
-    const operatorStep = document.getElementById("operatorStep");
-
-    const opForm = document.getElementById("opForm");
-    const opErr = document.getElementById("opErr");
-    const resetOpBtn = document.getElementById("resetOpBtn");
-
-    const output = document.getElementById("output");
-    const releasePre = document.getElementById("releasePre");
-    const entryPre = document.getElementById("entryPre");
-    const dlRelease = document.getElementById("dlRelease");
-    const cpRelease = document.getElementById("cpRelease");
-    const cpEntry = document.getElementById("cpEntry");
-
-    let baseSubjectName = "";
-    let basePayloadSha = "";
-    let lastReleaseJson = "";
-    let lastEntryJson = "";
-
-    function showStatus(txt) {
-      statusBox.style.display = "block";
-      statusPre.textContent = txt;
-    }
-
-    function normalizeSpaces(s) {
-      return (s || "").toString().trim().replace(/\s+/g, " ");
-    }
-
-    async function sha256Hex(str) {
-      const enc = new TextEncoder();
-      const data = enc.encode(str);
-      const digest = await crypto.subtle.digest("SHA-256", data);
-      const bytes = new Uint8Array(digest);
-      return Array.from(bytes).map(b => b.toString(16).padStart(2, "0")).join("");
-    }
-
-    async function copyToClipboard(text, btn) {
-      try {
-        await navigator.clipboard.writeText(text);
-        const old = btn.textContent;
-        btn.textContent = "Copiato ✓";
-        setTimeout(() => (btn.textContent = old), 1400);
-      } catch (e) {
-        const old = btn.textContent;
-        btn.textContent = "Errore copia";
-        setTimeout(() => (btn.textContent = old), 1400);
-      }
-    }
-
-    function downloadJson(filename, jsonText) {
-      const blob = new Blob([jsonText], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 250);
-    }
-
-    function resetAll() {
-      baseReleaseTa.value = "";
-      statusBox.style.display = "none";
-      statusPre.textContent = "";
-      operatorStep.style.display = "none";
-      output.style.display = "none";
-      releasePre.textContent = "";
-      entryPre.textContent = "";
-      baseSubjectName = "";
-      basePayloadSha = "";
-      lastReleaseJson = "";
-      lastEntryJson = "";
-      if (opForm) opForm.reset();
-      if (opErr) { opErr.style.display = "none"; opErr.textContent = ""; }
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    clearBtn.addEventListener("click", resetAll);
-
-    resetOpBtn.addEventListener("click", () => {
-      opForm.reset();
-      opErr.style.display = "none";
-      opErr.textContent = "";
-      output.style.display = "none";
-      releasePre.textContent = "";
-      entryPre.textContent = "";
-      lastReleaseJson = "";
-      lastEntryJson = "";
-    });
-
-    checkBtn.addEventListener("click", async () => {
-      operatorStep.style.display = "none";
-      output.style.display = "none";
-      lastReleaseJson = "";
-      lastEntryJson = "";
-
-      const raw = baseReleaseTa.value.trim();
-      if (!raw) {
-        showStatus("BLOCK — Release IPR Base mancante (fail-closed).");
-        return;
-      }
-
-      let obj;
-      try {
-        obj = JSON.parse(raw);
-      } catch (e) {
-        showStatus("BLOCK — JSON non valido (fail-closed).");
-        return;
-      }
-
-      // Accept either format:
-      // - release includes payload_sha256 field (recommended)
-      // - otherwise compute from release object (minus payload_sha256 if present)
-      const hasHash = typeof obj.payload_sha256 === "string" && obj.payload_sha256.length === 64;
-
-      // Extract minimal subject name (best effort)
-      try {
-        const subj = obj.subject || {};
-        const fn = normalizeSpaces(subj.first_name);
-        const ln = normalizeSpaces(subj.last_name);
-        baseSubjectName = (fn && ln) ? (fn + " " + ln) : "IPR_BASE_SUBJECT";
-      } catch (e) {
-        baseSubjectName = "IPR_BASE_SUBJECT";
-      }
-
-      let computedHash = "";
-      if (hasHash) {
-        computedHash = obj.payload_sha256;
-      } else {
-        // compute deterministic hash from JSON string of object without payload_sha256
-        const tmp = { ...obj };
-        delete tmp.payload_sha256;
-        const canon = JSON.stringify(tmp);
-        computedHash = await sha256Hex(canon);
-      }
-
-      basePayloadSha = computedHash;
-
-      // Fetch registry and require match (fail-closed)
-      const registryPath = "/hermeticum-bce-platform/registry/registry.json";
-
-      let reg;
-      try {
-        const res = await fetch(registryPath, { cache: "no-store" });
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        reg = await res.json();
-      } catch (e) {
-        showStatus(
-          "BLOCK — impossibile leggere registry.json (fail-closed)\n" +
-          "path: " + registryPath + "\n" +
-          "errore: " + (e && e.message ? e.message : String(e))
-        );
-        return;
-      }
-
-      const entries = Array.isArray(reg.entries) ? reg.entries : [];
-      const match = entries.find(x => x && x.payload_sha256 === basePayloadSha);
-
-      if (!match) {
-        showStatus(
-          "BLOCK — REGISTRY_MATCH = false (fail-closed)\n" +
-          "payload_sha256: " + basePayloadSha + "\n" +
-          "Azione: appendi l’entry IPR Base nel registry e riprova."
-        );
-        return;
-      }
-
-      showStatus(
-        "OK — IPR Base VALID (registry match trovato)\n" +
-        "name: " + (match.name || baseSubjectName) + "\n" +
-        "payload_sha256: " + basePayloadSha + "\n" +
-        "status: " + (match.status || "ACTIVE")
-      );
-
-      operatorStep.style.display = "block";
-      operatorStep.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-
-    opForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      opErr.style.display = "none";
-      opErr.textContent = "";
-
-      if (!basePayloadSha) {
-        opErr.style.display = "block";
-        opErr.textContent = "BLOCK — verifica IPR Base non eseguita (fail-closed).";
-        return;
-      }
-
-      const consent = document.getElementById("opConsent");
-      if (!consent.checked) {
-        opErr.style.display = "block";
-        opErr.textContent = "Consenso operativo obbligatorio (fail-closed).";
-        return;
-      }
-
-      const opNick = normalizeSpaces(document.getElementById("opNick").value);
-      const opEmail = normalizeSpaces(document.getElementById("opEmail").value);
-      const opCountry = normalizeSpaces(document.getElementById("opCountry").value);
-      const opCity = normalizeSpaces(document.getElementById("opCity").value);
-
-      if (!opNick || !opEmail || !opCountry || !opCity) {
-        opErr.style.display = "block";
-        opErr.textContent = "Campi operatore mancanti (fail-closed).";
-        return;
-      }
-
-      const now = new Date().toISOString();
-
-      const opRelease = {
-        proto: "HBCE-OPERATOR-RELEASE-v1",
-        kind: "IPR_OPERATOR_LICENSE",
-        issuer: "HBCE S.r.l.",
-        policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","NO_IDENTITY_CUSTODY"],
-        timestamp: now,
-        requires: {
-          kind: "IPR_BASE_EU_VALID",
-          ref_payload_sha256: basePayloadSha
-        },
-        operator: {
-          nickname: opNick,
-          email: opEmail,
-          country: opCountry,
-          city: opCity,
-          status: "ACTIVE"
-        }
-      };
-
-      const canon = JSON.stringify(opRelease);
-      const payload_sha256 = await sha256Hex(canon);
-
-      // Public entry (HASH-ONLY) for operator license
-      const entry = {
-        record_type: "OPERATOR_LICENSE",
-        operator_nickname: opNick,
-        ref_payload_sha256: basePayloadSha,
-        payload_sha256,
-        status: "ACTIVE",
-        timestamp: now
-      };
-
-      lastReleaseJson = JSON.stringify({ ...opRelease, payload_sha256 }, null, 2);
-      lastEntryJson = JSON.stringify(entry, null, 2);
-
-      releasePre.textContent = lastReleaseJson;
-      entryPre.textContent = lastEntryJson;
-      output.style.display = "block";
-      output.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-
-    dlRelease.addEventListener("click", () => {
-      if (!lastReleaseJson) return;
-      downloadJson("IPR_OPERATOR_LICENSE_RELEASE.json", lastReleaseJson);
-    });
-
-    cpRelease.addEventListener("click", () => {
-      if (!lastReleaseJson) return;
-      copyToClipboard(lastReleaseJson, cpRelease);
-    });
-
-    cpEntry.addEventListener("click", () => {
-      if (!lastEntryJson) return;
-      copyToClipboard(lastEntryJson, cpEntry);
-    });
-  </script>
+<script defer src="/hermeticum-bce-platform/operator/operator.js"></script>
 </body>
 </html>
