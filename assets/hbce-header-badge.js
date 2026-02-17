@@ -30,17 +30,12 @@
   function compute(nodes) {
     let active = 0;
     const countries = new Set();
-
     for (const n of nodes) {
       if (!n || typeof n !== "object") continue;
-
-      const st = String(n.status || "").toUpperCase();
-      if (st === "ACTIVE") active += 1;
-
+      if (String(n.status || "").toUpperCase() === "ACTIVE") active += 1;
       const c = String(n.country || "").toUpperCase();
       if (isIso2(c)) countries.add(c);
     }
-
     return { total: nodes.length, active, countries: countries.size };
   }
 
@@ -54,7 +49,6 @@
     try {
       const nodes = await loadNodes();
       const s = compute(nodes);
-
       set(IDS.state, s.active > 0 ? "ACTIVE" : "PILOT");
       set(IDS.nodes, s.total);
       set(IDS.countries, s.countries);
@@ -65,7 +59,6 @@
       set(IDS.state, "FAIL-CLOSED");
       set(IDS.nodes, "—");
       set(IDS.countries, "—");
-
       const wrap = $(IDS.wrap);
       if (wrap) wrap.title = `FAIL-CLOSED: cannot read/validate ${SRC}.`;
     }
