@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>EU-MAP — HERMETICUM Network Viewer</title>
+  <meta name="description" content="EU-MAP: viewer pubblico della rete HERMETICUM. Fonte: deployment/nodes.json. Filtri, conteggi, stato nodi. UE-first, audit-first, hash-only, append-only, fail-closed." />
+
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/network/eu-map/" />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <!-- HERO -->
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">EU-MAP · NETWORK VIEWER · SOURCE: deployment/nodes.json · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">EU-MAP — Rete nodi (Italia + UE)</h1>
+      <p class="hbce-hero__lead">
+        Viewer pubblico istituzionale della rete HERMETICUM. Questa pagina <strong>non inventa dati</strong>:
+        legge esclusivamente la fonte pubblica <code>deployment/nodes.json</code>. Se la fonte è illeggibile o incoerente → <strong>FAIL-CLOSED</strong>.
+      </p>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/deployment/nodes.json" target="_blank" rel="noopener">Apri nodes.json</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/deployment/">Deployment</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/network/">Network</a>
+      </div>
+
+      <div id="hbce_failclosed" class="hbce-card hbce-card--subtle" style="margin-top:14px; display:none;">
+        <div class="hbce-card__title">FAIL-CLOSED</div>
+        <div class="hbce-card__text" id="hbce_failclosed_msg">
+          Fonte non verificabile. Viewer bloccato.
+        </div>
+      </div>
+    </section>
+
+    <!-- STATUS / COUNTERS -->
+    <section class="hbce-card">
+      <h2 class="hbce-card__title">Stato rete (derivato)</h2>
+      <p class="hbce-card__text">
+        Conteggi calcolati lato client sulla base del JSON pubblico. Se mancano campi minimi → INVALID.
+      </p>
+
+      <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
+        <div class="hbce-card hbce-card--subtle">
+          <div class="hbce-card__title">Totale</div>
+          <div class="hbce-card__text">
+            Nodi: <strong><span id="c_total">—</span></strong><br/>
+            Paesi (ISO-2): <strong><span id="c_countries">—</span></strong>
+          </div>
+        </div>
+
+        <div class="hbce-card hbce-card--subtle">
+          <div class="hbce-card__title">Per stato</div>
+          <div class="hbce-card__text">
+            ACTIVE: <strong><span id="c_active">—</span></strong><br/>
+            PILOT: <strong><span id="c_pilot">—</span></strong><br/>
+            PLANNED: <strong><span id="c_planned">—</span></strong>
+          </div>
+        </div>
+
+        <div class="hbce-card hbce-card--subtle">
+          <div class="hbce-card__title">Italia</div>
+          <div class="hbce-card__text">
+            Regioni IT: <strong><span id="c_it_regions">—</span></strong><br/>
+            Nodi IT: <strong><span id="c_it_nodes">—</span></strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="hbce-meta" style="margin-top:12px;">
+        <span class="hbce-badge">UE-FIRST</span>
+        <span class="hbce-badge">AUDIT-FIRST</span>
+        <span class="hbce-badge">HASH-ONLY</span>
+        <span class="hbce-badge">APPEND-ONLY</span>
+        <span class="hbce-badge">FAIL-CLOSED</span>
+      </div>
+    </section>
+
+    <!-- FILTERS -->
+    <section class="hbce-card" style="margin-top:16px;">
+      <h2 class="hbce-card__title">Filtri</h2>
+      <p class="hbce-card__text">Ricerca e segmentazione senza alterare la fonte. Output = vista, non modifica.</p>
+
+      <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
+        <div class="hbce-card hbce-card--subtle">
+          <div class="hbce-card__title">Paese (ISO-2)</div>
+          <select id="f_country" class="hbce-input" style="width:100%; padding:10px 12px; border-radius:12px; background:rgba(255,255,255,.03); border:1px solid var(--line); color:var(--text);">
+            <option value="">Tutti</option>
+          </select>
+        </div>
+
+        <div class="hbce-card hbce-card--subtle">
+          <div class="hbce-card__title">Stato</div>
+          <select id="f_status" class="hbce-input" style="width:100%; padding:10px 12px; border-radius:12px; background:rgba(255,255,255,.03); border:1px solid var(--line); color:var(--text);">
+            <option value="">Tutti</option>
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="PILOT">PILOT</option>
+            <option value="PLANNED">PLANNED</option>
+          </select>
+        </div>
+
+        <div class="hbce-card hbce-card--subtle">
+          <div class="hbce-card__title">Ricerca</div>
+          <input id="f_search" type="search" placeholder="Cerca: regione, città, node_hash, operatore…" style="width:100%; padding:10px 12px; border-radius:12px; background:rgba(255,255,255,.03); border:1px solid var(--line); color:var(--text);" />
+        </div>
+      </div>
+
+      <div class="hbce-actions" style="margin-top:12px;">
+        <button id="btn_reset" class="hbce-btn" type="button">Reset filtri</button>
+        <button id="btn_export" class="hbce-btn hbce-btn--primary" type="button">Export vista (JSON)</button>
+      </div>
+
+      <div class="hbce-card hbce-card--subtle" style="margin-top:12px;">
+        <div class="hbce-card__title">Vista corrente</div>
+        <div class="hbce-card__text">
+          Risultati: <strong><span id="c_view">—</span></strong>
+          · Fonte: <a href="/hermeticum-bce-platform/deployment/nodes.json" style="color:var(--accent);">deployment/nodes.json</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- LIST -->
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Nodi</h2>
+      <p class="hbce-text">Tabella derivata: ogni riga è un nodo. Nessuna “interpretazione”, solo render della fonte.</p>
+
+      <div class="hbce-card" style="overflow:auto;">
+        <table style="width:100%; border-collapse:collapse; min-width:880px;">
+          <thead>
+            <tr style="text-align:left; border-bottom:1px solid var(--line);">
+              <th style="padding:10px;">Status</th>
+              <th style="padding:10px;">Country</th>
+              <th style="padding:10px;">Region</th>
+              <th style="padding:10px;">City</th>
+              <th style="padding:10px;">Node hash</th>
+              <th style="padding:10px;">Operator</th>
+              <th style="padding:10px;">Timestamp</th>
+              <th style="padding:10px;">Note</th>
+            </tr>
+          </thead>
+          <tbody id="tb_nodes">
+            <tr><td style="padding:10px; opacity:.8;" colspan="8">Caricamento…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- GOVERNANCE NOTE -->
+    <section class="hbce-section">
+      <div class="hbce-card hbce-card--subtle">
+        <div class="hbce-card__title">Governance (nota)</div>
+        <div class="hbce-card__text">
+          Questa EU-MAP è un viewer pubblico. L’abilitazione operativa di un territorio richiede:
+          <strong>IPR VALID</strong> + <strong>licenza</strong> + regole di rete. In pubblico: prove minimizzate (hash-only).
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  const SOURCE = "/hermeticum-bce-platform/deployment/nodes.json";
+
+  const el = (id)=>document.getElementById(id);
+
+  const failClosed = (msg)=>{
+    const box = el("hbce_failclosed");
+    const m = el("hbce_failclosed_msg");
+    if(m) m.textContent = msg || "Fonte non verificabile. Viewer bloccato.";
+    if(box) box.style.display = "block";
+    // Svuota tabella
+    const tb = el("tb_nodes");
+    if(tb) tb.innerHTML = '<tr><td style="padding:10px; opacity:.85;" colspan="8"><strong>FAIL-CLOSED</strong> — fonte non valida</td></tr>';
+    // Azzera counters
+    ["c_total","c_countries","c_active","c_pilot","c_planned","c_it_regions","c_it_nodes","c_view"].forEach(id=>{
+      const x=el(id); if(x) x.textContent="—";
+    });
+  };
+
+  // Validazione minima (fail-closed)
+  function validatePayload(data){
+    if(!data || typeof data !== "object") return "JSON non valido (non object).";
+    if(!Array.isArray(data.nodes)) return "Campo nodes[] mancante o non array.";
+    // regole minime per ogni nodo
+    for(let i=0;i<data.nodes.length;i++){
+      const n = data.nodes[i];
+      if(!n || typeof n !== "object") return "Nodo non valido (non object).";
+      const req = ["country","status","node_hash","timestamp"];
+      for(const k of req){
+        if(!(k in n)) return "Campo obbligatorio mancante in un nodo: " + k;
+        if(typeof n[k] !== "string") return "Campo non string in un nodo: " + k;
+        if(!n[k].trim()) return "Campo vuoto in un nodo: " + k;
+      }
+      // country ISO-2 minimo
+      if(n.country.length !== 2) return "country non ISO-2 in un nodo.";
+    }
+    return null;
+  }
+
+  function uniq(arr){
+    return Array.from(new Set(arr.filter(Boolean)));
+  }
+
+  function norm(s){
+    return String(s||"").toLowerCase().trim();
+  }
+
+  let RAW = null;
+  let VIEW = [];
+
+  function computeCounters(allNodes){
+    const total = allNodes.length;
+
+    const countries = uniq(allNodes.map(n=>n.country));
+    const active = allNodes.filter(n=>n.status==="ACTIVE").length;
+    const pilot = allNodes.filter(n=>n.status==="PILOT").length;
+    const planned = allNodes.filter(n=>n.status==="PLANNED").length;
+
+    const itNodes = allNodes.filter(n=>n.country==="IT");
+    const itRegions = uniq(itNodes.map(n=>n.region)).length;
+
+    el("c_total").textContent = String(total);
+    el("c_countries").textContent = String(countries.length);
+    el("c_active").textContent = String(active);
+    el("c_pilot").textContent = String(pilot);
+    el("c_planned").textContent = String(planned);
+    el("c_it_nodes").textContent = String(itNodes.length);
+    el("c_it_regions").textContent = String(itRegions);
+  }
+
+  function fillCountryFilter(allNodes){
+    const countries = uniq(allNodes.map(n=>n.country)).sort();
+    const sel = el("f_country");
+    if(!sel) return;
+    // pulizia mantenendo "Tutti"
+    sel.innerHTML = '<option value="">Tutti</option>' + countries.map(c=>`<option value="${c}">${c}</option>`).join("");
+  }
+
+  function applyFilters(){
+    if(!RAW) return;
+
+    const c = (el("f_country")?.value || "").trim();
+    const s = (el("f_status")?.value || "").trim();
+    const q = norm(el("f_search")?.value || "");
+
+    VIEW = RAW.nodes.filter(n=>{
+      if(c && n.country !== c) return false;
+      if(s && n.status !== s) return false;
+      if(q){
+        const hay = [
+          n.country, n.status, n.region, n.city, n.node_hash, n.operator, n.timestamp, n.note
+        ].map(norm).join(" | ");
+        if(!hay.includes(q)) return false;
+      }
+      return true;
+    });
+
+    el("c_view").textContent = String(VIEW.length);
+    renderTable(VIEW);
+  }
+
+  function badgeForStatus(st){
+    if(st === "ACTIVE") return '<span class="hbce-badge">ACTIVE</span>';
+    if(st === "PILOT") return '<span class="hbce-badge">PILOT</span>';
+    if(st === "PLANNED") return '<span class="hbce-badge">PLANNED</span>';
+    return '<span class="hbce-badge">UNKNOWN</span>';
+  }
+
+  function esc(x){
+    return String(x ?? "").replace(/[&<>"']/g, (m)=>({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[m]));
+  }
+
+  function renderTable(nodes){
+    const tb = el("tb_nodes");
+    if(!tb) return;
+
+    if(!nodes.length){
+      tb.innerHTML = '<tr><td style="padding:10px; opacity:.85;" colspan="8">Nessun nodo in vista (filtri).</td></tr>';
+      return;
+    }
+
+    tb.innerHTML = nodes.map(n=>`
+      <tr style="border-bottom:1px solid rgba(255,255,255,.06);">
+        <td style="padding:10px;">${badgeForStatus(esc(n.status))}</td>
+        <td style="padding:10px;"><strong>${esc(n.country)}</strong></td>
+        <td style="padding:10px;">${esc(n.region || "—")}</td>
+        <td style="padding:10px;">${esc(n.city || "—")}</td>
+        <td style="padding:10px;"><code style="opacity:.9;">${esc(n.node_hash)}</code></td>
+        <td style="padding:10px;">${esc(n.operator || "—")}</td>
+        <td style="padding:10px;"><code style="opacity:.85;">${esc(n.timestamp)}</code></td>
+        <td style="padding:10px; opacity:.85;">${esc(n.note || "")}</td>
+      </tr>
+    `).join("");
+  }
+
+  function exportView(){
+    const payload = {
+      exported_at: new Date().toISOString(),
+      source: SOURCE,
+      count: VIEW.length,
+      nodes: VIEW
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "hbce-eu-map-view.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 1500);
+  }
+
+  async function boot(){
+    try{
+      const res = await fetch(SOURCE, {cache:"no-store"});
+      if(!res.ok) return failClosed("HTTP non OK su nodes.json: " + res.status);
+      const data = await res.json();
+
+      const err = validatePayload(data);
+      if(err) return failClosed(err);
+
+      RAW = data;
+
+      // Counters globali (sull'intera fonte, non sulla vista)
+      computeCounters(RAW.nodes);
+      fillCountryFilter(RAW.nodes);
+
+      // Eventi filtri
+      ["f_country","f_status","f_search"].forEach(id=>{
+        const x = el(id);
+        if(!x) return;
+        x.addEventListener("input", applyFilters);
+        x.addEventListener("change", applyFilters);
+      });
+
+      const br = el("btn_reset");
+      if(br){
+        br.addEventListener("click", ()=>{
+          el("f_country").value = "";
+          el("f_status").value = "";
+          el("f_search").value = "";
+          applyFilters();
+        });
+      }
+
+      const be = el("btn_export");
+      if(be) be.addEventListener("click", exportView);
+
+      // Prima render
+      applyFilters();
+
+    }catch(e){
+      failClosed("Errore lettura/parsing nodes.json (fail-closed).");
+    }
+  }
+
+  boot();
+})();
+</script>
+
+</body>
+</html>
