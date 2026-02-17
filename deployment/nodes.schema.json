@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/deployment/nodes.schema.json",
+  "title": "HBCE Node Registry Schema",
+  "description": "Schema ufficiale per HBCE-NODE-REGISTRY (EU). Append-only, hash-only, audit-first, fail-closed.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["proto", "kind", "network", "mode", "policy", "origin", "rules", "nodes"],
+  "properties": {
+    "proto": {
+      "type": "string",
+      "const": "HBCE-NODE-REGISTRY-v1"
+    },
+    "kind": {
+      "type": "string",
+      "const": "EU_DISTRIBUTED_NODE_MAP"
+    },
+    "network": {
+      "type": "string",
+      "const": "EU"
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["APPEND_ONLY"]
+    },
+    "policy": {
+      "type": "array",
+      "minItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": ["APPEND_ONLY", "HASH_ONLY", "UE_FIRST", "AUDIT_FIRST", "FAIL_CLOSED", "GDPR_MIN", "NO_PUBLIC_DATA_CUSTODY"]
+      }
+    },
+    "origin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["city", "country", "status", "role"],
+      "properties": {
+        "city": { "type": "string", "minLength": 2, "maxLength": 64 },
+        "country": { "type": "string", "pattern": "^[A-Z]{2}$" },
+        "status": { "type": "string", "enum": ["ACTIVE", "PILOT"] },
+        "role": { "type": "string", "enum": ["ORIGIN_NODE"] },
+        "note": { "type": "string", "maxLength": 240 }
+      }
+    },
+    "rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min_requirement", "ipr_required", "license_required", "write_mode", "verification", "failure_mode"],
+      "properties": {
+        "min_requirement": { "type": "string", "minLength": 3, "maxLength": 120 },
+        "ipr_required": { "type": "boolean", "const": true },
+        "license_required": { "type": "boolean", "const": true },
+        "write_mode": { "type": "string", "enum": ["MANUAL_APPEND_ONLY"] },
+        "verification": { "type": "string", "minLength": 3, "maxLength": 120 },
+        "failure_mode": { "type": "string", "enum": ["FAIL_CLOSED"] }
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/node" }
+    }
+  },
+  "$defs": {
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["country", "status", "node_hash", "operator"],
+      "properties": {
+        "region": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "country": { "type": "string", "pattern": "^[A-Z]{2}$" },
+        "city": { "type": "string", "minLength": 2, "maxLength": 64 },
+        "status": { "type": "string", "enum": ["ACTIVE", "PILOT", "PLANNED", "SUSPENDED"] },
+
+        "node_hash": {
+          "type": "string",
+          "description": "Identificatore nodo. Preferito: sha256( node_manifest_canonical ). Ammesso placeholder per ORIGIN.",
+          "anyOf": [
+            { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            { "type": "string", "enum": ["ORIGIN-HBCE-TORINO"] }
+          ]
+        },
+
+        "operator": {
+          "type": "string",
+          "description": "Identificatore operatore (ROOT o payload_sha256 dell'IPR operatore).",
+          "anyOf": [
+            { "type": "string", "enum": ["ROOT"] },
+            { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+          ]
+        },
+
+        "ipr_required": { "type": "boolean", "default": true },
+        "license_required": { "type": "boolean", "default": true },
+
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp ISO 8601 UTC. Consigliato per ogni append.",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$"
+        },
+
+        "note": { "type": "string", "maxLength": 240 }
+      }
+    }
+  }
+}
