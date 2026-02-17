@@ -17,13 +17,12 @@
 
   <main class="hbce-container hbce-main">
 
-    <!-- HERO -->
     <section class="hbce-hero">
       <div class="hbce-hero__kicker">COD ALIENO · IO-SPACE · SOFTWARE OPERATIVO · FAIL-CLOSED</div>
       <h1 class="hbce-hero__title">COD ALIENO</h1>
       <p class="hbce-hero__lead">
-        Specifica operativa “ultima” del motore IO-SPACE per la certificazione di eventi opponibili.
-        Questo documento è progettato per essere applicabile: definisce campi, regole, output e failure-mode.
+        Specifica operativa “ultima” del motore IO-SPACE per certificazione di eventi opponibili:
+        campi minimi, regole, output deterministico e condizioni FAIL-CLOSED.
       </p>
 
       <div class="hbce-actions">
@@ -33,41 +32,37 @@
       </div>
     </section>
 
-    <!-- PRINCIPI -->
     <section class="hbce-card">
       <h2 class="hbce-card__title">Principi operativi</h2>
-      <p class="hbce-card__lead">IO-SPACE opera solo se la base è verificabile. In caso contrario: FAIL-CLOSED.</p>
       <ul class="hbce-list">
-        <li><strong>UE-FIRST</strong>: baseline normativa UE</li>
-        <li><strong>AUDIT-FIRST</strong>: ogni output deve essere ispezionabile</li>
-        <li><strong>HASH-ONLY</strong>: pubblicazione minimizzata (prove, non dati)</li>
-        <li><strong>APPEND-ONLY</strong>: registri senza riscritture</li>
-        <li><strong>FAIL-CLOSED</strong>: se manca integrità o match → INVALID</li>
-        <li><strong>NO PUBLIC DATA CUSTODY</strong>: nessuna custodia pubblica di dati personali</li>
+        <li><strong>UE-FIRST</strong> · baseline UE</li>
+        <li><strong>AUDIT-FIRST</strong> · ogni output ispezionabile</li>
+        <li><strong>HASH-ONLY</strong> · prove minimizzate, non dati</li>
+        <li><strong>APPEND-ONLY</strong> · niente riscritture</li>
+        <li><strong>FAIL-CLOSED</strong> · ambiguità = blocco</li>
+        <li><strong>NO PUBLIC DATA CUSTODY</strong> · niente dati personali in pubblico</li>
       </ul>
     </section>
 
-    <!-- COSA È IO-SPACE -->
     <section class="hbce-card">
-      <h2 class="hbce-card__title">IO-SPACE — che cosa certifica</h2>
+      <h2 class="hbce-card__title">Che cosa certifica IO-SPACE</h2>
       <p class="hbce-card__lead">
-        IO-SPACE genera un <strong>Event Manifest</strong> e un <strong>event_hash</strong> derivato in modo deterministico.
-        L’evento diventa opponibile quando è collegabile a un IPR valido e registrabile in modalità append-only.
+        IO-SPACE genera un <strong>Event Manifest</strong> e un <strong>event_hash</strong> deterministico.
+        Un evento è opponibile quando è collegabile a un IPR valido e registrabile in append-only.
       </p>
-
       <ul class="hbce-list">
         <li>Decisioni operative</li>
-        <li>Azioni su sistemi (AI/robot/infrastrutture)</li>
+        <li>Azioni su sistemi (AI / robot / infrastrutture)</li>
         <li>Comandi e transazioni tecniche</li>
         <li>Emissioni/certificazioni che richiedono tracciabilità</li>
       </ul>
     </section>
 
-    <!-- EVENT MANIFEST -->
     <section class="hbce-card">
       <h2 class="hbce-card__title">Event Manifest — struttura canonica</h2>
       <p class="hbce-card__lead">
-        Campi minimi per un evento certificabile. Tutto ciò che non è necessario va escluso (GDPR-min).
+        Campi minimi (GDPR-min). Se serve contenuto reale, resta nel release privato.
+        In pubblico: solo hash.
       </p>
 
       <pre class="hbce-pre"><code>{
@@ -92,36 +87,13 @@
 
   "timestamp": "2026-02-17T00:00:00Z"
 }</code></pre>
-
-      <p class="hbce-card__lead">
-        Nota: <code>summary</code> deve rimanere non sensibile. Se serve contenuto reale, va tenuto nel release file privato,
-        e in pubblico si pubblica solo hash.
-      </p>
     </section>
 
-    <!-- REGOLE DI VALUTAZIONE -->
-    <section class="hbce-card">
-      <h2 class="hbce-card__title">Regole di valutazione (maturità e responsabilità)</h2>
-      <p class="hbce-card__lead">
-        IO-SPACE è un motore di coerenza: più alto il livello, più alti requisiti e responsabilità.
-      </p>
-
-      <ul class="hbce-list">
-        <li><strong>risk_class</strong> (R0→R4): impatto potenziale dell’evento</li>
-        <li><strong>maturity_level</strong> (L0→L5): complessità/criticità del dominio</li>
-        <li>Se R o L oltre soglia consentita dall’operatore → <strong>DENY (fail-closed)</strong></li>
-      </ul>
-    </section>
-
-    <!-- OUTPUT -->
     <section class="hbce-card">
       <h2 class="hbce-card__title">Output deterministico</h2>
-      <p class="hbce-card__lead">Output minimo: manifest + hash + snippet registrabile.</p>
-
       <ul class="hbce-list">
-        <li><strong>event_manifest</strong> (JSON canonico)</li>
         <li><strong>event_hash</strong> = sha256(canonical_json(event_manifest))</li>
-        <li><strong>registry snippet</strong> hash-only per append nel registro pubblico</li>
+        <li><strong>snippet</strong> hash-only registrabile in append-only</li>
       </ul>
 
       <pre class="hbce-pre"><code>{
@@ -133,33 +105,29 @@
 }</code></pre>
     </section>
 
-    <!-- FAIL-CLOSED -->
     <section class="hbce-card">
       <h2 class="hbce-card__title">FAIL-CLOSED — condizioni di blocco</h2>
       <ul class="hbce-list">
         <li>IPR non valido / non verificabile nel registry</li>
-        <li>Manifest incompleto o non canonico</li>
-        <li>Timestamp non conforme (ISO 8601 UTC)</li>
-        <li>Ambiguità sui campi sensibili → blocco</li>
-        <li>Incoerenza tra rischio, maturità e permessi operatore</li>
+        <li>Manifest incompleto o timestamp non conforme (ISO 8601 UTC)</li>
+        <li>Ambiguità o contenuti sensibili in pubblico</li>
+        <li>Incoerenza rischio/maturità rispetto ai permessi operatore</li>
       </ul>
     </section>
 
-    <!-- INTEGRAZIONE -->
     <section class="hbce-card">
       <h2 class="hbce-card__title">Integrazione nel portale</h2>
-      <p class="hbce-card__lead">Percorso operativo standard (istituzionale):</p>
       <ol class="hbce-list">
-        <li>Attiva IPR (release file)</li>
-        <li>Verifica IPR (VALID)</li>
-        <li>Accesso operatore (gated)</li>
-        <li>Genera evento in IO-SPACE</li>
-        <li>Append hash-only nel registro eventi/registry</li>
+        <li>Attiva IPR</li>
+        <li>VERIFY: deve risultare VALID</li>
+        <li>Zona Operatori (gated)</li>
+        <li>IO-SPACE: genera evento</li>
+        <li>Append hash-only nel registry</li>
       </ol>
 
       <div class="hbce-actions">
         <a class="hbce-btn" href="/hermeticum-bce-platform/operator/">Zona Operatori</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/network/">NETWORK</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/network/">Network</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/deployment/">Deployment</a>
       </div>
     </section>
