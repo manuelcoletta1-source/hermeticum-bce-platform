@@ -1,155 +1,217 @@
 <!doctype html>
 <html lang="it">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<title>HERMETICUM B.C.E. — European IPR Registry & Operational Infrastructure</title>
-<meta name="description" content="Registro europeo IPR (append-only, hash-only). Verifica deterministica fail-closed. Rete distribuita JOKER-C2 e certificazione eventi opponibili (IO-SPACE)." />
-<meta name="theme-color" content="#0b0f14" />
-<link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/" />
+  <title>HERMETICUM B.C.E. — Registro Europeo IPR & Infrastruttura Operativa</title>
+  <meta name="description" content="Gateway europeo: IPR (Identity Primary Record), registry pubblico append-only (hash-only), VERIFY deterministico fail-closed, rete distribuita JOKER-C2 e certificazione eventi opponibili (IO-SPACE)." />
+  <meta name="theme-color" content="#0b0f14" />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/" />
 
-<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
 <body>
-<div data-hbce="header"></div>
+  <div data-hbce="header"></div>
 
-<main class="hbce-container hbce-main">
+  <main class="hbce-container hbce-main">
 
-<section class="hbce-hero">
-  <div class="hbce-hero__kicker">EU GATEWAY · UE-FIRST · AUDIT-FIRST · FAIL-CLOSED</div>
-  <h1 class="hbce-hero__title">Registro Europeo IPR + Infrastruttura Operativa</h1>
-  <p class="hbce-hero__lead">
-    Identità operative verificabili (IPR), registro pubblico append-only (hash-only),
-    verifica deterministica e rete distribuita JOKER-C2. Certificazione eventi opponibili (IO-SPACE).
-  </p>
+    <!-- HERO -->
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">EU GATEWAY · UE-FIRST · AUDIT-FIRST · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Registro Europeo IPR + Infrastruttura Operativa</h1>
+      <p class="hbce-hero__lead">
+        Identità operative verificabili (IPR), registro pubblico append-only (hash-only),
+        verifica deterministica e rete distribuita JOKER-C2. Certificazione eventi opponibili (IO-SPACE).
+      </p>
 
-  <div class="hbce-actions">
-    <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Attiva IPR</a>
-    <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-    <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-    <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operator/">Zona Operatori</a>
-  </div>
-</section>
+      <div class="hbce-actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Attiva IPR</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operator/">Zona Operatori</a>
+      </div>
+    </section>
 
-<section class="hbce-grid hbce-grid--2">
+    <!-- NETWORK STATUS (derived from public registry) -->
+    <section class="hbce-card">
+      <h2 class="hbce-card__title">Network Status (EU)</h2>
+      <p class="hbce-card__lead">
+        Indicatori ufficiali derivati da registry pubblico <code>deployment/nodes.json</code>.
+        Se il registry non è leggibile/valido → <strong>FAIL-CLOSED</strong>.
+      </p>
 
-  <div class="hbce-card">
-    <h2 class="hbce-card__title">EU IPR Registry (Public)</h2>
-    <p class="hbce-card__lead">
-      Registro pubblico append-only. Pubblica solo prove minimizzate (hash + timestamp).
-      Nessuna custodia pubblica di dati personali. Fail-closed.
-    </p>
-    <ul class="hbce-list">
-      <li>IPR release file → prova hash-only</li>
-      <li>Verifica deterministica → VALID / INVALID</li>
-      <li>Append-only ledger → audit permanente</li>
-      <li>Compatibilità UE-first / GDPR-min</li>
-    </ul>
-    <div class="hbce-actions">
-      <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Create IPR</a>
-      <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Open Registry</a>
-    </div>
-  </div>
+      <div class="hbce-grid hbce-grid--2">
+        <div class="hbce-card">
+          <h3 class="hbce-card__title">Nodi</h3>
+          <ul class="hbce-list">
+            <li><strong>ACTIVE</strong>: <span id="hbce_nodes_active">—</span></li>
+            <li><strong>PILOT</strong>: <span id="hbce_nodes_pilot">—</span></li>
+            <li><strong>PLANNED</strong>: <span id="hbce_nodes_planned">—</span></li>
+          </ul>
+        </div>
 
-  <div class="hbce-card">
-    <h2 class="hbce-card__title">JOKER-C2 Network (Distributed)</h2>
-    <p class="hbce-card__lead">
-      Rete operativa distribuita: <strong>1 nodo per regione italiana</strong> + <strong>1 nodo per nazione UE</strong>.
-      È la spina dorsale per lavoro operativo territoriale.
-    </p>
-    <ul class="hbce-list">
-      <li>Accesso tramite licenza operativa</li>
-      <li>Introduzione nuovi IPR (solo operatori)</li>
-      <li>Mercato software con livelli di responsabilità</li>
-      <li>Nodi locali = lavoro locale + coordinamento europeo</li>
-    </ul>
-    <div class="hbce-actions">
-      <a class="hbce-btn" href="/hermeticum-bce-platform/pricing/">Licenze</a>
-      <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/deployment/">Deployment EU</a>
-    </div>
-  </div>
+        <div class="hbce-card">
+          <h3 class="hbce-card__title">Copertura</h3>
+          <ul class="hbce-list">
+            <li><strong>Nazioni (ISO)</strong>: <span id="hbce_countries">—</span></li>
+            <li><strong>Regioni IT</strong>: <span id="hbce_regions_it">—</span></li>
+          </ul>
+        </div>
+      </div>
 
-</section>
+      <div id="hbce_nodes_status" class="hbce-callout" style="margin-top:14px">
+        Stato: —
+      </div>
 
-<section class="hbce-card">
-  <h2 class="hbce-card__title">IO-SPACE — Event Certification Engine (SSO)</h2>
-  <p class="hbce-card__lead">
-    Certificazione eventi “Sub-Secondo Opponibile”: ogni azione/decisione può diventare verificabile e registrabile.
-    Se non passa le soglie → <strong>FAIL-CLOSED</strong>.
-  </p>
-  <ul class="hbce-list">
-    <li>Eventi collegati a IPR</li>
-    <li>Manifest evento + hash</li>
-    <li>Snippet pronto per registry</li>
-    <li>Audit-first, deterministico</li>
-  </ul>
-  <div class="hbce-actions">
-    <a class="hbce-btn" href="/hermeticum-bce-platform/io-space/">Apri IO-SPACE</a>
-    <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/docs/">Docs & Compliance</a>
-  </div>
-</section>
+      <div class="hbce-actions" style="margin-top:14px">
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/deployment/nodes.json" target="_blank" rel="noopener">Apri nodes.json</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/deployment/nodes.schema.json" target="_blank" rel="noopener">Schema ufficiale</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/deployment/">Deployment</a>
+      </div>
+    </section>
 
-<section class="hbce-grid hbce-grid--2">
+    <!-- CORE GRID -->
+    <section class="hbce-grid hbce-grid--2">
 
-  <div class="hbce-card">
-    <h2 class="hbce-card__title">Percorso Operativo (lavoro)</h2>
-    <p class="hbce-card__lead">
-      Il lavoro è semplice e scalabile: la licenza è accesso + responsabilità.
-      Dopo la licenza si può operare, introdurre IPR e usare il mercato software.
-    </p>
-    <ol class="hbce-list">
-      <li>Attiva IPR</li>
-      <li>Acquista licenza operativa</li>
-      <li>Accedi alla Zona Operatori</li>
-      <li>Introduci nuovi IPR (derivati)</li>
-      <li>Accedi al mercato software per livelli</li>
-    </ol>
-    <div class="hbce-actions">
-      <a class="hbce-btn" href="/hermeticum-bce-platform/operator/">Entra (gated)</a>
-      <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">Vedi licenze</a>
-    </div>
-  </div>
+      <!-- EU IPR REGISTRY -->
+      <div class="hbce-card">
+        <h2 class="hbce-card__title">EU IPR Registry (Public)</h2>
+        <p class="hbce-card__lead">
+          Registro pubblico append-only. Pubblica solo prove minimizzate (hash + timestamp).
+          Nessuna custodia pubblica di dati personali. Fail-closed.
+        </p>
 
-  <div class="hbce-card">
-    <h2 class="hbce-card__title">Deployment (Italia + UE)</h2>
-    <p class="hbce-card__lead">
-      Strategia minima: <strong>1 utente operativo basta</strong> per attivare un territorio.
-      Nodo Torino → regioni italiane → nazioni UE.
-    </p>
-    <ul class="hbce-list">
-      <li>Origin Node: Torino (IT)</li>
-      <li>Italia: 1 nodo per regione</li>
-      <li>UE: 1 nodo per nazione</li>
-      <li>Globale: estensione per interoperabilità</li>
-    </ul>
-    <div class="hbce-actions">
-      <a class="hbce-btn" href="/hermeticum-bce-platform/deployment/">Apri mappa nodi</a>
-    </div>
-  </div>
+        <ul class="hbce-list">
+          <li>IPR release file → prova hash-only</li>
+          <li>Verifica deterministica → VALID / INVALID</li>
+          <li>Append-only ledger → audit permanente</li>
+          <li>UE-first / GDPR-min</li>
+        </ul>
 
-</section>
+        <div class="hbce-actions">
+          <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">CREATE IPR</a>
+          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">View Registry</a>
+        </div>
+      </div>
 
-<section class="hbce-card">
-  <h2 class="hbce-card__title">Standard di sicurezza e governance</h2>
-  <p class="hbce-card__lead">
-    Tutto è progettato per essere ispezionabile: hash-only, append-only, fail-closed, audit-first.
-    Nessuna custodia pubblica di dati personali: solo prove minimizzate.
-  </p>
-  <ul class="hbce-list">
-    <li>FAIL-CLOSED: se manca integrità → INVALID</li>
-    <li>HASH-ONLY: pubblicazione minimizzata</li>
-    <li>APPEND-ONLY: nessuna riscrittura</li>
-    <li>UE-FIRST: standard e compliance come baseline</li>
-  </ul>
-  <div class="hbce-actions">
-    <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/docs/">Apri documentazione</a>
-  </div>
-</section>
+      <!-- JOKER NETWORK -->
+      <div class="hbce-card">
+        <h2 class="hbce-card__title">JOKER-C2 Network (Distributed)</h2>
+        <p class="hbce-card__lead">
+          Rete operativa distribuita: <strong>1 nodo per regione italiana</strong> + <strong>1 nodo per nazione UE</strong>.
+          Spina dorsale territoriale per lavoro operativo.
+        </p>
 
-</main>
+        <ul class="hbce-list">
+          <li>Accesso tramite licenza operativa</li>
+          <li>Introduzione nuovi IPR (solo operatori)</li>
+          <li>Mercato software a livelli di responsabilità</li>
+          <li>Nodi locali = lavoro locale + coordinamento europeo</li>
+        </ul>
 
-<div data-hbce="footer"></div>
+        <div class="hbce-actions">
+          <a class="hbce-btn" href="/hermeticum-bce-platform/operator/">Entra (gated)</a>
+          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">Licenze</a>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- IO SPACE -->
+    <section class="hbce-card">
+      <h2 class="hbce-card__title">IO-SPACE — Event Certification Engine (SSO)</h2>
+      <p class="hbce-card__lead">
+        Certificazione eventi “Sub-Secondo Opponibile”: ogni azione/decisione può diventare verificabile e registrabile.
+        Se non passa le soglie → <strong>FAIL-CLOSED</strong>.
+      </p>
+
+      <ul class="hbce-list">
+        <li>Eventi collegati a IPR</li>
+        <li>Manifest evento + hash</li>
+        <li>Snippet pronto per registry</li>
+        <li>Audit-first, deterministico</li>
+      </ul>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/io-space/">Apri IO-SPACE</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/docs/">Docs & Compliance</a>
+      </div>
+    </section>
+
+    <!-- OPERATOR PATH -->
+    <section class="hbce-grid hbce-grid--2">
+
+      <div class="hbce-card">
+        <h2 class="hbce-card__title">Percorso operativo (lavoro)</h2>
+        <p class="hbce-card__lead">
+          La licenza è accesso + responsabilità. Dopo la licenza si può operare, introdurre IPR e usare i moduli.
+        </p>
+
+        <ol class="hbce-list">
+          <li>Attiva IPR</li>
+          <li>Verifica: IPR deve risultare <strong>VALID</strong></li>
+          <li>Acquista licenza operativa</li>
+          <li>Accedi alla <strong>Zona Operatori</strong></li>
+          <li>Introduci nuovi IPR + eventi IO-SPACE</li>
+        </ol>
+
+        <div class="hbce-actions">
+          <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">1) Attiva IPR</a>
+          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operator/">4) Zona Operatori</a>
+        </div>
+      </div>
+
+      <div class="hbce-card">
+        <h2 class="hbce-card__title">Deployment (Italia + UE)</h2>
+        <p class="hbce-card__lead">
+          Strategia minima: <strong>1 utente operativo basta</strong> per attivare un territorio.
+          Nodo origine: Torino (IT). Espansione: regioni italiane → nazioni UE.
+        </p>
+
+        <ul class="hbce-list">
+          <li>Italia: 1 nodo per regione</li>
+          <li>UE: 1 nodo per nazione</li>
+          <li>Registro nodi pubblico (append-only)</li>
+          <li>Schema formale (fail-closed)</li>
+        </ul>
+
+        <div class="hbce-actions">
+          <a class="hbce-btn" href="/hermeticum-bce-platform/deployment/">Apri Deployment</a>
+          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/deployment/nodes.json" target="_blank" rel="noopener">nodes.json</a>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- GOVERNANCE -->
+    <section class="hbce-card">
+      <h2 class="hbce-card__title">Standard di sicurezza e governance</h2>
+      <p class="hbce-card__lead">
+        Architettura progettata per auditabilità: hash-only, append-only, fail-closed, UE-first.
+        Nessuna custodia pubblica di dati personali: solo prove minimizzate.
+      </p>
+
+      <ul class="hbce-list">
+        <li><strong>FAIL-CLOSED</strong>: se manca integrità → INVALID</li>
+        <li><strong>HASH-ONLY</strong>: pubblicazione minimizzata</li>
+        <li><strong>APPEND-ONLY</strong>: no riscritture</li>
+        <li><strong>UE-FIRST</strong>: compliance come baseline</li>
+        <li><strong>AUDIT-FIRST</strong>: verificabilità prioritaria</li>
+      </ul>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/docs/">Apri documentazione</a>
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+
+  <!-- Counters (reads deployment/nodes.json) -->
+  <script defer src="/hermeticum-bce-platform/assets/hbce-counters.js"></script>
 </body>
 </html>
