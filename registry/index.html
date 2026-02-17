@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>REGISTRY — Append-only (public) | HBCE S.r.l.</title>
-  <meta name="description" content="Registro pubblico append-only (HASH-ONLY) della rete Hermeticum, sviluppata da HBCE S.r.l. Viewer con health meta, conteggi, ricerca, filtri ed export. UE-first, audit-first, fail-closed." />
+  <title>REGISTRY — Append-only (public) | HERMETICUM B.C.E.</title>
+  <meta name="description" content="Registro pubblico append-only (HASH-ONLY) della rete Hermeticum (HBCE-REGISTRY-v2). Viewer con health meta, conteggi, ricerca, filtri ed export. UE-first, audit-first, fail-closed." />
 
   <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/registry/" />
   <meta name="robots" content="index,follow" />
@@ -22,7 +22,7 @@
     <!-- HERO -->
     <section class="hbce-hero">
       <div class="hbce-hero__kicker">REGISTRY · APPEND-ONLY · HASH-ONLY · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">Registro pubblico (append-only)</h1>
+      <h1 class="hbce-hero__title">Registro pubblico (HBCE-REGISTRY-v2)</h1>
       <p class="hbce-hero__lead">
         Questo registry pubblica solo prove minimizzate (<strong>HASH-ONLY</strong>).
         Nessuna custodia pubblica di dati personali. Lettura <strong>fail-closed</strong>:
@@ -30,14 +30,13 @@
       </p>
 
       <p class="hbce-note" style="margin-top:12px;">
-        Servizio sviluppato e gestito da <strong>HBCE S.r.l.</strong> · policy: UE-first, audit-first, append-only.
+        Issuer: <strong>HERMETICUM B.C.E. S.r.l.</strong> · network: <strong>EU</strong> · mode: <strong>APPEND_ONLY_PUBLIC_LEDGER</strong>
       </p>
 
       <div class="hbce-actions" style="margin-top:12px;">
         <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Attiva IPR Base</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/operator/">Attiva IPR Operatore</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/operator/">Zona Operatori</a>
         <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/root/">Root</a>
       </div>
     </section>
 
@@ -118,7 +117,7 @@
           <div class="hbce-grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; align-items:end;">
             <label class="hbce-field">
               <span class="hbce-label">Ricerca</span>
-              <input class="hbce-input" id="q" placeholder="nome, operator_nickname, hash (parziale), status…" />
+              <input class="hbce-input" id="q" placeholder="name, entity_type, status, hash (parziale), note…" />
               <span class="hbce-note">Ricerca client-side nel registry caricato.</span>
             </label>
 
@@ -126,8 +125,8 @@
               <span class="hbce-label">Filtro tipo</span>
               <select class="hbce-input" id="typeFilter">
                 <option value="all">Tutti</option>
-                <option value="base">IPR Base (HUMAN)</option>
-                <option value="operator">Operator License</option>
+                <option value="human">IPR Base (HUMAN)</option>
+                <option value="operator">Operator License (OPERATOR)</option>
               </select>
             </label>
 
@@ -166,10 +165,10 @@
             <thead>
               <tr>
                 <th style="text-align:left; padding:10px;">Tipo</th>
-                <th style="text-align:left; padding:10px;">Identità</th>
+                <th style="text-align:left; padding:10px;">Name</th>
+                <th style="text-align:left; padding:10px;">Entity</th>
                 <th style="text-align:left; padding:10px;">Status</th>
                 <th style="text-align:left; padding:10px;">payload_sha256</th>
-                <th style="text-align:left; padding:10px;">ref_base_sha256</th>
                 <th style="text-align:left; padding:10px;">Timestamp</th>
                 <th style="text-align:left; padding:10px;">Azioni</th>
               </tr>
@@ -237,30 +236,32 @@
     let entries = [];
     let drawerJson = "";
 
-    function isHex64(s) {
-      return typeof s === "string" && /^[0-9a-f]{64}$/i.test(s.trim());
-    }
     function normalize(s) {
       return (s || "").toString().trim();
     }
     function safeLower(s) {
       return normalize(s).toLowerCase();
     }
-
-    function entryType(e) {
-      if (!e || typeof e !== "object") return "unknown";
-      if (safeLower(e.record_type) === "operator_license") return "operator";
-      if (normalize(e.operator_nickname)) return "operator";
-      if (isHex64(e.ref_payload_sha256)) return "operator";
-      if (safeLower(e.entity_type) === "human") return "base";
-      if (normalize(e.name) && !normalize(e.operator_nickname)) return "base";
-      return "unknown";
+    function isHex64Lower(s) {
+      return typeof s === "string" && /^[0-9a-f]{64}$/.test(s.trim());
     }
 
-    function formatTypeLabel(t) {
-      if (t === "base") return "IPR Base";
-      if (t === "operator") return "Operator License";
+    function entryKind(e) {
+      const et = safeLower(e && e.entity_type);
+      if (et === "operator") return "operator";
+      if (et === "human") return "human";
+      return "other";
+    }
+    function kindLabel(k) {
+      if (k === "human") return "IPR Base";
+      if (k === "operator") return "Operator License";
       return "Other";
+    }
+
+    function shortHash(h) {
+      const s = normalize(h);
+      if (s.length <= 16) return s || "—";
+      return s.slice(0, 10) + "…" + s.slice(-6);
     }
 
     function showFail(msg) {
@@ -273,12 +274,12 @@
       failPre.textContent = "";
     }
 
-    function setMeta(m) {
-      const meta = (m && typeof m === "object") ? m : {};
-      metaSchema.textContent = normalize(meta.schema) || "—";
-      metaIssuer.textContent = normalize(meta.issuer) || "—";
+    function setMetaFromRegistry(reg) {
+      const meta = (reg && reg.meta && typeof reg.meta === "object") ? reg.meta : {};
+      metaSchema.textContent = normalize(meta.schema_version) || "—";
+      metaIssuer.textContent = normalize(reg && reg.issuer) || "—";
       metaLast.textContent = normalize(meta.last_update) || "—";
-      metaPolicy.textContent = Array.isArray(meta.policy) ? meta.policy.join(" · ") : "—";
+      metaPolicy.textContent = Array.isArray(reg && reg.policy) ? reg.policy.join(" · ") : "—";
     }
 
     function computeLastTimestamp(list) {
@@ -289,15 +290,15 @@
         .slice(-1)[0] || "—";
     }
 
-    function setCountersFromMetaOrCompute(meta, list) {
-      const c = meta && meta.counts && typeof meta.counts === "object" ? meta.counts : null;
+    function setCounts(reg, list) {
+      const c = reg && reg.meta && reg.meta.counts && typeof reg.meta.counts === "object" ? reg.meta.counts : null;
 
       const totalMeta = c && Number.isFinite(c.total) ? c.total : null;
       const baseMeta = c && Number.isFinite(c.ipr_base_human) ? c.ipr_base_human : null;
       const opMeta = c && Number.isFinite(c.operator_license) ? c.operator_license : null;
 
-      const baseCalc = list.filter(e => entryType(e) === "base").length;
-      const opCalc = list.filter(e => entryType(e) === "operator").length;
+      const baseCalc = list.filter(e => entryKind(e) === "human").length;
+      const opCalc = list.filter(e => entryKind(e) === "operator").length;
 
       countAll.textContent = String(totalMeta !== null ? totalMeta : list.length);
       countBase.textContent = String(baseMeta !== null ? baseMeta : baseCalc);
@@ -310,8 +311,7 @@
       if (!query) return true;
       const ql = query.toLowerCase();
       const fields = [
-        e.name, e.operator_nickname, e.status, e.entity_type, e.record_type,
-        e.payload_sha256, e.ref_payload_sha256, e.timestamp
+        e.name, e.entity_type, e.status, e.payload_sha256, e.timestamp, e.note
       ].map(x => normalize(x)).filter(Boolean);
       return fields.some(x => x.toLowerCase().includes(ql));
     }
@@ -323,8 +323,8 @@
 
       let list = entries.slice();
 
-      if (tf === "base") list = list.filter(e => entryType(e) === "base");
-      if (tf === "operator") list = list.filter(e => entryType(e) === "operator");
+      if (tf === "human") list = list.filter(e => entryKind(e) === "human");
+      if (tf === "operator") list = list.filter(e => entryKind(e) === "operator");
       if (query) list = list.filter(e => matchesQuery(e, query));
 
       list.sort((a, b) => {
@@ -334,12 +334,6 @@
       });
 
       renderRows(list);
-    }
-
-    function shortHash(h) {
-      const s = normalize(h);
-      if (s.length <= 16) return s || "—";
-      return s.slice(0, 10) + "…" + s.slice(-6);
     }
 
     async function copyToClipboard(text, btn) {
@@ -361,13 +355,11 @@
       drawer.style.display = "block";
       drawer.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-
     function closeDrawerFn() {
       drawer.style.display = "none";
       drawerPre.textContent = "";
       drawerJson = "";
     }
-
     closeDrawer.addEventListener("click", closeDrawerFn);
     copyOne.addEventListener("click", () => {
       if (!drawerJson) return;
@@ -382,17 +374,21 @@
       rows.innerHTML = "";
 
       for (const e of list) {
-        const t = entryType(e);
+        const k = entryKind(e);
 
         const tr = document.createElement("tr");
 
         const tdType = document.createElement("td");
         tdType.style.padding = "10px";
-        tdType.textContent = formatTypeLabel(t);
+        tdType.textContent = kindLabel(k);
 
-        const tdId = document.createElement("td");
-        tdId.style.padding = "10px";
-        tdId.textContent = normalize(e.operator_nickname) || normalize(e.name) || "—";
+        const tdName = document.createElement("td");
+        tdName.style.padding = "10px";
+        tdName.textContent = normalize(e.name) || "—";
+
+        const tdEntity = document.createElement("td");
+        tdEntity.style.padding = "10px";
+        tdEntity.textContent = normalize(e.entity_type) || "—";
 
         const tdStatus = document.createElement("td");
         tdStatus.style.padding = "10px";
@@ -401,10 +397,6 @@
         const tdHash = document.createElement("td");
         tdHash.style.padding = "10px";
         tdHash.textContent = shortHash(e.payload_sha256);
-
-        const tdRef = document.createElement("td");
-        tdRef.style.padding = "10px";
-        tdRef.textContent = shortHash(e.ref_payload_sha256);
 
         const tdTs = document.createElement("td");
         tdTs.style.padding = "10px";
@@ -441,10 +433,10 @@
         tdAct.appendChild(aVerify);
 
         tr.appendChild(tdType);
-        tr.appendChild(tdId);
+        tr.appendChild(tdName);
+        tr.appendChild(tdEntity);
         tr.appendChild(tdStatus);
         tr.appendChild(tdHash);
-        tr.appendChild(tdRef);
         tr.appendChild(tdTs);
         tr.appendChild(tdAct);
 
@@ -470,14 +462,20 @@
       downloadJson("registry.export.json", registryRaw);
     });
 
-    function validateRegistrySchema(obj) {
+    function validateRegistryV2(obj) {
       if (!obj || typeof obj !== "object") return "Schema invalido: non è un oggetto JSON.";
-      if (!obj.meta || typeof obj.meta !== "object") return "Schema invalido: manca meta{} (fail-closed).";
-      if (!Array.isArray(obj.entries)) return "Schema invalido: manca entries[] (fail-closed).";
+      if (normalize(obj.proto) !== "HBCE-REGISTRY-v2") return "proto != HBCE-REGISTRY-v2 (fail-closed).";
+      if (normalize(obj.kind) !== "IPR_PUBLIC_REGISTRY") return "kind != IPR_PUBLIC_REGISTRY (fail-closed).";
+      if (!Array.isArray(obj.policy) || obj.policy.length === 0) return "policy[] mancante (fail-closed).";
+      if (!obj.meta || typeof obj.meta !== "object") return "meta{} mancante (fail-closed).";
+      if (!Array.isArray(obj.entries)) return "entries[] mancante (fail-closed).";
+
       for (const e of obj.entries) {
-        if (!e || typeof e !== "object") return "Schema invalido: entry non-oggetto (fail-closed).";
-        if (!normalize(e.timestamp)) return "Schema invalido: entry senza timestamp (fail-closed).";
-        if (!isHex64(e.payload_sha256)) return "Schema invalido: payload_sha256 non valido (fail-closed).";
+        if (!e || typeof e !== "object") return "entry non-oggetto (fail-closed).";
+        if (!normalize(e.name)) return "entry senza name (fail-closed).";
+        if (!normalize(e.timestamp)) return "entry senza timestamp (fail-closed).";
+        const h = normalize(e.payload_sha256);
+        if (!isHex64Lower(h)) return "payload_sha256 non valido (64-hex lowercase richiesto) (fail-closed).";
       }
       return "";
     }
@@ -488,7 +486,7 @@
 
       registryRaw = null;
       entries = [];
-      setMeta(null);
+      setMetaFromRegistry(null);
 
       let obj;
       try {
@@ -504,7 +502,7 @@
         return;
       }
 
-      const schemaErr = validateRegistrySchema(obj);
+      const schemaErr = validateRegistryV2(obj);
       if (schemaErr) {
         showFail("BLOCK — " + schemaErr + "\npath: " + REGISTRY_PATH);
         return;
@@ -513,8 +511,8 @@
       registryRaw = obj;
       entries = obj.entries.slice();
 
-      setMeta(obj.meta);
-      setCountersFromMetaOrCompute(obj.meta, entries);
+      setMetaFromRegistry(obj);
+      setCounts(obj, entries);
       applyFilters();
     }
 
