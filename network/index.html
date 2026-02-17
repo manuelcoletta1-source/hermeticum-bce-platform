@@ -4,10 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>NETWORK — Nodi HBCE (EU)</title>
-  <meta name="description" content="Viewer pubblico dei nodi HBCE: Italia + UE. Fonte: deployment/nodes.json (append-only). Fail-closed." />
-  <meta name="theme-color" content="#0b0f14" />
+  <title>NETWORK — HERMETICUM (EU Node Dashboard)</title>
+  <meta name="description" content="Dashboard rete HBCE: nodi EU/IT, stati ACTIVE/PILOT/PLANNED, conteggi e accesso a registry. Fail-closed: se nodes.json non è verificabile → rete non operativa." />
+
   <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/network/" />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
 
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
@@ -17,139 +19,113 @@
 
   <main class="hbce-container hbce-main">
 
-    <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">NETWORK · PUBLIC VIEWER · APPEND-ONLY · HASH-ONLY · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">Network — Nodi Operativi (Italia + UE)</h1>
+      <div class="hbce-hero__kicker">NETWORK · EU DISTRIBUTED NODES · AUDIT-FIRST · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">HBCE Network Dashboard</h1>
       <p class="hbce-hero__lead">
-        Viewer pubblico dei nodi territoriali. Fonte unica: <code>deployment/nodes.json</code>.
-        Se il registry nodi non è leggibile/valido → <strong>FAIL-CLOSED</strong>.
+        Stato rete derivato da <code>deployment/nodes.json</code>. Se la fonte non è coerente → <strong>FAIL-CLOSED</strong>.
       </p>
 
       <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/network/eu-map/">Apri EU-MAP</a>
         <a class="hbce-btn" href="/hermeticum-bce-platform/deployment/">Deployment</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/deployment/nodes.json" target="_blank" rel="noopener">nodes.json</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/deployment/nodes.schema.json" target="_blank" rel="noopener">Schema</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/deployment/nodes.json" target="_blank" rel="noopener">nodes.json</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/deployment/nodes.schema.json" target="_blank" rel="noopener">schema</a>
+      </div>
+
+      <div class="hbce-card hbce-card--subtle" style="margin-top:14px;">
+        <div class="hbce-card__title">Stato (runtime)</div>
+        <div id="hbce_net_state" class="hbce-card__text">—</div>
       </div>
     </section>
 
-    <!-- STATUS -->
-    <section class="hbce-card">
-      <h2 class="hbce-card__title">Stato registry nodi</h2>
-      <p class="hbce-card__lead">
-        Questo viewer non “inventa” niente: calcola e mostra solo ciò che è presente nel registry.
-      </p>
+    <section class="hbce-grid hbce-grid--3">
+      <div class="hbce-card">
+        <div class="hbce-card__title">Nodi</div>
+        <ul class="hbce-list">
+          <li><strong>TOTAL</strong>: <span id="k_total">—</span></li>
+          <li><strong>ACTIVE</strong>: <span id="k_active">—</span></li>
+          <li><strong>PILOT</strong>: <span id="k_pilot">—</span></li>
+          <li><strong>PLANNED</strong>: <span id="k_planned">—</span></li>
+        </ul>
+      </div>
 
-      <div class="hbce-grid hbce-grid--2">
-        <div class="hbce-card">
-          <h3 class="hbce-card__title">Indicatori</h3>
-          <ul class="hbce-list">
-            <li><strong>ACTIVE</strong>: <span id="net_active">—</span></li>
-            <li><strong>PILOT</strong>: <span id="net_pilot">—</span></li>
-            <li><strong>PLANNED</strong>: <span id="net_planned">—</span></li>
-            <li><strong>SUSPENDED</strong>: <span id="net_suspended">—</span></li>
-          </ul>
+      <div class="hbce-card">
+        <div class="hbce-card__title">Copertura</div>
+        <ul class="hbce-list">
+          <li><strong>COUNTRIES</strong>: <span id="k_countries">—</span></li>
+          <li><strong>IT REGIONS</strong>: <span id="k_it_regions">—</span></li>
+        </ul>
+      </div>
+
+      <div class="hbce-card">
+        <div class="hbce-card__title">Regole</div>
+        <p class="hbce-card__text">
+          Modalità: <strong>CATTIVA++</strong><br/>
+          1 errore in nodes.json → <strong>FAIL-CLOSED</strong><br/>
+          ACTIVE richiede operator valido + node_hash prefisso HBCE/ORIGIN.
+        </p>
+        <div class="hbce-actions" style="margin-top:10px;">
+          <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verify</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Registry</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Elenco nodi (filtrabile)</h2>
+
+      <div class="hbce-card" style="margin-top:12px;">
+        <div class="hbce-grid hbce-grid--3">
+          <div>
+            <div class="hbce-card__title">Filtro status</div>
+            <div class="hbce-actions" style="margin-top:8px;">
+              <button class="hbce-btn" type="button" data-filter-status="ALL">ALL</button>
+              <button class="hbce-btn" type="button" data-filter-status="ACTIVE">ACTIVE</button>
+              <button class="hbce-btn" type="button" data-filter-status="PILOT">PILOT</button>
+              <button class="hbce-btn" type="button" data-filter-status="PLANNED">PLANNED</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="hbce-card__title">Filtro country</div>
+            <input id="filter_country" class="hbce-btn" style="width:100%;" placeholder="ISO-2 (es. IT, FR, DE)" />
+          </div>
+
+          <div>
+            <div class="hbce-card__title">Ricerca</div>
+            <input id="filter_q" class="hbce-btn" style="width:100%;" placeholder="Cerca region/city/node_hash/operator" />
+          </div>
         </div>
 
-        <div class="hbce-card">
-          <h3 class="hbce-card__title">Copertura</h3>
-          <ul class="hbce-list">
-            <li><strong>Nazioni (ISO)</strong>: <span id="net_countries">—</span></li>
-            <li><strong>Regioni IT</strong>: <span id="net_regions_it">—</span></li>
-            <li><strong>Totale nodi</strong>: <span id="net_total">—</span></li>
-          </ul>
-        </div>
+        <p class="hbce-card__text" style="margin-top:10px;">
+          Output solo se rete in stato <strong>OK</strong>. Se FAIL-CLOSED, niente lista: zero fiducia, zero output.
+        </p>
       </div>
 
-      <div id="net_status" class="hbce-callout" style="margin-top:14px">
-        Stato: —
-      </div>
-    </section>
-
-    <!-- FILTERS -->
-    <section class="hbce-card">
-      <h2 class="hbce-card__title">Filtri</h2>
-      <p class="hbce-card__lead">Ricerca e filtro deterministici (client-side). Nessuna modifica al registry.</p>
-
-      <div class="hbce-grid hbce-grid--2">
-        <label class="hbce-field">
-          <span class="hbce-field__label">Cerca (regione / città / nazione / hash)</span>
-          <input id="q" class="hbce-input" placeholder="es. Torino, IT, Lombardia, 64-hex…" autocomplete="off" />
-        </label>
-
-        <label class="hbce-field">
-          <span class="hbce-field__label">Status</span>
-          <select id="status_filter" class="hbce-input">
-            <option value="ALL" selected>Tutti</option>
-            <option value="ACTIVE">ACTIVE</option>
-            <option value="PILOT">PILOT</option>
-            <option value="PLANNED">PLANNED</option>
-            <option value="SUSPENDED">SUSPENDED</option>
-          </select>
-        </label>
-
-        <label class="hbce-field">
-          <span class="hbce-field__label">Country (ISO)</span>
-          <select id="country_filter" class="hbce-input">
-            <option value="ALL" selected>Tutte</option>
-          </select>
-        </label>
-
-        <label class="hbce-field">
-          <span class="hbce-field__label">Ordina</span>
-          <select id="sort" class="hbce-input">
-            <option value="COUNTRY_REGION" selected>Nazione → Regione/Città</option>
-            <option value="STATUS">Status</option>
-            <option value="TIMESTAMP_DESC">Timestamp (desc)</option>
-            <option value="TIMESTAMP_ASC">Timestamp (asc)</option>
-          </select>
-        </label>
-      </div>
-
-      <div class="hbce-actions" style="margin-top:14px">
-        <button id="btn_reload" class="hbce-btn" type="button">Ricarica registry</button>
-        <button id="btn_export" class="hbce-btn hbce-btn--ghost" type="button">Export JSON (filtrato)</button>
-      </div>
-    </section>
-
-    <!-- TABLE -->
-    <section class="hbce-card">
-      <h2 class="hbce-card__title">Nodi (viewer)</h2>
-      <p class="hbce-card__lead">
-        Tabella generata da <code>deployment/nodes.json</code>. Se un record è incompleto o invalido, viene mostrato ma marcato.
-      </p>
-
-      <div style="overflow:auto">
-        <table class="hbce-table" id="net_table">
+      <div id="hbce_table_wrap" class="hbce-card" style="margin-top:12px; overflow:auto;">
+        <div class="hbce-card__title">Nodi</div>
+        <table style="width:100%; border-collapse:collapse; margin-top:10px;">
           <thead>
-            <tr>
-              <th>Status</th>
-              <th>Country</th>
-              <th>Region</th>
-              <th>City</th>
-              <th>node_hash</th>
-              <th>operator</th>
-              <th>timestamp</th>
-              <th>note</th>
+            <tr style="text-align:left; border-bottom:1px solid rgba(255,255,255,.08);">
+              <th style="padding:10px;">STATUS</th>
+              <th style="padding:10px;">COUNTRY</th>
+              <th style="padding:10px;">REGION</th>
+              <th style="padding:10px;">CITY</th>
+              <th style="padding:10px;">NODE_HASH</th>
+              <th style="padding:10px;">OPERATOR</th>
+              <th style="padding:10px;">TIMESTAMP</th>
             </tr>
           </thead>
-          <tbody id="net_tbody">
-            <tr><td colspan="8">Caricamento…</td></tr>
-          </tbody>
+          <tbody id="hbce_tbody"></tbody>
         </table>
-      </div>
-
-      <div class="hbce-actions" style="margin-top:14px">
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operator/">Zona Operatori (gated)</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry IPR</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
       </div>
     </section>
 
   </main>
 
   <div data-hbce="footer"></div>
-
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js" defer></script>
   <script defer src="/hermeticum-bce-platform/network/network.js"></script>
 </body>
 </html>
