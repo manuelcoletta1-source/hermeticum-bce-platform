@@ -1,6 +1,3 @@
-/* HBCE Counters — reads deployment/nodes.json
-   EU-first, audit-first, fail-closed in UI: if cannot load -> show fail-closed status.
-*/
 (function () {
   const $ = (id) => document.getElementById(id);
 
@@ -13,6 +10,8 @@
     status: "hbce_nodes_status"
   };
 
+  const SRC = "/hermeticum-bce-platform/deployment/nodes.json";
+
   function setText(id, v) {
     const el = $(id);
     if (el) el.textContent = String(v);
@@ -23,43 +22,44 @@
     if (el) el.innerHTML = html;
   }
 
-  async function loadNodes() {
-    const url = "/hermeticum-bce-platform/deployment/nodes.json";
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) throw new Error("nodes_fetch_failed");
+  async function loadRegistry() {
+    const res = await fetch(SRC, { cache: "no-store" });
+    if (!res.ok) throw new Error("fetch_failed");
     const json = await res.json();
-    if (!json || !Array.isArray(json.nodes)) throw new Error("nodes_invalid");
-    return json;
+    if (!json || !Array.isArray(json.nodes)) throw new Error("invalid");
+    return json.nodes;
   }
 
-  function computeStats(nodes) {
-    const byStatus = { ACTIVE: 0, PILOT: 0, PLANNED: 0, SUSPENDED: 0 };
+  function isIso2(x) {
+    return /^[A-Z]{2}$/.test(String(x || "").toUpperCase());
+  }
+
+  function compute(nodes) {
+    const by = { ACTIVE: 0, PILOT: 0, PLANNED: 0, SUSPENDED: 0 };
     const countries = new Set();
     const regionsIT = new Set();
 
     for (const n of nodes) {
       if (!n || typeof n !== "object") continue;
-
       const st = String(n.status || "").toUpperCase();
-      if (byStatus[st] !== undefined) byStatus[st] += 1;
+      if (by[st] !== undefined) by[st] += 1;
 
       const c = String(n.country || "").toUpperCase();
-      if (/^[A-Z]{2}$/.test(c)) countries.add(c);
+      if (isIso2(c)) countries.add(c);
 
       if (c === "IT" && n.region) regionsIT.add(String(n.region));
     }
 
     return {
-      active: byStatus.ACTIVE,
-      pilot: byStatus.PILOT,
-      planned: byStatus.PLANNED,
+      active: by.ACTIVE,
+      pilot: by.PILOT,
+      planned: by.PLANNED,
       countries: countries.size,
       regionsIT: regionsIT.size
     };
   }
 
   async function run() {
-    // default placeholders
     setText(IDS.active, "—");
     setText(IDS.pilot, "—");
     setText(IDS.planned, "—");
@@ -68,23 +68,21 @@
     setStatus("Stato: <strong>verifica in corso…</strong>");
 
     try {
-      const data = await loadNodes();
-      const stats = computeStats(data.nodes);
+      const nodes = await loadRegistry();
+      const s = compute(nodes);
 
-      setText(IDS.active, stats.active);
-      setText(IDS.pilot, stats.pilot);
-      setText(IDS.planned, stats.planned);
-      setText(IDS.countries, stats.countries);
-      setText(IDS.regions_it, stats.regionsIT);
+      setText(IDS.active, s.active);
+      setText(IDS.pilot, s.pilot);
+      setText(IDS.planned, s.planned);
+      setText(IDS.countries, s.countries);
+      setText(IDS.regions_it, s.regionsIT);
 
       setStatus('Stato: <strong>OK</strong> — valori derivati da <code>deployment/nodes.json</code> (public, append-only).');
     } catch (e) {
-      // Fail-closed in UI: if cannot verify the public registry -> show closed.
       setStatus('Stato: <strong>FAIL-CLOSED</strong> — impossibile leggere/validare <code>deployment/nodes.json</code>.');
     }
   }
 
-  // run after DOM ready
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", run);
   } else {
