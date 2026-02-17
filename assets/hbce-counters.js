@@ -1,128 +1,133 @@
+/* HBCE COUNTERS — CATTIVA MODE
+ * Used by index pages to show network counters from deployment/nodes.json
+ * Fails closed if ANY ACTIVE node is incomplete:
+ *  - operator empty/PENDING
+ *  - node_hash empty/PENDING
+ *  - (IT) region empty
+ */
+
 (function () {
-  const SRC = "/hermeticum-bce-platform/deployment/nodes.json";
+  "use strict";
 
-  const IDS = {
-    active: "hbce_nodes_active",
-    pilot: "hbce_nodes_pilot",
-    planned: "hbce_nodes_planned",
-    countries: "hbce_countries",
-    regionsIt: "hbce_regions_it",
-    status: "hbce_nodes_status"
-  };
+  const SOURCE = "/hermeticum-bce-platform/deployment/nodes.json";
 
-  const $ = (id) => document.getElementById(id);
+  const el = (id) => document.getElementById(id);
+  const set = (id, v) => { const x = el(id); if (x) x.textContent = String(v); };
 
-  function set(id, v) {
-    const el = $(id);
-    if (el) el.textContent = String(v);
+  function s(x) { return String(x || "").trim(); }
+  function upper(x) { return s(x).toUpperCase(); }
+
+  function isISO2(x) {
+    const v = s(x);
+    return v.length === 2 && /^[A-Z]{2}$/i.test(v);
   }
 
-  function setStatus(html) {
-    const el = $(IDS.status);
-    if (el) el.innerHTML = html;
-  }
+  function validate(data) {
+    if (!data || typeof data !== "object") return "JSON non valido (non object).";
+    if (!Array.isArray(data.nodes)) return "Campo nodes[] mancante o non array.";
 
-  function isIso2(x) {
-    return /^[A-Z]{2}$/.test(String(x || "").toUpperCase());
-  }
+    for (const n of data.nodes) {
+      if (!n || typeof n !== "object") return "Nodo non valido (non object).";
 
-  function normNode(n) {
-    const o = (n && typeof n === "object") ? n : {};
-    return {
-      status: String(o.status || "").toUpperCase(),
-      country: String(o.country || "").toUpperCase(),
-      region: String(o.region || ""),
-      city: String(o.city || ""),
-      node_hash: String(o.node_hash || ""),
-      operator: String(o.operator || "")
-    };
-  }
-
-  function compute(nodes) {
-    const by = { ACTIVE: 0, PILOT: 0, PLANNED: 0, SUSPENDED: 0 };
-    const countries = new Set();
-    const itRegions = new Set();
-
-    for (const raw of nodes) {
-      const n = normNode(raw);
-
-      if (by[n.status] !== undefined) by[n.status] += 1;
-      if (isIso2(n.country)) countries.add(n.country);
-      if (n.country === "IT" && n.region) itRegions.add(n.region);
+      const req = ["country", "status", "node_hash", "timestamp"];
+      for (const k of req) {
+        if (!(k in n)) return "Campo obbligatorio mancante: " + k;
+        if (typeof n[k] !== "string") return "Campo non string: " + k;
+        if (!s(n[k])) return "Campo vuoto: " + k;
+      }
+      if (!isISO2(n.country)) return "country non ISO-2 valido.";
     }
-
-    return {
-      active: by.ACTIVE,
-      pilot: by.PILOT,
-      planned: by.PLANNED,
-      suspended: by.SUSPENDED,
-      countries: countries.size,
-      itRegions: itRegions.size,
-      total: nodes.length
-    };
+    return null;
   }
 
-  async function loadRegistry() {
-    const res = await fetch(SRC, { cache: "no-store" });
-    if (!res.ok) throw new Error("fetch_failed");
+  function detectDirtyActive(nodes) {
+    for (const n of nodes) {
+      if (!n || n.status !== "ACTIVE") continue;
 
-    const json = await res.json();
+      const op = upper(n.operator);
+      const nh = upper(n.node_hash);
+      const rg = s(n.region);
 
-    // STRICT: match proto + nodes[]
-    if (!json || json.proto !== "HBCE-NODE-REGISTRY-v1") throw new Error("proto_mismatch");
-    if (!Array.isArray(json.nodes)) throw new Error("nodes_invalid");
+      const badOp = (!op || op === "PENDING");
+      const badNh = (!nh || nh === "PENDING");
+      const badItRegion = (upper(n.country) === "IT" && !rg);
 
-    return json;
+      if (badOp || badNh || badItRegion) return n;
+    }
+    return null;
   }
 
-  function failClosed(msg) {
-    set(IDS.active, "—");
-    set(IDS.pilot, "—");
-    set(IDS.planned, "—");
-    set(IDS.countries, "—");
-    set(IDS.regionsIt, "—");
-    setStatus(`Stato: <strong>FAIL-CLOSED</strong> — ${msg}`);
+  function uniq(arr) {
+    return Array.from(new Set(arr.filter(Boolean)));
+  }
+
+  function failClosed(reason) {
+    // IDs used in your index variants
+    const ids = [
+      "hbce_nodes_active",
+      "hbce_nodes_pilot",
+      "hbce_nodes_planned",
+      "hbce_countries",
+      "hbce_regions_it",
+      "hbce_nodes_status"
+    ];
+    ids.forEach((id) => set(id, "—"));
+
+    const st = el("hbce_nodes_status");
+    if (st) {
+      st.innerHTML =
+        "<strong>FAIL-CLOSED</strong> — " +
+        (reason ? s(reason) : "nodes.json non verificabile / incoerente (CATTIVA).");
+    }
+  }
+
+  function okStatus(msg) {
+    const st = el("hbce_nodes_status");
+    if (st) st.innerHTML = msg;
   }
 
   async function boot() {
-    // defaults
-    set(IDS.active, "—");
-    set(IDS.pilot, "—");
-    set(IDS.planned, "—");
-    set(IDS.countries, "—");
-    set(IDS.regionsIt, "—");
-    setStatus("Stato: —");
-
     try {
-      const reg = await loadRegistry();
-      const s = compute(reg.nodes);
+      const res = await fetch(SOURCE, { cache: "no-store" });
+      if (!res.ok) return failClosed("HTTP " + res.status + " su nodes.json");
 
-      set(IDS.active, s.active);
-      set(IDS.pilot, s.pilot);
-      set(IDS.planned, s.planned);
-      set(IDS.countries, s.countries);
-      set(IDS.regionsIt, s.itRegions);
+      const data = await res.json();
+      const err = validate(data);
+      if (err) return failClosed(err);
 
-      const origin = (reg.origin && typeof reg.origin === "object") ? reg.origin : null;
-      const originTxt = origin
-        ? `origin: <strong>${origin.city || "—"}</strong> (${String(origin.country || "").toUpperCase() || "—"})`
-        : "origin: —";
+      const dirty = detectDirtyActive(data.nodes);
+      if (dirty) {
+        const msg =
+          "ACTIVE incoerente trovato: " +
+          (dirty.country || "—") + " / " + (dirty.region || "—") + " / " + (dirty.city || "—") +
+          " · operator=" + (dirty.operator || "") + " · node_hash=" + (dirty.node_hash || "");
+        return failClosed(msg);
+      }
 
-      setStatus(
-        `Stato: <strong>OK</strong> — <code>${reg.proto}</code> · ${originTxt} · nodes: <strong>${s.total}</strong>`
+      // OK — ledger pulito in senso CATTIVO
+      const active = data.nodes.filter(n => n.status === "ACTIVE").length;
+      const pilot = data.nodes.filter(n => n.status === "PILOT").length;
+      const planned = data.nodes.filter(n => n.status === "PLANNED").length;
+
+      const countries = uniq(data.nodes.map(n => upper(n.country))).length;
+
+      const itNodes = data.nodes.filter(n => upper(n.country) === "IT");
+      const itRegions = uniq(itNodes.map(n => s(n.region))).filter(Boolean).length;
+
+      set("hbce_nodes_active", active);
+      set("hbce_nodes_pilot", pilot);
+      set("hbce_nodes_planned", planned);
+      set("hbce_countries", countries);
+      set("hbce_regions_it", itRegions);
+
+      okStatus(
+        "Stato: <strong>OK</strong> (CATTIVA) — nessun ACTIVE sporco. Fonte: <code>deployment/nodes.json</code>."
       );
+
     } catch (e) {
-      const reason =
-        (e && e.message === "proto_mismatch") ? "proto mismatch (expected HBCE-NODE-REGISTRY-v1)" :
-        (e && e.message === "nodes_invalid") ? "invalid nodes[] format" :
-        "cannot read/validate deployment/nodes.json";
-      failClosed(reason);
+      failClosed("Errore parsing/lettura nodes.json");
     }
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", boot);
-  } else {
-    boot();
-  }
+  boot();
 })();
