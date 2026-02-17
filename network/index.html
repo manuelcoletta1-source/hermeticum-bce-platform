@@ -1,12 +1,13 @@
-
 <!doctype html>
 <html lang="it">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>NETWORK — Operators Ledger (EU)</title>
-  <meta name="description" content="HBCE Operators Network Ledger: auditabile, append-only, hash-only. Controllo integrità in-browser (PASS/FAIL)." />
+  <title>NETWORK — Nodi HBCE (EU)</title>
+  <meta name="description" content="Viewer pubblico dei nodi HBCE: Italia + UE. Fonte: deployment/nodes.json (append-only). Fail-closed." />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/network/" />
 
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
@@ -16,101 +17,132 @@
 
   <main class="hbce-container hbce-main">
 
+    <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">NETWORK · Operators Ledger · APPEND-ONLY · HASH-ONLY</div>
-      <h1 class="hbce-hero__title">Rete operatori (EU) — Controllo integrità</h1>
+      <div class="hbce-hero__kicker">NETWORK · PUBLIC VIEWER · APPEND-ONLY · HASH-ONLY · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Network — Nodi Operativi (Italia + UE)</h1>
       <p class="hbce-hero__lead">
-        Questa pagina verifica in browser la coerenza del ledger <code>network/operators-ledger.json</code>
-        usando la regola deterministica <code>network/HASH_RULES.md</code>.
-        Risultato: <strong>PASS/FAIL</strong> riproducibile da chiunque.
+        Viewer pubblico dei nodi territoriali. Fonte unica: <code>deployment/nodes.json</code>.
+        Se il registry nodi non è leggibile/valido → <strong>FAIL-CLOSED</strong>.
       </p>
 
       <div class="hbce-actions">
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/network/operators-ledger.json" target="_blank" rel="noopener">Apri ledger JSON</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/network/HASH_RULES.md" target="_blank" rel="noopener">Apri HASH_RULES</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/deployment/">Deployment</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/deployment/nodes.json" target="_blank" rel="noopener">nodes.json</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/deployment/nodes.schema.json" target="_blank" rel="noopener">Schema</a>
       </div>
     </section>
 
-    <section class="hbce-card" style="margin-top:16px;">
-      <div class="hbce-card__header">
-        <h2 class="hbce-card__title">Stato rete</h2>
-        <p class="hbce-card__subtitle">Controllo deterministico: se qualcosa non torna → FAIL.</p>
+    <!-- STATUS -->
+    <section class="hbce-card">
+      <h2 class="hbce-card__title">Stato registry nodi</h2>
+      <p class="hbce-card__lead">
+        Questo viewer non “inventa” niente: calcola e mostra solo ciò che è presente nel registry.
+      </p>
+
+      <div class="hbce-grid hbce-grid--2">
+        <div class="hbce-card">
+          <h3 class="hbce-card__title">Indicatori</h3>
+          <ul class="hbce-list">
+            <li><strong>ACTIVE</strong>: <span id="net_active">—</span></li>
+            <li><strong>PILOT</strong>: <span id="net_pilot">—</span></li>
+            <li><strong>PLANNED</strong>: <span id="net_planned">—</span></li>
+            <li><strong>SUSPENDED</strong>: <span id="net_suspended">—</span></li>
+          </ul>
+        </div>
+
+        <div class="hbce-card">
+          <h3 class="hbce-card__title">Copertura</h3>
+          <ul class="hbce-list">
+            <li><strong>Nazioni (ISO)</strong>: <span id="net_countries">—</span></li>
+            <li><strong>Regioni IT</strong>: <span id="net_regions_it">—</span></li>
+            <li><strong>Totale nodi</strong>: <span id="net_total">—</span></li>
+          </ul>
+        </div>
       </div>
 
-      <div class="hbce-card__content">
-        <div id="statusBox" class="hbce-alert hbce-alert--info">
-          Caricamento ledger…
-        </div>
-
-        <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
-          <div class="hbce-metric">
-            <div class="hbce-metric__label">Records</div>
-            <div class="hbce-metric__value" id="mRecords">—</div>
-          </div>
-          <div class="hbce-metric">
-            <div class="hbce-metric__label">PASS</div>
-            <div class="hbce-metric__value" id="mPass">—</div>
-          </div>
-          <div class="hbce-metric">
-            <div class="hbce-metric__label">FAIL</div>
-            <div class="hbce-metric__value" id="mFail">—</div>
-          </div>
-        </div>
-
-        <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
-          <div class="hbce-metric">
-            <div class="hbce-metric__label">Italia — nodi regionali</div>
-            <div class="hbce-metric__value" id="mItalyRegions">—</div>
-          </div>
-          <div class="hbce-metric">
-            <div class="hbce-metric__label">UE — capitali</div>
-            <div class="hbce-metric__value" id="mEUCaps">—</div>
-          </div>
-          <div class="hbce-metric">
-            <div class="hbce-metric__label">Ruoli distinti</div>
-            <div class="hbce-metric__value" id="mRoles">—</div>
-          </div>
-        </div>
-
-        <div class="hbce-divider" style="margin:16px 0;"></div>
-
-        <div class="hbce-actions" style="gap:10px;">
-          <button class="hbce-btn hbce-btn--primary" id="btnRun">Esegui verifica</button>
-          <button class="hbce-btn" id="btnCopyFail" disabled>Copia elenco FAIL</button>
-        </div>
-
-        <p class="hbce-muted" style="margin-top:10px;">
-          Regola hash applicata:
-          <code>HBCE|OPERATOR|v1|{name}|{country}|{region}|{city}|{role}|PARENT={parent_or_-}</code>
-          → SHA-256 (hex lowercase).
-        </p>
+      <div id="net_status" class="hbce-callout" style="margin-top:14px">
+        Stato: —
       </div>
     </section>
 
-    <section class="hbce-card" style="margin-top:16px;">
-      <div class="hbce-card__header">
-        <h2 class="hbce-card__title">Dettaglio verifica (OPERATOR_ADDED)</h2>
-        <p class="hbce-card__subtitle">Solo record OPERATOR_ADDED: ogni hash deve essere ricalcolabile e identico.</p>
+    <!-- FILTERS -->
+    <section class="hbce-card">
+      <h2 class="hbce-card__title">Filtri</h2>
+      <p class="hbce-card__lead">Ricerca e filtro deterministici (client-side). Nessuna modifica al registry.</p>
+
+      <div class="hbce-grid hbce-grid--2">
+        <label class="hbce-field">
+          <span class="hbce-field__label">Cerca (regione / città / nazione / hash)</span>
+          <input id="q" class="hbce-input" placeholder="es. Torino, IT, Lombardia, 64-hex…" autocomplete="off" />
+        </label>
+
+        <label class="hbce-field">
+          <span class="hbce-field__label">Status</span>
+          <select id="status_filter" class="hbce-input">
+            <option value="ALL" selected>Tutti</option>
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="PILOT">PILOT</option>
+            <option value="PLANNED">PLANNED</option>
+            <option value="SUSPENDED">SUSPENDED</option>
+          </select>
+        </label>
+
+        <label class="hbce-field">
+          <span class="hbce-field__label">Country (ISO)</span>
+          <select id="country_filter" class="hbce-input">
+            <option value="ALL" selected>Tutte</option>
+          </select>
+        </label>
+
+        <label class="hbce-field">
+          <span class="hbce-field__label">Ordina</span>
+          <select id="sort" class="hbce-input">
+            <option value="COUNTRY_REGION" selected>Nazione → Regione/Città</option>
+            <option value="STATUS">Status</option>
+            <option value="TIMESTAMP_DESC">Timestamp (desc)</option>
+            <option value="TIMESTAMP_ASC">Timestamp (asc)</option>
+          </select>
+        </label>
       </div>
 
-      <div class="hbce-card__content" style="overflow:auto;">
-        <table class="hbce-table" id="tbl">
+      <div class="hbce-actions" style="margin-top:14px">
+        <button id="btn_reload" class="hbce-btn" type="button">Ricarica registry</button>
+        <button id="btn_export" class="hbce-btn hbce-btn--ghost" type="button">Export JSON (filtrato)</button>
+      </div>
+    </section>
+
+    <!-- TABLE -->
+    <section class="hbce-card">
+      <h2 class="hbce-card__title">Nodi (viewer)</h2>
+      <p class="hbce-card__lead">
+        Tabella generata da <code>deployment/nodes.json</code>. Se un record è incompleto o invalido, viene mostrato ma marcato.
+      </p>
+
+      <div style="overflow:auto">
+        <table class="hbce-table" id="net_table">
           <thead>
             <tr>
-              <th>Result</th>
-              <th>Operator</th>
+              <th>Status</th>
               <th>Country</th>
               <th>Region</th>
               <th>City</th>
-              <th>Role</th>
-              <th>Expected SHA256</th>
-              <th>Recorded SHA256</th>
+              <th>node_hash</th>
+              <th>operator</th>
+              <th>timestamp</th>
+              <th>note</th>
             </tr>
           </thead>
-          <tbody id="tbody">
-            <tr><td colspan="8" class="hbce-muted">Premi “Esegui verifica”.</td></tr>
+          <tbody id="net_tbody">
+            <tr><td colspan="8">Caricamento…</td></tr>
           </tbody>
         </table>
+      </div>
+
+      <div class="hbce-actions" style="margin-top:14px">
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operator/">Zona Operatori (gated)</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry IPR</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
       </div>
     </section>
 
@@ -118,154 +150,6 @@
 
   <div data-hbce="footer"></div>
 
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
-  <script>
-    // ---------- crypto helpers ----------
-    async function sha256Hex(str) {
-      const enc = new TextEncoder();
-      const buf = enc.encode(str);
-      const digest = await crypto.subtle.digest("SHA-256", buf);
-      const bytes = new Uint8Array(digest);
-      let hex = "";
-      for (const b of bytes) hex += b.toString(16).padStart(2, "0");
-      return hex;
-    }
-
-    function canonicalInput(rec) {
-      const parent = (rec.parent_operator_sha256 && String(rec.parent_operator_sha256).trim()) ? String(rec.parent_operator_sha256).trim() : "-";
-      const operatorName = String(rec.operator_name || "").trim();
-      const country = String(rec.country || "").trim();
-      const region = String(rec.region || "").trim();
-      const city = String(rec.city || "").trim();
-      const role = String(rec.role || "").trim();
-      return `HBCE|OPERATOR|v1|${operatorName}|${country}|${region}|${city}|${role}|PARENT=${parent}`;
-    }
-
-    function setStatus(kind, text) {
-      const box = document.getElementById("statusBox");
-      box.className = "hbce-alert " + (kind === "pass" ? "hbce-alert--success" : kind === "fail" ? "hbce-alert--danger" : "hbce-alert--info");
-      box.textContent = text;
-    }
-
-    function td(text, cls) {
-      const el = document.createElement("td");
-      if (cls) el.className = cls;
-      el.textContent = text;
-      return el;
-    }
-
-    // ---------- main ----------
-    let lastFailList = [];
-
-    async function loadLedger() {
-      const res = await fetch("/hermeticum-bce-platform/network/operators-ledger.json", { cache: "no-store" });
-      if (!res.ok) throw new Error("Impossibile caricare operators-ledger.json");
-      return await res.json();
-    }
-
-    function metricsFromRecords(records) {
-      const roles = new Set();
-      let itRegions = 0;
-      let euCaps = 0;
-
-      for (const r of records) {
-        if (r.record_type !== "OPERATOR_ADDED") continue;
-        roles.add(r.role || "");
-        const c = (r.country || "").trim();
-        const region = (r.region || "").trim();
-
-        if (c === "Italy" && region && region !== "National Capital") itRegions++;
-        if (c !== "Italy" && region === "National Capital") euCaps++;
-      }
-
-      return { rolesCount: roles.size, itRegions, euCaps };
-    }
-
-    async function run() {
-      setStatus("info", "Verifica in corso…");
-      document.getElementById("btnCopyFail").disabled = true;
-      lastFailList = [];
-
-      const tbody = document.getElementById("tbody");
-      tbody.innerHTML = "";
-
-      let ledger;
-      try {
-        ledger = await loadLedger();
-      } catch (e) {
-        setStatus("fail", String(e.message || e));
-        tbody.innerHTML = `<tr><td colspan="8" class="hbce-muted">FAIL — ledger non leggibile.</td></tr>`;
-        return;
-      }
-
-      const records = Array.isArray(ledger.records) ? ledger.records : [];
-      const ops = records.filter(r => r && r.record_type === "OPERATOR_ADDED");
-
-      // Metrics (high level)
-      document.getElementById("mRecords").textContent = String(ops.length);
-      const m = metricsFromRecords(ops);
-      document.getElementById("mItalyRegions").textContent = String(m.itRegions);
-      document.getElementById("mEUCaps").textContent = String(m.euCaps);
-      document.getElementById("mRoles").textContent = String(m.rolesCount);
-
-      let pass = 0, fail = 0;
-
-      for (const rec of ops) {
-        const input = canonicalInput(rec);
-        const expected = await sha256Hex(input);
-        const recorded = String(rec.operator_payload_sha256 || "").trim().toLowerCase();
-
-        const ok = (expected === recorded);
-
-        const tr = document.createElement("tr");
-        tr.appendChild(td(ok ? "PASS" : "FAIL", ok ? "hbce-badge hbce-badge--success" : "hbce-badge hbce-badge--danger"));
-        tr.appendChild(td(String(rec.operator_name || "").trim()));
-        tr.appendChild(td(String(rec.country || "").trim()));
-        tr.appendChild(td(String(rec.region || "").trim()));
-        tr.appendChild(td(String(rec.city || "").trim()));
-        tr.appendChild(td(String(rec.role || "").trim()));
-        tr.appendChild(td(expected, "hbce-mono"));
-        tr.appendChild(td(recorded || "(missing)", "hbce-mono"));
-
-        tbody.appendChild(tr);
-
-        if (ok) pass++;
-        else {
-          fail++;
-          lastFailList.push({
-            operator_name: rec.operator_name || "",
-            country: rec.country || "",
-            region: rec.region || "",
-            city: rec.city || "",
-            role: rec.role || "",
-            expected_sha256: expected,
-            recorded_sha256: recorded || ""
-          });
-        }
-      }
-
-      document.getElementById("mPass").textContent = String(pass);
-      document.getElementById("mFail").textContent = String(fail);
-
-      if (fail === 0) {
-        setStatus("pass", "PASS — ledger coerente. Tutti gli operator_payload_sha256 sono verificabili con HASH_RULES.");
-      } else {
-        setStatus("fail", `FAIL — trovati ${fail} record OPERATOR_ADDED non coerenti. Ledger da correggere (append-only: aggiungi record correttivi o rigenera file).`);
-        document.getElementById("btnCopyFail").disabled = false;
-      }
-    }
-
-    async function copyFail() {
-      const txt = JSON.stringify({ fails: lastFailList }, null, 2);
-      await navigator.clipboard.writeText(txt);
-      setStatus("info", `Elenco FAIL copiato (${lastFailList.length} record).`);
-    }
-
-    document.getElementById("btnRun").addEventListener("click", run);
-    document.getElementById("btnCopyFail").addEventListener("click", copyFail);
-
-    // Auto-run once
-    run();
-  </script>
+  <script defer src="/hermeticum-bce-platform/network/network.js"></script>
 </body>
 </html>
