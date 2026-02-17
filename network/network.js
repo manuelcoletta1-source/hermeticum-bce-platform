@@ -1,282 +1,180 @@
+/* HBCE NETWORK — CATTIVA++ runtime validator + renderer
+ * Reads: /deployment/nodes.json
+ * If anything fails validation -> FAIL-CLOSED (no table render).
+ */
+
 (function () {
+  "use strict";
+
+  const SOURCE = "/hermeticum-bce-platform/deployment/nodes.json";
+  const ALLOWED_STATUS = new Set(["ACTIVE", "PILOT", "PLANNED"]);
+
   const $ = (id) => document.getElementById(id);
+  const setText = (id, v) => { const el = $(id); if (el) el.textContent = String(v); };
+  const setHTML = (id, v) => { const el = $(id); if (el) el.innerHTML = String(v); };
 
-  const UI = {
-    status: "net_status",
-    total: "net_total",
-    active: "net_active",
-    pilot: "net_pilot",
-    planned: "net_planned",
-    suspended: "net_suspended",
-    countries: "net_countries",
-    regionsIT: "net_regions_it",
+  function s(x) { return String(x || "").trim(); }
+  function up(x) { return s(x).toUpperCase(); }
 
-    q: "q",
-    statusFilter: "status_filter",
-    countryFilter: "country_filter",
-    sort: "sort",
-    btnReload: "btn_reload",
-    btnExport: "btn_export",
-
-    tbody: "net_tbody"
-  };
-
-  const SRC = "/hermeticum-bce-platform/deployment/nodes.json";
-
-  let rawNodes = [];
-  let filteredNodes = [];
-
-  function setText(id, v) {
-    const el = $(id);
-    if (el) el.textContent = String(v);
+  function isISO2(x) { return /^[A-Z]{2}$/.test(up(x)); }
+  function isIsoTs(x) {
+    return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+\-]\d{2}:\d{2})$/.test(s(x));
+  }
+  function isValidNodeHash(x) {
+    const v = up(x);
+    if (!v) return false;
+    if (v === "PENDING") return false;
+    if (v.length < 10 || v.length > 80) return false;
+    return /^[A-Z0-9_-]+$/.test(v);
+  }
+  function isValidActivePrefix(x) {
+    const v = up(x);
+    return v.startsWith("HBCE-") || v.startsWith("ORIGIN-");
   }
 
-  function setStatus(html) {
-    const el = $(UI.status);
-    if (el) el.innerHTML = html;
+  function uniq(arr) { return Array.from(new Set(arr.filter(Boolean))); }
+
+  function failClosed(reason) {
+    setHTML("hbce_net_state", "<strong>FAIL-CLOSED</strong> — " + s(reason || "Fonte non verificabile / incoerente."));
+    const wrap = $("hbce_table_wrap");
+    if (wrap) wrap.style.display = "none";
   }
 
-  function safeStr(x) {
-    return (x === null || x === undefined) ? "" : String(x);
+  function okState(msg) {
+    setHTML("hbce_net_state", "<strong>OK</strong> — " + s(msg));
+    const wrap = $("hbce_table_wrap");
+    if (wrap) wrap.style.display = "block";
   }
 
-  function isIso2(x) {
-    return /^[A-Z]{2}$/.test(String(x || "").toUpperCase());
-  }
+  function validate(data) {
+    if (!data || typeof data !== "object") return "JSON non valido (non object).";
+    if (!Array.isArray(data.nodes)) return "Campo nodes[] mancante o non array.";
 
-  function isHex64(x) {
-    return /^[a-f0-9]{64}$/i.test(String(x || ""));
-  }
+    for (const n of data.nodes) {
+      if (!n || typeof n !== "object") return "Nodo non valido (non object).";
 
-  function normalizeNode(n) {
-    const o = (n && typeof n === "object") ? n : {};
-    const country = safeStr(o.country).toUpperCase();
-    const status = safeStr(o.status).toUpperCase();
-    return {
-      status,
-      country,
-      region: safeStr(o.region),
-      city: safeStr(o.city),
-      node_hash: safeStr(o.node_hash),
-      operator: safeStr(o.operator),
-      timestamp: safeStr(o.timestamp),
-      note: safeStr(o.note)
-    };
-  }
+      const req = ["country", "status", "node_hash", "operator", "timestamp", "city"];
+      for (const k of req) {
+        if (!(k in n)) return "Campo obbligatorio mancante: " + k;
+        if (typeof n[k] !== "string") return "Campo non string: " + k;
+        if (!s(n[k])) return "Campo vuoto: " + k;
+      }
 
-  async function load() {
-    setStatus("Stato: <strong>verifica in corso…</strong>");
-    const res = await fetch(SRC, { cache: "no-store" });
-    if (!res.ok) throw new Error("fetch_failed");
-    const json = await res.json();
-    if (!json || !Array.isArray(json.nodes)) throw new Error("invalid_format");
-    return json.nodes.map(normalizeNode);
-  }
+      if (!ALLOWED_STATUS.has(up(n.status))) return "status fuori enum: " + s(n.status);
+      if (!isISO2(n.country)) return "country non ISO-2: " + s(n.country);
+      if (!isIsoTs(n.timestamp)) return "timestamp non ISO-8601: " + s(n.timestamp);
+      if (!isValidNodeHash(n.node_hash)) return "node_hash invalido: " + s(n.node_hash);
 
-  function computeStats(nodes) {
-    const by = { ACTIVE: 0, PILOT: 0, PLANNED: 0, SUSPENDED: 0 };
-    const countries = new Set();
-    const regionsIT = new Set();
-
-    for (const n of nodes) {
-      if (by[n.status] !== undefined) by[n.status] += 1;
-      if (isIso2(n.country)) countries.add(n.country);
-      if (n.country === "IT" && n.region) regionsIT.add(n.region);
+      if (up(n.status) === "ACTIVE") {
+        if (up(n.operator) === "PENDING") return "ACTIVE con operator PENDING: " + s(n.node_hash);
+        if (!isValidActivePrefix(n.node_hash)) return "ACTIVE node_hash senza prefisso HBCE/ORIGIN: " + s(n.node_hash);
+        if (up(n.country) === "IT" && !s(n.region)) return "IT ACTIVE senza region: " + s(n.city);
+      }
     }
 
-    return {
-      total: nodes.length,
-      active: by.ACTIVE,
-      pilot: by.PILOT,
-      planned: by.PLANNED,
-      suspended: by.SUSPENDED,
-      countries: countries.size,
-      regionsIT: regionsIT.size
-    };
+    return null;
   }
 
-  function fillCountryOptions(nodes) {
-    const sel = $(UI.countryFilter);
-    if (!sel) return;
-    const current = sel.value || "ALL";
-
-    const set = new Set();
-    for (const n of nodes) if (isIso2(n.country)) set.add(n.country);
-
-    const list = Array.from(set).sort();
-    sel.innerHTML = `<option value="ALL">Tutte</option>` + list.map(c => `<option value="${c}">${c}</option>`).join("");
-
-    // restore
-    sel.value = list.includes(current) ? current : "ALL";
-  }
-
-  function matchesQuery(n, q) {
-    if (!q) return true;
-    const s = q.toLowerCase();
-    return [
-      n.status, n.country, n.region, n.city, n.node_hash, n.operator, n.timestamp, n.note
-    ].some(v => safeStr(v).toLowerCase().includes(s));
-  }
+  let RAW = [];
+  let FILTER_STATUS = "ALL";
 
   function applyFilters() {
-    const q = safeStr($(UI.q)?.value).trim();
-    const st = safeStr($(UI.statusFilter)?.value).toUpperCase() || "ALL";
-    const c = safeStr($(UI.countryFilter)?.value).toUpperCase() || "ALL";
+    const fCountry = up(($("filter_country")?.value || "").trim());
+    const q = up(($("filter_q")?.value || "").trim());
 
-    filteredNodes = rawNodes.filter(n => {
-      if (st !== "ALL" && n.status !== st) return false;
-      if (c !== "ALL" && n.country !== c) return false;
-      if (!matchesQuery(n, q)) return false;
+    const filtered = RAW.filter(n => {
+      if (FILTER_STATUS !== "ALL" && up(n.status) !== FILTER_STATUS) return false;
+      if (fCountry && up(n.country) !== fCountry) return false;
+
+      if (q) {
+        const blob = up([
+          n.country, n.region, n.city, n.status, n.node_hash, n.operator
+        ].map(s).join(" "));
+        if (!blob.includes(q)) return false;
+      }
       return true;
     });
 
-    applySort();
-    renderTable();
+    renderTable(filtered);
   }
 
-  function parseTime(t) {
-    const ms = Date.parse(t);
-    return Number.isFinite(ms) ? ms : 0;
-  }
-
-  function applySort() {
-    const mode = safeStr($(UI.sort)?.value) || "COUNTRY_REGION";
-
-    const rankStatus = (s) => {
-      if (s === "ACTIVE") return 0;
-      if (s === "PILOT") return 1;
-      if (s === "PLANNED") return 2;
-      if (s === "SUSPENDED") return 3;
-      return 9;
-    };
-
-    filteredNodes.sort((a, b) => {
-      if (mode === "STATUS") {
-        const ra = rankStatus(a.status), rb = rankStatus(b.status);
-        if (ra !== rb) return ra - rb;
-      }
-      if (mode === "TIMESTAMP_DESC") return parseTime(b.timestamp) - parseTime(a.timestamp);
-      if (mode === "TIMESTAMP_ASC") return parseTime(a.timestamp) - parseTime(b.timestamp);
-
-      // default COUNTRY_REGION
-      const cc = a.country.localeCompare(b.country);
-      if (cc !== 0) return cc;
-      const rr = a.region.localeCompare(b.region);
-      if (rr !== 0) return rr;
-      return a.city.localeCompare(b.city);
-    });
-  }
-
-  function cell(text) {
-    const td = document.createElement("td");
-    td.textContent = safeStr(text) || "—";
-    return td;
-  }
-
-  function cellHash(text, allowOrigin) {
-    const td = document.createElement("td");
-    const v = safeStr(text);
-
-    // mark invalid but show
-    const ok = isHex64(v) || (allowOrigin && v === "ORIGIN-HBCE-TORINO") || v === "PENDING";
-    td.textContent = v || "—";
-    if (!ok) td.style.opacity = "0.7";
-    return td;
-  }
-
-  function renderTable() {
-    const tb = $(UI.tbody);
+  function renderTable(list) {
+    const tb = $("hbce_tbody");
     if (!tb) return;
-
     tb.innerHTML = "";
-    if (!filteredNodes.length) {
-      const tr = document.createElement("tr");
-      const td = document.createElement("td");
-      td.colSpan = 8;
-      td.textContent = "Nessun nodo trovato con i filtri correnti.";
-      tr.appendChild(td);
-      tb.appendChild(tr);
-      return;
-    }
 
-    for (const n of filteredNodes) {
+    for (const n of list) {
       const tr = document.createElement("tr");
-      tr.appendChild(cell(n.status));
-      tr.appendChild(cell(n.country));
-      tr.appendChild(cell(n.region));
-      tr.appendChild(cell(n.city));
-      tr.appendChild(cellHash(n.node_hash, true));
-      tr.appendChild(cellHash(n.operator, false));
-      tr.appendChild(cell(n.timestamp));
-      tr.appendChild(cell(n.note));
+      tr.style.borderBottom = "1px solid rgba(255,255,255,.06)";
+
+      const cells = [
+        up(n.status),
+        up(n.country),
+        s(n.region || "—"),
+        s(n.city || "—"),
+        s(n.node_hash),
+        s(n.operator),
+        s(n.timestamp)
+      ];
+
+      for (const c of cells) {
+        const td = document.createElement("td");
+        td.style.padding = "10px";
+        td.textContent = c;
+        tr.appendChild(td);
+      }
       tb.appendChild(tr);
     }
   }
 
-  function exportFiltered() {
-    const payload = {
-      source: SRC,
-      exported_at: new Date().toISOString(),
-      count: filteredNodes.length,
-      nodes: filteredNodes
-    };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "hbce-network-export.json";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 500);
+  function wireUI() {
+    document.querySelectorAll("[data-filter-status]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        FILTER_STATUS = s(btn.getAttribute("data-filter-status") || "ALL").toUpperCase();
+        applyFilters();
+      });
+    });
+
+    $("filter_country")?.addEventListener("input", applyFilters);
+    $("filter_q")?.addEventListener("input", applyFilters);
   }
 
   async function boot() {
-    // default placeholders
-    setText(UI.total, "—");
-    setText(UI.active, "—");
-    setText(UI.pilot, "—");
-    setText(UI.planned, "—");
-    setText(UI.suspended, "—");
-    setText(UI.countries, "—");
-    setText(UI.regionsIT, "—");
-
     try {
-      rawNodes = await load();
+      const res = await fetch(SOURCE, { cache: "no-store" });
+      if (!res.ok) return failClosed("HTTP " + res.status + " su nodes.json");
 
-      const st = computeStats(rawNodes);
-      setText(UI.total, st.total);
-      setText(UI.active, st.active);
-      setText(UI.pilot, st.pilot);
-      setText(UI.planned, st.planned);
-      setText(UI.suspended, st.suspended);
-      setText(UI.countries, st.countries);
-      setText(UI.regionsIT, st.regionsIT);
+      const data = await res.json();
+      const err = validate(data);
+      if (err) return failClosed(err);
 
-      fillCountryOptions(rawNodes);
-      setStatus('Stato: <strong>OK</strong> — dati derivati da <code>deployment/nodes.json</code> (append-only).');
+      RAW = data.nodes.slice();
 
+      // metrics
+      const total = RAW.length;
+      const active = RAW.filter(n => up(n.status) === "ACTIVE").length;
+      const pilot = RAW.filter(n => up(n.status) === "PILOT").length;
+      const planned = RAW.filter(n => up(n.status) === "PLANNED").length;
+
+      const countries = uniq(RAW.map(n => up(n.country))).length;
+      const itRegions = uniq(RAW.filter(n => up(n.country) === "IT").map(n => s(n.region))).filter(Boolean).length;
+
+      setText("k_total", total);
+      setText("k_active", active);
+      setText("k_pilot", pilot);
+      setText("k_planned", planned);
+      setText("k_countries", countries);
+      setText("k_it_regions", itRegions);
+
+      okState("nodes.json valido (CATTIVA++). Nessun ACTIVE sporco.");
+
+      wireUI();
       applyFilters();
+
     } catch (e) {
-      rawNodes = [];
-      filteredNodes = [];
-      renderTable();
-      setStatus('Stato: <strong>FAIL-CLOSED</strong> — impossibile leggere/validare <code>deployment/nodes.json</code>.');
+      failClosed("Errore parsing/lettura nodes.json");
     }
   }
 
-  function wire() {
-    $(UI.btnReload)?.addEventListener("click", boot);
-    $(UI.btnExport)?.addEventListener("click", exportFiltered);
-
-    $(UI.q)?.addEventListener("input", applyFilters);
-    $(UI.statusFilter)?.addEventListener("change", applyFilters);
-    $(UI.countryFilter)?.addEventListener("change", applyFilters);
-    $(UI.sort)?.addEventListener("change", () => { applySort(); renderTable(); });
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => { wire(); boot(); });
-  } else {
-    wire(); boot();
-  }
+  boot();
 })();
