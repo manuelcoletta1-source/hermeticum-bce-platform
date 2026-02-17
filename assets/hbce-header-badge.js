@@ -1,26 +1,67 @@
-/* HBCE HEADER BADGE — CATTIVA MODE
+/* HBCE HEADER BADGE — CATTIVA++ MODE (schema + node_hash policy)
  * Source-of-truth: /deployment/nodes.json
- * Rule: FAIL-CLOSED if ANY node with status=ACTIVE is incomplete:
- *   - operator empty or "PENDING"
- *   - node_hash empty or "PENDING"
- *   - (IT) region empty
+ *
+ * FAIL-CLOSED if:
+ *  1) Any status not in {ACTIVE, PILOT, PLANNED}
+ *  2) Any country not ISO-2
+ *  3) timestamp not ISO-8601 (light sanity)
+ *  4) node_hash invalid for ANY node:
+ *       - empty or "PENDING"
+ *       - invalid charset/length
+ *  5) Any ACTIVE node is dirty:
+ *       - operator empty or "PENDING"
+ *       - (IT) region empty
+ *       - ACTIVE node_hash must start with HBCE- or ORIGIN-
  */
 
 (function () {
   "use strict";
 
   const SOURCE = "/hermeticum-bce-platform/deployment/nodes.json";
+  const ALLOWED_STATUS = new Set(["ACTIVE", "PILOT", "PLANNED"]);
 
   const el = (id) => document.getElementById(id);
   const setText = (id, v) => { const x = el(id); if (x) x.textContent = String(v); };
 
-  function normalizeStr(x) {
-    return String(x || "").trim();
-  }
+  function s(x) { return String(x || "").trim(); }
+  function up(x) { return s(x).toUpperCase(); }
 
   function isISO2Country(x) {
-    const s = normalizeStr(x);
-    return s.length === 2 && /^[A-Z]{2}$/i.test(s);
+    const v = up(x);
+    return v.length === 2 && /^[A-Z]{2}$/.test(v);
+  }
+
+  function isIsoTimestamp(x) {
+    const v = s(x);
+    return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+\-]\d{2}:\d{2})$/.test(v);
+  }
+
+  // node_hash: A–Z 0–9 _ - ; len 10..80 ; not PENDING
+  function isValidNodeHash(x) {
+    const v = up(x);
+    if (!v) return false;
+    if (v === "PENDING") return false;
+    if (v.length < 10 || v.length > 80) return false;
+    if (!/^[A-Z0-9_-]+$/.test(v)) return false;
+    return true;
+  }
+
+  function isValidActiveHashPrefix(x) {
+    const v = up(x);
+    return v.startsWith("HBCE-") || v.startsWith("ORIGIN-");
+  }
+
+  function uniq(arr) {
+    return Array.from(new Set(arr.filter(Boolean)));
+  }
+
+  function failClosed(reason) {
+    setText("hbce_badge_state", "FAIL-CLOSED");
+    setText("hbce_badge_nodes", "—");
+    setText("hbce_badge_countries", "—");
+
+    const badge = el("hbce_net_badge");
+    if (badge) badge.setAttribute("title", "FAIL-CLOSED: " + (reason || "Fonte non verificabile / incoerente."));
   }
 
   function validateNodesPayload(data) {
@@ -34,47 +75,38 @@
       for (const k of required) {
         if (!(k in n)) return "Campo obbligatorio mancante: " + k;
         if (typeof n[k] !== "string") return "Campo non string: " + k;
-        if (!normalizeStr(n[k])) return "Campo vuoto: " + k;
+        if (!s(n[k])) return "Campo vuoto: " + k;
       }
-      if (!isISO2Country(n.country)) return "country non ISO-2 valido.";
+
+      const st = up(n.status);
+      if (!ALLOWED_STATUS.has(st)) return "status fuori enum: " + s(n.status);
+
+      if (!isISO2Country(n.country)) return "country non ISO-2: " + s(n.country);
+      if (!isIsoTimestamp(n.timestamp)) return "timestamp non ISO-8601: " + s(n.timestamp);
+
+      // node_hash policy: applies to ALL nodes
+      if (!isValidNodeHash(n.node_hash)) return "node_hash invalido: " + s(n.node_hash);
     }
+
     return null;
   }
 
-  // CATTIVA: basta 1 ACTIVE sporco → FAIL-CLOSED
+  // CATTIVA++: basta 1 ACTIVE sporco → FAIL-CLOSED
   function detectDirtyActive(nodes) {
-    const dirty = [];
     for (const n of nodes) {
-      if (!n || n.status !== "ACTIVE") continue;
+      if (!n || up(n.status) !== "ACTIVE") continue;
 
-      const op = normalizeStr(n.operator);
-      const nh = normalizeStr(n.node_hash);
-      const rg = normalizeStr(n.region);
+      const op = up(n.operator);
+      const rg = s(n.region);
+      const nh = up(n.node_hash);
 
-      const badOp = (!op || op.toUpperCase() === "PENDING");
-      const badNh = (!nh || nh.toUpperCase() === "PENDING");
-      const badItRegion = (normalizeStr(n.country).toUpperCase() === "IT" && !rg);
+      const badOp = (!op || op === "PENDING");
+      const badItRegion = (up(n.country) === "IT" && !rg);
+      const badPrefix = (!isValidActiveHashPrefix(nh)); // ACTIVE must have HBCE-/ORIGIN-
 
-      if (badOp || badNh || badItRegion) {
-        dirty.push(n);
-      }
+      if (badOp || badItRegion || badPrefix) return n;
     }
-    return dirty;
-  }
-
-  function uniq(arr) {
-    return Array.from(new Set(arr.filter(Boolean)));
-  }
-
-  function failClosed(reason) {
-    setText("hbce_badge_state", "FAIL-CLOSED");
-    setText("hbce_badge_nodes", "—");
-    setText("hbce_badge_countries", "—");
-
-    const badge = el("hbce_net_badge");
-    if (badge) {
-      badge.setAttribute("title", "FAIL-CLOSED: " + (reason || "Fonte non verificabile / incoerente."));
-    }
+    return null;
   }
 
   async function boot() {
@@ -83,24 +115,24 @@
       if (!res.ok) return failClosed("HTTP " + res.status);
 
       const data = await res.json();
+
       const err = validateNodesPayload(data);
       if (err) return failClosed(err);
 
       const dirty = detectDirtyActive(data.nodes);
-      if (dirty.length) {
-        const d = dirty[0];
+      if (dirty) {
         const msg =
-          "ACTIVE incoerente trovato: " +
-          (d.country || "—") + " / " + (d.region || "—") + " / " + (d.city || "—") +
-          " · operator=" + (d.operator || "") + " · node_hash=" + (d.node_hash || "");
+          "ACTIVE incoerente: " +
+          up(dirty.country) + " / " + s(dirty.region || "—") + " / " + s(dirty.city || "—") +
+          " · operator=" + s(dirty.operator || "") + " · node_hash=" + s(dirty.node_hash || "");
         return failClosed(msg);
       }
 
       const total = data.nodes.length;
-      const countries = uniq(data.nodes.map(n => normalizeStr(n.country).toUpperCase())).length;
+      const countries = uniq(data.nodes.map(n => up(n.country))).length;
 
       const badge = el("hbce_net_badge");
-      if (badge) badge.setAttribute("title", "OK (CATTIVA): nodes.json valido + nessun ACTIVE sporco.");
+      if (badge) badge.setAttribute("title", "OK (CATTIVA++): schema ok + node_hash policy ok + ACTIVE puliti.");
 
       setText("hbce_badge_state", "OK");
       setText("hbce_badge_nodes", total);
