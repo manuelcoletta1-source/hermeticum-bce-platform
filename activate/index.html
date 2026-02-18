@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>Attiva IPR — Onboarding cliente (stile banca)</title>
-  <meta name="description" content="Onboarding cliente stile banca per attivare IPR (Identity Primary Record): inserisci dati (CIE/CF/documento/contatti), genera Release locale, poi append hash-only su registry pubblico e verifica deterministica (fail-closed)." />
+  <title>Activate IPR — Bank-like Onboarding</title>
+  <meta name="description" content="Bank-like onboarding to activate an Identity Primary Record (IPR). Enter KYC-style data (ID/CIE, tax code, passport/driving licence), generate a local Release file, then append hash-only proof to the public registry for deterministic verification (fail-closed)." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
@@ -90,125 +90,125 @@
 
     <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">ATTIVAZIONE IPR · ONBOARDING CLIENTE · STILE BANCA</div>
-      <h1 class="hbce-hero__title">Apri un IPR (Identity Primary Record)</h1>
+      <div class="hbce-hero__kicker">IPR ACTIVATION · BANK-LIKE ONBOARDING · EU INFRASTRUCTURE</div>
+      <h1 class="hbce-hero__title">Open an IPR (Identity Primary Record)</h1>
       <p class="hbce-hero__lead hbce-slim">
-        Qui avviene l’onboarding come in banca: inserisci i dati richiesti per rilasciare il tuo <strong>IPR Release</strong>
-        (file locale). Il sistema genera un’impronta <strong>SHA-256</strong> per la verifica deterministica e prepara l’entry
-        <strong>hash-only</strong> per il registry pubblico.
+        This is the customer onboarding (bank-style). You enter identity data to issue an <strong>IPR Release</strong>
+        (local file). The platform generates a <strong>SHA-256</strong> fingerprint for deterministic verification and prepares
+        the <strong>hash-only</strong> public registry entry.
         <br/>
-        Regola: se il registry non contiene l’hash → <strong>INVALID</strong> (fail-closed).
+        Rule: if the public registry does not contain your hash → <strong>INVALID</strong> (fail-closed).
       </p>
 
       <div class="hbce-steps" aria-label="activation steps">
-        <span class="hbce-step">1 — Dati cliente</span>
-        <span class="hbce-step">2 — Genera Release</span>
+        <span class="hbce-step">1 — Customer data</span>
+        <span class="hbce-step">2 — Generate Release</span>
         <span class="hbce-step">3 — Append hash-only</span>
         <span class="hbce-step">4 — VERIFY → VALID</span>
       </div>
 
       <p class="hbce-note" style="margin-top:.75rem;">
-        Pubblico: <span class="hbce-mono">label + payload_sha256 + timestamp</span> (hash-only). Privato: Release con dati completi (conservato dal cliente).
+        Public proof: <span class="hbce-mono">label + payload_sha256 + timestamp</span> (hash-only). Private: Release file with full data (kept by the customer).
       </p>
     </section>
 
-    <!-- CHOOSE PROFILE -->
+    <!-- PROFILE TABS -->
     <section class="hbce-section">
-      <h2>Seleziona il profilo</h2>
+      <h2>Select profile</h2>
       <div class="hbce-card">
         <div class="hbce-tabs" role="navigation" aria-label="profile tabs">
-          <a class="hbce-tab hbce-tab--active" href="#persona">Persona (CIE/CF)</a>
-          <a class="hbce-tab" href="#azienda">Azienda (P.IVA)</a>
-          <a class="hbce-tab" href="#ente">Ente / PA</a>
+          <a class="hbce-tab hbce-tab--active" href="#individual">Individual (ID/Tax code)</a>
+          <a class="hbce-tab" href="#company">Company (VAT)</a>
+          <a class="hbce-tab" href="#institution">Institution / Public body</a>
         </div>
         <p class="hbce-note" style="margin-top:.65rem;">
-          Compila il blocco relativo al tuo profilo. I campi sono pensati per essere “banca-ready”.
+          Fill the section matching your profile. Fields are designed to be “bank-ready”.
         </p>
       </div>
     </section>
 
-    <!-- PRIVACY / MODEL -->
+    <!-- DATA MODEL -->
     <section class="hbce-section">
-      <h2>Modello dati (GDPR-min)</h2>
+      <h2>Data model (GDPR-min)</h2>
       <div class="hbce-grid2">
         <div class="hbce-card hbce-col-8">
           <ul class="hbce-list">
-            <li><strong>Release (privato):</strong> contiene i dati completi dell’identità operativa. Deve essere conservato dal cliente.</li>
-            <li><strong>Registry (pubblico):</strong> contiene solo prove <strong>hash-only</strong> + timestamp (append-only).</li>
-            <li><strong>Verify:</strong> controlla integrità file + match in registry → <span class="hbce-mono">VALID/INVALID</span>.</li>
+            <li><strong>Release (private):</strong> contains the full operational identity data. The customer must store it.</li>
+            <li><strong>Registry (public):</strong> stores only <strong>hash-only</strong> proofs + timestamp (append-only).</li>
+            <li><strong>Verify:</strong> checks file integrity + registry match → <span class="hbce-mono">VALID/INVALID</span>.</li>
           </ul>
           <div class="hbce-divider"></div>
           <p class="hbce-note">
-            Definizione: <span class="hbce-mono">VALID IPR = FILE INTEGRITY OK + PRESENT IN REGISTRY</span>.
+            Definition: <span class="hbce-mono">VALID IPR = FILE INTEGRITY OK + PRESENT IN REGISTRY</span>.
           </p>
         </div>
         <div class="hbce-card hbce-col-4">
           <h3>Fail-closed</h3>
           <div class="hbce-kv">
-            <div><strong>Se manca hash</strong></div><div>INVALID</div>
-            <div><strong>Se file corrotto</strong></div><div>INVALID</div>
-            <div><strong>Se verify non eseguibile</strong></div><div>BLOCK</div>
+            <div><strong>Missing hash</strong></div><div>INVALID</div>
+            <div><strong>Corrupted file</strong></div><div>INVALID</div>
+            <div><strong>Verify unavailable</strong></div><div>BLOCK</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- PERSONA (BANK-LIKE KYC) -->
-    <section id="persona" class="hbce-section">
-      <h2>Onboarding Persona — dati richiesti (stile banca)</h2>
+    <!-- INDIVIDUAL -->
+    <section id="individual" class="hbce-section">
+      <h2>Individual onboarding — required fields (bank-like)</h2>
 
       <div class="hbce-grid2">
         <div class="hbce-card hbce-col-8">
-          <form class="hbce-form" action="/hermeticum-bce-platform/create/" method="get" aria-label="KYC persona">
+          <form class="hbce-form" action="/hermeticum-bce-platform/create/" method="get" aria-label="KYC individual">
 
             <div class="hbce-grid2">
               <div class="hbce-field hbce-col-6">
-                <label for="full_name">Nome e Cognome</label>
-                <input class="hbce-input" id="full_name" name="full_name" placeholder="Es. Mario Rossi" required />
+                <label for="full_name">Full legal name</label>
+                <input class="hbce-input" id="full_name" name="full_name" placeholder="e.g. John Doe" required />
               </div>
               <div class="hbce-field hbce-col-6">
-                <label for="dob">Data di nascita</label>
+                <label for="dob">Date of birth</label>
                 <input class="hbce-input" id="dob" name="dob" placeholder="YYYY-MM-DD" required />
-                <div class="hint">Formato consigliato: 1988-02-05</div>
+                <div class="hint">Recommended format: 1988-02-05</div>
               </div>
             </div>
 
             <div class="hbce-grid2">
               <div class="hbce-field hbce-col-6">
-                <label for="birth_place">Luogo di nascita</label>
-                <input class="hbce-input" id="birth_place" name="birth_place" placeholder="Comune (Provincia), Stato" required />
+                <label for="birth_place">Place of birth</label>
+                <input class="hbce-input" id="birth_place" name="birth_place" placeholder="City (Region/State), Country" required />
               </div>
               <div class="hbce-field hbce-col-6">
-                <label for="citizenship">Cittadinanza</label>
-                <input class="hbce-input" id="citizenship" name="citizenship" placeholder="Es. IT" required />
-              </div>
-            </div>
-
-            <div class="hbce-grid2">
-              <div class="hbce-field hbce-col-6">
-                <label for="fiscal_code">Codice Fiscale</label>
-                <input class="hbce-input" id="fiscal_code" name="fiscal_code" placeholder="Es. RSSMRA80A01H501U" required />
-                <div class="hint">Dato privato nel Release (non pubblico).</div>
-              </div>
-              <div class="hbce-field hbce-col-6">
-                <label for="cie_number">CIE / Documento Identità (numero)</label>
-                <input class="hbce-input" id="cie_number" name="cie_number" placeholder="Numero documento (CIE/ID)" required />
+                <label for="citizenship">Citizenship</label>
+                <input class="hbce-input" id="citizenship" name="citizenship" placeholder="e.g. IT" required />
               </div>
             </div>
 
             <div class="hbce-grid2">
               <div class="hbce-field hbce-col-6">
-                <label for="doc_type">Tipo documento</label>
+                <label for="tax_code">Tax code (Codice Fiscale)</label>
+                <input class="hbce-input" id="tax_code" name="tax_code" placeholder="e.g. RSSMRA80A01H501U" required />
+                <div class="hint">Private inside Release (never public).</div>
+              </div>
+              <div class="hbce-field hbce-col-6">
+                <label for="id_number">ID document number (CIE/ID)</label>
+                <input class="hbce-input" id="id_number" name="id_number" placeholder="Document number" required />
+              </div>
+            </div>
+
+            <div class="hbce-grid2">
+              <div class="hbce-field hbce-col-6">
+                <label for="doc_type">Document type</label>
                 <select class="hbce-select" id="doc_type" name="doc_type" required>
-                  <option value="" selected disabled>Seleziona…</option>
-                  <option value="CIE">Carta d'Identità (CIE/CI)</option>
-                  <option value="PASSPORT">Passaporto</option>
-                  <option value="DRIVING_LICENSE">Patente</option>
-                  <option value="OTHER">Altro</option>
+                  <option value="" selected disabled>Select…</option>
+                  <option value="NATIONAL_ID">National ID (CIE/ID)</option>
+                  <option value="PASSPORT">Passport</option>
+                  <option value="DRIVING_LICENSE">Driving licence</option>
+                  <option value="OTHER">Other</option>
                 </select>
               </div>
               <div class="hbce-field hbce-col-6">
-                <label for="doc_expiry">Scadenza documento</label>
+                <label for="doc_expiry">Document expiry</label>
                 <input class="hbce-input" id="doc_expiry" name="doc_expiry" placeholder="YYYY-MM-DD" required />
               </div>
             </div>
@@ -216,200 +216,200 @@
             <div class="hbce-grid2">
               <div class="hbce-field hbce-col-6">
                 <label for="email">Email</label>
-                <input class="hbce-input" id="email" name="email" type="email" placeholder="nome@dominio.tld" required />
+                <input class="hbce-input" id="email" name="email" type="email" placeholder="name@domain.tld" required />
               </div>
               <div class="hbce-field hbce-col-6">
-                <label for="pec">PEC (opzionale)</label>
-                <input class="hbce-input" id="pec" name="pec" type="email" placeholder="nome@pec.it" />
-                <div class="hint">Consigliata per uso istituzionale/legale.</div>
+                <label for="pec">PEC (optional)</label>
+                <input class="hbce-input" id="pec" name="pec" type="email" placeholder="name@pec.it" />
+                <div class="hint">Recommended for regulated/legal workflows.</div>
               </div>
             </div>
 
             <div class="hbce-field">
-              <label for="address">Residenza / sede operativa</label>
-              <input class="hbce-input" id="address" name="address" placeholder="Via, numero, CAP, città, provincia, Stato" required />
+              <label for="address">Residence / address</label>
+              <input class="hbce-input" id="address" name="address" placeholder="Street, number, postal code, city, country" required />
             </div>
 
             <div class="hbce-field">
-              <label for="purpose_person">Finalità operativa</label>
-              <textarea class="hbce-textarea" id="purpose_person" name="purpose_person" placeholder="Es. accesso moduli, operatività digitale, binding sistemi, ecc."></textarea>
-              <div class="hint">Serve per contestualizzare emissione e audit. Non va nel registry pubblico.</div>
+              <label for="purpose_individual">Operational purpose</label>
+              <textarea class="hbce-textarea" id="purpose_individual" name="purpose_individual" placeholder="e.g. infrastructure access, module activation, system binding, operator path, etc."></textarea>
+              <div class="hint">Used for issuance context and auditing (not public).</div>
             </div>
 
-            <div class="hbce-callout" role="note" aria-label="privacy note persona">
-              <strong>Nota importante</strong>
+            <div class="hbce-callout" role="note" aria-label="privacy note individual">
+              <strong>Important</strong>
               <div class="hbce-divider"></div>
               <p class="hbce-note" style="margin:0;">
-                Questi dati devono finire nel <strong>Release</strong> (privato). Nel registry pubblico verrà pubblicata solo la prova <strong>hash-only</strong>.
+                These fields are written into the <strong>Release</strong> file (private). The public registry will publish only <strong>hash-only</strong> proof.
               </p>
             </div>
 
             <div class="hbce-actions" style="margin-top:.25rem;">
-              <button class="hbce-btn" type="submit">Continua → Genera Release</button>
-              <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Ho già un Release → VERIFY</a>
+              <button class="hbce-btn" type="submit">Continue → Generate Release</button>
+              <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">I already have a Release → VERIFY</a>
             </div>
 
           </form>
         </div>
 
         <div class="hbce-card hbce-col-4">
-          <h3>Checklist “banca”</h3>
+          <h3>Bank-style checklist</h3>
           <ul class="hbce-bullets">
-            <li>CIE/Documento</li>
-            <li>Codice fiscale</li>
-            <li>Residenza</li>
+            <li>National ID / CIE</li>
+            <li>Tax code</li>
+            <li>Address</li>
             <li>Email / PEC</li>
-            <li>Scadenza documento</li>
+            <li>Document expiry</li>
           </ul>
 
           <div class="hbce-divider"></div>
 
-          <h3>Dopo il Release</h3>
+          <h3>After Release</h3>
           <ol class="hbce-list" style="list-style: decimal; padding-left: 1.2rem;">
-            <li>Append hash-only nel registry</li>
+            <li>Append hash-only entry to registry</li>
             <li>VERIFY</li>
-            <li>Stato: VALID</li>
+            <li>Status: VALID</li>
           </ol>
 
           <div class="hbce-actions">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Apri registry</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">Status piattaforma</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Open registry</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">Platform status</a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- AZIENDA -->
-    <section id="azienda" class="hbce-section">
-      <h2>Onboarding Azienda — dati richiesti</h2>
+    <!-- COMPANY -->
+    <section id="company" class="hbce-section">
+      <h2>Company onboarding — required fields</h2>
 
       <div class="hbce-grid2">
         <div class="hbce-card hbce-col-8">
-          <form class="hbce-form" action="/hermeticum-bce-platform/create/" method="get" aria-label="KYC azienda">
+          <form class="hbce-form" action="/hermeticum-bce-platform/create/" method="get" aria-label="KYC company">
 
             <div class="hbce-grid2">
               <div class="hbce-field hbce-col-8">
-                <label for="company_name">Ragione sociale</label>
-                <input class="hbce-input" id="company_name" name="company_name" placeholder="Es. ACME Robotics S.p.A." />
+                <label for="company_name">Legal company name</label>
+                <input class="hbce-input" id="company_name" name="company_name" placeholder="e.g. ACME Robotics S.p.A." />
               </div>
               <div class="hbce-field hbce-col-4">
-                <label for="company_country">Paese</label>
-                <input class="hbce-input" id="company_country" name="company_country" placeholder="Es. IT" />
+                <label for="company_country">Country</label>
+                <input class="hbce-input" id="company_country" name="company_country" placeholder="e.g. IT" />
               </div>
             </div>
 
             <div class="hbce-grid2">
               <div class="hbce-field hbce-col-6">
-                <label for="vat">Partita IVA</label>
+                <label for="vat">VAT number</label>
                 <input class="hbce-input" id="vat" name="vat" placeholder="ITxxxxxxxxxxx" />
               </div>
               <div class="hbce-field hbce-col-6">
-                <label for="lei">LEI (opzionale)</label>
+                <label for="lei">LEI (optional)</label>
                 <input class="hbce-input" id="lei" name="lei" placeholder="Legal Entity Identifier" />
               </div>
             </div>
 
             <div class="hbce-field">
-              <label for="company_address">Sede legale</label>
-              <input class="hbce-input" id="company_address" name="company_address" placeholder="Via, numero, CAP, città, provincia, Stato" />
+              <label for="company_address">Registered office</label>
+              <input class="hbce-input" id="company_address" name="company_address" placeholder="Full address" />
             </div>
 
             <div class="hbce-grid2">
               <div class="hbce-field hbce-col-6">
                 <label for="company_email">Email</label>
-                <input class="hbce-input" id="company_email" name="company_email" type="email" placeholder="contatto@azienda.tld" />
+                <input class="hbce-input" id="company_email" name="company_email" type="email" placeholder="contact@company.tld" />
               </div>
               <div class="hbce-field hbce-col-6">
-                <label for="company_pec">PEC (Italia)</label>
-                <input class="hbce-input" id="company_pec" name="company_pec" type="email" placeholder="azienda@pec.it" />
+                <label for="company_pec">PEC (Italy)</label>
+                <input class="hbce-input" id="company_pec" name="company_pec" type="email" placeholder="company@pec.it" />
               </div>
             </div>
 
             <div class="hbce-field">
-              <label for="company_scope">Uso operativo previsto</label>
-              <textarea class="hbce-textarea" id="company_scope" name="company_scope" placeholder="Es. flotta robot, AI agent, supply chain, audit industriale, infrastrutture IT, ecc."></textarea>
+              <label for="company_scope">Operational scope</label>
+              <textarea class="hbce-textarea" id="company_scope" name="company_scope" placeholder="e.g. robotics fleet, AI agents, supply chain audit, critical IT systems, etc."></textarea>
             </div>
 
             <div class="hbce-actions">
-              <button class="hbce-btn" type="submit">Continua → Genera Release</button>
-              <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">Catalogo B2B</a>
+              <button class="hbce-btn" type="submit">Continue → Generate Release</button>
+              <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">B2B catalogue</a>
             </div>
           </form>
         </div>
 
         <div class="hbce-card hbce-col-4">
-          <h3>Interfacce tipiche</h3>
+          <h3>Typical interfaces</h3>
           <ul class="hbce-bullets">
-            <li>Audit e compliance</li>
-            <li>Robot &amp; AI binding</li>
-            <li>Supply-chain verificabile</li>
-            <li>Accesso moduli enterprise</li>
+            <li>Audit & compliance</li>
+            <li>Robot & AI binding</li>
+            <li>Supply-chain traceability</li>
+            <li>Enterprise modules access</li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- ENTE / PA -->
-    <section id="ente" class="hbce-section">
-      <h2>Onboarding Ente / PA — dati richiesti</h2>
+    <!-- INSTITUTION -->
+    <section id="institution" class="hbce-section">
+      <h2>Institution / public body onboarding — required fields</h2>
 
       <div class="hbce-grid2">
         <div class="hbce-card hbce-col-8">
-          <form class="hbce-form" action="/hermeticum-bce-platform/create/" method="get" aria-label="KYC ente">
+          <form class="hbce-form" action="/hermeticum-bce-platform/create/" method="get" aria-label="KYC institution">
 
             <div class="hbce-grid2">
               <div class="hbce-field hbce-col-8">
-                <label for="inst_name">Denominazione ente</label>
-                <input class="hbce-input" id="inst_name" name="inst_name" placeholder="Es. Comune di … / Regione … / Agenzia …" />
+                <label for="inst_name">Institution name</label>
+                <input class="hbce-input" id="inst_name" name="inst_name" placeholder="e.g. City of … / Region … / Agency …" />
               </div>
               <div class="hbce-field hbce-col-4">
-                <label for="inst_level">Livello</label>
+                <label for="inst_level">Level</label>
                 <select class="hbce-select" id="inst_level" name="inst_level">
-                  <option value="" selected disabled>Seleziona…</option>
-                  <option value="LOCAL">Locale</option>
-                  <option value="CITY">Città</option>
-                  <option value="REGION">Regione</option>
-                  <option value="NATIONAL">Nazionale</option>
-                  <option value="EU">UE</option>
+                  <option value="" selected disabled>Select…</option>
+                  <option value="LOCAL">Local</option>
+                  <option value="CITY">City</option>
+                  <option value="REGION">Region</option>
+                  <option value="NATIONAL">National</option>
+                  <option value="EU">EU</option>
                 </select>
               </div>
             </div>
 
             <div class="hbce-field">
-              <label for="inst_address">Sede</label>
-              <input class="hbce-input" id="inst_address" name="inst_address" placeholder="Indirizzo completo" />
+              <label for="inst_address">Office address</label>
+              <input class="hbce-input" id="inst_address" name="inst_address" placeholder="Full address" />
             </div>
 
             <div class="hbce-grid2">
               <div class="hbce-field hbce-col-6">
                 <label for="inst_email">Email</label>
-                <input class="hbce-input" id="inst_email" name="inst_email" type="email" placeholder="ufficio@ente.tld" />
+                <input class="hbce-input" id="inst_email" name="inst_email" type="email" placeholder="office@institution.tld" />
               </div>
               <div class="hbce-field hbce-col-6">
-                <label for="inst_pec">PEC (consigliata)</label>
-                <input class="hbce-input" id="inst_pec" name="inst_pec" type="email" placeholder="ente@pec.it" />
+                <label for="inst_pec">PEC (recommended)</label>
+                <input class="hbce-input" id="inst_pec" name="inst_pec" type="email" placeholder="institution@pec.it" />
               </div>
             </div>
 
             <div class="hbce-field">
-              <label for="inst_scope">Perimetro operativo</label>
-              <textarea class="hbce-textarea" id="inst_scope" name="inst_scope" placeholder="Es. identità sistemi pubblici, audit infrastrutture, robot urbani, servizi digitali, ecc."></textarea>
+              <label for="inst_scope">Operational perimeter</label>
+              <textarea class="hbce-textarea" id="inst_scope" name="inst_scope" placeholder="e.g. public systems identity, infrastructure audit, city robotics, digital services, etc."></textarea>
             </div>
 
             <div class="hbce-actions">
-              <button class="hbce-btn" type="submit">Continua → Genera Release</button>
-              <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/network/">Rete nodi</a>
+              <button class="hbce-btn" type="submit">Continue → Generate Release</button>
+              <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/network/">Node network</a>
             </div>
           </form>
         </div>
 
         <div class="hbce-card hbce-col-4">
-          <h3>Uso tipico PA</h3>
+          <h3>Public-sector use</h3>
           <ul class="hbce-bullets">
             <li>Audit-by-design</li>
-            <li>Identità infrastrutture</li>
-            <li>Catena operativa verificabile</li>
-            <li>Integrazione nodi territoriali</li>
+            <li>Infrastructure identity</li>
+            <li>Verifiable operational chains</li>
+            <li>Territorial node integration</li>
           </ul>
         </div>
       </div>
@@ -417,37 +417,37 @@
 
     <!-- NEXT ACTIONS -->
     <section class="hbce-section">
-      <h2>Prossimi passi</h2>
+      <h2>Next steps</h2>
       <div class="hbce-grid">
         <div class="hbce-card">
-          <h3>1) Genera Release</h3>
-          <p>Vai su CREATE per generare file Release e receipt.</p>
+          <h3>1) Generate Release</h3>
+          <p>Go to CREATE to generate your Release file and issuance receipt.</p>
           <div class="hbce-actions">
             <a class="hbce-btn" href="/hermeticum-bce-platform/create/">CREATE</a>
           </div>
         </div>
 
         <div class="hbce-card">
-          <h3>2) Append al registry</h3>
-          <p>Inserisci l’entry hash-only nel registry pubblico append-only.</p>
+          <h3>2) Append to registry</h3>
+          <p>Append the hash-only entry to the public append-only registry.</p>
           <div class="hbce-actions">
             <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
           </div>
         </div>
 
         <div class="hbce-card">
-          <h3>3) Verify deterministico</h3>
-          <p>Controllo VALID/INVALID. Se non matcha → BLOCK (fail-closed).</p>
+          <h3>3) Deterministic verify</h3>
+          <p>Check VALID/INVALID. If it does not match → BLOCK (fail-closed).</p>
           <div class="hbce-actions">
             <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
           </div>
         </div>
 
         <div class="hbce-card">
-          <h3>4) Accesso moduli</h3>
-          <p>Solo dopo VALID: moduli, operator path, rete nodi.</p>
+          <h3>4) Access modules</h3>
+          <p>Only after VALID: modules, operator path, node network.</p>
           <div class="hbce-actions">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">Catalogo</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">Catalogue</a>
           </div>
         </div>
       </div>
