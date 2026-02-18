@@ -1,5 +1,6 @@
 {
-  "proto": "HBCE-NODE-REGISTRY-v1",
+  "proto": "HBCE-NODE-REGISTRY-v2",
+  "schema_version": 2,
   "kind": "EU_DISTRIBUTED_NODE_MAP",
   "network": "EU",
   "mode": "APPEND_ONLY",
@@ -12,21 +13,35 @@
     "GDPR_MIN",
     "NO_PUBLIC_DATA_CUSTODY"
   ],
+
   "origin": {
     "city": "Torino",
+    "region": "PIEMONTE",
     "country": "IT",
     "status": "ACTIVE",
     "role": "ORIGIN_NODE",
-    "note": "Nodo origine rete europea IPR/JOKER-C2"
+    "operator": "MANUEL COLETTA — BARRIERA DI MILANO",
+    "note": "Origin node of the EU IPR/JOKER-C2 network"
   },
+
   "rules": {
     "min_requirement": "1 VALID OPERATOR",
     "ipr_required": true,
     "license_required": true,
     "write_mode": "MANUAL_APPEND_ONLY",
     "verification": "HASH_MATCH && OPERATOR_VALID",
-    "failure_mode": "FAIL_CLOSED"
+    "failure_mode": "FAIL_CLOSED",
+
+    "allowed_status": ["ACTIVE", "PILOT", "PLANNED"],
+    "node_hash_policy": {
+      "charset": "A-Z0-9_-",
+      "min_len": 10,
+      "max_len": 80,
+      "disallow": ["PENDING"],
+      "active_prefix_required": ["HBCE-", "ORIGIN-"]
+    }
   },
+
   "nodes": [
     {
       "region": "PIEMONTE",
@@ -34,9 +49,9 @@
       "city": "TORINO",
       "status": "ACTIVE",
       "node_hash": "ORIGIN-HBCE-IT-PIEMONTE-TORINO-0001",
-      "operator": "ROOT",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "note": "Origin node"
+      "operator": "MANUEL COLETTA — BARRIERA DI MILANO",
+      "timestamp": "2026-02-18T00:00:00Z",
+      "note": "Origin node (EU root)"
     },
 
     {
@@ -46,8 +61,8 @@
       "status": "PLANNED",
       "node_hash": "HBCE-IT-LOMBARDIA-MILANO-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "note": "Planned regional node"
+      "timestamp": "2026-02-18T00:00:00Z",
+      "note": "Planned regional node (Italy)"
     },
     {
       "region": "VENETO",
@@ -56,8 +71,8 @@
       "status": "PLANNED",
       "node_hash": "HBCE-IT-VENETO-VENEZIA-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "note": "Planned regional node"
+      "timestamp": "2026-02-18T00:00:00Z",
+      "note": "Planned regional node (Italy)"
     },
     {
       "region": "EMILIA-ROMAGNA",
@@ -66,8 +81,8 @@
       "status": "PLANNED",
       "node_hash": "HBCE-IT-EMILIA-ROMAGNA-BOLOGNA-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "note": "Planned regional node"
+      "timestamp": "2026-02-18T00:00:00Z",
+      "note": "Planned regional node (Italy)"
     },
     {
       "region": "TOSCANA",
@@ -76,8 +91,8 @@
       "status": "PLANNED",
       "node_hash": "HBCE-IT-TOSCANA-FIRENZE-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "note": "Planned regional node"
+      "timestamp": "2026-02-18T00:00:00Z",
+      "note": "Planned regional node (Italy)"
     },
     {
       "region": "LAZIO",
@@ -86,8 +101,8 @@
       "status": "PLANNED",
       "node_hash": "HBCE-IT-LAZIO-ROMA-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "note": "Planned regional node"
+      "timestamp": "2026-02-18T00:00:00Z",
+      "note": "Planned regional node (Italy)"
     },
     {
       "region": "CAMPANIA",
@@ -96,8 +111,8 @@
       "status": "PLANNED",
       "node_hash": "HBCE-IT-CAMPANIA-NAPOLI-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "note": "Planned regional node"
+      "timestamp": "2026-02-18T00:00:00Z",
+      "note": "Planned regional node (Italy)"
     },
     {
       "region": "SICILIA",
@@ -106,8 +121,8 @@
       "status": "PLANNED",
       "node_hash": "HBCE-IT-SICILIA-PALERMO-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "note": "Planned regional node"
+      "timestamp": "2026-02-18T00:00:00Z",
+      "note": "Planned regional node (Italy)"
     },
     {
       "region": "SARDEGNA",
@@ -116,8 +131,8 @@
       "status": "PLANNED",
       "node_hash": "HBCE-IT-SARDEGNA-CAGLIARI-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "note": "Planned regional node"
+      "timestamp": "2026-02-18T00:00:00Z",
+      "note": "Planned regional node (Italy)"
     },
     {
       "region": "PUGLIA",
@@ -126,8 +141,8 @@
       "status": "PLANNED",
       "node_hash": "HBCE-IT-PUGLIA-BARI-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "note": "Planned regional node"
+      "timestamp": "2026-02-18T00:00:00Z",
+      "note": "Planned regional node (Italy)"
     },
     {
       "region": "LIGURIA",
@@ -136,8 +151,8 @@
       "status": "PLANNED",
       "node_hash": "HBCE-IT-LIGURIA-GENOVA-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "note": "Planned regional node"
+      "timestamp": "2026-02-18T00:00:00Z",
+      "note": "Planned regional node (Italy)"
     },
     {
       "region": "MARCHE",
@@ -146,8 +161,8 @@
       "status": "PLANNED",
       "node_hash": "HBCE-IT-MARCHE-ANCONA-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "note": "Planned regional node"
+      "timestamp": "2026-02-18T00:00:00Z",
+      "note": "Planned regional node (Italy)"
     },
     {
       "region": "ABRUZZO",
@@ -156,8 +171,8 @@
       "status": "PLANNED",
       "node_hash": "HBCE-IT-ABRUZZO-L_AQUILA-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "note": "Planned regional node"
+      "timestamp": "2026-02-18T00:00:00Z",
+      "note": "Planned regional node (Italy)"
     },
     {
       "region": "UMBRIA",
@@ -166,8 +181,8 @@
       "status": "PLANNED",
       "node_hash": "HBCE-IT-UMBRIA-PERUGIA-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "note": "Planned regional node"
+      "timestamp": "2026-02-18T00:00:00Z",
+      "note": "Planned regional node (Italy)"
     },
     {
       "region": "CALABRIA",
@@ -176,8 +191,8 @@
       "status": "PLANNED",
       "node_hash": "HBCE-IT-CALABRIA-CATANZARO-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "note": "Planned regional node"
+      "timestamp": "2026-02-18T00:00:00Z",
+      "note": "Planned regional node (Italy)"
     },
     {
       "region": "BASILICATA",
@@ -186,8 +201,8 @@
       "status": "PLANNED",
       "node_hash": "HBCE-IT-BASILICATA-POTENZA-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "note": "Planned regional node"
+      "timestamp": "2026-02-18T00:00:00Z",
+      "note": "Planned regional node (Italy)"
     },
     {
       "region": "MOLISE",
@@ -196,8 +211,8 @@
       "status": "PLANNED",
       "node_hash": "HBCE-IT-MOLISE-CAMPOBASSO-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "note": "Planned regional node"
+      "timestamp": "2026-02-18T00:00:00Z",
+      "note": "Planned regional node (Italy)"
     },
     {
       "region": "FRIULI-VENEZIA-GIULIA",
@@ -206,8 +221,8 @@
       "status": "PLANNED",
       "node_hash": "HBCE-IT-FRIULI-VENEZIA-GIULIA-TRIESTE-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "note": "Planned regional node"
+      "timestamp": "2026-02-18T00:00:00Z",
+      "note": "Planned regional node (Italy)"
     },
     {
       "region": "TRENTINO-ALTO-ADIGE",
@@ -216,8 +231,8 @@
       "status": "PLANNED",
       "node_hash": "HBCE-IT-TRENTINO-ALTO-ADIGE-TRENTO-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "note": "Planned regional node"
+      "timestamp": "2026-02-18T00:00:00Z",
+      "note": "Planned regional node (Italy)"
     },
     {
       "region": "VALLE-DAOSTA",
@@ -226,8 +241,8 @@
       "status": "PLANNED",
       "node_hash": "HBCE-IT-VALLE-DAOSTA-AOSTA-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "note": "Planned regional node"
+      "timestamp": "2026-02-18T00:00:00Z",
+      "note": "Planned regional node (Italy)"
     },
 
     {
@@ -237,7 +252,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-AT-AUSTRIA-VIENNA-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -247,7 +262,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-BE-BELGIUM-BRUSSELS-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -257,7 +272,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-BG-BULGARIA-SOFIA-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -267,7 +282,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-HR-CROATIA-ZAGREB-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -277,7 +292,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-CY-CYPRUS-NICOSIA-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -287,7 +302,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-CZ-CZECHIA-PRAGUE-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -297,7 +312,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-DK-DENMARK-COPENHAGEN-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -307,7 +322,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-EE-ESTONIA-TALLINN-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -317,7 +332,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-FI-FINLAND-HELSINKI-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -327,7 +342,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-FR-FRANCE-PARIS-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -337,7 +352,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-DE-GERMANY-BERLIN-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -347,7 +362,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-GR-GREECE-ATHENS-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -357,7 +372,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-HU-HUNGARY-BUDAPEST-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -367,7 +382,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-IE-IRELAND-DUBLIN-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -377,7 +392,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-LV-LATVIA-RIGA-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -387,7 +402,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-LT-LITHUANIA-VILNIUS-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -397,7 +412,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-LU-LUXEMBOURG-LUXEMBOURG-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -407,7 +422,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-MT-MALTA-VALLETTA-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -417,7 +432,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-NL-NETHERLANDS-AMSTERDAM-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -427,7 +442,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-PL-POLAND-WARSAW-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -437,7 +452,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-PT-PORTUGAL-LISBON-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -447,7 +462,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-RO-ROMANIA-BUCHAREST-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -457,7 +472,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-SK-SLOVAKIA-BRATISLAVA-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -467,7 +482,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-SI-SLOVENIA-LJUBLJANA-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -477,7 +492,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-ES-SPAIN-MADRID-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     },
     {
@@ -487,7 +502,7 @@
       "status": "PLANNED",
       "node_hash": "HBCE-SE-SWEDEN-STOCKHOLM-PLANNED-0001",
       "operator": "PENDING",
-      "timestamp": "2026-02-17T00:00:00Z",
+      "timestamp": "2026-02-18T00:00:00Z",
       "note": "Planned EU national node"
     }
   ]
