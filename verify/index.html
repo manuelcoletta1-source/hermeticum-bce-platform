@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>VERIFY — Deterministic IPR Validation</title>
-  <meta name="description" content="Deterministic verification of IPR Release file: compute SHA-256, check presence in public append-only registry, return VALID/INVALID (fail-closed)." />
+  <title>VERIFY — Deterministic IPR Status (VALID / INVALID)</title>
+  <meta name="description" content="Deterministic verification for Identity Primary Record (IPR). Validate Release integrity and confirm registry presence (hash-only, append-only). Output is binary: VALID or INVALID (fail-closed)." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
@@ -19,18 +19,49 @@
     .hbce-col-6{ grid-column: span 6; }
     .hbce-col-8{ grid-column: span 8; }
     .hbce-col-12{ grid-column: span 12; }
-    @media (max-width: 900px){ .hbce-col-4,.hbce-col-6,.hbce-col-8{ grid-column: span 12; } }
+    @media (max-width: 900px){
+      .hbce-col-4,.hbce-col-6,.hbce-col-8{ grid-column: span 12; }
+    }
 
     .hbce-mono{ font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
-    .hbce-pre{
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
-      padding: .85rem;
-      overflow:auto;
-      max-height: 360px;
+
+    .hbce-pill{
+      display:inline-block;
+      padding:.25rem .55rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.03);
+      color:rgba(255,255,255,.86);
+      font-size:.86rem;
+      font-weight:950;
+      letter-spacing:.02em;
+      text-transform: uppercase;
     }
-    .hbce-input{
+
+    .hbce-stepbar{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.8rem; }
+    .hbce-step{
+      padding:.35rem .65rem; border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.03);
+      font-weight:900; font-size:.86rem; opacity:.92;
+    }
+
+    .hbce-divider{ height:1px; background: rgba(255,255,255,.10); margin: 1rem 0; }
+
+    .hbce-note-box{
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.03);
+      padding: 1rem;
+    }
+
+    .hbce-kv{ display:grid; grid-template-columns: 210px 1fr; gap:.55rem 1rem; }
+    .hbce-kv div{ padding:.1rem 0; }
+
+    .hbce-form{ display:grid; gap:.9rem; }
+    .hbce-field label{ display:block; font-weight:900; margin-bottom:.35rem; }
+    .hbce-field .hint{ opacity:.78; font-size:.92rem; margin-top:.35rem; }
+    .hbce-input, .hbce-textarea{
       width:100%;
       border-radius: 14px;
       border:1px solid rgba(255,255,255,.12);
@@ -39,20 +70,44 @@
       padding:.75rem .85rem;
       outline: none;
     }
-    .hbce-divider{ height:1px; background: rgba(255,255,255,.10); margin: .85rem 0; }
-    .hbce-kv{ display:grid; grid-template-columns: 200px 1fr; gap:.45rem 1rem; }
-    .hbce-kv div{ padding:.1rem 0; }
-    .hbce-badge{
-      display:inline-block;
-      padding:.35rem .65rem;
-      border-radius:999px;
+    .hbce-textarea{ min-height: 120px; resize: vertical; }
+
+    .hbce-status{
+      border-radius: 18px;
       border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.03);
-      font-weight:1000;
-      letter-spacing:.02em;
+      background: rgba(255,255,255,.03);
+      padding: 1rem;
     }
-    .hbce-badge--ok{ border-color: rgba(255,255,255,.26); }
-    .hbce-badge--bad{ border-color: rgba(255,255,255,.26); }
+    .hbce-status__title{ font-weight:1000; letter-spacing:.01em; font-size:1.05rem; }
+    .hbce-status__badge{
+      display:inline-block;
+      margin-top:.55rem;
+      padding:.35rem .7rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.18);
+      font-weight:1000;
+      letter-spacing:.03em;
+      text-transform: uppercase;
+      font-size:.85rem;
+    }
+    .hbce-status__badge--valid{ }
+    .hbce-status__badge--invalid{ }
+
+    .hbce-code{
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      padding: .85rem .9rem;
+      overflow:auto;
+      font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size: .92rem;
+      line-height: 1.35;
+      color: rgba(255,255,255,.90);
+      white-space: pre;
+    }
+
+    .hbce-actions-row{ display:flex; flex-wrap:wrap; gap:.6rem; margin-top: .9rem; }
   </style>
 </head>
 
@@ -61,79 +116,228 @@
 
   <main class="hbce-container hbce-main">
 
+    <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">VERIFY · DETERMINISTIC · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">Verify IPR (Release → Registry match)</h1>
+      <div class="hbce-hero__kicker">VERIFY · DETERMINISTIC STATUS · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Verify IPR status</h1>
       <p class="hbce-hero__lead">
-        Upload your <strong>IPR Release</strong> file. The verifier computes <strong>SHA-256</strong>,
-        then checks for a match in the <strong>public append-only registry</strong>.
-        If any step cannot be executed → <strong>BLOCK</strong> (fail-closed).
+        Verification is deterministic: it proves <strong>Release integrity</strong> and <strong>registry presence</strong>.
+        The outcome is binary: <strong>VALID</strong> or <strong>INVALID</strong>.
+        If verification cannot prove identity → <strong>BLOCK</strong> (fail-closed).
       </p>
 
-      <div class="hbce-actions">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">ACTIVATE</a>
+      <div class="hbce-stepbar" aria-label="verification steps">
+        <span class="hbce-step">1 · Provide Release</span>
+        <span class="hbce-step">2 · Compute fingerprint</span>
+        <span class="hbce-step">3 · Check registry presence</span>
+        <span class="hbce-step">4 · Output VALID / INVALID</span>
+      </div>
+
+      <div class="hbce-actions" style="margin-top:1rem;">
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/activate/">Onboarding</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/">CREATE</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/pricing/">Catalogue</a>
       </div>
+
+      <p class="hbce-note" style="margin-top:.85rem;">
+        Rule: <span class="hbce-mono">VALID IPR = FILE INTEGRITY OK + PRESENT IN REGISTRY</span>.
+      </p>
     </section>
 
+    <!-- INPUTS -->
     <section class="hbce-section">
-      <h2>Upload Release</h2>
+      <h2>Verification inputs</h2>
 
       <div class="hbce-grid2">
         <div class="hbce-card hbce-col-8">
-          <input class="hbce-input" id="file" type="file" accept="application/json" />
-          <p class="hbce-note" style="margin-top:.6rem;">
-            Expected: JSON file generated by <strong>/create</strong>. This page does not upload your file anywhere.
+          <p>
+            VERIFY needs two data sources: a private proof (Release) and a public proof (registry).
+            Public proof is <strong>hash-only</strong> (GDPR-min).
           </p>
+
+          <div class="hbce-note-box">
+            <div class="hbce-kv">
+              <div><strong>Private input</strong></div><div>IPR Release file (customer custody)</div>
+              <div><strong>Public input</strong></div><div>Registry entry (label + payload_sha256 + timestamp)</div>
+              <div><strong>Output</strong></div><div>VALID / INVALID (fail-closed)</div>
+            </div>
+          </div>
 
           <div class="hbce-divider"></div>
 
-          <div class="hbce-actions">
-            <button class="hbce-btn" id="btn-verify" type="button" disabled>Run VERIFY</button>
-            <button class="hbce-btn hbce-btn--ghost" id="btn-reset" type="button">Reset</button>
+          <form class="hbce-form" action="#" method="post" aria-label="verify form (visual)">
+            <div class="hbce-field">
+              <label for="release_note">Release file (private custody)</label>
+              <textarea class="hbce-textarea" id="release_note" name="release_note" placeholder="In this demo UI, you keep the Release file locally. Verification logic is deterministic: compute SHA-256 from the Release content, then check registry presence."></textarea>
+              <div class="hint">
+                This page explains the rule and failure modes. Actual file handling can be added client-side when needed.
+              </div>
+            </div>
+
+            <div class="hbce-field">
+              <label for="expected_sha">Expected payload_sha256 (64-hex)</label>
+              <input class="hbce-input" id="expected_sha" name="expected_sha" placeholder="Paste the payload_sha256 you want to verify (from your Receipt / Registry Entry)" />
+              <div class="hint">If the hash is missing or not 64-hex → invalid by definition.</div>
+            </div>
+
+            <div class="hbce-actions-row">
+              <a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/registry/">Check registry presence</a>
+              <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">Platform status</a>
+            </div>
+          </form>
+        </div>
+
+        <div class="hbce-card hbce-col-4">
+          <h3>Why it is fail-closed</h3>
+          <ul class="hbce-list">
+            <li>No unverifiable execution</li>
+            <li>No partial validity</li>
+            <li>No trust required: only proofs</li>
+          </ul>
+          <div class="hbce-divider"></div>
+          <p class="hbce-note">
+            If a verifier cannot reproduce the status deterministically, the safe default is <strong>BLOCK</strong>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- OUTPUT STATES -->
+    <section class="hbce-section">
+      <h2>Deterministic outputs</h2>
+
+      <div class="hbce-grid2">
+        <div class="hbce-card hbce-col-6">
+          <div class="hbce-status" role="status" aria-label="valid example">
+            <div class="hbce-status__title">VALID IPR</div>
+            <div class="hbce-status__badge hbce-status__badge--valid">VALID</div>
+            <div class="hbce-divider"></div>
+            <ul class="hbce-list">
+              <li>Release integrity OK</li>
+              <li>payload_sha256 computed deterministically</li>
+              <li>Registry match found (append-only)</li>
+            </ul>
+            <div class="hbce-note-box" style="margin-top:.9rem;">
+              <span class="hbce-mono">Access granted</span> to modules, catalogue tiers, and operator paths (if licensed).
+            </div>
+          </div>
+        </div>
+
+        <div class="hbce-card hbce-col-6">
+          <div class="hbce-status" role="status" aria-label="invalid example">
+            <div class="hbce-status__title">INVALID IPR</div>
+            <div class="hbce-status__badge hbce-status__badge--invalid">INVALID</div>
+            <div class="hbce-divider"></div>
+            <ul class="hbce-list">
+              <li>Release integrity cannot be proven, or file missing</li>
+              <li>payload_sha256 invalid format / not reproducible</li>
+              <li>Registry match not found</li>
+              <li>Verification cannot run deterministically</li>
+            </ul>
+            <div class="hbce-note-box" style="margin-top:.9rem;">
+              <span class="hbce-mono">Access blocked</span> by design (fail-closed).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hbce-note-box" style="margin-top:1rem;">
+        <strong>Audit clarity:</strong> every INVALID case is explainable as a missing proof, a broken integrity condition, or absent registry match.
+      </div>
+    </section>
+
+    <!-- FAILURE REASONS (EXPLAINED) -->
+    <section class="hbce-section">
+      <h2>Failure reasons (what breaks verification)</h2>
+
+      <div class="hbce-grid2">
+        <div class="hbce-card hbce-col-8">
+          <table class="hbce-table" aria-label="failure reasons">
+            <thead>
+              <tr>
+                <th>Reason</th>
+                <th>Meaning</th>
+                <th>Fix</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Missing Release</strong></td>
+                <td>No private proof → integrity cannot be proven.</td>
+                <td>Recover Release from secure storage (or re-issue).</td>
+              </tr>
+              <tr>
+                <td><strong>Hash mismatch</strong></td>
+                <td>The computed fingerprint does not match the expected hash.</td>
+                <td>Use the correct Release file and compare with the right entry.</td>
+              </tr>
+              <tr>
+                <td><strong>Not in registry</strong></td>
+                <td>Hash-only entry was not appended (append-only).</td>
+                <td>Request operator append; then verify again.</td>
+              </tr>
+              <tr>
+                <td><strong>Non-deterministic verify</strong></td>
+                <td>Verification cannot be reproduced.</td>
+                <td>Fix tooling and ensure deterministic calculation paths.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="hbce-card hbce-col-4">
+          <div class="hbce-pill">Operator note</div>
+          <h3 style="margin-top:.55rem;">Registry append is governed</h3>
+          <p class="hbce-note">
+            Public registry is append-only. Operators are accountable for correct append discipline and audit evidence.
+          </p>
+          <div class="hbce-divider"></div>
+          <div class="hbce-actions-row">
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operator/">Operator access</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/horizon/">Horizon</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUICK PATH -->
+    <section class="hbce-section">
+      <h2>Fast operational path</h2>
+
+      <div class="hbce-grid2">
+        <div class="hbce-card hbce-col-8">
+          <ol class="hbce-list" style="list-style: decimal; padding-left: 1.2rem;">
+            <li><strong>Activate</strong> (bank-like onboarding): /activate</li>
+            <li><strong>Create</strong> Release + Receipt + registry entry: /create</li>
+            <li><strong>Append</strong> hash-only entry to registry: /registry</li>
+            <li><strong>Verify</strong> → VALID: /verify</li>
+            <li><strong>Choose</strong> a catalogue tier (civil / business / B2B / B2G): /pricing</li>
+          </ol>
+          <div class="hbce-actions" style="margin-top:1rem;">
+            <a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/pricing/">Go to Catalogue</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Open Registry</a>
           </div>
         </div>
 
         <div class="hbce-card hbce-col-4">
-          <h3>Decision rule</h3>
-          <div class="hbce-kv">
-            <div><strong>File integrity</strong></div><div>OK</div>
-            <div><strong>payload_sha256</strong></div><div>computed</div>
-            <div><strong>Registry match</strong></div><div>required</div>
-            <div><strong>Result</strong></div><div><span class="hbce-mono">VALID</span> or <span class="hbce-mono">INVALID</span></div>
-          </div>
+          <h3>Formal contact</h3>
+          <p class="hbce-note">For procurement / regulated channels.</p>
+          <ul class="hbce-list">
+            <li><strong>Company PEC:</strong> <a href="mailto:hermeticum@pec.it">hermeticum@pec.it</a></li>
+            <li><strong>Operational PEC:</strong> <a href="mailto:manuelcoletta@domiciliodigitale.com">manuelcoletta@domiciliodigitale.com</a></li>
+          </ul>
+          <p class="hbce-note">Policy: hash-only · append-only · GDPR-min · fail-closed</p>
         </div>
       </div>
     </section>
 
-    <section class="hbce-section">
-      <h2>Result</h2>
-      <div class="hbce-grid2">
-        <div class="hbce-card hbce-col-6">
-          <h3>Status</h3>
-          <div id="status" class="hbce-badge">WAITING</div>
-          <div class="hbce-divider"></div>
-          <div class="hbce-pre"><pre class="hbce-mono" id="log">Upload a Release file to begin.</pre></div>
-        </div>
-
-        <div class="hbce-card hbce-col-6">
-          <h3>Computed payload_sha256</h3>
-          <div class="hbce-pre"><pre class="hbce-mono" id="sha">—</pre></div>
-          <p class="hbce-note">This must match an entry in the public registry (append-only, hash-only).</p>
-          <div class="hbce-actions">
-            <a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/registry/">Open registry</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">Platform status</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
+    <!-- SIGN -->
     <section class="hbce-section">
       <div class="hbce-footnote">
         <p>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</p>
         <p>HERMETICUM B.C.E. S.r.l.</p>
-        <p class="hbce-note">UE-first · audit-first · fail-closed · hash-only · append-only · GDPR-min</p>
+        <p class="hbce-note">EU-first · audit-first · fail-closed · hash-only · append-only · GDPR-min</p>
       </div>
     </section>
 
@@ -141,139 +345,5 @@
 
   <div data-hbce="footer"></div>
   <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
-
-  <script>
-    (function(){
-      const $ = (id) => document.getElementById(id);
-
-      const fileInput = $("file");
-      const btnVerify = $("btn-verify");
-      const btnReset = $("btn-reset");
-
-      const statusEl = $("status");
-      const logEl = $("log");
-      const shaEl = $("sha");
-
-      let releaseText = null;
-      let releaseJson = null;
-
-      function setStatus(text){
-        statusEl.textContent = text;
-      }
-      function setLog(text){
-        logEl.textContent = text;
-      }
-
-      async function sha256Hex(str){
-        const enc = new TextEncoder();
-        const data = enc.encode(str);
-        const hash = await crypto.subtle.digest("SHA-256", data);
-        const arr = Array.from(new Uint8Array(hash));
-        return arr.map(b => b.toString(16).padStart(2,"0")).join("");
-      }
-
-      async function loadRegistry(){
-        const res = await fetch("/hermeticum-bce-platform/registry/registry.json", { cache: "no-store" });
-        if(!res.ok) throw new Error("Registry fetch failed (HTTP " + res.status + ")");
-        const json = await res.json();
-        const entries = Array.isArray(json.entries) ? json.entries : [];
-        return entries;
-      }
-
-      function isHex64(s){ return /^[a-f0-9]{64}$/i.test(String(s||"").trim()); }
-
-      fileInput.addEventListener("change", async () => {
-        setStatus("WAITING");
-        shaEl.textContent = "—";
-        btnVerify.disabled = true;
-        releaseText = null;
-        releaseJson = null;
-
-        const f = fileInput.files && fileInput.files[0];
-        if(!f){
-          setLog("Upload a Release file to begin.");
-          return;
-        }
-
-        try{
-          releaseText = await f.text();
-          releaseJson = JSON.parse(releaseText);
-
-          // Minimal sanity check
-          if(!releaseJson || typeof releaseJson !== "object"){
-            throw new Error("Invalid JSON object.");
-          }
-
-          setLog("Release loaded. Ready to verify.");
-          btnVerify.disabled = false;
-        }catch(e){
-          setStatus("BLOCK");
-          setLog("ERROR: " + (e && e.message ? e.message : String(e)));
-        }
-      });
-
-      btnVerify.addEventListener("click", async () => {
-        if(!releaseText) return;
-
-        btnVerify.disabled = true;
-        setStatus("VERIFYING");
-        setLog("Computing SHA-256…");
-
-        try{
-          if(!crypto || !crypto.subtle){
-            throw new Error("Web Crypto API not available.");
-          }
-
-          const sha = await sha256Hex(releaseText);
-          shaEl.textContent = sha;
-
-          if(!isHex64(sha)){
-            throw new Error("Computed sha256 is not valid (unexpected).");
-          }
-
-          setLog("SHA-256 computed. Loading registry…");
-          const entries = await loadRegistry();
-
-          const match = entries.find(e =>
-            String(e.payload_sha256 || "").toLowerCase() === sha.toLowerCase()
-          );
-
-          if(match){
-            setStatus("VALID");
-            setLog(
-              "VALID IPR — FILE INTEGRITY OK + PRESENT IN REGISTRY\n\n" +
-              "Match found:\n" +
-              JSON.stringify(match, null, 2)
-            );
-          }else{
-            setStatus("INVALID");
-            setLog(
-              "INVALID — No registry match.\n\n" +
-              "Action:\n" +
-              "1) Go to /registry\n" +
-              "2) Append the hash-only entry generated by /create\n" +
-              "3) Commit (append-only)\n" +
-              "4) Re-run VERIFY"
-            );
-          }
-        }catch(e){
-          setStatus("BLOCK");
-          setLog("ERROR: " + (e && e.message ? e.message : String(e)));
-        }finally{
-          btnVerify.disabled = false;
-        }
-      });
-
-      btnReset.addEventListener("click", () => {
-        fileInput.value = "";
-        releaseText = null;
-        releaseJson = null;
-        btnVerify.disabled = true;
-        setStatus("WAITING");
-        shaEl.textContent = "—";
-        setLog("Upload a Release file to begin.");
-      });
-    })();
-  </script>
 </body>
 </html>
