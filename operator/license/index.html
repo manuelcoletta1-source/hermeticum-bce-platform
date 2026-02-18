@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>HBCE Operator License — Issue (Manual Append-Only)</title>
+<meta name="description" content="Issue an HBCE Operator License under manual append-only rules. Requires VALID IPR. Fail-closed posture." />
+
+<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css">
+</head>
+
+<body>
+
+<div data-hbce="header"></div>
+
+<main class="hbce-container hbce-main">
+
+<section class="hbce-hero">
+  <div class="hbce-hero__kicker">OPERATOR LICENSE · ISSUE · MANUAL APPEND-ONLY</div>
+  <h1 class="hbce-hero__title">Issue Operator License</h1>
+  <p class="hbce-hero__lead">
+    Operator licensing is a controlled process. The issuer manually appends proof records.
+    If IPR is not VALID, license issuance is blocked (fail-closed).
+  </p>
+
+  <div class="hbce-actions">
+    <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/operator/">Operator Access</a>
+    <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verify IPR</a>
+    <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Registry</a>
+  </div>
+</section>
+
+<section class="hbce-section">
+  <h2 class="hbce-h2">Prerequisites</h2>
+
+  <div class="hbce-grid hbce-grid--3">
+    <div class="hbce-card">
+      <div class="hbce-card__title">VALID IPR</div>
+      <div class="hbce-card__text">
+        The operator must hold a valid IPR release file and must match the public registry proof.
+      </div>
+    </div>
+    <div class="hbce-card">
+      <div class="hbce-card__title">Issuer authority</div>
+      <div class="hbce-card__text">
+        License issuance is performed by an authorized issuer under HBCE rules (manual append-only).
+      </div>
+    </div>
+    <div class="hbce-card">
+      <div class="hbce-card__title">Fail-closed posture</div>
+      <div class="hbce-card__text">
+        If proof is missing or inconsistent, issuance is blocked. No partial states.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hbce-section">
+  <h2 class="hbce-h2">License record (hash-only proof)</h2>
+
+  <div class="hbce-card">
+    <div class="hbce-card__text">
+      An Operator License is represented publicly only by minimal proof fields:
+      <br><br>
+      <strong>name</strong> (public identity label) + <strong>payload_sha256</strong> + <strong>timestamp</strong>
+      <br><br>
+      No public custody of personal operational data (hash-only).
+    </div>
+
+    <div class="hbce-card hbce-card--subtle" style="margin-top:14px">
+      <div class="hbce-card__title">Minimal public entry (example format)</div>
+      <div class="hbce-card__text">
+<pre style="margin:0; white-space:pre-wrap;">
+{
+  "name": "OPERATOR LICENSE — &lt;PUBLIC LABEL&gt;",
+  "payload_sha256": "&lt;64-hex sha256&gt;",
+  "timestamp": "&lt;ISO-8601&gt;"
+}
+</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hbce-section">
+  <h2 class="hbce-h2">Issuance flow (deterministic)</h2>
+
+  <div class="hbce-card">
+    <div class="hbce-card__text">
+      1) Verify IPR (file integrity + registry match)
+      <br>
+      2) Generate Operator License payload (internal, non-public)
+      <br>
+      3) Compute deterministic <strong>payload_sha256</strong>
+      <br>
+      4) Append hash-only proof to public registry (manual append-only)
+      <br>
+      5) Operator becomes eligible for node assignment
+      <br><br>
+      If any step fails, issuance stops (fail-closed).
+    </div>
+  </div>
+</section>
+
+<section class="hbce-section">
+  <h2 class="hbce-h2">Node assignment</h2>
+
+  <div class="hbce-card">
+    <div class="hbce-card__text">
+      Licensing is not enough. A licensed operator must be assigned to a node:
+      <br><br>
+      - Regional node (Italy)
+      <br>
+      - National node (EU)
+      <br><br>
+      Node assignment is recorded in the node registry and validated by integrity rules.
+    </div>
+  </div>
+</section>
+
+<section class="hbce-section">
+  <h2 class="hbce-h2">Operational contact (PEC)</h2>
+
+  <div class="hbce-card">
+    <div class="hbce-card__text">
+      Licensing and issuance requests:
+      <ul class="hbce-list">
+        <li>PEC: <strong>hermeticum@pec.it</strong></li>
+        <li>Operational: <strong>manuelcoletta@domiciliodigitale.com</strong></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="hbce-section">
+  <div class="hbce-actions">
+    <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">Verify IPR</a>
+    <a class="hbce-btn" href="/hermeticum-bce-platform/operator/">Operator Access</a>
+    <a class="hbce-btn" href="/hermeticum-bce-platform/deployment/">Deployment</a>
+  </div>
+</section>
+
+</main>
+
+<div data-hbce="footer"></div>
+<script src="/hermeticum-bce-platform/assets/net-badge.js"></script>
+
+</body>
+</html>
