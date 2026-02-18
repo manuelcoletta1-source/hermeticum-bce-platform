@@ -1,131 +1,63 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <title>NETWORK — HERMETICUM (EU Node Dashboard)</title>
-  <meta name="description" content="Dashboard rete HBCE: nodi EU/IT, stati ACTIVE/PILOT/PLANNED, conteggi e accesso a registry. Fail-closed: se nodes.json non è verificabile → rete non operativa." />
-
-  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/network/" />
-  <meta name="robots" content="index,follow" />
-  <meta name="theme-color" content="#0b0f14" />
-
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>HBCE Network — Federated Nodes</title>
+  <meta name="description" content="HBCE federated network: origin node, regional nodes, EU national nodes. Coordinated by Joker-C2. Fail-closed integrity." />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
-
 <body>
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
 
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">NETWORK · EU DISTRIBUTED NODES · AUDIT-FIRST · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">HBCE Network Dashboard</h1>
+      <div class="hbce-hero__kicker">FEDERATED NETWORK · NODES · OPERATORS</div>
+      <h1 class="hbce-hero__title">HBCE Network — origin node and EU expansion</h1>
       <p class="hbce-hero__lead">
-        Stato rete derivato da <code>deployment/nodes.json</code>. Se la fonte non è coerente → <strong>FAIL-CLOSED</strong>.
+        HBCE operates as a federated network: origin node, regional nodes and EU national nodes, coordinated by JOKER-C2.
       </p>
-
-      <div class="hbce-actions">
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/network/eu-map/">Apri EU-MAP</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/deployment/">Deployment</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/deployment/nodes.json" target="_blank" rel="noopener">nodes.json</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/deployment/nodes.schema.json" target="_blank" rel="noopener">schema</a>
-      </div>
-
-      <div class="hbce-card hbce-card--subtle" style="margin-top:14px;">
-        <div class="hbce-card__title">Stato (runtime)</div>
-        <div id="hbce_net_state" class="hbce-card__text">—</div>
-      </div>
     </section>
 
-    <section class="hbce-grid hbce-grid--3">
-      <div class="hbce-card">
-        <div class="hbce-card__title">Nodi</div>
-        <ul class="hbce-list">
-          <li><strong>TOTAL</strong>: <span id="k_total">—</span></li>
-          <li><strong>ACTIVE</strong>: <span id="k_active">—</span></li>
-          <li><strong>PILOT</strong>: <span id="k_pilot">—</span></li>
-          <li><strong>PLANNED</strong>: <span id="k_planned">—</span></li>
-        </ul>
-      </div>
-
-      <div class="hbce-card">
-        <div class="hbce-card__title">Copertura</div>
-        <ul class="hbce-list">
-          <li><strong>COUNTRIES</strong>: <span id="k_countries">—</span></li>
-          <li><strong>IT REGIONS</strong>: <span id="k_it_regions">—</span></li>
-        </ul>
-      </div>
-
-      <div class="hbce-card">
-        <div class="hbce-card__title">Regole</div>
-        <p class="hbce-card__text">
-          Modalità: <strong>CATTIVA++</strong><br/>
-          1 errore in nodes.json → <strong>FAIL-CLOSED</strong><br/>
-          ACTIVE richiede operator valido + node_hash prefisso HBCE/ORIGIN.
-        </p>
-        <div class="hbce-actions" style="margin-top:10px;">
-          <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verify</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Registry</a>
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Network model</h2>
+      <div class="hbce-grid hbce-grid--3">
+        <div class="hbce-card">
+          <div class="hbce-card__title">Origin node</div>
+          <div class="hbce-card__text"><strong>Torino (IT)</strong> — coordination, standardization, operator issuance.</div>
+        </div>
+        <div class="hbce-card">
+          <div class="hbce-card__title">Italy</div>
+          <div class="hbce-card__text">Minimum schema: <strong>1 node per region</strong>.</div>
+        </div>
+        <div class="hbce-card">
+          <div class="hbce-card__title">European Union</div>
+          <div class="hbce-card__text">Minimum schema: <strong>1 node per EU country</strong>.</div>
         </div>
       </div>
     </section>
 
     <section class="hbce-section">
-      <h2 class="hbce-h2">Elenco nodi (filtrabile)</h2>
-
-      <div class="hbce-card" style="margin-top:12px;">
-        <div class="hbce-grid hbce-grid--3">
-          <div>
-            <div class="hbce-card__title">Filtro status</div>
-            <div class="hbce-actions" style="margin-top:8px;">
-              <button class="hbce-btn" type="button" data-filter-status="ALL">ALL</button>
-              <button class="hbce-btn" type="button" data-filter-status="ACTIVE">ACTIVE</button>
-              <button class="hbce-btn" type="button" data-filter-status="PILOT">PILOT</button>
-              <button class="hbce-btn" type="button" data-filter-status="PLANNED">PLANNED</button>
-            </div>
-          </div>
-
-          <div>
-            <div class="hbce-card__title">Filtro country</div>
-            <input id="filter_country" class="hbce-btn" style="width:100%;" placeholder="ISO-2 (es. IT, FR, DE)" />
-          </div>
-
-          <div>
-            <div class="hbce-card__title">Ricerca</div>
-            <input id="filter_q" class="hbce-btn" style="width:100%;" placeholder="Cerca region/city/node_hash/operator" />
-          </div>
+      <h2 class="hbce-h2">Integrity posture</h2>
+      <div class="hbce-card">
+        <div class="hbce-card__text">
+          The network runs in fail-closed posture: if node schema is invalid or ACTIVE nodes are inconsistent, the system reports FAIL-CLOSED via the header network badge.
         </div>
-
-        <p class="hbce-card__text" style="margin-top:10px;">
-          Output solo se rete in stato <strong>OK</strong>. Se FAIL-CLOSED, niente lista: zero fiducia, zero output.
-        </p>
       </div>
+    </section>
 
-      <div id="hbce_table_wrap" class="hbce-card" style="margin-top:12px; overflow:auto;">
-        <div class="hbce-card__title">Nodi</div>
-        <table style="width:100%; border-collapse:collapse; margin-top:10px;">
-          <thead>
-            <tr style="text-align:left; border-bottom:1px solid rgba(255,255,255,.08);">
-              <th style="padding:10px;">STATUS</th>
-              <th style="padding:10px;">COUNTRY</th>
-              <th style="padding:10px;">REGION</th>
-              <th style="padding:10px;">CITY</th>
-              <th style="padding:10px;">NODE_HASH</th>
-              <th style="padding:10px;">OPERATOR</th>
-              <th style="padding:10px;">TIMESTAMP</th>
-            </tr>
-          </thead>
-          <tbody id="hbce_tbody"></tbody>
-        </table>
+    <section class="hbce-section">
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/documents/">UE documents</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/architecture/">Architecture</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/joker-c2/">JOKER-C2</a>
       </div>
     </section>
 
   </main>
 
   <div data-hbce="footer"></div>
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js" defer></script>
-  <script defer src="/hermeticum-bce-platform/network/network.js"></script>
+  <script src="/hermeticum-bce-platform/assets/net-badge.js"></script>
 </body>
 </html>
