@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>Activate IPR — Bank-like Onboarding</title>
-  <meta name="description" content="Bank-like onboarding to activate an Identity Primary Record (IPR). Enter KYC-style data (ID/CIE, tax code, passport/driving licence), generate a local Release file, then append hash-only proof to the public registry for deterministic verification (fail-closed)." />
+  <title>Activate IPR — Bank-like Onboarding (EU)</title>
+  <meta name="description" content="Bank-like onboarding to activate an Identity Primary Record (IPR). Collect EU-grade identity fields (KYC-style), generate Release locally, append hash-only proof to the public registry, then verify deterministically (fail-closed)." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
@@ -19,23 +19,35 @@
     .hbce-col-6{ grid-column: span 6; }
     .hbce-col-8{ grid-column: span 8; }
     .hbce-col-12{ grid-column: span 12; }
-    @media (max-width: 900px){ .hbce-col-4,.hbce-col-6,.hbce-col-8{ grid-column: span 12; } }
+    @media (max-width: 900px){
+      .hbce-col-4,.hbce-col-6,.hbce-col-8{ grid-column: span 12; }
+    }
 
-    .hbce-slim{ max-width: 920px; }
+    .hbce-mono{ font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
 
-    .hbce-steps{ display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.75rem; }
-    .hbce-step{
-      padding:.35rem .65rem;
+    .hbce-pill{
+      display:inline-block;
+      padding:.25rem .55rem;
       border-radius:999px;
       border:1px solid rgba(255,255,255,.14);
       background:rgba(255,255,255,.03);
-      font-weight:800;
+      color:rgba(255,255,255,.86);
       font-size:.86rem;
-      opacity:.92;
+      font-weight:950;
+      letter-spacing:.02em;
+      text-transform: uppercase;
+    }
+
+    .hbce-stepbar{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.8rem; }
+    .hbce-step{
+      padding:.35rem .65rem; border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.03);
+      font-weight:900; font-size:.86rem; opacity:.92;
     }
 
     .hbce-form{ display:grid; gap:.9rem; }
-    .hbce-field label{ display:block; font-weight:800; margin-bottom:.35rem; }
+    .hbce-field label{ display:block; font-weight:900; margin-bottom:.35rem; }
     .hbce-field .hint{ opacity:.78; font-size:.92rem; margin-top:.35rem; }
 
     .hbce-input, .hbce-select, .hbce-textarea{
@@ -49,37 +61,17 @@
     }
     .hbce-textarea{ min-height: 110px; resize: vertical; }
 
-    .hbce-divider{ height:1px; background: rgba(255,255,255,.10); margin: .85rem 0; }
-
-    .hbce-callout{
+    .hbce-note-box{
       border-radius: 18px;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.03);
       padding: 1rem;
     }
 
-    .hbce-mono{ font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
+    .hbce-divider{ height:1px; background: rgba(255,255,255,.10); margin: 1rem 0; }
 
-    .hbce-tabs{ display:flex; gap:.5rem; flex-wrap:wrap; }
-    .hbce-tab{
-      display:inline-flex; align-items:center; justify-content:center;
-      padding:.5rem .8rem;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.03);
-      font-weight:900;
-      text-decoration:none;
-      color:rgba(255,255,255,.90);
-    }
-    .hbce-tab--active{
-      background:rgba(255,255,255,.06);
-      border-color: rgba(255,255,255,.22);
-    }
-    .hbce-kv{ display:grid; grid-template-columns: 190px 1fr; gap:.4rem 1rem; }
+    .hbce-kv{ display:grid; grid-template-columns: 180px 1fr; gap:.45rem 1rem; }
     .hbce-kv div{ padding:.1rem 0; }
-
-    .hbce-bullets{ margin:0; padding-left: 1.1rem; }
-    .hbce-bullets li{ margin:.25rem 0; }
   </style>
 </head>
 
@@ -90,366 +82,276 @@
 
     <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">IPR ACTIVATION · BANK-LIKE ONBOARDING · EU INFRASTRUCTURE</div>
-      <h1 class="hbce-hero__title">Open an IPR (Identity Primary Record)</h1>
-      <p class="hbce-hero__lead hbce-slim">
-        This is the customer onboarding (bank-style). You enter identity data to issue an <strong>IPR Release</strong>
-        (local file). The platform generates a <strong>SHA-256</strong> fingerprint for deterministic verification and prepares
-        the <strong>hash-only</strong> public registry entry.
-        <br/>
-        Rule: if the public registry does not contain your hash → <strong>INVALID</strong> (fail-closed).
+      <div class="hbce-hero__kicker">IPR ACTIVATION · BANK-LIKE ONBOARDING · EU-FIRST</div>
+      <h1 class="hbce-hero__title">Activate your IPR (Identity Primary Record)</h1>
+      <p class="hbce-hero__lead">
+        This is the onboarding gateway — comparable to opening a bank account, but for <strong>operational identity</strong>.
+        You provide EU-grade identity fields; the platform then generates your <strong>Release file</strong> locally, prepares
+        a <strong>hash-only</strong> registry entry, and enables deterministic verification.
       </p>
 
-      <div class="hbce-steps" aria-label="activation steps">
-        <span class="hbce-step">1 — Customer data</span>
-        <span class="hbce-step">2 — Generate Release</span>
-        <span class="hbce-step">3 — Append hash-only</span>
-        <span class="hbce-step">4 — VERIFY → VALID</span>
+      <div class="hbce-stepbar" aria-label="activation steps">
+        <span class="hbce-step">1 · Choose entity</span>
+        <span class="hbce-step">2 · Enter identity fields</span>
+        <span class="hbce-step">3 · CREATE Release (local)</span>
+        <span class="hbce-step">4 · Append (hash-only)</span>
+        <span class="hbce-step">5 · VERIFY → VALID</span>
       </div>
 
-      <p class="hbce-note" style="margin-top:.75rem;">
-        Public proof: <span class="hbce-mono">label + payload_sha256 + timestamp</span> (hash-only). Private: Release file with full data (kept by the customer).
+      <p class="hbce-note" style="margin-top:.85rem;">
+        Rule: <span class="hbce-mono">VALID IPR = FILE INTEGRITY OK + PRESENT IN REGISTRY</span> (fail-closed).
       </p>
-    </section>
 
-    <!-- PROFILE TABS -->
-    <section class="hbce-section">
-      <h2>Select profile</h2>
-      <div class="hbce-card">
-        <div class="hbce-tabs" role="navigation" aria-label="profile tabs">
-          <a class="hbce-tab hbce-tab--active" href="#individual">Individual (ID/Tax code)</a>
-          <a class="hbce-tab" href="#company">Company (VAT)</a>
-          <a class="hbce-tab" href="#institution">Institution / Public body</a>
-        </div>
-        <p class="hbce-note" style="margin-top:.65rem;">
-          Fill the section matching your profile. Fields are designed to be “bank-ready”.
-        </p>
+      <div class="hbce-actions" style="margin-top:1rem;">
+        <a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/create/">Continue → CREATE Release</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY existing</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Open registry</a>
       </div>
     </section>
 
-    <!-- DATA MODEL -->
+    <!-- GDPR-MIN / CUSTODY -->
     <section class="hbce-section">
-      <h2>Data model (GDPR-min)</h2>
+      <h2>GDPR-min custody model (non-negotiable)</h2>
+
       <div class="hbce-grid2">
         <div class="hbce-card hbce-col-8">
-          <ul class="hbce-list">
-            <li><strong>Release (private):</strong> contains the full operational identity data. The customer must store it.</li>
-            <li><strong>Registry (public):</strong> stores only <strong>hash-only</strong> proofs + timestamp (append-only).</li>
-            <li><strong>Verify:</strong> checks file integrity + registry match → <span class="hbce-mono">VALID/INVALID</span>.</li>
-          </ul>
-          <div class="hbce-divider"></div>
-          <p class="hbce-note">
-            Definition: <span class="hbce-mono">VALID IPR = FILE INTEGRITY OK + PRESENT IN REGISTRY</span>.
+          <p>
+            This onboarding page is designed to collect the fields needed to generate the <strong>private Release file</strong>.
+            The Release file is <strong>kept locally</strong> by the customer. Public systems only store
+            <strong>hash-only proofs</strong> (no public personal data custody).
           </p>
+          <ul class="hbce-list">
+            <li><strong>Public:</strong> label + payload_sha256 + timestamp (hash-only)</li>
+            <li><strong>Private:</strong> Release file (customer custody)</li>
+            <li><strong>Failure mode:</strong> if verification cannot be proven → <strong>BLOCK</strong> (fail-closed)</li>
+          </ul>
         </div>
+
         <div class="hbce-card hbce-col-4">
-          <h3>Fail-closed</h3>
+          <h3>What you receive</h3>
           <div class="hbce-kv">
-            <div><strong>Missing hash</strong></div><div>INVALID</div>
-            <div><strong>Corrupted file</strong></div><div>INVALID</div>
-            <div><strong>Verify unavailable</strong></div><div>BLOCK</div>
+            <div><strong>Release</strong></div><div>private identity proof</div>
+            <div><strong>Receipt</strong></div><div>issuance evidence</div>
+            <div><strong>Registry entry</strong></div><div>hash-only proof</div>
+            <div><strong>Status</strong></div><div>VALID / INVALID</div>
           </div>
         </div>
       </div>
+
+      <div class="hbce-note-box" style="margin-top:1rem;">
+        <strong>Important:</strong> This page does not submit data to public storage.
+        Your identity becomes operational only after <strong>CREATE</strong> + registry append + <strong>VERIFY</strong>.
+      </div>
     </section>
 
-    <!-- INDIVIDUAL -->
-    <section id="individual" class="hbce-section">
-      <h2>Individual onboarding — required fields (bank-like)</h2>
+    <!-- ONBOARDING FORM -->
+    <section class="hbce-section">
+      <h2>Onboarding (EU-grade identity fields)</h2>
 
       <div class="hbce-grid2">
+
         <div class="hbce-card hbce-col-8">
-          <form class="hbce-form" action="/hermeticum-bce-platform/create/" method="get" aria-label="KYC individual">
+          <p class="hbce-note">
+            Fill in the fields exactly as they should appear in your operational identity.
+            Use official data (as in a bank KYC intake). Public registry will not store these fields.
+          </p>
 
-            <div class="hbce-grid2">
-              <div class="hbce-field hbce-col-6">
-                <label for="full_name">Full legal name</label>
-                <input class="hbce-input" id="full_name" name="full_name" placeholder="e.g. John Doe" required />
-              </div>
-              <div class="hbce-field hbce-col-6">
-                <label for="dob">Date of birth</label>
-                <input class="hbce-input" id="dob" name="dob" placeholder="YYYY-MM-DD" required />
-                <div class="hint">Recommended format: 1988-02-05</div>
-              </div>
-            </div>
+          <form class="hbce-form" action="#" method="post" aria-label="IPR bank-like onboarding form">
 
-            <div class="hbce-grid2">
-              <div class="hbce-field hbce-col-6">
-                <label for="birth_place">Place of birth</label>
-                <input class="hbce-input" id="birth_place" name="birth_place" placeholder="City (Region/State), Country" required />
-              </div>
-              <div class="hbce-field hbce-col-6">
-                <label for="citizenship">Citizenship</label>
-                <input class="hbce-input" id="citizenship" name="citizenship" placeholder="e.g. IT" required />
-              </div>
-            </div>
-
-            <div class="hbce-grid2">
-              <div class="hbce-field hbce-col-6">
-                <label for="tax_code">Tax code (Codice Fiscale)</label>
-                <input class="hbce-input" id="tax_code" name="tax_code" placeholder="e.g. RSSMRA80A01H501U" required />
-                <div class="hint">Private inside Release (never public).</div>
-              </div>
-              <div class="hbce-field hbce-col-6">
-                <label for="id_number">ID document number (CIE/ID)</label>
-                <input class="hbce-input" id="id_number" name="id_number" placeholder="Document number" required />
-              </div>
-            </div>
-
-            <div class="hbce-grid2">
-              <div class="hbce-field hbce-col-6">
-                <label for="doc_type">Document type</label>
-                <select class="hbce-select" id="doc_type" name="doc_type" required>
-                  <option value="" selected disabled>Select…</option>
-                  <option value="NATIONAL_ID">National ID (CIE/ID)</option>
-                  <option value="PASSPORT">Passport</option>
-                  <option value="DRIVING_LICENSE">Driving licence</option>
-                  <option value="OTHER">Other</option>
-                </select>
-              </div>
-              <div class="hbce-field hbce-col-6">
-                <label for="doc_expiry">Document expiry</label>
-                <input class="hbce-input" id="doc_expiry" name="doc_expiry" placeholder="YYYY-MM-DD" required />
-              </div>
-            </div>
-
-            <div class="hbce-grid2">
-              <div class="hbce-field hbce-col-6">
-                <label for="email">Email</label>
-                <input class="hbce-input" id="email" name="email" type="email" placeholder="name@domain.tld" required />
-              </div>
-              <div class="hbce-field hbce-col-6">
-                <label for="pec">PEC (optional)</label>
-                <input class="hbce-input" id="pec" name="pec" type="email" placeholder="name@pec.it" />
-                <div class="hint">Recommended for regulated/legal workflows.</div>
-              </div>
-            </div>
-
+            <!-- ENTITY TYPE -->
             <div class="hbce-field">
-              <label for="address">Residence / address</label>
-              <input class="hbce-input" id="address" name="address" placeholder="Street, number, postal code, city, country" required />
+              <label for="entity_type">Entity type</label>
+              <select class="hbce-select" id="entity_type" name="entity_type" required>
+                <option value="" selected disabled>Select…</option>
+                <option value="HUMAN">Human (Individual)</option>
+                <option value="COMPANY">Company (Business)</option>
+                <option value="INSTITUTION">Institution / Public body</option>
+              </select>
+              <div class="hint">Entity type defines the identity profile and issuance context.</div>
             </div>
 
+            <!-- DISPLAY / LEGAL NAME -->
             <div class="hbce-field">
-              <label for="purpose_individual">Operational purpose</label>
-              <textarea class="hbce-textarea" id="purpose_individual" name="purpose_individual" placeholder="e.g. infrastructure access, module activation, system binding, operator path, etc."></textarea>
-              <div class="hint">Used for issuance context and auditing (not public).</div>
+              <label for="legal_name">Legal name</label>
+              <input class="hbce-input" id="legal_name" name="legal_name" placeholder="e.g. John Doe / ACME Robotics S.p.A. / City of Torino" required />
+              <div class="hint">Not stored publicly. Used inside the Release file.</div>
             </div>
 
-            <div class="hbce-callout" role="note" aria-label="privacy note individual">
-              <strong>Important</strong>
+            <!-- JURISDICTION -->
+            <div class="hbce-grid2">
+              <div class="hbce-field hbce-col-6">
+                <label for="country_code">Country code</label>
+                <input class="hbce-input" id="country_code" name="country_code" placeholder="e.g. IT, FR, DE" required />
+                <div class="hint">ISO-like code used in the issuance context.</div>
+              </div>
+              <div class="hbce-field hbce-col-6">
+                <label for="jurisdiction">Jurisdiction</label>
+                <input class="hbce-input" id="jurisdiction" name="jurisdiction" value="EU" required />
+                <div class="hint">Default EU.</div>
+              </div>
+            </div>
+
+            <!-- CONTACT -->
+            <div class="hbce-grid2">
+              <div class="hbce-field hbce-col-6">
+                <label for="contact_email">Contact email</label>
+                <input class="hbce-input" id="contact_email" name="contact_email" type="email" placeholder="name@domain.tld" />
+                <div class="hint">Optional. Operational contact (not public).</div>
+              </div>
+              <div class="hbce-field hbce-col-6">
+                <label for="contact_pec">PEC (recommended for formal channels)</label>
+                <input class="hbce-input" id="contact_pec" name="contact_pec" type="email" placeholder="name@pec.it" />
+                <div class="hint">Optional. Strongly recommended for regulated entities.</div>
+              </div>
+            </div>
+
+            <!-- IDENTITY DOCUMENTS (HUMAN) -->
+            <div class="hbce-note-box">
+              <div class="hbce-pill">Individuals (Human) — identity documents</div>
+              <div class="hbce-divider"></div>
+
+              <div class="hbce-grid2">
+                <div class="hbce-field hbce-col-6">
+                  <label for="tax_id">Tax ID / Fiscal code</label>
+                  <input class="hbce-input" id="tax_id" name="tax_id" placeholder="e.g. IT fiscal code" />
+                  <div class="hint">Used for EU-grade identity matching inside the Release file.</div>
+                </div>
+                <div class="hbce-field hbce-col-6">
+                  <label for="cie_id">National eID / CIE number</label>
+                  <input class="hbce-input" id="cie_id" name="cie_id" placeholder="e.g. CIE / national eID number" />
+                  <div class="hint">Optional but recommended for strong onboarding.</div>
+                </div>
+              </div>
+
+              <div class="hbce-grid2">
+                <div class="hbce-field hbce-col-6">
+                  <label for="passport_no">Passport number</label>
+                  <input class="hbce-input" id="passport_no" name="passport_no" placeholder="Passport number" />
+                </div>
+                <div class="hbce-field hbce-col-6">
+                  <label for="driver_license_no">Driving license number</label>
+                  <input class="hbce-input" id="driver_license_no" name="driver_license_no" placeholder="License number" />
+                </div>
+              </div>
+
+              <div class="hbce-grid2">
+                <div class="hbce-field hbce-col-6">
+                  <label for="birth_place">Place of birth</label>
+                  <input class="hbce-input" id="birth_place" name="birth_place" placeholder="City, Country" />
+                </div>
+                <div class="hbce-field hbce-col-6">
+                  <label for="birth_date">Date of birth</label>
+                  <input class="hbce-input" id="birth_date" name="birth_date" type="date" />
+                </div>
+              </div>
+            </div>
+
+            <!-- BUSINESS (COMPANY) -->
+            <div class="hbce-note-box">
+              <div class="hbce-pill">Companies (Business) — registry & legal identifiers</div>
+              <div class="hbce-divider"></div>
+
+              <div class="hbce-grid2">
+                <div class="hbce-field hbce-col-6">
+                  <label for="vat_id">VAT ID</label>
+                  <input class="hbce-input" id="vat_id" name="vat_id" placeholder="VAT number" />
+                  <div class="hint">Used inside the Release file for legal traceability.</div>
+                </div>
+                <div class="hbce-field hbce-col-6">
+                  <label for="company_registry_id">Company registry number</label>
+                  <input class="hbce-input" id="company_registry_id" name="company_registry_id" placeholder="Company register ID" />
+                  <div class="hint">Optional. Depends on national registry.</div>
+                </div>
+              </div>
+
+              <div class="hbce-grid2">
+                <div class="hbce-field hbce-col-6">
+                  <label for="legal_rep_name">Legal representative</label>
+                  <input class="hbce-input" id="legal_rep_name" name="legal_rep_name" placeholder="Full name" />
+                </div>
+                <div class="hbce-field hbce-col-6">
+                  <label for="legal_rep_tax_id">Legal rep Tax ID</label>
+                  <input class="hbce-input" id="legal_rep_tax_id" name="legal_rep_tax_id" placeholder="Tax ID / fiscal code" />
+                </div>
+              </div>
+            </div>
+
+            <!-- INSTITUTION -->
+            <div class="hbce-note-box">
+              <div class="hbce-pill">Institutions — public body identifiers</div>
+              <div class="hbce-divider"></div>
+
+              <div class="hbce-grid2">
+                <div class="hbce-field hbce-col-6">
+                  <label for="public_body_id">Public body ID / code</label>
+                  <input class="hbce-input" id="public_body_id" name="public_body_id" placeholder="Internal code / national identifier" />
+                </div>
+                <div class="hbce-field hbce-col-6">
+                  <label for="department">Department / unit</label>
+                  <input class="hbce-input" id="department" name="department" placeholder="Department name" />
+                </div>
+              </div>
+            </div>
+
+            <!-- OPERATIONAL PURPOSE -->
+            <div class="hbce-field">
+              <label for="purpose">Operational purpose</label>
+              <textarea class="hbce-textarea" id="purpose" name="purpose" placeholder="Describe scope: certified digital operations, procurement flows, automation, robotics, infrastructure gates, audit requirements, etc."></textarea>
+              <div class="hint">Used for issuance context and audit framing (not public).</div>
+            </div>
+
+            <!-- CONSENT NOTE -->
+            <div class="hbce-note-box" role="note" aria-label="custody note">
+              <strong>Custody and minimization</strong>
               <div class="hbce-divider"></div>
               <p class="hbce-note" style="margin:0;">
-                These fields are written into the <strong>Release</strong> file (private). The public registry will publish only <strong>hash-only</strong> proof.
+                Public registry stores only: <span class="hbce-mono">label + payload_sha256 + timestamp</span>.
+                Identity fields remain private in the local Release file.
               </p>
             </div>
 
-            <div class="hbce-actions" style="margin-top:.25rem;">
-              <button class="hbce-btn" type="submit">Continue → Generate Release</button>
-              <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">I already have a Release → VERIFY</a>
+            <div class="hbce-actions" style="margin-top:.2rem;">
+              <a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/create/">Continue → CREATE Release</a>
+              <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">Catalogue</a>
+              <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
             </div>
 
           </form>
+
+          <p class="hbce-note" style="margin-top:1rem;">
+            Next step is CREATE: the platform generates Release + Receipt + Registry entry, then you append hash-only proof and VERIFY deterministically.
+          </p>
         </div>
 
         <div class="hbce-card hbce-col-4">
-          <h3>Bank-style checklist</h3>
-          <ul class="hbce-bullets">
-            <li>National ID / CIE</li>
-            <li>Tax code</li>
-            <li>Address</li>
-            <li>Email / PEC</li>
-            <li>Document expiry</li>
+          <h3>Fail-closed conditions</h3>
+          <ul class="hbce-list">
+            <li>Release integrity cannot be proven</li>
+            <li>Hash not present in registry</li>
+            <li>Verify cannot execute deterministically</li>
           </ul>
 
           <div class="hbce-divider"></div>
 
-          <h3>After Release</h3>
-          <ol class="hbce-list" style="list-style: decimal; padding-left: 1.2rem;">
-            <li>Append hash-only entry to registry</li>
-            <li>VERIFY</li>
-            <li>Status: VALID</li>
-          </ol>
-
+          <h3>Quick links</h3>
           <div class="hbce-actions">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Open registry</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">Platform status</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- COMPANY -->
-    <section id="company" class="hbce-section">
-      <h2>Company onboarding — required fields</h2>
-
-      <div class="hbce-grid2">
-        <div class="hbce-card hbce-col-8">
-          <form class="hbce-form" action="/hermeticum-bce-platform/create/" method="get" aria-label="KYC company">
-
-            <div class="hbce-grid2">
-              <div class="hbce-field hbce-col-8">
-                <label for="company_name">Legal company name</label>
-                <input class="hbce-input" id="company_name" name="company_name" placeholder="e.g. ACME Robotics S.p.A." />
-              </div>
-              <div class="hbce-field hbce-col-4">
-                <label for="company_country">Country</label>
-                <input class="hbce-input" id="company_country" name="company_country" placeholder="e.g. IT" />
-              </div>
-            </div>
-
-            <div class="hbce-grid2">
-              <div class="hbce-field hbce-col-6">
-                <label for="vat">VAT number</label>
-                <input class="hbce-input" id="vat" name="vat" placeholder="ITxxxxxxxxxxx" />
-              </div>
-              <div class="hbce-field hbce-col-6">
-                <label for="lei">LEI (optional)</label>
-                <input class="hbce-input" id="lei" name="lei" placeholder="Legal Entity Identifier" />
-              </div>
-            </div>
-
-            <div class="hbce-field">
-              <label for="company_address">Registered office</label>
-              <input class="hbce-input" id="company_address" name="company_address" placeholder="Full address" />
-            </div>
-
-            <div class="hbce-grid2">
-              <div class="hbce-field hbce-col-6">
-                <label for="company_email">Email</label>
-                <input class="hbce-input" id="company_email" name="company_email" type="email" placeholder="contact@company.tld" />
-              </div>
-              <div class="hbce-field hbce-col-6">
-                <label for="company_pec">PEC (Italy)</label>
-                <input class="hbce-input" id="company_pec" name="company_pec" type="email" placeholder="company@pec.it" />
-              </div>
-            </div>
-
-            <div class="hbce-field">
-              <label for="company_scope">Operational scope</label>
-              <textarea class="hbce-textarea" id="company_scope" name="company_scope" placeholder="e.g. robotics fleet, AI agents, supply chain audit, critical IT systems, etc."></textarea>
-            </div>
-
-            <div class="hbce-actions">
-              <button class="hbce-btn" type="submit">Continue → Generate Release</button>
-              <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">B2B catalogue</a>
-            </div>
-          </form>
-        </div>
-
-        <div class="hbce-card hbce-col-4">
-          <h3>Typical interfaces</h3>
-          <ul class="hbce-bullets">
-            <li>Audit & compliance</li>
-            <li>Robot & AI binding</li>
-            <li>Supply-chain traceability</li>
-            <li>Enterprise modules access</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- INSTITUTION -->
-    <section id="institution" class="hbce-section">
-      <h2>Institution / public body onboarding — required fields</h2>
-
-      <div class="hbce-grid2">
-        <div class="hbce-card hbce-col-8">
-          <form class="hbce-form" action="/hermeticum-bce-platform/create/" method="get" aria-label="KYC institution">
-
-            <div class="hbce-grid2">
-              <div class="hbce-field hbce-col-8">
-                <label for="inst_name">Institution name</label>
-                <input class="hbce-input" id="inst_name" name="inst_name" placeholder="e.g. City of … / Region … / Agency …" />
-              </div>
-              <div class="hbce-field hbce-col-4">
-                <label for="inst_level">Level</label>
-                <select class="hbce-select" id="inst_level" name="inst_level">
-                  <option value="" selected disabled>Select…</option>
-                  <option value="LOCAL">Local</option>
-                  <option value="CITY">City</option>
-                  <option value="REGION">Region</option>
-                  <option value="NATIONAL">National</option>
-                  <option value="EU">EU</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="hbce-field">
-              <label for="inst_address">Office address</label>
-              <input class="hbce-input" id="inst_address" name="inst_address" placeholder="Full address" />
-            </div>
-
-            <div class="hbce-grid2">
-              <div class="hbce-field hbce-col-6">
-                <label for="inst_email">Email</label>
-                <input class="hbce-input" id="inst_email" name="inst_email" type="email" placeholder="office@institution.tld" />
-              </div>
-              <div class="hbce-field hbce-col-6">
-                <label for="inst_pec">PEC (recommended)</label>
-                <input class="hbce-input" id="inst_pec" name="inst_pec" type="email" placeholder="institution@pec.it" />
-              </div>
-            </div>
-
-            <div class="hbce-field">
-              <label for="inst_scope">Operational perimeter</label>
-              <textarea class="hbce-textarea" id="inst_scope" name="inst_scope" placeholder="e.g. public systems identity, infrastructure audit, city robotics, digital services, etc."></textarea>
-            </div>
-
-            <div class="hbce-actions">
-              <button class="hbce-btn" type="submit">Continue → Generate Release</button>
-              <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/network/">Node network</a>
-            </div>
-          </form>
-        </div>
-
-        <div class="hbce-card hbce-col-4">
-          <h3>Public-sector use</h3>
-          <ul class="hbce-bullets">
-            <li>Audit-by-design</li>
-            <li>Infrastructure identity</li>
-            <li>Verifiable operational chains</li>
-            <li>Territorial node integration</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- NEXT ACTIONS -->
-    <section class="hbce-section">
-      <h2>Next steps</h2>
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>1) Generate Release</h3>
-          <p>Go to CREATE to generate your Release file and issuance receipt.</p>
-          <div class="hbce-actions">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/create/">CREATE</a>
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <h3>2) Append to registry</h3>
-          <p>Append the hash-only entry to the public append-only registry.</p>
-          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/">CREATE</a>
             <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <h3>3) Deterministic verify</h3>
-          <p>Check VALID/INVALID. If it does not match → BLOCK (fail-closed).</p>
-          <div class="hbce-actions">
             <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/horizon/">Horizon</a>
+          </div>
+
+          <div class="hbce-divider"></div>
+
+          <div class="hbce-note-box">
+            <div class="hbce-pill">Reminder</div>
+            <p style="margin:.7rem 0 0;">
+              This onboarding is EU-style: identity fields are used to generate the private Release file.
+              Public proof remains hash-only.
+            </p>
           </div>
         </div>
 
-        <div class="hbce-card">
-          <h3>4) Access modules</h3>
-          <p>Only after VALID: modules, operator path, node network.</p>
-          <div class="hbce-actions">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">Catalogue</a>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -458,7 +360,7 @@
       <div class="hbce-footnote">
         <p>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</p>
         <p>HERMETICUM B.C.E. S.r.l.</p>
-        <p class="hbce-note">UE-first · audit-first · fail-closed · hash-only · append-only · GDPR-min</p>
+        <p class="hbce-note">EU-first · audit-first · fail-closed · hash-only · append-only · GDPR-min</p>
       </div>
     </section>
 
