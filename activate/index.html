@@ -1,185 +1,281 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<title>Activate IPR — Identity Primary Record</title>
-<meta name="description" content="Activate your Identity Primary Record (IPR). Generate operational identity, create release file and enable registry verification for infrastructure access." />
+  <title>Activate IPR — Identity Primary Record</title>
+  <meta name="description" content="Bank-like onboarding to activate an Identity Primary Record (IPR). Enter data, generate release file, then append hash-only proof to the public registry for deterministic verification (fail-closed)." />
 
-<meta name="robots" content="index,follow" />
-<meta name="theme-color" content="#0b0f14" />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/activate/" />
 
-<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+
+  <style>
+    .hbce-grid2{ display:grid; gap:1rem; grid-template-columns: repeat(12, 1fr); }
+    .hbce-col-4{ grid-column: span 4; }
+    .hbce-col-6{ grid-column: span 6; }
+    .hbce-col-8{ grid-column: span 8; }
+    .hbce-col-12{ grid-column: span 12; }
+    @media (max-width: 900px){ .hbce-col-4,.hbce-col-6,.hbce-col-8{ grid-column: span 12; } }
+
+    .hbce-form{ display:grid; gap:.9rem; }
+    .hbce-field label{ display:block; font-weight:800; margin-bottom:.35rem; }
+    .hbce-field .hint{ opacity:.78; font-size:.92rem; margin-top:.35rem; }
+    .hbce-input, .hbce-select, .hbce-textarea{
+      width:100%;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.03);
+      color: rgba(255,255,255,.92);
+      padding:.75rem .85rem;
+      outline: none;
+    }
+    .hbce-textarea{ min-height: 110px; resize: vertical; }
+    .hbce-slim{ max-width: 860px; }
+    .hbce-steps{ display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.75rem; }
+    .hbce-step{
+      padding:.35rem .65rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.03);
+      font-weight:800;
+      font-size:.86rem;
+      opacity:.92;
+    }
+    .hbce-kv{ display:grid; grid-template-columns: 180px 1fr; gap:.4rem 1rem; }
+    .hbce-kv div{ padding:.1rem 0; }
+    .hbce-divider{ height:1px; background: rgba(255,255,255,.10); margin: .85rem 0; }
+    .hbce-callout{
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.03);
+      padding: 1rem;
+    }
+    .hbce-mono{ font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
+  </style>
 </head>
 
 <body>
-<div data-hbce="header"></div>
+  <div data-hbce="header"></div>
 
-<main class="hbce-container hbce-main">
+  <main class="hbce-container hbce-main">
 
-<section class="hbce-hero">
-<div class="hbce-hero__kicker">IPR ACTIVATION · OPERATIONAL IDENTITY · EU INFRASTRUCTURE</div>
-<h1 class="hbce-hero__title">Activate Identity Primary Record</h1>
+    <!-- HERO -->
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">IPR ACTIVATION · BANK-LIKE ONBOARDING · EU INFRASTRUCTURE</div>
+      <h1 class="hbce-hero__title">Activate your IPR (Identity Primary Record)</h1>
+      <p class="hbce-hero__lead hbce-slim">
+        This page is the operational onboarding: like opening a bank account.
+        You provide the required identity fields, then the platform generates the <strong>IPR Release</strong> file
+        and a <strong>hash-only</strong> registry entry. Verification is deterministic and <strong>fail-closed</strong>.
+      </p>
 
-<p class="hbce-hero__lead">
-The Identity Primary Record (IPR) is the required operational identity for access to the HERMETICUM B.C.E. infrastructure.
-Activation generates a release file and a cryptographic fingerprint used for deterministic verification.
-</p>
-</section>
+      <div class="hbce-steps" aria-label="activation steps">
+        <span class="hbce-step">Step 1 — Enter data</span>
+        <span class="hbce-step">Step 2 — Generate Release</span>
+        <span class="hbce-step">Step 3 — Append to Registry</span>
+        <span class="hbce-step">Step 4 — Verify (VALID)</span>
+      </div>
 
-<section class="hbce-section">
-<h2>Activation overview</h2>
+      <p class="hbce-note" style="margin-top:.75rem;">
+        Public proof is <strong>hash-only</strong> (no public personal data). If registry match is missing → <strong>INVALID</strong>.
+      </p>
+    </section>
 
-<div class="hbce-grid">
+    <!-- WHAT YOU GET -->
+    <section class="hbce-section">
+      <h2>What you receive</h2>
 
-<div class="hbce-card">
-<h3>Operational identity</h3>
-<p>
-The IPR establishes a persistent operational identity for individuals, companies,
-institutions, AI systems and autonomous infrastructures.
-</p>
-</div>
+      <div class="hbce-grid2">
+        <div class="hbce-card hbce-col-8">
+          <ul class="hbce-list">
+            <li><strong>IPR Release file</strong> (your operational identity file to keep locally)</li>
+            <li><strong>Receipt</strong> (issuance proof for your records)</li>
+            <li><strong>Registry entry (hash-only)</strong> ready to append to the public registry</li>
+            <li><strong>Deterministic verification</strong> resulting in VALID/INVALID</li>
+          </ul>
+          <div class="hbce-divider"></div>
+          <p class="hbce-note">
+            Operational rule: <span class="hbce-mono">VALID IPR = FILE INTEGRITY OK + PRESENT IN REGISTRY</span>.
+          </p>
+        </div>
 
-<div class="hbce-card">
-<h3>Cryptographic verification</h3>
-<p>
-Each identity is linked to a SHA-256 fingerprint used for deterministic verification
-and registry validation.
-</p>
-</div>
+        <div class="hbce-card hbce-col-4">
+          <h3>Risk model</h3>
+          <div class="hbce-kv">
+            <div><strong>Public data</strong></div><div>hash-only proofs</div>
+            <div><strong>Private data</strong></div><div>your local Release file</div>
+            <div><strong>Failure mode</strong></div><div>fail-closed (BLOCK)</div>
+            <div><strong>Goal</strong></div><div>accountability &amp; audit</div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<div class="hbce-card">
-<h3>Public hash-only registry</h3>
-<p>
-The public registry stores only hash proofs and timestamps.
-No personal data is publicly stored.
-</p>
-</div>
+    <!-- ONBOARDING FORM -->
+    <section class="hbce-section">
+      <h2>Onboarding — required fields</h2>
 
-<div class="hbce-card">
-<h3>Fail-closed validation</h3>
-<p>
-If integrity or registry presence cannot be verified,
-identity status is considered invalid.
-</p>
-</div>
+      <div class="hbce-grid2">
+        <div class="hbce-card hbce-col-8">
+          <p class="hbce-note">
+            Fill the fields below exactly as you want them reflected in your operational identity.
+            This form is designed for <strong>customers</strong>: individuals, companies, institutions and automated systems.
+          </p>
 
-</div>
-</section>
+          <form class="hbce-form" action="#" method="post" aria-label="IPR onboarding form">
+            <div class="hbce-field">
+              <label for="entity_type">Entity type</label>
+              <select class="hbce-select" id="entity_type" name="entity_type" required>
+                <option value="" selected disabled>Select…</option>
+                <option value="HUMAN">Human (Individual)</option>
+                <option value="COMPANY">Company (Business)</option>
+                <option value="INSTITUTION">Institution / Public body</option>
+                <option value="AI_SYSTEM">AI system / Agent</option>
+                <option value="ROBOT">Robot / Autonomous machine</option>
+                <option value="INFRA">Infrastructure / Critical system</option>
+              </select>
+              <div class="hint">This determines the standard fields for your Release and the verification profile.</div>
+            </div>
 
-<section class="hbce-section">
-<h2>Activation process</h2>
+            <div class="hbce-field">
+              <label for="display_name">Legal name / display label</label>
+              <input class="hbce-input" id="display_name" name="display_name" placeholder="e.g. ACME Robotics S.p.A. / City of Torino / John Doe" required />
+              <div class="hint">Public registry will NOT store this field; it stays in your Release file.</div>
+            </div>
 
-<div class="hbce-grid">
+            <div class="hbce-grid2">
+              <div class="hbce-field hbce-col-6">
+                <label for="country">Country (EU)</label>
+                <input class="hbce-input" id="country" name="country" placeholder="e.g. IT, FR, DE" required />
+              </div>
+              <div class="hbce-field hbce-col-6">
+                <label for="jurisdiction">Jurisdiction</label>
+                <input class="hbce-input" id="jurisdiction" name="jurisdiction" placeholder="EU" value="EU" required />
+              </div>
+            </div>
 
-<div class="hbce-card">
-<h3>1 — Create identity</h3>
-<p>Generate the IPR release file containing operational identity data.</p>
-</div>
+            <div class="hbce-grid2">
+              <div class="hbce-field hbce-col-6">
+                <label for="contact_email">Contact email</label>
+                <input class="hbce-input" id="contact_email" name="contact_email" type="email" placeholder="name@domain.tld" />
+                <div class="hint">Optional. Use for operational contact (not published).</div>
+              </div>
+              <div class="hbce-field hbce-col-6">
+                <label for="contact_pec">PEC (Italy / official)</label>
+                <input class="hbce-input" id="contact_pec" name="contact_pec" type="email" placeholder="name@pec.it" />
+                <div class="hint">Optional. Recommended for institutional or regulated entities.</div>
+              </div>
+            </div>
 
-<div class="hbce-card">
-<h3>2 — Generate fingerprint</h3>
-<p>A SHA-256 hash is produced for deterministic verification.</p>
-</div>
+            <div class="hbce-field">
+              <label for="purpose">Operational purpose</label>
+              <textarea class="hbce-textarea" id="purpose" name="purpose" placeholder="Describe the operational scope: AI control, robotics fleet, critical infra, public administration workflow, etc."></textarea>
+              <div class="hint">Used to define the issuance context and support auditing, not published.</div>
+            </div>
 
-<div class="hbce-card">
-<h3>3 — Registry presence</h3>
-<p>The hash must be present in the public append-only registry.</p>
-</div>
+            <div class="hbce-callout" role="note" aria-label="privacy note">
+              <strong>Privacy / GDPR-min</strong>
+              <div class="hbce-divider"></div>
+              <p class="hbce-note" style="margin:0;">
+                The public registry stores only: <span class="hbce-mono">label + payload_sha256 + timestamp</span>.
+                No personal data custody in public systems.
+              </p>
+            </div>
 
-<div class="hbce-card">
-<h3>4 — Operational access</h3>
-<p>Once verified, the identity can access licensed modules and operator network.</p>
-</div>
+            <div class="hbce-actions" style="margin-top:.3rem;">
+              <a class="hbce-btn" href="/hermeticum-bce-platform/create/">Continue → Generate Release</a>
+              <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify existing IPR</a>
+            </div>
+          </form>
+        </div>
 
-</div>
-</section>
+        <div class="hbce-card hbce-col-4">
+          <h3>What happens next</h3>
+          <ol class="hbce-list" style="list-style: decimal; padding-left: 1.2rem;">
+            <li><strong>Release generation</strong> (local file)</li>
+            <li><strong>Receipt</strong> (issuance proof)</li>
+            <li><strong>Append</strong> hash-only entry to registry</li>
+            <li><strong>Verify</strong> → VALID</li>
+          </ol>
 
-<section class="hbce-section">
-<h2>Create Identity Primary Record</h2>
+          <div class="hbce-divider"></div>
 
-<div class="hbce-card">
-<p>
-Generate an Identity Primary Record release file and registry-ready hash entry.
-This file represents the operational identity of the entity.
-</p>
+          <p class="hbce-note">
+            If your hash is not present in registry, your operational status is <strong>INVALID</strong>.
+            This is a fail-closed infrastructure.
+          </p>
 
-<div class="hbce-actions">
-<a class="hbce-btn" href="/hermeticum-bce-platform/create/">Create IPR</a>
-<a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/verify/">Verify existing IPR</a>
-</div>
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Open registry</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">Platform status</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<p style="margin-top:12px;">
-Store the release file securely.  
-Loss of the file equals loss of identity proof.
-</p>
-</div>
-</section>
+    <!-- REQUIREMENTS -->
+    <section class="hbce-section">
+      <h2>Operational requirements</h2>
+      <div class="hbce-grid2">
+        <div class="hbce-card hbce-col-8">
+          <ul class="hbce-list">
+            <li><strong>Keep your Release file</strong> in secure storage. Loss of the file = loss of proof.</li>
+            <li><strong>Registry match is mandatory</strong> to become operational (append-only, hash-only).</li>
+            <li><strong>Verification is deterministic</strong>: either VALID or INVALID — no partial state.</li>
+          </ul>
+        </div>
+        <div class="hbce-card hbce-col-4">
+          <h3>Definition</h3>
+          <p class="hbce-note">
+            <span class="hbce-mono">VALID IPR</span><br/>
+            file integrity OK<br/>
+            + registry match found<br/>
+            + deterministic verify
+          </p>
+        </div>
+      </div>
+    </section>
 
-<section class="hbce-section">
-<h2>Registry requirement</h2>
+    <!-- NEXT -->
+    <section class="hbce-section">
+      <h2>After activation</h2>
+      <div class="hbce-grid">
+        <div class="hbce-card">
+          <h3>Enterprise modules</h3>
+          <p>Activate licensed software modules using your VALID IPR.</p>
+        </div>
+        <div class="hbce-card">
+          <h3>Operator path</h3>
+          <p>Apply for operator authorization to issue IPR and deploy nodes.</p>
+        </div>
+        <div class="hbce-card">
+          <h3>System binding</h3>
+          <p>Bind AI, robots and infrastructures to a verifiable operational identity.</p>
+        </div>
+        <div class="hbce-card">
+          <h3>EU network</h3>
+          <p>Integrate into the European operational identity network.</p>
+        </div>
+      </div>
+    </section>
 
-<div class="hbce-card">
-<p>
-An IPR becomes operational only when:
-</p>
+    <!-- SIGN -->
+    <section class="hbce-section">
+      <div class="hbce-footnote">
+        <p><strong>HERMETICUM B.C.E. S.r.l.</strong></p>
+        <p>European Operational Identity Infrastructure</p>
+        <p>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</p>
+        <p class="hbce-note">UE-first · audit-first · fail-closed · hash-only · append-only · GDPR-min</p>
+      </div>
+    </section>
 
-<ul class="hbce-list">
-<li>File integrity is verified</li>
-<li>Hash is present in registry</li>
-<li>Verification returns VALID status</li>
-</ul>
+  </main>
 
-<p>
-If one requirement fails → status is INVALID (fail-closed model).
-</p>
-
-<div class="hbce-actions">
-<a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Open registry</a>
-<a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/verify/">Run verification</a>
-</div>
-</div>
-</section>
-
-<section class="hbce-section">
-<h2>Next steps</h2>
-
-<div class="hbce-grid">
-
-<div class="hbce-card">
-<h3>Access licensed modules</h3>
-<p>Use a valid IPR to activate infrastructure software.</p>
-</div>
-
-<div class="hbce-card">
-<h3>Operator authorization</h3>
-<p>Upgrade identity to operator level for node deployment.</p>
-</div>
-
-<div class="hbce-card">
-<h3>Network integration</h3>
-<p>Join the European operational identity network.</p>
-</div>
-
-<div class="hbce-card">
-<h3>System binding</h3>
-<p>Bind AI, robotic or institutional systems to verified identity.</p>
-</div>
-
-</div>
-</section>
-
-<section class="hbce-section">
-<p>
-<strong>HERMETICUM B.C.E. S.r.l.</strong><br/>
-European Operational Identity Infrastructure<br/>
-Blindata · Computabile · Evolutiva
-</p>
-</section>
-
-</main>
-
-<div data-hbce="footer"></div>
+  <div data-hbce="footer"></div>
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </body>
 </html>
