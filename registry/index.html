@@ -1,17 +1,65 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>REGISTRY — Append-only (public) | HERMETICUM B.C.E.</title>
-  <meta name="description" content="Registro pubblico append-only (HASH-ONLY) della rete Hermeticum (HBCE-REGISTRY-v2). Viewer con health meta, conteggi, ricerca, filtri ed export. UE-first, audit-first, fail-closed." />
+  <title>REGISTRY — Append-only (hash-only)</title>
+  <meta name="description" content="Public append-only registry (hash-only). Paste a registry entry, validate format, and append it to registry.json entries[]. Viewer includes search and export. GDPR-min, fail-closed." />
 
-  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/registry/" />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/registry/" />
 
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+
+  <style>
+    .hbce-grid2{ display:grid; gap:1rem; grid-template-columns: repeat(12, 1fr); }
+    .hbce-col-4{ grid-column: span 4; }
+    .hbce-col-6{ grid-column: span 6; }
+    .hbce-col-8{ grid-column: span 8; }
+    .hbce-col-12{ grid-column: span 12; }
+    @media (max-width: 900px){ .hbce-col-4,.hbce-col-6,.hbce-col-8{ grid-column: span 12; } }
+
+    .hbce-mono{ font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
+    .hbce-pre{
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      padding: .85rem;
+      overflow:auto;
+      max-height: 340px;
+    }
+    .hbce-input, .hbce-textarea{
+      width:100%;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.03);
+      color: rgba(255,255,255,.92);
+      padding:.75rem .85rem;
+      outline: none;
+    }
+    .hbce-textarea{ min-height: 140px; resize: vertical; }
+    .hbce-divider{ height:1px; background: rgba(255,255,255,.10); margin: .85rem 0; }
+    .hbce-kv{ display:grid; grid-template-columns: 180px 1fr; gap:.45rem 1rem; }
+    .hbce-kv div{ padding:.1rem 0; }
+    .hbce-pill{
+      display:inline-block; padding:.25rem .55rem; border-radius:999px;
+      border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.03);
+      font-weight:900; font-size:.84rem; opacity:.92;
+    }
+    .hbce-row{ display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; }
+    .hbce-table{ width:100%; border-collapse: collapse; }
+    .hbce-table th, .hbce-table td{
+      border-bottom:1px solid rgba(255,255,255,.10);
+      padding:.55rem .4rem;
+      text-align:left;
+      vertical-align: top;
+      font-size: .95rem;
+    }
+    .hbce-table th{ opacity:.85; font-weight:900; }
+    .hbce-muted{ opacity:.8; }
+  </style>
 </head>
 
 <body>
@@ -19,509 +67,275 @@
 
   <main class="hbce-container hbce-main">
 
-    <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">REGISTRY · APPEND-ONLY · HASH-ONLY · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">Registro pubblico (HBCE-REGISTRY-v2)</h1>
+      <div class="hbce-hero__kicker">REGISTRY · APPEND-ONLY · PUBLIC · HASH-ONLY</div>
+      <h1 class="hbce-hero__title">Public Registry (append-only)</h1>
       <p class="hbce-hero__lead">
-        Questo registry pubblica solo prove minimizzate (<strong>HASH-ONLY</strong>).
-        Nessuna custodia pubblica di dati personali. Lettura <strong>fail-closed</strong>:
-        se il registry non è valido → operatività bloccata.
+        This registry publishes only minimal proofs:
+        <span class="hbce-mono">name + payload_sha256 + timestamp</span>.
+        No public personal data custody. If SHA-256 is missing or invalid → <strong>INVALID</strong> (fail-closed).
       </p>
 
-      <p class="hbce-note" style="margin-top:12px;">
-        Issuer: <strong>HERMETICUM B.C.E. S.r.l.</strong> · network: <strong>EU</strong> · mode: <strong>APPEND_ONLY_PUBLIC_LEDGER</strong>
-      </p>
-
-      <div class="hbce-actions" style="margin-top:12px;">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Attiva IPR Base</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/operator/">Zona Operatori</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+      <div class="hbce-actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/create/">CREATE</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">STATUS</a>
       </div>
     </section>
 
-    <!-- HEALTH + CONTROLS -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Health & Viewer</h2>
+      <h2>Append assistant (hash-only)</h2>
 
-      <div class="hbce-card">
-        <div class="hbce-card__body">
+      <div class="hbce-grid2">
+        <div class="hbce-card hbce-col-8">
+          <p class="hbce-note">
+            Paste the JSON entry generated by <strong>/create</strong>. This tool validates format and shows the exact snippet
+            to append into <span class="hbce-mono">registry/registry.json → entries[]</span>.
+          </p>
 
-          <!-- META HEALTH -->
-          <div class="hbce-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;">
-            <div class="hbce-card" style="margin:0;">
-              <div class="hbce-card__body">
-                <div class="hbce-note">Schema</div>
-                <div style="font-size:14px; font-weight:800;" id="metaSchema">—</div>
-              </div>
-            </div>
+          <label class="hbce-muted" for="entry_in"><strong>Registry entry JSON</strong></label>
+          <textarea id="entry_in" class="hbce-textarea hbce-mono" placeholder='{
+  "name": "ACME Robotics",
+  "payload_sha256": "64-hex sha256",
+  "timestamp": "2026-02-18T10:00:00.000Z"
+}'></textarea>
 
-            <div class="hbce-card" style="margin:0;">
-              <div class="hbce-card__body">
-                <div class="hbce-note">Issuer</div>
-                <div style="font-size:14px; font-weight:800;" id="metaIssuer">—</div>
-              </div>
-            </div>
-
-            <div class="hbce-card" style="margin:0;">
-              <div class="hbce-card__body">
-                <div class="hbce-note">Last update</div>
-                <div style="font-size:14px; font-weight:800;" id="metaLast">—</div>
-              </div>
-            </div>
-
-            <div class="hbce-card" style="margin:0;">
-              <div class="hbce-card__body">
-                <div class="hbce-note">Policy</div>
-                <div style="font-size:12px; font-weight:700;" id="metaPolicy">—</div>
-              </div>
-            </div>
+          <div class="hbce-row" style="margin-top:.7rem;">
+            <button class="hbce-btn" id="btn-validate" type="button">Validate entry</button>
+            <button class="hbce-btn hbce-btn--alt" id="btn-copy" type="button" disabled>Copy normalized entry</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btn-clear" type="button">Clear</button>
           </div>
 
-          <hr style="opacity:.15; margin:16px 0;" />
+          <div class="hbce-divider"></div>
 
-          <!-- COUNTS -->
-          <div class="hbce-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;">
-            <div class="hbce-card" style="margin:0;">
-              <div class="hbce-card__body">
-                <div class="hbce-note">Totale entries</div>
-                <div style="font-size:24px; font-weight:800;" id="countAll">—</div>
-              </div>
-            </div>
+          <div class="hbce-kv">
+            <div><span class="hbce-pill">Rule</span></div>
+            <div><span class="hbce-mono">payload_sha256</span> must be 64 hex chars (sha256)</div>
 
-            <div class="hbce-card" style="margin:0;">
-              <div class="hbce-card__body">
-                <div class="hbce-note">IPR Base (HUMAN)</div>
-                <div style="font-size:24px; font-weight:800;" id="countBase">—</div>
-              </div>
-            </div>
+            <div><span class="hbce-pill">Public</span></div>
+            <div>hash-only + timestamp (no personal data)</div>
 
-            <div class="hbce-card" style="margin:0;">
-              <div class="hbce-card__body">
-                <div class="hbce-note">Operator License</div>
-                <div style="font-size:24px; font-weight:800;" id="countOp">—</div>
-              </div>
-            </div>
-
-            <div class="hbce-card" style="margin:0;">
-              <div class="hbce-card__body">
-                <div class="hbce-note">Ultimo timestamp (entries)</div>
-                <div style="font-size:14px; font-weight:700;" id="lastTs">—</div>
-              </div>
-            </div>
+            <div><span class="hbce-pill">Write mode</span></div>
+            <div>manual append-only (Git commit)</div>
           </div>
+        </div>
 
-          <hr style="opacity:.15; margin:16px 0;" />
+        <div class="hbce-card hbce-col-4">
+          <h3>Where to append</h3>
+          <p class="hbce-note">Open this file in your repo and append the entry:</p>
+          <div class="hbce-pre"><pre class="hbce-mono">registry/registry.json
+→ entries[]</pre></div>
 
-          <!-- CONTROLS -->
-          <div class="hbce-grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; align-items:end;">
-            <label class="hbce-field">
-              <span class="hbce-label">Ricerca</span>
-              <input class="hbce-input" id="q" placeholder="name, entity_type, status, hash (parziale), note…" />
-              <span class="hbce-note">Ricerca client-side nel registry caricato.</span>
-            </label>
-
-            <label class="hbce-field">
-              <span class="hbce-label">Filtro tipo</span>
-              <select class="hbce-input" id="typeFilter">
-                <option value="all">Tutti</option>
-                <option value="human">IPR Base (HUMAN)</option>
-                <option value="operator">Operator License (OPERATOR)</option>
-              </select>
-            </label>
-
-            <label class="hbce-field">
-              <span class="hbce-label">Ordina</span>
-              <select class="hbce-input" id="sortBy">
-                <option value="newest">Più recenti</option>
-                <option value="oldest">Più vecchi</option>
-              </select>
-            </label>
-
-            <div class="hbce-actions" style="gap:10px;">
-              <button class="hbce-btn hbce-btn--primary" id="reloadBtn" type="button">Ricarica</button>
-              <button class="hbce-btn" id="exportBtn" type="button">Export JSON</button>
-            </div>
+          <p class="hbce-note" style="margin-top:.8rem;">
+            After you commit, run VERIFY.
+          </p>
+          <div class="hbce-actions">
+            <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY now</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/">Back to CREATE</a>
           </div>
-
-          <div id="failBox" class="hbce-card" style="margin-top:14px; display:none;">
-            <div class="hbce-card__body">
-              <div class="hbce-note">FAIL-CLOSED</div>
-              <pre class="hbce-pre" id="failPre" style="margin:0; white-space:pre-wrap;"></pre>
-            </div>
-          </div>
-
         </div>
       </div>
     </section>
 
-    <!-- TABLE -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Entries</h2>
-
+      <h2>Registry viewer</h2>
       <div class="hbce-card">
-        <div class="hbce-card__body" style="overflow:auto;">
-          <table class="hbce-table" style="width:100%; border-collapse:collapse;">
+        <div class="hbce-row">
+          <input id="q" class="hbce-input" placeholder="Search by name or sha256…" />
+          <button class="hbce-btn hbce-btn--alt" id="btn-refresh" type="button">Refresh</button>
+          <button class="hbce-btn hbce-btn--ghost" id="btn-export" type="button" disabled>Export JSON</button>
+        </div>
+
+        <p class="hbce-note" style="margin-top:.65rem;">
+          Source: <span class="hbce-mono">/hermeticum-bce-platform/registry/registry.json</span>
+        </p>
+
+        <div class="hbce-pre" style="max-height: 420px;">
+          <table class="hbce-table" id="tbl">
             <thead>
               <tr>
-                <th style="text-align:left; padding:10px;">Tipo</th>
-                <th style="text-align:left; padding:10px;">Name</th>
-                <th style="text-align:left; padding:10px;">Entity</th>
-                <th style="text-align:left; padding:10px;">Status</th>
-                <th style="text-align:left; padding:10px;">payload_sha256</th>
-                <th style="text-align:left; padding:10px;">Timestamp</th>
-                <th style="text-align:left; padding:10px;">Azioni</th>
+                <th>#</th>
+                <th>Name</th>
+                <th>payload_sha256</th>
+                <th>timestamp</th>
               </tr>
             </thead>
-            <tbody id="rows">
-              <tr><td colspan="7" style="padding:12px;" class="hbce-note">Caricamento…</td></tr>
+            <tbody id="tbody">
+              <tr><td colspan="4" class="hbce-muted">Loading…</td></tr>
             </tbody>
           </table>
         </div>
       </div>
-
-      <p class="hbce-note" style="margin-top:10px;">
-        Viewer read-only. Registry append-only, pubblicazione HASH-ONLY.
-      </p>
     </section>
 
-    <!-- DRAWER -->
-    <section class="hbce-section" id="drawer" style="display:none;">
-      <h2 class="hbce-h2">Dettaglio entry</h2>
-      <div class="hbce-card">
-        <div class="hbce-card__body">
-          <div class="hbce-actions" style="margin-bottom:10px;">
-            <button class="hbce-btn hbce-btn--primary" id="copyOne" type="button">Copia JSON</button>
-            <button class="hbce-btn" id="closeDrawer" type="button">Chiudi</button>
-          </div>
-          <pre class="hbce-pre" id="drawerPre" style="margin:0; max-height:420px; overflow:auto; white-space:pre;"></pre>
-        </div>
+    <section class="hbce-section">
+      <div class="hbce-footnote">
+        <p>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</p>
+        <p>HERMETICUM B.C.E. S.r.l.</p>
+        <p class="hbce-note">UE-first · audit-first · fail-closed · hash-only · append-only · GDPR-min</p>
       </div>
     </section>
 
   </main>
 
   <div data-hbce="footer"></div>
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 
   <script>
-    const REGISTRY_PATH = "/hermeticum-bce-platform/registry/registry.json";
+    (function(){
+      const $ = (id) => document.getElementById(id);
 
-    const metaSchema = document.getElementById("metaSchema");
-    const metaIssuer = document.getElementById("metaIssuer");
-    const metaLast = document.getElementById("metaLast");
-    const metaPolicy = document.getElementById("metaPolicy");
+      const entryIn = $("entry_in");
+      const btnValidate = $("btn-validate");
+      const btnCopy = $("btn-copy");
+      const btnClear = $("btn-clear");
 
-    const countAll = document.getElementById("countAll");
-    const countBase = document.getElementById("countBase");
-    const countOp = document.getElementById("countOp");
-    const lastTs = document.getElementById("lastTs");
+      const q = $("q");
+      const btnRefresh = $("btn-refresh");
+      const btnExport = $("btn-export");
+      const tbody = $("tbody");
 
-    const q = document.getElementById("q");
-    const typeFilter = document.getElementById("typeFilter");
-    const sortBy = document.getElementById("sortBy");
+      let registry = null;
+      let normalizedEntry = null;
 
-    const reloadBtn = document.getElementById("reloadBtn");
-    const exportBtn = document.getElementById("exportBtn");
-    const rows = document.getElementById("rows");
+      function isHex64(s){ return /^[a-f0-9]{64}$/i.test(String(s||"").trim()); }
+      function isIso(s){ return /^\d{4}-\d{2}-\d{2}T/.test(String(s||"").trim()); }
 
-    const failBox = document.getElementById("failBox");
-    const failPre = document.getElementById("failPre");
+      function normalizeEntry(obj){
+        return {
+          name: String(obj.name || obj.label || "").trim().slice(0, 80),
+          payload_sha256: String(obj.payload_sha256 || "").trim().toLowerCase(),
+          timestamp: String(obj.timestamp || "").trim()
+        };
+      }
 
-    const drawer = document.getElementById("drawer");
-    const drawerPre = document.getElementById("drawerPre");
-    const copyOne = document.getElementById("copyOne");
-    const closeDrawer = document.getElementById("closeDrawer");
+      function setStatus(msg){
+        // lightweight: reuse textarea placeholder-ish via alert for now
+        // (avoid UI overengineering here)
+        alert(msg);
+      }
 
-    let registryRaw = null;
-    let entries = [];
-    let drawerJson = "";
+      btnValidate.addEventListener("click", () => {
+        normalizedEntry = null;
+        btnCopy.disabled = true;
 
-    function normalize(s) {
-      return (s || "").toString().trim();
-    }
-    function safeLower(s) {
-      return normalize(s).toLowerCase();
-    }
-    function isHex64Lower(s) {
-      return typeof s === "string" && /^[0-9a-f]{64}$/.test(s.trim());
-    }
+        let obj;
+        try{
+          obj = JSON.parse(entryIn.value || "");
+        }catch(e){
+          setStatus("INVALID JSON. Paste a valid entry object.");
+          return;
+        }
 
-    function entryKind(e) {
-      const et = safeLower(e && e.entity_type);
-      if (et === "operator") return "operator";
-      if (et === "human") return "human";
-      return "other";
-    }
-    function kindLabel(k) {
-      if (k === "human") return "IPR Base";
-      if (k === "operator") return "Operator License";
-      return "Other";
-    }
+        const n = normalizeEntry(obj);
+        if(!n.name){
+          setStatus("INVALID: name is required.");
+          return;
+        }
+        if(!isHex64(n.payload_sha256)){
+          setStatus("INVALID: payload_sha256 must be 64-hex sha256.");
+          return;
+        }
+        if(!n.timestamp || !isIso(n.timestamp)){
+          setStatus("INVALID: timestamp must be ISO format (e.g. 2026-02-18T10:00:00.000Z).");
+          return;
+        }
 
-    function shortHash(h) {
-      const s = normalize(h);
-      if (s.length <= 16) return s || "—";
-      return s.slice(0, 10) + "…" + s.slice(-6);
-    }
-
-    function showFail(msg) {
-      failBox.style.display = "block";
-      failPre.textContent = msg;
-      rows.innerHTML = '<tr><td colspan="7" style="padding:12px;" class="hbce-note">FAIL-CLOSED — registry non disponibile</td></tr>';
-    }
-    function hideFail() {
-      failBox.style.display = "none";
-      failPre.textContent = "";
-    }
-
-    function setMetaFromRegistry(reg) {
-      const meta = (reg && reg.meta && typeof reg.meta === "object") ? reg.meta : {};
-      metaSchema.textContent = normalize(meta.schema_version) || "—";
-      metaIssuer.textContent = normalize(reg && reg.issuer) || "—";
-      metaLast.textContent = normalize(meta.last_update) || "—";
-      metaPolicy.textContent = Array.isArray(reg && reg.policy) ? reg.policy.join(" · ") : "—";
-    }
-
-    function computeLastTimestamp(list) {
-      return list
-        .map(e => normalize(e.timestamp))
-        .filter(Boolean)
-        .sort()
-        .slice(-1)[0] || "—";
-    }
-
-    function setCounts(reg, list) {
-      const c = reg && reg.meta && reg.meta.counts && typeof reg.meta.counts === "object" ? reg.meta.counts : null;
-
-      const totalMeta = c && Number.isFinite(c.total) ? c.total : null;
-      const baseMeta = c && Number.isFinite(c.ipr_base_human) ? c.ipr_base_human : null;
-      const opMeta = c && Number.isFinite(c.operator_license) ? c.operator_license : null;
-
-      const baseCalc = list.filter(e => entryKind(e) === "human").length;
-      const opCalc = list.filter(e => entryKind(e) === "operator").length;
-
-      countAll.textContent = String(totalMeta !== null ? totalMeta : list.length);
-      countBase.textContent = String(baseMeta !== null ? baseMeta : baseCalc);
-      countOp.textContent = String(opMeta !== null ? opMeta : opCalc);
-
-      lastTs.textContent = computeLastTimestamp(list);
-    }
-
-    function matchesQuery(e, query) {
-      if (!query) return true;
-      const ql = query.toLowerCase();
-      const fields = [
-        e.name, e.entity_type, e.status, e.payload_sha256, e.timestamp, e.note
-      ].map(x => normalize(x)).filter(Boolean);
-      return fields.some(x => x.toLowerCase().includes(ql));
-    }
-
-    function applyFilters() {
-      const query = normalize(q.value);
-      const tf = typeFilter.value;
-      const sb = sortBy.value;
-
-      let list = entries.slice();
-
-      if (tf === "human") list = list.filter(e => entryKind(e) === "human");
-      if (tf === "operator") list = list.filter(e => entryKind(e) === "operator");
-      if (query) list = list.filter(e => matchesQuery(e, query));
-
-      list.sort((a, b) => {
-        const ta = normalize(a.timestamp);
-        const tb = normalize(b.timestamp);
-        return sb === "oldest" ? ta.localeCompare(tb) : tb.localeCompare(ta);
+        normalizedEntry = n;
+        entryIn.value = JSON.stringify(n, null, 2);
+        btnCopy.disabled = false;
+        setStatus("VALID entry format. Append this to registry.json entries[].");
       });
 
-      renderRows(list);
-    }
+      btnCopy.addEventListener("click", async () => {
+        if(!normalizedEntry) return;
+        const text = JSON.stringify(normalizedEntry, null, 2);
+        try{
+          await navigator.clipboard.writeText(text);
+          btnCopy.textContent = "Copied ✓";
+          setTimeout(()=> btnCopy.textContent = "Copy normalized entry", 1100);
+        }catch(e){
+          setStatus("Copy failed. Copy manually from the text area.");
+        }
+      });
 
-    async function copyToClipboard(text, btn) {
-      try {
-        await navigator.clipboard.writeText(text);
-        const old = btn.textContent;
-        btn.textContent = "Copiato ✓";
-        setTimeout(() => (btn.textContent = old), 1400);
-      } catch (e) {
-        const old = btn.textContent;
-        btn.textContent = "Errore copia";
-        setTimeout(() => (btn.textContent = old), 1400);
-      }
-    }
+      btnClear.addEventListener("click", () => {
+        entryIn.value = "";
+        normalizedEntry = null;
+        btnCopy.disabled = true;
+      });
 
-    function openDrawer(obj) {
-      drawerJson = JSON.stringify(obj, null, 2);
-      drawerPre.textContent = drawerJson;
-      drawer.style.display = "block";
-      drawer.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-    function closeDrawerFn() {
-      drawer.style.display = "none";
-      drawerPre.textContent = "";
-      drawerJson = "";
-    }
-    closeDrawer.addEventListener("click", closeDrawerFn);
-    copyOne.addEventListener("click", () => {
-      if (!drawerJson) return;
-      copyToClipboard(drawerJson, copyOne);
-    });
+      async function loadRegistry(){
+        tbody.innerHTML = '<tr><td colspan="4" class="hbce-muted">Loading…</td></tr>';
+        registry = null;
+        btnExport.disabled = true;
 
-    function renderRows(list) {
-      if (!Array.isArray(list) || list.length === 0) {
-        rows.innerHTML = '<tr><td colspan="7" style="padding:12px;" class="hbce-note">Nessun risultato.</td></tr>';
-        return;
-      }
-      rows.innerHTML = "";
-
-      for (const e of list) {
-        const k = entryKind(e);
-
-        const tr = document.createElement("tr");
-
-        const tdType = document.createElement("td");
-        tdType.style.padding = "10px";
-        tdType.textContent = kindLabel(k);
-
-        const tdName = document.createElement("td");
-        tdName.style.padding = "10px";
-        tdName.textContent = normalize(e.name) || "—";
-
-        const tdEntity = document.createElement("td");
-        tdEntity.style.padding = "10px";
-        tdEntity.textContent = normalize(e.entity_type) || "—";
-
-        const tdStatus = document.createElement("td");
-        tdStatus.style.padding = "10px";
-        tdStatus.textContent = normalize(e.status) || "—";
-
-        const tdHash = document.createElement("td");
-        tdHash.style.padding = "10px";
-        tdHash.textContent = shortHash(e.payload_sha256);
-
-        const tdTs = document.createElement("td");
-        tdTs.style.padding = "10px";
-        tdTs.textContent = normalize(e.timestamp) || "—";
-
-        const tdAct = document.createElement("td");
-        tdAct.style.padding = "10px";
-
-        const btnView = document.createElement("button");
-        btnView.className = "hbce-btn";
-        btnView.type = "button";
-        btnView.textContent = "Dettagli";
-        btnView.addEventListener("click", () => openDrawer(e));
-
-        const btnCopyHash = document.createElement("button");
-        btnCopyHash.className = "hbce-btn";
-        btnCopyHash.type = "button";
-        btnCopyHash.textContent = "Copia hash";
-        btnCopyHash.style.marginLeft = "8px";
-        btnCopyHash.addEventListener("click", () => {
-          const h = normalize(e.payload_sha256);
-          if (!h) return;
-          copyToClipboard(h, btnCopyHash);
-        });
-
-        const aVerify = document.createElement("a");
-        aVerify.className = "hbce-btn";
-        aVerify.style.marginLeft = "8px";
-        aVerify.href = "/hermeticum-bce-platform/verify/";
-        aVerify.textContent = "VERIFY";
-
-        tdAct.appendChild(btnView);
-        tdAct.appendChild(btnCopyHash);
-        tdAct.appendChild(aVerify);
-
-        tr.appendChild(tdType);
-        tr.appendChild(tdName);
-        tr.appendChild(tdEntity);
-        tr.appendChild(tdStatus);
-        tr.appendChild(tdHash);
-        tr.appendChild(tdTs);
-        tr.appendChild(tdAct);
-
-        rows.appendChild(tr);
-      }
-    }
-
-    function downloadJson(filename, obj) {
-      const json = JSON.stringify(obj, null, 2);
-      const blob = new Blob([json], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 250);
-    }
-
-    exportBtn.addEventListener("click", () => {
-      if (!registryRaw) return;
-      downloadJson("registry.export.json", registryRaw);
-    });
-
-    function validateRegistryV2(obj) {
-      if (!obj || typeof obj !== "object") return "Schema invalido: non è un oggetto JSON.";
-      if (normalize(obj.proto) !== "HBCE-REGISTRY-v2") return "proto != HBCE-REGISTRY-v2 (fail-closed).";
-      if (normalize(obj.kind) !== "IPR_PUBLIC_REGISTRY") return "kind != IPR_PUBLIC_REGISTRY (fail-closed).";
-      if (!Array.isArray(obj.policy) || obj.policy.length === 0) return "policy[] mancante (fail-closed).";
-      if (!obj.meta || typeof obj.meta !== "object") return "meta{} mancante (fail-closed).";
-      if (!Array.isArray(obj.entries)) return "entries[] mancante (fail-closed).";
-
-      for (const e of obj.entries) {
-        if (!e || typeof e !== "object") return "entry non-oggetto (fail-closed).";
-        if (!normalize(e.name)) return "entry senza name (fail-closed).";
-        if (!normalize(e.timestamp)) return "entry senza timestamp (fail-closed).";
-        const h = normalize(e.payload_sha256);
-        if (!isHex64Lower(h)) return "payload_sha256 non valido (64-hex lowercase richiesto) (fail-closed).";
-      }
-      return "";
-    }
-
-    async function loadRegistry() {
-      hideFail();
-      rows.innerHTML = '<tr><td colspan="7" style="padding:12px;" class="hbce-note">Caricamento…</td></tr>';
-
-      registryRaw = null;
-      entries = [];
-      setMetaFromRegistry(null);
-
-      let obj;
-      try {
-        const res = await fetch(REGISTRY_PATH, { cache: "no-store" });
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        obj = await res.json();
-      } catch (e) {
-        showFail(
-          "BLOCK — impossibile leggere registry.json (fail-closed)\n" +
-          "path: " + REGISTRY_PATH + "\n" +
-          "errore: " + (e && e.message ? e.message : String(e))
-        );
-        return;
+        try{
+          const res = await fetch("/hermeticum-bce-platform/registry/registry.json", { cache: "no-store" });
+          if(!res.ok) throw new Error("HTTP " + res.status);
+          const json = await res.json();
+          const entries = Array.isArray(json.entries) ? json.entries : [];
+          registry = { raw: json, entries };
+          btnExport.disabled = entries.length === 0;
+          render();
+        }catch(e){
+          tbody.innerHTML = '<tr><td colspan="4" class="hbce-muted">Failed to load registry.json (check path and JSON validity).</td></tr>';
+        }
       }
 
-      const schemaErr = validateRegistryV2(obj);
-      if (schemaErr) {
-        showFail("BLOCK — " + schemaErr + "\npath: " + REGISTRY_PATH);
-        return;
+      function render(){
+        const term = String(q.value||"").trim().toLowerCase();
+        const entries = (registry && registry.entries) ? registry.entries : [];
+        const filtered = term
+          ? entries.filter(x =>
+              String(x.name||"").toLowerCase().includes(term) ||
+              String(x.payload_sha256||"").toLowerCase().includes(term)
+            )
+          : entries;
+
+        if(filtered.length === 0){
+          tbody.innerHTML = '<tr><td colspan="4" class="hbce-muted">No matches.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = filtered.map((x, i) => {
+          const sha = String(x.payload_sha256||"");
+          const short = sha ? (sha.slice(0,12) + "…" + sha.slice(-8)) : "";
+          return `
+            <tr>
+              <td class="hbce-muted">${i+1}</td>
+              <td>${escapeHtml(String(x.name||""))}</td>
+              <td class="hbce-mono">${escapeHtml(short)}</td>
+              <td class="hbce-mono">${escapeHtml(String(x.timestamp||""))}</td>
+            </tr>
+          `;
+        }).join("");
       }
 
-      registryRaw = obj;
-      entries = obj.entries.slice();
+      function escapeHtml(s){
+        return s.replace(/[&<>"']/g, (c) => ({
+          "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+        }[c]));
+      }
 
-      setMetaFromRegistry(obj);
-      setCounts(obj, entries);
-      applyFilters();
-    }
+      btnRefresh.addEventListener("click", loadRegistry);
+      q.addEventListener("input", render);
 
-    reloadBtn.addEventListener("click", loadRegistry);
-    q.addEventListener("input", applyFilters);
-    typeFilter.addEventListener("change", applyFilters);
-    sortBy.addEventListener("change", applyFilters);
+      btnExport.addEventListener("click", () => {
+        if(!registry) return;
+        const blob = new Blob([JSON.stringify(registry.raw, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "registry.json";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      });
 
-    loadRegistry();
+      loadRegistry();
+    })();
   </script>
 </body>
 </html>
