@@ -4,14 +4,15 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>HERMETICUM B.C.E. — IPR Infrastructure Access</title>
-  <meta name="description" content="Entry point to the European operational identity infrastructure (IPR). Choose profile (Business/Public/Operator), complete bank-like onboarding, generate Release, append hash-only proof, and run deterministic verification (fail-closed)." />
+  <title>HERMETICUM B.C.E. — European Operational Identity Infrastructure (IPR)</title>
+  <meta name="description" content="EU-first operational identity infrastructure. Bank-like onboarding for IPR (Identity Primary Record): entry to EU registry (€45), deterministic verify (fail-closed), pricing catalogue (Civil/Business/B2B/B2G), operator licensing path, training, and Horizon-facing programme." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
   <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/" />
 
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+
   <style>
     .hbce-grid2{ display:grid; gap:1rem; grid-template-columns: repeat(12, 1fr); }
     .hbce-col-4{ grid-column: span 4; }
@@ -21,13 +22,7 @@
     @media (max-width: 900px){
       .hbce-col-4,.hbce-col-6,.hbce-col-8{ grid-column: span 12; }
     }
-    .hbce-stepbar{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.8rem; }
-    .hbce-step{
-      padding:.35rem .65rem; border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.03);
-      font-weight:800; font-size:.86rem; opacity:.92;
-    }
+
     .hbce-mono{ font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
 
     .hbce-pill{
@@ -36,14 +31,90 @@
       border-radius:999px;
       border:1px solid rgba(255,255,255,.14);
       background:rgba(255,255,255,.03);
-      font-weight:900;
-      font-size:.84rem;
+      color:rgba(255,255,255,.86);
+      font-size:.86rem;
+      font-weight:950;
       letter-spacing:.02em;
       text-transform: uppercase;
-      opacity:.92;
     }
-    .hbce-kv{ display:grid; grid-template-columns: 210px 1fr; gap:.45rem 1rem; }
+
+    .hbce-badge-row{ display:flex; flex-wrap:wrap; gap:.5rem; margin:.7rem 0 0; }
+    .hbce-badge{
+      display:inline-flex; align-items:center; gap:.45rem;
+      padding:.28rem .6rem; border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.03);
+      color:rgba(255,255,255,.86);
+      font-size:.86rem; font-weight:850;
+      white-space:nowrap;
+    }
+    .hbce-badge .dot{
+      width:8px; height:8px; border-radius:999px;
+      background:rgba(255,255,255,.55);
+      display:inline-block;
+    }
+
+    .hbce-note-box{
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.03);
+      padding: 1rem;
+    }
+
+    .hbce-table{
+      width:100%;
+      border-collapse: collapse;
+      overflow:hidden;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.02);
+    }
+    .hbce-table th, .hbce-table td{
+      padding:.75rem .85rem;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      vertical-align: top;
+      text-align:left;
+    }
+    .hbce-table th{
+      font-size:.9rem;
+      text-transform: uppercase;
+      letter-spacing:.02em;
+      opacity:.9;
+      font-weight:950;
+    }
+    .hbce-table tr:last-child td{ border-bottom: none; }
+
+    .hbce-price{
+      font-weight:1000;
+      letter-spacing:.01em;
+      font-size: 1.18rem;
+    }
+    .hbce-subprice{ opacity:.82; font-size:.92rem; margin-top:.1rem; }
+
+    .hbce-divider{ height:1px; background: rgba(255,255,255,.10); margin: 1rem 0; }
+
+    .hbce-tag{
+      display:inline-block;
+      padding:.18rem .5rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.16);
+      font-weight:900;
+      font-size:.82rem;
+      margin-right:.35rem;
+      margin-bottom:.35rem;
+    }
+
+    .hbce-kv{ display:grid; grid-template-columns: 210px 1fr; gap:.55rem 1rem; }
     .hbce-kv div{ padding:.1rem 0; }
+
+    .hbce-stepbar{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.8rem; }
+    .hbce-step{
+      padding:.35rem .65rem; border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.03);
+      font-weight:900; font-size:.86rem; opacity:.92;
+    }
   </style>
 </head>
 
@@ -52,146 +123,463 @@
 
   <main class="hbce-container hbce-main">
 
-    <!-- HERO -->
+    <!-- HERO / EU GATEWAY -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">EU-FIRST · BANK-LIKE ONBOARDING · OPERATIONAL IDENTITY</div>
-      <h1 class="hbce-hero__title">IPR Infrastructure Access</h1>
+      <div class="hbce-hero__kicker">EU-FIRST · OPERATIONAL IDENTITY · BANK-LIKE ONBOARDING</div>
+      <h1 class="hbce-hero__title">European Operational Identity Infrastructure (IPR)</h1>
       <p class="hbce-hero__lead">
-        This platform provides the operational identity required to act inside complex digital environments
-        (enterprises, public bodies, AI/robotic systems, and critical infrastructures).
-        Access is deterministic: <strong>if it cannot be verified → BLOCK</strong> (fail-closed).
+        HERMETICUM B.C.E. provides an operational identity layer designed for EU-grade accountability:
+        deterministic verification, hash-only public proofs, and a fail-closed access model.
+        <br />
+        Core rule: <strong>no execution without verification</strong>. If verification cannot be proven → <strong>BLOCK</strong>.
       </p>
 
-      <div class="hbce-stepbar" aria-label="flow">
-        <span class="hbce-step">1 · Choose profile</span>
-        <span class="hbce-step">2 · Enter data</span>
-        <span class="hbce-step">3 · Generate Release</span>
-        <span class="hbce-step">4 · Append registry</span>
-        <span class="hbce-step">5 · VERIFY → VALID</span>
+      <div class="hbce-stepbar" aria-label="core flow">
+        <span class="hbce-step">1 · Onboarding</span>
+        <span class="hbce-step">2 · Create Release</span>
+        <span class="hbce-step">3 · Append (hash-only)</span>
+        <span class="hbce-step">4 · Verify → VALID</span>
+        <span class="hbce-step">5 · Activate Tools + Network</span>
       </div>
 
       <div class="hbce-actions" style="margin-top:1rem;">
         <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Start onboarding</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">I already have an IPR → VERIFY</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Public registry</a>
+        <a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/create/">CREATE (Release)</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
+        <a class="hbce-btn hbce-btn--ghost" href="#catalogue">Catalogue</a>
       </div>
 
-      <p class="hbce-note" style="margin-top:.8rem;">
-        Public: <span class="hbce-mono">hash-only</span> (no public custody of personal data). Private: Release file stored locally.
+      <div class="hbce-badge-row" aria-label="policy badges">
+        <span class="hbce-badge"><span class="dot"></span> EU-first</span>
+        <span class="hbce-badge"><span class="dot"></span> audit-first</span>
+        <span class="hbce-badge"><span class="dot"></span> fail-closed</span>
+        <span class="hbce-badge"><span class="dot"></span> hash-only</span>
+        <span class="hbce-badge"><span class="dot"></span> append-only</span>
+        <span class="hbce-badge"><span class="dot"></span> GDPR-min</span>
+        <span class="hbce-badge"><span class="dot"></span> no public data custody</span>
+      </div>
+
+      <p class="hbce-note" style="margin-top:.85rem;">
+        Public verification uses <span class="hbce-mono">hash-only</span> proofs. Private identity stays in the local Release file.
       </p>
     </section>
 
-    <!-- POSITIONING (3-LAYER) -->
-    <section class="hbce-section">
-      <h2>How this system is structured</h2>
+    <!-- BASE ENTRY -->
+    <section class="hbce-section" id="entry">
+      <h2>Mandatory entry: IPR Bio (EU Registry)</h2>
 
       <div class="hbce-grid2">
-        <div class="hbce-card hbce-col-4">
-          <div class="hbce-pill">1 · Company (R&amp;D)</div>
-          <h3 style="margin-top:.55rem;">HERMETICUM B.C.E. S.r.l.</h3>
+        <div class="hbce-card hbce-col-8">
           <p>
-            The R&amp;D entity building European-first protocols, verification flows, and deployment playbooks for operational identity.
-            Engineered for GDPR-min and audit-first adoption.
+            The entry contract establishes an EU-grade operational identity presence. It is the prerequisite for all tracks:
+            civil users, companies, industrial operations, and public-sector deployments.
           </p>
+          <ul class="hbce-list">
+            <li>Deterministic status: <span class="hbce-mono">VALID / INVALID</span></li>
+            <li>Hash-only public proof (GDPR-min)</li>
+            <li>Fail-closed access gates (non-negotiable)</li>
+          </ul>
+          <div class="hbce-note-box" style="margin-top:.9rem;">
+            <strong>Definition:</strong> <span class="hbce-mono">VALID IPR = FILE INTEGRITY OK + PRESENT IN REGISTRY</span>
+          </div>
         </div>
 
         <div class="hbce-card hbce-col-4">
-          <div class="hbce-pill">2 · Infrastructure</div>
-          <h3 style="margin-top:.55rem;">HERMETICUM — European Cyber Bank</h3>
-          <p>
-            The infrastructure layer (not a financial bank): a bank-like system for digital execution.
-            It issues and verifies identity proofs for modules, operator networks, and territorial nodes.
-          </p>
-        </div>
-
-        <div class="hbce-card hbce-col-4">
-          <div class="hbce-pill">3 · Customer instrument</div>
-          <h3 style="margin-top:.55rem;">IPR (Identity Primary Record)</h3>
-          <p>
-            The customer’s operational instrument: a private Release file + a public hash-only proof.
-            It enables deterministic access, accountability, and module activation.
+          <div class="hbce-pill">IPR Bio</div>
+          <div style="margin-top:.6rem;">
+            <div class="hbce-price">€ 45</div>
+            <div class="hbce-subprice">one-time (mandatory)</div>
+          </div>
+          <div class="hbce-divider"></div>
+          <p class="hbce-note" style="margin:0;">
+            Access starts only after <strong>VALID</strong> verification.
           </p>
         </div>
       </div>
     </section>
 
-    <!-- CHOOSE PROFILE -->
-    <section class="hbce-section">
-      <h2>Choose your access profile</h2>
-
-      <div class="hbce-grid2">
-
-        <div class="hbce-card hbce-col-4">
-          <h3>Companies &amp; Industry (B2B)</h3>
-          <p>Operational identity for AI, robots, supply chains, audit, contracts, and industrial workflows.</p>
-          <div class="hbce-actions">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/activate/#company">Open Business IPR</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/#b2b">B2B catalogue</a>
-          </div>
-        </div>
-
-        <div class="hbce-card hbce-col-4">
-          <h3>Institutions &amp; Public Sector (B2G)</h3>
-          <p>Identity for public systems, critical infrastructure, operational acts, and audit-by-design governance.</p>
-          <div class="hbce-actions">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/activate/#institution">Open Institutional IPR</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/#b2g">B2G catalogue</a>
-          </div>
-        </div>
-
-        <div class="hbce-card hbce-col-4">
-          <h3>Certified operators</h3>
-          <p>IPR issuance, registry append operations, territorial network deployment, and operational governance.</p>
-          <div class="hbce-actions">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/operator/">Operator access</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operator/pricing/">Operator licences</a>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- RULES -->
-    <section class="hbce-section">
-      <h2>Validity rules (simple and hard)</h2>
+    <!-- CLIENT OUTCOME -->
+    <section class="hbce-section" id="what-you-get">
+      <h2>What the customer receives</h2>
 
       <div class="hbce-grid2">
         <div class="hbce-card hbce-col-8">
           <ul class="hbce-list">
-            <li><strong>Release file integrity</strong> (private proof)</li>
-            <li><strong>Hash present in registry</strong> (public hash-only proof)</li>
-            <li><strong>Deterministic verification</strong> → VALID/INVALID</li>
+            <li><strong>IPR Release file</strong> (private operational identity proof, stored locally)</li>
+            <li><strong>Receipt</strong> (issuance evidence for audit and continuity)</li>
+            <li><strong>Registry entry</strong> (hash-only public proof ready for append-only registry)</li>
+            <li><strong>Deterministic verification</strong> returning VALID / INVALID</li>
           </ul>
-          <p>
-            If one requirement fails → <strong>INVALID</strong> (fail-closed). No “silent execution”.
+          <p class="hbce-note">
+            Custody rule: loss of the Release file = loss of private proof. Public systems do not keep personal data.
           </p>
-          <div class="hbce-actions">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Start onboarding</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
+        </div>
+
+        <div class="hbce-card hbce-col-4">
+          <h3>Risk model</h3>
+          <div class="hbce-kv">
+            <div><strong>Public</strong></div><div>hash-only proofs</div>
+            <div><strong>Private</strong></div><div>Release file (local custody)</div>
+            <div><strong>Failure</strong></div><div>fail-closed (BLOCK)</div>
+            <div><strong>Goal</strong></div><div>accountability &amp; auditability</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CATALOGUE -->
+    <section class="hbce-section" id="catalogue">
+      <h2>Catalogue (Tool + Network)</h2>
+      <p class="hbce-note">
+        Each level includes a <strong>Tool license (one-time)</strong> and a <strong>Network service (monthly)</strong>
+        for verification gates, audit packs, monitoring, and operational updates.
+      </p>
+
+      <div class="hbce-grid2">
+
+        <!-- CIVIL -->
+        <div class="hbce-card hbce-col-6">
+          <div class="hbce-pill">Civil</div>
+          <h3 style="margin-top:.55rem;">Personal operational identity</h3>
+          <p class="hbce-note">
+            For individuals who need certified digital operations and controlled access to infrastructure modules.
+          </p>
+
+          <table class="hbce-table" aria-label="Civil pricing">
+            <thead>
+              <tr>
+                <th>Level</th>
+                <th>Tool (one-time)</th>
+                <th>Network (monthly)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Start</strong></td>
+                <td><div class="hbce-price">€ 90</div></td>
+                <td><div class="hbce-price">€ 5</div></td>
+              </tr>
+              <tr>
+                <td><strong>Grow</strong></td>
+                <td><div class="hbce-price">€ 290</div></td>
+                <td><div class="hbce-price">€ 15</div></td>
+              </tr>
+              <tr>
+                <td><strong>Scale</strong></td>
+                <td><div class="hbce-price">€ 690</div></td>
+                <td><div class="hbce-price">€ 39</div></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="hbce-note" style="margin-top:.65rem;">
+            Outcome: certified personal identity gates (fail-closed) and operational continuity.
+          </p>
+        </div>
+
+        <!-- BUSINESS -->
+        <div class="hbce-card hbce-col-6">
+          <div class="hbce-pill">Business</div>
+          <h3 style="margin-top:.55rem;">Company operational identity</h3>
+          <p class="hbce-note">
+            For companies requiring verified workflows, suppliers, contracts, and multi-user operational evidence.
+          </p>
+
+          <div style="margin:.6rem 0;">
+            <span class="hbce-tag">workflow identity</span>
+            <span class="hbce-tag">audit packs</span>
+            <span class="hbce-tag">supplier corridors</span>
+          </div>
+
+          <table class="hbce-table" aria-label="Business pricing">
+            <thead>
+              <tr>
+                <th>Level</th>
+                <th>Tool (one-time)</th>
+                <th>Network (monthly)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Start</strong></td>
+                <td><div class="hbce-price">€ 2,900</div></td>
+                <td><div class="hbce-price">€ 190</div></td>
+              </tr>
+              <tr>
+                <td><strong>Grow</strong></td>
+                <td><div class="hbce-price">€ 9,900</div></td>
+                <td><div class="hbce-price">€ 490</div></td>
+              </tr>
+              <tr>
+                <td><strong>Scale</strong></td>
+                <td><div class="hbce-price">€ 29,000</div></td>
+                <td><div class="hbce-price">€ 1,490</div></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="hbce-note-box" style="margin-top:.9rem;">
+            <strong>Operator eligibility:</strong> Business <strong>Scale</strong> unlocks eligibility for the
+            <strong>HBCE Certified Operator</strong> application (issuance + registry append operations).
+          </div>
+        </div>
+
+        <!-- B2B -->
+        <div class="hbce-card hbce-col-6">
+          <div class="hbce-pill">B2B</div>
+          <h3 style="margin-top:.55rem;">Industry / high-liability operations</h3>
+          <p class="hbce-note">
+            For industrial operations, automation, robotics fleets, and cross-site compliance corridors.
+          </p>
+
+          <div style="margin:.6rem 0;">
+            <span class="hbce-tag">automation</span>
+            <span class="hbce-tag">robotics fleets</span>
+            <span class="hbce-tag">fail-closed gates</span>
+          </div>
+
+          <table class="hbce-table" aria-label="B2B pricing">
+            <thead>
+              <tr>
+                <th>Level</th>
+                <th>Tool (one-time)</th>
+                <th>Network (monthly)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Start</strong></td>
+                <td><div class="hbce-price">€ 49,000</div></td>
+                <td><div class="hbce-price">€ 2,900</div></td>
+              </tr>
+              <tr>
+                <td><strong>Grow</strong></td>
+                <td><div class="hbce-price">€ 120,000</div></td>
+                <td><div class="hbce-price">€ 7,900</div></td>
+              </tr>
+              <tr>
+                <td><strong>Scale</strong></td>
+                <td><div class="hbce-price">€ 390,000</div></td>
+                <td><div class="hbce-price">€ 19,000</div></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="hbce-note" style="margin-top:.65rem;">
+            Outcome: enforceable identity gates at industrial boundaries with exportable compliance evidence.
+          </p>
+        </div>
+
+        <!-- B2G -->
+        <div class="hbce-card hbce-col-6">
+          <div class="hbce-pill">B2G</div>
+          <h3 style="margin-top:.55rem;">Public bodies / governments</h3>
+          <p class="hbce-note">
+            For institutions requiring procurement-grade workflows, territorial systems, and national governance corridors.
+          </p>
+
+          <div style="margin:.6rem 0;">
+            <span class="hbce-tag">procurement</span>
+            <span class="hbce-tag">territorial systems</span>
+            <span class="hbce-tag">governance corridors</span>
+          </div>
+
+          <table class="hbce-table" aria-label="B2G pricing">
+            <thead>
+              <tr>
+                <th>Level</th>
+                <th>Tool (one-time)</th>
+                <th>Network (monthly)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Start</strong></td>
+                <td><div class="hbce-price">€ 250,000</div></td>
+                <td><div class="hbce-price">€ 9,900</div></td>
+              </tr>
+              <tr>
+                <td><strong>Grow</strong></td>
+                <td><div class="hbce-price">€ 900,000</div></td>
+                <td><div class="hbce-price">€ 29,000</div></td>
+              </tr>
+              <tr>
+                <td><strong>Scale</strong></td>
+                <td><div class="hbce-price">€ 3,000,000</div></td>
+                <td><div class="hbce-price">€ 90,000</div></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="hbce-note" style="margin-top:.65rem;">
+            Outcome: deterministic identity enforcement for public operations (audit-first, fail-closed).
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- OPERATOR -->
+    <section class="hbce-section" id="operator">
+      <h2>HBCE Certified Operator (issuance authority)</h2>
+
+      <div class="hbce-grid2">
+        <div class="hbce-card hbce-col-8">
+          <p>
+            Operators are certified entities authorized to perform issuance operations:
+            onboarding intake, Release generation, receipt discipline, append-only registry operations, and deterministic verification support.
+          </p>
+          <ul class="hbce-list">
+            <li><strong>Who:</strong> professionals and companies that want to issue IPR for customers</li>
+            <li><strong>What:</strong> issuance + registry append operations + audit packs</li>
+            <li><strong>Why:</strong> territorial scaling (cities/regions) requires operator governance</li>
+          </ul>
+
+          <div class="hbce-note-box" style="margin-top:.9rem;">
+            <strong>Eligibility gate:</strong> Business <strong>Scale</strong> level → Operator application eligibility.
+            Operator status is not automatic: it is governance-controlled and audit-based.
           </div>
         </div>
 
         <div class="hbce-card hbce-col-4">
-          <h3>Definition</h3>
-          <p class="hbce-note">
-            <span class="hbce-mono">VALID IPR = FILE INTEGRITY OK + PRESENT IN REGISTRY</span>
+          <h3>Operator actions</h3>
+          <div class="hbce-kv">
+            <div><span class="hbce-pill">Issue</span></div><div>Release + receipt</div>
+            <div><span class="hbce-pill">Append</span></div><div>hash-only registry entry</div>
+            <div><span class="hbce-pill">Verify</span></div><div>deterministic VALID/INVALID</div>
+            <div><span class="hbce-pill">Audit</span></div><div>evidence packs</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRAINING -->
+    <section class="hbce-section" id="training">
+      <h2>Training (IPR → Operator → Governance)</h2>
+
+      <div class="hbce-grid2">
+        <div class="hbce-card hbce-col-8">
+          <p>
+            The pricing ladder is also a role ladder. Training defines the operational discipline required to move from
+            a VALID user to a certified operator and (eventually) node governance responsibilities.
           </p>
+
+          <table class="hbce-table" aria-label="training stack">
+            <thead>
+              <tr>
+                <th>Course</th>
+                <th>Purpose</th>
+                <th>Outcome</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Course 0</strong> — IPR Basics</td>
+                <td>Understand CREATE → APPEND → VERIFY and custody rules</td>
+                <td>Operate as a VALID user</td>
+              </tr>
+              <tr>
+                <td><strong>Course 1</strong> — Proof Packs</td>
+                <td>Receipts, evidence packs, audit traces</td>
+                <td>Operate in certified mode</td>
+              </tr>
+              <tr>
+                <td><strong>Course 2</strong> — Operator Foundation</td>
+                <td>Registry logic, onboarding discipline, fail-closed handling</td>
+                <td>Support issuance under supervision</td>
+              </tr>
+              <tr>
+                <td><strong>Course 3</strong> — Operator License</td>
+                <td>Issuance authority: release + receipts + append operations</td>
+                <td>Become a certified issuer</td>
+              </tr>
+              <tr>
+                <td><strong>Course 4</strong> — Node Operations</td>
+                <td>Monitoring, integrity, incident handling, corridors</td>
+                <td>Assist or run node governance workflows</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="hbce-actions" style="margin-top:1rem;">
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/training/">Open training page</a>
+          </div>
+
+          <p class="hbce-note" style="margin-top:.75rem;">
+            Minimum kit: device + stable internet + GitHub account + secure storage discipline for Release files.
+          </p>
+        </div>
+
+        <div class="hbce-card hbce-col-4">
+          <h3>Operational minimum kit</h3>
+          <ul class="hbce-list">
+            <li>Laptop / Chromebook</li>
+            <li>Stable connection</li>
+            <li>GitHub account</li>
+            <li>Secure storage + backup</li>
+            <li>Email (PEC recommended)</li>
+          </ul>
         </div>
       </div>
     </section>
 
     <!-- HORIZON -->
-    <section class="hbce-section">
-      <h2>EU programme (Horizon)</h2>
-      <div class="hbce-card">
-        <p>
-          IPR is structured as a European infrastructure programme: a territorial node network, audit-first governance,
-          and operational identity standards for B2B and B2G adoption.
-        </p>
-        <div class="hbce-actions">
-          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/horizon/">Horizon page</a>
-          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/eu/">EU Gateway</a>
-          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/#nodes">EU node program</a>
+    <section class="hbce-section" id="horizon">
+      <h2>Horizon-facing programme</h2>
+
+      <div class="hbce-grid2">
+        <div class="hbce-card hbce-col-8">
+          <p>
+            EOII/IPR can be framed as an EU infrastructure programme: deterministic identity gates, audit-by-design,
+            and operator-governed territorial scaling. The Horizon page is written for reviewers: deliverables, governance,
+            and staged deployment logic.
+          </p>
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/horizon/">Open Horizon page</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/eu/">EU Gateway</a>
+          </div>
+        </div>
+
+        <div class="hbce-card hbce-col-4">
+          <h3>Compliance stance</h3>
+          <p class="hbce-note">
+            No public personal data custody. Public validation uses hash-only proofs and append-only registries.
+            Deterministic verification supports procurement-grade auditability.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW TO START -->
+    <section class="hbce-section" id="start">
+      <h2>How to start (bank-like)</h2>
+
+      <div class="hbce-grid2">
+        <div class="hbce-card hbce-col-8">
+          <ol class="hbce-list" style="list-style: decimal; padding-left: 1.2rem;">
+            <li><strong>Onboarding</strong>: submit required fields</li>
+            <li><strong>Create</strong>: Release + receipt + registry entry</li>
+            <li><strong>Append</strong>: hash-only entry to registry (append-only)</li>
+            <li><strong>Verify</strong>: deterministic VALID/INVALID</li>
+            <li><strong>Choose</strong>: Civil / Business / B2B / B2G level</li>
+            <li><strong>Scale</strong>: training → operator → node governance</li>
+          </ol>
+          <div class="hbce-actions">
+            <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Start onboarding</a>
+            <a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/create/">Create</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">Pricing page</a>
+          </div>
+        </div>
+
+        <div class="hbce-card hbce-col-4">
+          <h3>Formal contact</h3>
+          <p class="hbce-note">Procurement / institutional channels.</p>
+          <ul class="hbce-list">
+            <li><strong>Company PEC:</strong> <a href="mailto:hermeticum@pec.it">hermeticum@pec.it</a></li>
+            <li><strong>Operational PEC:</strong> <a href="mailto:manuelcoletta@domiciliodigitale.com">manuelcoletta@domiciliodigitale.com</a></li>
+          </ul>
+          <p class="hbce-note">Policy: hash-only · append-only · GDPR-min · fail-closed</p>
         </div>
       </div>
     </section>
@@ -201,7 +589,7 @@
       <div class="hbce-footnote">
         <p>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</p>
         <p>HERMETICUM B.C.E. S.r.l.</p>
-        <p class="hbce-note">UE-first · audit-first · fail-closed · hash-only · append-only · GDPR-min</p>
+        <p class="hbce-note">EU-first · audit-first · fail-closed · hash-only · append-only · GDPR-min</p>
       </div>
     </section>
 
