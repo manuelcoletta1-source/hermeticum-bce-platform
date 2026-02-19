@@ -17,7 +17,6 @@
 
   <main class="hbce-container hbce-main">
 
-    <!-- HERO -->
     <section class="hbce-hero">
       <div class="hbce-hero__kicker">HBCE · PROTOCOL · PUBLIC TECHNICAL SPEC</div>
       <h1 class="hbce-hero__title">HBCE Protocol v1.0</h1>
@@ -37,10 +36,8 @@
       </div>
     </section>
 
-    <!-- META -->
     <section class="hbce-card">
       <h2>Document Metadata</h2>
-
       <div class="hbce-table-wrap">
         <table class="hbce-table">
           <tbody>
@@ -61,14 +58,12 @@
           </tbody>
         </table>
       </div>
-
       <p class="hbce-note">
         This specification is designed to be implementable and demonstrable. It is not a legal opinion and does not
         attribute responsibility. It defines technical primitives and deterministic verification logic.
       </p>
     </section>
 
-    <!-- 1 PURPOSE -->
     <section class="hbce-card">
       <h2>1. Purpose</h2>
       <p>
@@ -83,7 +78,6 @@
       </p>
     </section>
 
-    <!-- 2 PRINCIPLES -->
     <section class="hbce-card">
       <h2>2. Foundational Principles</h2>
       <ul class="hbce-list">
@@ -95,44 +89,18 @@
       </ul>
     </section>
 
-    <!-- 3 ARCHITECTURE -->
     <section class="hbce-card">
       <h2>3. Layered Architecture</h2>
-
       <div class="hbce-grid hbce-grid--2">
-        <div class="hbce-panel">
-          <h3>Layer 0 — Identity Primary Record (IPR)</h3>
-          <p>A persistent identity object with a stable identifier, a root hash, timestamps, status, and optional public key.</p>
-        </div>
-
-        <div class="hbce-panel">
-          <h3>Layer 1 — Append-Only Registry</h3>
-          <p>Immutable records/events referencing hashed payloads; no retroactive modification is allowed.</p>
-        </div>
-
-        <div class="hbce-panel">
-          <h3>Layer 2 — Deterministic Verification</h3>
-          <p>Replicable checks: hash matching + state rules + optional signature validation.</p>
-        </div>
-
-        <div class="hbce-panel">
-          <h3>Layer 3 — Time Certification (Renewal)</h3>
-          <p>Cyclic certification; overdue identities can be frozen by rule; renew emits append-only events.</p>
-        </div>
-
-        <div class="hbce-panel">
-          <h3>Layer 4 — Operational Authorization</h3>
-          <p>Licenses/capabilities derived from but distinct from the base identity.</p>
-        </div>
-
-        <div class="hbce-panel">
-          <h3>Layer 5 — Governance &amp; Versioning</h3>
-          <p>Protocol evolution is versioned; changes are append-only (no rewriting of history).</p>
-        </div>
+        <div class="hbce-panel"><h3>Layer 0 — Identity Primary Record (IPR)</h3><p>Persistent identity object: identifier, root hash, timestamps, status, optional public key.</p></div>
+        <div class="hbce-panel"><h3>Layer 1 — Append-Only Registry</h3><p>Immutable records/events referencing hashed payloads; no retroactive modification.</p></div>
+        <div class="hbce-panel"><h3>Layer 2 — Deterministic Verification</h3><p>Replicable checks: hash matching + state rules + optional signature validation.</p></div>
+        <div class="hbce-panel"><h3>Layer 3 — Time Certification (Renewal)</h3><p>Cyclic certification; overdue identities freeze by rule; renew emits append-only events.</p></div>
+        <div class="hbce-panel"><h3>Layer 4 — Operational Authorization</h3><p>Licenses/capabilities derived from but distinct from the base identity.</p></div>
+        <div class="hbce-panel"><h3>Layer 5 — Governance &amp; Versioning</h3><p>Protocol evolution is versioned; changes are append-only (no rewriting history).</p></div>
       </div>
     </section>
 
-    <!-- 4 DATA OBJECTS -->
     <section class="hbce-card">
       <h2>4. Data Objects (v1.0)</h2>
 
@@ -168,143 +136,102 @@
       </p>
     </section>
 
-    <!-- 5 VERIFICATION -->
     <section class="hbce-card">
       <h2>5. Deterministic Verification Rules</h2>
       <p>
         Deterministic verification must be replicable by an independent verifier given the same input payload and public registry records.
         If any required check fails, the result is <strong>INVALID</strong> (fail-closed).
       </p>
-
       <ol class="hbce-list">
         <li><strong>Hash</strong>: compute <code>H = SHA-256(payload)</code>.</li>
-        <li><strong>Match</strong>: verify <code>H</code> matches the corresponding <code>ref_payload_hash</code> in the registry record.</li>
-        <li><strong>State</strong>: verify the referenced IPR is not <code>REVOKED</code> (and complies with current rules).</li>
-        <li><strong>Certification</strong> (if enabled): verify current time is not beyond <code>next_due</code>; otherwise treat as <code>FROZEN</code> per rule.</li>
-        <li><strong>Signature</strong> (optional v1.0): if <code>signature</code> exists, verify it against the declared public key and signing rules.</li>
+        <li><strong>Match</strong>: verify <code>H</code> matches <code>ref_payload_hash</code> in the registry record.</li>
+        <li><strong>State</strong>: verify the referenced IPR is not <code>REVOKED</code>.</li>
+        <li><strong>Certification</strong> (if enabled): if <code>now &gt; next_due</code> treat as <code>FROZEN</code> by rule.</li>
+        <li><strong>Signature</strong> (optional v1.0): if present, verify against the declared public key.</li>
       </ol>
-
-      <p class="hbce-note">
-        Verification is deterministic by design: same inputs must produce the same result (<code>VALID</code> / <code>INVALID</code>).
-      </p>
+      <p class="hbce-note">Same inputs must produce the same result: <code>VALID</code> / <code>INVALID</code>.</p>
     </section>
 
-    <!-- 6 CERTIFICATION -->
     <section class="hbce-card">
       <h2>6. Time Certification (Renewal)</h2>
-
       <p>
-        HBCE supports an optional periodic certification cycle. Certification is modeled as time-bound validity rules and append-only events.
-        If a certification window expires, the system freezes the IPR by rule, and a renewal operation emits an append-only event.
+        HBCE supports an optional periodic certification cycle. If a certification window expires, the system freezes the IPR by rule,
+        and a renewal emits an append-only event.
       </p>
-
-      <h3>6.1 Certification Fields</h3>
       <ul class="hbce-list">
         <li><code>last_certification</code> (ISO 8601)</li>
         <li><code>next_due</code> (ISO 8601)</li>
         <li><code>certification_level</code> (string)</li>
       </ul>
-
-      <h3>6.2 Overdue Rule</h3>
       <pre class="hbce-pre"><code>If now &gt; next_due:
   status = FROZEN
   emit append-only event (STATUS_UPDATE)</code></pre>
-
-      <p class="hbce-note">
-        The renewal mechanism exists to enforce continuous operability: identity is not a one-time artifact, but an auditable lifecycle.
-      </p>
     </section>
 
-    <!-- 7 AUTHORIZATION -->
     <section class="hbce-card">
       <h2>7. Operational Authorization (State Separation)</h2>
       <p>
-        HBCE separates identity from permission. An IPR answers “who/what is this entity?” while authorization answers “what can it do?”.
-        Licenses are derived from identity but represented as distinct objects and state flows.
+        HBCE separates identity from permission. Licenses are derived from identity but represented as distinct objects and state flows.
       </p>
-
-      <h3>7.1 License Types (illustrative)</h3>
       <ul class="hbce-list">
         <li><code>Operator</code></li>
         <li><code>Node</code></li>
         <li><code>Enterprise</code></li>
         <li><code>Infrastructure</code></li>
       </ul>
-
-      <p class="hbce-note">
-        v1.0 defines the separation principle; full governance and issuance workflows can be expanded in v1.1+.
-      </p>
     </section>
 
-    <!-- 8 GOVERNANCE -->
     <section class="hbce-card">
       <h2>8. Governance &amp; Versioning</h2>
       <p>
-        Protocol versions follow semantic structure: <code>HBCE-PROTOCOL-vMAJOR.MINOR</code>.
-        Updates must not rewrite historical registry events. Changes introduce new validation rules or new record types
-        while preserving backward interpretability where defined.
+        Versions follow <code>HBCE-PROTOCOL-vMAJOR.MINOR</code>. Updates must not rewrite historical events. Validation must remain deterministic within a declared version.
       </p>
-
-      <h3>8.1 Update Constraints</h3>
       <ul class="hbce-list">
-        <li>No retroactive deletion or modification of historical records.</li>
+        <li>No retroactive deletion/modification of historical records.</li>
         <li>New rules must be explicit and versioned.</li>
-        <li>Validation must remain deterministic within a declared version.</li>
+        <li>Determinism is mandatory.</li>
       </ul>
     </section>
 
-    <!-- 9 EU MAPPING -->
     <section class="hbce-card">
       <h2>9. EU Compliance Mapping (technical)</h2>
-
-      <h3>GDPR (data minimization, accountability)</h3>
+      <h3>GDPR</h3>
       <ul class="hbce-list">
-        <li>Public layer is hash-only; no personal data is required for public verification.</li>
-        <li>Minimization by design and “no public custody” are protocol constraints.</li>
+        <li>Public layer is hash-only; no personal data required for public verification.</li>
+        <li>No public custody of personal data by design.</li>
       </ul>
-
-      <h3>NIS2 (resilience and risk management)</h3>
+      <h3>NIS2</h3>
       <ul class="hbce-list">
         <li>Immutable event logs + measurable states support auditability and operational continuity.</li>
       </ul>
-
-      <h3>eIDAS 2.0 (identity and trust services)</h3>
+      <h3>eIDAS 2.0</h3>
       <ul class="hbce-list">
-        <li>HBCE can integrate with trust services for signatures and timestamps (implementation-specific).</li>
+        <li>Can integrate with trust services (signatures/timestamps) depending on implementation.</li>
       </ul>
-
       <h3>AI Governance</h3>
       <ul class="hbce-list">
-        <li>AI systems can be assigned IPRs; operational state changes become auditable events.</li>
+        <li>AI systems can be assigned IPRs; state changes become auditable events.</li>
       </ul>
-
-      <p class="hbce-note">
-        This is a technical mapping, not a legal determination. HBCE provides tools that make evidence and state more verifiable.
-      </p>
     </section>
 
-    <!-- 10 THREAT MODEL -->
     <section class="hbce-card">
       <h2>10. Threat Model Summary</h2>
-
       <h3>Designed to mitigate</h3>
       <ul class="hbce-list">
-        <li>Retroactive log tampering (immutability constraints and append-only logs)</li>
+        <li>Retroactive log tampering</li>
         <li>Identity impersonation via unverifiable states</li>
         <li>Untracked state changes</li>
         <li>Payload falsification (hash mismatch)</li>
       </ul>
-
       <h3>Not fully addressed by v1.0</h3>
       <ul class="hbce-list">
         <li>Endpoint compromise</li>
-        <li>Private key theft (OPSEC and key management required)</li>
+        <li>Private key theft</li>
         <li>Physical attacks</li>
         <li>Automated distributed consensus</li>
       </ul>
     </section>
 
-    <!-- 11 LIMITATIONS -->
     <section class="hbce-card">
       <h2>11. v1.0 Limitations</h2>
       <ul class="hbce-list">
@@ -314,33 +241,25 @@
         <li>No automatic cross-border interoperability workflows</li>
       </ul>
       <p class="hbce-note">
-        v1.0 is a demonstrator: minimal, functional, auditable. Subsequent versions can harden issuance rules, signatures,
+        v1.0 is a demonstrator: minimal, functional, auditable. Later versions can harden issuance rules, signatures,
         and inter-operator governance under append-only constraints.
       </p>
     </section>
 
-    <!-- 12 PUBLIC HASH (NO PDF) -->
     <section class="hbce-card">
-      <h2>12. Public Hash (canonical web spec)</h2>
+      <h2>12. Canonical Hash (no PDF)</h2>
       <p>
-        If you want a public integrity anchor without a PDF, publish the SHA-256 of this page content in a separate file and treat it as the canonical artifact hash.
+        To publish a public integrity anchor without a PDF, compute SHA-256 of this page and store it as the canonical artifact hash.
       </p>
-
-      <pre class="hbce-pre"><code># example (local)
-sha256sum docs/hbce/protocol/index.html</code></pre>
-
+      <pre class="hbce-pre"><code>sha256sum docs/hbce/protocol/index.html</code></pre>
       <p class="hbce-note">
-        Recommended: store the resulting SHA-256 in <code>docs/hbce/protocol/HBCE-PROTOCOL-v1.0.sha256</code>.
-        If mismatch → INVALID (fail-closed).
+        Store the hash in <code>docs/hbce/protocol/HBCE-PROTOCOL-v1.0.sha256</code>. If mismatch → INVALID (fail-closed).
       </p>
     </section>
 
-    <!-- STATUS -->
     <section class="hbce-card">
       <h2>Document Status</h2>
-      <p>
-        <strong>HBCE Protocol v1.0</strong> — Public Technical Draft — 2026-02-19 — Issuer: HERMETICUM B.C.E. S.r.l.
-      </p>
+      <p><strong>HBCE Protocol v1.0</strong> — Public Technical Draft — 2026-02-19 — Issuer: HERMETICUM B.C.E. S.r.l.</p>
     </section>
 
   </main>
