@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <title>REGISTRY — Append-only (hash-only)</title>
-  <meta name="description" content="Public append-only registry (hash-only). Paste a registry entry, validate format, and append it to registry.json entries[]. Viewer includes search and export. GDPR-min, fail-closed." />
+  <meta name="description" content="Public append-only registry (hash-only). Validate entry format and append to registry.json entries[]. Viewer includes search, type filter, export and quick VERIFY links. GDPR-min, fail-closed." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
@@ -30,7 +30,7 @@
       overflow:auto;
       max-height: 340px;
     }
-    .hbce-input, .hbce-textarea{
+    .hbce-input, .hbce-textarea, .hbce-select{
       width:100%;
       border-radius: 14px;
       border:1px solid rgba(255,255,255,.12);
@@ -47,6 +47,7 @@
       display:inline-block; padding:.25rem .55rem; border-radius:999px;
       border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.03);
       font-weight:900; font-size:.84rem; opacity:.92;
+      text-transform: uppercase; letter-spacing:.02em;
     }
     .hbce-row{ display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; }
     .hbce-table{ width:100%; border-collapse: collapse; }
@@ -59,6 +60,20 @@
     }
     .hbce-table th{ opacity:.85; font-weight:900; }
     .hbce-muted{ opacity:.8; }
+    .hbce-tag{
+      display:inline-block;
+      padding:.18rem .5rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.03);
+      font-weight:900;
+      font-size:.78rem;
+      opacity:.92;
+      white-space: nowrap;
+    }
+    .hbce-link{ color: rgba(255,255,255,.92); text-decoration: none; border-bottom:1px dashed rgba(255,255,255,.25); }
+    .hbce-link:hover{ border-bottom-color: rgba(255,255,255,.55); }
+    .hbce-small{ font-size:.92rem; opacity:.86; }
   </style>
 </head>
 
@@ -81,6 +96,10 @@
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">STATUS</a>
       </div>
+
+      <p class="hbce-note" style="margin-top:.85rem;">
+        Source: <span class="hbce-mono">/hermeticum-bce-platform/registry/registry.json</span>
+      </p>
     </section>
 
     <section class="hbce-section">
@@ -95,9 +114,12 @@
 
           <label class="hbce-muted" for="entry_in"><strong>Registry entry JSON</strong></label>
           <textarea id="entry_in" class="hbce-textarea hbce-mono" placeholder='{
-  "name": "ACME Robotics",
-  "payload_sha256": "64-hex sha256",
-  "timestamp": "2026-02-18T10:00:00.000Z"
+  "entity_type": "UPMESE_CERTIFICATE",
+  "name": "Manuel Coletta",
+  "payload_sha256": "64-hex sha256 lowercase",
+  "timestamp": "2026-02-19T18:00:00.000Z",
+  "status": "ACTIVE",
+  "note": "proto=HBCE-UPMESE-v1; kind=MONTHLY_OPERATIONAL_CONTINUITY_CERTIFICATE; label=UP-MESE-01"
 }'></textarea>
 
           <div class="hbce-row" style="margin-top:.7rem;">
@@ -139,32 +161,52 @@
 
     <section class="hbce-section">
       <h2>Registry viewer</h2>
+
       <div class="hbce-card">
         <div class="hbce-row">
-          <input id="q" class="hbce-input" placeholder="Search by name or sha256…" />
+          <input id="q" class="hbce-input" placeholder="Search by name, type or sha256…" />
+
+          <select id="type" class="hbce-select" style="max-width: 320px;">
+            <option value="">All types</option>
+            <option value="HUMAN">HUMAN</option>
+            <option value="OPERATOR">OPERATOR</option>
+            <option value="UPMESE_CERTIFICATE">UPMESE_CERTIFICATE</option>
+          </select>
+
           <button class="hbce-btn hbce-btn--alt" id="btn-refresh" type="button">Refresh</button>
           <button class="hbce-btn hbce-btn--ghost" id="btn-export" type="button" disabled>Export JSON</button>
         </div>
 
-        <p class="hbce-note" style="margin-top:.65rem;">
-          Source: <span class="hbce-mono">/hermeticum-bce-platform/registry/registry.json</span>
-        </p>
+        <div class="hbce-row" style="margin-top:.65rem;">
+          <span class="hbce-pill">Counts</span>
+          <span class="hbce-small">total: <span class="hbce-mono" id="cnt-total">—</span></span>
+          <span class="hbce-small">human: <span class="hbce-mono" id="cnt-human">—</span></span>
+          <span class="hbce-small">operator: <span class="hbce-mono" id="cnt-operator">—</span></span>
+          <span class="hbce-small">up-mese: <span class="hbce-mono" id="cnt-upmese">—</span></span>
+          <span class="hbce-small">last_update: <span class="hbce-mono" id="last-update">—</span></span>
+        </div>
 
-        <div class="hbce-pre" style="max-height: 420px;">
+        <div class="hbce-pre" style="max-height: 460px; margin-top:.75rem;">
           <table class="hbce-table" id="tbl">
             <thead>
               <tr>
                 <th>#</th>
+                <th>Type</th>
                 <th>Name</th>
                 <th>payload_sha256</th>
                 <th>timestamp</th>
+                <th>verify</th>
               </tr>
             </thead>
             <tbody id="tbody">
-              <tr><td colspan="4" class="hbce-muted">Loading…</td></tr>
+              <tr><td colspan="6" class="hbce-muted">Loading…</td></tr>
             </tbody>
           </table>
         </div>
+
+        <p class="hbce-note" style="margin-top:.65rem;">
+          Tip: click <span class="hbce-mono">VERIFY</span> to open the deterministic checker with the hash pre-filled.
+        </p>
       </div>
     </section>
 
@@ -191,27 +233,40 @@
       const btnClear = $("btn-clear");
 
       const q = $("q");
+      const typeSel = $("type");
       const btnRefresh = $("btn-refresh");
       const btnExport = $("btn-export");
       const tbody = $("tbody");
 
+      const cntTotal = $("cnt-total");
+      const cntHuman = $("cnt-human");
+      const cntOperator = $("cnt-operator");
+      const cntUpmese = $("cnt-upmese");
+      const lastUpdate = $("last-update");
+
       let registry = null;
       let normalizedEntry = null;
 
-      function isHex64(s){ return /^[a-f0-9]{64}$/i.test(String(s||"").trim()); }
+      function isHex64Lower(s){ return /^[a-f0-9]{64}$/.test(String(s||"").trim()); }
       function isIso(s){ return /^\d{4}-\d{2}-\d{2}T/.test(String(s||"").trim()); }
 
       function normalizeEntry(obj){
+        // allow old create payloads: name (or label) but enforce "name"
+        const name = String(obj.name || obj.label || "").trim().slice(0, 80);
+        const entityType = String(obj.entity_type || "").trim().slice(0, 40);
+        const status = String(obj.status || "ACTIVE").trim().slice(0, 20);
+        const note = (obj.note !== undefined && obj.note !== null) ? String(obj.note).trim().slice(0, 220) : "";
         return {
-          name: String(obj.name || obj.label || "").trim().slice(0, 80),
+          ...(entityType ? { entity_type: entityType } : {}),
+          name,
           payload_sha256: String(obj.payload_sha256 || "").trim().toLowerCase(),
-          timestamp: String(obj.timestamp || "").trim()
+          timestamp: String(obj.timestamp || "").trim(),
+          ...(status ? { status } : {}),
+          ...(note ? { note } : {})
         };
       }
 
       function setStatus(msg){
-        // lightweight: reuse textarea placeholder-ish via alert for now
-        // (avoid UI overengineering here)
         alert(msg);
       }
 
@@ -232,19 +287,19 @@
           setStatus("INVALID: name is required.");
           return;
         }
-        if(!isHex64(n.payload_sha256)){
-          setStatus("INVALID: payload_sha256 must be 64-hex sha256.");
+        if(!isHex64Lower(n.payload_sha256)){
+          setStatus("INVALID: payload_sha256 must be 64-hex sha256 lowercase.");
           return;
         }
         if(!n.timestamp || !isIso(n.timestamp)){
-          setStatus("INVALID: timestamp must be ISO format (e.g. 2026-02-18T10:00:00.000Z).");
+          setStatus("INVALID: timestamp must be ISO format (e.g. 2026-02-19T18:00:00.000Z).");
           return;
         }
 
         normalizedEntry = n;
         entryIn.value = JSON.stringify(n, null, 2);
         btnCopy.disabled = false;
-        setStatus("VALID entry format. Append this to registry.json entries[].");
+        setStatus("VALID entry format. Append this to registry.json entries[] (append-only).");
       });
 
       btnCopy.addEventListener("click", async () => {
@@ -266,7 +321,7 @@
       });
 
       async function loadRegistry(){
-        tbody.innerHTML = '<tr><td colspan="4" class="hbce-muted">Loading…</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="hbce-muted">Loading…</td></tr>';
         registry = null;
         btnExport.disabled = true;
 
@@ -276,50 +331,83 @@
           const json = await res.json();
           const entries = Array.isArray(json.entries) ? json.entries : [];
           registry = { raw: json, entries };
+
+          // meta counts (fallback to compute)
+          const meta = json.meta || {};
+          const counts = meta.counts || {};
+          const total = typeof counts.total === "number" ? counts.total : entries.length;
+
+          cntTotal.textContent = String(total);
+          cntHuman.textContent = String(typeof counts.ipr_base_human === "number" ? counts.ipr_base_human : entries.filter(e => String(e.entity_type||"") === "HUMAN").length);
+          cntOperator.textContent = String(typeof counts.operator_license === "number" ? counts.operator_license : entries.filter(e => String(e.entity_type||"") === "OPERATOR").length);
+          cntUpmese.textContent = String(
+            typeof counts.up_mese_certificate === "number"
+              ? counts.up_mese_certificate
+              : entries.filter(e => String(e.entity_type||"") === "UPMESE_CERTIFICATE").length
+          );
+          lastUpdate.textContent = String(meta.last_update || "—");
+
           btnExport.disabled = entries.length === 0;
           render();
         }catch(e){
-          tbody.innerHTML = '<tr><td colspan="4" class="hbce-muted">Failed to load registry.json (check path and JSON validity).</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="6" class="hbce-muted">Failed to load registry.json (check path and JSON validity).</td></tr>';
+          cntTotal.textContent = "—";
+          cntHuman.textContent = "—";
+          cntOperator.textContent = "—";
+          cntUpmese.textContent = "—";
+          lastUpdate.textContent = "—";
         }
       }
 
       function render(){
         const term = String(q.value||"").trim().toLowerCase();
+        const type = String(typeSel.value||"").trim();
+
         const entries = (registry && registry.entries) ? registry.entries : [];
-        const filtered = term
-          ? entries.filter(x =>
-              String(x.name||"").toLowerCase().includes(term) ||
-              String(x.payload_sha256||"").toLowerCase().includes(term)
-            )
-          : entries;
+        const filtered = entries.filter(x => {
+          const et = String(x.entity_type||"");
+          if(type && et !== type) return false;
+
+          if(!term) return true;
+          return (
+            String(x.name||"").toLowerCase().includes(term) ||
+            String(x.payload_sha256||"").toLowerCase().includes(term) ||
+            et.toLowerCase().includes(term)
+          );
+        });
 
         if(filtered.length === 0){
-          tbody.innerHTML = '<tr><td colspan="4" class="hbce-muted">No matches.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="6" class="hbce-muted">No matches.</td></tr>';
           return;
         }
 
         tbody.innerHTML = filtered.map((x, i) => {
           const sha = String(x.payload_sha256||"");
           const short = sha ? (sha.slice(0,12) + "…" + sha.slice(-8)) : "";
+          const et = String(x.entity_type || "—");
+          const verifyUrl = "/hermeticum-bce-platform/verify/?expected_sha=" + encodeURIComponent(sha);
           return `
             <tr>
               <td class="hbce-muted">${i+1}</td>
+              <td><span class="hbce-tag">${escapeHtml(et)}</span></td>
               <td>${escapeHtml(String(x.name||""))}</td>
-              <td class="hbce-mono">${escapeHtml(short)}</td>
+              <td class="hbce-mono" title="${escapeHtml(sha)}">${escapeHtml(short)}</td>
               <td class="hbce-mono">${escapeHtml(String(x.timestamp||""))}</td>
+              <td><a class="hbce-link" href="${verifyUrl}">VERIFY</a></td>
             </tr>
           `;
         }).join("");
       }
 
       function escapeHtml(s){
-        return s.replace(/[&<>"']/g, (c) => ({
+        return String(s).replace(/[&<>"']/g, (c) => ({
           "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
         }[c]));
       }
 
       btnRefresh.addEventListener("click", loadRegistry);
       q.addEventListener("input", render);
+      typeSel.addEventListener("change", render);
 
       btnExport.addEventListener("click", () => {
         if(!registry) return;
