@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>RENEW — UP-MESE Continuity Certificate</title>
+  <meta name="description" content="Customer renewal flow for UP-MESE operational continuity. Generates deterministic certificate JSON, computes SHA-256, and outputs a registry entry (hash-only, append-only, fail-closed)." />
+
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/renew/" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+
+  <style>
+    .hbce-grid2{ display:grid; gap:1rem; grid-template-columns: repeat(12, 1fr); }
+    .hbce-col-4{ grid-column: span 4; }
+    .hbce-col-6{ grid-column: span 6; }
+    .hbce-col-8{ grid-column: span 8; }
+    .hbce-col-12{ grid-column: span 12; }
+    @media (max-width: 900px){
+      .hbce-col-4,.hbce-col-6,.hbce-col-8{ grid-column: span 12; }
+    }
+
+    .hbce-mono{ font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
+    .hbce-input, .hbce-textarea, .hbce-select{
+      width:100%;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.03);
+      color: rgba(255,255,255,.92);
+      padding:.75rem .85rem;
+      outline: none;
+    }
+    .hbce-textarea{ min-height: 160px; resize: vertical; }
+    .hbce-divider{ height:1px; background: rgba(255,255,255,.10); margin: 1rem 0; }
+    .hbce-row{ display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; }
+    .hbce-note-box{
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.03);
+      padding: 1rem;
+    }
+    .hbce-kv{ display:grid; grid-template-columns: 220px 1fr; gap:.55rem 1rem; }
+    .hbce-kv div{ padding:.1rem 0; }
+    .hbce-pill{
+      display:inline-block;
+      padding:.25rem .55rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.03);
+      font-weight:950;
+      letter-spacing:.02em;
+      text-transform: uppercase;
+      font-size:.84rem;
+      opacity:.92;
+    }
+    .hbce-code{
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      padding: .85rem .9rem;
+      overflow:auto;
+      font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size: .92rem;
+      line-height: 1.35;
+      color: rgba(255,255,255,.90);
+      white-space: pre;
+    }
+    .hbce-badge{
+      display:inline-block;
+      margin-left:.5rem;
+      padding:.25rem .6rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.16);
+      font-weight:950;
+      letter-spacing:.02em;
+      text-transform: uppercase;
+      font-size:.8rem;
+      opacity:.92;
+      white-space: nowrap;
+    }
+    .hbce-ok{ }
+    .hbce-bad{ }
+  </style>
+</head>
+
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">RENEW · UP-MESE · DETERMINISTIC · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">UP-MESE renewal</h1>
+      <p class="hbce-hero__lead">
+        This flow creates a monthly continuity certificate for an operational identity.
+        Output is deterministic: <strong>certificate JSON</strong> + <strong>sha256</strong> + <strong>registry entry</strong>.
+      </p>
+
+      <div class="hbce-actions" style="margin-top:1rem;">
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/timeline/">Timeline</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/create/">Create</a>
+      </div>
+
+      <p class="hbce-note" style="margin-top:.85rem;">
+        Policy: hash-only · append-only · GDPR-min · fail-closed.
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <h2>1 · Build certificate</h2>
+
+      <div class="hbce-grid2">
+        <div class="hbce-card hbce-col-8">
+          <p class="hbce-note">
+            Fill the minimal fields. No secrets are required here. The certificate is a deterministic JSON proof.
+            Public side stores only <span class="hbce-mono">sha256 + timestamp</span>.
+          </p>
+
+          <div class="hbce-row" style="margin-top:.75rem;">
+            <div style="flex:1; min-width: 260px;">
+              <label for="root_id"><strong>Root IPR id</strong></label>
+              <input class="hbce-input" id="root_id" value="IPR-3" />
+            </div>
+            <div style="flex:1; min-width: 260px;">
+              <label for="root_name"><strong>Owner name</strong></label>
+              <input class="hbce-input" id="root_name" value="Manuel Coletta" />
+            </div>
+          </div>
+
+          <div class="hbce-row" style="margin-top:.75rem;">
+            <div style="flex:1; min-width: 260px;">
+              <label for="period"><strong>UP-MESE period (YYYY-MM)</strong></label>
+              <input class="hbce-input" id="period" placeholder="2026-02" />
+            </div>
+            <div style="flex:1; min-width: 260px;">
+              <label for="label"><strong>Certificate label</strong></label>
+              <input class="hbce-input" id="label" value="HBCE-UPMESE-01" />
+            </div>
+          </div>
+
+          <div class="hbce-row" style="margin-top:.75rem;">
+            <div style="flex:1; min-width: 260px;">
+              <label for="amount_eur"><strong>Monthly amount (EUR)</strong></label>
+              <input class="hbce-input" id="amount_eur" value="9" />
+            </div>
+            <div style="flex:1; min-width: 260px;">
+              <label for="currency"><strong>Currency</strong></label>
+              <input class="hbce-input" id="currency" value="EUR" />
+            </div>
+          </div>
+
+          <div class="hbce-row" style="margin-top:.75rem;">
+            <div style="flex:1; min-width: 260px;">
+              <label for="issued_at"><strong>Issued at (ISO8601 UTC)</strong></label>
+              <input class="hbce-input" id="issued_at" placeholder="auto" />
+            </div>
+            <div style="flex:1; min-width: 260px;">
+              <label for="status"><strong>Status</strong></label>
+              <select class="hbce-select" id="status">
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="SUSPENDED">SUSPENDED</option>
+                <option value="REVOKED">REVOKED</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="hbce-divider"></div>
+
+          <div class="hbce-row">
+            <button class="hbce-btn" id="btn-build" type="button">Build certificate JSON</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btn-clear" type="button">Clear</button>
+          </div>
+
+          <div class="hbce-note-box" style="margin-top:1rem;">
+            <div class="hbce-kv">
+              <div><span class="hbce-pill">Fail-closed</span></div>
+              <div>If required fields are missing → no output.</div>
+              <div><span class="hbce-pill">Deterministic</span></div>
+              <div>Canonical JSON → SHA-256 is reproducible by any verifier.</div>
+              <div><span class="hbce-pill">Public</span></div>
+              <div>Only <span class="hbce-mono">payload_sha256 + timestamp</span> is appended.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hbce-card hbce-col-4">
+          <h3>Required fields</h3>
+          <ul class="hbce-list">
+            <li>Root id</li>
+            <li>Owner name</li>
+            <li>Period (YYYY-MM)</li>
+            <li>Issued at (ISO8601)</li>
+            <li>Amount (EUR)</li>
+          </ul>
+          <div class="hbce-divider"></div>
+          <p class="hbce-note">
+            This page is a deterministic generator. Payment integration can be added later.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>2 · Compute SHA-256 (canonical)</h2>
+      <div class="hbce-grid2">
+        <div class="hbce-card hbce-col-6">
+          <label for="out_cert"><strong>Certificate JSON (canonical source)</strong></label>
+          <textarea class="hbce-textarea hbce-mono" id="out_cert" placeholder="Build the certificate first." readonly></textarea>
+
+          <div class="hbce-row" style="margin-top:.75rem;">
+            <button class="hbce-btn hbce-btn--alt" id="btn-hash" type="button" disabled>Compute SHA-256</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btn-copy-cert" type="button" disabled>Copy certificate</button>
+          </div>
+        </div>
+
+        <div class="hbce-card hbce-col-6">
+          <div class="hbce-note-box">
+            <div class="hbce-row">
+              <span class="hbce-pill">Computed</span>
+              <span class="hbce-mono" id="out_hash">—</span>
+              <span class="hbce-badge" id="hash_state">—</span>
+            </div>
+            <div class="hbce-divider"></div>
+            <div class="hbce-code" id="out_steps">No hash computed yet.</div>
+          </div>
+
+          <div class="hbce-row" style="margin-top:.75rem;">
+            <button class="hbce-btn hbce-btn--ghost" id="btn-copy-hash" type="button" disabled>Copy hash</button>
+            <a class="hbce-btn hbce-btn--ghost" id="btn-open-verify" href="/hermeticum-bce-platform/verify/" aria-disabled="true">Open VERIFY</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>3 · Registry entry (append-only)</h2>
+
+      <div class="hbce-grid2">
+        <div class="hbce-card hbce-col-8">
+          <p class="hbce-note">
+            Append the entry below into <span class="hbce-mono">registry/registry.json → entries[]</span>.
+            This is the public proof. After append, anyone can VERIFY.
+          </p>
+
+          <label for="out_entry"><strong>Normalized registry entry</strong></label>
+          <textarea class="hbce-textarea hbce-mono" id="out_entry" placeholder="Compute hash first to generate the registry entry." readonly></textarea>
+
+          <div class="hbce-row" style="margin-top:.75rem;">
+            <button class="hbce-btn" id="btn-copy-entry" type="button" disabled>Copy registry entry</button>
+            <a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/registry/">Open Registry</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/timeline/">Open Timeline</a>
+          </div>
+        </div>
+
+        <div class="hbce-card hbce-col-4">
+          <h3>Operator step</h3>
+          <p class="hbce-note">
+            Registry is append-only. An operator appends the proof as a Git commit.
+          </p>
+          <div class="hbce-divider"></div>
+          <p class="hbce-note">
+            When appended, UP-MESE becomes visible in Timeline and deterministically VALID in VERIFY.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-footnote">
+        <p>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</p>
+        <p>HERMETICUM B.C.E. S.r.l.</p>
+        <p class="hbce-note">EU-first · audit-first · fail-closed · hash-only · append-only · GDPR-min</p>
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <script>
+  (function(){
+    "use strict";
+
+    const $ = (id) => document.getElementById(id);
+
+    const rootId = $("root_id");
+    const rootName = $("root_name");
+    const period = $("period");
+    const label = $("label");
+    const amountEur = $("amount_eur");
+    const currency = $("currency");
+    const issuedAt = $("issued_at");
+    const status = $("status");
+
+    const btnBuild = $("btn-build");
+    const btnClear = $("btn-clear");
+
+    const outCert = $("out_cert");
+    const btnHash = $("btn-hash");
+    const btnCopyCert = $("btn-copy-cert");
+
+    const outHash = $("out_hash");
+    const hashState = $("hash_state");
+    const outSteps = $("out_steps");
+    const btnCopyHash = $("btn-copy-hash");
+    const btnOpenVerify = $("btn-open-verify");
+
+    const outEntry = $("out_entry");
+    const btnCopyEntry = $("btn-copy-entry");
+
+    let certObj = null;
+    let certCanonical = "";
+    let certSha = "";
+
+    function nowIsoUtc(){
+      return new Date().toISOString();
+    }
+
+    function setHashBadge(text){
+      hashState.textContent = text;
+    }
+
+    function isPeriod(s){
+      return /^\d{4}-\d{2}$/.test(String(s||"").trim());
+    }
+
+    function canonicalize(value){
+      if(value === null) return "null";
+      const t = typeof value;
+      if(t === "number" || t === "boolean") return JSON.stringify(value);
+      if(t === "string") return JSON.stringify(value);
+      if(Array.isArray(value)) return "[" + value.map(canonicalize).join(",") + "]";
+      if(t === "object"){
+        const keys = Object.keys(value).sort();
+        return "{" + keys.map(k => JSON.stringify(k) + ":" + canonicalize(value[k])).join(",") + "}";
+      }
+      throw new Error("Non-JSON value encountered.");
+    }
+
+    async function sha256HexFromString(s){
+      const enc = new TextEncoder();
+      const bytes = enc.encode(s);
+      const digest = await crypto.subtle.digest("SHA-256", bytes);
+      const arr = Array.from(new Uint8Array(digest));
+      return arr.map(b => b.toString(16).padStart(2,"0")).join("");
+    }
+
+    function normalizeRegistryEntry(sha, ts){
+      return {
+        entity_type: "UPMESE_CERTIFICATE",
+        name: String(rootName.value||"").trim().slice(0,80),
+        payload_sha256: sha,
+        timestamp: ts,
+        status: String(status.value||"ACTIVE").trim(),
+        note: "proto=HBCE-UPMESE-v1; kind=MONTHLY_OPERATIONAL_CONTINUITY_CERTIFICATE; period=" + String(period.value||"").trim() + "; label=" + String(label.value||"").trim()
+      };
+    }
+
+    function fail(msg){
+      outSteps.textContent = msg;
+      setHashBadge("INVALID");
+    }
+
+    function clearAll(){
+      certObj = null;
+      certCanonical = "";
+      certSha = "";
+
+      outCert.value = "";
+      outHash.textContent = "—";
+      outEntry.value = "";
+
+      btnHash.disabled = true;
+      btnCopyCert.disabled = true;
+      btnCopyHash.disabled = true;
+      btnCopyEntry.disabled = true;
+
+      btnOpenVerify.setAttribute("aria-disabled", "true");
+      btnOpenVerify.href = "/hermeticum-bce-platform/verify/";
+
+      outSteps.textContent = "No hash computed yet.";
+      setHashBadge("—");
+
+      if(!issuedAt.value) issuedAt.value = "";
+    }
+
+    btnClear.addEventListener("click", clearAll);
+
+    btnBuild.addEventListener("click", () => {
+      clearAll();
+
+      const rid = String(rootId.value||"").trim();
+      const rname = String(rootName.value||"").trim();
+      const per = String(period.value||"").trim();
+      const lab = String(label.value||"").trim();
+      const amtRaw = String(amountEur.value||"").trim();
+      const cur = String(currency.value||"").trim().toUpperCase();
+      const iss = String(issuedAt.value||"").trim() || nowIsoUtc();
+
+      if(!rid){ fail("FAIL-CLOSED: missing Root IPR id."); return; }
+      if(!rname){ fail("FAIL-CLOSED: missing Owner name."); return; }
+      if(!isPeriod(per)){ fail("FAIL-CLOSED: period must be YYYY-MM."); return; }
+
+      const amt = Number(amtRaw);
+      if(!Number.isFinite(amt) || amt <= 0){ fail("FAIL-CLOSED: amount must be a positive number."); return; }
+      if(!cur){ fail("FAIL-CLOSED: currency missing."); return; }
+
+      issuedAt.value = iss;
+
+      certObj = {
+        proto: "HBCE-UPMESE-v1",
+        kind: "MONTHLY_OPERATIONAL_CONTINUITY_CERTIFICATE",
+        issuer: "HERMETICUM B.C.E. S.r.l.",
+        jurisdiction: "EU",
+        policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","GDPR_MIN","NO_IDENTITY_CUSTODY"],
+        root: { id: rid, name: rname },
+        up_mese: {
+          label: lab || "HBCE-UPMESE",
+          period: per,
+          issued_at: iss,
+          status: String(status.value||"ACTIVE").trim()
+        },
+        billing: { amount: amt, currency: cur, cadence: "MONTHLY" },
+        public_proof: { mode: "HASH_ONLY", append_to: "registry/registry.json entries[]" }
+      };
+
+      try{
+        certCanonical = canonicalize(certObj);
+      }catch(e){
+        fail("FAIL-CLOSED: canonicalization error: " + e.message);
+        return;
+      }
+
+      // show pretty JSON to user (not canonical string)
+      outCert.value = JSON.stringify(certObj, null, 2);
+
+      btnHash.disabled = false;
+      btnCopyCert.disabled = false;
+
+      outSteps.textContent =
+        "1) Certificate built.\n" +
+        "2) Next: compute SHA-256 from canonical JSON.\n" +
+        "Fail-closed: no registry entry until hash exists.";
+
+      setHashBadge("READY");
+    });
+
+    btnHash.addEventListener("click", async () => {
+      if(!certObj || !certCanonical){
+        fail("FAIL-CLOSED: build certificate first.");
+        return;
+      }
+
+      setHashBadge("WORKING");
+
+      try{
+        certSha = await sha256HexFromString(certCanonical);
+      }catch(e){
+        fail("FAIL-CLOSED: SHA-256 computation error: " + e.message);
+        return;
+      }
+
+      outHash.textContent = certSha;
+      setHashBadge("OK");
+
+      const ts = String(issuedAt.value||"").trim() || nowIsoUtc();
+      const entry = normalizeRegistryEntry(certSha, ts);
+      outEntry.value = JSON.stringify(entry, null, 2);
+
+      btnCopyHash.disabled = false;
+      btnCopyEntry.disabled = false;
+
+      btnOpenVerify.removeAttribute("aria-disabled");
+      btnOpenVerify.href = "/hermeticum-bce-platform/verify/?expected_sha=" + encodeURIComponent(certSha) + "&type=UPMESE_CERT";
+
+      outSteps.textContent =
+        "SHA-256 computed from canonical JSON.\n" +
+        "Next: append the registry entry (append-only).\n\n" +
+        "computed_sha256: " + certSha + "\n" +
+        "verify_link: " + btnOpenVerify.href;
+    });
+
+    async function copyText(text, okMsg){
+      try{
+        await navigator.clipboard.writeText(text);
+        outSteps.textContent = okMsg;
+      }catch(e){
+        outSteps.textContent = "Copy failed. Copy manually.";
+      }
+    }
+
+    btnCopyCert.addEventListener("click", () => {
+      if(!outCert.value) return;
+      copyText(outCert.value, "Certificate copied.");
+    });
+
+    btnCopyHash.addEventListener("click", () => {
+      if(!certSha) return;
+      copyText(certSha, "Hash copied.");
+    });
+
+    btnCopyEntry.addEventListener("click", () => {
+      if(!outEntry.value) return;
+      copyText(outEntry.value, "Registry entry copied.");
+    });
+
+    // init
+    clearAll();
+    if(!issuedAt.value) issuedAt.value = "";
+    if(!period.value){
+      const d = new Date();
+      const mm = String(d.getMonth()+1).padStart(2,"0");
+      period.value = d.getFullYear() + "-" + mm;
+    }
+  })();
+  </script>
+</body>
+</html>
