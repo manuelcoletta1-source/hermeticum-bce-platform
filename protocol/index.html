@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>HBCE Protocol — Official v1</title>
+<meta name="description" content="HBCE Protocol v1 Official: deterministic, hash-only, append-only, fail-closed operational identity for humans, AI, robots, vehicles and critical infrastructure." />
+
+<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+<meta name="theme-color" content="#0b0f14" />
+</head>
+
+<body>
+
+<div data-hbce="header"></div>
+
+<main class="hbce-container hbce-main">
+
+<section class="hbce-hero">
+  <div class="hbce-hero__kicker">HBCE PROTOCOL · OFFICIAL v1 · INDUSTRIAL & DUAL-USE READY</div>
+  <h1 class="hbce-hero__title">HBCE Protocol v1 — Official Specification</h1>
+  <p class="hbce-hero__lead">
+    Deterministic operational identity infrastructure for humans, AI, autonomous machines and critical systems.
+    Public registry is hash-only and append-only. Verification is fail-closed.
+  </p>
+</section>
+
+<section class="hbce-section">
+  <h2>Core Properties</h2>
+  <ul>
+    <li><strong>Hash-only</strong>: public registry exposes cryptographic proofs only (no public custody of personal data).</li>
+    <li><strong>Append-only</strong>: history cannot be erased; changes are events.</li>
+    <li><strong>Fail-closed</strong>: if verification fails → <strong>INVALID</strong>.</li>
+    <li><strong>Audit-first</strong>: every state transition is reconstructible.</li>
+    <li><strong>Derivation integrity</strong>: derived identities require a valid parent.</li>
+  </ul>
+</section>
+
+<section class="hbce-section">
+  <h2>Official v1 Artifacts</h2>
+  <p>
+    These artifacts define and demonstrate HBCE Protocol v1 as an implementation-ready bundle.
+  </p>
+
+  <div class="hbce-grid">
+    <div class="hbce-card">
+      <h3 class="hbce-card__title">Protocol Bundle (Official JSON)</h3>
+      <p class="hbce-card__text">
+        Frozen specification: policy, canonicalization rules, record schemas, verification rules, examples.
+      </p>
+      <p class="hbce-card__actions">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/protocol/hbce-protocol-v1.official.json">
+          Open hbce-protocol-v1.official.json
+        </a>
+      </p>
+    </div>
+
+    <div class="hbce-card">
+      <h3 class="hbce-card__title">Append-only Ledger (Example)</h3>
+      <p class="hbce-card__text">
+        Chained ledger example: root → operator → derived → events.
+        Used to test deterministic verification and chain integrity.
+      </p>
+      <p class="hbce-card__actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/protocol/hbce-registry-ledger.example.json">
+          Open hbce-registry-ledger.example.json
+        </a>
+      </p>
+    </div>
+
+    <div class="hbce-card">
+      <h3 class="hbce-card__title">Reference Verifier (JS)</h3>
+      <p class="hbce-card__text">
+        Deterministic verifier: chain integrity, schema checks, fail-closed outcomes, derivation checks.
+      </p>
+      <p class="hbce-card__actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/protocol/hbce-verify.reference.js">
+          Open hbce-verify.reference.js
+        </a>
+      </p>
+    </div>
+
+    <div class="hbce-card">
+      <h3 class="hbce-card__title">Reference Signer (ED25519)</h3>
+      <p class="hbce-card__text">
+        Keygen + signing tool producing real ED25519 signatures over canonical JSON preimages.
+      </p>
+      <p class="hbce-card__actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/protocol/hbce-sign.reference.js">
+          Open hbce-sign.reference.js
+        </a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="hbce-section">
+  <h2>Record Model</h2>
+  <p>
+    HBCE defines a small set of public record types for the registry.
+    Private payloads are stored off-registry; only payload hashes are published.
+  </p>
+
+  <div class="hbce-grid">
+    <div class="hbce-card">
+      <h3 class="hbce-card__title">IPR Root Record</h3>
+      <p class="hbce-card__text">
+        Root identity for humans, institutions, corporates, AI. This anchors the derivation tree.
+      </p>
+      <pre class="hbce-code"><code>{
+  "kind": "IPR_ROOT_RECORD",
+  "entity_id": "IPR-ROOT-…",
+  "entity_type": "HUMAN_ROOT|INSTITUTION_ROOT|CORPORATE_ROOT|AI_ROOT",
+  "payload_sha256": "…",
+  "timestamp": "…",
+  "status": "VALID|INVALID|REVOKED",
+  "issuer": { "sign_alg": "ED25519", "pubkey": "…", "signature": "…" }
+}</code></pre>
+    </div>
+
+    <div class="hbce-card">
+      <h3 class="hbce-card__title">IPR Derived Record</h3>
+      <p class="hbce-card__text">
+        Derived identity for robots, vehicles, drones, software, infrastructure. Requires parent to be VALID.
+      </p>
+      <pre class="hbce-code"><code>{
+  "kind": "IPR_DERIVED_RECORD",
+  "entity_id": "IPR-DEV-…",
+  "entity_type": "IPR_ROBOT|IPR_VEHICLE|IPR_DRONE|…",
+  "parent_entity_id": "IPR-ROOT-…",
+  "derivation_type": "DERIVED_FROM_ROOT|…",
+  "payload_sha256": "…",
+  "timestamp": "…",
+  "status": "VALID|INVALID|REVOKED",
+  "rules": { "fail_closed": true, "inherit_invalidity": true, "append_only": true },
+  "issuer": { "sign_alg": "ED25519", "pubkey": "…", "signature": "…" }
+}</code></pre>
+    </div>
+
+    <div class="hbce-card">
+      <h3 class="hbce-card__title">IPR Event Record</h3>
+      <p class="hbce-card__text">
+        Append-only event emitted by an operator. Used for firmware updates, critical ops, alerts, decommission, etc.
+      </p>
+      <pre class="hbce-code"><code>{
+  "kind": "IPR_EVENT_RECORD",
+  "event_id": "EVT-…",
+  "entity_id": "IPR-DEV-…",
+  "event_type": "FIRMWARE_UPDATE|SECURITY_ALERT|…",
+  "event_payload_sha256": "…",
+  "timestamp": "…",
+  "status": "VALID|INVALID|REVOKED",
+  "append_only": true,
+  "operator": { "operator_id": "IPR-OP-…", "sign_alg": "ED25519", "pubkey": "…", "signature": "…" }
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<section class="hbce-section">
+  <h2>Verification Rules (Fail-Closed)</h2>
+  <ul>
+    <li>If any required field is missing → <strong>INVALID</strong></li>
+    <li>If a hash is malformed (not 64-hex for SHA-256) → <strong>INVALID</strong></li>
+    <li>If signature verification fails → <strong>INVALID</strong></li>
+    <li>If a derived record has a parent not VALID → <strong>INVALID</strong></li>
+    <li>If ledger chain integrity fails (prev pointer mismatch) → <strong>INVALID</strong></li>
+  </ul>
+</section>
+
+<section class="hbce-section">
+  <h2>Reference CLI Flow</h2>
+  <p>
+    The reference toolchain demonstrates deterministic behavior:
+    same input → same canonical JSON → same hash → same verification outcome.
+  </p>
+
+  <pre class="hbce-code"><code># 1) Rebuild a self-consistent hash chain
+node protocol/hbce-verify.reference.js protocol/hbce-registry-ledger.example.json --rebuild > protocol/hbce-registry-ledger.rebuilt.json
+
+# 2) Generate ED25519 keys
+mkdir -p protocol/keys
+node protocol/hbce-sign.reference.js --keygen issuer   > protocol/keys/issuer.ed25519.json
+node protocol/hbce-sign.reference.js --keygen operator > protocol/keys/operator.ed25519.json
+
+# 3) Sign the ledger with real signatures
+node protocol/hbce-sign.reference.js --sign-ledger protocol/hbce-registry-ledger.rebuilt.json protocol/keys/issuer.ed25519.json protocol/keys/operator.ed25519.json > protocol/hbce-registry-ledger.signed.json
+
+# 4) Verify chain + entity
+node protocol/hbce-verify.reference.js protocol/hbce-registry-ledger.signed.json --check-chain
+node protocol/hbce-verify.reference.js protocol/hbce-registry-ledger.signed.json --verify-entity IPR-DEV-ROBOT-0001</code></pre>
+</section>
+
+<section class="hbce-section">
+  <h2>Positioning</h2>
+  <p>
+    HBCE is designed for industrial, institutional and dual-use environments:
+    OEM robotics, autonomous mobility, energy systems, space operations and digital security.
+  </p>
+  <p>
+    Public registry holds cryptographic proofs only. No public custody of personal data.
+  </p>
+</section>
+
+</main>
+
+<div data-hbce="footer"></div>
+<script src="/hermeticum-bce-platform/assets/hbce.js"></script>
+</body>
+</html>
