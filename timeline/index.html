@@ -1,121 +1,223 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<title>HBCE Continuity Timeline — Operational Identity Evolution</title>
-<meta name="description" content="Public operational continuity timeline. Shows IPR existence and monthly certified evolution (UP-MESE). Hash-only, append-only, EU audit logic." />
+  <title>HBCE Continuity Timeline — Operational Identity Evolution</title>
+  <meta name="description" content="Public operational continuity timeline. Shows IPR existence and monthly certified evolution (UP-MESE). Hash-only, append-only, EU audit logic." />
 
-<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/timeline/" />
 
-<style>
-.timeline{
-  border-left:2px solid rgba(255,255,255,.2);
-  margin-left:10px;
-  padding-left:20px;
-}
-.event{
-  margin-bottom:22px;
-}
-.dot{
-  width:10px;
-  height:10px;
-  background:#00ffe1;
-  border-radius:50%;
-  position:relative;
-  left:-26px;
-  top:14px;
-}
-.hash{
-  font-family:monospace;
-  font-size:.9rem;
-  opacity:.85;
-}
-.badge{
-  display:inline-block;
-  padding:4px 10px;
-  border:1px solid rgba(255,255,255,.2);
-  border-radius:20px;
-  font-size:.8rem;
-  margin-left:8px;
-}
-</style>
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+
+  <style>
+    .hbce-mono{ font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
+
+    .hbce-timeline{
+      margin-top: .9rem;
+      border-left: 2px solid rgba(255,255,255,.18);
+      padding-left: 1.15rem;
+      margin-left: .6rem;
+    }
+    .hbce-event{
+      position: relative;
+      padding: .9rem .9rem;
+      margin: 0 0 .9rem 0;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.03);
+    }
+    .hbce-dot{
+      position:absolute;
+      left: -1.35rem;
+      top: 1.2rem;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.25);
+      background: rgba(255,255,255,.75);
+    }
+    .hbce-badge{
+      display:inline-block;
+      padding:.18rem .55rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+      font-weight: 950;
+      font-size: .78rem;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      opacity: .92;
+      margin-left: .5rem;
+      white-space: nowrap;
+    }
+    .hbce-tag{
+      display:inline-block;
+      padding:.18rem .55rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.03);
+      font-weight: 950;
+      font-size: .78rem;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      opacity: .92;
+      white-space: nowrap;
+    }
+    .hbce-kv{ display:grid; grid-template-columns: 140px 1fr; gap:.4rem .9rem; margin-top:.7rem; }
+    .hbce-muted{ opacity:.82; }
+    .hbce-hash{ word-break: break-all; }
+    .hbce-row{ display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; }
+    .hbce-link{ color: rgba(255,255,255,.92); text-decoration:none; border-bottom:1px dashed rgba(255,255,255,.25); }
+    .hbce-link:hover{ border-bottom-color: rgba(255,255,255,.55); }
+  </style>
 </head>
 
 <body>
-<div data-hbce="header"></div>
+  <div data-hbce="header"></div>
 
-<main class="hbce-container hbce-main">
+  <main class="hbce-container hbce-main">
 
-<section class="hbce-hero">
-<div class="hbce-hero__kicker">HBCE · CONTINUITY LEDGER</div>
-<h1 class="hbce-hero__title">Operational Continuity Timeline</h1>
-<p class="hbce-hero__lead">
-This timeline shows the verifiable existence and evolution of operational identity.
-Each step is hash-anchored and publicly reproducible.
-</p>
-</section>
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">HBCE · CONTINUITY LEDGER · APPEND-ONLY</div>
+      <h1 class="hbce-hero__title">Operational Continuity Timeline</h1>
+      <p class="hbce-hero__lead">
+        This page renders a public, reproducible timeline from the append-only registry.
+        Each event is a <strong>hash-only proof</strong> and can be checked in <strong>VERIFY</strong>.
+      </p>
 
-<section class="hbce-section">
-<h2>Identity evolution (append-only)</h2>
+      <div class="hbce-actions" style="margin-top:1rem;">
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/create/">Create</a>
+      </div>
 
-<div class="timeline" id="timeline">
-Loading timeline…
-</div>
-</section>
+      <p class="hbce-note" style="margin-top:.85rem;">
+        Source: <span class="hbce-mono">/hermeticum-bce-platform/registry/registry.json</span>
+      </p>
+    </section>
 
-<section class="hbce-section">
-<div class="hbce-footnote">
-<p>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</p>
-<p>HERMETICUM B.C.E. S.r.l.</p>
-</div>
-</section>
+    <section class="hbce-section">
+      <h2>Timeline</h2>
 
-</main>
+      <div class="hbce-card">
+        <div class="hbce-row">
+          <span class="hbce-tag">Counts</span>
+          <span class="hbce-muted">total:</span> <span class="hbce-mono" id="cntTotal">—</span>
+          <span class="hbce-muted">human:</span> <span class="hbce-mono" id="cntHuman">—</span>
+          <span class="hbce-muted">operator:</span> <span class="hbce-mono" id="cntOperator">—</span>
+          <span class="hbce-muted">up-mese:</span> <span class="hbce-mono" id="cntUpmese">—</span>
+          <span class="hbce-muted">last_update:</span> <span class="hbce-mono" id="lastUpdate">—</span>
+        </div>
 
-<div data-hbce="footer"></div>
-<script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+        <div class="hbce-timeline" id="timeline">
+          <div class="hbce-muted">Loading timeline…</div>
+        </div>
+      </div>
+    </section>
 
-<script>
-(async function(){
+    <section class="hbce-section">
+      <div class="hbce-footnote">
+        <p>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</p>
+        <p>HERMETICUM B.C.E. S.r.l.</p>
+        <p class="hbce-note">EU-first · audit-first · fail-closed · hash-only · append-only · GDPR-min</p>
+      </div>
+    </section>
 
-const container = document.getElementById("timeline");
+  </main>
 
-try{
- const res = await fetch("/hermeticum-bce-platform/registry/registry.json",{cache:"no-store"});
- const data = await res.json();
- const entries = data.entries || [];
+  <div data-hbce="footer"></div>
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 
- const sorted = entries.sort((a,b)=> new Date(a.timestamp) - new Date(b.timestamp));
+  <script>
+  (async function(){
+    const timeline = document.getElementById("timeline");
+    const cntTotal = document.getElementById("cntTotal");
+    const cntHuman = document.getElementById("cntHuman");
+    const cntOperator = document.getElementById("cntOperator");
+    const cntUpmese = document.getElementById("cntUpmese");
+    const lastUpdate = document.getElementById("lastUpdate");
 
- container.innerHTML = "";
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, (c) => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[c]));
+    }
 
- sorted.forEach(e=>{
-   const div = document.createElement("div");
-   div.className = "event";
+    try{
+      const res = await fetch("/hermeticum-bce-platform/registry/registry.json", { cache:"no-store" });
+      if(!res.ok) throw new Error("HTTP " + res.status);
 
-   const short = e.payload_sha256.slice(0,16)+"...";
+      const data = await res.json();
+      const entries = Array.isArray(data.entries) ? data.entries.slice() : [];
+      const meta = data.meta || {};
+      const counts = meta.counts || {};
 
-   div.innerHTML = `
-   <div class="dot"></div>
-   <strong>${e.entity_type || "IPR"}</strong>
-   <span class="badge">${e.status || "ACTIVE"}</span><br>
-   <span>${e.name}</span><br>
-   <span class="hash">${short}</span><br>
-   <span>${e.timestamp}</span><br>
-   <a href="/hermeticum-bce-platform/verify/?expected_sha=${e.payload_sha256}">
-   verify</a>
-   `;
+      // counts (fallback to compute)
+      const total = (typeof counts.total === "number") ? counts.total : entries.length;
+      const human = (typeof counts.ipr_base_human === "number") ? counts.ipr_base_human : entries.filter(e => String(e.entity_type||"") === "HUMAN").length;
+      const operator = (typeof counts.operator_license === "number") ? counts.operator_license : entries.filter(e => String(e.entity_type||"") === "OPERATOR").length;
+      const upmese = (typeof counts.up_mese_certificate === "number") ? counts.up_mese_certificate : entries.filter(e => String(e.entity_type||"") === "UPMESE_CERTIFICATE").length;
 
-   container.appendChild(div);
- });
+      cntTotal.textContent = String(total);
+      cntHuman.textContent = String(human);
+      cntOperator.textContent = String(operator);
+      cntUpmese.textContent = String(upmese);
+      lastUpdate.textContent = String(meta.last_update || "—");
 
-}catch(e){
- container.innerHTML = "Timeline load failed.";
-}
+      // sort by timestamp ascending
+      entries.sort((a,b) => new Date(a.timestamp || 0) - new Date(b.timestamp || 0));
 
-})();
-</script>
+      if(entries.length === 0){
+        timeline.innerHTML = '<div class="hbce-muted">No entries in registry.</div>';
+        return;
+      }
+
+      timeline.innerHTML = entries.map((e) => {
+        const et = String(e.entity_type || "—");
+        const status = String(e.status || "ACTIVE");
+        const name = String(e.name || "—");
+        const ts = String(e.timestamp || "—");
+        const sha = String(e.payload_sha256 || "");
+        const short = sha ? (sha.slice(0,12) + "…" + sha.slice(-8)) : "—";
+        const verifyUrl = "/hermeticum-bce-platform/verify/?expected_sha=" + encodeURIComponent(sha);
+
+        return `
+          <div class="hbce-event">
+            <div class="hbce-dot" aria-hidden="true"></div>
+            <div class="hbce-row">
+              <span class="hbce-tag">${escapeHtml(et)}</span>
+              <span class="hbce-badge">${escapeHtml(status)}</span>
+            </div>
+
+            <div style="margin-top:.55rem;">
+              <strong>${escapeHtml(name)}</strong>
+              <div class="hbce-muted hbce-mono" style="margin-top:.25rem;">${escapeHtml(ts)}</div>
+            </div>
+
+            <div class="hbce-kv">
+              <div class="hbce-muted">sha256</div>
+              <div class="hbce-mono hbce-hash" title="${escapeHtml(sha)}">${escapeHtml(short)}</div>
+
+              <div class="hbce-muted">verify</div>
+              <div><a class="hbce-link" href="${verifyUrl}">Open VERIFY</a></div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+    }catch(err){
+      timeline.innerHTML = '<div class="hbce-muted">Timeline load failed. Check registry path and JSON validity.</div>';
+      cntTotal.textContent = "—";
+      cntHuman.textContent = "—";
+      cntOperator.textContent = "—";
+      cntUpmese.textContent = "—";
+      lastUpdate.textContent = "—";
+    }
+  })();
+  </script>
 </body>
 </html>
