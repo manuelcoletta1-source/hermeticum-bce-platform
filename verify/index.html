@@ -409,7 +409,6 @@
         const keys = Object.keys(value).sort();
         return "{" + keys.map(k => JSON.stringify(k) + ":" + canonicalize(value[k])).join(",") + "}";
       }
-      // undefined / functions are not valid JSON; fail-closed.
       throw new Error("Non-JSON value encountered during canonicalization.");
     }
 
@@ -461,7 +460,8 @@
 
     function clearUI(){
       proofText.value = "";
-      expectedSha.value = "";
+      // expectedSha may come from URL; keep it unless user explicitly clears
+      if(!expectedSha.dataset.lockedFromUrl) expectedSha.value = "";
       proofFile.value = "";
       outDetected.textContent = "—";
       outHash.textContent = "—";
@@ -471,7 +471,10 @@
       outExplain.textContent = "No verification executed yet.";
     }
 
-    btnClear.addEventListener("click", clearUI);
+    btnClear.addEventListener("click", () => {
+      expectedSha.dataset.lockedFromUrl = "";
+      clearUI();
+    });
 
     proofFile.addEventListener("change", async () => {
       const f = proofFile.files && proofFile.files[0];
@@ -479,6 +482,27 @@
       const text = await f.text();
       proofText.value = text;
     });
+
+    // Query string support:
+    // - expected_sha=64hex
+    // - type=UPMESE_CERT|IPR_RELEASE|GENERIC_JSON|AUTO
+    function applyQuery(){
+      const params = new URLSearchParams(window.location.search || "");
+      const qsHash = (params.get("expected_sha") || "").trim().toLowerCase();
+      const qsType = (params.get("type") || "").trim();
+
+      if(qsHash){
+        expectedSha.value = qsHash;
+        expectedSha.dataset.lockedFromUrl = "1";
+      }
+
+      if(qsType){
+        const allowed = new Set(["AUTO","IPR_RELEASE","UPMESE_CERT","GENERIC_JSON"]);
+        if(allowed.has(qsType)){
+          proofType.value = qsType;
+        }
+      }
+    }
 
     form.addEventListener("submit", async (ev) => {
       ev.preventDefault();
@@ -505,7 +529,6 @@
         return;
       }
 
-      // detect kind
       const detected = (proofType.value === "AUTO") ? detectKind(obj) : proofType.value;
       outDetected.textContent = detected;
 
@@ -528,8 +551,7 @@
       const computed = await sha256HexFromString(canon);
       outHash.textContent = computed;
 
-      // optional expected hash check
-      const exp = (expectedSha.value || "").trim();
+      const exp = (expectedSha.value || "").trim().toLowerCase();
       if(exp.length > 0){
         logs.push("");
         logs.push("step: expected hash check");
@@ -575,7 +597,6 @@
         return;
       }
 
-      // Found → VALID
       setBadge("VALID");
       outMatch.textContent = "FOUND (index " + hit.index + ")";
       outRegistry.textContent = summarizeRegistryHit(reg, hit);
@@ -589,8 +610,9 @@
       explain(logs);
     });
 
-    // initialize
+    // init
     clearUI();
+    applyQuery();
   })();
   </script>
 </body>
