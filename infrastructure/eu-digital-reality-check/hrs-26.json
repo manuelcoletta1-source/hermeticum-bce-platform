@@ -1,0 +1,93 @@
+{
+  "proto": "HBCE-HRS-26-v1",
+  "kind": "RESILIENCE_METROLOGY_RUBRIC",
+  "title": "HBCE Resilience Score (HRS-26)",
+  "version": "1.0",
+  "date": "2026-02-19",
+  "issuer": "HERMETICUM B.C.E. S.r.l.",
+  "range": { "min": 0, "max": 100 },
+  "definition": {
+    "formula": "HRS-26 = I1 + I2 + I3 + I4 + I5",
+    "domain": "External observability score based on public information (P0-P3).",
+    "not_measuring": [
+      "moral responsibility",
+      "internal security controls not publicly evidenced",
+      "legal liability",
+      "private incident response details"
+    ]
+  },
+  "indices": [
+    {
+      "id": "I1",
+      "name": "Identity",
+      "range": [0, 20],
+      "criteria_scale": [0, 2, 4],
+      "criteria": [
+        { "id": "I1-C1", "name": "MFA enforcement", "0": "Absent", "2": "Partial / limited", "4": "Enforced for privileged access" },
+        { "id": "I1-C2", "name": "Role separation", "0": "No separation", "2": "Logical separation", "4": "Technical separation + least privilege" },
+        { "id": "I1-C3", "name": "Persistent identity model", "0": "Account-only / weak identity", "2": "Session-based / partial", "4": "Entity-based identities with lifecycle states" },
+        { "id": "I1-C4", "name": "Deterministic revocation/state", "0": "Manual / opaque", "2": "Auditable but not deterministic", "4": "Publicly verifiable state (ACTIVE/FROZEN/REVOKED)" },
+        { "id": "I1-C5", "name": "Privileged access governance", "0": "Ad-hoc", "2": "Documented / partial", "4": "Strong governance + measurable controls" }
+      ]
+    },
+    {
+      "id": "I2",
+      "name": "Integrity",
+      "range": [0, 20],
+      "criteria_scale": [0, 2, 4],
+      "criteria": [
+        { "id": "I2-C1", "name": "Immutable logging", "0": "Mutable/unknown", "2": "Central logs (limited guarantees)", "4": "Append-only or tamper-evident logs" },
+        { "id": "I2-C2", "name": "Event chaining/proofs", "0": "No proof chain", "2": "Partial correlation", "4": "Chained events / provable integrity" },
+        { "id": "I2-C3", "name": "Scope measurability", "0": "Unknown scope", "2": "Estimated scope", "4": "Measured scope with evidence" },
+        { "id": "I2-C4", "name": "Export controls visibility", "0": "No visibility", "2": "Partial visibility", "4": "Auditable exports/downloads" },
+        { "id": "I2-C5", "name": "Retroactive tamper resistance", "0": "Not addressed", "2": "Procedural controls", "4": "Technical controls (append-only / WORM / attestations)" }
+      ]
+    },
+    {
+      "id": "I3",
+      "name": "Verification",
+      "range": [0, 20],
+      "criteria_scale": [0, 2, 4],
+      "criteria": [
+        { "id": "I3-C1", "name": "Deterministic verification", "0": "Trust-only", "2": "Internal verification", "4": "Independent replicable verification" },
+        { "id": "I3-C2", "name": "Hash-based proofs", "0": "Absent", "2": "Partial", "4": "Explicit hash proofs for artifacts/events" },
+        { "id": "I3-C3", "name": "Signature evidence", "0": "Absent/unknown", "2": "Internal signatures", "4": "Verifiable signatures (where applicable)" },
+        { "id": "I3-C4", "name": "State publication/visibility", "0": "No state visibility", "2": "Partial statements", "4": "State model with clear validity rules" },
+        { "id": "I3-C5", "name": "Third-party verifiability", "0": "No", "2": "Limited", "4": "Yes, via published evidence and method" }
+      ]
+    },
+    {
+      "id": "I4",
+      "name": "Containment",
+      "range": [0, 20],
+      "criteria_scale": [0, 2, 4],
+      "criteria": [
+        { "id": "I4-C1", "name": "Segmentation / blast-radius control", "0": "Flat / unknown", "2": "Partial segmentation", "4": "Strong segmentation and isolation" },
+        { "id": "I4-C2", "name": "Privileged action monitoring", "0": "Absent", "2": "Partial", "4": "Strong monitoring + alerts" },
+        { "id": "I4-C3", "name": "Third-party risk controls", "0": "Unknown", "2": "Partial controls", "4": "Measured controls and contracts/attestations" },
+        { "id": "I4-C4", "name": "Data minimization impact", "0": "High-value central dataset", "2": "Some minimization", "4": "Strong minimization reduces breach value" },
+        { "id": "I4-C5", "name": "Containment evidence", "0": "No evidence", "2": "Statements only", "4": "Evidence of containment actions and scope limiting" }
+      ]
+    },
+    {
+      "id": "I5",
+      "name": "Recovery",
+      "range": [0, 20],
+      "criteria_scale": [0, 2, 4],
+      "criteria": [
+        { "id": "I5-C1", "name": "Disclosure quality", "0": "Opaque", "2": "Basic disclosure", "4": "Clear disclosure + updates" },
+        { "id": "I5-C2", "name": "Timeline transparency", "0": "Absent", "2": "Partial", "4": "Complete timeline (as available)" },
+        { "id": "I5-C3", "name": "Mitigation clarity", "0": "Unknown", "2": "General steps", "4": "Specific mitigation actions stated" },
+        { "id": "I5-C4", "name": "User guidance", "0": "None", "2": "Some guidance", "4": "Clear guidance and monitoring actions" },
+        { "id": "I5-C5", "name": "Post-incident hardening", "0": "Not stated", "2": "Mentioned", "4": "Concrete hardening commitments or actions" }
+      ]
+    }
+  ],
+  "classes": [
+    { "range": [0, 20], "label": "Fragile" },
+    { "range": [21, 40], "label": "Weak" },
+    { "range": [41, 60], "label": "Intermediate" },
+    { "range": [61, 80], "label": "Resilient" },
+    { "range": [81, 100], "label": "High verifiable resilience" }
+  ]
+}
