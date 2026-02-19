@@ -55,6 +55,87 @@
   </p>
 </section>
 
+<!-- PROTOCOL V1 OFFICIAL -->
+<section class="hbce-section" id="protocol">
+  <h2>Protocol v1 Official — Technical Documentation</h2>
+
+  <p>
+    HBCE Protocol v1 is published as a versioned, implementation-ready bundle:
+    data structures, append-only ledger example, and reference tooling for deterministic verification.
+  </p>
+
+  <div class="hbce-grid" style="gap:16px;">
+    <div class="hbce-card">
+      <h3 class="hbce-card__title">Official Bundle (JSON)</h3>
+      <p class="hbce-card__text">
+        Frozen protocol definition: policy, canonicalization rules, record schemas, verification rules, and examples.
+      </p>
+      <p class="hbce-card__actions">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/protocol/hbce-protocol-v1.official.json">
+          Open hbce-protocol-v1.official.json
+        </a>
+      </p>
+    </div>
+
+    <div class="hbce-card">
+      <h3 class="hbce-card__title">Append-only Ledger (Example)</h3>
+      <p class="hbce-card__text">
+        Example ledger with chained records (root → operator → derived → events) for validation and testing.
+      </p>
+      <p class="hbce-card__actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/protocol/hbce-registry-ledger.example.json">
+          Open hbce-registry-ledger.example.json
+        </a>
+      </p>
+    </div>
+
+    <div class="hbce-card">
+      <h3 class="hbce-card__title">Reference Verifier (JS)</h3>
+      <p class="hbce-card__text">
+        Deterministic verify logic: chain integrity, fail-closed rules, derivation checks.
+      </p>
+      <p class="hbce-card__actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/protocol/hbce-verify.reference.js">
+          Open hbce-verify.reference.js
+        </a>
+      </p>
+    </div>
+
+    <div class="hbce-card">
+      <h3 class="hbce-card__title">Reference Signer (ED25519)</h3>
+      <p class="hbce-card__text">
+        Keygen + signing tool for producing real ED25519 signatures using canonical JSON preimages.
+      </p>
+      <p class="hbce-card__actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/protocol/hbce-sign.reference.js">
+          Open hbce-sign.reference.js
+        </a>
+      </p>
+    </div>
+  </div>
+
+  <h3>Deterministic Verification (Fail-Closed)</h3>
+  <ul>
+    <li>If any required field is missing → <strong>INVALID</strong></li>
+    <li>If SHA-256 is not 64-hex → <strong>INVALID</strong></li>
+    <li>If signature is invalid → <strong>INVALID</strong></li>
+    <li>If derived entity parent is not VALID → <strong>INVALID</strong></li>
+    <li>Registry is append-only; history cannot be erased</li>
+  </ul>
+
+  <h3>Minimal CLI Flow (Reference)</h3>
+  <pre class="hbce-code"><code>node protocol/hbce-verify.reference.js protocol/hbce-registry-ledger.example.json --rebuild &gt; protocol/hbce-registry-ledger.rebuilt.json
+node protocol/hbce-sign.reference.js --keygen issuer &gt; protocol/keys/issuer.ed25519.json
+node protocol/hbce-sign.reference.js --keygen operator &gt; protocol/keys/operator.ed25519.json
+node protocol/hbce-sign.reference.js --sign-ledger protocol/hbce-registry-ledger.rebuilt.json protocol/keys/issuer.ed25519.json protocol/keys/operator.ed25519.json &gt; protocol/hbce-registry-ledger.signed.json
+node protocol/hbce-verify.reference.js protocol/hbce-registry-ledger.signed.json --check-chain
+node protocol/hbce-verify.reference.js protocol/hbce-registry-ledger.signed.json --verify-entity IPR-DEV-ROBOT-0001</code></pre>
+
+  <p>
+    This reference toolchain is designed for reproducibility: same inputs → same hashes → same verification result.
+  </p>
+</section>
+
 <!-- ARCHITECTURE -->
 <section class="hbce-section">
   <h2>Architecture</h2>
