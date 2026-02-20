@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <title>HERMETICUM B.C.E. — EU Operational Identity Infrastructure</title>
-<meta name="description" content="EU-first operational identity infrastructure. IPR, operator licensing, audit-first registry and offline-real Evidence Lab (kernel + verifier). Deterministic verification, hash-only, append-only, fail-closed." />
+<meta name="description" content="EU-first operational identity infrastructure: IPR, operator licensing, deterministic verification, append-only registry logic, and offline-real Evidence Lab (kernel + verifier). Audit-first, fail-closed." />
 
 <meta name="robots" content="index,follow" />
 <meta name="theme-color" content="#0b0f14" />
@@ -14,16 +14,16 @@
 <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 
 <style>
-  /* Minimal additions, no layout break. */
+  /* Minimal inline additions to avoid breaking existing hbce.css */
   .hbce-hero__badges{ display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
   .hbce-badge{
     display:inline-flex; align-items:center; gap:8px;
     padding:8px 10px; border-radius:999px;
     border:1px solid rgba(255,255,255,.14);
     background: rgba(255,255,255,.04);
-    font-weight:800; font-size:.92rem;
+    font-weight:900; font-size:.92rem;
   }
-  .hbce-badge b{ font-weight:950; }
+  .hbce-mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
   .hbce-metrics{
     display:grid; gap:12px;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -38,7 +38,29 @@
   }
   .hbce-metric__k{ font-size:.88rem; opacity:.82; }
   .hbce-metric__v{ font-size:1.05rem; font-weight:950; margin-top:6px; }
-  .hbce-mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+  .hbce-status{
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.03);
+    padding:14px;
+  }
+  .hbce-status--ok{ border-color:rgba(34,197,94,.35); background:rgba(34,197,94,.06); }
+  .hbce-status--warn{ border-color:rgba(245,158,11,.35); background:rgba(245,158,11,.06); }
+  .hbce-status__grid{ display:grid; gap:8px; grid-template-columns: 1fr; }
+  .hbce-status__k{ opacity:.75; font-weight:800; }
+  .hbce-status__v{ font-weight:950; }
+  .hbce-status__v.ok{ color:#22c55e; }
+  .hbce-status__v.warn{ color:#f59e0b; }
+  .hbce-status__small{ opacity:.7; font-size:.92rem; margin-top:8px; }
+  .hbce-input{
+    width:100%;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.18);
+    color: rgba(234,242,255,.92);
+    border-radius:12px;
+    padding:10px 12px;
+    outline:none;
+  }
 </style>
 </head>
 
@@ -49,26 +71,40 @@
 <main class="hbce-container hbce-main">
 
 <!-- HERO -->
-
 <section class="hbce-hero">
   <div class="hbce-hero__kicker">EU-FIRST · AUDIT-FIRST · FAIL-CLOSED</div>
 
   <h1 class="hbce-hero__title">Operational Identity Infrastructure</h1>
 
   <p class="hbce-hero__lead">
-    HERMETICUM B.C.E. provides Identity Primary Records (IPR), operator licensing,
-    append-only public registry logic, and deterministic evidence workflows.
-    Designed for EU regulatory alignment and machine-verifiable integrity.
+    HERMETICUM B.C.E. provides Identity Primary Records (IPR), operator licensing, deterministic verification,
+    append-only registry logic, and offline-real evidence packs signed via WebCrypto.
+    Designed for EU-aligned compliance posture and machine-verifiable integrity.
   </p>
 
   <div class="hbce-hero__badges">
-    <span class="hbce-badge"><b>HASH-ONLY</b> · minimized proofs</span>
-    <span class="hbce-badge"><b>APPEND-ONLY</b> · tamper-evident</span>
-    <span class="hbce-badge"><b>FAIL-CLOSED</b> · mismatch → INVALID</span>
-    <span class="hbce-badge"><b>OFFLINE-REAL</b> · WebCrypto signatures</span>
+    <span class="hbce-badge">HASH-ONLY</span>
+    <span class="hbce-badge">APPEND-ONLY</span>
+    <span class="hbce-badge">FAIL-CLOSED</span>
+    <span class="hbce-badge">OFFLINE-REAL</span>
   </div>
 
-  <!-- Technical Metrics (local, deterministic) -->
+  <!-- SYSTEM STATUS (local, deterministic) -->
+  <div class="hbce-section" style="padding-top:16px;">
+    <div id="sysBox" class="hbce-status hbce-status--warn">
+      <div class="hbce-status__grid">
+        <div class="hbce-status__k">SYSTEM STATUS</div>
+        <div class="hbce-status__v warn" id="sysStatus">NO LOCAL PROOF</div>
+        <div class="hbce-status__k">LAST VERIFIED ROOT</div>
+        <div class="hbce-status__v hbce-mono" id="sysRoot">none</div>
+        <div class="hbce-status__small">
+          Mode: AUDIT-FIRST · HASH-ONLY · FAIL-CLOSED · NO PUBLIC DATA CUSTODY
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Technical Metrics (local only) -->
   <div class="hbce-metrics" aria-label="Technical metrics (local)">
     <div class="hbce-metric">
       <div class="hbce-metric__k">Local Ledger Entries</div>
@@ -89,13 +125,12 @@
   </div>
 
   <p class="hbce-hero__lead" style="margin-top:14px;">
-    Metrics are computed locally (browser storage) to preserve <span class="hbce-mono">HASH_ONLY</span>
-    and avoid custody. For public verification, use the Evidence Lab (Kernel + Verifier).
+    Metrics are computed locally (browser storage) to preserve <span class="hbce-mono">HASH_ONLY</span>.
+    For independent audit, use Kernel + Verifier or the Audit page.
   </p>
 </section>
 
-<!-- CORE ACCESS -->
-
+<!-- ACCESS -->
 <section class="hbce-section">
   <h2 class="hbce-section__title">Access Infrastructure</h2>
 
@@ -105,7 +140,7 @@
       <h3 class="hbce-card__title">1 · Create IPR</h3>
       <p class="hbce-card__text">
         Generate a new Identity Primary Record (IPR).
-        Required for any operator access or infrastructure interaction.
+        Required for operator access and infrastructure interaction.
       </p>
       <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/base/">
         Create IPR →
@@ -115,8 +150,8 @@
     <article class="hbce-card">
       <h3 class="hbce-card__title">2 · Registry</h3>
       <p class="hbce-card__text">
-        Public append-only registry (hash-only).
-        Deterministic verification: if hash mismatch → INVALID (fail-closed).
+        Append-only public registry logic (hash-only). Deterministic verification:
+        mismatch → INVALID (fail-closed).
       </p>
       <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">
         Open Registry →
@@ -126,8 +161,8 @@
     <article class="hbce-card">
       <h3 class="hbce-card__title">3 · Verify</h3>
       <p class="hbce-card__text">
-        Deterministic verification tool.
-        Confirms integrity of released payloads (hash match required).
+        Deterministic verification tool for released payloads.
+        Hash must match exactly (fail-closed).
       </p>
       <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">
         Verify →
@@ -138,7 +173,6 @@
 </section>
 
 <!-- OPERATOR -->
-
 <section class="hbce-section">
   <h2 class="hbce-section__title">Operator Layer</h2>
 
@@ -166,21 +200,40 @@
       </a>
     </article>
 
+    <article class="hbce-card">
+      <h3 class="hbce-card__title">Enterprise & Gov</h3>
+      <p class="hbce-card__text">
+        Institutional gateway (B2B/B2G): adoption targets, operator corridors, audit posture.
+      </p>
+      <a class="hbce-btn" href="/hermeticum-bce-platform/enterprise/">
+        Open Enterprise →
+      </a>
+    </article>
+
   </div>
 </section>
 
 <!-- EVIDENCE LAB -->
-
 <section class="hbce-section">
-  <h2 class="hbce-section__title">Evidence Lab</h2>
+  <h2 class="hbce-section__title">Evidence & Audit</h2>
 
   <div class="hbce-grid">
 
     <article class="hbce-card">
+      <h3 class="hbce-card__title">Evidence Lab (Hub)</h3>
+      <p class="hbce-card__text">
+        Public offline-real evidence workflow: generate and verify Evidence Pack v2 (PASS/FAIL).
+      </p>
+      <a class="hbce-btn" href="/hermeticum-bce-platform/lab/">
+        Open Evidence Lab →
+      </a>
+    </article>
+
+    <article class="hbce-card">
       <h3 class="hbce-card__title">Kernel (Issuer)</h3>
       <p class="hbce-card__text">
-        Generates Evidence Pack v2 with canonical SHA-512 pack root
-        and ECDSA P-256 signature (offline-real).
+        Emits events and exports signed Evidence Pack v2
+        (canonical SHA-512 root + ECDSA P-256 signature + append-only ledger).
       </p>
       <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/sim/joker-kernel/">
         Open Kernel →
@@ -190,9 +243,8 @@
     <article class="hbce-card">
       <h3 class="hbce-card__title">Verifier (Independent)</h3>
       <p class="hbce-card__text">
-        Recomputes canonical preimage, verifies signature,
-        validates append-only ledger and per-record integrity.
-        Returns PASS / FAIL.
+        Recomputes canonical preimage and verifies signature, ledger chain, and record integrity.
+        Returns PASS/FAIL (fail-closed).
       </p>
       <a class="hbce-btn" href="/hermeticum-bce-platform/sim/joker-kernel/verifier.html">
         Open Verifier →
@@ -200,10 +252,20 @@
     </article>
 
     <article class="hbce-card">
-      <h3 class="hbce-card__title">Import Pack Root (optional)</h3>
+      <h3 class="hbce-card__title">Audit (External Procedure)</h3>
+      <p class="hbce-card__text">
+        How a third party audits HBCE Evidence Pack v2 without trusting the issuer.
+      </p>
+      <a class="hbce-btn" href="/hermeticum-bce-platform/audit/">
+        Open Audit →
+      </a>
+    </article>
+
+    <article class="hbce-card">
+      <h3 class="hbce-card__title">Pin Pack Root (optional)</h3>
       <p class="hbce-card__text">
         Paste a <span class="hbce-mono">pack_root_hash</span> to pin the latest audited state on this device.
-        This does not publish data; it only stores a local reference.
+        Local only (no publication).
       </p>
       <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
         <input id="packRootInput" class="hbce-input hbce-mono" type="text" placeholder="paste pack_root_hash (hex)" style="flex:1; min-width:260px;">
@@ -218,7 +280,6 @@
 </section>
 
 <!-- POLICY -->
-
 <section class="hbce-section">
   <div class="hbce-card">
     <h3 class="hbce-card__title">Operational Policy</h3>
@@ -226,7 +287,7 @@
       UE_FIRST · AUDIT_FIRST · HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · NO_PUBLIC_DATA_CUSTODY
     </p>
     <p class="hbce-card__meta">
-      HERMETICUM B.C.E. S.r.l. — EU Operational Root Infrastructure
+      HERMETICUM B.C.E. S.r.l. — “HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA”
     </p>
   </div>
 </section>
@@ -238,63 +299,84 @@
 
 <script>
 (function(){
-  // Local-only metrics: deterministic, no network, no custody.
+  // Local-only deterministic signals. No network calls.
+  const KEY_ID = "HBCE_JOKER_ID_V1";
+  const KEY_LEDGER = "HBCE_LOCAL_LEDGER_V1";
+  const KEY_LAST_ROOT = "HBCE_LAST_PACK_ROOT";
+
   const elLedger = document.getElementById("mLedger");
   const elKid = document.getElementById("mKid");
   const elTip = document.getElementById("mTip");
   const elPackRoot = document.getElementById("mPackRoot");
 
-  const KEY_ID = "HBCE_JOKER_ID_V1";
-  const KEY_LEDGER = "HBCE_LOCAL_LEDGER_V1";
-  const KEY_LAST_ROOT = "HBCE_LAST_PACK_ROOT";
+  const sysBox = document.getElementById("sysBox");
+  const sysStatus = document.getElementById("sysStatus");
+  const sysRoot = document.getElementById("sysRoot");
 
-  function safeJsonParse(s){
-    try { return JSON.parse(s); } catch { return null; }
-  }
+  const pinInput = document.getElementById("packRootInput");
+  const pinBtn = document.getElementById("btnPin");
+  const pinStatus = document.getElementById("pinStatus");
 
+  function safeJsonParse(s){ try { return JSON.parse(s); } catch { return null; } }
   function shortHex(h){
     if(!h || typeof h !== "string") return "—";
     if(h === "GENESIS") return "GENESIS";
     return (h.length > 18) ? (h.slice(0,10) + "…" + h.slice(-6)) : h;
   }
+  function isHex64plus(s){ return typeof s === "string" && /^[0-9a-fA-F]{64,}$/.test(s); }
 
   // Identity
-  const idRaw = localStorage.getItem(KEY_ID);
-  const idObj = idRaw ? safeJsonParse(idRaw) : null;
+  const idObj = safeJsonParse(localStorage.getItem(KEY_ID) || "");
   elKid.textContent = idObj?.kid ? idObj.kid : "—";
 
   // Ledger
-  const lRaw = localStorage.getItem(KEY_LEDGER);
-  const ledger = lRaw ? safeJsonParse(lRaw) : null;
-  const chain = Array.isArray(ledger?.chain) ? ledger.chain : [];
+  const ledgerObj = safeJsonParse(localStorage.getItem(KEY_LEDGER) || "");
+  const chain = Array.isArray(ledgerObj?.chain) ? ledgerObj.chain : [];
   elLedger.textContent = String(chain.length);
   const tip = chain.length ? chain[chain.length - 1].chain_hash : "GENESIS";
   elTip.textContent = shortHex(tip);
 
-  // Last pack root (pinned)
-  const lastRoot = localStorage.getItem(KEY_LAST_ROOT);
+  // Last root (seen/pinned)
+  const lastRoot = (localStorage.getItem(KEY_LAST_ROOT) || "").trim();
   elPackRoot.textContent = shortHex(lastRoot);
 
-  // Pin UI
-  const input = document.getElementById("packRootInput");
-  const btn = document.getElementById("btnPin");
-  const status = document.getElementById("pinStatus");
-
-  function isHex64plus(s){
-    return typeof s === "string" && /^[0-9a-fA-F]{64,}$/.test(s);
+  if(lastRoot){
+    sysBox.classList.remove("hbce-status--warn");
+    sysBox.classList.add("hbce-status--ok");
+    sysStatus.textContent = "VERIFIED";
+    sysStatus.classList.remove("warn");
+    sysStatus.classList.add("ok");
+    sysRoot.textContent = lastRoot.slice(0,32) + "...";
+  } else {
+    sysBox.classList.remove("hbce-status--ok");
+    sysBox.classList.add("hbce-status--warn");
+    sysStatus.textContent = "NO LOCAL PROOF";
+    sysStatus.classList.remove("ok");
+    sysStatus.classList.add("warn");
+    sysRoot.textContent = "none";
   }
 
-  if(btn){
-    btn.addEventListener("click", ()=>{
-      const v = (input?.value || "").trim();
+  // Pin UI
+  if(pinBtn){
+    pinBtn.addEventListener("click", ()=>{
+      const v = (pinInput?.value || "").trim();
       if(!isHex64plus(v)){
-        status.textContent = "Invalid: pack_root_hash must be hex (64+ chars).";
+        pinStatus.textContent = "Invalid: pack_root_hash must be hex (64+ chars).";
         return;
       }
       localStorage.setItem(KEY_LAST_ROOT, v.toLowerCase());
-      elPackRoot.textContent = shortHex(v.toLowerCase());
-      status.textContent = "Pinned locally ✓";
-      if(input) input.value = "";
+      const vv = v.toLowerCase();
+      elPackRoot.textContent = shortHex(vv);
+
+      sysBox.classList.remove("hbce-status--warn");
+      sysBox.classList.add("hbce-status--ok");
+      sysStatus.textContent = "VERIFIED";
+      sysStatus.classList.remove("warn");
+      sysStatus.classList.add("ok");
+      sysRoot.textContent = vv.slice(0,32) + "...";
+
+      pinStatus.textContent = "Pinned locally ✓";
+      if(pinInput) pinInput.value = "";
     });
   }
 })();
