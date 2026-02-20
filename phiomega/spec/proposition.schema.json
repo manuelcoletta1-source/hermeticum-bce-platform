@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/phiomega/spec/proposition.schema.json",
+  "title": "ΦΩ Proposition v0.1",
+  "type": "object",
+  "required": ["proto", "id", "ref_event_hash", "metrics", "claim", "decision", "proof"],
+  "properties": {
+    "proto": { "const": "PHIOMEGA-PROP-v0.1" },
+    "id": { "type": "string" },
+    "ref_event_hash": { "type": "string", "pattern": "^(sha256:)[0-9a-f]{64}$" },
+    "metrics": {
+      "type": "object",
+      "required": ["kappa", "sigma", "chiTau"],
+      "properties": {
+        "kappa": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "sigma": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "chiTau": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "epsilon_s": { "type": "number", "minimum": 0.0 }
+      },
+      "additionalProperties": false
+    },
+    "claim": { "type": "string", "minLength": 3 },
+    "decision": {
+      "type": "object",
+      "required": ["status", "reason"],
+      "properties": {
+        "status": { "type": "string", "enum": ["ACCEPT","DENY","SAFE_HALT"] },
+        "reason": { "type": "string", "enum": ["OK","KAPPA_LOW","SIGMA_LOW","CHI_TOO_HIGH","INTEGRITY_FAIL"] }
+      },
+      "additionalProperties": false
+    },
+    "proof": {
+      "type": "object",
+      "required": ["hash"],
+      "properties": {
+        "hash": { "type": "string", "pattern": "^(sha3-256:)[0-9a-f]{64}$" },
+        "tsa": { "type": ["string","null"] },
+        "qes": { "type": ["string","null"] },
+        "anchors": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
