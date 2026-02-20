@@ -1,517 +1,163 @@
-cat > index.html <<'EOF'
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>JOKER-KERNEL — Evidence Pack v2 Signed (REAL)</title>
-  <meta name="description" content="Offline-real Joker Kernel: CQD emission + deterministic Evidence Pack v2 signing using canonical JSON + SHA-512 + ECDSA P-256."/>
-  <style>
-    :root{--bg:#0b0f14;--ink:#eaf2ff;--mut:rgba(234,242,255,.78);--line:rgba(255,255,255,.10);--soft:rgba(255,255,255,.04);--g:#22c55e;--w:#f59e0b;--b:#ef4444;}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--ink)}
-    header{padding:16px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.04),transparent)}
-    h1{margin:0;font-size:1.05rem}
-    p{margin:8px 0 0;color:var(--mut);line-height:1.35}
-    main{max-width:1050px;margin:0 auto;padding:16px}
-    .card{border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:16px;padding:14px}
-    .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
-    .btn{appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:800}
-    .btn:hover{background:rgba(255,255,255,.08)}
-    .btn.primary{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.18)}
-    .btn.danger{background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.35)}
-    .pill{display:inline-flex;gap:8px;align-items:center;padding:8px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);font-size:.9rem}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
-    .small{font-size:.9rem;color:var(--mut);line-height:1.35}
-    .hr{height:1px;background:var(--line);border:0;margin:12px 0}
-    textarea{width:100%;min-height:260px;resize:vertical;background:rgba(0,0,0,.25);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:12px}
-    .ok{padding:12px;border-radius:14px;border:1px solid rgba(34,197,94,.35);background:rgba(34,197,94,.08)}
-    .warn{padding:12px;border-radius:14px;border:1px solid rgba(245,158,11,.35);background:rgba(245,158,11,.08)}
-    .bad{padding:12px;border-radius:14px;border:1px solid rgba(239,68,68,.35);background:rgba(239,68,68,.08)}
-    code{color:rgba(234,242,255,.92)}
-  </style>
-</head>
-<body>
-<header>
-  <h1>JOKER-KERNEL — Evidence Pack v2 Signed (REAL)</h1>
-  <p>
-    Emits CQD records and exports <span class="mono">HBCE-EVIDENCE-PACK-v2</span> with:
-    <b>canonical JSON</b> → <b>SHA-512 pack_root_hash</b> → <b>ECDSA P-256 pack_signature</b>.
-    Touch one byte → FAIL in verifier.
-  </p>
-</header>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<main>
-  <section class="card">
-    <div class="row">
-      <div class="row" style="justify-content:flex-start;">
-        <span class="pill">Identity: <span class="mono" id="kid">NOT_READY</span></span>
-        <span class="pill">Records: <span class="mono" id="rcount">0</span></span>
-        <span class="pill">Ledger tip: <span class="mono" id="ltip">GENESIS</span></span>
-      </div>
-      <div class="row">
-        <button class="btn" id="btnId">Init / Load Identity</button>
-        <button class="btn" id="btnAct">Emit ACT</button>
-        <button class="btn" id="btnFail">Emit FAIL_CLOSED</button>
-        <button class="btn primary" id="btnExport">Export Pack v2 (Signed)</button>
-        <button class="btn danger" id="btnWipe">Wipe Local State</button>
-      </div>
-    </div>
+<title>HERMETICUM B.C.E. — EU Operational Identity Infrastructure</title>
+<meta name="description" content="EU-first operational identity infrastructure. IPR, operator licenses, audit-first registry and offline-real Evidence Lab (kernel + verifier)." />
 
-    <div class="hr"></div>
+<meta name="robots" content="index,follow" />
+<meta name="theme-color" content="#0b0f14" />
+<link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/" />
 
-    <div id="status" class="warn small">Kernel ready. Initialize identity to sign evidence.</div>
-
-    <div class="hr"></div>
-
-    <div class="small"><b>Latest emitted CQD (preview)</b></div>
-    <textarea id="preview" class="mono" spellcheck="false" placeholder="CQD preview will appear here..."></textarea>
-
-    <div class="hr"></div>
-
-    <div class="small">
-      <b>REAL signing rule</b><br/>
-      pack_root_hash = SHA-512( canonical(preimage) ) where preimage includes:
-      <code>proto, generatedAt, issuer, mode, identity.kid, ledger_tip, record_hashes[], anchor_set_hash</code>.
-      Signature signs <code>pack_root_hash</code> (hex) as bytes.
-    </div>
-  </section>
-</main>
-
-<script>
-(async function(){
-  const IPR_ANCHOR_SET = Object.freeze({
-    actalis_qtsp_tsa: {
-      id: "ΦΩ-TSA-QTSP-ACTALIS-INRIM",
-      tsa_dn: "CN=ACTALIS QTSP TSA, O=Actalis S.p.A., C=IT",
-      genTime: "2025-10-17T20:00:30Z",
-      hash_algo: "SHA-512",
-      opposable_hash_sha512:
-        "43e45c617d2e168657a3c277af1dc120dde4465888aa4e5bcaea961e8bd74afee3d68502144c5dea4e30a6e7720fbb7f536b228269902b158c52dc3ce8fbb15d",
-      anchors: {
-        ipfsCid: "bafybeibce-tsa-qtsp-ΦΩ2025",
-        btcTxid: "a5b7d6e91c32f4a0a17f2cd9b0dd6ee3c41234fab56b9c77a39f00f7b8c2a4cc",
-        evmTxHash: "0x9eaf12c7d0e0ab47f8d3221d0c44acb1a12ff3d9280ff7e4c11a56e05d77c9a1"
-      },
-      validation_state: "ATTACHED_DECLARED"
-    },
-    unebdo_phi_tsa_token: {
-      id: "ΦΩ-LTA₁",
-      issuer: "UNEBDO Quantum Systems ΦΩ — Root INRiM UTC-IT",
-      policy_oid: "1.3.76.16.ΦΩ.2025.UNEBDO.QTSP",
-      serial: "ΦΩ-2025-0021541",
-      genTime: "2025-10-24T15:36:00Z",
-      accuracy: "± 1×10⁻⁹ s",
-      hash_algo: "SHA-512",
-      message_imprint_sha512:
-        "5b1a0b0f9a6a9f4e0c7c2a8e4b8e7a1f0c0c6b7a3d9e5f1c2b7d8e9f0a1b2c3d4e5f60718293a4b5c6d7e8f9012a3b4c5",
-      signature_declared: "RSA-PSS / SHA-512 + Ed25519 (Hybrid)",
-      validation_state: "ATTACHED_DECLARED"
-    }
-  });
-
-  const $ = (id)=>document.getElementById(id);
-  const kidEl = $("kid");
-  const rcountEl = $("rcount");
-  const ltipEl = $("ltip");
-  const statusEl = $("status");
-  const previewEl = $("preview");
-
-  const btnId = $("btnId");
-  const btnAct = $("btnAct");
-  const btnFail = $("btnFail");
-  const btnExport = $("btnExport");
-  const btnWipe = $("btnWipe");
-
-  function canonicalize(value){
-    if(value === null) return null;
-    const t = typeof value;
-    if(t === "number" || t === "string" || t === "boolean") return value;
-    if(Array.isArray(value)) return value.map(canonicalize);
-    if(t === "object"){
-      const out = {};
-      const keys = Object.keys(value).sort();
-      for(const k of keys) out[k] = canonicalize(value[k]);
-      return out;
-    }
-    return null;
-  }
-  function canonicalStringify(obj){
-    return JSON.stringify(canonicalize(obj));
-  }
-
-  function bufToHex(buf){
-    const b = new Uint8Array(buf);
-    let s="";
-    for(const x of b) s += x.toString(16).padStart(2,"0");
-    return s;
-  }
-  function hexToBytes(hex){
-    const out = new Uint8Array(hex.length/2);
-    for(let i=0;i<out.length;i++) out[i]=parseInt(hex.slice(i*2,i*2+2),16);
-    return out;
-  }
-  async function sha512Hex(bytes){
-    const dig = await crypto.subtle.digest("SHA-512", bytes);
-    return bufToHex(dig);
-  }
-  function isoNow(){ return new Date().toISOString(); }
-
-  const ID_STORE = "HBCE_JOKER_ID_V1";
-  let ID = { ready:false, kid:null, pubJwk:null, privKey:null, pubKey:null };
-
-  async function loadOrCreateIdentity(){
-    const raw = localStorage.getItem(ID_STORE);
-    if(raw){
-      const saved = JSON.parse(raw);
-      const pubKey = await crypto.subtle.importKey("jwk", saved.pubJwk, {name:"ECDSA", namedCurve:"P-256"}, true, ["verify"]);
-      const privKey = await crypto.subtle.importKey("jwk", saved.privJwk, {name:"ECDSA", namedCurve:"P-256"}, false, ["sign"]);
-      ID = { ready:true, kid:saved.kid, pubJwk:saved.pubJwk, privKey, pubKey };
-      return;
-    }
-    const kp = await crypto.subtle.generateKey({name:"ECDSA", namedCurve:"P-256"}, true, ["sign","verify"]);
-    const pubJwk = await crypto.subtle.exportKey("jwk", kp.publicKey);
-    const privJwk = await crypto.subtle.exportKey("jwk", kp.privateKey);
-    const kidMaterial = new TextEncoder().encode(canonicalStringify(pubJwk));
-    const kid = (await sha512Hex(kidMaterial)).slice(0,24);
-    localStorage.setItem(ID_STORE, JSON.stringify({kid, pubJwk, privJwk}));
-    ID = { ready:true, kid, pubJwk, privKey:kp.privateKey, pubKey:kp.publicKey };
-  }
-
-  async function signHexAsBytes(hexMessage){
-    const msg = hexToBytes(hexMessage);
-    const sig = await crypto.subtle.sign({name:"ECDSA", hash:"SHA-256"}, ID.privKey, msg);
-    return bufToHex(sig);
-  }
-
-  const LEDGER_KEY = "HBCE_LOCAL_LEDGER_V1";
-  function loadLedger(){
-    const raw = localStorage.getItem(LEDGER_KEY);
-    return raw ? JSON.parse(raw) : { chain:[], replicas:[[],[]] };
-  }
-  function saveLedger(L){ localStorage.setItem(LEDGER_KEY, JSON.stringify(L)); }
-
-  async function ledgerAppend(recordHashHex){
-    const L = loadLedger();
-    const prev = L.chain.length ? L.chain[L.chain.length-1].chain_hash : "GENESIS";
-    const payload = new TextEncoder().encode(prev + "|" + recordHashHex);
-    const chainHash = await sha512Hex(payload);
-    const entry = { idx:L.chain.length, prev_chain_hash: prev, record_hash: recordHashHex, chain_hash: chainHash, ts: isoNow() };
-    L.chain.push(entry);
-    L.replicas[0].push(entry);
-    L.replicas[1].push(entry);
-    saveLedger(L);
-    return entry;
-  }
-  function ledgerTipHash(L){
-    return (L.chain && L.chain.length) ? L.chain[L.chain.length-1].chain_hash : "GENESIS";
-  }
-
-  const records = [];
-
-  async function emitCQD(eventType, detail){
-    if(!ID.ready) throw new Error("Identity not initialized.");
-    const now = isoNow();
-
-    const payload = {
-      "phi:eventType": eventType,
-      "phi:detail": detail || null,
-      "phi:utc": now
-    };
-
-    const D_norm = canonicalStringify(payload);
-    const hashD = await sha512Hex(new TextEncoder().encode(D_norm));
-
-    const toSign = await sha512Hex(new TextEncoder().encode(hashD + "|" + now));
-    const signatureHex = await signHexAsBytes(toSign);
-
-    const recordCore = canonicalStringify({ hashD, toSign, kid:ID.kid });
-    const recordHash = await sha512Hex(new TextEncoder().encode(recordCore));
-    const led = await ledgerAppend(recordHash);
-
-    const CQD = {
-      "@type": "phi:CQD-RECORD-1.0",
-      "@id": `phi:EVENT-${records.length}-${ID.kid}`,
-      "phi:hashAlgo": "SHA-512",
-      "phi:hashValue": hashD,
-      "T_axis": {
-        "phi:utc": now,
-        "phi:tsa_attached": [ IPR_ANCHOR_SET.actalis_qtsp_tsa, IPR_ANCHOR_SET.unebdo_phi_tsa_token ],
-        "phi:validation_state": "ATTACHED_DECLARED"
-      },
-      "I_axis": {
-        "phi:iprId": "IPR-AI-0001",
-        "phi:nickname": "JOKER-C2",
-        "phi:devSig": {
-          "phi:algo": "ECDSA-P256(SHA-256)",
-          "phi:kid": ID.kid,
-          "phi:publicJwk": ID.pubJwk,
-          "phi:signedDigestHex": toSign,
-          "phi:signatureHex": signatureHex
-        }
-      },
-      "E_axis": { "phi:envProfile": "CHROMEBOOK-OFFLINE" },
-      "L_axis": {
-        "phi:recordHash": recordHash,
-        "phi:ledgerEntry": led,
-        "phi:publicAnchors": IPR_ANCHOR_SET.actalis_qtsp_tsa.anchors
-      },
-      "phi:payload": payload
-    };
-
-    records.push(CQD);
-
-    const L = loadLedger();
-    kidEl.textContent = ID.kid;
-    rcountEl.textContent = String(records.length);
-    ltipEl.textContent = ledgerTipHash(L);
-    previewEl.value = JSON.stringify(CQD, null, 2);
-
-    statusEl.className = "ok small";
-    statusEl.innerHTML = `<b>Emitted</b> <span class="mono">${eventType}</span> · record_hash=<span class="mono">${recordHash.slice(0,24)}…</span>`;
-  }
-
-  async function exportEvidencePackV2(){
-    if(!ID.ready) throw new Error("Identity not initialized.");
-
-    const L = loadLedger();
-    const generatedAt = isoNow();
-
-    const anchor_set_hash = await sha512Hex(new TextEncoder().encode(canonicalStringify(IPR_ANCHOR_SET)));
-    const record_hashes = records.map(r => r["phi:hashValue"]);
-    const ledger_tip = ledgerTipHash(L);
-
-    const preimage = {
-      proto: "HBCE-EVIDENCE-PACK-v2",
-      kind: "JOKER_KERNEL_EVIDENCE",
-      issuer: "HERMETICUM B.C.E. S.r.l.",
-      mode: "OFFLINE_REAL",
-      generatedAt,
-      identity: { iprId:"IPR-AI-0001", nickname:"JOKER-C2", kid:ID.kid, algo:"ECDSA-P256" },
-      ledger_tip,
-      record_hashes,
-      anchor_set_hash
-    };
-
-    const preimage_canon = canonicalStringify(preimage);
-    const pack_root_hash = await sha512Hex(new TextEncoder().encode(preimage_canon));
-    const pack_signature = await signHexAsBytes(pack_root_hash);
-
-    const pack = {
-      ...preimage,
-      proof: {
-        pack_root_hash,
-        pack_signature,
-        signature_algo: "ECDSA-P256(SHA-256) over pack_root_hash bytes",
-        canonicalization: "recursive key-sort + JSON.stringify",
-        preimage_canonical: preimage_canon
-      },
-      ipr_anchor_set: IPR_ANCHOR_SET,
-      ledger: L,
-      records
-    };
-
-    const blob = new Blob([JSON.stringify(pack, null, 2)], {type:"application/json"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `hbce_evidence_pack_v2_${Date.now()}.json`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-
-    statusEl.className = "ok small";
-    statusEl.innerHTML = `<b>Exported Pack v2 (REAL signed)</b> root=<span class="mono">${pack_root_hash.slice(0,24)}…</span>`;
-  }
-
-  btnId.addEventListener("click", async ()=>{
-    try{
-      await loadOrCreateIdentity();
-      kidEl.textContent = ID.kid;
-      statusEl.className = "ok small";
-      statusEl.innerHTML = `<b>Identity ready</b> kid=<span class="mono">${ID.kid}</span>`;
-    }catch(e){
-      statusEl.className = "bad small";
-      statusEl.textContent = "Identity init failed: " + String(e);
-    }
-  });
-
-  btnAct.addEventListener("click", async ()=>{
-    try{ await emitCQD("ACT", {note:"manual act"}); }
-    catch(e){ statusEl.className="bad small"; statusEl.textContent=String(e); }
-  });
-
-  btnFail.addEventListener("click", async ()=>{
-    try{ await emitCQD("FAIL_CLOSED", {reason:"manual test"}); }
-    catch(e){ statusEl.className="bad small"; statusEl.textContent=String(e); }
-  });
-
-  btnExport.addEventListener("click", async ()=>{
-    try{ await exportEvidencePackV2(); }
-    catch(e){ statusEl.className="bad small"; statusEl.textContent=String(e); }
-  });
-
-  btnWipe.addEventListener("click", ()=>{
-    localStorage.removeItem(ID_STORE);
-    localStorage.removeItem(LEDGER_KEY);
-    records.length = 0;
-    kidEl.textContent = "NOT_READY";
-    rcountEl.textContent = "0";
-    ltipEl.textContent = "GENESIS";
-    previewEl.value = "";
-    statusEl.className = "warn small";
-    statusEl.textContent = "Local state wiped.";
-  });
-})();
-</script>
-</body>
-</html>
-EOF
-
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <title>HERMETICUM B.C.E. — EU Operational Identity (IPR)</title>
-  <meta name="description" content="EU operational identity infrastructure. Identity Primary Record (IPR), public hash-only registry, deterministic verification, and ΦΩ industrial pilot for robots and AI systems." />
-
-  <meta name="robots" content="index,follow" />
-  <meta name="theme-color" content="#0b0f14" />
-  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/" />
-
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
 <body>
+
 <div data-hbce="header"></div>
 
 <main class="hbce-container hbce-main">
 
 <!-- HERO -->
+
 <section class="hbce-hero">
   <div class="hbce-hero__kicker">EU-FIRST · AUDIT-FIRST · FAIL-CLOSED</div>
-
-  <h1 class="hbce-hero__title">
-    Operational identity for humans, AI and machines
-  </h1>
-
+  <h1 class="hbce-hero__title">Operational Identity Infrastructure</h1>
   <p class="hbce-hero__lead">
-    Identity Primary Record (IPR) creates a verifiable operational identity.
-    Public registry is hash-only, append-only and deterministic.
-    Industrial systems can enter via ΦΩ Pilot.
+    HERMETICUM B.C.E. provides Identity Primary Records (IPR), operator licensing,
+    append-only public registry logic, and deterministic evidence workflows.
+    Designed for EU regulatory alignment and machine-verifiable integrity.
   </p>
+</section>
 
-  <div class="hbce-actions">
-    <a class="hbce-btn hbce-btn--primary"
-       href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/activate/">
-       Activate IPR
-    </a>
+<!-- CORE ACCESS -->
 
-    <a class="hbce-btn"
-       href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/create/base/">
-       Create IPR
-    </a>
+<section class="hbce-section">
+  <h2 class="hbce-section__title">Access Infrastructure</h2>
 
-    <a class="hbce-btn"
-       href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/verify/">
-       Verify
-    </a>
+  <div class="hbce-grid">
 
-    <a class="hbce-btn"
-       href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/registry/">
-       Registry
-    </a>
+    <article class="hbce-card">
+      <h3 class="hbce-card__title">1 · Create IPR</h3>
+      <p class="hbce-card__text">
+        Generate a new Identity Primary Record (IPR). 
+        Required for any operator access or infrastructure interaction.
+      </p>
+      <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/base/">
+        Create IPR →
+      </a>
+    </article>
 
-    <a class="hbce-btn"
-       href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/phiomega/">
-       ΦΩ Pilot
-    </a>
+    <article class="hbce-card">
+      <h3 class="hbce-card__title">2 · Registry</h3>
+      <p class="hbce-card__text">
+        Public append-only registry (hash-only). 
+        Deterministic verification: if hash mismatch → INVALID (fail-closed).
+      </p>
+      <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">
+        Open Registry →
+      </a>
+    </article>
+
+    <article class="hbce-card">
+      <h3 class="hbce-card__title">3 · Verify</h3>
+      <p class="hbce-card__text">
+        Deterministic SHA verification tool. 
+        Confirms integrity of released IPR payloads.
+      </p>
+      <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">
+        Verify →
+      </a>
+    </article>
+
   </div>
 </section>
 
-<!-- CORE -->
+<!-- OPERATOR -->
+
 <section class="hbce-section">
-<h2 class="hbce-h2">Core system</h2>
+  <h2 class="hbce-section__title">Operator Layer</h2>
 
-<div class="hbce-grid">
+  <div class="hbce-grid">
 
-<article class="hbce-card">
-<h3 class="hbce-h3">IPR — Identity Primary Record</h3>
-<p class="hbce-p">
-Persistent operational identity for humans, AI, robots and infrastructure.
-Required to access modules and registry.
-</p>
-<p class="hbce-p">
-<a href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/create/base/">
-Create IPR →
-</a>
-</p>
-</article>
+    <article class="hbce-card">
+      <h3 class="hbce-card__title">Operator License (UE)</h3>
+      <p class="hbce-card__text">
+        Enables emission and governance of operational flows.
+        Requires VALID IPR Base.
+      </p>
+      <a class="hbce-btn" href="/hermeticum-bce-platform/create/operator/">
+        Apply Operator →
+      </a>
+    </article>
 
-<article class="hbce-card">
-<h3 class="hbce-h3">Public registry</h3>
-<p class="hbce-p">
-Append-only registry publishing only minimal proofs (hash).
-No public custody of personal data.
-</p>
-<p class="hbce-p">
-<a href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/registry/">
-Open registry →
-</a>
-</p>
-</article>
+    <article class="hbce-card">
+      <h3 class="hbce-card__title">Infrastructure Layers</h3>
+      <p class="hbce-card__text">
+        Civil, Business and Institutional operational classes.
+        Structured scaling for EU and cross-border nodes.
+      </p>
+      <a class="hbce-btn" href="/hermeticum-bce-platform/infrastructure/ipr-layers.html">
+        View Layers →
+      </a>
+    </article>
 
-<article class="hbce-card">
-<h3 class="hbce-h3">Deterministic verify</h3>
-<p class="hbce-p">
-Verify any record by hash.
-Output: MATCH or NO MATCH.
-If integrity fails → fail-closed.
-</p>
-<p class="hbce-p">
-<a href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/verify/">
-Verify →
-</a>
-</p>
-</article>
-
-<article class="hbce-card">
-<h3 class="hbce-h3">ΦΩ Industrial pilot</h3>
-<p class="hbce-p">
-Verifiable identity for robots and PLCs.
-Evidence Pack + deterministic verification.
-30-day pilot.
-</p>
-<p class="hbce-p">
-<a href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/phiomega/">
-Open ΦΩ →
-</a>
-</p>
-</article>
-
-</div>
+  </div>
 </section>
 
-<!-- PRINCIPLES -->
+<!-- EVIDENCE LAB -->
+
 <section class="hbce-section">
-<h2 class="hbce-h2">Operating principles</h2>
-<div class="hbce-card">
-<ul class="hbce-list">
-<li>UE-first architecture</li>
-<li>Audit-first design</li>
-<li>Fail-closed validation</li>
-<li>Hash-only public layer</li>
-<li>Append-only registry</li>
-</ul>
-</div>
+  <h2 class="hbce-section__title">Evidence Lab</h2>
+
+  <div class="hbce-grid">
+
+    <article class="hbce-card">
+      <h3 class="hbce-card__title">Kernel (Issuer)</h3>
+      <p class="hbce-card__text">
+        Generates Evidence Pack v2 with canonical SHA-512 pack root
+        and ECDSA P-256 signature.
+      </p>
+      <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/sim/joker-kernel/">
+        Open Kernel →
+      </a>
+    </article>
+
+    <article class="hbce-card">
+      <h3 class="hbce-card__title">Verifier (Independent)</h3>
+      <p class="hbce-card__text">
+        Recomputes canonical preimage, verifies signature,
+        validates append-only ledger and per-record integrity.
+        Returns PASS / FAIL.
+      </p>
+      <a class="hbce-btn" href="/hermeticum-bce-platform/sim/joker-kernel/verifier.html">
+        Open Verifier →
+      </a>
+    </article>
+
+  </div>
+</section>
+
+<!-- POLICY -->
+
+<section class="hbce-section">
+  <div class="hbce-card">
+    <h3 class="hbce-card__title">Operational Policy</h3>
+    <p class="hbce-card__text">
+      UE_FIRST · AUDIT_FIRST · HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · NO_PUBLIC_DATA_CUSTODY
+    </p>
+    <p class="hbce-card__meta">
+      HERMETICUM B.C.E. S.r.l. — EU Operational Root Infrastructure
+    </p>
+  </div>
 </section>
 
 </main>
 
 <div data-hbce="footer"></div>
 <script src="/hermeticum-bce-platform/assets/hbce.js"></script>
+
 </body>
 </html>
