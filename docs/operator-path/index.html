@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>DOCS — Operator Path (from VALID IPR Base)</title>
+  <meta name="description" content="Operator path: obtain an IPR Operator License starting from a VALID IPR Base (published proof). Deterministic gates, fail-closed, append-only registry." />
+
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/docs/operator-path/" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce-protocol.css" />
+
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js" defer></script>
+  <script src="/hermeticum-bce-platform/assets/hbce-protocol.js" defer></script>
+
+  <style>
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size: 12.5px;
+      color: rgba(0,183,255,.92);
+      word-break: break-word;
+    }
+    .hbce-steps{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap:16px;
+      margin-top: 14px;
+    }
+    .hbce-stepnum{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,255,195,.22);
+      background: rgba(0,255,195,.06);
+      color: rgba(0,255,195,.92);
+      font-weight: 800;
+      box-shadow: 0 10px 22px rgba(0,0,0,.35);
+      margin-bottom: 10px;
+    }
+    .hbce-check{
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: rgba(230,237,246,.78);
+      font-size: 13.5px;
+      line-height: 1.55;
+    }
+    .hbce-check li{ margin: 6px 0; }
+    .hbce-badgeRow{ margin-top: 10px; }
+    .hbce-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.02);
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin: 4px 6px 0 0;
+    }
+    .hbce-chip.ok{ border-color: rgba(0,255,195,.28); background: rgba(0,255,195,.06); color: rgba(0,255,195,.92); }
+  </style>
+</head>
+
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">DOCS · OPERATOR PATH · DETERMINISTIC GATES · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Operator path</h1>
+      <p class="hbce-hero__lead">
+        An Operator License is not a button. It is a capability layer that requires a <strong>VALID</strong> IPR Base
+        with a published minimized proof in the append-only registry.
+      </p>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/docs/quickstart/">Quickstart</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/create/operator/">Create Operator</a>
+      </div>
+
+      <div class="hbce-note">Operator capability comes after public proof (hash-only) exists</div>
+    </section>
+
+    <section class="hbce-critical">
+      <div class="hbce-critical__kicker">FAIL-CLOSED NOTICE · OPERATOR GATE</div>
+      <div class="hbce-critical__title">No published proof ⇒ no operator</div>
+      <p class="hbce-critical__text">
+        Operator issuance must fail if the base identity proof is not present in the public registry.
+        This is the minimum posture for auditability and governance.
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Prerequisites</h2>
+      <ul class="hbce-check">
+        <li>You have an IPR Base private release artifact (kept private).</li>
+        <li>You computed <span class="mono">payload_sha256</span> (64-hex lowercase).</li>
+        <li>You verified deterministically (VALID/INVALID, no partial state).</li>
+        <li>You published a minimized hash-only entry to <span class="mono">/registry/registry.json</span> (append-only).</li>
+        <li>Registry viewer shows your base proof as VALID (format + required evidence fields present).</li>
+      </ul>
+
+      <div class="hbce-badgeRow">
+        <span class="hbce-chip ok">UE_FIRST</span>
+        <span class="hbce-chip ok">AUDIT_FIRST</span>
+        <span class="hbce-chip ok">FAIL_CLOSED</span>
+        <span class="hbce-chip ok">HASH_ONLY</span>
+        <span class="hbce-chip ok">APPEND_ONLY</span>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Steps (operator issuance)</h2>
+
+      <div class="hbce-steps">
+        <article class="hbce-card">
+          <div class="hbce-stepnum">1</div>
+          <h3>Confirm base proof exists publicly</h3>
+          <p>
+            Open the Registry viewer and locate your IPR Base entry (hash + timestamp). This is the gating evidence.
+          </p>
+          <div class="hbce-actions">
+            <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Open Registry</a>
+          </div>
+          <p style="margin-top:10px;color:rgba(230,237,246,.70);font-size:13.5px;">
+            If the base proof is missing, do: <a class="hbce-link" href="/hermeticum-bce-platform/registry/publish/">Publish</a>.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-stepnum">2</div>
+          <h3>Create Operator License release (private)</h3>
+          <p>
+            Generate the operator license release artifact. This is a private payload, just like base release.
+          </p>
+          <div class="hbce-actions">
+            <a class="hbce-btn" href="/hermeticum-bce-platform/create/operator/">Create Operator</a>
+          </div>
+          <p style="margin-top:10px;color:rgba(230,237,246,.70);font-size:13.5px;">
+            Output: <span class="mono">payload_sha256</span> + <span class="mono">timestamp</span> + <span class="mono">signature</span>.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-stepnum">3</div>
+          <h3>Verify operator evidence</h3>
+          <p>
+            Verify deterministically. Missing evidence ⇒ INVALID.
+          </p>
+          <div class="hbce-actions">
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
+          </div>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-stepnum">4</div>
+          <h3>Publish operator proof (hash-only)</h3>
+          <p>
+            Publish a minimized entry for the operator license into the append-only registry.
+          </p>
+          <div class="hbce-actions">
+            <a class="hbce-btn" href="/hermeticum-bce-platform/registry/publish/">Publish</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Confirm in Registry</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>What “Operator” enables</h2>
+      <div class="hbce-grid">
+        <article class="hbce-card">
+          <h3>Issuance capability</h3>
+          <p>Ability to issue/operate additional flows (modules, nodes, governance artifacts) under deterministic proof.</p>
+        </article>
+        <article class="hbce-card">
+          <h3>Governance layer</h3>
+          <p>Operator identity becomes a governance anchor for cyber-physical operations and audit trails.</p>
+        </article>
+        <article class="hbce-card">
+          <h3>Audit responsibility</h3>
+          <p>Operator issuance implies stricter evidence discipline: append-only events, incident reconstruction readiness.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Direct links</h2>
+      <div class="hbce-actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/docs/quickstart/">Quickstart</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/base/">Create Base</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/publish/">Publish</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/operator/">Create Operator</a>
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+</body>
+</html>
