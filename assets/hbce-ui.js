@@ -1,6 +1,6 @@
 /* ============================================================
    HBCE UI INJECTOR — header/footer (EU-first)
-   Single file, deterministic injection
+   Deterministic injection (no external deps)
    ============================================================ */
 
 (function () {
@@ -8,12 +8,14 @@
 
   const BASE = "/hermeticum-bce-platform/";
 
+  // Canonical navigation (single source of truth)
   const nav = [
     { href: BASE, label: "Home" },
     { href: BASE + "activate/", label: "Activate" },
     { href: BASE + "create/base/", label: "Create IPR" },
     { href: BASE + "verify/", label: "Verify" },
     { href: BASE + "registry/", label: "Registry" },
+    { href: BASE + "registry/publish/", label: "Publish" },
     { href: BASE + "pricing/", label: "Pricing" },
     { href: BASE + "horizon/", label: "Horizon" }
   ];
@@ -68,10 +70,11 @@
 
         <div class="hbce-footer__col">
           <div class="hbce-footer__h">Core</div>
+          <a class="hbce-footer__a" href="${BASE}activate/">Activate</a>
+          <a class="hbce-footer__a" href="${BASE}create/base/">Create IPR</a>
           <a class="hbce-footer__a" href="${BASE}verify/">Verify</a>
           <a class="hbce-footer__a" href="${BASE}registry/">Registry</a>
-          <a class="hbce-footer__a" href="${BASE}pricing/">Catalogue</a>
-          <a class="hbce-footer__a" href="${BASE}horizon/">EU Programs</a>
+          <a class="hbce-footer__a" href="${BASE}registry/publish/">Publish</a>
         </div>
 
         <div class="hbce-footer__col">
@@ -79,6 +82,7 @@
           <a class="hbce-footer__a" href="${BASE}infrastructure/eu-autonomy-framework.html">EU Autonomy Framework</a>
           <a class="hbce-footer__a" href="${BASE}infrastructure/ipr-layers.html">IPR Layers</a>
           <a class="hbce-footer__a" href="${BASE}protocol/">Protocol</a>
+          <a class="hbce-footer__a" href="${BASE}horizon/">Horizon</a>
         </div>
 
         <div class="hbce-footer__col">
@@ -100,8 +104,10 @@
   function setActiveLinks(root) {
     const path = window.location.pathname;
     const links = root.querySelectorAll("a.hbce-nav__link, a.hbce-navmobile__link");
+
     links.forEach(a => {
       const href = a.getAttribute("href") || "";
+      // mark active if exact match OR if path is within section (except BASE root)
       const isActive = href !== "#" && (href === path || (href !== BASE && path.startsWith(href)));
       if (isActive) a.classList.add("is-active");
     });
@@ -118,7 +124,6 @@
       mobile.hidden = expanded;
     });
 
-    // close on navigation
     mobile.addEventListener("click", (e) => {
       const t = e.target;
       if (t && t.tagName === "A") {
