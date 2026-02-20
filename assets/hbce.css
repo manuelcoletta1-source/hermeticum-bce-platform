@@ -1,32 +1,36 @@
 /* =========================================================
-   HBCE — Institutional Dark UI + Micro-Glow (Canonical)
-   80% institutional / 20% tech signal (controlled)
+   HBCE — Canonical UI (Institutional Dark + Minimal Tech)
+   Goal: B2G credibility, audit-first feel, structured panels.
+   No "cyber glow". Controlled accent only.
    ========================================================= */
 
 :root{
-  /* Base */
-  --hbce-bg: #0a0f14;
-  --hbce-surface: #0f1620;
-  --hbce-surface-2: #121c28;
+  /* Surfaces */
+  --hbce-bg: #0b0f14;
+  --hbce-surface: #101823;
+  --hbce-surface-2: #141f2d;
 
+  /* Lines */
   --hbce-border: rgba(255,255,255,.10);
-  --hbce-border-2: rgba(255,255,255,.16);
+  --hbce-border-2: rgba(255,255,255,.18);
 
+  /* Text */
   --hbce-text: rgba(255,255,255,.92);
   --hbce-muted: rgba(255,255,255,.72);
   --hbce-soft: rgba(255,255,255,.56);
 
-  /* Controlled accent (micro-glow, not cyberpunk) */
-  --hbce-accent: rgba(110,168,255,.95);
-  --hbce-accent-soft: rgba(110,168,255,.14);
-  --hbce-mint-soft: rgba(0,255,170,.07);
-
+  /* Accent (minimal) */
+  --hbce-accent: rgba(145,195,255,.92);      /* institutional blue */
+  --hbce-accent-2: rgba(145,195,255,.18);    /* subtle bg tint */
   --hbce-link: rgba(190,220,255,.92);
-  --hbce-link-hover: rgba(230,245,255,.98);
+  --hbce-link-hover: rgba(235,246,255,.98);
 
-  --hbce-shadow: 0 14px 42px rgba(0,0,0,.42);
+  /* Effects */
+  --hbce-shadow: 0 14px 42px rgba(0,0,0,.38);
+  --hbce-shadow-soft: 0 10px 30px rgba(0,0,0,.28);
   --hbce-radius: 16px;
 
+  /* Fonts */
   --hbce-font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
   --hbce-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
@@ -37,14 +41,9 @@ html, body{ height: 100%; }
 body{
   margin: 0;
   font-family: var(--hbce-font);
+  background: var(--hbce-bg);
   color: var(--hbce-text);
   line-height: 1.55;
-
-  /* micro-glow background: institutional dark + subtle signals */
-  background:
-    radial-gradient(1100px 800px at 12% -12%, var(--hbce-accent-soft), transparent 60%),
-    radial-gradient(900px 700px at 92% 8%, var(--hbce-mint-soft), transparent 65%),
-    var(--hbce-bg);
 }
 
 /* Links */
@@ -57,11 +56,11 @@ a:hover{ color: var(--hbce-link-hover); text-decoration: underline; }
   margin: 0 auto;
   padding: 0 16px;
 }
-
 .hbce-main{
   padding: 26px 0 64px;
 }
 
+/* CTA group */
 .hbce-cta-group{
   display:flex;
   flex-wrap:wrap;
@@ -69,11 +68,10 @@ a:hover{ color: var(--hbce-link-hover); text-decoration: underline; }
   margin-top:16px;
 }
 
-/* Header/Footer (compatible with injected partials) */
+/* Header/Footer (works with injected partials) */
 header, footer{
   background: rgba(0,0,0,.18);
   border-bottom: 1px solid var(--hbce-border);
-  backdrop-filter: blur(6px);
 }
 footer{
   border-top: 1px solid var(--hbce-border);
@@ -82,24 +80,25 @@ footer{
 
 /* HERO */
 .hbce-hero{
-  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,0));
+  background: var(--hbce-surface);
   border: 1px solid var(--hbce-border);
   border-radius: var(--hbce-radius);
   padding: 28px;
   box-shadow: var(--hbce-shadow);
   position: relative;
-  overflow: hidden;
 }
 
-/* micro-glow edge line (subtle) */
+/* minimal “tech” signal: top hairline */
 .hbce-hero::before{
   content:"";
   position:absolute;
-  inset:0;
-  border-radius: var(--hbce-radius);
+  left: 18px;
+  right: 18px;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--hbce-accent), rgba(255,255,255,0));
+  opacity: .25;
   pointer-events:none;
-  background: radial-gradient(800px 220px at 20% 0%, rgba(110,168,255,.10), transparent 55%);
-  mix-blend-mode: screen;
 }
 
 .hbce-hero__kicker{
@@ -123,9 +122,9 @@ footer{
   font-size: 18px;
 }
 
-/* Sections */
+/* SECTIONS (structured panels) */
 .hbce-section{
-  background: rgba(255,255,255,.03);
+  background: var(--hbce-surface);
   border: 1px solid var(--hbce-border);
   border-radius: var(--hbce-radius);
   padding: 22px;
@@ -134,7 +133,11 @@ footer{
   position: relative;
 }
 
-/* subtle top accent hairline */
+.hbce-section--dark{
+  background: var(--hbce-surface-2);
+}
+
+/* minimal hairline only (no glow) */
 .hbce-section::before{
   content:"";
   position:absolute;
@@ -142,12 +145,9 @@ footer{
   right: 18px;
   top: 0;
   height: 1px;
-  background: linear-gradient(90deg, rgba(110,168,255,.24), rgba(255,255,255,0));
-  opacity: .8;
-}
-
-.hbce-section--dark{
-  background: rgba(255,255,255,.04);
+  background: linear-gradient(90deg, rgba(255,255,255,.16), rgba(255,255,255,0));
+  opacity: .85;
+  pointer-events:none;
 }
 
 .hbce-section h2{
@@ -194,7 +194,7 @@ footer{
 
 /* Cards */
 .hbce-card{
-  background: rgba(255,255,255,.035);
+  background: var(--hbce-surface-2);
   border: 1px solid var(--hbce-border);
   border-radius: 14px;
   padding: 20px;
@@ -202,21 +202,10 @@ footer{
   position: relative;
 }
 
-/* micro-glow corner, very subtle */
-.hbce-card::after{
-  content:"";
-  position:absolute;
-  inset:-1px;
-  border-radius: 14px;
-  pointer-events:none;
-  background: radial-gradient(320px 120px at 15% 0%, rgba(110,168,255,.10), transparent 60%);
-  opacity: .9;
-}
-
 .hbce-card:hover{
-  border-color: rgba(255,255,255,.22);
+  border-color: var(--hbce-border-2);
   transform: translateY(-2px);
-  box-shadow: var(--hbce-shadow);
+  box-shadow: var(--hbce-shadow-soft);
 }
 
 .hbce-card__kicker{
@@ -236,11 +225,12 @@ footer{
 .hbce-card__text{
   font-size: 14px;
   color: var(--hbce-muted);
+  line-height: 1.55;
 }
 
 .hbce-card__actions{ margin-top: 16px; }
 
-/* Buttons (support both naming styles) */
+/* Buttons — support both legacy and new naming */
 .hbce-btn,
 .hbce-button{
   display:inline-block;
@@ -257,23 +247,23 @@ footer{
 .hbce-btn:hover,
 .hbce-button:hover{
   background: rgba(0,0,0,.30);
-  border-color: rgba(255,255,255,.22);
+  border-color: var(--hbce-border-2);
   transform: translateY(-1px);
-  box-shadow: 0 10px 30px rgba(0,0,0,.28);
 }
 
 .hbce-btn--primary,
 .hbce-button--primary{
-  background: rgba(110,168,255,.10);
-  border-color: rgba(110,168,255,.34);
+  background: rgba(145,195,255,.10);
+  border-color: rgba(145,195,255,.36);
 }
 
 .hbce-btn--primary:hover,
 .hbce-button--primary:hover{
-  background: rgba(110,168,255,.14);
-  border-color: rgba(110,168,255,.52);
+  background: rgba(145,195,255,.14);
+  border-color: rgba(145,195,255,.55);
 }
 
+/* optional ghost */
 .hbce-button--ghost{
   background: transparent;
 }
@@ -290,7 +280,7 @@ footer{
 .hbce-code code{
   font-family: var(--hbce-mono);
   font-size: 12px;
-  color: rgba(200,225,255,.92);
+  color: rgba(205,228,255,.92);
   line-height: 1.55;
   white-space: pre;
 }
@@ -307,7 +297,7 @@ input::placeholder, textarea::placeholder{
   color: rgba(255,255,255,.40);
 }
 
-/* Tables (safe default) */
+/* Tables */
 table{ border-collapse: collapse; width: 100%; }
 th, td{
   border: 1px solid var(--hbce-border);
