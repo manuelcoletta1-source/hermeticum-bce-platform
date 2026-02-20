@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>ΦΩ Industrial Pilot — Verifiable Identity & Event Logging for Robots/PLCs</title>
+  <meta name="description" content="ΦΩ Industrial Pilot (Laptop Mode): assign verifiable identity to a robot/PLC, generate append-only evidence logs, and provide deterministic verification + pilot report. EU-first, audit-first, fail-closed." />
+
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/phiomega/" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">ΦΩ · INDUSTRIAL PILOT · LAPTOP MODE</div>
+      <h1 class="hbce-hero__title">Verifiable Identity & Evidence Logging for Robots / PLCs</h1>
+      <p class="hbce-hero__lead">
+        ΦΩ is a verifiable identity + event logging layer for machines.
+        It does not “control” your robot/PLC — it makes its actions provable.
+        Built for EU auditability: fail-closed, hash-only, append-only.
+      </p>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--primary" href="#pilot">Pilot Mode (30 days)</a>
+        <a class="hbce-btn" href="#specs">Download Specs</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verify</a>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">What this solves (in plain engineering terms)</h2>
+      <div class="hbce-grid">
+        <article class="hbce-card">
+          <h3 class="hbce-h3">Machine identity</h3>
+          <p class="hbce-p">
+            Each machine receives a <strong>Machine Identity Pack (MIP)</strong>:
+            stable ID + layered fingerprints + policy. Identity is linked to an append-only evidence chain.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <h3 class="hbce-h3">Append-only evidence</h3>
+          <p class="hbce-p">
+            Operational events become chained records (hash-linked).
+            Tampering becomes detectable. No “trust me logs”.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <h3 class="hbce-h3">Deterministic verification</h3>
+          <p class="hbce-p">
+            A verifier can check a record by ID/hash and get a deterministic result:
+            <strong>MATCH / NO MATCH</strong> plus timeline.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="pilot" class="hbce-section">
+      <h2 class="hbce-h2">Pilot Mode (Laptop Mode) — 30 days</h2>
+      <p class="hbce-p">
+        Designed for fast industrial validation: ΦΩ runs on a laptop connected to the machine network/log export (read-only).
+        Minimum infrastructure. Maximum proof.
+      </p>
+
+      <div class="hbce-grid">
+        <article class="hbce-card">
+          <h3 class="hbce-h3">D1 — Evidence Log</h3>
+          <p class="hbce-p">
+            Raw events + ΦΩ propositions + chained evidence records (append-only). Portable archive.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <h3 class="hbce-h3">D2 — Verify Tool</h3>
+          <p class="hbce-p">
+            Deterministic verification: input record/hash → output match result + traceability.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <h3 class="hbce-h3">D3 — Pilot Report</h3>
+          <p class="hbce-p">
+            Identity summary (MIP), event timeline, critical incidents, and readiness for EU audit pipelines.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Fail-closed rules (safety-by-design)</h2>
+      <div class="hbce-card">
+        <ul class="hbce-list">
+          <li><strong>Hash-only:</strong> evidence is represented as hashes (no public data custody).</li>
+          <li><strong>Append-only:</strong> records are chained; edits are detectable.</li>
+          <li><strong>Fail-closed:</strong> if integrity/thresholds are not met → deny + log.</li>
+          <li><strong>Thresholds (pilot reference):</strong> κ ≥ 0.997 · Σ ≥ 0.995 · Χτ ≤ 0.60.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="specs" class="hbce-section">
+      <h2 class="hbce-h2">Specs (download)</h2>
+      <p class="hbce-p">
+        Use these schemas to integrate ΦΩ with PLC logs, robots, gateways, or R&D pipelines.
+      </p>
+
+      <div class="hbce-grid">
+        <article class="hbce-card">
+          <h3 class="hbce-h3">MIP schema</h3>
+          <p class="hbce-p">Machine Identity Pack: identity, fingerprints, policies, chain genesis.</p>
+          <p class="hbce-p"><a href="./spec/mip.schema.json">Download mip.schema.json</a></p>
+        </article>
+
+        <article class="hbce-card">
+          <h3 class="hbce-h3">Event schema</h3>
+          <p class="hbce-p">Industrial event envelope (Λ): minimal fields + anti-replay + hash chain.</p>
+          <p class="hbce-p"><a href="./spec/event.schema.json">Download event.schema.json</a></p>
+        </article>
+
+        <article class="hbce-card">
+          <h3 class="hbce-h3">Proposition schema</h3>
+          <p class="hbce-p">ΦΩ proposition: κ, Σ, Χτ, decision status, and proof fields.</p>
+          <p class="hbce-p"><a href="./spec/proposition.schema.json">Download proposition.schema.json</a></p>
+        </article>
+
+        <article class="hbce-card">
+          <h3 class="hbce-h3">OpenAPI (pilot)</h3>
+          <p class="hbce-p">Minimal API endpoints for event ingestion, propositions, and evidence storage.</p>
+          <p class="hbce-p"><a href="./spec/openapi.yaml">Download openapi.yaml</a></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">EU alignment (high level)</h2>
+      <p class="hbce-p">
+        ΦΩ is designed to support continuous auditability and evidence preservation workflows
+        (eIDAS-ready signature/time-stamping pipelines and long-term evidence packs).
+      </p>
+      <div class="hbce-card">
+        <p class="hbce-p">
+          Note: Pilot Mode can run as <strong>OPPONIBLE_READY</strong> (technical signing + deterministic verification),
+          and later be upgraded to qualified signing/time-stamping and long-term archival.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce.js"></script>
+</body>
+</html>
