@@ -1,0 +1,234 @@
+{
+  "proto": "HBCE-CORE-v3",
+  "kind": "HBCE_COHERENCE_BY_OPERATION_MANIFEST",
+  "issuer": "HERMETICUM B.C.E. S.r.l.",
+  "jurisdiction": "EU",
+  "mode": "PERMISSIONLESS",
+  "policy": [
+    "UE_FIRST",
+    "AUDIT_FIRST",
+    "FAIL_CLOSED",
+    "HASH_ONLY",
+    "APPEND_ONLY",
+    "NO_IDENTITY_CUSTODY"
+  ],
+
+  "module": {
+    "id": "HBCE-CBO-001",
+    "name": "Coherence-by-Operation (CbO)",
+    "version": "v0.1",
+    "purpose": "Start low-trust, earn coherence through operation inside a safety envelope. Promote autonomy only when Λ/κ/Σ/Χτ remain stable for N cycles.",
+    "core_metrics": ["lambda", "kappa", "sigma", "chi_tau", "epsilon_dt", "lambda_dt"],
+    "targets": {
+      "lambda_target": 1.0,
+      "lambda_range": [0.997, 1.003],
+      "kappa_min": 0.997,
+      "sigma_min": 0.995,
+      "chi_tau_max": 0.6,
+      "epsilon_dt_max_s": 1e-9,
+      "sso_max_s": 1.0,
+      "fail_closed_reaction_ms_max": 100
+    }
+  },
+
+  "trust_model": {
+    "initial_state": "LOW_TRUST",
+    "states": [
+      {
+        "state": "LOW_TRUST",
+        "alias": "L0",
+        "description": "Bootstrap mode. System is not yet coherent. Only conservative actions allowed.",
+        "envelope": {
+          "max_velocity_mps": 1.0,
+          "max_accel_mps2": 1.0,
+          "max_tilt_deg": 10,
+          "max_altitude_m": 10,
+          "geofence_required": true,
+          "autonomy_features": ["manual_assist", "stabilize_only"],
+          "deny_features": ["aggressive_maneuvers", "high_speed", "beyond_visual_envelope"]
+        },
+        "promotion_rule": {
+          "requires_consecutive_valid_cycles": 120,
+          "window_s": 120,
+          "constraints": ["QUADRUPLE_OPPONIBILITY", "TIME_SYNC_OK"]
+        }
+      },
+      {
+        "state": "CONSTRAINED_AUTONOMY",
+        "alias": "L1",
+        "description": "Coherence is emerging. Limited autonomy allowed inside strict envelope.",
+        "envelope": {
+          "max_velocity_mps": 3.0,
+          "max_accel_mps2": 2.0,
+          "max_tilt_deg": 18,
+          "max_altitude_m": 30,
+          "geofence_required": true,
+          "autonomy_features": ["position_hold", "return_to_home", "auto_land"],
+          "deny_features": ["swarm_ops", "payload_critical_ops", "beyond_geofence"]
+        },
+        "promotion_rule": {
+          "requires_consecutive_valid_cycles": 300,
+          "window_s": 300,
+          "constraints": ["QUADRUPLE_OPPONIBILITY", "LAMBDA_DT_STABLE"]
+        }
+      },
+      {
+        "state": "OPERATIONAL",
+        "alias": "L2",
+        "description": "Stable operation. Standard mission profile allowed with continuous monitoring.",
+        "envelope": {
+          "max_velocity_mps": 8.0,
+          "max_accel_mps2": 4.0,
+          "max_tilt_deg": 28,
+          "max_altitude_m": 120,
+          "geofence_required": true,
+          "autonomy_features": ["mission_waypoints", "adaptive_speed", "predictive_stability"],
+          "deny_features": ["swarm_ops_unverified", "critical_infrastructure_ops_unverified"]
+        },
+        "promotion_rule": {
+          "requires_consecutive_valid_cycles": 900,
+          "window_s": 900,
+          "constraints": ["QUADRUPLE_OPPONIBILITY", "PREDICTIVE_OK"]
+        }
+      },
+      {
+        "state": "HIGH_TRUST",
+        "alias": "L3",
+        "description": "High-trust autonomy. Advanced profiles allowed if audit proofs are produced.",
+        "envelope": {
+          "max_velocity_mps": 12.0,
+          "max_accel_mps2": 6.0,
+          "max_tilt_deg": 35,
+          "max_altitude_m": 200,
+          "geofence_required": true,
+          "autonomy_features": ["fleet_coordination_ready", "redundancy_checks", "audit_streaming"],
+          "deny_features": ["fully_unbounded_ops"]
+        },
+        "promotion_rule": {
+          "requires_consecutive_valid_cycles": 1800,
+          "window_s": 1800,
+          "constraints": ["QUADRUPLE_OPPONIBILITY", "LEDGER_PROOFS_OK", "OPERATOR_GATED"]
+        }
+      }
+    ],
+
+    "demotion_rules": [
+      {
+        "name": "lambda_out_of_range",
+        "if": "lambda < 0.997 OR lambda > 1.003",
+        "action": "FAIL_CLOSED",
+        "demote_to": "LOW_TRUST",
+        "note": "Out-of-range Λ equals non-compensable instability event."
+      },
+      {
+        "name": "kappa_failure",
+        "if": "kappa < 0.997 OR epsilon_dt > 1e-9",
+        "action": "FAIL_CLOSED",
+        "demote_to": "LOW_TRUST",
+        "note": "Time incoherence invalidates decision cycle."
+      },
+      {
+        "name": "sigma_divergence",
+        "if": "sigma < 0.995",
+        "action": "FAIL_CLOSED",
+        "demote_to": "LOW_TRUST",
+        "note": "Computational divergence must not propagate."
+      },
+      {
+        "name": "ethical_breach",
+        "if": "chi_tau > 0.6",
+        "action": "FAIL_CLOSED",
+        "demote_to": "LOW_TRUST",
+        "note": "Ethical-operational risk breach triggers immediate stop."
+      }
+    ]
+  },
+
+  "control_loop": {
+    "cycle": {
+      "name": "SSO_CYCLE",
+      "max_duration_s": 1.0,
+      "phases": [
+        "sense",
+        "estimate",
+        "compute_metrics",
+        "predict_lambda",
+        "collimation_u_t",
+        "safety_gate",
+        "actuate",
+        "ledger_commit"
+      ]
+    },
+    "collimation": {
+      "u_t": {
+        "description": "Corrective action function used to bring Λ back toward 1.000 within envelope bounds.",
+        "limits": {
+          "max_delta_throttle": 0.15,
+          "max_delta_tilt_deg": 5,
+          "max_delta_yaw_deg": 10
+        }
+      },
+      "prediction": {
+        "lambda_hat": "lambda + lambda_dt * tau",
+        "tau_s": 0.5,
+        "requires": ["timestamp", "payload_hash", "anchors_optional"]
+      }
+    }
+  },
+
+  "telemetry": {
+    "record_schema": {
+      "required": [
+        "record_id",
+        "ts_utc_it",
+        "ts_unebdo",
+        "lambda",
+        "lambda_dt",
+        "kappa",
+        "sigma",
+        "chi_tau",
+        "state",
+        "action",
+        "payload_hash"
+      ],
+      "optional": [
+        "epsilon_dt",
+        "sensor_health",
+        "battery_v",
+        "imu_vibration",
+        "gps_quality",
+        "operator_ipr_ref",
+        "unit_ipr_ref",
+        "tsa_token_ref",
+        "qes_sig_ref",
+        "anchors"
+      ]
+    },
+    "anchors_optional": ["IPFS_CID", "BTC_TXID", "EVM_TX"]
+  },
+
+  "ledger": {
+    "mode": "HASH_ONLY_APPEND_ONLY",
+    "commit_rule": "Every cycle produces a minimized proof record. If FAIL_CLOSED, mark NON_VALID and isolate autonomy.",
+    "levels": ["Sigma_Unit", "Sigma_Zone", "Sigma_City", "Sigma_State", "Sigma_Europa"],
+    "hash_alg": "SHA-256",
+    "signature_profile": "ED25519 (dev) -> QES (production)",
+    "time_profile": "TSA RFC3161 (production)"
+  },
+
+  "integration": {
+    "targets": [
+      {
+        "platform": "PX4/ArduPilot",
+        "interface": ["MAVLink"],
+        "onboard_compute": ["Raspberry Pi", "Jetson"],
+        "notes": "CbO runs as an onboard safety supervisor, gating flight modes by trust state."
+      },
+      {
+        "platform": "ROS2",
+        "interface": ["DDS"],
+        "notes": "CbO gates autonomy nodes and motion controllers using Λ-state and fail-closed events."
+      }
+    ]
+  }
+}
