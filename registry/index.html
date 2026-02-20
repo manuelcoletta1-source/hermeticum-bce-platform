@@ -2,78 +2,128 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>REGISTRY — Append-only (hash-only)</title>
-  <meta name="description" content="Public append-only registry (hash-only). Validate entry format and append to registry.json entries[]. Viewer includes search, type filter, export and quick VERIFY links. GDPR-min, fail-closed." />
+  <title>REGISTRY — Append-Only Public Ledger (Hash-Only)</title>
+  <meta name="description" content="HBCE public registry viewer: append-only, hash-only proofs. Deterministic validation. Missing required fields => INVALID (fail-closed)." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
   <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/registry/" />
 
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce-protocol.css" />
+
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js" defer></script>
+  <script src="/hermeticum-bce-platform/assets/hbce-protocol.js" defer></script>
 
   <style>
-    .hbce-grid2{ display:grid; gap:1rem; grid-template-columns: repeat(12, 1fr); }
-    .hbce-col-4{ grid-column: span 4; }
-    .hbce-col-6{ grid-column: span 6; }
-    .hbce-col-8{ grid-column: span 8; }
-    .hbce-col-12{ grid-column: span 12; }
-    @media (max-width: 900px){ .hbce-col-4,.hbce-col-6,.hbce-col-8{ grid-column: span 12; } }
-
-    .hbce-mono{ font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
-    .hbce-pre{
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.12);
+    .hbce-toolbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:flex-end;
+      justify-content: space-between;
+      margin-top: 12px;
+    }
+    .hbce-toolbar__left{ display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; }
+    .hbce-toolbar__right{ display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; }
+    .hbce-kpis{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .hbce-kpi{
+      border: 1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.22);
-      padding: .85rem;
-      overflow:auto;
-      max-height: 340px;
+      border-radius: 16px;
+      padding: 12px 12px;
     }
-    .hbce-input, .hbce-textarea, .hbce-select{
-      width:100%;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.03);
-      color: rgba(255,255,255,.92);
-      padding:.75rem .85rem;
-      outline: none;
+    .hbce-kpi__k{ font-size: 11px; letter-spacing: 1.1px; text-transform: uppercase; color: rgba(230,237,246,.62); }
+    .hbce-kpi__v{ margin-top: 6px; font-size: 18px; letter-spacing: -.2px; color: rgba(230,237,246,.92); }
+    .hbce-kpi__v span{ color: rgba(0,255,195,.92); }
+
+    .hbce-tablewrap{
+      margin-top: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.22);
+      border-radius: 18px;
+      overflow: hidden;
     }
-    .hbce-textarea{ min-height: 140px; resize: vertical; }
-    .hbce-divider{ height:1px; background: rgba(255,255,255,.10); margin: .85rem 0; }
-    .hbce-kv{ display:grid; grid-template-columns: 180px 1fr; gap:.45rem 1rem; }
-    .hbce-kv div{ padding:.1rem 0; }
-    .hbce-pill{
-      display:inline-block; padding:.25rem .55rem; border-radius:999px;
-      border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.03);
-      font-weight:900; font-size:.84rem; opacity:.92;
-      text-transform: uppercase; letter-spacing:.02em;
+
+    table.hbce-reg{
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
     }
-    .hbce-row{ display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; }
-    .hbce-table{ width:100%; border-collapse: collapse; }
-    .hbce-table th, .hbce-table td{
-      border-bottom:1px solid rgba(255,255,255,.10);
-      padding:.55rem .4rem;
-      text-align:left;
+    .hbce-reg th, .hbce-reg td{
+      padding: 10px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      text-align: left;
       vertical-align: top;
-      font-size: .95rem;
     }
-    .hbce-table th{ opacity:.85; font-weight:900; }
-    .hbce-muted{ opacity:.8; }
-    .hbce-tag{
-      display:inline-block;
-      padding:.18rem .5rem;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.03);
-      font-weight:900;
-      font-size:.78rem;
-      opacity:.92;
+    .hbce-reg th{
+      font-size: 11px;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+      color: rgba(230,237,246,.72);
+      background: rgba(255,255,255,.02);
+    }
+    .hbce-reg td{
+      color: rgba(230,237,246,.82);
+    }
+    .hbce-reg .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12.2px;
+      word-break: break-word;
+    }
+    .hbce-reg .muted{ color: rgba(230,237,246,.55); }
+
+    .hbce-rowactions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .hbce-miniBtn{
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.02);
+      color: rgba(230,237,246,.85);
+      border-radius: 12px;
+      padding: 7px 9px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: transform .12s ease, border-color .12s ease, background .12s ease, opacity .12s ease;
+      user-select: none;
+    }
+    .hbce-miniBtn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(0,183,255,.35);
+      background: rgba(0,183,255,.06);
+    }
+    .hbce-miniBtn:active{ transform: translateY(0); opacity: .9; }
+
+    .hbce-pillish{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.02);
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
       white-space: nowrap;
     }
-    .hbce-link{ color: rgba(255,255,255,.92); text-decoration: none; border-bottom:1px dashed rgba(255,255,255,.25); }
-    .hbce-link:hover{ border-bottom-color: rgba(255,255,255,.55); }
-    .hbce-small{ font-size:.92rem; opacity:.86; }
+    .hbce-pillish.ok{ border-color: rgba(0,255,195,.28); background: rgba(0,255,195,.06); color: rgba(0,255,195,.92); }
+    .hbce-pillish.bad{ border-color: rgba(255,45,85,.30); background: rgba(255,45,85,.06); color: rgba(255,45,85,.92); }
+
+    .hbce-empty{
+      padding: 16px 12px;
+      color: rgba(230,237,246,.70);
+      font-size: 13.5px;
+    }
   </style>
 </head>
 
@@ -83,346 +133,330 @@
   <main class="hbce-container hbce-main">
 
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">REGISTRY · APPEND-ONLY · PUBLIC · HASH-ONLY</div>
-      <h1 class="hbce-hero__title">Public Registry (append-only)</h1>
+      <div class="hbce-hero__kicker">REGISTRY · PUBLIC · APPEND-ONLY · HASH-ONLY</div>
+      <h1 class="hbce-hero__title">Public registry viewer</h1>
       <p class="hbce-hero__lead">
-        This registry publishes only minimal proofs:
-        <span class="hbce-mono">name + payload_sha256 + timestamp</span>.
-        No public personal data custody. If SHA-256 is missing or invalid → <strong>INVALID</strong> (fail-closed).
+        This ledger publishes minimized proofs only (hashes, timestamps, status). Deterministic checks apply.
+        Missing required fields results in <strong>INVALID</strong> (fail-closed).
       </p>
 
       <div class="hbce-actions">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/create/">CREATE</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">STATUS</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Open Verify</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/infrastructure/eu-autonomy-framework.html">EU Autonomy Framework</a>
       </div>
+    </section>
 
-      <p class="hbce-note" style="margin-top:.85rem;">
-        Source: <span class="hbce-mono">/hermeticum-bce-platform/registry/registry.json</span>
+    <section class="hbce-critical">
+      <div class="hbce-critical__kicker">FAIL-CLOSED NOTICE · DETERMINISTIC LEDGER RULES</div>
+      <div class="hbce-critical__title">Append-only proofs. No ambiguity.</div>
+      <p class="hbce-critical__text">
+        A registry entry is VALID only if it contains the required evidence fields.
+        If evidence is missing or malformed, it is treated as <strong>INVALID</strong>.
       </p>
     </section>
 
     <section class="hbce-section">
-      <h2>Append assistant (hash-only)</h2>
+      <h2>Controls</h2>
 
-      <div class="hbce-grid2">
-        <div class="hbce-card hbce-col-8">
-          <p class="hbce-note">
-            Paste the JSON entry generated by <strong>/create</strong>. This tool validates format and shows the exact snippet
-            to append into <span class="hbce-mono">registry/registry.json → entries[]</span>.
-          </p>
-
-          <label class="hbce-muted" for="entry_in"><strong>Registry entry JSON</strong></label>
-          <textarea id="entry_in" class="hbce-textarea hbce-mono" placeholder='{
-  "entity_type": "UPMESE_CERTIFICATE",
-  "name": "Manuel Coletta",
-  "payload_sha256": "64-hex sha256 lowercase",
-  "timestamp": "2026-02-19T18:00:00.000Z",
-  "status": "ACTIVE",
-  "note": "proto=HBCE-UPMESE-v1; kind=MONTHLY_OPERATIONAL_CONTINUITY_CERTIFICATE; label=UP-MESE-01"
-}'></textarea>
-
-          <div class="hbce-row" style="margin-top:.7rem;">
-            <button class="hbce-btn" id="btn-validate" type="button">Validate entry</button>
-            <button class="hbce-btn hbce-btn--alt" id="btn-copy" type="button" disabled>Copy normalized entry</button>
-            <button class="hbce-btn hbce-btn--ghost" id="btn-clear" type="button">Clear</button>
+      <div class="hbce-toolbar">
+        <div class="hbce-toolbar__left">
+          <div class="hbce-field" style="margin-top:0;min-width:260px;flex:1;">
+            <label class="hbce-label" for="q">Search</label>
+            <input class="hbce-input" id="q" placeholder="Search by name, hash, status, timestamp..." autocomplete="off" />
+            <div class="hbce-help">Search is local and deterministic (no tracking).</div>
           </div>
 
-          <div class="hbce-divider"></div>
-
-          <div class="hbce-kv">
-            <div><span class="hbce-pill">Rule</span></div>
-            <div><span class="hbce-mono">payload_sha256</span> must be 64 hex chars (sha256)</div>
-
-            <div><span class="hbce-pill">Public</span></div>
-            <div>hash-only + timestamp (no personal data)</div>
-
-            <div><span class="hbce-pill">Write mode</span></div>
-            <div>manual append-only (Git commit)</div>
+          <div class="hbce-field" style="margin-top:0;min-width:220px;">
+            <label class="hbce-label" for="filter">Filter</label>
+            <select class="hbce-select" id="filter">
+              <option value="all">All</option>
+              <option value="valid">VALID only</option>
+              <option value="invalid">INVALID only</option>
+            </select>
           </div>
         </div>
 
-        <div class="hbce-card hbce-col-4">
-          <h3>Where to append</h3>
-          <p class="hbce-note">Open this file in your repo and append the entry:</p>
-          <div class="hbce-pre"><pre class="hbce-mono">registry/registry.json
-→ entries[]</pre></div>
+        <div class="hbce-toolbar__right">
+          <button class="hbce-btn" type="button" id="btnReload">Reload</button>
+          <button class="hbce-btn hbce-btn--ghost" type="button" id="btnExport">Export filtered JSON</button>
+        </div>
+      </div>
 
-          <p class="hbce-note" style="margin-top:.8rem;">
-            After you commit, run VERIFY.
-          </p>
-          <div class="hbce-actions">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY now</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/">Back to CREATE</a>
+      <div class="hbce-kpis" id="kpis">
+        <div class="hbce-kpi">
+          <div class="hbce-kpi__k">Entries loaded</div>
+          <div class="hbce-kpi__v" id="kAll">0</div>
+        </div>
+        <div class="hbce-kpi">
+          <div class="hbce-kpi__k">VALID</div>
+          <div class="hbce-kpi__v"><span id="kValid">0</span></div>
+        </div>
+        <div class="hbce-kpi">
+          <div class="hbce-kpi__k">INVALID</div>
+          <div class="hbce-kpi__v" style="color:rgba(255,45,85,.92);" id="kInvalid">0</div>
+        </div>
+        <div class="hbce-kpi">
+          <div class="hbce-kpi__k">Registry source</div>
+          <div class="hbce-kpi__v" style="font-size:12.5px;color:rgba(230,237,246,.70);" id="kSource">—</div>
+        </div>
+      </div>
+
+      <div class="hbce-terminal" data-status="warn" id="regTerminal">
+        <div class="hbce-terminal__bar">
+          <div class="hbce-terminal__title">Registry terminal</div>
+          <div class="hbce-terminal__status">WARN</div>
+        </div>
+        <div class="hbce-terminal__body">
+          <div class="hbce-terminal__line">
+            <div class="hbce-terminal__k">policy</div>
+            <div class="hbce-terminal__v">UE_FIRST · AUDIT_FIRST · FAIL_CLOSED · HASH_ONLY · APPEND_ONLY</div>
+          </div>
+          <div class="hbce-terminal__line">
+            <div class="hbce-terminal__k">required</div>
+            <div class="hbce-terminal__v">payload_sha256, timestamp</div>
+          </div>
+          <div class="hbce-terminal__line">
+            <div class="hbce-terminal__k">status</div>
+            <div class="hbce-terminal__v" id="termStatus">Awaiting registry load</div>
+          </div>
+          <div class="hbce-terminal__line">
+            <div class="hbce-terminal__k">source</div>
+            <div class="hbce-terminal__v mono" id="termSource">—</div>
           </div>
         </div>
       </div>
-    </section>
 
-    <section class="hbce-section">
-      <h2>Registry viewer</h2>
-
-      <div class="hbce-card">
-        <div class="hbce-row">
-          <input id="q" class="hbce-input" placeholder="Search by name, type or sha256…" />
-
-          <select id="type" class="hbce-select" style="max-width: 320px;">
-            <option value="">All types</option>
-            <option value="HUMAN">HUMAN</option>
-            <option value="OPERATOR">OPERATOR</option>
-            <option value="UPMESE_CERTIFICATE">UPMESE_CERTIFICATE</option>
-          </select>
-
-          <button class="hbce-btn hbce-btn--alt" id="btn-refresh" type="button">Refresh</button>
-          <button class="hbce-btn hbce-btn--ghost" id="btn-export" type="button" disabled>Export JSON</button>
+      <div class="hbce-evidence">
+        <div class="hbce-evidence__top">
+          <h3 class="hbce-evidence__h">System anchor (hash-only)</h3>
+          <span class="hbce-mini">public · minimized</span>
         </div>
 
-        <div class="hbce-row" style="margin-top:.65rem;">
-          <span class="hbce-pill">Counts</span>
-          <span class="hbce-small">total: <span class="hbce-mono" id="cnt-total">—</span></span>
-          <span class="hbce-small">human: <span class="hbce-mono" id="cnt-human">—</span></span>
-          <span class="hbce-small">operator: <span class="hbce-mono" id="cnt-operator">—</span></span>
-          <span class="hbce-small">up-mese: <span class="hbce-mono" id="cnt-upmese">—</span></span>
-          <span class="hbce-small">last_update: <span class="hbce-mono" id="last-update">—</span></span>
+        <div class="hbce-evidence__row">
+          <div class="hbce-evidence__label">ROOT SHA-512</div>
+          <div class="hbce-evidence__value is-hash" id="root-sha512">
+b7929e4d1d9a782c79b473c5311f70d864f0b6ae6a6de38df5ef9b2acbb7e73f2d8c544967fa13b1124c8a93d5c2e77d24dc5b3c91a2e6c8b8f97b90a7b09e99
+          </div>
+          <button class="hbce-copy" type="button" data-hbce-copy="#root-sha512">COPY</button>
         </div>
+      </div>
 
-        <div class="hbce-pre" style="max-height: 460px; margin-top:.75rem;">
-          <table class="hbce-table" id="tbl">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Type</th>
-                <th>Name</th>
-                <th>payload_sha256</th>
-                <th>timestamp</th>
-                <th>verify</th>
-              </tr>
-            </thead>
-            <tbody id="tbody">
-              <tr><td colspan="6" class="hbce-muted">Loading…</td></tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="hbce-tablewrap" id="tableWrap">
+        <table class="hbce-reg" aria-label="Registry table">
+          <thead>
+            <tr>
+              <th style="width:120px;">Status</th>
+              <th style="width:220px;">Name</th>
+              <th>payload_sha256</th>
+              <th style="width:220px;">Timestamp</th>
+              <th style="width:210px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="5" class="hbce-empty">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
 
-        <p class="hbce-note" style="margin-top:.65rem;">
-          Tip: click <span class="hbce-mono">VERIFY</span> to open the deterministic checker with the hash pre-filled.
+      <div class="hbce-callout hbce-callout--info">
+        <div class="hbce-callout__h">Deterministic interpretation</div>
+        <p style="margin:0;color:rgba(230,237,246,.72);font-size:13.5px;">
+          This viewer validates format locally. A VALID row means “required evidence exists and matches the deterministic schema”.
+          It does not guarantee the private payload exists publicly — public surface remains hash-only.
         </p>
-      </div>
-    </section>
-
-    <section class="hbce-section">
-      <div class="hbce-footnote">
-        <p>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</p>
-        <p>HERMETICUM B.C.E. S.r.l.</p>
-        <p class="hbce-note">UE-first · audit-first · fail-closed · hash-only · append-only · GDPR-min</p>
       </div>
     </section>
 
   </main>
 
   <div data-hbce="footer"></div>
-  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 
   <script>
     (function(){
-      const $ = (id) => document.getElementById(id);
+      // ---- CONFIG (change only this if your registry file is elsewhere)
+      const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
 
-      const entryIn = $("entry_in");
-      const btnValidate = $("btn-validate");
-      const btnCopy = $("btn-copy");
-      const btnClear = $("btn-clear");
+      const q = document.getElementById("q");
+      const filter = document.getElementById("filter");
+      const btnReload = document.getElementById("btnReload");
+      const btnExport = document.getElementById("btnExport");
 
-      const q = $("q");
-      const typeSel = $("type");
-      const btnRefresh = $("btn-refresh");
-      const btnExport = $("btn-export");
-      const tbody = $("tbody");
+      const kAll = document.getElementById("kAll");
+      const kValid = document.getElementById("kValid");
+      const kInvalid = document.getElementById("kInvalid");
+      const kSource = document.getElementById("kSource");
 
-      const cntTotal = $("cnt-total");
-      const cntHuman = $("cnt-human");
-      const cntOperator = $("cnt-operator");
-      const cntUpmese = $("cnt-upmese");
-      const lastUpdate = $("last-update");
+      const term = document.getElementById("regTerminal");
+      const termStatus = document.getElementById("termStatus");
+      const termSource = document.getElementById("termSource");
 
-      let registry = null;
-      let normalizedEntry = null;
+      const tbody = document.getElementById("tbody");
 
-      function isHex64Lower(s){ return /^[a-f0-9]{64}$/.test(String(s||"").trim()); }
-      function isIso(s){ return /^\d{4}-\d{2}-\d{2}T/.test(String(s||"").trim()); }
+      let raw = [];
+      let view = [];
 
-      function normalizeEntry(obj){
-        // allow old create payloads: name (or label) but enforce "name"
-        const name = String(obj.name || obj.label || "").trim().slice(0, 80);
-        const entityType = String(obj.entity_type || "").trim().slice(0, 40);
-        const status = String(obj.status || "ACTIVE").trim().slice(0, 20);
-        const note = (obj.note !== undefined && obj.note !== null) ? String(obj.note).trim().slice(0, 220) : "";
+      function setTerm(kind, msg){
+        term.setAttribute("data-status", kind);
+        termStatus.textContent = msg;
+        termSource.textContent = REGISTRY_URL;
+        // refresh protocol badge mapping
+        document.dispatchEvent(new Event("DOMContentLoaded"));
+      }
+
+      function isSha256(s){
+        return /^[a-f0-9]{64}$/i.test(String(s||"").trim());
+      }
+
+      function isRFC3339ish(s){
+        // pragmatic: accept RFC3339-like timestamps; strict parsing handled by ISO Date
+        const v = String(s||"").trim();
+        if (!v) return false;
+        const d = new Date(v);
+        return !Number.isNaN(d.getTime());
+      }
+
+      function validateEntry(e){
+        // fail-closed: required fields must exist and be valid
+        const payload = e && (e.payload_sha256 || e.payloadSha256 || e.payload || e.sha256);
+        const ts = e && (e.timestamp || e.time || e.t);
+        const ok = isSha256(payload) && isRFC3339ish(ts);
         return {
-          ...(entityType ? { entity_type: entityType } : {}),
-          name,
-          payload_sha256: String(obj.payload_sha256 || "").trim().toLowerCase(),
-          timestamp: String(obj.timestamp || "").trim(),
-          ...(status ? { status } : {}),
-          ...(note ? { note } : {})
+          ok,
+          payload: String(payload || "").trim(),
+          ts: String(ts || "").trim(),
+          name: String((e && (e.name || e.nickname || e.id || e.label)) || "").trim(),
+          status: String((e && (e.status || "")) || "").trim()
         };
       }
 
-      function setStatus(msg){
-        alert(msg);
-      }
-
-      btnValidate.addEventListener("click", () => {
-        normalizedEntry = null;
-        btnCopy.disabled = true;
-
-        let obj;
-        try{
-          obj = JSON.parse(entryIn.value || "");
-        }catch(e){
-          setStatus("INVALID JSON. Paste a valid entry object.");
-          return;
-        }
-
-        const n = normalizeEntry(obj);
-        if(!n.name){
-          setStatus("INVALID: name is required.");
-          return;
-        }
-        if(!isHex64Lower(n.payload_sha256)){
-          setStatus("INVALID: payload_sha256 must be 64-hex sha256 lowercase.");
-          return;
-        }
-        if(!n.timestamp || !isIso(n.timestamp)){
-          setStatus("INVALID: timestamp must be ISO format (e.g. 2026-02-19T18:00:00.000Z).");
-          return;
-        }
-
-        normalizedEntry = n;
-        entryIn.value = JSON.stringify(n, null, 2);
-        btnCopy.disabled = false;
-        setStatus("VALID entry format. Append this to registry.json entries[] (append-only).");
-      });
-
-      btnCopy.addEventListener("click", async () => {
-        if(!normalizedEntry) return;
-        const text = JSON.stringify(normalizedEntry, null, 2);
-        try{
-          await navigator.clipboard.writeText(text);
-          btnCopy.textContent = "Copied ✓";
-          setTimeout(()=> btnCopy.textContent = "Copy normalized entry", 1100);
-        }catch(e){
-          setStatus("Copy failed. Copy manually from the text area.");
-        }
-      });
-
-      btnClear.addEventListener("click", () => {
-        entryIn.value = "";
-        normalizedEntry = null;
-        btnCopy.disabled = true;
-      });
-
-      async function loadRegistry(){
-        tbody.innerHTML = '<tr><td colspan="6" class="hbce-muted">Loading…</td></tr>';
-        registry = null;
-        btnExport.disabled = true;
-
-        try{
-          const res = await fetch("/hermeticum-bce-platform/registry/registry.json", { cache: "no-store" });
-          if(!res.ok) throw new Error("HTTP " + res.status);
-          const json = await res.json();
-          const entries = Array.isArray(json.entries) ? json.entries : [];
-          registry = { raw: json, entries };
-
-          // meta counts (fallback to compute)
-          const meta = json.meta || {};
-          const counts = meta.counts || {};
-          const total = typeof counts.total === "number" ? counts.total : entries.length;
-
-          cntTotal.textContent = String(total);
-          cntHuman.textContent = String(typeof counts.ipr_base_human === "number" ? counts.ipr_base_human : entries.filter(e => String(e.entity_type||"") === "HUMAN").length);
-          cntOperator.textContent = String(typeof counts.operator_license === "number" ? counts.operator_license : entries.filter(e => String(e.entity_type||"") === "OPERATOR").length);
-          cntUpmese.textContent = String(
-            typeof counts.up_mese_certificate === "number"
-              ? counts.up_mese_certificate
-              : entries.filter(e => String(e.entity_type||"") === "UPMESE_CERTIFICATE").length
-          );
-          lastUpdate.textContent = String(meta.last_update || "—");
-
-          btnExport.disabled = entries.length === 0;
-          render();
-        }catch(e){
-          tbody.innerHTML = '<tr><td colspan="6" class="hbce-muted">Failed to load registry.json (check path and JSON validity).</td></tr>';
-          cntTotal.textContent = "—";
-          cntHuman.textContent = "—";
-          cntOperator.textContent = "—";
-          cntUpmese.textContent = "—";
-          lastUpdate.textContent = "—";
-        }
+      function normalizeInput(data){
+        // Accept { entries: [...] } or [...] (array)
+        if (Array.isArray(data)) return data;
+        if (data && Array.isArray(data.entries)) return data.entries;
+        if (data && Array.isArray(data.registry)) return data.registry;
+        return [];
       }
 
       function render(){
-        const term = String(q.value||"").trim().toLowerCase();
-        const type = String(typeSel.value||"").trim();
+        const query = (q.value || "").trim().toLowerCase();
+        const f = filter.value;
 
-        const entries = (registry && registry.entries) ? registry.entries : [];
-        const filtered = entries.filter(x => {
-          const et = String(x.entity_type||"");
-          if(type && et !== type) return false;
+        view = raw
+          .map((e, idx) => {
+            const v = validateEntry(e);
+            return { idx, src: e, v };
+          })
+          .filter(r => {
+            if (f === "valid" && !r.v.ok) return false;
+            if (f === "invalid" && r.v.ok) return false;
+            if (!query) return true;
 
-          if(!term) return true;
-          return (
-            String(x.name||"").toLowerCase().includes(term) ||
-            String(x.payload_sha256||"").toLowerCase().includes(term) ||
-            et.toLowerCase().includes(term)
-          );
-        });
+            const hay = [
+              r.v.name, r.v.payload, r.v.ts, r.v.status
+            ].join(" ").toLowerCase();
 
-        if(filtered.length === 0){
-          tbody.innerHTML = '<tr><td colspan="6" class="hbce-muted">No matches.</td></tr>';
+            return hay.includes(query);
+          });
+
+        // KPIs
+        const total = raw.length;
+        const validCount = raw.reduce((acc, e) => acc + (validateEntry(e).ok ? 1 : 0), 0);
+        const invalidCount = total - validCount;
+
+        kAll.textContent = String(total);
+        kValid.textContent = String(validCount);
+        kInvalid.textContent = String(invalidCount);
+        kSource.textContent = REGISTRY_URL;
+
+        // Terminal status
+        if (total === 0) setTerm("warn","No entries loaded (empty or missing registry).");
+        else if (invalidCount > 0) setTerm("fail","Registry contains INVALID entries (fail-closed posture).");
+        else setTerm("pass","Registry schema coherence OK (all entries contain required evidence).");
+
+        // Table
+        if (view.length === 0){
+          tbody.innerHTML = '<tr><td colspan="5" class="hbce-empty">No matching entries.</td></tr>';
           return;
         }
 
-        tbody.innerHTML = filtered.map((x, i) => {
-          const sha = String(x.payload_sha256||"");
-          const short = sha ? (sha.slice(0,12) + "…" + sha.slice(-8)) : "";
-          const et = String(x.entity_type || "—");
-          const verifyUrl = "/hermeticum-bce-platform/verify/?expected_sha=" + encodeURIComponent(sha);
+        tbody.innerHTML = view.map(r => {
+          const pill = r.v.ok
+            ? '<span class="hbce-pillish ok">VALID</span>'
+            : '<span class="hbce-pillish bad">INVALID</span>';
+
+          const safeName = escapeHtml(r.v.name || "—");
+          const safeTs = escapeHtml(r.v.ts || "—");
+          const safeHash = escapeHtml(r.v.payload || "—");
+
+          // copy button uses inline dataset selector based on row index
+          const hashId = "h_" + r.idx;
+
           return `
             <tr>
-              <td class="hbce-muted">${i+1}</td>
-              <td><span class="hbce-tag">${escapeHtml(et)}</span></td>
-              <td>${escapeHtml(String(x.name||""))}</td>
-              <td class="hbce-mono" title="${escapeHtml(sha)}">${escapeHtml(short)}</td>
-              <td class="hbce-mono">${escapeHtml(String(x.timestamp||""))}</td>
-              <td><a class="hbce-link" href="${verifyUrl}">VERIFY</a></td>
+              <td>${pill}</td>
+              <td>${safeName || '<span class="muted">—</span>'}</td>
+              <td class="mono"><span id="${hashId}">${safeHash}</span></td>
+              <td class="mono">${safeTs}</td>
+              <td>
+                <div class="hbce-rowactions">
+                  <button class="hbce-miniBtn" type="button" data-hbce-copy="#${hashId}">COPY HASH</button>
+                  <a class="hbce-miniBtn" href="/hermeticum-bce-platform/verify/" title="Open Verify">VERIFY</a>
+                </div>
+              </td>
             </tr>
           `;
         }).join("");
+
+        // protocol copy wiring (re-run on new buttons)
+        document.dispatchEvent(new Event("DOMContentLoaded"));
       }
 
       function escapeHtml(s){
-        return String(s).replace(/[&<>"']/g, (c) => ({
-          "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-        }[c]));
+        return String(s||"")
+          .replaceAll("&","&amp;")
+          .replaceAll("<","&lt;")
+          .replaceAll(">","&gt;")
+          .replaceAll('"',"&quot;")
+          .replaceAll("'","&#039;");
       }
 
-      btnRefresh.addEventListener("click", loadRegistry);
-      q.addEventListener("input", render);
-      typeSel.addEventListener("change", render);
+      async function load(){
+        tbody.innerHTML = '<tr><td colspan="5" class="hbce-empty">Loading…</td></tr>';
+        setTerm("warn","Loading registry source…");
 
-      btnExport.addEventListener("click", () => {
-        if(!registry) return;
-        const blob = new Blob([JSON.stringify(registry.raw, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
+        try{
+          const res = await fetch(REGISTRY_URL, { cache: "no-store" });
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          const data = await res.json();
+          raw = normalizeInput(data);
+          render();
+        } catch (err){
+          raw = [];
+          render();
+          setTerm("fail","Registry load FAILED (missing file or invalid JSON). Fail-closed.");
+          tbody.innerHTML =
+            '<tr><td colspan="5" class="hbce-empty">Registry file not found or invalid JSON. Check registry source path and format.</td></tr>';
+        }
+      }
+
+      function exportFiltered(){
+        const out = view.map(r => r.src);
+        const blob = new Blob([JSON.stringify(out, null, 2)], { type: "application/json" });
         const a = document.createElement("a");
-        a.href = url;
-        a.download = "registry.json";
+        a.href = URL.createObjectURL(blob);
+        a.download = "hbce_registry_export_filtered.json";
         document.body.appendChild(a);
         a.click();
         a.remove();
-        URL.revokeObjectURL(url);
-      });
+        URL.revokeObjectURL(a.href);
+      }
 
-      loadRegistry();
+      q.addEventListener("input", render);
+      filter.addEventListener("change", render);
+      btnReload.addEventListener("click", load);
+      btnExport.addEventListener("click", exportFiltered);
+
+      load();
     })();
   </script>
 </body>
