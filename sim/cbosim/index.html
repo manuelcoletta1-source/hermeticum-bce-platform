@@ -1,0 +1,620 @@
+<!-- FILE: /sim/cbosim/index.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CBOSIM v0.1 — Coherence-by-Operation Simulator (HBCE)</title>
+  <meta name="description" content="In-browser simulator for Coherence-by-Operation: Λ/κ/Σ/Χτ, u(t) collimation, trust states, fail-closed, JSON logs." />
+  <style>
+    :root{
+      --bg:#0b0f14; --panel:#0f1620; --ink:#eaf2ff; --muted:rgba(234,242,255,.78);
+      --line:rgba(255,255,255,.10); --soft:rgba(255,255,255,.04);
+      --good:#22c55e; --warn:#f59e0b; --bad:#ef4444;
+    }
+    *{ box-sizing:border-box; }
+    body{ margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:var(--bg); color:var(--ink); }
+    header{ padding:18px 16px; border-bottom:1px solid var(--line); background:linear-gradient(180deg, rgba(255,255,255,.04), transparent); }
+    header h1{ margin:0; font-size:1.05rem; letter-spacing:.2px; }
+    header p{ margin:6px 0 0; color:var(--muted); font-size:.92rem; line-height:1.35; }
+    main{ padding:16px; max-width:1100px; margin:0 auto; }
+    .grid{ display:grid; gap:14px; grid-template-columns: 1.2fr .8fr; }
+    @media (max-width: 980px){ .grid{ grid-template-columns:1fr; } }
+    .card{ background:rgba(255,255,255,.03); border:1px solid var(--line); border-radius:16px; padding:14px; }
+    .row{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+    .btn{ appearance:none; border:1px solid var(--line); background:rgba(255,255,255,.06);
+      color:var(--ink); padding:10px 12px; border-radius:12px; cursor:pointer; font-weight:600; }
+    .btn:hover{ background:rgba(255,255,255,.08); }
+    .btn.primary{ background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.18); }
+    .btn.danger{ background:rgba(239,68,68,.14); border-color:rgba(239,68,68,.35); }
+    .pill{ display:inline-flex; gap:8px; align-items:center; padding:8px 10px; border-radius:999px;
+      border:1px solid var(--line); background:rgba(255,255,255,.03); font-size:.9rem; }
+    .kpi{ display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:10px; }
+    @media (max-width: 980px){ .kpi{ grid-template-columns:repeat(2, minmax(0,1fr)); } }
+    .kpi .box{ padding:12px; border-radius:14px; border:1px solid var(--line); background:var(--soft); }
+    .kpi b{ display:block; font-size:1.05rem; }
+    .kpi span{ color:var(--muted); font-size:.9rem; }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+    label{ font-size:.9rem; color:var(--muted); }
+    input[type="range"]{ width:100%; }
+    .two{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    @media (max-width: 680px){ .two{ grid-template-columns:1fr; } }
+    canvas{ width:100%; height:300px; display:block; background:rgba(0,0,0,.25); border:1px solid var(--line); border-radius:14px; }
+    textarea{ width:100%; min-height:180px; resize:vertical; background:rgba(0,0,0,.25); color:var(--ink);
+      border:1px solid var(--line); border-radius:14px; padding:12px; }
+    .status{ font-weight:800; letter-spacing:.3px; }
+    .good{ color:var(--good); }
+    .warn{ color:var(--warn); }
+    .bad{ color:var(--bad); }
+    .small{ font-size:.9rem; color:var(--muted); line-height:1.35; }
+    .hr{ height:1px; background:var(--line); border:0; margin:12px 0; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>CBOSIM v0.1 — Coherence-by-Operation Simulator (HBCE)</h1>
+  <p>
+    In-browser simulation of <b>Λ/κ/Σ/Χτ</b>, <b>u(t)</b> collimation, trust states (L0→L3), and <b>fail-closed</b>.
+    No installs. Runs on Chromebook. Produces JSON evidence logs.
+  </p>
+</header>
+
+<main>
+  <div class="grid">
+
+    <!-- LEFT: GRAPH + CONTROLS -->
+    <section class="card">
+      <div class="row" style="justify-content:space-between;">
+        <div class="row">
+          <span class="pill"><span class="mono">SSO</span> ≤ <span class="mono" id="ssoView">1.00s</span></span>
+          <span class="pill"><span class="mono">dt</span> = <span class="mono" id="dtView">0.10s</span></span>
+          <span class="pill">Mode: <span class="mono" id="modeView">AUTO</span></span>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="btnStart">Start</button>
+          <button class="btn" id="btnPause">Pause</button>
+          <button class="btn danger" id="btnReset">Reset</button>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="two">
+        <div>
+          <label>Disturbance (wind / vibration / noise)</label>
+          <input id="disturb" type="range" min="0" max="1" step="0.01" value="0.35" />
+          <div class="small">Higher = harder environment. Simulates drift and disturbances.</div>
+        </div>
+        <div>
+          <label>u(t) strength (collimation / correction)</label>
+          <input id="ut" type="range" min="0" max="1" step="0.01" value="0.55" />
+          <div class="small">Higher = stronger corrective action (bounded by safety envelope).</div>
+        </div>
+      </div>
+
+      <div class="two" style="margin-top:10px;">
+        <div>
+          <label>Ethical risk pressure (Χτ bias)</label>
+          <input id="chiBias" type="range" min="0" max="1" step="0.01" value="0.25" />
+          <div class="small">Higher = more likely Χτ rises (e.g., contested/unsafe context).</div>
+        </div>
+        <div>
+          <label>Time quality (κ / ε)</label>
+          <input id="timeQual" type="range" min="0" max="1" step="0.01" value="0.70" />
+          <div class="small">Lower = worse synchronization; increases ε and reduces κ.</div>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <canvas id="chart" width="1000" height="380"></canvas>
+
+      <div class="small" style="margin-top:10px;">
+        Chart shows Λ (white), thresholds (green band), and fail-closed events (red spikes). Use the sliders to
+        create drift/disturbances and watch how CbO earns coherence or collapses to fail-closed.
+      </div>
+    </section>
+
+    <!-- RIGHT: KPIs + LOG -->
+    <aside class="card">
+
+      <div class="kpi">
+        <div class="box">
+          <b class="mono" id="lambdaBox">0.9800</b>
+          <span>Λ (equilibrium)</span>
+        </div>
+        <div class="box">
+          <b class="mono" id="kappaBox">0.9900</b>
+          <span>κ (time coherence)</span>
+        </div>
+        <div class="box">
+          <b class="mono" id="sigmaBox">0.9900</b>
+          <span>Σ (compute coherence)</span>
+        </div>
+        <div class="box">
+          <b class="mono" id="chiBox">0.30</b>
+          <span>Χτ (risk)</span>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="row" style="justify-content:space-between;">
+        <div>
+          <div class="small">Trust state</div>
+          <div class="status mono" id="trustState">L0 · LOW_TRUST</div>
+          <div class="small">Last action: <span class="mono" id="lastAction">BOOT</span></div>
+        </div>
+        <div>
+          <div class="small">System</div>
+          <div class="status" id="sysStatus"><span class="good">RUNNABLE</span></div>
+          <div class="small">Valid streak: <span class="mono" id="streak">0</span></div>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="row">
+        <button class="btn" id="btnExport">Export JSON log</button>
+        <button class="btn" id="btnCopy">Copy JSON</button>
+        <button class="btn" id="btnInject">Inject fault</button>
+      </div>
+
+      <p class="small">
+        <b>Inject fault</b> simulates a sudden event (sensor glitch / GPS loss / actuator anomaly).
+        CbO should demote and/or fail-closed deterministically.
+      </p>
+
+      <textarea id="log" class="mono" spellcheck="false" aria-label="JSON log output"></textarea>
+
+      <p class="small">
+        This simulator is a Phase-0 artifact: it proves the logic before hardware exists.
+        Next step is wiring this logic to PX4/ArduPilot or ROS2.
+      </p>
+    </aside>
+  </div>
+</main>
+
+<script>
+/**
+ * CBOSIM v0.1
+ * - Generates synthetic signals for autonomy: stability, time coherence, compute coherence, ethical risk.
+ * - Implements Coherence-by-Operation (CbO): start LOW_TRUST, earn promotion only via consecutive valid cycles.
+ * - Enforces deterministic demotion + fail-closed on violations.
+ * - Produces minimized JSON evidence records.
+ *
+ * NOTE: This is a simulator, not a flight controller.
+ */
+
+(function(){
+  // ===== Thresholds (public, demo-safe) =====
+  const TH = {
+    lambdaMin: 0.997,
+    lambdaMax: 1.003,
+    kappaMin: 0.997,
+    sigmaMin: 0.995,
+    chiMax: 0.60,
+    ssoMax: 1.0
+  };
+
+  // Promotion requirements (cycles) for demo
+  const PROMO = {
+    L0_to_L1: 40,
+    L1_to_L2: 90,
+    L2_to_L3: 180
+  };
+
+  // Envelope caps per trust state (used only to bound u(t))
+  const ENVELOPE = {
+    L0: { utCap: 0.35 },
+    L1: { utCap: 0.55 },
+    L2: { utCap: 0.75 },
+    L3: { utCap: 0.90 }
+  };
+
+  // ===== UI elements =====
+  const canvas = document.getElementById('chart');
+  const ctx = canvas.getContext('2d');
+
+  const disturb = document.getElementById('disturb');
+  const ut = document.getElementById('ut');
+  const chiBias = document.getElementById('chiBias');
+  const timeQual = document.getElementById('timeQual');
+
+  const btnStart = document.getElementById('btnStart');
+  const btnPause = document.getElementById('btnPause');
+  const btnReset = document.getElementById('btnReset');
+  const btnExport = document.getElementById('btnExport');
+  const btnCopy = document.getElementById('btnCopy');
+  const btnInject = document.getElementById('btnInject');
+
+  const lambdaBox = document.getElementById('lambdaBox');
+  const kappaBox = document.getElementById('kappaBox');
+  const sigmaBox = document.getElementById('sigmaBox');
+  const chiBox = document.getElementById('chiBox');
+  const trustState = document.getElementById('trustState');
+  const sysStatus = document.getElementById('sysStatus');
+  const lastAction = document.getElementById('lastAction');
+  const streakView = document.getElementById('streak');
+  const logArea = document.getElementById('log');
+  const dtView = document.getElementById('dtView');
+  const ssoView = document.getElementById('ssoView');
+  const modeView = document.getElementById('modeView');
+
+  // ===== Simulation state =====
+  let running = false;
+  let dt = 0.10;     // seconds
+  let t = 0.0;
+  let tickN = 0;
+
+  // Start "unstable": matches your concept.
+  let lambda = 0.9800;
+  let prevLambda = lambda;
+  let kappa = 0.9900;
+  let sigma = 0.9900;
+  let chi = 0.30;
+
+  let trust = "L0"; // L0/L1/L2/L3
+  let validStreak = 0;
+  let failClosed = false;
+
+  // Evidence log + chart buffers
+  const MAX_POINTS = 400;
+  let series = [];       // [{t, lambda, fail}]
+  let events = [];       // evidence records
+
+  // Fault injection
+  let injected = false;
+
+  // ===== Helpers =====
+  function clamp(x, a, b){ return Math.max(a, Math.min(b, x)); }
+  function randn(){ // quick gaussian-ish
+    let u = 0, v = 0;
+    while(u === 0) u = Math.random();
+    while(v === 0) v = Math.random();
+    return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+  }
+
+  function nowIso(){
+    return new Date().toISOString();
+  }
+
+  function trustLabel(tr){
+    if(tr === "L0") return "L0 · LOW_TRUST";
+    if(tr === "L1") return "L1 · CONSTRAINED_AUTONOMY";
+    if(tr === "L2") return "L2 · OPERATIONAL";
+    return "L3 · HIGH_TRUST";
+  }
+
+  function computeMetrics(){
+    // Disturbance increases noise + drift
+    const d = Number(disturb.value);
+
+    // Time quality controls epsilon drift and therefore kappa
+    const tq = Number(timeQual.value);
+    // epsilon_dt is conceptual here; lower tq => higher error => lower kappa
+    const epsilonDt = (1 - tq) * 1.5e-9; // demo scale
+
+    // kappa trends toward 1 with noise, but worsens with epsilonDt
+    kappa = clamp(1.0 - (epsilonDt / 1e-9) * 0.003 + randn()*0.0003 - d*0.0002, 0.980, 1.000);
+
+    // sigma degrades with disturbance and random divergence spikes
+    const divergenceSpike = (Math.random() < (d*0.02)) ? (0.004 + Math.random()*0.004) : 0;
+    sigma = clamp(0.999 - d*0.003 + randn()*0.0004 - divergenceSpike, 0.970, 1.000);
+
+    // ethical risk (chi) rises with chiBias + disturbance, can spike on fault
+    const cb = Number(chiBias.value);
+    const spike = injected ? (0.25 + Math.random()*0.15) : 0;
+    injected = false;
+    chi = clamp(chi + (cb*0.003 + d*0.002) + randn()*0.008 + spike - 0.006, 0.00, 1.00);
+
+    // lambda dynamics:
+    // - base instability: wants to drift down a bit without correction
+    // - disturbance adds noise and downward bias
+    // - u(t) correction pulls toward 1.000 but bounded by envelope
+    const utStrength = Number(ut.value);
+    const cap = ENVELOPE[trust].utCap;
+    const utApplied = clamp(utStrength, 0, cap);
+
+    // Predictive correction: if trending down, correct stronger
+    const lambdaDt = (lambda - prevLambda) / dt;
+    const predBoost = clamp(-lambdaDt * 12, 0, 0.12); // more negative trend => more boost
+
+    // Natural drift + noise
+    const drift = -0.0009 * (0.6 + d);           // stronger disturbance => stronger drift
+    const noise = randn() * (0.0006 + d*0.0008); // disturbance -> noise
+
+    // Collimation u(t): pull toward target 1.0 within bounds
+    const pull = (1.0 - lambda) * (0.020 + utApplied*0.055 + predBoost);
+
+    prevLambda = lambda;
+    lambda = clamp(lambda + drift + noise + pull, 0.85, 1.10);
+
+    return { epsilonDt, lambdaDt };
+  }
+
+  function isValid(metrics){
+    const okLambda = (lambda >= TH.lambdaMin && lambda <= TH.lambdaMax);
+    const okKappa = (kappa >= TH.kappaMin);
+    const okSigma = (sigma >= TH.sigmaMin);
+    const okChi = (chi <= TH.chiMax);
+
+    // We treat epsilonDt > 1e-9 as time coherence violation (demo)
+    const okEps = (metrics.epsilonDt <= 1e-9);
+
+    return {
+      ok: (okLambda && okKappa && okSigma && okChi && okEps),
+      okLambda, okKappa, okSigma, okChi, okEps
+    };
+  }
+
+  function promoteIfEligible(valid){
+    if(!valid.ok) return;
+
+    if(trust === "L0" && validStreak >= PROMO.L0_to_L1) trust = "L1";
+    else if(trust === "L1" && validStreak >= PROMO.L1_to_L2) trust = "L2";
+    else if(trust === "L2" && validStreak >= PROMO.L2_to_L3) trust = "L3";
+  }
+
+  function demoteFailClosed(valid){
+    if(valid.ok) return {action:"CONTINUE", fail:false};
+
+    // Deterministic: any single violation => FAIL_CLOSED + demote to L0
+    failClosed = true;
+    trust = "L0";
+    validStreak = 0;
+
+    // pick primary reason
+    let reason = "UNKNOWN";
+    if(!valid.okLambda) reason = "LAMBDA_OUT_OF_RANGE";
+    else if(!valid.okEps || !valid.okKappa) reason = "TIME_INCOHERENCE";
+    else if(!valid.okSigma) reason = "SIGMA_DIVERGENCE";
+    else if(!valid.okChi) reason = "ETHICAL_BREACH";
+
+    return {action:`FAIL_CLOSED:${reason}`, fail:true};
+  }
+
+  function makeRecord(metrics, action){
+    // Minimal evidence record (safe/public demo)
+    return {
+      record_id: `cbosim-${tickN.toString(16)}-${Math.random().toString(16).slice(2,8)}`,
+      ts_iso: nowIso(),
+      t_s: Number(t.toFixed(2)),
+      dt_s: dt,
+      lambda: Number(lambda.toFixed(4)),
+      lambda_dt: Number(metrics.lambdaDt.toFixed(5)),
+      kappa: Number(kappa.toFixed(4)),
+      sigma: Number(sigma.toFixed(4)),
+      chi_tau: Number(chi.toFixed(3)),
+      trust_state: trust,
+      action,
+      thresholds: {
+        lambda: [TH.lambdaMin, TH.lambdaMax],
+        kappa_min: TH.kappaMin,
+        sigma_min: TH.sigmaMin,
+        chi_max: TH.chiMax,
+        epsilon_dt_max: 1e-9
+      },
+      epsilon_dt: metrics.epsilonDt
+    };
+  }
+
+  function pushSeries(fail){
+    series.push({ t, lambda, fail });
+    if(series.length > MAX_POINTS) series.shift();
+  }
+
+  function draw(){
+    const w = canvas.width, h = canvas.height;
+    ctx.clearRect(0,0,w,h);
+
+    // background
+    ctx.fillStyle = "rgba(0,0,0,.22)";
+    ctx.fillRect(0,0,w,h);
+
+    // plot bounds
+    const pad = 42;
+    const X0 = pad, Y0 = pad, X1 = w - pad, Y1 = h - pad;
+
+    // y scale: focus around 1.0
+    const ymin = 0.960, ymax = 1.040;
+
+    function xMap(i){
+      const n = Math.max(1, series.length-1);
+      return X0 + (i / n) * (X1 - X0);
+    }
+    function yMap(v){
+      const t = (v - ymin) / (ymax - ymin);
+      return Y1 - t * (Y1 - Y0);
+    }
+
+    // threshold band
+    const yA = yMap(TH.lambdaMax);
+    const yB = yMap(TH.lambdaMin);
+    ctx.fillStyle = "rgba(34,197,94,.10)";
+    ctx.fillRect(X0, yA, X1-X0, yB - yA);
+
+    // axes
+    ctx.strokeStyle = "rgba(255,255,255,.15)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(X0, Y0);
+    ctx.lineTo(X0, Y1);
+    ctx.lineTo(X1, Y1);
+    ctx.stroke();
+
+    // labels
+    ctx.fillStyle = "rgba(234,242,255,.78)";
+    ctx.font = "12px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace";
+    ctx.fillText("Λ", 16, 18);
+    ctx.fillText(ymax.toFixed(3), 8, Y0+4);
+    ctx.fillText(ymin.toFixed(3), 8, Y1+4);
+    ctx.fillText("time →", X1-60, h-12);
+
+    // lambda line
+    if(series.length){
+      ctx.strokeStyle = "rgba(234,242,255,.92)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      series.forEach((p,i)=>{
+        const x = xMap(i), y = yMap(p.lambda);
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      });
+      ctx.stroke();
+
+      // fail-closed spikes
+      ctx.strokeStyle = "rgba(239,68,68,.85)";
+      ctx.lineWidth = 2;
+      series.forEach((p,i)=>{
+        if(!p.fail) return;
+        const x = xMap(i);
+        ctx.beginPath();
+        ctx.moveTo(x, Y0);
+        ctx.lineTo(x, Y1);
+        ctx.stroke();
+      });
+
+      // current point
+      const last = series[series.length-1];
+      const x = xMap(series.length-1), y = yMap(last.lambda);
+      ctx.fillStyle = last.fail ? "rgba(239,68,68,1)" : "rgba(234,242,255,1)";
+      ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2); ctx.fill();
+    }
+  }
+
+  function uiUpdate(valid, action){
+    lambdaBox.textContent = lambda.toFixed(4);
+    kappaBox.textContent = kappa.toFixed(4);
+    sigmaBox.textContent = sigma.toFixed(4);
+    chiBox.textContent = chi.toFixed(3);
+
+    trustState.textContent = trustLabel(trust);
+    streakView.textContent = String(validStreak);
+
+    lastAction.textContent = action;
+
+    if(failClosed){
+      sysStatus.innerHTML = `<span class="bad">FAIL_CLOSED</span>`;
+    } else if(valid.ok){
+      sysStatus.innerHTML = `<span class="good">RUNNABLE</span>`;
+    } else {
+      sysStatus.innerHTML = `<span class="warn">DEGRADED</span>`;
+    }
+  }
+
+  function logUpdate(){
+    // show last ~30 records
+    const tail = events.slice(-30);
+    logArea.value = JSON.stringify(tail, null, 2);
+  }
+
+  function step(){
+    if(!running) return;
+
+    // clear fail-closed automatically after 1 cycle in simulator (demo)
+    // In real systems you may require operator intervention / explicit re-arm.
+    if(failClosed){
+      failClosed = false;
+    }
+
+    tickN += 1;
+    t = Number((t + dt).toFixed(4));
+
+    const metrics = computeMetrics();
+    const valid = isValid(metrics);
+
+    if(valid.ok){
+      validStreak += 1;
+      promoteIfEligible(valid);
+    }
+
+    const decision = demoteFailClosed(valid);
+    const action = decision.action;
+
+    // record evidence
+    const rec = makeRecord(metrics, action);
+    events.push(rec);
+
+    // chart series
+    pushSeries(decision.fail);
+
+    // update UI
+    uiUpdate(valid, action);
+    logUpdate();
+    draw();
+
+    // schedule next
+    setTimeout(step, Math.max(10, dt*1000));
+  }
+
+  function resetAll(){
+    running = false;
+    t = 0.0; tickN = 0;
+    lambda = 0.9800; prevLambda = lambda;
+    kappa = 0.9900; sigma = 0.9900; chi = 0.30;
+    trust = "L0";
+    validStreak = 0;
+    failClosed = false;
+    series = [];
+    events = [];
+    logArea.value = "";
+    uiUpdate({ok:true}, "BOOT");
+    draw();
+  }
+
+  // ===== Buttons =====
+  btnStart.addEventListener('click', ()=>{
+    running = true;
+    modeView.textContent = "AUTO";
+    step();
+  });
+
+  btnPause.addEventListener('click', ()=>{
+    running = false;
+    modeView.textContent = "PAUSED";
+  });
+
+  btnReset.addEventListener('click', ()=>{
+    resetAll();
+  });
+
+  btnInject.addEventListener('click', ()=>{
+    injected = true;
+    // also jolt lambda downward to demonstrate deterministic fail-closed
+    lambda -= 0.012 + Math.random()*0.015;
+  });
+
+  btnExport.addEventListener('click', ()=>{
+    const blob = new Blob([JSON.stringify(events, null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `cbosim_v0.1_log_${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  btnCopy.addEventListener('click', async ()=>{
+    try{
+      await navigator.clipboard.writeText(JSON.stringify(events, null, 2));
+      btnCopy.textContent = "Copied ✓";
+      setTimeout(()=>btnCopy.textContent="Copy JSON", 900);
+    }catch(e){
+      btnCopy.textContent = "Copy failed";
+      setTimeout(()=>btnCopy.textContent="Copy JSON", 900);
+    }
+  });
+
+  // show dt/SSO
+  dtView.textContent = dt.toFixed(2) + "s";
+  ssoView.textContent = TH.ssoMax.toFixed(2) + "s";
+
+  // init
+  resetAll();
+})();
+</script>
+</body>
+</html>
