@@ -1,110 +1,124 @@
-/* HBCE Theme — Dark Structured (Global)
-   Purpose: make the whole platform feel like an infrastructure console (B2G/Enterprise-grade)
-*/
+/* ===========================================
+   HBCE GLOBAL THEME — Dark Structured (B2G)
+   Compatible with legacy hbce-card/grid/btn
+   =========================================== */
 
 :root{
   --hbce-bg: #070a0f;
   --hbce-surface: #0b0f17;
-  --hbce-surface-2: #101826;
-  --hbce-border: rgba(255,255,255,.09);
-  --hbce-text: rgba(255,255,255,.92);
-  --hbce-muted: rgba(255,255,255,.72);
-  --hbce-soft: rgba(255,255,255,.56);
-  --hbce-shadow: 0 14px 46px rgba(0,0,0,.46);
+  --hbce-surface-2: #0f141b;   /* matches your current card bg */
+  --hbce-border: #1e2630;      /* matches your current border */
+  --hbce-border-2: #2f3a48;
+  --hbce-text: #e6edf3;
+  --hbce-muted: #a8b3c2;
+  --hbce-soft: #9fb0c3;
+  --hbce-accent: #6ea8ff;      /* matches your kicker */
+  --hbce-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
-/* Base */
+/* Base page */
 html, body{
-  background: radial-gradient(1200px 900px at 15% -10%, rgba(80,120,255,.14), transparent 55%),
-              radial-gradient(1000px 800px at 95% 10%, rgba(0,255,170,.08), transparent 60%),
-              var(--hbce-bg);
+  background:
+    radial-gradient(1200px 900px at 15% -10%, rgba(110,168,255,.16), transparent 55%),
+    radial-gradient(1000px 800px at 95% 10%, rgba(0,255,170,.08), transparent 60%),
+    var(--hbce-bg);
   color: var(--hbce-text);
 }
 
 /* Links */
-a{ color: rgba(160,200,255,.95); }
-a:hover{ color: rgba(200,230,255,.98); }
+a{ color: #cfe3ff; }
+a:hover{ color: #eaf2ff; }
 
-/* Main container readability */
-.hbce-container{ max-width: 1080px; }
-
-/* Header/footer surfaces (works even if header is injected) */
-header, footer{
-  background: rgba(0,0,0,.18);
-  border-bottom: 1px solid var(--hbce-border);
-}
-
-/* Hero */
+/* Hero scaffolding (adds structure without breaking existing layout) */
 .hbce-hero{
-  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,0));
+  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0));
   border: 1px solid var(--hbce-border);
+  border-radius: 16px;
+  padding: 26px;
   box-shadow: var(--hbce-shadow);
-  border-radius: 18px;
-  padding: 30px;
 }
-.hbce-hero__kicker{
-  color: var(--hbce-muted);
-  letter-spacing: .14em;
-  text-transform: uppercase;
-}
-.hbce-hero__lead{ color: var(--hbce-muted); max-width: 72ch; }
+.hbce-hero__kicker{ color: var(--hbce-accent); }
+.hbce-hero__lead{ color: var(--hbce-muted); }
 
-/* Sections */
+/* Sections: turn whitespace into “panels” */
 .hbce-section{
   background: var(--hbce-surface);
   border: 1px solid var(--hbce-border);
-  box-shadow: var(--hbce-shadow);
-  border-radius: 18px;
+  border-radius: 16px;
   padding: 22px;
-  margin-top: 18px;
+  box-shadow: var(--hbce-shadow);
+  margin-top: 18px; /* override old 60px spacing to feel structured */
 }
-.hbce-section--dark{ background: var(--hbce-surface-2); }
+.hbce-section h2{ color: var(--hbce-text); }
+.hbce-section h3{ color: #d8e6ff; }
+
+/* Cards: keep your look, just normalize hover + depth */
+.hbce-card{
+  background: var(--hbce-surface-2);
+  border: 1px solid var(--hbce-border);
+  border-radius: 14px;
+  box-shadow: none;
+}
+.hbce-card:hover{
+  border-color: var(--hbce-border-2);
+  transform: translateY(-3px);
+  box-shadow: var(--hbce-shadow);
+}
+.hbce-card__title{ color: var(--hbce-text); }
+.hbce-card__text{ color: var(--hbce-soft); }
 
 /* Lists */
 .hbce-list li{ color: var(--hbce-muted); }
 
-/* Cards */
-.hbce-card{
-  background: var(--hbce-surface-2);
-  border: 1px solid var(--hbce-border);
-  border-radius: 18px;
-  box-shadow: var(--hbce-shadow);
-}
-.hbce-card__kicker{ color: var(--hbce-soft); }
-.hbce-card__text{ color: var(--hbce-muted); }
-
-/* Notes */
+/* Notes / callouts (if used) */
 .hbce-note{
-  background: rgba(255,255,255,.03);
-  border: 1px solid var(--hbce-border);
-  color: var(--hbce-muted);
-  border-radius: 14px;
-  padding: 12px 14px;
-}
-
-/* Inputs (for pages with forms/tools) */
-input, textarea, select{
-  background: rgba(255,255,255,.04);
-  border: 1px solid var(--hbce-border);
-  color: var(--hbce-text);
+  background: #0a0f15;
+  border: 1px solid #1c2530;
   border-radius: 12px;
+  padding: 14px;
+  color: var(--hbce-muted);
 }
-input::placeholder, textarea::placeholder{ color: rgba(255,255,255,.40); }
 
-/* Buttons — keep your hbce.css base classes but improve contrast */
+/* Buttons: support both legacy .hbce-btn and newer .hbce-button */
+.hbce-btn,
 .hbce-button{
-  border-color: var(--hbce-border);
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: #121821;
+  border: 1px solid #2a3442;
+  color: #cfe3ff;
+  text-decoration: none;
+  font-size: 13px;
+  transition: all .2s ease;
 }
+.hbce-btn:hover,
+.hbce-button:hover{
+  background: #16202b;
+  border-color: #3a4a5f;
+}
+
+.hbce-btn--primary,
+.hbce-button--primary{
+  background: #1b2a3a;
+  border-color: #3f5f86;
+  color: #eaf2ff;
+}
+.hbce-btn--primary:hover,
+.hbce-button--primary:hover{
+  background: #22364d;
+  border-color: #6ea8ff;
+}
+
 .hbce-button--ghost{
   background: transparent;
 }
 
-/* Tables (if any) */
-table{
-  border-collapse: collapse;
+/* Inputs (if any pages have tools) */
+input, textarea, select{
+  background: #0a0f15;
+  border: 1px solid #1c2530;
+  border-radius: 12px;
+  color: var(--hbce-text);
 }
-th, td{
-  border: 1px solid var(--hbce-border);
-}
-th{ color: var(--hbce-muted); }
-td{ color: var(--hbce-text); }
+input::placeholder, textarea::placeholder{ color: rgba(255,255,255,.40); }
