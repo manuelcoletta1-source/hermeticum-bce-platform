@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>ΦΩ Pilot Scope — 30-Day Industrial Validation (Laptop Mode)</title>
+  <meta name="description" content="ΦΩ Industrial Pilot Scope: 30-day validation to assign verifiable identity to a robot/PLC, generate append-only evidence logs, provide deterministic verification, and deliver a pilot report. EU-first, audit-first, fail-closed." />
+
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/phiomega/pilot-scope/" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">ΦΩ · PILOT SCOPE · 30 DAYS · LAPTOP MODE</div>
+      <h1 class="hbce-hero__title">Industrial Pilot Scope (Statement of Work)</h1>
+      <p class="hbce-hero__lead">
+        This document defines the practical scope of a 30-day ΦΩ pilot: verifiable machine identity,
+        append-only evidence logging, deterministic verification, and a final technical report.
+      </p>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/phiomega/">Back to ΦΩ Pilot</a>
+        <a class="hbce-btn" href="#deliverables">Deliverables</a>
+        <a class="hbce-btn" href="#requirements">Requirements</a>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">1) Objective</h2>
+      <div class="hbce-card">
+        <p class="hbce-p">
+          Validate ΦΩ on a real industrial system (robot / PLC / cell) in <strong>read-only</strong> mode, producing
+          a verifiable identity and an evidence trail of operational events. The pilot is designed to be
+          <strong>fast, minimally invasive</strong>, and aligned with EU auditability principles (hash-only, append-only, fail-closed).
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">2) Pilot mode: Laptop Mode (read-only)</h2>
+      <div class="hbce-card">
+        <ul class="hbce-list">
+          <li><strong>Deployment:</strong> ΦΩ runs on a laptop connected to the machine network or log export source.</li>
+          <li><strong>Access level:</strong> read-only (log ingestion, no machine control).</li>
+          <li><strong>Inputs:</strong> file export (CSV/JSON), syslog, gateway feed (HTTP), or industrial protocols in read mode.</li>
+          <li><strong>Outputs:</strong> chained evidence log, deterministic verification, and a final report.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="deliverables" class="hbce-section">
+      <h2 class="hbce-h2">3) Deliverables</h2>
+
+      <div class="hbce-grid">
+        <article class="hbce-card">
+          <h3 class="hbce-h3">D1 — Machine Identity Pack (MIP)</h3>
+          <p class="hbce-p">
+            A stable identity envelope for the machine: ID, layered fingerprints (software/config), policies,
+            and chain genesis hash (append-only linkage).
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <h3 class="hbce-h3">D2 — Evidence Log (append-only)</h3>
+          <p class="hbce-p">
+            Raw events + ΦΩ propositions + evidence records chained by hashes (tamper-evident).
+            Delivered as a portable archive.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <h3 class="hbce-h3">D3 — Deterministic Verify</h3>
+          <p class="hbce-p">
+            Verification procedure/tooling: input record/hash → deterministic output (MATCH / NO MATCH)
+            and traceable timeline.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <h3 class="hbce-h3">D4 — Pilot Report</h3>
+          <p class="hbce-p">
+            Technical report describing identity, event taxonomy, critical incidents, continuity metrics,
+            and readiness for EU audit pipelines and future signature/time-stamping upgrades.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">4) Event coverage (baseline)</h2>
+      <div class="hbce-card">
+        <p class="hbce-p">
+          Baseline event taxonomy includes lifecycle, safety, operation, and (if present) AI decision events:
+          BOOT/SHUTDOWN, MODE_CHANGE, CONFIG_CHANGE, E_STOP, SAFETY_TRIP, HUMAN_OVERRIDE,
+          FAULT/RECOVERY, JOB_START/JOB_END, AI_DECISION/POLICY_DENY.
+        </p>
+        <p class="hbce-p">
+          Final event list is refined during Week 1 based on the actual machine interface/logs.
+        </p>
+      </div>
+    </section>
+
+    <section id="requirements" class="hbce-section">
+      <h2 class="hbce-h2">5) Requirements (from the host organization)</h2>
+      <div class="hbce-card">
+        <ul class="hbce-list">
+          <li>One real target system: robot / PLC / cell (production or test environment).</li>
+          <li>Read-only access to logs or event export (file, syslog, gateway, or protocol read mode).</li>
+          <li>A technical contact for coordination (R&D / automation / OT engineer).</li>
+          <li>Optional: NDA before sharing any internal identifiers (serial/MAC/config exports).</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">6) Timeline (30 days)</h2>
+
+      <div class="hbce-grid">
+        <article class="hbce-card">
+          <h3 class="hbce-h3">Week 1 — Setup & Identity</h3>
+          <ul class="hbce-list">
+            <li>Confirm input channel(s) (export/syslog/gateway).</li>
+            <li>Emit MIP (identity + fingerprints + genesis).</li>
+            <li>Finalize event mapping for the target system.</li>
+          </ul>
+        </article>
+
+        <article class="hbce-card">
+          <h3 class="hbce-h3">Week 2–3 — Evidence logging</h3>
+          <ul class="hbce-list">
+            <li>Continuous capture of baseline events.</li>
+            <li>Hash-chain integrity monitoring (append-only).</li>
+            <li>Critical event review (faults, overrides, safety trips).</li>
+          </ul>
+        </article>
+
+        <article class="hbce-card">
+          <h3 class="hbce-h3">Week 4 — Verification & Report</h3>
+          <ul class="hbce-list">
+            <li>Deterministic verification procedure/tooling delivery.</li>
+            <li>Final evidence pack export.</li>
+            <li>Pilot report delivery and debrief.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">7) Commercial notes (pilot-ready)</h2>
+      <div class="hbce-card">
+        <p class="hbce-p">
+          Pilot pricing is typically in the <strong>€3k–€8k</strong> range for a 30-day validation (Laptop Mode),
+          depending on integration complexity and the number of event channels.
+        </p>
+        <p class="hbce-p">
+          The pilot can be delivered as <strong>OPPONIBLE_READY</strong> (technical signing + deterministic verification),
+          with optional upgrades to qualified signing/time-stamping and long-term archival workflows.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">8) Contact</h2>
+      <div class="hbce-card">
+        <p class="hbce-p"><strong>Operator:</strong> Manuel Coletta</p>
+        <p class="hbce-p"><strong>Entity:</strong> HERMETICUM B.C.E. S.r.l.</p>
+        <p class="hbce-p">
+          This scope is a practical SOW outline. Final legal/contractual terms (NDA, access conditions, invoicing)
+          are agreed directly with the host organization.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce.js"></script>
+</body>
+</html>
