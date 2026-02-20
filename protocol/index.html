@@ -4,11 +4,10 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<title>HBCE Protocol — Official v1</title>
-<meta name="description" content="HBCE Protocol v1 Official: deterministic, hash-only, append-only, fail-closed operational identity for humans, AI, robots, vehicles and critical infrastructure." />
+<title>HBCE Protocol — European Operational Identity (v1)</title>
+<meta name="description" content="HBCE Protocol v1 — EU-first operational identity protocol: deterministic verification, hash-only public evidence, append-only registry, fail-closed validity." />
 
 <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
-<meta name="theme-color" content="#0b0f14" />
 </head>
 
 <body>
@@ -17,195 +16,215 @@
 
 <main class="hbce-container hbce-main">
 
+<!-- HERO -->
 <section class="hbce-hero">
-  <div class="hbce-hero__kicker">HBCE PROTOCOL · OFFICIAL v1 · INDUSTRIAL & DUAL-USE READY</div>
-  <h1 class="hbce-hero__title">HBCE Protocol v1 — Official Specification</h1>
+  <div class="hbce-hero__kicker">HBCE PROTOCOL · v1 · EU-FIRST · AUDIT-FIRST</div>
+  <h1 class="hbce-hero__title">HBCE Protocol v1</h1>
   <p class="hbce-hero__lead">
-    Deterministic operational identity infrastructure for humans, AI, autonomous machines and critical systems.
-    Public registry is hash-only and append-only. Verification is fail-closed.
+    Deterministic operational identity protocol for humans, AI agents and autonomous systems operating on European territory.
+    Public evidence is hash-only. Registry is append-only. Validity is fail-closed.
+  </p>
+
+  <div class="hbce-cta-group">
+    <a class="hbce-button hbce-button--primary" href="/hermeticum-bce-platform/activate/">Canonical gateway</a>
+    <a class="hbce-button" href="/hermeticum-bce-platform/registry/">Public registry</a>
+    <a class="hbce-button hbce-button--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
+  </div>
+
+  <p class="hbce-note">
+    This document describes protocol semantics and operational truth rules. It is written to be auditable and reproducible.
   </p>
 </section>
 
+<!-- 0. SCOPE -->
 <section class="hbce-section">
-  <h2>Core Properties</h2>
-  <ul>
-    <li><strong>Hash-only</strong>: public registry exposes cryptographic proofs only (no public custody of personal data).</li>
-    <li><strong>Append-only</strong>: history cannot be erased; changes are events.</li>
-    <li><strong>Fail-closed</strong>: if verification fails → <strong>INVALID</strong>.</li>
-    <li><strong>Audit-first</strong>: every state transition is reconstructible.</li>
-    <li><strong>Derivation integrity</strong>: derived identities require a valid parent.</li>
-  </ul>
-</section>
-
-<section class="hbce-section">
-  <h2>Official v1 Artifacts</h2>
+  <h2>0. Scope</h2>
   <p>
-    These artifacts define and demonstrate HBCE Protocol v1 as an implementation-ready bundle.
+    HBCE defines a minimal operational identity layer for critical environments. It introduces:
   </p>
+  <ul class="hbce-list">
+    <li>Identity Primary Record (IPR) as a persistent operational identity root.</li>
+    <li>Hash-only public evidence and deterministic verification.</li>
+    <li>Append-only registry discipline.</li>
+    <li>Fail-closed validity (missing proof ⇒ INVALID).</li>
+  </ul>
+  <p class="hbce-note">
+    HBCE is an operational identity and auditability layer. It does not claim to replace eIDAS / EUDI Wallet legal identity schemes.
+  </p>
+</section>
 
-  <div class="hbce-grid">
+<!-- 1. DEFINITIONS -->
+<section class="hbce-section">
+  <h2>1. Definitions</h2>
+
+  <div class="hbce-grid hbce-grid--2">
     <div class="hbce-card">
-      <h3 class="hbce-card__title">Protocol Bundle (Official JSON)</h3>
-      <p class="hbce-card__text">
-        Frozen specification: policy, canonicalization rules, record schemas, verification rules, examples.
-      </p>
-      <p class="hbce-card__actions">
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/protocol/hbce-protocol-v1.official.json">
-          Open hbce-protocol-v1.official.json
-        </a>
-      </p>
+      <div class="hbce-card__kicker">TERM</div>
+      <div class="hbce-card__title">IPR (Identity Primary Record)</div>
+      <div class="hbce-card__text">
+        Persistent operational identity root. Used to derive operator authority, autonomous unit identities and infrastructure identities.
+      </div>
     </div>
 
     <div class="hbce-card">
-      <h3 class="hbce-card__title">Append-only Ledger (Example)</h3>
-      <p class="hbce-card__text">
-        Chained ledger example: root → operator → derived → events.
-        Used to test deterministic verification and chain integrity.
-      </p>
-      <p class="hbce-card__actions">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/protocol/hbce-registry-ledger.example.json">
-          Open hbce-registry-ledger.example.json
-        </a>
-      </p>
+      <div class="hbce-card__kicker">TERM</div>
+      <div class="hbce-card__title">Canonical file</div>
+      <div class="hbce-card__text">
+        A deterministic representation of an identity release used to compute a reproducible SHA-256 digest.
+      </div>
     </div>
 
     <div class="hbce-card">
-      <h3 class="hbce-card__title">Reference Verifier (JS)</h3>
-      <p class="hbce-card__text">
-        Deterministic verifier: chain integrity, schema checks, fail-closed outcomes, derivation checks.
-      </p>
-      <p class="hbce-card__actions">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/protocol/hbce-verify.reference.js">
-          Open hbce-verify.reference.js
-        </a>
-      </p>
+      <div class="hbce-card__kicker">TERM</div>
+      <div class="hbce-card__title">Public registry entry</div>
+      <div class="hbce-card__text">
+        Hash-only evidence published append-only. No public custody of personal data. Verification is deterministic.
+      </div>
     </div>
 
     <div class="hbce-card">
-      <h3 class="hbce-card__title">Reference Signer (ED25519)</h3>
-      <p class="hbce-card__text">
-        Keygen + signing tool producing real ED25519 signatures over canonical JSON preimages.
-      </p>
-      <p class="hbce-card__actions">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/protocol/hbce-sign.reference.js">
-          Open hbce-sign.reference.js
-        </a>
-      </p>
+      <div class="hbce-card__kicker">TERM</div>
+      <div class="hbce-card__title">Fail-closed validity</div>
+      <div class="hbce-card__text">
+        Missing or mismatched proof results in INVALID status. No “best effort”. No partial trust.
+      </div>
     </div>
   </div>
 </section>
 
-<section class="hbce-section">
-  <h2>Record Model</h2>
-  <p>
-    HBCE defines a small set of public record types for the registry.
-    Private payloads are stored off-registry; only payload hashes are published.
+<!-- 2. OPERATIONAL TRUTH -->
+<section class="hbce-section hbce-section--dark">
+  <h2>2. Operational truth (deterministic)</h2>
+  <ul class="hbce-list">
+    <li><strong>VALID</strong> = SHA-256(canonical identity file) exists in public registry + integrity checks pass.</li>
+    <li><strong>INVALID</strong> = missing match OR mismatch OR integrity failure.</li>
+    <li>Public registry stores <strong>hash-only</strong> evidence (GDPR-min; no public personal data custody).</li>
+    <li>Registry is <strong>append-only</strong>. History is never rewritten.</li>
+  </ul>
+
+  <p class="hbce-note">
+    HBCE validity is binary and reproducible. This is required for governance in critical environments.
   </p>
+</section>
+
+<!-- 3. DATA CUSTODY -->
+<section class="hbce-section">
+  <h2>3. Data custody model</h2>
+  <p>
+    HBCE separates private custody from public verification:
+  </p>
+  <ul class="hbce-list">
+    <li><strong>Private custody</strong>: identity release files remain client-side / operator-side.</li>
+    <li><strong>Public verification</strong>: registry contains only hash evidence + timestamps.</li>
+    <li><strong>No public personal data custody</strong>: registry never stores identity payloads.</li>
+  </ul>
+  <p class="hbce-note">
+    The protocol enforces minimization by construction: public layer never holds identity data.
+  </p>
+</section>
+
+<!-- 4. CORE FLOWS -->
+<section class="hbce-section">
+  <h2>4. Core flows</h2>
 
   <div class="hbce-grid">
     <div class="hbce-card">
-      <h3 class="hbce-card__title">IPR Root Record</h3>
-      <p class="hbce-card__text">
-        Root identity for humans, institutions, corporates, AI. This anchors the derivation tree.
-      </p>
-      <pre class="hbce-code"><code>{
-  "kind": "IPR_ROOT_RECORD",
-  "entity_id": "IPR-ROOT-…",
-  "entity_type": "HUMAN_ROOT|INSTITUTION_ROOT|CORPORATE_ROOT|AI_ROOT",
-  "payload_sha256": "…",
-  "timestamp": "…",
-  "status": "VALID|INVALID|REVOKED",
-  "issuer": { "sign_alg": "ED25519", "pubkey": "…", "signature": "…" }
-}</code></pre>
+      <div class="hbce-card__kicker">FLOW</div>
+      <div class="hbce-card__title">Create IPR Base</div>
+      <div class="hbce-card__text">
+        Generate a private IPR release file. Compute canonical SHA-256 digest. Prepare a hash-only registry entry.
+      </div>
+      <div class="hbce-card__actions">
+        <a class="hbce-button" href="/hermeticum-bce-platform/create/base/">Open flow</a>
+      </div>
     </div>
 
     <div class="hbce-card">
-      <h3 class="hbce-card__title">IPR Derived Record</h3>
-      <p class="hbce-card__text">
-        Derived identity for robots, vehicles, drones, software, infrastructure. Requires parent to be VALID.
-      </p>
-      <pre class="hbce-code"><code>{
-  "kind": "IPR_DERIVED_RECORD",
-  "entity_id": "IPR-DEV-…",
-  "entity_type": "IPR_ROBOT|IPR_VEHICLE|IPR_DRONE|…",
-  "parent_entity_id": "IPR-ROOT-…",
-  "derivation_type": "DERIVED_FROM_ROOT|…",
-  "payload_sha256": "…",
-  "timestamp": "…",
-  "status": "VALID|INVALID|REVOKED",
-  "rules": { "fail_closed": true, "inherit_invalidity": true, "append_only": true },
-  "issuer": { "sign_alg": "ED25519", "pubkey": "…", "signature": "…" }
-}</code></pre>
+      <div class="hbce-card__kicker">FLOW</div>
+      <div class="hbce-card__title">Append to public registry</div>
+      <div class="hbce-card__text">
+        Publish hash-only evidence append-only. Git commit history is the audit trail.
+      </div>
+      <div class="hbce-card__actions">
+        <a class="hbce-button" href="/hermeticum-bce-platform/registry/">Open registry</a>
+      </div>
     </div>
 
     <div class="hbce-card">
-      <h3 class="hbce-card__title">IPR Event Record</h3>
-      <p class="hbce-card__text">
-        Append-only event emitted by an operator. Used for firmware updates, critical ops, alerts, decommission, etc.
-      </p>
-      <pre class="hbce-code"><code>{
-  "kind": "IPR_EVENT_RECORD",
-  "event_id": "EVT-…",
-  "entity_id": "IPR-DEV-…",
-  "event_type": "FIRMWARE_UPDATE|SECURITY_ALERT|…",
-  "event_payload_sha256": "…",
-  "timestamp": "…",
-  "status": "VALID|INVALID|REVOKED",
-  "append_only": true,
-  "operator": { "operator_id": "IPR-OP-…", "sign_alg": "ED25519", "pubkey": "…", "signature": "…" }
-}</code></pre>
+      <div class="hbce-card__kicker">FLOW</div>
+      <div class="hbce-card__title">Verify + certificate</div>
+      <div class="hbce-card__text">
+        Upload a private release file. Compute canonical digest. Match in registry. If match ⇒ certificate.
+      </div>
+      <div class="hbce-card__actions">
+        <a class="hbce-button" href="/hermeticum-bce-platform/verify/">Open verify</a>
+      </div>
+    </div>
+
+    <div class="hbce-card">
+      <div class="hbce-card__kicker">FLOW</div>
+      <div class="hbce-card__title">Operator license (gated)</div>
+      <div class="hbce-card__text">
+        Operator issuance requires VALID IPR Base proof. Missing match ⇒ STOP (fail-closed). Authority is explicit.
+      </div>
+      <div class="hbce-card__actions">
+        <a class="hbce-button hbce-button--primary" href="/hermeticum-bce-platform/create/operator/">Open operator flow</a>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="hbce-section">
-  <h2>Verification Rules (Fail-Closed)</h2>
-  <ul>
-    <li>If any required field is missing → <strong>INVALID</strong></li>
-    <li>If a hash is malformed (not 64-hex for SHA-256) → <strong>INVALID</strong></li>
-    <li>If signature verification fails → <strong>INVALID</strong></li>
-    <li>If a derived record has a parent not VALID → <strong>INVALID</strong></li>
-    <li>If ledger chain integrity fails (prev pointer mismatch) → <strong>INVALID</strong></li>
+<!-- 5. DERIVATION RULES -->
+<section class="hbce-section hbce-section--dark">
+  <h2>5. Derivation rules (mandatory)</h2>
+  <ul class="hbce-list">
+    <li>Derived identities must reference a parent identity root.</li>
+    <li>Parent identity must be <strong>VALID</strong> in the public registry at issuance time.</li>
+    <li>If parent is not VALID ⇒ issuance MUST STOP (fail-closed).</li>
+    <li>Autonomous systems and AI units operate under derived identities.</li>
   </ul>
+  <p class="hbce-note">
+    Derivation is the enforcement mechanism that binds humans, operators and autonomous units into a deterministic identity graph.
+  </p>
 </section>
 
+<!-- 6. IMPLEMENTATION CONSTRAINTS -->
 <section class="hbce-section">
-  <h2>Reference CLI Flow</h2>
-  <p>
-    The reference toolchain demonstrates deterministic behavior:
-    same input → same canonical JSON → same hash → same verification outcome.
-  </p>
+  <h2>6. Implementation constraints</h2>
+  <ul class="hbce-list">
+    <li>GitHub Pages has no server-side writes: registry append is manual by design (auditable).</li>
+    <li>Deterministic hashing requires canonicalization rules (stable ordering, stable encoding).</li>
+    <li>Public verification must be reproducible in independent environments.</li>
+  </ul>
 
-  <pre class="hbce-code"><code># 1) Rebuild a self-consistent hash chain
-node protocol/hbce-verify.reference.js protocol/hbce-registry-ledger.example.json --rebuild > protocol/hbce-registry-ledger.rebuilt.json
-
-# 2) Generate ED25519 keys
-mkdir -p protocol/keys
-node protocol/hbce-sign.reference.js --keygen issuer   > protocol/keys/issuer.ed25519.json
-node protocol/hbce-sign.reference.js --keygen operator > protocol/keys/operator.ed25519.json
-
-# 3) Sign the ledger with real signatures
-node protocol/hbce-sign.reference.js --sign-ledger protocol/hbce-registry-ledger.rebuilt.json protocol/keys/issuer.ed25519.json protocol/keys/operator.ed25519.json > protocol/hbce-registry-ledger.signed.json
-
-# 4) Verify chain + entity
-node protocol/hbce-verify.reference.js protocol/hbce-registry-ledger.signed.json --check-chain
-node protocol/hbce-verify.reference.js protocol/hbce-registry-ledger.signed.json --verify-entity IPR-DEV-ROBOT-0001</code></pre>
+  <div class="hbce-cta-group">
+    <a class="hbce-button" href="/hermeticum-bce-platform/security/">Security model</a>
+    <a class="hbce-button" href="/hermeticum-bce-platform/standard/ipr/">IPR standard</a>
+    <a class="hbce-button hbce-button--ghost" href="/hermeticum-bce-platform/normative/">Normative mapping</a>
+  </div>
 </section>
 
-<section class="hbce-section">
-  <h2>Positioning</h2>
+<!-- 7. STATUS -->
+<section class="hbce-section hbce-section--dark">
+  <h2>7. Status and continuity</h2>
   <p>
-    HBCE is designed for industrial, institutional and dual-use environments:
-    OEM robotics, autonomous mobility, energy systems, space operations and digital security.
+    The protocol is designed to persist as an infrastructure layer. Continuity is enforced by append-only evidence,
+    deterministic verification and explicit authority rules.
   </p>
-  <p>
-    Public registry holds cryptographic proofs only. No public custody of personal data.
+  <div class="hbce-cta-group">
+    <a class="hbce-button" href="/hermeticum-bce-platform/status/">Infrastructure status</a>
+    <a class="hbce-button" href="/hermeticum-bce-platform/timeline/">Timeline</a>
+    <a class="hbce-button hbce-button--ghost" href="/hermeticum-bce-platform/audit/">Audit hub</a>
+  </div>
+
+  <p class="hbce-note">
+    Protocol posture: EU-first · audit-first · fail-closed · hash-only · append-only · GDPR-min · no public data custody
   </p>
 </section>
 
 </main>
 
 <div data-hbce="footer"></div>
-<script src="/hermeticum-bce-platform/assets/hbce.js"></script>
+
 </body>
 </html>
