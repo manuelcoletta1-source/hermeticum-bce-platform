@@ -1,194 +1,423 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CREATE — IPR Base Fiscale (EU)</title>
-  <meta name="description" content="Creazione IPR Base fiscale europeo. Dati bank-grade (CIE/passaporto/CF). Output: file reale + entry hash-only registry." />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>CREATE IPR BASE — Release Generator (Deterministic)</title>
+  <meta name="description" content="Create IPR Base release artifact and deterministic evidence (payload_sha256 + timestamp + signature). Client-side only. Fail-closed." />
+
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/create/base/" />
+
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
-  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
-  <script defer src="/hermeticum-bce-platform/assets/hbce-crypto.js"></script>
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce-protocol.css" />
+
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js" defer></script>
+  <script src="/hermeticum-bce-platform/assets/hbce-protocol.js" defer></script>
+
+  <style>
+    .hbce-two{
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap:16px;
+      margin-top:14px;
+    }
+    @media (max-width: 980px){ .hbce-two{ grid-template-columns: 1fr; } }
+
+    .hbce-formrow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:flex-end;
+      margin-top:12px;
+    }
+    .hbce-formrow .hbce-btn{ height: 40px; }
+
+    .hbce-small{
+      margin: 8px 0 0;
+      font-size: 12.5px;
+      color: rgba(230,237,246,.62);
+    }
+
+    .hbce-out{
+      margin-top: 12px;
+    }
+  </style>
 </head>
+
 <body>
-<div data-hbce="header"></div>
+  <div data-hbce="header"></div>
 
-<main class="hbce-container hbce-main">
+  <main class="hbce-container hbce-main">
 
-<section class="hbce-hero">
-  <div class="hbce-hero__kicker">IPR BASE · FISCALE · BANK-GRADE</div>
-  <h1 class="hbce-hero__title">Crea IPR Base (EU)</h1>
-  <p class="hbce-hero__lead">
-    Identità primaria fiscale europea.  
-    Contiene dati reali (come banca).  
-    Il file completo resta al cliente.  
-    Nel registry pubblico va solo SHA256.
-  </p>
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">CREATE · IPR BASE EU · RELEASE · HASH-ONLY · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Create IPR Base — deterministic release</h1>
+      <p class="hbce-hero__lead">
+        This page generates an IPR Base release artifact and the deterministic evidence fields required by HBCE:
+        <strong>payload_sha256</strong>, <strong>timestamp</strong>, <strong>signature</strong>.
+        Everything runs client-side. No storage. No external calls.
+      </p>
 
-  <div class="hbce-row" style="margin-top:18px">
-    <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">ACTIVATE</a>
-    <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-    <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-  </div>
-</section>
+      <div class="hbce-actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Back to Activation Wizard</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry</a>
+      </div>
 
-<section class="hbce-grid">
+      <div class="hbce-note">Generate → Hash → Verify → Publish minimized proof</div>
+    </section>
 
-<div class="hbce-card hbce-card--6">
-<h2>Dati anagrafici</h2>
+    <section class="hbce-critical">
+      <div class="hbce-critical__kicker">FAIL-CLOSED NOTICE · DETERMINISTIC EVIDENCE</div>
+      <div class="hbce-critical__title">If required evidence is missing ⇒ INVALID</div>
+      <p class="hbce-critical__text">
+        HBCE validation is deterministic. If <strong>payload_sha256</strong>, <strong>timestamp</strong>, or <strong>signature</strong>
+        is missing/malformed, verification must deny. Public surface is hash-only; do not publish private payloads.
+      </p>
+    </section>
 
-<div class="hbce-field">
-<label>Nome</label>
-<input id="nome" class="hbce-input" placeholder="Nome"/>
-</div>
+    <section class="hbce-section">
+      <h2>1) Input (IPR Base)</h2>
+      <p>
+        Fill the minimum fields needed to generate a release artifact. Keep it operational. Avoid sensitive data.
+      </p>
 
-<div class="hbce-field">
-<label>Cognome</label>
-<input id="cognome" class="hbce-input" placeholder="Cognome"/>
-</div>
+      <div class="hbce-two">
 
-<div class="hbce-field">
-<label>Nickname</label>
-<input id="nick" class="hbce-input" placeholder="Nickname operativo"/>
-</div>
+        <!-- LEFT: INPUT -->
+        <div class="hbce-card">
+          <h3>Release fields</h3>
 
-<div class="hbce-field">
-<label>Codice fiscale</label>
-<input id="cf" class="hbce-input" placeholder="Codice fiscale"/>
-</div>
+          <div class="hbce-field">
+            <label class="hbce-label" for="entityType">entity_type (required)</label>
+            <select class="hbce-select" id="entityType">
+              <option value="">— select —</option>
+              <option value="HUMAN">HUMAN</option>
+              <option value="AI">AI</option>
+              <option value="MACHINE">MACHINE</option>
+              <option value="INFRASTRUCTURE">INFRASTRUCTURE</option>
+              <option value="ORG">ORG</option>
+            </select>
+            <div class="hbce-help">Missing ⇒ INVALID (fail-closed).</div>
+          </div>
 
-<div class="hbce-field">
-<label>Documento</label>
-<select id="doc" class="hbce-select">
-<option value="CIE">Carta identità (CIE)</option>
-<option value="PASSAPORTO">Passaporto</option>
-</select>
-</div>
+          <div class="hbce-field">
+            <label class="hbce-label" for="displayName">name / label (required)</label>
+            <input class="hbce-input" id="displayName" placeholder="e.g. Manuel Coletta / HBCE Node Piemonte / Robot Unit 001" autocomplete="off" />
+            <div class="hbce-help">Operational label only. Do not publish sensitive data.</div>
+          </div>
 
-<div class="hbce-field">
-<label>Numero documento</label>
-<input id="docnum" class="hbce-input" placeholder="Numero documento"/>
-</div>
+          <div class="hbce-field">
+            <label class="hbce-label" for="iprid">ipr_id (optional)</label>
+            <input class="hbce-input" id="iprid" placeholder="e.g. IPR-3, IPR-AI-0001, IPR-NODE-IT-PIE-001" autocomplete="off" />
+            <div class="hbce-help">Optional. Can be assigned later.</div>
+          </div>
 
-<div class="hbce-field">
-<label>Residenza</label>
-<input id="res" class="hbce-input" placeholder="Città / Stato"/>
-</div>
+          <div class="hbce-field">
+            <label class="hbce-label" for="role">role (optional)</label>
+            <input class="hbce-input" id="role" placeholder="e.g. ORIGIN_OPERATOR / DEVICE_OPERATOR / VALIDATOR" autocomplete="off" />
+          </div>
 
-<div class="hbce-field">
-<label>Email</label>
-<input id="email" class="hbce-input" placeholder="email"/>
-</div>
+          <div class="hbce-field">
+            <label class="hbce-label" for="jurisdiction">jurisdiction (required)</label>
+            <select class="hbce-select" id="jurisdiction">
+              <option value="">— select —</option>
+              <option value="EU">EU</option>
+              <option value="IT">IT</option>
+              <option value="EU+IT">EU+IT</option>
+            </select>
+            <div class="hbce-help">EU-first posture. Missing ⇒ INVALID.</div>
+          </div>
 
-<div class="hbce-row">
-<button id="btnCreate" class="hbce-btn hbce-btn--primary">GENERA IPR BASE</button>
-</div>
+          <div class="hbce-field">
+            <label class="hbce-label" for="note">note (optional)</label>
+            <input class="hbce-input" id="note" placeholder="Short operational note (optional)" autocomplete="off" />
+          </div>
 
-<div id="status" class="hbce-badge hbce-badge--warn" style="margin-top:12px">Waiting…</div>
-</div>
+          <div class="hbce-formrow">
+            <button class="hbce-btn" type="button" id="btnGenerate">Generate release + evidence</button>
+            <button class="hbce-btn hbce-btn--ghost" type="button" id="btnClear">Clear</button>
+          </div>
 
-<div class="hbce-card hbce-card--6">
-<h2>Output</h2>
+          <p class="hbce-small">
+            The generated JSON is your private release artifact. Public registry should store <strong>hash-only</strong> proofs.
+          </p>
+        </div>
 
-<div class="hbce-field">
-<label>Registry entry (incolla)</label>
-<pre id="entry" class="hbce-textarea"></pre>
-</div>
+        <!-- RIGHT: OUTPUT -->
+        <div>
+          <div class="hbce-terminal" data-status="warn" id="genTerminal">
+            <div class="hbce-terminal__bar">
+              <div class="hbce-terminal__title">Release terminal</div>
+              <div class="hbce-terminal__status">WARN</div>
+            </div>
+            <div class="hbce-terminal__body">
+              <div class="hbce-terminal__line">
+                <div class="hbce-terminal__k">posture</div>
+                <div class="hbce-terminal__v">UE_FIRST · AUDIT_FIRST · FAIL_CLOSED · HASH_ONLY · APPEND_ONLY</div>
+              </div>
+              <div class="hbce-terminal__line">
+                <div class="hbce-terminal__k">required</div>
+                <div class="hbce-terminal__v">entity_type, name/label, jurisdiction</div>
+              </div>
+              <div class="hbce-terminal__line">
+                <div class="hbce-terminal__k">crypto</div>
+                <div class="hbce-terminal__v" id="cryptoStatus">Awaiting generation</div>
+              </div>
+              <div class="hbce-terminal__line">
+                <div class="hbce-terminal__k">result</div>
+                <div class="hbce-terminal__v" id="genResult">WARN</div>
+              </div>
+            </div>
+          </div>
 
-<div class="hbce-row">
-<button id="dlRelease" class="hbce-btn hbce-btn--ok" disabled>DOWNLOAD IPR_RELEASE.json</button>
-<button id="dlReceipt" class="hbce-btn" disabled>DOWNLOAD RECEIPT.json</button>
-<button id="copyEntry" class="hbce-btn" disabled>COPY ENTRY</button>
-</div>
+          <div class="hbce-callout hbce-callout--info">
+            <div class="hbce-callout__h">How to use the output</div>
+            <p style="margin:0;color:rgba(230,237,246,.72);font-size:13.5px;">
+              1) Keep the release JSON private as your artifact.<br/>
+              2) Copy <strong>payload_sha256</strong>, <strong>timestamp</strong>, <strong>signature</strong> into <a class="hbce-link" href="/hermeticum-bce-platform/verify/">Verify</a>.<br/>
+              3) Publish minimized proof (hash-only) to the <a class="hbce-link" href="/hermeticum-bce-platform/registry/">Registry</a>.
+            </p>
+          </div>
 
-<pre id="raw" class="hbce-textarea" style="margin-top:12px"></pre>
+          <div class="hbce-evidence hbce-out">
+            <div class="hbce-evidence__top">
+              <h3 class="hbce-evidence__h">Evidence output (copy)</h3>
+              <span class="hbce-mini">deterministic</span>
+            </div>
 
-</div>
+            <div class="hbce-evidence__row" style="margin-bottom:10px;">
+              <div class="hbce-evidence__label">payload_sha256</div>
+              <div class="hbce-evidence__value is-hash" id="out_sha">—</div>
+              <button class="hbce-copy" type="button" data-hbce-copy="#out_sha">COPY</button>
+            </div>
 
-</section>
-</main>
+            <div class="hbce-evidence__row" style="margin-bottom:10px;">
+              <div class="hbce-evidence__label">timestamp</div>
+              <div class="hbce-evidence__value" id="out_ts">—</div>
+              <button class="hbce-copy" type="button" data-hbce-copy="#out_ts">COPY</button>
+            </div>
 
-<div data-hbce="footer"></div>
+            <div class="hbce-evidence__row">
+              <div class="hbce-evidence__label">signature</div>
+              <div class="hbce-evidence__value" id="out_sig">—</div>
+              <button class="hbce-copy" type="button" data-hbce-copy="#out_sig">COPY</button>
+            </div>
+          </div>
 
-<script>
-let RELEASE=null, RECEIPT=null, ENTRY=null;
+          <div class="hbce-section" style="margin-top:14px;">
+            <h2>2) Release artifact (private)</h2>
+            <p>
+              This is the JSON release artifact you keep privately. The hash above is computed from this exact text.
+            </p>
 
-document.getElementById("btnCreate").onclick=async()=>{
+            <div class="hbce-code" id="releaseJson">—</div>
 
-const nome=document.getElementById("nome").value.trim();
-const cognome=document.getElementById("cognome").value.trim();
-const nick=document.getElementById("nick").value.trim();
-const cf=document.getElementById("cf").value.trim();
-const doc=document.getElementById("doc").value;
-const docnum=document.getElementById("docnum").value.trim();
-const res=document.getElementById("res").value.trim();
-const email=document.getElementById("email").value.trim();
+            <div class="hbce-formrow">
+              <button class="hbce-btn hbce-btn--ghost" type="button" id="btnCopyRelease" data-hbce-copy="#releaseJson">COPY RELEASE JSON</button>
+              <button class="hbce-btn hbce-btn--ghost" type="button" id="btnDownload">DOWNLOAD JSON</button>
+            </div>
+          </div>
 
-if(!nome||!cognome||!cf){
-alert("Nome cognome e CF obbligatori");
-return;
-}
+        </div>
+      </div>
+    </section>
 
-const ts=new Date().toISOString();
+    <section class="hbce-section">
+      <h2>3) Next gates</h2>
+      <div class="hbce-grid">
+        <article class="hbce-card">
+          <h3>Verify gate</h3>
+          <p>Paste evidence fields into Verify. Missing evidence ⇒ INVALID.</p>
+          <a class="hbce-link" href="/hermeticum-bce-platform/verify/">Open Verify</a>
+        </article>
 
-RELEASE={
-proto:"HBCE-IPR-FISCAL-v1",
-kind:"IPR_BASE_FISCAL_FILE",
-issuer:"HERMETICUM B.C.E. S.r.l.",
-jurisdiction:"EU",
-policy:["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","GDPR_MIN"],
-subject:{
-nome,cognome,nickname:nick,
-codice_fiscale:cf,
-documento:doc,
-numero_documento:docnum,
-residenza:res,
-email:email
-},
-issued_at:ts
-};
+        <article class="hbce-card">
+          <h3>Registry gate</h3>
+          <p>Publish minimized proof: hash + timestamp (+ status). Append-only.</p>
+          <a class="hbce-link" href="/hermeticum-bce-platform/registry/">Open Registry</a>
+        </article>
 
-const payload_sha256=await HBCE.sha256String(HBCE.stableStringify(RELEASE));
-RELEASE.payload_sha256=payload_sha256;
+        <article class="hbce-card">
+          <h3>EU Autonomy Framework</h3>
+          <p>Connect identity + evidence + time to autonomous systems governance requirements.</p>
+          <a class="hbce-link" href="/hermeticum-bce-platform/infrastructure/eu-autonomy-framework.html">Read framework</a>
+        </article>
+      </div>
+    </section>
 
-ENTRY={
-entity_type:"IPR_BASE",
-name:nome+" "+cognome,
-payload_sha256,
-timestamp:ts,
-status:"ACTIVE"
-};
+  </main>
 
-RECEIPT={
-proto:"HBCE-RECEIPT-v1",
-kind:"IPR_BASE_RECEIPT",
-timestamp:ts,
-payload_sha256,
-note:"Append entry in registry.json"
-};
+  <div data-hbce="footer"></div>
 
-document.getElementById("entry").textContent=JSON.stringify(ENTRY,null,2);
-document.getElementById("raw").textContent=JSON.stringify(RELEASE,null,2);
+  <script>
+    (function(){
+      const term = document.getElementById("genTerminal");
+      const cryptoStatus = document.getElementById("cryptoStatus");
+      const genResult = document.getElementById("genResult");
 
-document.getElementById("dlRelease").disabled=false;
-document.getElementById("dlReceipt").disabled=false;
-document.getElementById("copyEntry").disabled=false;
+      const entityType = document.getElementById("entityType");
+      const displayName = document.getElementById("displayName");
+      const iprid = document.getElementById("iprid");
+      const role = document.getElementById("role");
+      const jurisdiction = document.getElementById("jurisdiction");
+      const note = document.getElementById("note");
 
-document.getElementById("dlRelease").onclick=()=>{
-HBCE.download("HBCE_IPR_FISCAL_RELEASE.json",JSON.stringify(RELEASE,null,2));
-};
+      const outSha = document.getElementById("out_sha");
+      const outTs = document.getElementById("out_ts");
+      const outSig = document.getElementById("out_sig");
+      const releaseJson = document.getElementById("releaseJson");
 
-document.getElementById("dlReceipt").onclick=()=>{
-HBCE.download("HBCE_RECEIPT.json",JSON.stringify(RECEIPT,null,2));
-};
+      const btnGenerate = document.getElementById("btnGenerate");
+      const btnClear = document.getElementById("btnClear");
+      const btnDownload = document.getElementById("btnDownload");
 
-document.getElementById("copyEntry").onclick=async()=>{
-await navigator.clipboard.writeText(JSON.stringify(ENTRY,null,2));
-alert("Entry copiata. Incollare nel registry.");
-};
+      function setTerm(kind, msg){
+        term.setAttribute("data-status", kind);
+        cryptoStatus.textContent = msg;
+        genResult.textContent = kind.toUpperCase();
+        // refresh badge mapping
+        document.dispatchEvent(new Event("DOMContentLoaded"));
+      }
 
-document.getElementById("status").className="hbce-badge hbce-badge--ok";
-document.getElementById("status").textContent="IPR BASE GENERATED";
-};
-</script>
+      function hasText(s){ return String(s||"").trim().length > 0; }
+
+      function stableStringify(obj){
+        // deterministic JSON order: build an ordered object explicitly
+        const o = {};
+        Object.keys(obj).forEach(k => { o[k] = obj[k]; });
+        return JSON.stringify(o, null, 2);
+      }
+
+      async function sha256Hex(text){
+        if (!window.crypto || !crypto.subtle) return null;
+        const enc = new TextEncoder();
+        const data = enc.encode(text);
+        const hash = await crypto.subtle.digest("SHA-256", data);
+        const bytes = new Uint8Array(hash);
+        return Array.from(bytes).map(b => b.toString(16).padStart(2,"0")).join("");
+      }
+
+      function buildRelease(){
+        const now = new Date();
+        const ts = now.toISOString();
+
+        // Canonical release schema (HBCE-CORE-v3 aligned, minimal)
+        const rel = {
+          proto: "HBCE-CORE-v3",
+          kind: "IPR_BASE_RELEASE",
+          issuer: "HERMETICUM B.C.E. S.r.l.",
+          jurisdiction: jurisdiction.value.trim(),
+          mode: "PERMISSIONLESS",
+          policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","NO_IDENTITY_CUSTODY"],
+
+          subject: {
+            entity_type: entityType.value.trim(),
+            name: displayName.value.trim(),
+            ipr_id: iprid.value.trim() || undefined,
+            role: role.value.trim() || undefined
+          },
+
+          meta: {
+            created_at: ts,
+            note: note.value.trim() || undefined,
+            public_surface: "HASH_ONLY"
+          }
+        };
+
+        // remove undefined deterministically
+        if (!rel.subject.ipr_id) delete rel.subject.ipr_id;
+        if (!rel.subject.role) delete rel.subject.role;
+        if (!rel.meta.note) delete rel.meta.note;
+
+        // stable stringify (keys already in correct insertion order)
+        const txt = stableStringify(rel);
+        return { ts, txt };
+      }
+
+      async function generate(){
+        // required fields
+        if (!hasText(entityType.value) || !hasText(displayName.value) || !hasText(jurisdiction.value)){
+          setTerm("fail","Missing required fields. Fail-closed: cannot generate.");
+          outSha.textContent = "—";
+          outTs.textContent = "—";
+          outSig.textContent = "—";
+          releaseJson.textContent = "—";
+          return;
+        }
+
+        // crypto requirement
+        if (!window.crypto || !crypto.subtle){
+          setTerm("fail","WebCrypto unavailable. Fail-closed: cannot compute SHA-256.");
+          return;
+        }
+
+        setTerm("warn","Generating deterministic release…");
+
+        const { ts, txt } = buildRelease();
+        const sha = await sha256Hex(txt);
+
+        if (!sha){
+          setTerm("fail","SHA-256 computation failed. Fail-closed.");
+          return;
+        }
+
+        // signature placeholder: still required by verify gate, but real signing can be added later
+        const sig = "SIGNATURE_REQUIRED_ED25519 (placeholder)";
+
+        releaseJson.textContent = txt;
+        outSha.textContent = sha;
+        outTs.textContent = ts;
+        outSig.textContent = sig;
+
+        setTerm("pass","Release generated. Evidence ready for Verify/Registry.");
+
+        // re-wire copy buttons for new content
+        document.dispatchEvent(new Event("DOMContentLoaded"));
+      }
+
+      function clearAll(){
+        entityType.value = "";
+        displayName.value = "";
+        iprid.value = "";
+        role.value = "";
+        jurisdiction.value = "";
+        note.value = "";
+
+        outSha.textContent = "—";
+        outTs.textContent = "—";
+        outSig.textContent = "—";
+        releaseJson.textContent = "—";
+
+        setTerm("warn","Awaiting generation");
+      }
+
+      function downloadJSON(){
+        const txt = releaseJson.textContent || "";
+        if (!hasText(txt) || txt.trim() === "—") return;
+
+        const blob = new Blob([txt], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+
+        const safeName = (displayName.value || "ipr_base").trim().replaceAll(/[^a-z0-9_-]+/gi, "_").slice(0, 48);
+        a.download = `HBCE_IPR_BASE_RELEASE_${safeName}.json`;
+
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(a.href);
+      }
+
+      btnGenerate.addEventListener("click", generate);
+      btnClear.addEventListener("click", clearAll);
+      btnDownload.addEventListener("click", downloadJSON);
+
+      setTerm("warn","Awaiting generation");
+    })();
+  </script>
 </body>
 </html>
