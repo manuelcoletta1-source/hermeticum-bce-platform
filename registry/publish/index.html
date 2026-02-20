@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>REGISTRY PUBLISH — Minimized Proof (Append-Only)</title>
+  <meta name="description" content="Publish minimized hash-only proof to the HBCE append-only registry. Deterministic schema. Missing required fields => INVALID (fail-closed)." />
+
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/registry/publish/" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce-protocol.css" />
+
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js" defer></script>
+  <script src="/hermeticum-bce-platform/assets/hbce-protocol.js" defer></script>
+
+  <style>
+    .hbce-two{
+      display:grid;
+      grid-template-columns: 1.02fr .98fr;
+      gap:16px;
+      margin-top:14px;
+    }
+    @media (max-width: 980px){ .hbce-two{ grid-template-columns: 1fr; } }
+
+    .hbce-formrow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:flex-end;
+      margin-top:12px;
+    }
+    .hbce-formrow .hbce-btn{ height: 40px; }
+
+    .hbce-miniNote{
+      margin-top:10px;
+      color: rgba(230,237,246,.62);
+      font-size: 12.5px;
+    }
+
+    .hbce-pathbox{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.22);
+      border-radius: 16px;
+      padding: 12px 12px;
+      margin-top: 12px;
+    }
+    .hbce-pathbox code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size: 12.2px;
+      color: rgba(0,183,255,.92);
+      word-break: break-word;
+    }
+  </style>
+</head>
+
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">PUBLISH · REGISTRY · APPEND-ONLY · HASH-ONLY · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Publish minimized proof</h1>
+      <p class="hbce-hero__lead">
+        Generate a minimized, hash-only registry entry. This does not publish your private release artifact.
+        It produces an append-only entry containing deterministic evidence fields for public matching.
+      </p>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/create/base/">Create IPR Base</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry Viewer</a>
+      </div>
+
+      <div class="hbce-note">Minimize public surface · publish hash-only evidence</div>
+    </section>
+
+    <section class="hbce-critical">
+      <div class="hbce-critical__kicker">FAIL-CLOSED NOTICE · PUBLIC LEDGER RULES</div>
+      <div class="hbce-critical__title">Append-only means: no edits</div>
+      <p class="hbce-critical__text">
+        If you need to change something, you do not edit old entries. You publish a new entry/event.
+        Missing required evidence ⇒ <strong>INVALID</strong>.
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Publish input</h2>
+      <p>
+        Paste the deterministic evidence produced by the release generator and verification workflow.
+      </p>
+
+      <div class="hbce-two">
+
+        <!-- LEFT: INPUT -->
+        <div class="hbce-card">
+          <h3>Minimized registry entry fields</h3>
+
+          <div class="hbce-field">
+            <label class="hbce-label" for="name">name (public)</label>
+            <input class="hbce-input" id="name" placeholder="Public label (e.g. Manuel Coletta / HBCE Node Piemonte)" autocomplete="off" />
+            <div class="hbce-help">Keep it minimal. Do not publish sensitive data.</div>
+          </div>
+
+          <div class="hbce-field">
+            <label class="hbce-label" for="payload">payload_sha256 (required)</label>
+            <input class="hbce-input" id="payload" placeholder="64-hex sha256" autocomplete="off" />
+            <div class="hbce-help">Required. Missing/invalid format ⇒ INVALID.</div>
+          </div>
+
+          <div class="hbce-field">
+            <label class="hbce-label" for="timestamp">timestamp (required)</label>
+            <input class="hbce-input" id="timestamp" placeholder="RFC3339 (e.g. 2026-02-20T16:00:00+01:00)" autocomplete="off" />
+            <div class="hbce-help">Required. Must be parseable. Missing ⇒ INVALID.</div>
+          </div>
+
+          <div class="hbce-field">
+            <label class="hbce-label" for="status">status (optional but recommended)</label>
+            <select class="hbce-select" id="status">
+              <option value="">— select —</option>
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="VALID">VALID</option>
+              <option value="ISSUED">ISSUED</option>
+              <option value="REVOKED">REVOKED</option>
+              <option value="SUSPENDED">SUSPENDED</option>
+              <option value="STATUS_UPDATE">STATUS_UPDATE</option>
+            </select>
+            <div class="hbce-help">Status is useful for registry interpretation (still hash-only).</div>
+          </div>
+
+          <div class="hbce-field">
+            <label class="hbce-label" for="note">note (optional)</label>
+            <input class="hbce-input" id="note" placeholder="Optional short note" autocomplete="off" />
+          </div>
+
+          <div class="hbce-formrow">
+            <button class="hbce-btn" type="button" id="btnBuild">Build entry</button>
+            <button class="hbce-btn hbce-btn--ghost" type="button" id="btnClear">Clear</button>
+          </div>
+
+          <div class="hbce-pathbox">
+            <div class="hbce-miniNote">Default registry target (viewer expects):</div>
+            <code>/registry/registry.json</code>
+            <div class="hbce-miniNote">
+              This page produces a single entry object. Append it manually to the registry list (append-only).
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: OUTPUT -->
+        <div>
+          <div class="hbce-terminal" data-status="warn" id="pubTerminal">
+            <div class="hbce-terminal__bar">
+              <div class="hbce-terminal__title">Publish terminal</div>
+              <div class="hbce-terminal__status">WARN</div>
+            </div>
+            <div class="hbce-terminal__body">
+              <div class="hbce-terminal__line">
+                <div class="hbce-terminal__k">required</div>
+                <div class="hbce-terminal__v">payload_sha256, timestamp</div>
+              </div>
+              <div class="hbce-terminal__line">
+                <div class="hbce-terminal__k">public</div>
+                <div class="hbce-terminal__v">name + hash + timestamp (+ status)</div>
+              </div>
+              <div class="hbce-terminal__line">
+                <div class="hbce-terminal__k">mode</div>
+                <div class="hbce-terminal__v">append-only (no edits)</div>
+              </div>
+              <div class="hbce-terminal__line">
+                <div class="hbce-terminal__k">result</div>
+                <div class="hbce-terminal__v" id="pubResult">WARN</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hbce-evidence" style="margin-top:14px;">
+            <div class="hbce-evidence__top">
+              <h3 class="hbce-evidence__h">Entry output (copy)</h3>
+              <span class="hbce-mini">append-only</span>
+            </div>
+
+            <div class="hbce-evidence__row" style="margin-bottom:10px;">
+              <div class="hbce-evidence__label">payload_sha256</div>
+              <div class="hbce-evidence__value is-hash" id="out_sha">—</div>
+              <button class="hbce-copy" type="button" data-hbce-copy="#out_sha">COPY</button>
+            </div>
+
+            <div class="hbce-evidence__row" style="margin-bottom:10px;">
+              <div class="hbce-evidence__label">timestamp</div>
+              <div class="hbce-evidence__value" id="out_ts">—</div>
+              <button class="hbce-copy" type="button" data-hbce-copy="#out_ts">COPY</button>
+            </div>
+
+            <div class="hbce-evidence__row">
+              <div class="hbce-evidence__label">name</div>
+              <div class="hbce-evidence__value" id="out_name">—</div>
+              <button class="hbce-copy" type="button" data-hbce-copy="#out_name">COPY</button>
+            </div>
+          </div>
+
+          <div class="hbce-section" style="margin-top:14px;">
+            <h2>Registry entry JSON</h2>
+            <p>
+              Append this object to your registry list. This is minimized and hash-only.
+            </p>
+
+            <div class="hbce-code" id="entryJson">—</div>
+
+            <div class="hbce-formrow">
+              <button class="hbce-btn hbce-btn--ghost" type="button" data-hbce-copy="#entryJson">COPY ENTRY JSON</button>
+              <button class="hbce-btn hbce-btn--ghost" type="button" id="btnDownload">DOWNLOAD ENTRY JSON</button>
+            </div>
+          </div>
+
+          <div class="hbce-callout hbce-callout--warn">
+            <div class="hbce-callout__h">Append-only discipline</div>
+            <p style="margin:0;color:rgba(230,237,246,.72);font-size:13.5px;">
+              Do not edit past entries. Changes must be new entries or events referencing prior hashes.
+              This prevents silent rewriting and keeps auditability intact.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+
+  <script>
+    (function(){
+      const term = document.getElementById("pubTerminal");
+      const pubResult = document.getElementById("pubResult");
+
+      const name = document.getElementById("name");
+      const payload = document.getElementById("payload");
+      const timestamp = document.getElementById("timestamp");
+      const status = document.getElementById("status");
+      const note = document.getElementById("note");
+
+      const outSha = document.getElementById("out_sha");
+      const outTs = document.getElementById("out_ts");
+      const outName = document.getElementById("out_name");
+      const entryJson = document.getElementById("entryJson");
+
+      const btnBuild = document.getElementById("btnBuild");
+      const btnClear = document.getElementById("btnClear");
+      const btnDownload = document.getElementById("btnDownload");
+
+      function setTerm(kind){
+        term.setAttribute("data-status", kind);
+        pubResult.textContent = kind.toUpperCase();
+        document.dispatchEvent(new Event("DOMContentLoaded"));
+      }
+
+      function hasText(s){ return String(s||"").trim().length > 0; }
+      function isSha256(s){ return /^[a-f0-9]{64}$/i.test(String(s||"").trim()); }
+      function isTime(s){
+        const v = String(s||"").trim();
+        if (!v) return false;
+        const d = new Date(v);
+        return !Number.isNaN(d.getTime());
+      }
+
+      function stableEntry(){
+        const e = {
+          name: name.value.trim() || undefined,
+          payload_sha256: payload.value.trim(),
+          timestamp: timestamp.value.trim(),
+          status: status.value.trim() || undefined,
+          note: note.value.trim() || undefined
+        };
+        if (!e.name) delete e.name;
+        if (!e.status) delete e.status;
+        if (!e.note) delete e.note;
+        return e;
+      }
+
+      function build(){
+        // fail-closed required fields
+        if (!isSha256(payload.value) || !isTime(timestamp.value)){
+          setTerm("fail");
+          outSha.textContent = "—";
+          outTs.textContent = "—";
+          outName.textContent = "—";
+          entryJson.textContent = "—";
+          return;
+        }
+
+        const e = stableEntry();
+        const txt = JSON.stringify(e, null, 2);
+
+        outSha.textContent = e.payload_sha256;
+        outTs.textContent = e.timestamp;
+        outName.textContent = e.name || "—";
+        entryJson.textContent = txt;
+
+        // terminal result
+        setTerm("pass");
+      }
+
+      function clearAll(){
+        name.value = "";
+        payload.value = "";
+        timestamp.value = "";
+        status.value = "";
+        note.value = "";
+
+        outSha.textContent = "—";
+        outTs.textContent = "—";
+        outName.textContent = "—";
+        entryJson.textContent = "—";
+
+        setTerm("warn");
+      }
+
+      function download(){
+        const txt = entryJson.textContent || "";
+        if (!hasText(txt) || txt.trim() === "—") return;
+
+        const blob = new Blob([txt], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+
+        const safeName = (name.value || "entry").trim().replaceAll(/[^a-z0-9_-]+/gi, "_").slice(0, 48);
+        a.download = `HBCE_REGISTRY_ENTRY_${safeName}.json`;
+
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(a.href);
+      }
+
+      btnBuild.addEventListener("click", build);
+      btnClear.addEventListener("click", clearAll);
+      btnDownload.addEventListener("click", download);
+
+      setTerm("warn");
+    })();
+  </script>
+</body>
+</html>
