@@ -1,138 +1,191 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>Activate — HBCE Operational Identity (EU)</title>
-  <meta name="description" content="Canonical activation gateway for HBCE operational identity. B2G-first. Create → Registry → Verify. Fail-closed, hash-only, append-only." />
+<title>Activate — HBCE Operational Gateway (IPR → Registry → Verify → Operator)</title>
+<meta name="description" content="Canonical HBCE gateway. Execute deterministic flow: Create IPR Base → Append hash-only evidence → Verify (PASS/FAIL) → Issue Operator authority. Fail-closed. Append-only. GDPR-min." />
 
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
 <body>
-  <div data-hbce="header"></div>
 
-  <main class="hbce-container hbce-main">
+<div data-hbce="header"></div>
 
-    <!-- HERO -->
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CANONICAL GATEWAY · EU-FIRST · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">Activate an operational identity (IPR)</h1>
-      <p class="hbce-hero__lead">
-        This is the canonical entrypoint for HBCE.
-        Choose your corridor (Government / Enterprise / Individual) and follow the deterministic flow:
-        <strong>Create → Registry → Verify</strong>.
-        If a SHA-256 proof is missing from the public registry, status is <strong>INVALID</strong> (fail-closed).
-      </p>
+<main class="hbce-container hbce-main">
 
-      <div class="hbce-cta-group">
-        <a class="hbce-button hbce-button--primary" href="/hermeticum-bce-platform/create/base/">Create IPR Base</a>
-        <a class="hbce-button" href="/hermeticum-bce-platform/verify/">Verify</a>
-        <a class="hbce-button hbce-button--ghost" href="/hermeticum-bce-platform/registry/">Registry</a>
+<!-- HERO -->
+<section class="hbce-hero">
+  <div class="hbce-hero__kicker">CANONICAL GATEWAY · DETERMINISTIC · FAIL-CLOSED</div>
+  <h1 class="hbce-hero__title">Activate (operational execution gateway)</h1>
+  <p class="hbce-hero__lead">
+    This is the canonical HBCE entrypoint. Execute the operational chain:
+    IPR Base → public registry (hash-only) → verify (PASS/FAIL) → operator authority.
+  </p>
+
+  <div class="hbce-cta-group">
+    <a class="hbce-button hbce-button--primary" href="/hermeticum-bce-platform/create/base/">Start: Create IPR Base</a>
+    <a class="hbce-button" href="/hermeticum-bce-platform/operational-prerequisites/">Operational prerequisites</a>
+    <a class="hbce-button hbce-button--ghost" href="/hermeticum-bce-platform/protocol/">Protocol</a>
+  </div>
+
+  <p class="hbce-note">
+    Operational truth is binary. Missing registry proof ⇒ INVALID (fail-closed).
+  </p>
+</section>
+
+<!-- 10 MIN START -->
+<section class="hbce-section">
+  <h2>1) 10-minute start (canonical)</h2>
+
+  <div class="hbce-grid">
+    <div class="hbce-card">
+      <div class="hbce-card__kicker">STEP 1</div>
+      <div class="hbce-card__title">Create IPR Base (private release)</div>
+      <div class="hbce-card__text">
+        Generate the private IPR release file. This file remains in private custody. A canonical SHA-256 digest will be computed for public proof.
       </div>
-    </section>
-
-    <!-- CORRIDORS -->
-    <section class="hbce-section">
-      <h2>Choose your corridor</h2>
-      <p>
-        HBCE adoption is executed through corridors. Public sector and critical industry are primary.
-        Individual activation remains available as downstream onboarding.
-      </p>
-
-      <div class="hbce-grid hbce-grid--3">
-        <!-- B2G -->
-        <div class="hbce-card">
-          <div class="hbce-card__kicker">B2G · PRIMARY</div>
-          <h3 class="hbce-card__title">Governments & Public Sector</h3>
-          <p class="hbce-card__text">
-            Institutional deployment for citizens, public operators, AI accountability and critical systems.
-            Pilot corridors and governance discipline available.
-          </p>
-          <div class="hbce-card__actions">
-            <a class="hbce-button hbce-button--primary" href="/hermeticum-bce-platform/b2g/">Open B2G</a>
-            <a class="hbce-button" href="/hermeticum-bce-platform/corridors/">Corridors</a>
-          </div>
-        </div>
-
-        <!-- ENTERPRISE -->
-        <div class="hbce-card">
-          <div class="hbce-card__kicker">ENTERPRISE · SECONDARY</div>
-          <h3 class="hbce-card__title">Enterprise & Critical Industry</h3>
-          <p class="hbce-card__text">
-            Integration for OEMs, robotics, energy, datacenters, aerospace and autonomous systems.
-            Operational identity for assets, operators and AI units.
-          </p>
-          <div class="hbce-card__actions">
-            <a class="hbce-button hbce-button--primary" href="/hermeticum-bce-platform/enterprise/">Open Enterprise</a>
-            <a class="hbce-button" href="/hermeticum-bce-platform/oem/">OEM track</a>
-          </div>
-        </div>
-
-        <!-- CITIZEN -->
-        <div class="hbce-card">
-          <div class="hbce-card__kicker">INDIVIDUAL · ONBOARDING</div>
-          <h3 class="hbce-card__title">Individual Activation</h3>
-          <p class="hbce-card__text">
-            Create your IPR Base file locally, append only the SHA-256 proof to the public registry,
-            then verify deterministically and generate a certificate.
-          </p>
-          <div class="hbce-card__actions">
-            <a class="hbce-button hbce-button--primary" href="/hermeticum-bce-platform/create/base/">Start</a>
-            <a class="hbce-button" href="/hermeticum-bce-platform/pricing/">Pricing</a>
-          </div>
-        </div>
+      <div class="hbce-card__actions">
+        <a class="hbce-button hbce-button--primary" href="/hermeticum-bce-platform/create/base/">Open Create IPR Base</a>
       </div>
-    </section>
+    </div>
 
-    <!-- CANONICAL FLOW -->
-    <section class="hbce-section">
-      <h2>Canonical flow (deterministic)</h2>
-      <ol class="hbce-list">
-        <li>
-          <strong>Create IPR Base</strong> (private custody). Generate a real release file locally.
-          <div class="hbce-cta-group">
-            <a class="hbce-button" href="/hermeticum-bce-platform/create/base/">Create IPR Base</a>
-          </div>
-        </li>
-        <li>
-          <strong>Append to Registry</strong> (public hash-only). Paste SHA-256 proof into <code>registry/registry.json</code> and commit (append-only).
-          <div class="hbce-cta-group">
-            <a class="hbce-button" href="/hermeticum-bce-platform/registry/">Registry viewer</a>
-            <a class="hbce-button hbce-button--ghost" href="/hermeticum-bce-platform/ecosystem/">PASS/FAIL guard</a>
-          </div>
-        </li>
-        <li>
-          <strong>Verify + Certificate</strong>. Upload the real file, compute canonical SHA-256, match registry → VALID, else INVALID (fail-closed).
-          <div class="hbce-cta-group">
-            <a class="hbce-button" href="/hermeticum-bce-platform/verify/">Verify</a>
-          </div>
-        </li>
-      </ol>
-    </section>
-
-    <!-- OPERATOR -->
-    <section class="hbce-section hbce-section--dark">
-      <h2>Operator access (gated)</h2>
-      <p>
-        Operator issuance and governance require a VALID IPR Base in the public registry.
-        No match → STOP (fail-closed).
-      </p>
-      <div class="hbce-cta-group">
-        <a class="hbce-button hbce-button--primary" href="/hermeticum-bce-platform/create/operator/">Create Operator License</a>
-        <a class="hbce-button" href="/hermeticum-bce-platform/training/">Operator training</a>
-        <a class="hbce-button hbce-button--ghost" href="/hermeticum-bce-platform/join-operator/">Join as operator</a>
+    <div class="hbce-card">
+      <div class="hbce-card__kicker">STEP 2</div>
+      <div class="hbce-card__title">Append public proof (hash-only)</div>
+      <div class="hbce-card__text">
+        Publish hash-only evidence into the append-only public registry. Public layer never stores personal data.
       </div>
+      <div class="hbce-card__actions">
+        <a class="hbce-button" href="/hermeticum-bce-platform/registry/">Open Public Registry</a>
+      </div>
+    </div>
 
-      <p class="hbce-note">
-        HBCE does not replace eIDAS / EUDI Wallet legal identity schemes.
-        HBCE is an operational identity and auditability layer designed for deterministic verification and minimization.
-      </p>
-    </section>
+    <div class="hbce-card">
+      <div class="hbce-card__kicker">STEP 3</div>
+      <div class="hbce-card__title">Verify (PASS/FAIL)</div>
+      <div class="hbce-card__text">
+        Upload the private release file, compute canonical digest and match it against registry evidence. Match ⇒ VALID. No match ⇒ INVALID.
+      </div>
+      <div class="hbce-card__actions">
+        <a class="hbce-button" href="/hermeticum-bce-platform/verify/">Open Verify</a>
+      </div>
+    </div>
 
-  </main>
+    <div class="hbce-card">
+      <div class="hbce-card__kicker">STEP 4</div>
+      <div class="hbce-card__title">Operator authority (gated)</div>
+      <div class="hbce-card__text">
+        Operator issuance requires a VALID IPR Base proof in the registry. Missing proof ⇒ STOP (fail-closed).
+      </div>
+      <div class="hbce-card__actions">
+        <a class="hbce-button hbce-button--primary" href="/hermeticum-bce-platform/create/operator/">Open Create Operator</a>
+      </div>
+    </div>
+  </div>
 
-  <div data-hbce="footer"></div>
+  <p class="hbce-note">
+    This chain is the minimum operational discipline. Everything else routes back here.
+  </p>
+</section>
+
+<!-- PREREQUISITES (THE GATE) -->
+<section class="hbce-section hbce-section--dark">
+  <h2>2) Operational prerequisites (mandatory gate)</h2>
+  <ul class="hbce-list">
+    <li><strong>IPR Base exists</strong> (private release file).</li>
+    <li><strong>Public proof exists</strong> (hash-only registry evidence).</li>
+    <li><strong>Deterministic verification passes</strong> (canonical SHA-256 match).</li>
+    <li><strong>Authority is explicit</strong> (operator license gated by VALID proof).</li>
+  </ul>
+
+  <div class="hbce-cta-group">
+    <a class="hbce-button hbce-button--primary" href="/hermeticum-bce-platform/operational-prerequisites/">Read prerequisites (PASS/FAIL)</a>
+    <a class="hbce-button" href="/hermeticum-bce-platform/security/">Security model</a>
+    <a class="hbce-button hbce-button--ghost" href="/hermeticum-bce-platform/audit/">Audit hub</a>
+  </div>
+
+  <p class="hbce-note">
+    Prerequisites are not optional. They are designed to harden into mandatory infrastructure as autonomy scales.
+  </p>
+</section>
+
+<!-- WHO THIS IS FOR -->
+<section class="hbce-section">
+  <h2>3) Who this gateway is for</h2>
+
+  <div class="hbce-grid hbce-grid--2">
+    <div class="hbce-card">
+      <div class="hbce-card__kicker">INDIVIDUAL</div>
+      <div class="hbce-card__title">Humans (IPR root)</div>
+      <div class="hbce-card__text">
+        The human IPR is the operational root used to derive accountable identities for operators, AI units and autonomous systems.
+      </div>
+      <div class="hbce-card__actions">
+        <a class="hbce-button" href="/hermeticum-bce-platform/what-is-ipr/">What is IPR</a>
+      </div>
+    </div>
+
+    <div class="hbce-card">
+      <div class="hbce-card__kicker">AUTHORITY</div>
+      <div class="hbce-card__title">Operators (issuance and governance)</div>
+      <div class="hbce-card__text">
+        Operators enforce issuance discipline and accountable execution. Authority is verifiable and fail-closed.
+      </div>
+      <div class="hbce-card__actions">
+        <a class="hbce-button" href="/hermeticum-bce-platform/operator/">Operator layer</a>
+      </div>
+    </div>
+
+    <div class="hbce-card">
+      <div class="hbce-card__kicker">AUTONOMY</div>
+      <div class="hbce-card__title">AI units and autonomous systems</div>
+      <div class="hbce-card__text">
+        Autonomous identities must be derived from a VALID parent root. Non-derived autonomy is INVALID by design.
+      </div>
+      <div class="hbce-card__actions">
+        <a class="hbce-button" href="/hermeticum-bce-platform/ai/">AI layer</a>
+      </div>
+    </div>
+
+    <div class="hbce-card">
+      <div class="hbce-card__kicker">B2G</div>
+      <div class="hbce-card__title">Government and critical domains</div>
+      <div class="hbce-card__text">
+        Deterministic identity and authority become prerequisites in critical corridors: energy, transport, defense, public sector.
+      </div>
+      <div class="hbce-card__actions">
+        <a class="hbce-button" href="/hermeticum-bce-platform/b2g/">B2G deployment</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CANONICAL EXIT ROUTING -->
+<section class="hbce-section hbce-section--dark">
+  <h2>4) Canonical exits (no alternative entrypoints)</h2>
+  <p>
+    All documentation and institutional pages must route back to this gateway for execution.
+    HBCE is operated through deterministic flows and append-only evidence.
+  </p>
+
+  <div class="hbce-cta-group">
+    <a class="hbce-button hbce-button--primary" href="/hermeticum-bce-platform/create/base/">Create IPR Base</a>
+    <a class="hbce-button" href="/hermeticum-bce-platform/registry/">Registry</a>
+    <a class="hbce-button" href="/hermeticum-bce-platform/verify/">Verify</a>
+    <a class="hbce-button" href="/hermeticum-bce-platform/create/operator/">Operator</a>
+  </div>
+
+  <p class="hbce-note">
+    Operational posture: EU-first · audit-first · fail-closed · hash-only · append-only · GDPR-min · no public data custody
+  </p>
+</section>
+
+</main>
+
+<div data-hbce="footer"></div>
+
 </body>
 </html>
