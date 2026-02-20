@@ -1,0 +1,50 @@
+openapi: 3.1.0
+info:
+  title: ΦΩ Industrial Pilot API
+  version: "0.1"
+servers:
+  - url: https://localhost/phiomega-api
+paths:
+  /event:
+    post:
+      summary: Ingest industrial event (Λ)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./event.schema.json
+      responses:
+        "202": { description: Accepted }
+  /proposition:
+    post:
+      summary: Submit ΦΩ proposition (κ, Σ, Χτ) + decision
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./proposition.schema.json
+      responses:
+        "201": { description: Created }
+  /mip:
+    post:
+      summary: Register Machine Identity Pack (MIP)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./mip.schema.json
+      responses:
+        "201": { description: Created }
+  /verify/{hash}:
+    get:
+      summary: Deterministic verification for a given hash
+      parameters:
+        - name: hash
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: OK }
