@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/phiomega/spec/mip.schema.json",
+  "title": "ΦΩ Machine Identity Pack (MIP) v0.1",
+  "type": "object",
+  "required": ["proto", "machine_id", "issuer", "born_at", "machine", "fingerprints", "policy", "evidence_chain"],
+  "properties": {
+    "proto": { "const": "PHIOMEGA-MIP-v0.1" },
+    "machine_id": { "type": "string", "minLength": 3 },
+    "issuer": {
+      "type": "object",
+      "required": ["entity", "operator", "jurisdiction"],
+      "properties": {
+        "entity": { "type": "string" },
+        "operator": { "type": "string" },
+        "jurisdiction": { "type": "string", "enum": ["EU"] }
+      },
+      "additionalProperties": false
+    },
+    "born_at": { "type": "string", "format": "date-time" },
+    "site": {
+      "type": "object",
+      "properties": {
+        "city": { "type": "string" },
+        "country": { "type": "string", "minLength": 2, "maxLength": 2 },
+        "zone": { "type": "string" },
+        "disclosure": { "type": "string", "enum": ["MINIMAL", "PRIVATE"] }
+      },
+      "additionalProperties": false
+    },
+    "machine": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "type": "string", "enum": ["PLC", "ROBOT", "CELL"] },
+        "vendor": { "type": "string" },
+        "model": { "type": "string" },
+        "serial": { "type": "string" },
+        "fw_version": { "type": "string" },
+        "sw_version": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "interfaces": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "read_only"],
+        "properties": {
+          "kind": { "type": "string", "enum": ["OPC-UA", "MODBUS", "SYSLOG", "FILE_EXPORT", "HTTP"] },
+          "read_only": { "type": "boolean", "const": true }
+        },
+        "additionalProperties": false
+      }
+    },
+    "fingerprints": {
+      "type": "object",
+      "required": ["fp_soft", "fp_cfg"],
+      "properties": {
+        "fp_soft": { "type": "string", "pattern": "^(sha256:)[0-9a-f]{64}$" },
+        "fp_cfg": { "type": "string", "pattern": "^(sha256:)[0-9a-f]{64}$" },
+        "fp_hw_hint": { "type": "string", "pattern": "^(sha256:)[0-9a-f]{64}$" }
+      },
+      "additionalProperties": false
+    },
+    "keys": {
+      "type": "object",
+      "properties": {
+        "device_pub": { "type": "string" },
+        "operator_pub": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "policy": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["HASH_ONLY", "APPEND_ONLY", "FAIL_CLOSED", "NO_PUBLIC_DATA_CUSTODY"]
+      },
+      "minItems": 1
+    },
+    "phiomega": {
+      "type": "object",
+      "properties": {
+        "cycle": {
+          "type": "object",
+          "properties": { "type": { "const": "SSO" }, "max_period_s": { "type": "number", "maximum": 1.0 } },
+          "additionalProperties": false
+        },
+        "thresholds": {
+          "type": "object",
+          "properties": {
+            "kappa_min": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+            "sigma_min": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+            "chiTau_critical": { "type": "number", "minimum": 0.0, "maximum": 1.0 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "evidence_chain": {
+      "type": "object",
+      "required": ["genesis_hash", "hash_alg", "timebase"],
+      "properties": {
+        "genesis_hash": { "type": "string", "pattern": "^(sha256:)[0-9a-f]{64}$" },
+        "hash_alg": { "type": "string", "enum": ["sha256"] },
+        "timebase": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
