@@ -16,6 +16,8 @@
     { href: BASE + "verify/", label: "Verify" },
     { href: BASE + "registry/", label: "Registry" },
     { href: BASE + "registry/publish/", label: "Publish" },
+    { href: BASE + "protocol/", label: "Protocol" },
+    { href: BASE + "compliance/", label: "Compliance" },
     { href: BASE + "pricing/", label: "Pricing" },
     { href: BASE + "horizon/", label: "Horizon" }
   ];
@@ -78,10 +80,10 @@
         </div>
 
         <div class="hbce-footer__col">
-          <div class="hbce-footer__h">Infrastructure</div>
-          <a class="hbce-footer__a" href="${BASE}infrastructure/eu-autonomy-framework.html">EU Autonomy Framework</a>
-          <a class="hbce-footer__a" href="${BASE}infrastructure/ipr-layers.html">IPR Layers</a>
+          <div class="hbce-footer__h">Governance</div>
           <a class="hbce-footer__a" href="${BASE}protocol/">Protocol</a>
+          <a class="hbce-footer__a" href="${BASE}compliance/">Compliance</a>
+          <a class="hbce-footer__a" href="${BASE}infrastructure/eu-autonomy-framework.html">EU Autonomy Framework</a>
           <a class="hbce-footer__a" href="${BASE}horizon/">Horizon</a>
         </div>
 
@@ -107,7 +109,6 @@
 
     links.forEach(a => {
       const href = a.getAttribute("href") || "";
-      // mark active if exact match OR if path is within section (except BASE root)
       const isActive = href !== "#" && (href === path || (href !== BASE && path.startsWith(href)));
       if (isActive) a.classList.add("is-active");
     });
