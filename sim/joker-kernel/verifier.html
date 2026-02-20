@@ -1,11 +1,10 @@
-<!-- FILE: /sim/joker-kernel/verifier.html -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>HBCE Verifier — Evidence Pack v2 (REAL)</title>
-  <meta name="description" content="Offline verifier for HBCE Evidence Pack v2: canonical preimage → SHA-512 pack_root_hash → ECDSA signature verification; plus ledger chain + record hash + record signature verification."/>
+  <title>HBCE Verifier — Evidence Pack v2 (Offline-Real)</title>
+  <meta name="description" content="Offline-real verifier for HBCE Evidence Pack v2: canonical preimage -> SHA-512 pack_root_hash -> ECDSA P-256 signature verification; plus ledger hash-chain and per-record hash/signature checks."/>
   <style>
     :root{--bg:#0b0f14;--ink:#eaf2ff;--mut:rgba(234,242,255,.78);--line:rgba(255,255,255,.10);--soft:rgba(255,255,255,.04);--g:#22c55e;--w:#f59e0b;--b:#ef4444;}
     *{box-sizing:border-box}
@@ -38,14 +37,15 @@
     .tag.warn{border-color:rgba(245,158,11,.35)}
     input[type="file"]{display:none}
     label.filepick{cursor:pointer}
+    code{color:rgba(234,242,255,.92)}
   </style>
 </head>
 <body>
 <header>
-  <h1>HBCE Verifier — Evidence Pack v2 (REAL)</h1>
+  <h1>HBCE Verifier — Evidence Pack v2 (Offline-Real)</h1>
   <p>
-    Verifies pack-level proof: <span class="mono">canonical(preimage) → SHA-512 pack_root_hash → ECDSA signature</span>.
-    Also verifies ledger hash-chain and per-record hash+signature.
+    Verifies: <span class="mono">canonical(preimage) → SHA-512 pack_root_hash → ECDSA P-256 signature</span>,
+    plus ledger hash-chain and per-record hash/signature checks. Fail-closed.
   </p>
 </header>
 
@@ -60,11 +60,16 @@
           <label class="btn filepick" for="fileInput">Load JSON</label>
           <input id="fileInput" type="file" accept="application/json,.json"/>
           <button class="btn primary" id="btnVerify">Verify</button>
+          <button class="btn" id="btnExample">Example</button>
           <button class="btn danger" id="btnClear">Clear</button>
         </div>
       </div>
       <div class="hr"></div>
       <textarea id="input" class="mono" spellcheck="false" placeholder="Paste the Evidence Pack v2 JSON here..."></textarea>
+      <div class="hr"></div>
+      <div class="small">
+        Tip: to prove tamper detection, edit one byte inside the JSON (e.g. change a letter in <span class="mono">phi:detail</span>), then verify again. It must FAIL.
+      </div>
     </section>
 
     <section class="card">
@@ -89,6 +94,7 @@
         <span class="tag warn" id="tRoot">Root: <span class="mono">—</span></span>
         <span class="tag warn" id="tSig">PackSig: <span class="mono">—</span></span>
         <span class="tag warn" id="tLedger">Ledger: <span class="mono">—</span></span>
+        <span class="tag warn" id="tRecords">Records: <span class="mono">—</span></span>
       </div>
 
       <div class="hr"></div>
@@ -99,8 +105,8 @@
             <tr>
               <th style="width:60px;">#</th>
               <th style="width:140px;">Event</th>
-              <th style="width:120px;">Hash</th>
-              <th style="width:140px;">Sig</th>
+              <th style="width:120px;">D Hash</th>
+              <th style="width:140px;">Record Sig</th>
               <th>Note</th>
             </tr>
           </thead>
@@ -127,14 +133,16 @@
   const tRoot = $("tRoot");
   const tSig = $("tSig");
   const tLedger = $("tLedger");
+  const tRecords = $("tRecords");
 
   const btnVerify = $("btnVerify");
   const btnClear = $("btnClear");
   const btnCopy = $("btnCopy");
   const btnExport = $("btnExport");
+  const btnExample = $("btnExample");
   const fileInput = $("fileInput");
 
-  // -------- Canonical JSON (MUST match kernel) --------
+  // --- Canonical JSON (MUST match kernel) ---
   function canonicalize(value){
     if(value === null) return null;
     const t = typeof value;
@@ -146,13 +154,13 @@
       for(const k of keys) out[k] = canonicalize(value[k]);
       return out;
     }
-    return null;
+    return null; // fail-closed: undefined/functions become null
   }
   function canonicalStringify(obj){
     return JSON.stringify(canonicalize(obj));
   }
 
-  // -------- Crypto utils --------
+  // --- Crypto utils ---
   function bufToHex(buf){
     const b = new Uint8Array(buf);
     let s="";
@@ -174,12 +182,23 @@
     el.classList.add("tag", state);
     el.innerHTML = html;
   }
-
+  function clearUI(){
+    rows.innerHTML = "";
+    reportArea.value = "";
+    summary.className = "warn small";
+    summary.textContent = "Load a pack and press Verify.";
+    setTag(tPack,"warn",`Pack: <span class="mono">—</span>`);
+    setTag(tRoot,"warn",`Root: <span class="mono">—</span>`);
+    setTag(tSig,"warn",`PackSig: <span class="mono">—</span>`);
+    setTag(tLedger,"warn",`Ledger: <span class="mono">—</span>`);
+    setTag(tRecords,"warn",`Records: <span class="mono">—</span>`);
+  }
   function parseJSON(txt){
     try { return {ok:true, v: JSON.parse(txt)}; }
     catch(e){ return {ok:false, e:String(e)}; }
   }
 
+  // --- Ledger verification (append-only hash-chain) ---
   async function verifyLedger(ledger){
     const chain = ledger?.chain;
     if(!Array.isArray(chain)) return {ok:false, reason:"Missing ledger.chain", len:0};
@@ -192,17 +211,20 @@
     }
     return {ok:true, len:chain.length};
   }
+  function ledgerTip(ledger){
+    const c = ledger?.chain;
+    return (Array.isArray(c) && c.length) ? c[c.length-1].chain_hash : "GENESIS";
+  }
 
-  async function verifyRecordHash(rec){
+  // --- Per-record verification (must match kernel rules) ---
+  async function verifyRecordDHash(rec){
     const hashValue = rec?.["phi:hashValue"];
     const payload = rec?.["phi:payload"];
     if(typeof hashValue !== "string") return {ok:false, reason:"Missing phi:hashValue"};
-    if(!payload) return {ok:false, reason:"Missing phi:payload"};
-
-    // Kernel hashes canonical(payload)
+    if(!payload || typeof payload !== "object") return {ok:false, reason:"Missing phi:payload"};
     const D_norm = canonicalStringify(payload);
     const recomputed = await sha512Hex(new TextEncoder().encode(D_norm));
-    if(recomputed !== hashValue) return {ok:false, reason:"Record hash mismatch"};
+    if(recomputed !== hashValue) return {ok:false, reason:"Record D hash mismatch"};
     return {ok:true};
   }
 
@@ -217,7 +239,7 @@
     const signatureHex = devSig["phi:signatureHex"];
     if(!pubJwk || !signedDigestHex || !signatureHex) return {ok:false, reason:"Missing signature fields"};
 
-    // Kernel computes signedDigestHex = SHA-512(hashD + "|" + utc)
+    // Kernel rule: signedDigestHex = SHA-512(hashD + "|" + utc)
     const expected = await sha512Hex(new TextEncoder().encode(hashD + "|" + utc));
     if(expected !== signedDigestHex) return {ok:false, reason:"signedDigestHex mismatch"};
 
@@ -234,61 +256,65 @@
     return ok ? {ok:true} : {ok:false, reason:"Signature invalid"};
   }
 
-  async function verifyPackRootAndSig(pack){
+  // --- Pack proof verification (REAL) ---
+  async function verifyPackProof(pack){
+    if(pack?.proto !== "HBCE-EVIDENCE-PACK-v2") return {ok:false, reason:"Unsupported proto"};
     const proof = pack?.proof;
-    const identity = pack?.identity;
-    if(!proof?.pack_root_hash || !proof?.pack_signature) return {ok:false, reason:"Missing proof"};
-    if(!identity?.kid || !pack?.records || !pack?.ledger || !pack?.ipr_anchor_set) return {ok:false, reason:"Missing required fields"};
+    if(!proof?.pack_root_hash || !proof?.pack_signature) return {ok:false, reason:"Missing proof.pack_root_hash/pack_signature"};
+    if(!pack?.ipr_anchor_set) return {ok:false, reason:"Missing ipr_anchor_set"};
+    if(!Array.isArray(pack?.records)) return {ok:false, reason:"Missing records[]"};
+    if(!pack?.ledger) return {ok:false, reason:"Missing ledger"};
+    if(!pack?.identity?.kid) return {ok:false, reason:"Missing identity.kid"};
 
-    // Recompute anchor_set_hash
+    // 1) Recompute anchor_set_hash from ipr_anchor_set
     const anchor_set_hash = await sha512Hex(new TextEncoder().encode(canonicalStringify(pack.ipr_anchor_set)));
 
-    // Rebuild preimage EXACTLY like kernel
+    // 2) Rebuild preimage EXACTLY like kernel export
     const preimage = {
       proto: pack.proto,
       kind: pack.kind,
       issuer: pack.issuer,
       mode: pack.mode,
       generatedAt: pack.generatedAt,
-      identity: { iprId: identity.iprId, nickname: identity.nickname, kid: identity.kid, algo: identity.algo },
-      ledger_tip: (pack.ledger.chain?.length ? pack.ledger.chain[pack.ledger.chain.length-1].chain_hash : "GENESIS"),
-      record_hashes: pack.records.map(r => r["phi:hashValue"]),
+      identity: {
+        iprId: pack.identity.iprId,
+        nickname: pack.identity.nickname,
+        kid: pack.identity.kid,
+        algo: pack.identity.algo
+      },
+      ledger_tip: ledgerTip(pack.ledger),
+      record_hashes: pack.records.map(r => r?.["phi:hashValue"]),
       anchor_set_hash
     };
+
+    // Fail-closed: if any record hash is missing
+    if(preimage.record_hashes.some(x => typeof x !== "string")) return {ok:false, reason:"Record hash missing in records[]"};
 
     const preimage_canon = canonicalStringify(preimage);
     const recomputed_root = await sha512Hex(new TextEncoder().encode(preimage_canon));
 
-    if(recomputed_root !== proof.pack_root_hash) return {ok:false, reason:"pack_root_hash mismatch", recomputed_root};
-
-    // Verify signature over bytes(pack_root_hash)
-    let pubKey;
-    try{
-      pubKey = await crypto.subtle.importKey("jwk", pack.records[0]?.I_axis?.["phi:devSig"]?.["phi:publicJwk"] || identity.publicJwk || null,
-        {name:"ECDSA", namedCurve:"P-256"}, true, ["verify"]);
-    }catch(e){
-      // Fallback: use identity.publicJwk if present; otherwise fail closed.
-      // If your kernel stores pubJwk only inside records, record[0] path should work.
-      return {ok:false, reason:"Missing/importable public key for pack signature"};
+    if(recomputed_root !== proof.pack_root_hash){
+      return {ok:false, reason:"pack_root_hash mismatch", recomputed_root};
     }
 
+    // 3) Verify pack signature using publicJwk from first record (fail-closed)
+    const pubJwk = pack.records?.[0]?.I_axis?.["phi:devSig"]?.["phi:publicJwk"];
+    if(!pubJwk) return {ok:false, reason:"Missing publicJwk (records[0].I_axis.phi:devSig.phi:publicJwk)"};
+
+    let pubKey;
+    try{
+      pubKey = await crypto.subtle.importKey("jwk", pubJwk, {name:"ECDSA", namedCurve:"P-256"}, true, ["verify"]);
+    }catch(e){
+      return {ok:false, reason:"Public key import failed for pack signature"};
+    }
+
+    // Signature signs bytes(pack_root_hash)
     const msg = hexToBytes(proof.pack_root_hash);
     const sig = hexToBytes(proof.pack_signature);
     const ok = await crypto.subtle.verify({name:"ECDSA", hash:"SHA-256"}, pubKey, sig, msg);
     if(!ok) return {ok:false, reason:"pack_signature invalid"};
 
-    return {ok:true};
-  }
-
-  function clearUI(){
-    rows.innerHTML = "";
-    reportArea.value = "";
-    summary.className = "warn small";
-    summary.textContent = "Load a pack and press Verify.";
-    setTag(tPack,"warn",`Pack: <span class="mono">—</span>`);
-    setTag(tRoot,"warn",`Root: <span class="mono">—</span>`);
-    setTag(tSig,"warn",`PackSig: <span class="mono">—</span>`);
-    setTag(tLedger,"warn",`Ledger: <span class="mono">—</span>`);
+    return {ok:true, preimage_canon};
   }
 
   function addRow(i, eventType, hashOk, sigOk, note){
@@ -304,14 +330,14 @@
     rows.appendChild(tr);
   }
 
-  let lastReport=null;
+  let lastReport = null;
 
   async function runVerify(){
-    rows.innerHTML="";
-    reportArea.value="";
-    lastReport=null;
+    rows.innerHTML = "";
+    reportArea.value = "";
+    lastReport = null;
 
-    const parsed=parseJSON(input.value.trim());
+    const parsed = parseJSON(input.value.trim());
     if(!parsed.ok){
       summary.className="bad small";
       summary.textContent="JSON parse error: "+parsed.e;
@@ -319,11 +345,11 @@
       return;
     }
 
-    const pack=parsed.v;
-    setTag(tPack,"warn",`Pack: <span class="mono">${pack.proto||"—"}</span>`);
+    const pack = parsed.v;
+    setTag(tPack,"warn",`Pack: <span class="mono">${pack.proto || "—"}</span>`);
 
     // 1) Pack proof
-    const pr = await verifyPackRootAndSig(pack);
+    const pr = await verifyPackProof(pack);
     if(pr.ok){
       setTag(tRoot,"good",`Root: <span class="mono">PASS</span>`);
       setTag(tSig,"good",`PackSig: <span class="mono">PASS</span>`);
@@ -335,36 +361,44 @@
     // 2) Ledger
     const lr = await verifyLedger(pack.ledger);
     if(lr.ok) setTag(tLedger,"good",`Ledger: <span class="mono">PASS</span> · <span class="mono">${lr.len}</span>`);
-    else setTag(tLedger,"bad",`Ledger: <span class="mono">FAIL</span>`);
+    else setTag(tLedger,"bad",`Ledger: <span class="mono">FAIL</span> · <span class="mono">${lr.reason}</span>`);
 
     // 3) Records
     const recs = Array.isArray(pack.records) ? pack.records : [];
     let hp=0, sp=0;
     for(let i=0;i<recs.length;i++){
-      const r=recs[i];
-      const ev=r?.["phi:payload"]?.["phi:eventType"] || "—";
-      const h=await verifyRecordHash(r);
-      const s=await verifyRecordSignature(r);
+      const r = recs[i];
+      const ev = r?.["phi:payload"]?.["phi:eventType"] || "—";
+      const h = await verifyRecordDHash(r);
+      const s = await verifyRecordSignature(r);
       if(h.ok) hp++;
       if(s.ok) sp++;
-      const note=[h.ok?null:h.reason, s.ok?null:s.reason].filter(Boolean).join(" · ");
+      const note = [h.ok?null:h.reason, s.ok?null:s.reason].filter(Boolean).join(" · ");
       addRow(i, ev, h.ok, s.ok, note);
     }
-
     const allHashOk = (hp===recs.length);
     const allSigOk = (sp===recs.length);
+    setTag(tRecords, (allHashOk && allSigOk) ? "good" : "bad", `Records: <span class="mono">${hp}/${recs.length}</span> hash · <span class="mono">${sp}/${recs.length}</span> sig`);
+
     const overall = pr.ok && lr.ok && allHashOk && allSigOk;
 
     summary.className = overall ? "ok small" : "bad small";
     summary.innerHTML = overall
-      ? `<b>PASS</b> — pack proof + ledger + record integrity verified.`
-      : `<b>FAIL</b> — broken integrity (pack/ledger/records).`;
+      ? `<b>PASS</b> — pack proof + ledger + record integrity verified (offline-real).`
+      : `<b>FAIL</b> — integrity broken (pack proof and/or ledger and/or records).`;
 
     lastReport = {
-      verifier:"HBCE-VERIFIER-v2-REAL",
-      verifiedAt:new Date().toISOString(),
-      results:{
-        overall: overall ? "PASS":"FAIL",
+      verifier: "HBCE-VERIFIER-v2-OFFLINE-REAL",
+      verifiedAt: new Date().toISOString(),
+      pack: {
+        proto: pack.proto || null,
+        issuer: pack.issuer || null,
+        mode: pack.mode || null,
+        generatedAt: pack.generatedAt || null,
+        kid: pack.identity?.kid || null
+      },
+      results: {
+        overall: overall ? "PASS" : "FAIL",
         pack_proof: pr,
         ledger: lr,
         records: { hash_pass: hp, sig_pass: sp, total: recs.length }
@@ -375,23 +409,43 @@
 
   // File load
   fileInput.addEventListener("change", async ()=>{
-    const f=fileInput.files?.[0];
+    const f = fileInput.files?.[0];
     if(!f) return;
     input.value = await f.text();
   });
 
   btnVerify.addEventListener("click", ()=>runVerify());
   btnClear.addEventListener("click", ()=>{
-    input.value="";
+    input.value = "";
     clearUI();
+  });
+
+  btnExample.addEventListener("click", ()=>{
+    input.value = JSON.stringify({
+      proto:"HBCE-EVIDENCE-PACK-v2",
+      kind:"JOKER_KERNEL_EVIDENCE",
+      issuer:"HERMETICUM B.C.E. S.r.l.",
+      mode:"OFFLINE_REAL",
+      generatedAt:new Date().toISOString(),
+      identity:{iprId:"IPR-AI-0001",nickname:"JOKER-C2",kid:"example",algo:"ECDSA-P256"},
+      ledger:{chain:[],replicas:[[],[]]},
+      records:[],
+      ipr_anchor_set:{},
+      proof:{pack_root_hash:"",pack_signature:""}
+    }, null, 2);
   });
 
   btnCopy.addEventListener("click", async ()=>{
     if(!lastReport) return;
-    await navigator.clipboard.writeText(JSON.stringify(lastReport, null, 2));
-    summary.className="ok small";
-    summary.textContent="Report copied ✓";
-    setTimeout(()=>{summary.className="warn small";summary.textContent="Load a pack and press Verify.";},900);
+    try{
+      await navigator.clipboard.writeText(JSON.stringify(lastReport, null, 2));
+      summary.className="ok small";
+      summary.textContent="Report copied ✓";
+      setTimeout(()=>{summary.className="warn small";summary.textContent="Load a pack and press Verify.";},900);
+    }catch(e){
+      summary.className="bad small";
+      summary.textContent="Copy failed: "+String(e);
+    }
   });
 
   btnExport.addEventListener("click", ()=>{
