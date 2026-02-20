@@ -2,113 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>VERIFY — Deterministic IPR / UP-MESE Status (VALID / INVALID)</title>
-  <meta name="description" content="Deterministic verification for HBCE proofs. Compute SHA-256 from canonical JSON and confirm registry presence (hash-only, append-only). Output is binary: VALID or INVALID (fail-closed)." />
+  <title>VERIFY — Deterministic Validation (Fail-Closed)</title>
+  <meta name="description" content="HBCE Verify: deterministic validation of releases and evidence. Hash-only, append-only posture. Missing required proofs => INVALID (fail-closed)." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
   <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/verify/" />
 
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce-protocol.css" />
+
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js" defer></script>
+  <script src="/hermeticum-bce-platform/assets/hbce-protocol.js" defer></script>
 
   <style>
-    .hbce-grid2{ display:grid; gap:1rem; grid-template-columns: repeat(12, 1fr); }
-    .hbce-col-4{ grid-column: span 4; }
-    .hbce-col-6{ grid-column: span 6; }
-    .hbce-col-8{ grid-column: span 8; }
-    .hbce-col-12{ grid-column: span 12; }
-    @media (max-width: 900px){
-      .hbce-col-4,.hbce-col-6,.hbce-col-8{ grid-column: span 12; }
+    /* Page-local only: no global overrides */
+    .hbce-two{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:16px;
+      margin-top:14px;
     }
-
-    .hbce-mono{ font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
-    .hbce-small{ font-size:.92rem; opacity:.86; }
-    .hbce-pill{
-      display:inline-block;
-      padding:.25rem .55rem;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.03);
-      color:rgba(255,255,255,.86);
-      font-size:.86rem;
-      font-weight:950;
-      letter-spacing:.02em;
-      text-transform: uppercase;
+    @media (max-width: 980px){
+      .hbce-two{ grid-template-columns: 1fr; }
     }
-
-    .hbce-stepbar{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.8rem; }
-    .hbce-step{
-      padding:.35rem .65rem; border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.03);
-      font-weight:900; font-size:.86rem; opacity:.92;
+    .hbce-formrow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:flex-end;
+      margin-top:12px;
     }
-
-    .hbce-divider{ height:1px; background: rgba(255,255,255,.10); margin: 1rem 0; }
-
-    .hbce-note-box{
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.03);
-      padding: 1rem;
-    }
-
-    .hbce-kv{ display:grid; grid-template-columns: 220px 1fr; gap:.55rem 1rem; }
-    .hbce-kv div{ padding:.1rem 0; }
-
-    .hbce-form{ display:grid; gap:.9rem; }
-    .hbce-field label{ display:block; font-weight:900; margin-bottom:.35rem; }
-    .hbce-field .hint{ opacity:.78; font-size:.92rem; margin-top:.35rem; }
-    .hbce-input, .hbce-textarea, .hbce-select{
-      width:100%;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.03);
-      color: rgba(255,255,255,.92);
-      padding:.75rem .85rem;
-      outline: none;
-    }
-    .hbce-textarea{ min-height: 160px; resize: vertical; }
-
-    .hbce-status{
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.03);
-      padding: 1rem;
-    }
-    .hbce-status__title{ font-weight:1000; letter-spacing:.01em; font-size:1.05rem; }
-    .hbce-status__badge{
-      display:inline-block;
-      margin-top:.55rem;
-      padding:.35rem .7rem;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.18);
-      font-weight:1000;
-      letter-spacing:.03em;
-      text-transform: uppercase;
-      font-size:.85rem;
-    }
-    .hbce-status__badge--valid{ }
-    .hbce-status__badge--invalid{ }
-
-    .hbce-code{
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      padding: .85rem .9rem;
-      overflow:auto;
-      font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-      font-size: .92rem;
-      line-height: 1.35;
-      color: rgba(255,255,255,.90);
-      white-space: pre;
-    }
-
-    .hbce-actions-row{ display:flex; flex-wrap:wrap; gap:.6rem; margin-top: .9rem; align-items:center; }
-    .hbce-inline{ display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; }
+    .hbce-formrow .hbce-btn{ height: 40px; }
   </style>
 </head>
 
@@ -117,503 +44,231 @@
 
   <main class="hbce-container hbce-main">
 
-    <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">VERIFY · DETERMINISTIC SHA-256 · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">Verify proof status</h1>
+      <div class="hbce-hero__kicker">VERIFY · DETERMINISTIC · HASH-ONLY · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Deterministic validation terminal</h1>
       <p class="hbce-hero__lead">
-        Verification is deterministic: compute <strong>SHA-256</strong> from <strong>canonical JSON</strong>,
-        then confirm <strong>registry presence</strong> (hash-only, append-only).
-        Output is binary: <strong>VALID</strong> or <strong>INVALID</strong>.
-        If verification cannot prove identity → <strong>BLOCK</strong> (fail-closed).
+        Verify does not “guess”. It matches proofs deterministically. If a required element is missing,
+        the result is <strong>INVALID</strong>. This is a compliance posture, not a UX preference.
       </p>
 
-      <div class="hbce-stepbar" aria-label="verification steps">
-        <span class="hbce-step">1 · Provide JSON proof</span>
-        <span class="hbce-step">2 · Canonicalize + SHA-256</span>
-        <span class="hbce-step">3 · Fetch registry</span>
-        <span class="hbce-step">4 · Match → VALID / INVALID</span>
+      <div class="hbce-actions">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Open Registry</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/infrastructure/eu-autonomy-framework.html">EU Autonomy Framework</a>
       </div>
+    </section>
 
-      <div class="hbce-actions" style="margin-top:1rem;">
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/activate/">Onboarding</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/">CREATE</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/pricing/">Catalogue</a>
-      </div>
-
-      <p class="hbce-note" style="margin-top:.85rem;">
-        Rule: <span class="hbce-mono">VALID = (SHA-256(canonical JSON) matches registry.entries[].payload_sha256)</span>.
+    <section class="hbce-critical">
+      <div class="hbce-critical__kicker">FAIL-CLOSED NOTICE · PUBLIC SURFACE IS HASH-ONLY</div>
+      <div class="hbce-critical__title">No partial validation</div>
+      <p class="hbce-critical__text">
+        HBCE publishes minimized proofs. Verification requires deterministic matching (hash + time + signature).
+        If a requirement is not satisfied, verification returns <strong>INVALID</strong>. No “almost valid”.
       </p>
     </section>
 
-    <!-- INPUTS -->
     <section class="hbce-section">
-      <h2>Verification inputs</h2>
+      <h2>Verification input</h2>
+      <p>
+        Paste evidence fields below. This page is a deterministic interface: it does not store private data.
+        For public matching, use the Registry viewer.
+      </p>
 
-      <div class="hbce-grid2">
-        <div class="hbce-card hbce-col-8">
-          <p>
-            VERIFY supports both <strong>IPR Release</strong> and <strong>UP-MESE certificate</strong>.
-            You keep the JSON proof privately; the registry stores only <strong>hash-only</strong> public proofs (GDPR-min).
-          </p>
+      <div class="hbce-two">
 
-          <div class="hbce-note-box">
-            <div class="hbce-kv">
-              <div><strong>Private input</strong></div><div>JSON proof (Release / Certificate) — user custody</div>
-              <div><strong>Public input</strong></div><div>Registry entry: <span class="hbce-mono">payload_sha256 + timestamp</span></div>
-              <div><strong>Output</strong></div><div><span class="hbce-mono">VALID</span> / <span class="hbce-mono">INVALID</span> (fail-closed)</div>
+        <!-- LEFT: INPUT -->
+        <div class="hbce-card">
+          <h3>Evidence fields</h3>
+
+          <div class="hbce-field">
+            <label class="hbce-label" for="payloadSha">payload_sha256 (required)</label>
+            <input class="hbce-input" id="payloadSha" name="payloadSha" placeholder="64-hex sha256" autocomplete="off" />
+            <div class="hbce-help">Missing or invalid format ⇒ INVALID.</div>
+          </div>
+
+          <div class="hbce-field">
+            <label class="hbce-label" for="timestamp">timestamp (required)</label>
+            <input class="hbce-input" id="timestamp" name="timestamp" placeholder="RFC3339 (e.g. 2026-02-20T16:00:00+01:00)" autocomplete="off" />
+            <div class="hbce-help">Timestamp is evidence. Use certified time sources when applicable.</div>
+          </div>
+
+          <div class="hbce-field">
+            <label class="hbce-label" for="signature">signature (required)</label>
+            <textarea class="hbce-textarea" id="signature" name="signature" rows="4" placeholder="ED25519 signature (or reference)"></textarea>
+            <div class="hbce-help">If signature is missing ⇒ INVALID.</div>
+          </div>
+
+          <div class="hbce-field">
+            <label class="hbce-label" for="note">note (optional)</label>
+            <input class="hbce-input" id="note" name="note" placeholder="Optional note (never required)" autocomplete="off" />
+          </div>
+
+          <div class="hbce-formrow">
+            <button class="hbce-btn" type="button" id="btnSimulatePass">Simulate PASS</button>
+            <button class="hbce-btn hbce-btn--ghost" type="button" id="btnSimulateFail">Simulate FAIL</button>
+            <button class="hbce-btn hbce-btn--ghost" type="button" id="btnClear">Clear</button>
+          </div>
+
+          <div class="hbce-callout hbce-callout--info" style="margin-top:14px;">
+            <div class="hbce-callout__h">Operational rule</div>
+            <p style="margin:0;color:rgba(230,237,246,.72);font-size:13.5px;">
+              Verification must be reproducible. Public checks should resolve against the Registry ledger.
+              Private payloads remain off-chain; only hashes are public.
+            </p>
+          </div>
+        </div>
+
+        <!-- RIGHT: TERMINAL / RESULT -->
+        <div>
+          <div class="hbce-terminal" data-status="warn" id="verifyTerminal">
+            <div class="hbce-terminal__bar">
+              <div class="hbce-terminal__title">Verification terminal</div>
+              <div class="hbce-terminal__status">WARN</div>
+            </div>
+
+            <div class="hbce-terminal__body">
+              <div class="hbce-terminal__line">
+                <div class="hbce-terminal__k">policy</div>
+                <div class="hbce-terminal__v">UE_FIRST · AUDIT_FIRST · FAIL_CLOSED · HASH_ONLY · APPEND_ONLY</div>
+              </div>
+              <div class="hbce-terminal__line">
+                <div class="hbce-terminal__k">required</div>
+                <div class="hbce-terminal__v">payload_sha256, timestamp, signature</div>
+              </div>
+              <div class="hbce-terminal__line">
+                <div class="hbce-terminal__k">status</div>
+                <div class="hbce-terminal__v" id="statusText">Awaiting deterministic input</div>
+              </div>
+              <div class="hbce-terminal__line">
+                <div class="hbce-terminal__k">result</div>
+                <div class="hbce-terminal__v" id="resultText">WARN</div>
+              </div>
             </div>
           </div>
 
-          <div class="hbce-divider"></div>
-
-          <form class="hbce-form" id="verifyForm" action="#" method="post" aria-label="verify form">
-            <div class="hbce-field">
-              <label for="proof_type">Proof type</label>
-              <select class="hbce-select" id="proof_type" name="proof_type">
-                <option value="AUTO">AUTO (detect from JSON)</option>
-                <option value="IPR_RELEASE">IPR Release</option>
-                <option value="UPMESE_CERT">UP-MESE Certificate</option>
-                <option value="GENERIC_JSON">Generic HBCE JSON (hash-only proof)</option>
-              </select>
-              <div class="hint">AUTO reads <span class="hbce-mono">proto</span> and <span class="hbce-mono">kind</span> when present.</div>
+          <div class="hbce-evidence">
+            <div class="hbce-evidence__top">
+              <h3 class="hbce-evidence__h">System anchor (hash-only)</h3>
+              <span class="hbce-mini">public · minimized</span>
             </div>
 
-            <div class="hbce-field">
-              <label for="proof_file">JSON file (optional)</label>
-              <input class="hbce-input" id="proof_file" name="proof_file" type="file" accept=".json,application/json,text/plain" />
-              <div class="hint">If you upload a file, its content will populate the textarea below.</div>
-            </div>
-
-            <div class="hbce-field">
-              <label for="proof_text">JSON proof (paste)</label>
-              <textarea class="hbce-textarea" id="proof_text" name="proof_text" placeholder='Paste JSON here (Release / UP-MESE). Example fields: {"proto":"...","kind":"..."}'></textarea>
-              <div class="hint">
-                Verification is deterministic: canonicalize the JSON, compute SHA-256, then check registry presence.
+            <div class="hbce-evidence__row">
+              <div class="hbce-evidence__label">ROOT SHA-512</div>
+              <div class="hbce-evidence__value is-hash" id="root-sha512">
+b7929e4d1d9a782c79b473c5311f70d864f0b6ae6a6de38df5ef9b2acbb7e73f2d8c544967fa13b1124c8a93d5c2e77d24dc5b3c91a2e6c8b8f97b90a7b09e99
               </div>
+              <button class="hbce-copy" type="button" data-hbce-copy="#root-sha512">COPY</button>
             </div>
 
-            <div class="hbce-field">
-              <label for="expected_sha">Optional: expected payload_sha256 (64-hex)</label>
-              <input class="hbce-input" id="expected_sha" name="expected_sha" placeholder="If provided, it must match the computed hash. Otherwise → INVALID." />
-              <div class="hint">If missing, VERIFY still checks registry match using computed hash.</div>
+            <div class="hbce-callout hbce-callout--warn" style="margin-top:12px;">
+              <div class="hbce-callout__h">Fail-closed enforcement</div>
+              <p style="margin:0;color:rgba(230,237,246,.72);font-size:13.5px;">
+                If any required evidence is missing, the system must deny validation and produce an audit trail.
+              </p>
             </div>
-
-            <div class="hbce-actions-row">
-              <button class="hbce-btn" type="submit" id="btnVerify">Verify now</button>
-              <button class="hbce-btn hbce-btn--ghost" type="button" id="btnClear">Clear</button>
-              <a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/registry/">Open Registry</a>
-            </div>
-
-            <div class="hbce-note-box" style="margin-top:.9rem;">
-              <div class="hbce-inline">
-                <span class="hbce-pill">Registry source</span>
-                <span class="hbce-mono" id="registryPath">/hermeticum-bce-platform/registry/registry.json</span>
-              </div>
-              <div class="hbce-small" style="margin-top:.5rem;">
-                Network: EU · mode: append-only · public data: hash-only · failure mode: fail-closed
-              </div>
-            </div>
-          </form>
+          </div>
         </div>
 
-        <div class="hbce-card hbce-col-4">
-          <h3>Why fail-closed</h3>
-          <ul class="hbce-list">
-            <li>No unverifiable execution</li>
-            <li>No partial validity</li>
-            <li>No trust required: only proofs</li>
-            <li>Invalid by default if a proof cannot be reproduced</li>
-          </ul>
-          <div class="hbce-divider"></div>
-          <p class="hbce-note">
-            If a verifier cannot reproduce the status deterministically, the safe default is <strong>BLOCK</strong>.
-          </p>
-        </div>
       </div>
     </section>
 
-    <!-- OUTPUT -->
     <section class="hbce-section">
-      <h2>Deterministic output</h2>
-
-      <div class="hbce-grid2">
-        <div class="hbce-card hbce-col-6">
-          <div class="hbce-status" role="status" aria-label="result">
-            <div class="hbce-status__title">Result</div>
-            <div class="hbce-status__badge" id="badgeResult">—</div>
-            <div class="hbce-divider"></div>
-
-            <div class="hbce-note-box">
-              <div class="hbce-kv">
-                <div><strong>Detected</strong></div><div id="outDetected">—</div>
-                <div><strong>Computed SHA-256</strong></div><div class="hbce-mono" id="outHash">—</div>
-                <div><strong>Registry match</strong></div><div id="outMatch">—</div>
-              </div>
-            </div>
-
-            <div class="hbce-divider"></div>
-
-            <div class="hbce-note-box">
-              <div class="hbce-pill">Explainability</div>
-              <div class="hbce-code" id="outExplain" style="margin-top:.65rem;">No verification executed yet.</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="hbce-card hbce-col-6">
-          <div class="hbce-status" role="status" aria-label="details">
-            <div class="hbce-status__title">Registry details</div>
-            <div class="hbce-divider"></div>
-            <div class="hbce-code" id="outRegistry">—</div>
-            <div class="hbce-actions-row">
-              <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Open Registry viewer</a>
-              <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">Platform status</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="hbce-note-box" style="margin-top:1rem;">
-        <strong>Audit clarity:</strong> every INVALID case is explainable as missing proof, broken integrity, invalid hash format, or absent registry match.
-      </div>
-    </section>
-
-    <!-- FAILURE REASONS -->
-    <section class="hbce-section">
-      <h2>Failure reasons (what breaks verification)</h2>
-
-      <div class="hbce-grid2">
-        <div class="hbce-card hbce-col-8">
-          <table class="hbce-table" aria-label="failure reasons">
-            <thead>
-              <tr>
-                <th>Reason</th>
-                <th>Meaning</th>
-                <th>Fix</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>Invalid JSON</strong></td>
-                <td>Proof cannot be parsed deterministically.</td>
-                <td>Provide valid JSON (Release/Certificate).</td>
-              </tr>
-              <tr>
-                <td><strong>Hash invalid format</strong></td>
-                <td>Expected hash is not 64-hex (lowercase).</td>
-                <td>Paste the correct payload_sha256.</td>
-              </tr>
-              <tr>
-                <td><strong>Expected mismatch</strong></td>
-                <td>Computed hash does not match the expected hash.</td>
-                <td>Use the correct proof file or the correct expected hash.</td>
-              </tr>
-              <tr>
-                <td><strong>Not in registry</strong></td>
-                <td>Hash-only entry was not appended (append-only).</td>
-                <td>Request operator append; then verify again.</td>
-              </tr>
-              <tr>
-                <td><strong>Registry unreachable</strong></td>
-                <td>Public proof cannot be fetched.</td>
-                <td>Check connectivity / deployment / path.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="hbce-card hbce-col-4">
-          <div class="hbce-pill">Operator note</div>
-          <h3 style="margin-top:.55rem;">Append-only discipline</h3>
-          <p class="hbce-note">
-            Registry is append-only. Operators are accountable for correct append discipline and audit evidence.
-          </p>
-          <div class="hbce-divider"></div>
-          <div class="hbce-actions-row">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/operator/">Operator access</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/horizon/">Horizon</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SIGN -->
-    <section class="hbce-section">
-      <div class="hbce-footnote">
-        <p>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</p>
-        <p>HERMETICUM B.C.E. S.r.l.</p>
-        <p class="hbce-note">EU-first · audit-first · fail-closed · hash-only · append-only · GDPR-min</p>
+      <h2>Deterministic rules</h2>
+      <div class="hbce-grid">
+        <article class="hbce-card">
+          <h3>Hash-only public surface</h3>
+          <p>Public proofs are hashes and timestamps. Private payloads remain private.</p>
+        </article>
+        <article class="hbce-card">
+          <h3>Append-only evidence</h3>
+          <p>Once published, evidence is not rewritten. Changes become new events.</p>
+        </article>
+        <article class="hbce-card">
+          <h3>Fail-closed default</h3>
+          <p>Uncertainty is denial. Determinism is compliance.</p>
+        </article>
       </div>
     </section>
 
   </main>
 
   <div data-hbce="footer"></div>
-  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 
   <script>
-  (function(){
-    "use strict";
+    // Page-local logic only (no external calls). Deterministic UX simulation.
+    (function(){
+      const t = document.getElementById("verifyTerminal");
+      const statusText = document.getElementById("statusText");
+      const resultText = document.getElementById("resultText");
 
-    const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
+      const payloadSha = document.getElementById("payloadSha");
+      const timestamp = document.getElementById("timestamp");
+      const signature = document.getElementById("signature");
 
-    const el = (id) => document.getElementById(id);
+      const btnPass = document.getElementById("btnSimulatePass");
+      const btnFail = document.getElementById("btnSimulateFail");
+      const btnClear = document.getElementById("btnClear");
 
-    const form = el("verifyForm");
-    const proofType = el("proof_type");
-    const proofFile = el("proof_file");
-    const proofText = el("proof_text");
-    const expectedSha = el("expected_sha");
-
-    const badgeResult = el("badgeResult");
-    const outDetected = el("outDetected");
-    const outHash = el("outHash");
-    const outMatch = el("outMatch");
-    const outExplain = el("outExplain");
-    const outRegistry = el("outRegistry");
-    const btnClear = el("btnClear");
-
-    el("registryPath").textContent = REGISTRY_URL;
-
-    function setBadge(state){
-      badgeResult.textContent = state;
-      badgeResult.classList.remove("hbce-status__badge--valid","hbce-status__badge--invalid");
-      if(state === "VALID") badgeResult.classList.add("hbce-status__badge--valid");
-      if(state === "INVALID") badgeResult.classList.add("hbce-status__badge--invalid");
-    }
-
-    function isLowerHex64(s){
-      return typeof s === "string" && /^[0-9a-f]{64}$/.test(s.trim());
-    }
-
-    function detectKind(obj){
-      const p = (obj && obj.proto) ? String(obj.proto) : "";
-      const k = (obj && obj.kind) ? String(obj.kind) : "";
-      if(p.startsWith("HBCE-UPMESE") || k.includes("MONTHLY_OPERATIONAL_CONTINUITY_CERTIFICATE")) return "UPMESE_CERT";
-      if(p.startsWith("HBCE-IPR-RELEASE") || k.includes("IPR_BASE") || k.includes("IPR_RELEASE")) return "IPR_RELEASE";
-      return "GENERIC_JSON";
-    }
-
-    // Canonical JSON: recursively sort keys; arrays keep order; no whitespace.
-    function canonicalize(value){
-      if(value === null) return "null";
-      const t = typeof value;
-      if(t === "number" || t === "boolean") return JSON.stringify(value);
-      if(t === "string") return JSON.stringify(value);
-      if(Array.isArray(value)){
-        return "[" + value.map(canonicalize).join(",") + "]";
-      }
-      if(t === "object"){
-        const keys = Object.keys(value).sort();
-        return "{" + keys.map(k => JSON.stringify(k) + ":" + canonicalize(value[k])).join(",") + "}";
-      }
-      throw new Error("Non-JSON value encountered during canonicalization.");
-    }
-
-    async function sha256HexFromString(s){
-      const enc = new TextEncoder();
-      const bytes = enc.encode(s);
-      const digest = await crypto.subtle.digest("SHA-256", bytes);
-      const arr = Array.from(new Uint8Array(digest));
-      return arr.map(b => b.toString(16).padStart(2,"0")).join("");
-    }
-
-    async function fetchRegistry(){
-      const res = await fetch(REGISTRY_URL, { cache: "no-store" });
-      if(!res.ok) throw new Error("Registry fetch failed: HTTP " + res.status);
-      const data = await res.json();
-      if(!data || !Array.isArray(data.entries)) throw new Error("Registry invalid schema (missing entries).");
-      return data;
-    }
-
-    function findEntry(reg, sha){
-      const entries = reg.entries || [];
-      const idx = entries.findIndex(e => e && String(e.payload_sha256 || "") === sha);
-      if(idx < 0) return null;
-      return { index: idx, entry: entries[idx] };
-    }
-
-    function summarizeRegistryHit(reg, hit){
-      const e = hit.entry || {};
-      const meta = reg.meta || {};
-      const lines = [];
-      lines.push("REGISTRY HIT");
-      lines.push("index: " + hit.index);
-      lines.push("entity_type: " + (e.entity_type || "—"));
-      lines.push("name: " + (e.name || "—"));
-      lines.push("payload_sha256: " + (e.payload_sha256 || "—"));
-      lines.push("timestamp: " + (e.timestamp || "—"));
-      lines.push("status: " + (e.status || "—"));
-      if(e.note) lines.push("note: " + e.note);
-      lines.push("");
-      lines.push("REGISTRY META");
-      lines.push("schema_version: " + (meta.schema_version || "—"));
-      lines.push("last_update: " + (meta.last_update || "—"));
-      return lines.join("\n");
-    }
-
-    function explain(lines){
-      outExplain.textContent = lines.join("\n");
-    }
-
-    function clearUI(){
-      proofText.value = "";
-      // expectedSha may come from URL; keep it unless user explicitly clears
-      if(!expectedSha.dataset.lockedFromUrl) expectedSha.value = "";
-      proofFile.value = "";
-      outDetected.textContent = "—";
-      outHash.textContent = "—";
-      outMatch.textContent = "—";
-      outRegistry.textContent = "—";
-      setBadge("—");
-      outExplain.textContent = "No verification executed yet.";
-    }
-
-    btnClear.addEventListener("click", () => {
-      expectedSha.dataset.lockedFromUrl = "";
-      clearUI();
-    });
-
-    proofFile.addEventListener("change", async () => {
-      const f = proofFile.files && proofFile.files[0];
-      if(!f) return;
-      const text = await f.text();
-      proofText.value = text;
-    });
-
-    // Query string support:
-    // - expected_sha=64hex
-    // - type=UPMESE_CERT|IPR_RELEASE|GENERIC_JSON|AUTO
-    function applyQuery(){
-      const params = new URLSearchParams(window.location.search || "");
-      const qsHash = (params.get("expected_sha") || "").trim().toLowerCase();
-      const qsType = (params.get("type") || "").trim();
-
-      if(qsHash){
-        expectedSha.value = qsHash;
-        expectedSha.dataset.lockedFromUrl = "1";
+      function setStatus(kind, msg){
+        t.setAttribute("data-status", kind);
+        // hbce-protocol.js will map data-status -> badge
+        statusText.textContent = msg;
+        resultText.textContent = kind.toUpperCase();
+        // force refresh mapping (safe)
+        const ev = new Event("DOMContentLoaded");
+        document.dispatchEvent(ev);
       }
 
-      if(qsType){
-        const allowed = new Set(["AUTO","IPR_RELEASE","UPMESE_CERT","GENERIC_JSON"]);
-        if(allowed.has(qsType)){
-          proofType.value = qsType;
-        }
+      function isSha256(s){
+        return /^[a-f0-9]{64}$/i.test((s||"").trim());
       }
-    }
-
-    form.addEventListener("submit", async (ev) => {
-      ev.preventDefault();
-
-      setBadge("—");
-      outDetected.textContent = "—";
-      outHash.textContent = "—";
-      outMatch.textContent = "—";
-      outRegistry.textContent = "—";
-
-      const logs = [];
-      logs.push("HBCE VERIFY (FAIL-CLOSED)");
-      logs.push("step: parse JSON");
-      logs.push("");
-
-      let obj;
-      try{
-        obj = JSON.parse(proofText.value || "");
-      }catch(err){
-        setBadge("INVALID");
-        logs.push("INVALID: JSON parse failed.");
-        logs.push("reason: " + err.message);
-        explain(logs);
-        return;
+      function hasText(s){
+        return (s||"").trim().length > 0;
       }
 
-      const detected = (proofType.value === "AUTO") ? detectKind(obj) : proofType.value;
-      outDetected.textContent = detected;
+      function evaluate(){
+        const ok =
+          isSha256(payloadSha.value) &&
+          hasText(timestamp.value) &&
+          hasText(signature.value);
 
-      logs.push("detected: " + detected);
-      logs.push("step: canonicalize JSON");
-      logs.push("");
-
-      let canon;
-      try{
-        canon = canonicalize(obj);
-      }catch(err){
-        setBadge("INVALID");
-        logs.push("INVALID: canonicalization failed.");
-        logs.push("reason: " + err.message);
-        explain(logs);
-        return;
+        if (ok) setStatus("pass","Deterministic input complete. Ready to match against Registry.");
+        else setStatus("fail","Missing/invalid evidence. Fail-closed: INVALID.");
       }
 
-      logs.push("step: compute SHA-256 (canonical JSON)");
-      const computed = await sha256HexFromString(canon);
-      outHash.textContent = computed;
+      btnPass.addEventListener("click", () => {
+        payloadSha.value = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        timestamp.value = "2026-02-20T16:00:00+01:00";
+        signature.value = "ED25519_SIGNATURE_PLACEHOLDER";
+        evaluate();
+      });
 
-      const exp = (expectedSha.value || "").trim().toLowerCase();
-      if(exp.length > 0){
-        logs.push("");
-        logs.push("step: expected hash check");
-        if(!isLowerHex64(exp)){
-          setBadge("INVALID");
-          logs.push("INVALID: expected hash is not 64-hex lowercase.");
-          explain(logs);
-          return;
-        }
-        if(exp !== computed){
-          setBadge("INVALID");
-          logs.push("INVALID: expected hash mismatch.");
-          logs.push("expected: " + exp);
-          logs.push("computed: " + computed);
-          explain(logs);
-          return;
-        }
-        logs.push("OK: expected hash matches computed hash.");
-      }
+      btnFail.addEventListener("click", () => {
+        payloadSha.value = "";
+        timestamp.value = "";
+        signature.value = "";
+        evaluate();
+      });
 
-      logs.push("");
-      logs.push("step: fetch registry");
-      let reg;
-      try{
-        reg = await fetchRegistry();
-      }catch(err){
-        setBadge("INVALID");
-        logs.push("INVALID: registry unreachable or invalid.");
-        logs.push("reason: " + err.message);
-        explain(logs);
-        return;
-      }
+      btnClear.addEventListener("click", () => {
+        payloadSha.value = "";
+        timestamp.value = "";
+        signature.value = "";
+        setStatus("warn","Awaiting deterministic input");
+      });
 
-      logs.push("step: match computed hash in registry.entries");
-      const hit = findEntry(reg, computed);
-      if(!hit){
-        setBadge("INVALID");
-        outMatch.textContent = "NOT FOUND";
-        outRegistry.textContent = "No match found for payload_sha256.\n\ncomputed: " + computed;
-        logs.push("INVALID: hash not present in registry (append-only).");
-        logs.push("computed: " + computed);
-        explain(logs);
-        return;
-      }
+      // live evaluation (but still deterministic)
+      [payloadSha, timestamp, signature].forEach(el => {
+        el.addEventListener("input", () => {
+          // evaluate only when user typed something; avoid spam on empty
+          const any = hasText(payloadSha.value) || hasText(timestamp.value) || hasText(signature.value);
+          if (!any) return setStatus("warn","Awaiting deterministic input");
+          evaluate();
+        });
+      });
 
-      setBadge("VALID");
-      outMatch.textContent = "FOUND (index " + hit.index + ")";
-      outRegistry.textContent = summarizeRegistryHit(reg, hit);
-
-      logs.push("VALID: registry match found.");
-      logs.push("index: " + hit.index);
-      logs.push("entity_type: " + (hit.entry.entity_type || "—"));
-      logs.push("timestamp: " + (hit.entry.timestamp || "—"));
-      logs.push("status: " + (hit.entry.status || "—"));
-
-      explain(logs);
-    });
-
-    // init
-    clearUI();
-    applyQuery();
-  })();
+      setStatus("warn","Awaiting deterministic input");
+    })();
   </script>
 </body>
 </html>
