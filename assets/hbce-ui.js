@@ -3,6 +3,7 @@
    - EU-first, audit-first navigation
    - Adds ΦΩ Industrial Pilot section link
    - Safe: no external deps, deterministic DOM inject
+   - Injects minimal nav CSS to ensure mobile toggle works
    ========================================================= */
 
 (function () {
@@ -30,22 +31,21 @@
   function isActive(href) {
     const here = normPath(window.location.pathname);
     const target = normPath(href);
-
     if (target === "/") return here === "/";
-    // active for exact or subtree (e.g. /verify and /verify/...)
     return here === target || here.startsWith(target + "/");
   }
 
   function buildNavItem(item) {
-    const active = isActive(item.href) ? " aria-current=\"page\"" : "";
-    const cls = isActive(item.href) ? " hbce-nav__link is-active" : " hbce-nav__link";
-    const label = esc(item.label);
-    const href = esc(item.href);
-    return `<a class="${cls}" href="${href}"${active}>${label}</a>`;
+    const active = isActive(item.href) ? ' aria-current="page"' : "";
+    const cls = isActive(item.href)
+      ? "hbce-nav__link is-active"
+      : "hbce-nav__link";
+    return `<a class="${cls}" href="${esc(item.href)}"${active}>${esc(
+      item.label
+    )}</a>`;
   }
 
   // -------- config ----------
-  // Keep it tight: CORE first, then specs, then governance tools.
   const NAV = [
     { label: "Home", href: "/hermeticum-bce-platform/" },
 
@@ -67,6 +67,55 @@
     mark: "HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA",
     entity: "HERMETICUM B.C.E. S.r.l."
   };
+
+  // -------- minimal CSS injection (nav toggle safety) ----------
+  function injectNavCSS() {
+    const id = "hbce-nav-inline-css";
+    if (document.getElementById(id)) return;
+
+    const css = `
+/* HBCE inline nav safety (minimal, non-invasive) */
+.hbce-header { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); }
+.hbce-header__inner { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:14px 0; }
+.hbce-brand { display:flex; flex-direction:column; text-decoration:none; }
+.hbce-brand__mark { font-weight:700; letter-spacing:.4px; }
+.hbce-brand__entity { opacity:.8; font-size:.92rem; }
+
+.hbce-nav { display:flex; gap:12px; align-items:center; }
+.hbce-nav__link { text-decoration:none; padding:8px 10px; border-radius:10px; }
+.hbce-nav__link.is-active { outline:1px solid rgba(255,255,255,.22); }
+
+.hbce-nav__toggle { display:none; background:transparent; border:0; padding:8px; border-radius:12px; cursor:pointer; }
+.hbce-nav__toggleBar { display:block; width:22px; height:2px; margin:4px 0; background:currentColor; opacity:.85; }
+
+/* Mobile behavior */
+@media (max-width: 900px) {
+  .hbce-nav__toggle { display:inline-flex; align-items:center; justify-content:center; }
+  .hbce-nav {
+    display:none;
+    position:absolute;
+    left:0; right:0;
+    top:64px;
+    padding:12px;
+    margin:0 12px;
+    border-radius:16px;
+    background: rgba(15,18,24,.92);
+    backdrop-filter: blur(12px);
+    outline: 1px solid rgba(255,255,255,.10);
+    flex-direction:column;
+    align-items:stretch;
+    gap:8px;
+  }
+  .hbce-nav.is-open { display:flex; }
+  .hbce-nav__link { padding:10px 12px; }
+}
+`;
+
+    const style = document.createElement("style");
+    style.id = id;
+    style.textContent = css;
+    document.head.appendChild(style);
+  }
 
   // -------- templates ----------
   function headerHTML() {
@@ -132,6 +181,8 @@
 
   // -------- injectors ----------
   function inject() {
+    injectNavCSS();
+
     const headerSlot = document.querySelector('[data-hbce="header"]');
     if (headerSlot) headerSlot.innerHTML = headerHTML();
 
@@ -152,7 +203,6 @@
       nav.classList.toggle("is-open", !expanded);
     });
 
-    // Close nav when clicking outside (mobile sanity)
     document.addEventListener("click", (e) => {
       if (!nav.classList.contains("is-open")) return;
       if (nav.contains(e.target) || toggle.contains(e.target)) return;
