@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/phiomega/spec/event.schema.json",
+  "title": "ΦΩ Industrial Event (Λ) v0.1",
+  "type": "object",
+  "required": ["proto", "isoTime", "machine", "event", "security"],
+  "properties": {
+    "proto": { "const": "PHIOMEGA-EVENT-v0.1" },
+    "isoTime": { "type": "string", "format": "date-time" },
+    "machine": {
+      "type": "object",
+      "required": ["machine_id", "source"],
+      "properties": {
+        "machine_id": { "type": "string" },
+        "source": { "type": "string", "enum": ["PLC", "ROBOT", "APP"] },
+        "fw": { "type": "string" },
+        "sw": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "event": {
+      "type": "object",
+      "required": ["type", "severity"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "BOOT","SHUTDOWN","HEARTBEAT","MODE_CHANGE","CONFIG_CHANGE",
+            "E_STOP","SAFETY_TRIP","HUMAN_OVERRIDE","ACCESS_OPEN","SAFE_HALT",
+            "JOB_START","JOB_END","ACTION_EXEC","SENSOR_ANOMALY","FAULT","RECOVERY",
+            "AI_INFERENCE","AI_DECISION","POLICY_DENY","UPDATE_APPLIED"
+          ]
+        },
+        "severity": { "type": "string", "enum": ["INFO","WARN","CRIT"] },
+        "job_id": { "type": "string" },
+        "op_id": { "type": "string" },
+        "message": { "type": "string" },
+        "data": { "type": "object", "additionalProperties": true }
+      },
+      "additionalProperties": false
+    },
+    "security": {
+      "type": "object",
+      "required": ["nonce", "prev_hash"],
+      "properties": {
+        "nonce": { "type": "string", "minLength": 8 },
+        "prev_hash": { "type": "string", "pattern": "^(sha256:)[0-9a-f]{64}$" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
