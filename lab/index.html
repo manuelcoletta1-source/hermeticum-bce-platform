@@ -3,12 +3,50 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HBCE Evidence Lab — Offline-Real Proof (Kernel + Verifier)</title>
-  <meta name="description" content="HBCE Evidence Lab: generate and verify offline-real Evidence Packs v2 (canonical SHA-512 root + ECDSA P-256 signature + append-only ledger). Independent verifier produces PASS/FAIL." />
+  <title>HBCE Evidence Lab — Offline-Real Proof (ADS + Kernel + Verifier)</title>
+  <meta name="description" content="HBCE Evidence Lab: deterministic autonomous decisions (ADS), evidence emission (Kernel), independent verification (Verifier). Offline-real Evidence Packs v2: canonical SHA-512 root + ECDSA P-256 signatures + append-only ledger. PASS/FAIL." />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
   <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/lab/" />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+
+  <style>
+    .hbce-mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+    .hbce-status{
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.03);
+      padding:14px;
+    }
+    .hbce-status--ok{ border-color:rgba(34,197,94,.35); background:rgba(34,197,94,.06); }
+    .hbce-status--warn{ border-color:rgba(245,158,11,.35); background:rgba(245,158,11,.06); }
+    .hbce-status__grid{ display:grid; gap:8px; grid-template-columns: 1fr; }
+    .hbce-status__k{ opacity:.75; font-weight:800; }
+    .hbce-status__v{ font-weight:950; }
+    .hbce-status__v.ok{ color:#22c55e; }
+    .hbce-status__v.warn{ color:#f59e0b; }
+    .hbce-status__small{ opacity:.7; font-size:.92rem; margin-top:8px; }
+    .hbce-metrics{
+      display:grid; gap:12px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-top:12px;
+    }
+    @media (max-width: 980px){ .hbce-metrics{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    .hbce-metric{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.03);
+      border-radius:16px;
+      padding:12px;
+    }
+    .hbce-metric__k{ font-size:.88rem; opacity:.82; }
+    .hbce-metric__v{ font-size:1.05rem; font-weight:950; margin-top:6px; }
+    .hbce-note{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.03);
+      border-radius:16px;
+      padding:14px;
+    }
+  </style>
 </head>
 
 <body>
@@ -17,26 +55,77 @@
   <main class="hbce-container hbce-main">
 
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">HBCE · AUDIT-FIRST · FAIL-CLOSED</div>
+      <div class="hbce-hero__kicker">HBCE · EU-FIRST · AUDIT-FIRST · FAIL-CLOSED</div>
       <h1 class="hbce-hero__title">Evidence Lab</h1>
       <p class="hbce-hero__lead">
-        Public, offline-real evidence workflow: generate an Evidence Pack v2 and verify it independently.
-        Deterministic canonicalization, SHA-512 pack root, ECDSA P-256 signatures, append-only hash-chain ledger.
+        Public, offline-real evidence workflow: deterministic autonomous decisions (ADS), evidence emission (Kernel),
+        and independent verification (Verifier). Deterministic canonicalization, SHA-512 pack root, ECDSA P-256 signatures,
+        append-only hash-chain ledger. Results are binary: <b>PASS/FAIL</b>.
       </p>
     </section>
 
+    <!-- LIVE STATUS (LOCAL ONLY) -->
+    <section class="hbce-section">
+      <div id="sysBox" class="hbce-status hbce-status--warn">
+        <div class="hbce-status__grid">
+          <div class="hbce-status__k">LOCAL SYSTEM STATUS</div>
+          <div class="hbce-status__v warn" id="sysStatus">NO LOCAL PROOF</div>
+          <div class="hbce-status__k">LAST VERIFIED ROOT</div>
+          <div class="hbce-status__v hbce-mono" id="sysRoot">none</div>
+          <div class="hbce-status__small">
+            Local-only indicator. No publication. Mode: HASH-ONLY · APPEND-ONLY · FAIL-CLOSED
+          </div>
+        </div>
+      </div>
+
+      <div class="hbce-metrics" aria-label="Local metrics">
+        <div class="hbce-metric">
+          <div class="hbce-metric__k">Local Ledger Entries</div>
+          <div class="hbce-metric__v hbce-mono" id="mLedger">—</div>
+        </div>
+        <div class="hbce-metric">
+          <div class="hbce-metric__k">Local Identity (KID)</div>
+          <div class="hbce-metric__v hbce-mono" id="mKid">—</div>
+        </div>
+        <div class="hbce-metric">
+          <div class="hbce-metric__k">Ledger Tip (SHA-512)</div>
+          <div class="hbce-metric__v hbce-mono" id="mTip">—</div>
+        </div>
+        <div class="hbce-metric">
+          <div class="hbce-metric__k">Last Pack Root (seen)</div>
+          <div class="hbce-metric__v hbce-mono" id="mPackRoot">—</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKFLOW -->
     <section class="hbce-section">
       <div class="hbce-grid">
+
+        <article class="hbce-card">
+          <h2 class="hbce-card__title">0) ADS (Deterministic Decisions)</h2>
+          <p class="hbce-card__text">
+            Deterministic autonomous decision engine. Emits signed decision events into the local append-only ledger.
+            This is the “entity layer” (C): decisions become evidence.
+          </p>
+          <p class="hbce-card__meta">
+            Output: signed decision events (local ledger)
+          </p>
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/sim/ads/" rel="noopener">
+            Open ADS →
+          </a>
+        </article>
+
         <article class="hbce-card">
           <h2 class="hbce-card__title">1) Kernel (Issuer)</h2>
           <p class="hbce-card__text">
-            Emits CQD records and exports <span class="hbce-mono">HBCE-EVIDENCE-PACK-v2</span>.
+            Emits records and exports <span class="hbce-mono">HBCE-EVIDENCE-PACK-v2</span>.
             Pack-level proof is signed over <span class="hbce-mono">pack_root_hash</span>.
           </p>
           <p class="hbce-card__meta">
             Output: Evidence Pack JSON (download)
           </p>
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/sim/joker-kernel/" rel="noopener">
+          <a class="hbce-btn" href="/hermeticum-bce-platform/sim/joker-kernel/" rel="noopener">
             Open Kernel →
           </a>
         </article>
@@ -46,6 +135,7 @@
           <p class="hbce-card__text">
             Independent verification: recomputes canonical preimage and validates SHA-512 root, ECDSA signature,
             ledger hash-chain, and per-record integrity. Returns <b>PASS/FAIL</b>.
+            On PASS it stores <span class="hbce-mono">HBCE_LAST_PACK_ROOT</span> locally (fail-closed).
           </p>
           <p class="hbce-card__meta">
             Input: Evidence Pack JSON (upload)
@@ -61,6 +151,7 @@
             Recommended external audit procedure:
           </p>
           <ol class="hbce-list">
+            <li>Run ADS and emit decisions (optional but recommended).</li>
             <li>Generate a pack in Kernel.</li>
             <li>Verify in Verifier (must PASS).</li>
             <li>Mutate one byte and verify again (must FAIL).</li>
@@ -69,17 +160,25 @@
           <p class="hbce-card__meta">
             Policy: fail-closed, hash-only, append-only
           </p>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/audit/" rel="noopener">
+            Open Audit Procedure →
+          </a>
         </article>
+
       </div>
     </section>
 
+    <!-- NOTES -->
     <section class="hbce-section">
-      <div class="hbce-card">
+      <div class="hbce-note">
         <h2 class="hbce-card__title">Security Notes</h2>
         <p class="hbce-card__text">
           This lab is designed for deterministic verification. It does not claim qualified timestamping by itself.
           If TSA/QTSP artifacts are attached later, the verifier can evolve to validate them and upgrade
           <span class="hbce-mono">validation_state</span> from <span class="hbce-mono">ATTACHED_DECLARED</span> to verified.
+        </p>
+        <p class="hbce-card__meta">
+          “Offline-real” means: cryptographic operations occur locally in the browser (WebCrypto). No network dependency.
         </p>
       </div>
     </section>
@@ -88,5 +187,71 @@
 
   <div data-hbce="footer"></div>
   <script src="/hermeticum-bce-platform/assets/hbce.js"></script>
+
+  <!-- CSP-safe local status logic (kept inline here only if CSP allows; if CSP blocks inline, move this to /assets/lab-status.js) -->
+  <script>
+  (function(){
+    const KEY_ID = "HBCE_JOKER_ID_V1";
+    const KEY_LEDGER = "HBCE_LOCAL_LEDGER_V1";
+    const KEY_LAST_ROOT = "HBCE_LAST_PACK_ROOT";
+    const KEY_LAST_ROOT_TS = "HBCE_LAST_PACK_ROOT_TS";
+
+    const elLedger = document.getElementById("mLedger");
+    const elKid = document.getElementById("mKid");
+    const elTip = document.getElementById("mTip");
+    const elPackRoot = document.getElementById("mPackRoot");
+
+    const sysBox = document.getElementById("sysBox");
+    const sysStatus = document.getElementById("sysStatus");
+    const sysRoot = document.getElementById("sysRoot");
+
+    function safeJsonParse(s){ try { return JSON.parse(s); } catch { return null; } }
+    function shortHex(h){
+      if(!h || typeof h !== "string") return "—";
+      if(h === "GENESIS") return "GENESIS";
+      return (h.length > 18) ? (h.slice(0,10) + "…" + h.slice(-6)) : h;
+    }
+    function render(){
+      const idObj = safeJsonParse(localStorage.getItem(KEY_ID) || "");
+      if(elKid) elKid.textContent = idObj?.kid ? idObj.kid : "—";
+
+      const ledgerObj = safeJsonParse(localStorage.getItem(KEY_LEDGER) || "");
+      const chain = Array.isArray(ledgerObj?.chain) ? ledgerObj.chain : [];
+      if(elLedger) elLedger.textContent = String(chain.length);
+      const tip = chain.length ? chain[chain.length - 1].chain_hash : "GENESIS";
+      if(elTip) elTip.textContent = shortHex(tip);
+
+      const lastRoot = (localStorage.getItem(KEY_LAST_ROOT) || "").trim();
+      if(elPackRoot) elPackRoot.textContent = shortHex(lastRoot);
+
+      if(sysBox && sysStatus && sysRoot){
+        if(lastRoot){
+          sysBox.classList.remove("hbce-status--warn");
+          sysBox.classList.add("hbce-status--ok");
+          sysStatus.textContent = "VERIFIED";
+          sysStatus.classList.remove("warn");
+          sysStatus.classList.add("ok");
+          sysRoot.textContent = lastRoot.slice(0,32) + "...";
+        }else{
+          sysBox.classList.remove("hbce-status--ok");
+          sysBox.classList.add("hbce-status--warn");
+          sysStatus.textContent = "NO LOCAL PROOF";
+          sysStatus.classList.remove("ok");
+          sysStatus.classList.add("warn");
+          sysRoot.textContent = "none";
+        }
+      }
+    }
+
+    render();
+
+    window.addEventListener("storage", (e)=>{
+      if(e.key === KEY_LAST_ROOT || e.key === KEY_LAST_ROOT_TS){
+        render();
+      }
+    });
+  })();
+  </script>
+
 </body>
 </html>
