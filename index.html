@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <title>HERMETICUM B.C.E. — EU Operational Identity Infrastructure</title>
-<meta name="description" content="EU-first operational identity infrastructure: IPR, operator licensing, deterministic verification, append-only registry logic, and offline-real Evidence Lab (kernel + verifier). Audit-first, fail-closed." />
+<meta name="description" content="EU-first operational identity infrastructure: IPR, operator licensing, deterministic verification, append-only registry logic, and offline-real evidence packs signed via WebCrypto. Audit-first, fail-closed." />
 
 <meta name="robots" content="index,follow" />
 <meta name="theme-color" content="#0b0f14" />
@@ -14,7 +14,6 @@
 <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 
 <style>
-  /* Minimal inline additions to avoid breaking existing hbce.css */
   .hbce-hero__badges{ display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
   .hbce-badge{
     display:inline-flex; align-items:center; gap:8px;
@@ -70,7 +69,6 @@
 
 <main class="hbce-container hbce-main">
 
-<!-- HERO -->
 <section class="hbce-hero">
   <div class="hbce-hero__kicker">EU-FIRST · AUDIT-FIRST · FAIL-CLOSED</div>
 
@@ -89,7 +87,6 @@
     <span class="hbce-badge">OFFLINE-REAL</span>
   </div>
 
-  <!-- SYSTEM STATUS (local, deterministic) -->
   <div class="hbce-section" style="padding-top:16px;">
     <div id="sysBox" class="hbce-status hbce-status--warn">
       <div class="hbce-status__grid">
@@ -104,7 +101,6 @@
     </div>
   </div>
 
-  <!-- Technical Metrics (local only) -->
   <div class="hbce-metrics" aria-label="Technical metrics (local)">
     <div class="hbce-metric">
       <div class="hbce-metric__k">Local Ledger Entries</div>
@@ -126,11 +122,10 @@
 
   <p class="hbce-hero__lead" style="margin-top:14px;">
     Metrics are computed locally (browser storage) to preserve <span class="hbce-mono">HASH_ONLY</span>.
-    For independent audit, use Kernel + Verifier or the Audit page.
+    For independent audit, use Evidence Lab (Kernel + Verifier) or the Audit page.
   </p>
 </section>
 
-<!-- ACCESS -->
 <section class="hbce-section">
   <h2 class="hbce-section__title">Access Infrastructure</h2>
 
@@ -172,7 +167,6 @@
   </div>
 </section>
 
-<!-- OPERATOR -->
 <section class="hbce-section">
   <h2 class="hbce-section__title">Operator Layer</h2>
 
@@ -213,7 +207,6 @@
   </div>
 </section>
 
-<!-- EVIDENCE LAB -->
 <section class="hbce-section">
   <h2 class="hbce-section__title">Evidence & Audit</h2>
 
@@ -279,7 +272,6 @@
   </div>
 </section>
 
-<!-- POLICY -->
 <section class="hbce-section">
   <div class="hbce-card">
     <h3 class="hbce-card__title">Operational Policy</h3>
@@ -299,10 +291,10 @@
 
 <script>
 (function(){
-  // Local-only deterministic signals. No network calls.
   const KEY_ID = "HBCE_JOKER_ID_V1";
   const KEY_LEDGER = "HBCE_LOCAL_LEDGER_V1";
   const KEY_LAST_ROOT = "HBCE_LAST_PACK_ROOT";
+  const KEY_LAST_ROOT_TS = "HBCE_LAST_PACK_ROOT_TS";
 
   const elLedger = document.getElementById("mLedger");
   const elKid = document.getElementById("mKid");
@@ -325,38 +317,38 @@
   }
   function isHex64plus(s){ return typeof s === "string" && /^[0-9a-fA-F]{64,}$/.test(s); }
 
-  // Identity
-  const idObj = safeJsonParse(localStorage.getItem(KEY_ID) || "");
-  elKid.textContent = idObj?.kid ? idObj.kid : "—";
+  function render(){
+    const idObj = safeJsonParse(localStorage.getItem(KEY_ID) || "");
+    elKid.textContent = idObj?.kid ? idObj.kid : "—";
 
-  // Ledger
-  const ledgerObj = safeJsonParse(localStorage.getItem(KEY_LEDGER) || "");
-  const chain = Array.isArray(ledgerObj?.chain) ? ledgerObj.chain : [];
-  elLedger.textContent = String(chain.length);
-  const tip = chain.length ? chain[chain.length - 1].chain_hash : "GENESIS";
-  elTip.textContent = shortHex(tip);
+    const ledgerObj = safeJsonParse(localStorage.getItem(KEY_LEDGER) || "");
+    const chain = Array.isArray(ledgerObj?.chain) ? ledgerObj.chain : [];
+    elLedger.textContent = String(chain.length);
+    const tip = chain.length ? chain[chain.length - 1].chain_hash : "GENESIS";
+    elTip.textContent = shortHex(tip);
 
-  // Last root (seen/pinned)
-  const lastRoot = (localStorage.getItem(KEY_LAST_ROOT) || "").trim();
-  elPackRoot.textContent = shortHex(lastRoot);
+    const lastRoot = (localStorage.getItem(KEY_LAST_ROOT) || "").trim();
+    elPackRoot.textContent = shortHex(lastRoot);
 
-  if(lastRoot){
-    sysBox.classList.remove("hbce-status--warn");
-    sysBox.classList.add("hbce-status--ok");
-    sysStatus.textContent = "VERIFIED";
-    sysStatus.classList.remove("warn");
-    sysStatus.classList.add("ok");
-    sysRoot.textContent = lastRoot.slice(0,32) + "...";
-  } else {
-    sysBox.classList.remove("hbce-status--ok");
-    sysBox.classList.add("hbce-status--warn");
-    sysStatus.textContent = "NO LOCAL PROOF";
-    sysStatus.classList.remove("ok");
-    sysStatus.classList.add("warn");
-    sysRoot.textContent = "none";
+    if(lastRoot){
+      sysBox.classList.remove("hbce-status--warn");
+      sysBox.classList.add("hbce-status--ok");
+      sysStatus.textContent = "VERIFIED";
+      sysStatus.classList.remove("warn");
+      sysStatus.classList.add("ok");
+      sysRoot.textContent = lastRoot.slice(0,32) + "...";
+    }else{
+      sysBox.classList.remove("hbce-status--ok");
+      sysBox.classList.add("hbce-status--warn");
+      sysStatus.textContent = "NO LOCAL PROOF";
+      sysStatus.classList.remove("ok");
+      sysStatus.classList.add("warn");
+      sysRoot.textContent = "none";
+    }
   }
 
-  // Pin UI
+  render();
+
   if(pinBtn){
     pinBtn.addEventListener("click", ()=>{
       const v = (pinInput?.value || "").trim();
@@ -365,20 +357,19 @@
         return;
       }
       localStorage.setItem(KEY_LAST_ROOT, v.toLowerCase());
-      const vv = v.toLowerCase();
-      elPackRoot.textContent = shortHex(vv);
-
-      sysBox.classList.remove("hbce-status--warn");
-      sysBox.classList.add("hbce-status--ok");
-      sysStatus.textContent = "VERIFIED";
-      sysStatus.classList.remove("warn");
-      sysStatus.classList.add("ok");
-      sysRoot.textContent = vv.slice(0,32) + "...";
-
+      localStorage.setItem(KEY_LAST_ROOT_TS, String(Date.now()));
       pinStatus.textContent = "Pinned locally ✓";
       if(pinInput) pinInput.value = "";
+      render();
     });
   }
+
+  // Live update from verifier (other tab)
+  window.addEventListener("storage", (e)=>{
+    if(e.key === KEY_LAST_ROOT || e.key === KEY_LAST_ROOT_TS){
+      render();
+    }
+  });
 })();
 </script>
 
