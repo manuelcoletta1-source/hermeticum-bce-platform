@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <title>ΦΩ Industrial Pilot — Verifiable Identity & Evidence Logging for Robots/PLCs</title>
-  <meta name="description" content="ΦΩ Industrial Pilot (Laptop Mode): assign verifiable identity to a robot/PLC, generate append-only evidence logs, and provide deterministic verification + pilot report. EU-first, audit-first, fail-closed." />
+  <meta name="description" content="ΦΩ Industrial Pilot (Laptop Mode): verifiable machine identity (MIP), append-only evidence logging, deterministic verification, and a portable Evidence Pack. EU-first, audit-first, fail-closed." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
@@ -21,31 +21,31 @@
 
     <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">ΦΩ · INDUSTRIAL PILOT · LAPTOP MODE</div>
-      <h1 class="hbce-hero__title">Verifiable Identity & Evidence Logging for Robots / PLCs</h1>
+      <div class="hbce-hero__kicker">ΦΩ · INDUSTRIAL PILOT · LAPTOP MODE · READ-ONLY</div>
+      <h1 class="hbce-hero__title">Verifiable identity + evidence logging for robots / PLCs</h1>
       <p class="hbce-hero__lead">
-        ΦΩ is a verifiable identity + event logging layer for machines.
-        It does not “control” your robot/PLC — it makes its actions provable.
-        Built for EU auditability: fail-closed, hash-only, append-only.
+        ΦΩ is a machine identity and evidence layer designed for EU auditability.
+        It does not control your system — it makes operations provable with append-only records and deterministic verification.
       </p>
 
       <div class="hbce-actions">
-        <a class="hbce-btn hbce-btn--primary" href="#pilot">Pilot Mode (30 days)</a>
+        <a class="hbce-btn hbce-btn--primary" href="#pilot">Pilot (30 days)</a>
         <a class="hbce-btn" href="/hermeticum-bce-platform/phiomega/pilot-scope/">Pilot Scope (SOW)</a>
-        <a class="hbce-btn" href="#specs">Download Specs</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verify</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/phiomega/evidence-pack/">Evidence Pack</a>
+        <a class="hbce-btn" href="#specs">Specs</a>
       </div>
     </section>
 
-    <!-- WHAT -->
+    <!-- VALUE -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">What this solves (in plain engineering terms)</h2>
+      <h2 class="hbce-h2">What ΦΩ delivers (no hype)</h2>
+
       <div class="hbce-grid">
         <article class="hbce-card">
-          <h3 class="hbce-h3">Machine identity</h3>
+          <h3 class="hbce-h3">Machine identity (MIP)</h3>
           <p class="hbce-p">
-            Each machine receives a <strong>Machine Identity Pack (MIP)</strong>:
-            stable ID + layered fingerprints + policy. Identity is linked to an append-only evidence chain.
+            A stable Machine Identity Pack: machine_id, layered fingerprints (software/config),
+            policies, and genesis hash linking identity to the evidence chain.
           </p>
         </article>
 
@@ -53,15 +53,25 @@
           <h3 class="hbce-h3">Append-only evidence</h3>
           <p class="hbce-p">
             Operational events become chained records (hash-linked).
-            Tampering becomes detectable. No “trust me logs”.
+            Tampering becomes detectable. Evidence remains portable and offline-verifiable.
           </p>
         </article>
 
         <article class="hbce-card">
           <h3 class="hbce-h3">Deterministic verification</h3>
           <p class="hbce-p">
-            A verifier can check a record by ID/hash and get a deterministic result:
-            <strong>MATCH / NO MATCH</strong> plus timeline.
+            Verification is deterministic: input record/hash → output MATCH / NO MATCH plus a traceable timeline.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <h3 class="hbce-h3">Evidence Pack delivery</h3>
+          <p class="hbce-p">
+            A structured archive (identity + events + propositions + evidence + report) that can be stored internally
+            and verified offline.
+          </p>
+          <p class="hbce-p">
+            <a href="/hermeticum-bce-platform/phiomega/evidence-pack/">Open Evidence Pack →</a>
           </p>
         </article>
       </div>
@@ -69,54 +79,49 @@
 
     <!-- PILOT -->
     <section id="pilot" class="hbce-section">
-      <h2 class="hbce-h2">Pilot Mode (Laptop Mode) — 30 days</h2>
+      <h2 class="hbce-h2">Pilot (Laptop Mode) — 30 days</h2>
       <p class="hbce-p">
-        Designed for fast industrial validation: ΦΩ runs on a laptop connected to the machine network/log export (read-only).
-        Minimum infrastructure. Maximum proof.
+        ΦΩ runs on a laptop connected to your robot/PLC logs or read-only event export.
+        Minimum infrastructure, minimal invasiveness, maximum proof.
       </p>
 
       <div class="hbce-grid">
         <article class="hbce-card">
-          <h3 class="hbce-h3">D1 — Machine Identity Pack (MIP)</h3>
-          <p class="hbce-p">
-            A stable identity envelope for the machine: ID, layered fingerprints (software/config), policies,
-            and chain genesis hash (append-only linkage).
-          </p>
+          <h3 class="hbce-h3">Week 1 — Setup & Identity</h3>
+          <ul class="hbce-list">
+            <li>Confirm input channel(s) (file export/syslog/gateway/protocol read mode).</li>
+            <li>Emit the Machine Identity Pack (MIP) + genesis hash.</li>
+            <li>Finalize event mapping for the target system.</li>
+          </ul>
         </article>
 
         <article class="hbce-card">
-          <h3 class="hbce-h3">D2 — Evidence Log (append-only)</h3>
-          <p class="hbce-p">
-            Raw events + ΦΩ propositions + evidence records chained by hashes (tamper-evident).
-            Delivered as a portable archive.
-          </p>
+          <h3 class="hbce-h3">Week 2–3 — Evidence logging</h3>
+          <ul class="hbce-list">
+            <li>Continuous capture of baseline events (lifecycle/safety/ops).</li>
+            <li>Append-only chain integrity monitoring.</li>
+            <li>Critical event review (faults, overrides, safety trips).</li>
+          </ul>
         </article>
 
         <article class="hbce-card">
-          <h3 class="hbce-h3">D3 — Deterministic Verify</h3>
-          <p class="hbce-p">
-            Verification procedure/tooling: input record/hash → deterministic output (MATCH / NO MATCH)
-            and traceable timeline.
-          </p>
+          <h3 class="hbce-h3">Week 4 — Verify + Report</h3>
+          <ul class="hbce-list">
+            <li>Deterministic verification procedure/tooling delivery.</li>
+            <li>Evidence Pack export (portable archive).</li>
+            <li>Pilot report + technical debrief.</li>
+          </ul>
         </article>
+      </div>
 
-        <article class="hbce-card">
-          <h3 class="hbce-h3">D4 — Pilot Report</h3>
-          <p class="hbce-p">
-            Technical report describing identity, event taxonomy, critical incidents, continuity metrics,
-            and readiness for EU audit pipelines and future signature/time-stamping upgrades.
-          </p>
-        </article>
-
-        <article class="hbce-card">
-          <h3 class="hbce-h3">Pilot Scope (SOW)</h3>
-          <p class="hbce-p">
-            A clean Statement of Work outline for R&D teams: objective, requirements, timeline, deliverables, and pilot-ready notes.
-          </p>
-          <p class="hbce-p">
-            <a href="/hermeticum-bce-platform/phiomega/pilot-scope/">Open Pilot Scope →</a>
-          </p>
-        </article>
+      <div class="hbce-card" style="margin-top:16px;">
+        <h3 class="hbce-h3">Pilot Scope (SOW)</h3>
+        <p class="hbce-p">
+          A clean Statement of Work for R&D teams: objective, requirements, deliverables, timeline, and pilot-ready notes.
+        </p>
+        <p class="hbce-p">
+          <a href="/hermeticum-bce-platform/phiomega/pilot-scope/">Open Pilot Scope →</a>
+        </p>
       </div>
     </section>
 
@@ -128,7 +133,8 @@
           <li><strong>Hash-only:</strong> evidence is represented as hashes (no public data custody).</li>
           <li><strong>Append-only:</strong> records are chained; edits are detectable.</li>
           <li><strong>Fail-closed:</strong> if integrity/thresholds are not met → deny + log.</li>
-          <li><strong>Thresholds (pilot reference):</strong> κ ≥ 0.997 · Σ ≥ 0.995 · Χτ ≤ 0.60.</li>
+          <li><strong>Threshold reference:</strong> κ ≥ 0.997 · Σ ≥ 0.995 · Χτ ≤ 0.60.</li>
+          <li><strong>Read-only pilot:</strong> ΦΩ ingests events; it does not control actuators in Pilot Mode.</li>
         </ul>
       </div>
     </section>
@@ -137,7 +143,7 @@
     <section id="specs" class="hbce-section">
       <h2 class="hbce-h2">Specs (download)</h2>
       <p class="hbce-p">
-        Use these schemas to integrate ΦΩ with PLC logs, robots, gateways, or R&D pipelines.
+        Integration-ready schemas for identity, events, and propositions. Use these to connect PLC logs, robots, gateways, or R&D pipelines.
       </p>
 
       <div class="hbce-grid">
@@ -167,17 +173,21 @@
       </div>
     </section>
 
-    <!-- EU -->
+    <!-- CTA -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">EU alignment (high level)</h2>
-      <p class="hbce-p">
-        ΦΩ is designed to support continuous auditability and evidence preservation workflows
-        (signature/time-stamping pipelines and long-term evidence packs).
-      </p>
+      <h2 class="hbce-h2">Start a pilot</h2>
       <div class="hbce-card">
         <p class="hbce-p">
-          Pilot Mode can run as <strong>OPPONIBLE_READY</strong> (technical signing + deterministic verification),
-          and later be upgraded to qualified signing/time-stamping and long-term archival.
+          If you have a robot/PLC/cell and can provide read-only access to logs or event export, ΦΩ can produce an Evidence Pack within a 30-day pilot.
+        </p>
+        <ul class="hbce-list">
+          <li>Target system: robot / PLC / cell (test or production environment)</li>
+          <li>Read-only event source: export/syslog/gateway/protocol read mode</li>
+          <li>Technical contact: R&D / automation / OT engineer</li>
+          <li>Optional NDA before sharing internal identifiers</li>
+        </ul>
+        <p class="hbce-p">
+          See <a href="/hermeticum-bce-platform/phiomega/pilot-scope/">Pilot Scope (SOW)</a> and <a href="/hermeticum-bce-platform/phiomega/evidence-pack/">Evidence Pack</a>.
         </p>
       </div>
     </section>
