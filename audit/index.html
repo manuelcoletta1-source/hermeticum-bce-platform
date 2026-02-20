@@ -3,81 +3,91 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HBCE Audit — External Verification Procedure</title>
-  <meta name="description" content="External audit procedure for HBCE Evidence Pack v2: deterministic verification of pack root, signature, ledger chain and record integrity. Fail-closed." />
+
+  <title>HBCE Audit — External Verification</title>
+  <meta name="description" content="Independent verification of HBCE Evidence Pack v2. Deterministic canonical hash, ECDSA signature, append-only ledger. PASS/FAIL." />
+
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
-  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/audit/" />
+
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
+
 <body>
 
 <div data-hbce="header"></div>
 
 <main class="hbce-container hbce-main">
 
-  <section class="hbce-hero">
-    <div class="hbce-hero__kicker">AUDIT-FIRST · FAIL-CLOSED</div>
-    <h1 class="hbce-hero__title">External Audit Procedure</h1>
-    <p class="hbce-hero__lead">
-      This page documents how any independent party can verify HBCE Evidence Pack v2 without trusting the issuer.
-      Deterministic canonicalization, SHA-512 pack root, ECDSA P-256 signature, append-only ledger chain.
-    </p>
-  </section>
+<!-- HERO -->
+<section class="hbce-hero">
+  <div class="hbce-hero__kicker">AUDIT-FIRST · FAIL-CLOSED</div>
+  <h1 class="hbce-hero__title">External Verification Procedure</h1>
+  <p class="hbce-hero__lead">
+    Any third party can verify an HBCE Evidence Pack without trusting the issuer.
+    Deterministic canonicalization, SHA-512 pack root, ECDSA signature and append-only ledger.
+  </p>
+</section>
 
-  <section class="hbce-section">
-    <div class="hbce-grid">
+<!-- STEPS -->
+<section class="hbce-section">
+  <h2 class="hbce-section__title">Audit Flow</h2>
 
-      <article class="hbce-card">
-        <h2 class="hbce-card__title">1) Generate Evidence Pack</h2>
-        <p class="hbce-card__text">
-          Use the Kernel (issuer) to emit events and export an Evidence Pack v2 JSON.
-        </p>
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/sim/joker-kernel/">
-          Open Kernel →
-        </a>
-      </article>
+  <div class="hbce-grid">
 
-      <article class="hbce-card">
-        <h2 class="hbce-card__title">2) Verify Independently</h2>
-        <p class="hbce-card__text">
-          Use the Verifier (auditor) to recompute canonical preimage, validate SHA-512 root, verify ECDSA signature,
-          validate ledger chain and per-record integrity. Output is PASS/FAIL.
-        </p>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/sim/joker-kernel/verifier.html">
-          Open Verifier →
-        </a>
-      </article>
-
-      <article class="hbce-card">
-        <h2 class="hbce-card__title">3) Tamper Test</h2>
-        <p class="hbce-card__text">
-          Modify one byte in the JSON (e.g., a character inside <span class="hbce-mono">phi:detail</span>).
-          Re-verify: it must FAIL. If it does not fail, the verifier is not trustworthy.
-        </p>
-      </article>
-
-    </div>
-  </section>
-
-  <section class="hbce-section">
-    <div class="hbce-card">
-      <h2 class="hbce-card__title">What is Verified</h2>
-      <ul class="hbce-list">
-        <li><b>Pack Root</b>: recomputed from canonical preimage (deterministic ordering).</li>
-        <li><b>Pack Signature</b>: ECDSA P-256 signature over pack_root_hash bytes.</li>
-        <li><b>Ledger Chain</b>: append-only hash-chain linking record hashes (tamper-evident).</li>
-        <li><b>Record Integrity</b>: per-record payload canonical hash + signature validation.</li>
-      </ul>
-      <p class="hbce-card__meta">
-        Policy: UE_FIRST · AUDIT_FIRST · HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · NO_PUBLIC_DATA_CUSTODY
+    <article class="hbce-card">
+      <h3 class="hbce-card__title">1 · Generate Pack</h3>
+      <p class="hbce-card__text">
+        Use the Kernel to emit events and export an Evidence Pack v2 JSON.
       </p>
-    </div>
-  </section>
+      <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/sim/joker-kernel/">
+        Open Kernel →
+      </a>
+    </article>
+
+    <article class="hbce-card">
+      <h3 class="hbce-card__title">2 · Verify Pack</h3>
+      <p class="hbce-card__text">
+        Use the independent verifier to recompute hash, verify signature and ledger integrity.
+        Result must be PASS or FAIL.
+      </p>
+      <a class="hbce-btn" href="/hermeticum-bce-platform/sim/joker-kernel/verifier.html">
+        Open Verifier →
+      </a>
+    </article>
+
+    <article class="hbce-card">
+      <h3 class="hbce-card__title">3 · Tamper Test</h3>
+      <p class="hbce-card__text">
+        Modify one character inside the JSON file and verify again.
+        System must return FAIL (fail-closed).
+      </p>
+    </article>
+
+  </div>
+</section>
+
+<!-- WHAT IS VERIFIED -->
+<section class="hbce-section">
+  <div class="hbce-card">
+    <h2 class="hbce-card__title">What Gets Verified</h2>
+    <ul class="hbce-list">
+      <li>Canonical pack_root_hash (SHA-512)</li>
+      <li>ECDSA P-256 signature validity</li>
+      <li>Append-only ledger chain integrity</li>
+      <li>Per-record hash and signature integrity</li>
+    </ul>
+
+    <p class="hbce-card__meta">
+      Policy: UE_FIRST · AUDIT_FIRST · HASH_ONLY · APPEND_ONLY · FAIL_CLOSED
+    </p>
+  </div>
+</section>
 
 </main>
 
 <div data-hbce="footer"></div>
 <script src="/hermeticum-bce-platform/assets/hbce.js"></script>
+
 </body>
 </html>
