@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>ΦΩ Evidence Pack — What you receive (D1/D2/D3) + deterministic verification</title>
+  <meta name="description" content="ΦΩ Evidence Pack: deliverables archive structure, append-only hash chaining, verification procedure (MATCH/NO MATCH), and example records for robots/PLCs in Pilot Mode." />
+
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/phiomega/evidence-pack/" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">ΦΩ · EVIDENCE PACK · APPEND-ONLY · HASH-ONLY</div>
+      <h1 class="hbce-hero__title">Evidence Pack (Pilot Mode)</h1>
+      <p class="hbce-hero__lead">
+        This page describes the concrete deliverables of a ΦΩ pilot: the portable archive you receive,
+        how records are chained, and how deterministic verification works.
+      </p>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/phiomega/">Back to ΦΩ Pilot</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/phiomega/pilot-scope/">Pilot Scope (SOW)</a>
+        <a class="hbce-btn" href="#verify">Verification procedure</a>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">What is an Evidence Pack?</h2>
+      <div class="hbce-card">
+        <p class="hbce-p">
+          An Evidence Pack is a <strong>portable</strong>, <strong>tamper-evident</strong> archive for a real machine (robot/PLC/cell).
+          It contains identity, events, propositions, and chained evidence records. The pack can be verified deterministically.
+        </p>
+        <ul class="hbce-list">
+          <li><strong>Hash-only:</strong> evidence is represented as hashes (no public data custody).</li>
+          <li><strong>Append-only:</strong> records are hash-chained (edits become detectable).</li>
+          <li><strong>Fail-closed:</strong> if integrity is broken → verification fails (NO MATCH).</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Deliverables (D1/D2/D3)</h2>
+      <div class="hbce-grid">
+        <article class="hbce-card">
+          <h3 class="hbce-h3">D1 — Machine Identity Pack (MIP)</h3>
+          <p class="hbce-p">
+            Identity envelope: machine_id, layered fingerprints, policies, chain genesis hash.
+            Delivered as JSON (public/minimal and optional private version).
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <h3 class="hbce-h3">D2 — Evidence Log (append-only)</h3>
+          <p class="hbce-p">
+            A chain of events and evidence records. Each record contains a <strong>prev_hash</strong>,
+            forming an immutable-like sequence within the pack.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <h3 class="hbce-h3">D3 — Deterministic Verify</h3>
+          <p class="hbce-p">
+            A verification procedure (or tool) to check a record/hash and confirm:
+            <strong>MATCH</strong> (integrity intact) or <strong>NO MATCH</strong> (tampered / broken chain).
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Archive structure (portable)</h2>
+      <div class="hbce-card">
+        <p class="hbce-p">Example folder layout:</p>
+        <pre class="hbce-pre"><code>PHIOMEGA_EVIDENCE_PACK/
+  manifest.json
+  identity/
+    mip.public.json
+    mip.private.json  (optional, host-owned)
+  events/
+    000001.event.json
+    000002.event.json
+    ...
+  propositions/
+    000001.prop.json
+    000002.prop.json
+    ...
+  evidence/
+    000001.record.json
+    000002.record.json
+    ...
+  verify/
+    verify.md
+    (optional) verify.html / verify-cli
+  report/
+    pilot-report.pdf (or .html)
+</code></pre>
+        <p class="hbce-p">
+          Packs can be zipped and stored internally. No external services are required to validate internal chaining.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Record chaining (append-only)</h2>
+      <div class="hbce-card">
+        <p class="hbce-p">
+          Every event carries a <code>prev_hash</code> field, and every evidence record references the hash of the previous record.
+          This creates a chain where tampering breaks verification deterministically.
+        </p>
+
+        <div class="hbce-grid">
+          <article class="hbce-card">
+            <h3 class="hbce-h3">Event (Λ) example</h3>
+            <pre class="hbce-pre"><code>{
+  "proto": "PHIOMEGA-EVENT-v0.1",
+  "isoTime": "2026-02-20T16:30:00+01:00",
+  "machine": { "machine_id": "CN-PILOT-001", "source": "PLC" },
+  "event": { "type": "JOB_START", "severity": "INFO", "job_id": "JOB-000042" },
+  "security": {
+    "nonce": "b64:4yQm...==",
+    "prev_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  }
+}</code></pre>
+          </article>
+
+          <article class="hbce-card">
+            <h3 class="hbce-h3">Evidence record example</h3>
+            <pre class="hbce-pre"><code>{
+  "proto": "PHIOMEGA-RECORD-v0.1",
+  "record_id": "REC-20260220-000001",
+  "ref_event_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "prev_record_hash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "hash": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "status": "OPPONIBLE_READY",
+  "note": "Pilot mode: technical integrity + deterministic verification"
+}</code></pre>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="verify" class="hbce-section">
+      <h2 class="hbce-h2">Deterministic verification (MATCH / NO MATCH)</h2>
+      <div class="hbce-card">
+        <p class="hbce-p">
+          Verification is deterministic and offline-capable. The verifier recalculates hashes and checks chain continuity.
+        </p>
+
+        <h3 class="hbce-h3">Verification steps</h3>
+        <ol class="hbce-ol">
+          <li>Pick a target <strong>record</strong> (by record_id or hash).</li>
+          <li>Recompute the record hash from canonical JSON fields.</li>
+          <li>Check that <code>prev_record_hash</code> matches the previous record hash.</li>
+          <li>Walk backward (or forward) to the genesis hash from MIP.</li>
+          <li>If any mismatch occurs → <strong>NO MATCH</strong>. If all checks pass → <strong>MATCH</strong>.</li>
+        </ol>
+
+        <p class="hbce-p">
+          This is the core advantage: no “trust me”. Either it matches, or it doesn’t.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Pilot-to-production upgrade path</h2>
+      <div class="hbce-card">
+        <div class="hbce-grid">
+          <article class="hbce-card">
+            <h3 class="hbce-h3">Pilot</h3>
+            <ul class="hbce-list">
+              <li>Laptop Mode (read-only)</li>
+              <li>OPPONIBLE_READY evidence</li>
+              <li>Offline deterministic verification</li>
+            </ul>
+          </article>
+          <article class="hbce-card">
+            <h3 class="hbce-h3">Upgrade</h3>
+            <ul class="hbce-list">
+              <li>Signature/time-stamping workflows</li>
+              <li>Long-term preservation packs</li>
+              <li>Anchoring to external registries if required</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Next steps</h2>
+      <div class="hbce-card">
+        <p class="hbce-p">
+          If you have a robot/PLC/cell and can provide read-only access to logs or event export,
+          ΦΩ can generate an Evidence Pack within a 30-day pilot.
+        </p>
+        <p class="hbce-p">
+          See: <a href="/hermeticum-bce-platform/phiomega/pilot-scope/">Pilot Scope (SOW)</a>.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce.js"></script>
+</body>
+</html>
