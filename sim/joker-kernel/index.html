@@ -2,233 +2,97 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>JOKER-KERNEL v1.0 — CQD + Λ (ΦΩ) + IPR Anchor-Set (Offline-Real)</title>
-  <meta name="description" content="Offline-real kernel: CQD records (D,T,I,E,L), Λ equilibrium (ΦΩ), fail-closed trust envelope, local append-only ledger, real WebCrypto signatures, and preloaded IPR anchor-set (QTSP/TSA + IPFS/BTC/EVM)." />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>JOKER-KERNEL — Evidence Pack v2 Signed (REAL)</title>
+  <meta name="description" content="Offline-real Joker Kernel: CQD emission + deterministic Evidence Pack v2 signing using canonical JSON + SHA-512 + ECDSA P-256."/>
   <style>
-    :root{
-      --bg:#0b0f14; --panel:#0f1620; --ink:#eaf2ff; --muted:rgba(234,242,255,.78);
-      --line:rgba(255,255,255,.10); --soft:rgba(255,255,255,.04);
-      --good:#22c55e; --warn:#f59e0b; --bad:#ef4444;
-    }
-    *{ box-sizing:border-box; }
-    body{ margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background:var(--bg); color:var(--ink); }
-    header{ padding:18px 16px; border-bottom:1px solid var(--line); background:linear-gradient(180deg, rgba(255,255,255,.04), transparent); }
-    header h1{ margin:0; font-size:1.06rem; letter-spacing:.2px; }
-    header p{ margin:6px 0 0; color:var(--muted); font-size:.92rem; line-height:1.35; }
-    main{ padding:16px; max-width:1200px; margin:0 auto; }
-    .grid{ display:grid; gap:14px; grid-template-columns: 1.2fr .8fr; }
-    @media (max-width: 980px){ .grid{ grid-template-columns:1fr; } }
-    .card{ background:rgba(255,255,255,.03); border:1px solid var(--line); border-radius:16px; padding:14px; }
-    .row{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
-    .btn{ appearance:none; border:1px solid var(--line); background:rgba(255,255,255,.06);
-      color:var(--ink); padding:10px 12px; border-radius:12px; cursor:pointer; font-weight:800; }
-    .btn:hover{ background:rgba(255,255,255,.08); }
-    .btn.primary{ background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.18); }
-    .btn.danger{ background:rgba(239,68,68,.14); border-color:rgba(239,68,68,.35); }
-    .pill{ display:inline-flex; gap:8px; align-items:center; padding:8px 10px; border-radius:999px;
-      border:1px solid var(--line); background:rgba(255,255,255,.03); font-size:.9rem; }
-    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
-    .kpi{ display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:10px; }
-    @media (max-width: 980px){ .kpi{ grid-template-columns:repeat(2, minmax(0,1fr)); } }
-    .kpi .box{ padding:12px; border-radius:14px; border:1px solid var(--line); background:var(--soft); }
-    .kpi b{ display:block; font-size:1.05rem; }
-    .kpi span{ color:var(--muted); font-size:.9rem; }
-    label{ font-size:.9rem; color:var(--muted); }
-    input[type="range"]{ width:100%; }
-    .two{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    @media (max-width: 680px){ .two{ grid-template-columns:1fr; } }
-    canvas{ width:100%; height:280px; display:block; background:rgba(0,0,0,.25); border:1px solid var(--line); border-radius:14px; }
-    textarea{ width:100%; min-height:240px; resize:vertical; background:rgba(0,0,0,.25); color:var(--ink);
-      border:1px solid var(--line); border-radius:14px; padding:12px; }
-    .status{ font-weight:950; letter-spacing:.3px; }
-    .good{ color:var(--good); }
-    .warn{ color:var(--warn); }
-    .bad{ color:var(--bad); }
-    .small{ font-size:.9rem; color:var(--muted); line-height:1.35; }
-    .hr{ height:1px; background:var(--line); border:0; margin:12px 0; }
-    .note{ padding:12px; border-radius:14px; border:1px solid rgba(245,158,11,.35); background:rgba(245,158,11,.08); }
-    .ok{ padding:12px; border-radius:14px; border:1px solid rgba(34,197,94,.35); background:rgba(34,197,94,.08); }
-    .dangerbox{ padding:12px; border-radius:14px; border:1px solid rgba(239,68,68,.35); background:rgba(239,68,68,.08); }
-    details{ border:1px solid var(--line); border-radius:14px; padding:10px 12px; background:rgba(255,255,255,.02); }
-    summary{ cursor:pointer; font-weight:800; }
-    code{ color:rgba(234,242,255,.92); }
+    :root{--bg:#0b0f14;--ink:#eaf2ff;--mut:rgba(234,242,255,.78);--line:rgba(255,255,255,.10);--soft:rgba(255,255,255,.04);--g:#22c55e;--w:#f59e0b;--b:#ef4444;}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--ink)}
+    header{padding:16px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.04),transparent)}
+    h1{margin:0;font-size:1.05rem}
+    p{margin:8px 0 0;color:var(--mut);line-height:1.35}
+    main{max-width:1050px;margin:0 auto;padding:16px}
+    .card{border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:16px;padding:14px}
+    .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+    .btn{appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:800}
+    .btn:hover{background:rgba(255,255,255,.08)}
+    .btn.primary{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.18)}
+    .btn.danger{background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.35)}
+    .pill{display:inline-flex;gap:8px;align-items:center;padding:8px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);font-size:.9rem}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
+    .small{font-size:.9rem;color:var(--mut);line-height:1.35}
+    .hr{height:1px;background:var(--line);border:0;margin:12px 0}
+    textarea{width:100%;min-height:260px;resize:vertical;background:rgba(0,0,0,.25);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:12px}
+    .ok{padding:12px;border-radius:14px;border:1px solid rgba(34,197,94,.35);background:rgba(34,197,94,.08)}
+    .warn{padding:12px;border-radius:14px;border:1px solid rgba(245,158,11,.35);background:rgba(245,158,11,.08)}
+    .bad{padding:12px;border-radius:14px;border:1px solid rgba(239,68,68,.35);background:rgba(239,68,68,.08)}
+    code{color:rgba(234,242,255,.92)}
   </style>
 </head>
-
 <body>
 <header>
-  <h1>JOKER-KERNEL v1.0 — CQD + Λ (ΦΩ) + IPR Anchor-Set (Offline-Real)</h1>
+  <h1>JOKER-KERNEL — Evidence Pack v2 Signed (REAL)</h1>
   <p>
-    CQD emits opposable events as <span class="mono">CQD(D)={D,T,I,E,L}</span> with fail-closed validation.
-    Λ uses the ΦΩ equation and VALID Ω window <span class="mono">[0.997, 1.003]</span>.
-    Public anchors are preloaded from the IPR anchor-set (QTSP/TSA + IPFS/BTC/EVM). 
+    This file emits CQD records and exports a <span class="mono">HBCE-EVIDENCE-PACK-v2</span> with:
+    <b>canonical JSON</b> → <b>SHA-512 pack_root_hash</b> → <b>ECDSA P-256 pack_signature</b>.
+    Touch one byte → FAIL in verifier. That’s “reale”.
   </p>
 </header>
 
 <main>
-  <div class="grid">
-
-    <!-- LEFT: KERNEL -->
-    <section class="card">
-      <div class="row" style="justify-content:space-between;">
-        <div class="row">
-          <span class="pill">Trust: <span class="mono" id="trustView">L0</span></span>
-          <span class="pill">Mode: <span class="mono" id="modeView">OFFLINE_REAL</span></span>
-          <span class="pill">CQD: <span class="mono" id="cqdView">INVALID</span></span>
-        </div>
-        <div class="row">
-          <button class="btn" id="btnIdentity">Init / Load Identity</button>
-          <button class="btn primary" id="btnRun">Run</button>
-          <button class="btn" id="btnPause">Pause</button>
-          <button class="btn danger" id="btnReset">Reset</button>
-        </div>
+  <section class="card">
+    <div class="row">
+      <div class="row" style="justify-content:flex-start;">
+        <span class="pill">Identity: <span class="mono" id="kid">NOT_READY</span></span>
+        <span class="pill">Records: <span class="mono" id="rcount">0</span></span>
+        <span class="pill">Ledger tip: <span class="mono" id="ltip">GENESIS</span></span>
       </div>
-
-      <div class="hr"></div>
-
-      <div class="two">
-        <div>
-          <label>Disturbance (environment / drift)</label>
-          <input id="disturb" type="range" min="0" max="1" step="0.01" value="0.35" />
-          <div class="small">Raises Σ pressure and pushes χτ upward.</div>
-        </div>
-        <div>
-          <label>u(t) (collimation)</label>
-          <input id="ut" type="range" min="0" max="1" step="0.01" value="0.55" />
-          <div class="small">Bounded by trust envelope (L0→L3).</div>
-        </div>
-      </div>
-
-      <div class="two" style="margin-top:10px;">
-        <div>
-          <label>Time coherence (κ driver)</label>
-          <input id="timeQual" type="range" min="0" max="1" step="0.01" value="0.70" />
-          <div class="small">Lower → weaker κ and worse ε.</div>
-        </div>
-        <div>
-          <label>Ethical tension bias (χτ driver)</label>
-          <input id="chiBias" type="range" min="0" max="1" step="0.01" value="0.25" />
-          <div class="small">Higher → χτ rises faster (contested context).</div>
-        </div>
-      </div>
-
-      <div class="hr"></div>
-
-      <canvas id="chart" width="1000" height="360"></canvas>
-
-      <div class="row" style="margin-top:10px;">
-        <button class="btn" id="btnAct">Emit ACT (CQD)</button>
-        <button class="btn" id="btnFault">Inject Fault</button>
-        <button class="btn" id="btnVerify">Verify Local Ledger</button>
-      </div>
-
-      <div id="statusBox" class="small" style="margin-top:10px;"></div>
-
-      <div class="hr"></div>
-
-      <details>
-        <summary>IPR Anchor-Set (preloaded)</summary>
-        <div class="small" style="margin-top:8px;">
-          <div><b>QTSP/TSA Actalis (INRiM Sync)</b> + triple anchor (IPFS/BTC/EVM)</div>
-          <div class="mono" id="anchorActalis"></div>
-          <div style="margin-top:10px;"><b>UNEBDO ΦΩ TSA TOKEN (ΦΩ-LTA₁)</b></div>
-          <div class="mono" id="anchorUnebdo"></div>
-          <div class="note small" style="margin-top:10px;">
-            Offline mode can attach anchors as evidence, but cryptographic verification of a TSA token requires the binary <span class="mono">.tsr</span> plus trust chain artifacts.
-            Kernel remains fail-closed: external verification upgrades the record state.
-          </div>
-        </div>
-      </details>
-    </section>
-
-    <!-- RIGHT: KPIs + LOG -->
-    <aside class="card">
-      <div class="kpi">
-        <div class="box"><b class="mono" id="lambdaBox">0.980000</b><span>Λ</span></div>
-        <div class="box"><b class="mono" id="kappaBox">0.9900</b><span>κ</span></div>
-        <div class="box"><b class="mono" id="sigmaBox">0.9900</b><span>Σ</span></div>
-        <div class="box"><b class="mono" id="chiBox">0.300</b><span>Χτ</span></div>
-      </div>
-
-      <div class="hr"></div>
-
-      <div class="kpi">
-        <div class="box"><b class="mono" id="EBox">0.8500</b><span>E</span></div>
-        <div class="box"><b class="mono" id="IBox">0.8000</b><span>I</span></div>
-        <div class="box"><b class="mono" id="VBox">0.6000</b><span>V</span></div>
-        <div class="box"><b class="mono" id="etaBox">0.9000</b><span>η</span></div>
-      </div>
-
-      <div class="hr"></div>
-
-      <div class="row" style="justify-content:space-between;">
-        <div>
-          <div class="small">Kernel</div>
-          <div class="status mono" id="kernelState">L0 · LOW_TRUST</div>
-          <div class="small">Last action: <span class="mono" id="lastAction">BOOT</span></div>
-        </div>
-        <div>
-          <div class="small">Safety</div>
-          <div class="status" id="safetyState"><span class="good">RUNNABLE</span></div>
-          <div class="small">Valid streak: <span class="mono" id="streak">0</span></div>
-        </div>
-      </div>
-
-      <div class="hr"></div>
-
       <div class="row">
-        <button class="btn" id="btnExport">Export Evidence Pack</button>
-        <button class="btn" id="btnCopy">Copy JSON</button>
-        <button class="btn danger" id="btnWipe">Wipe Local Ledger</button>
+        <button class="btn" id="btnId">Init / Load Identity</button>
+        <button class="btn" id="btnAct">Emit ACT</button>
+        <button class="btn" id="btnFail">Emit FAIL_CLOSED</button>
+        <button class="btn primary" id="btnExport">Export Pack v2 (Signed)</button>
+        <button class="btn danger" id="btnWipe">Wipe Local State</button>
       </div>
+    </div>
 
-      <textarea id="log" class="mono" spellcheck="false"></textarea>
-    </aside>
+    <div class="hr"></div>
 
-  </div>
+    <div id="status" class="warn small">Kernel ready. Initialize identity to sign evidence.</div>
+
+    <div class="hr"></div>
+
+    <div class="small">
+      <b>Latest emitted CQD (preview)</b>
+    </div>
+    <textarea id="preview" class="mono" spellcheck="false" placeholder="CQD preview will appear here..."></textarea>
+
+    <div class="hr"></div>
+
+    <div class="small">
+      <b>REAL signing rule</b><br/>
+      pack_root_hash = SHA-512( canonical(preimage) ) where preimage includes:
+      <code>proto, generatedAt, issuer, mode, identity.kid, ledger_tip, record_hashes[], anchor_set_hash</code>.
+      Signature signs <code>pack_root_hash</code> (hex) as bytes.
+    </div>
+  </section>
 </main>
 
 <script>
 (async function(){
-  // =========================
-  // 0) Canonical constraints
-  // =========================
-  // CQD definition and VALID condition: CQD(D)={D,T,I,E,L}, VALID(D) iff all axes valid. (paper)
-  // Λ equation and VALID Ω window: Λ=(Eκ + IΣ + Vη + (1-χτ))/4, VALID Ω if Λ∈[0.997,1.003]. (Λ doc)
-  const TH = {
-    lambdaMin: 0.997,
-    lambdaMax: 1.003,
-    chiMax: 0.60,
-    sigmaMin: 0.995,
-    kappaMin: 0.997,
-    etaMin: 0.92,
-    epsMax: 1e-9
-  };
-
-  // Trust envelope (CbO-style gating)
-  const PROMO = { L0_to_L1: 40, L1_to_L2: 90, L2_to_L3: 180 };
-  const ENVELOPE = { L0:{utCap:0.35}, L1:{utCap:0.55}, L2:{utCap:0.75}, L3:{utCap:0.90} };
-
-  // =========================
-  // 1) IPR anchor-set (preloaded)
-  // =========================
-  // From QTSP/TSA Actalis module: hash, genTime, validation parameters, and triple anchors. (TSA QTSP PDF)
-  // From UNEBDO ΦΩ TSA token: policy OID, serial, genTime, accuracy, message imprint. (ΦΩ TSA TOKEN PDF)
+  // ---------------------------
+  // IPR Anchor-Set (preloaded)
+  // ---------------------------
   const IPR_ANCHOR_SET = Object.freeze({
     actalis_qtsp_tsa: {
       id: "ΦΩ-TSA-QTSP-ACTALIS-INRIM",
       tsa_dn: "CN=ACTALIS QTSP TSA, O=Actalis S.p.A., C=IT",
-      policy_oid: "1.2.840.113549.1.9.16.6.5",
       genTime: "2025-10-17T20:00:30Z",
-      accuracy: "1e-9",
-      source_node: "INRiM Sync – Linux Torino ΦΩ",
       hash_algo: "SHA-512",
       opposable_hash_sha512:
         "43e45c617d2e168657a3c277af1dc120dde4465888aa4e5bcaea961e8bd74afee3d68502144c5dea4e30a6e7720fbb7f536b228269902b158c52dc3ce8fbb15d",
-      validationParameters: { "ε":"≤1×10⁻⁹ s", "κ":"≥0.997", "Σ":"≥0.995", "Χτ":"≤0.60" },
       anchors: {
         ipfsCid: "bafybeibce-tsa-qtsp-ΦΩ2025",
         btcTxid: "a5b7d6e91c32f4a0a17f2cd9b0dd6ee3c41234fab56b9c77a39f00f7b8c2a4cc",
@@ -236,7 +100,6 @@
       },
       validation_state: "ATTACHED_DECLARED"
     },
-
     unebdo_phi_tsa_token: {
       id: "ΦΩ-LTA₁",
       issuer: "UNEBDO Quantum Systems ΦΩ — Root INRiM UTC-IT",
@@ -248,94 +111,69 @@
       message_imprint_sha512:
         "5b1a0b0f9a6a9f4e0c7c2a8e4b8e7a1f0c0c6b7a3d9e5f1c2b7d8e9f0a1b2c3d4e5f60718293a4b5c6d7e8f9012a3b4c5",
       signature_declared: "RSA-PSS / SHA-512 + Ed25519 (Hybrid)",
-      qtsp_reference: "AC-QES-ΦΩ-2025-001 (Actalis QTSP EU Qualified)",
       validation_state: "ATTACHED_DECLARED"
     }
   });
 
-  // =========================
-  // 2) UI
-  // =========================
-  const el = id => document.getElementById(id);
+  // ---------------------------
+  // DOM
+  // ---------------------------
+  const $ = (id)=>document.getElementById(id);
+  const kidEl = $("kid");
+  const rcountEl = $("rcount");
+  const ltipEl = $("ltip");
+  const statusEl = $("status");
+  const previewEl = $("preview");
 
-  const canvas = el('chart');
-  const ctx = canvas.getContext('2d');
+  const btnId = $("btnId");
+  const btnAct = $("btnAct");
+  const btnFail = $("btnFail");
+  const btnExport = $("btnExport");
+  const btnWipe = $("btnWipe");
 
-  const disturb = el('disturb');
-  const ut = el('ut');
-  const timeQual = el('timeQual');
-  const chiBias = el('chiBias');
-
-  const btnIdentity = el('btnIdentity');
-  const btnRun = el('btnRun');
-  const btnPause = el('btnPause');
-  const btnReset = el('btnReset');
-
-  const btnAct = el('btnAct');
-  const btnFault = el('btnFault');
-  const btnVerify = el('btnVerify');
-
-  const btnExport = el('btnExport');
-  const btnCopy = el('btnCopy');
-  const btnWipe = el('btnWipe');
-
-  const trustView = el('trustView');
-  const modeView = el('modeView');
-  const cqdView = el('cqdView');
-
-  const lambdaBox = el('lambdaBox');
-  const kappaBox = el('kappaBox');
-  const sigmaBox = el('sigmaBox');
-  const chiBox = el('chiBox');
-
-  const EBox = el('EBox');
-  const IBox = el('IBox');
-  const VBox = el('VBox');
-  const etaBox = el('etaBox');
-
-  const kernelState = el('kernelState');
-  const lastAction = el('lastAction');
-  const safetyState = el('safetyState');
-  const streakView = el('streak');
-  const logArea = el('log');
-  const statusBox = el('statusBox');
-
-  const anchorActalis = el('anchorActalis');
-  const anchorUnebdo = el('anchorUnebdo');
-
-  // Render anchor-set (transparent, readable)
-  anchorActalis.textContent = JSON.stringify(IPR_ANCHOR_SET.actalis_qtsp_tsa, null, 2);
-  anchorUnebdo.textContent = JSON.stringify(IPR_ANCHOR_SET.unebdo_phi_tsa_token, null, 2);
-
-  // =========================
-  // 3) Utilities
-  // =========================
-  function clamp(x,a,b){ return Math.max(a, Math.min(b, x)); }
-  function isoNow(){ return new Date().toISOString(); }
-  function randn(){
-    let u=0,v=0; while(u===0) u=Math.random(); while(v===0) v=Math.random();
-    return Math.sqrt(-2.0*Math.log(u))*Math.cos(2.0*Math.PI*v);
+  // ---------------------------
+  // Canonical JSON (REAL)
+  // ---------------------------
+  function canonicalize(value){
+    if(value === null) return null;
+    const t = typeof value;
+    if(t === "number" || t === "string" || t === "boolean") return value;
+    if(Array.isArray(value)) return value.map(canonicalize);
+    if(t === "object"){
+      const out = {};
+      const keys = Object.keys(value).sort();
+      for(const k of keys) out[k] = canonicalize(value[k]);
+      return out;
+    }
+    return null; // undefined / function → null (fail-closed by design)
   }
+  function canonicalStringify(obj){
+    return JSON.stringify(canonicalize(obj));
+  }
+
+  // ---------------------------
+  // Crypto utils
+  // ---------------------------
   function bufToHex(buf){
     const b = new Uint8Array(buf);
-    let s = "";
+    let s="";
     for(const x of b) s += x.toString(16).padStart(2,"0");
     return s;
   }
   function hexToBytes(hex){
     const out = new Uint8Array(hex.length/2);
-    for(let i=0;i<out.length;i++) out[i] = parseInt(hex.slice(i*2, i*2+2),16);
+    for(let i=0;i<out.length;i++) out[i]=parseInt(hex.slice(i*2,i*2+2),16);
     return out;
   }
   async function sha512Hex(bytes){
     const dig = await crypto.subtle.digest("SHA-512", bytes);
     return bufToHex(dig);
   }
+  function isoNow(){ return new Date().toISOString(); }
 
-  // =========================
-  // 4) Identity (offline-real)
-  // =========================
-  // WebCrypto ECDSA P-256. QES can be attached later; we remain honest + fail-closed on axis validation.
+  // ---------------------------
+  // Identity (ECDSA P-256)
+  // ---------------------------
   const ID_STORE = "HBCE_JOKER_ID_V1";
   let ID = { ready:false, kid:null, pubJwk:null, privKey:null, pubKey:null };
 
@@ -351,21 +189,22 @@
     const kp = await crypto.subtle.generateKey({name:"ECDSA", namedCurve:"P-256"}, true, ["sign","verify"]);
     const pubJwk = await crypto.subtle.exportKey("jwk", kp.publicKey);
     const privJwk = await crypto.subtle.exportKey("jwk", kp.privateKey);
-    const kidMaterial = new TextEncoder().encode(JSON.stringify(pubJwk));
+    const kidMaterial = new TextEncoder().encode(canonicalStringify(pubJwk));
     const kid = (await sha512Hex(kidMaterial)).slice(0,24);
     localStorage.setItem(ID_STORE, JSON.stringify({kid, pubJwk, privJwk}));
     ID = { ready:true, kid, pubJwk, privKey:kp.privateKey, pubKey:kp.publicKey };
   }
 
-  async function signDigestHex(digestHex){
-    const msg = hexToBytes(digestHex);
+  async function signHexAsBytes(hexMessage){
+    // Signs the bytes represented by hexMessage
+    const msg = hexToBytes(hexMessage);
     const sig = await crypto.subtle.sign({name:"ECDSA", hash:"SHA-256"}, ID.privKey, msg);
     return bufToHex(sig);
   }
 
-  // =========================
-  // 5) Local append-only ledger (offline-real)
-  // =========================
+  // ---------------------------
+  // Local ledger (append-only hash-chain)
+  // ---------------------------
   const LEDGER_KEY = "HBCE_LOCAL_LEDGER_V1";
   function loadLedger(){
     const raw = localStorage.getItem(LEDGER_KEY);
@@ -386,517 +225,189 @@
     return entry;
   }
 
-  async function verifyLedgerChain(){
-    const L = loadLedger();
-    for(let i=0;i<L.chain.length;i++){
-      const prev = i===0 ? "GENESIS" : L.chain[i-1].chain_hash;
-      const payload = new TextEncoder().encode(prev + "|" + L.chain[i].record_hash);
-      const expect = await sha512Hex(payload);
-      if(expect !== L.chain[i].chain_hash) return { ok:false, badAt:i, len:L.chain.length };
-    }
-    return { ok:true, badAt:-1, len:L.chain.length };
+  function ledgerTipHash(L){
+    return (L.chain && L.chain.length) ? L.chain[L.chain.length-1].chain_hash : "GENESIS";
   }
 
-  // =========================
-  // 6) Kernel state
-  // =========================
-  let running = false;
-  let dt = 0.10;
-  let t = 0.0;
-  let tickN = 0;
-
-  // Start unstable by design (your doctrine)
-  let trust = "L0";
-  let validStreak = 0;
-  let failClosed = false;
-
-  // Variables (0..1)
-  let E = 0.85, I = 0.80, V = 0.60, eta = 0.90;
-  let kappa = 0.990, sigma = 0.990, chi = 0.300;
-  let lambda = 0.9800, prevLambda = lambda;
-  let injected = false;
-
-  const MAX_POINTS = 420;
-  const series = [];      // {t, lambda, fail}
-  const evidence = [];    // CQD records
-
-  function trustLabel(tr){
-    if(tr==="L0") return "L0 · LOW_TRUST";
-    if(tr==="L1") return "L1 · CONSTRAINED_AUTONOMY";
-    if(tr==="L2") return "L2 · OPERATIONAL";
-    return "L3 · HIGH_TRUST";
-  }
-
-  // =========================
-  // 7) Λ engine (ΦΩ)
-  // =========================
-  function computeDynamics(){
-    const d = Number(disturb.value);
-    const tq = Number(timeQual.value);
-    const cb = Number(chiBias.value);
-
-    // epsilon worsens as time coherence drops
-    const epsilonDt = (1 - tq) * 1.5e-9;
-    // κ: coerenza fisica del modello (bounded)
-    kappa = clamp(1.0 - (epsilonDt / TH.epsMax) * 0.003 + randn()*0.00025 - d*0.00018, 0.975, 1.000);
-    // Σ: integrità computabile lungo Σ-chain (bounded)
-    const divergenceSpike = (Math.random() < (d*0.02)) ? (0.004 + Math.random()*0.004) : 0;
-    sigma = clamp(0.999 - d*0.003 + randn()*0.00035 - divergenceSpike, 0.965, 1.000);
-
-    // u(t) bounded by trust envelope
-    const utStrength = Number(ut.value);
-    const cap = ENVELOPE[trust].utCap;
-    const u = clamp(utStrength, 0, cap);
-
-    // fault injection
-    if(injected){
-      I = clamp(I - (0.12 + Math.random()*0.10), 0, 1);
-      E = clamp(E - (0.10 + Math.random()*0.08), 0, 1);
-      V = clamp(V - (0.15 + Math.random()*0.10), 0, 1);
-      chi = clamp(chi + (0.25 + Math.random()*0.15), 0, 1);
-      injected = false;
-    }
-
-    // evolve state
-    E = clamp(E + (u*0.010) - (d*0.006) + randn()*0.004, 0, 1);
-    I = clamp(I + (u*0.012) - (d*0.007) + randn()*0.005, 0, 1);
-    V = clamp(V + (u*0.010) - (d*0.006) + randn()*0.006, 0, 1);
-    eta = clamp(eta + (u*0.006) - (d*0.003) + randn()*0.002, 0, 1);
-
-    // χτ: ethical tension
-    chi = clamp(chi + (cb*0.003 + d*0.002) + randn()*0.006 - (u*0.010) - 0.003, 0, 1);
-
-    // Λ equation (canonical ΦΩ):
-    // Λ = (E·κ + I·Σ + V·η + (1 - χτ)) / 4
-    prevLambda = lambda;
-    lambda = (E*kappa + I*sigma + V*eta + (1 - chi)) / 4.0;
-
-    return { epsilonDt };
-  }
-
-  function lambdaValidity(metrics){
-    const okLambda = (lambda >= TH.lambdaMin && lambda <= TH.lambdaMax);
-    const okChi = (chi <= TH.chiMax);
-    const okSigma = (sigma >= TH.sigmaMin);
-    const okKappa = (kappa >= TH.kappaMin);
-    const okEta = (eta >= TH.etaMin);
-    const okEps = (metrics.epsilonDt <= TH.epsMax);
-    const ok = okLambda && okChi && okSigma && okKappa && okEta && okEps;
-    return { ok, okLambda, okChi, okSigma, okKappa, okEta, okEps };
-  }
-
-  function promoteIfEligible(v){
-    if(!v.ok) return;
-    if(trust==="L0" && validStreak>=PROMO.L0_to_L1) trust="L1";
-    else if(trust==="L1" && validStreak>=PROMO.L1_to_L2) trust="L2";
-    else if(trust==="L2" && validStreak>=PROMO.L2_to_L3) trust="L3";
-  }
-
-  function failClosedIfNeeded(v){
-    if(v.ok) return { action:"CONTINUE", fail:false, reason:null };
-    failClosed = true;
-    trust = "L0";
-    validStreak = 0;
-
-    let reason = "UNKNOWN";
-    if(!v.okLambda) reason = "LAMBDA_OUT_OF_RANGE";
-    else if(!v.okEps || !v.okKappa) reason = "TIME_INCOHERENCE";
-    else if(!v.okSigma) reason = "SIGMA_DIVERGENCE";
-    else if(!v.okEta) reason = "ETA_BELOW_MIN";
-    else if(!v.okChi) reason = "ETHICAL_BREACH";
-
-    return { action:`FAIL_CLOSED:${reason}`, fail:true, reason };
-  }
-
-  // =========================
-  // 8) CQD engine (D,T,I,E,L)
-  // =========================
-  function axisT(nowIso){
-    return {
-      "phi:type": "TempoOpponibile",
-      "phi:utc": nowIso,
-      "phi:epsilonBound": "ε ≤ 10⁻⁹ s (declared by anchor-set)",
-      "phi:tsa": {
-        "phi:rfc3161": true,
-        "phi:attached": [
-          IPR_ANCHOR_SET.actalis_qtsp_tsa,
-          IPR_ANCHOR_SET.unebdo_phi_tsa_token
-        ],
-        "phi:validation_state": "ATTACHED_DECLARED",
-        "phi:note": "Binary TSA token (.tsr) + chain artifacts upgrade this axis to VERIFIED."
-      }
-    };
-  }
-
-  function axisI(hashD, nowIso){
-    return {
-      "phi:type": "IdentitaOpponibile",
-      "phi:iprId": "IPR-AI-0001",
-      "phi:nickname": "JOKER-C2",
-      "phi:devSig": {
-        "phi:algo": "ECDSA-P256(SHA-256)",
-        "phi:kid": ID.kid,
-        "phi:publicJwk": ID.pubJwk,
-        "phi:signed": { hashD, nowIso }
-      },
-      "phi:qes": { "phi:present": false, "phi:note": "Attach QES later (production)." }
-    };
-  }
-
-  function axisE(){
-    return {
-      "phi:type": "StatoEnergeticoInformazionale",
-      "phi:nodeId": "JOKER-KERNEL-LOCAL",
-      "phi:envProfile": "CHROMEBOOK-OFFLINE",
-      "phi:metrics": {
-        E: Number(E.toFixed(4)),
-        I: Number(I.toFixed(4)),
-        V: Number(V.toFixed(4)),
-        eta: Number(eta.toFixed(4)),
-        kappa: Number(kappa.toFixed(4)),
-        sigma: Number(sigma.toFixed(4)),
-        chi_tau: Number(chi.toFixed(3)),
-        lambda: Number(lambda.toFixed(6))
-      }
-    };
-  }
-
-  async function axisL(recordHash, ledgerEntry){
-    return {
-      "phi:type": "MultiLedgerAnchor",
-      "phi:localLedgers": [
-        { "phi:name":"LOCAL_HASHCHAIN_A", "phi:chainHash": ledgerEntry.chain_hash, "phi:idx": ledgerEntry.idx },
-        { "phi:name":"LOCAL_HASHCHAIN_B", "phi:chainHash": ledgerEntry.chain_hash, "phi:idx": ledgerEntry.idx }
-      ],
-      "phi:publicAnchors": {
-        "phi:ipfs": { "phi:present": true, "phi:cid": IPR_ANCHOR_SET.actalis_qtsp_tsa.anchors.ipfsCid },
-        "phi:bitcoin": { "phi:present": true, "phi:txid": IPR_ANCHOR_SET.actalis_qtsp_tsa.anchors.btcTxid },
-        "phi:ethereum": { "phi:present": true, "phi:txHash": IPR_ANCHOR_SET.actalis_qtsp_tsa.anchors.evmTxHash }
-      },
-      "phi:recordHash": recordHash
-    };
-  }
-
-  function cqdAxisValidity(T_axis, I_axis, E_axis, L_axis){
-    const validT = !!(T_axis?.["phi:utc"] && T_axis?.phi?.tsa !== null || T_axis?.["phi:tsa"]);
-    const validI = !!(I_axis?.["phi:devSig"]?.["phi:kid"]);
-    const validE = !!(E_axis?.["phi:metrics"]?.lambda !== undefined);
-    const validL = !!(L_axis?.["phi:localLedgers"]?.length);
-    return { validT, validI, validE, validL, ok: (validT && validI && validE && validL) };
-  }
+  // ---------------------------
+  // CQD emission (minimal REAL core)
+  // ---------------------------
+  const records = [];
 
   async function emitCQD(eventType, detail){
     if(!ID.ready) throw new Error("Identity not initialized.");
-    const nowIso = isoNow();
+    const now = isoNow();
 
-    // D payload: normalized object
-    const D_obj = {
+    const payload = {
       "phi:eventType": eventType,
       "phi:detail": detail || null,
-      "phi:trustState": trust,
-      "phi:lambda": Number(lambda.toFixed(6)),
-      "phi:thresholds": TH
+      "phi:utc": now
     };
-    const D_norm = JSON.stringify(D_obj);
 
-    // hashD
+    // D_norm is canonical
+    const D_norm = canonicalStringify(payload);
     const hashD = await sha512Hex(new TextEncoder().encode(D_norm));
 
-    // Sign a digest that binds hashD + time
-    const toSign = await sha512Hex(new TextEncoder().encode(hashD + "|" + nowIso));
-    const sigHex = await signDigestHex(toSign);
+    // Bind signature to hashD + now (digest computed canonically)
+    const toSign = await sha512Hex(new TextEncoder().encode(hashD + "|" + now));
+    const signatureHex = await signHexAsBytes(toSign);
 
-    // Build axes
-    const T_axis = axisT(nowIso);
-    const I_axis = axisI(hashD, nowIso);
-    I_axis["phi:devSig"]["phi:signedDigestHex"] = toSign;
-    I_axis["phi:devSig"]["phi:signatureHex"] = sigHex;
+    // Ledger record hash binds (hashD + toSign + kid)
+    const recordCore = canonicalStringify({ hashD, toSign, kid:ID.kid });
+    const recordHash = await sha512Hex(new TextEncoder().encode(recordCore));
+    const led = await ledgerAppend(recordHash);
 
-    const E_axis = axisE();
-
-    // ledger record hash binds core (hashD + key metrics + time)
-    const coreForLedger = JSON.stringify({
-      hashAlgo:"SHA-512",
-      hashD,
-      utc: nowIso,
-      kid: ID.kid,
-      metrics: E_axis["phi:metrics"],
-      eventType
-    });
-    const recordHash = await sha512Hex(new TextEncoder().encode(coreForLedger));
-    const ledgerEntry = await ledgerAppend(recordHash);
-    const L_axis = await axisL(recordHash, ledgerEntry);
-
-    // CQD record
     const CQD = {
       "@type": "phi:CQD-RECORD-1.0",
-      "@id": `phi:EVENT-${tickN.toString(16)}-${ID.kid}`,
+      "@id": `phi:EVENT-${records.length}-${ID.kid}`,
       "phi:hashAlgo": "SHA-512",
       "phi:hashValue": hashD,
-      "phi:sizeBytes": D_norm.length,
-      "T_axis": T_axis,
-      "I_axis": I_axis,
-      "E_axis": E_axis,
-      "L_axis": L_axis,
-      "phi:lambdaEquilibrium": {
-        "phi:Lambda": Number(lambda.toFixed(6)),
-        "phi:LambdaMin": TH.lambdaMin,
-        "phi:LambdaMax": TH.lambdaMax,
-        "phi:model": "ΦΩ-Λ-CORE-1.0"
+      "T_axis": {
+        "phi:utc": now,
+        "phi:tsa_attached": [ IPR_ANCHOR_SET.actalis_qtsp_tsa, IPR_ANCHOR_SET.unebdo_phi_tsa_token ],
+        "phi:validation_state": "ATTACHED_DECLARED"
       },
-      "phi:cqdAxisValidity": cqdAxisValidity(T_axis, I_axis, E_axis, L_axis),
-      "phi:payload": D_obj
+      "I_axis": {
+        "phi:iprId": "IPR-AI-0001",
+        "phi:nickname": "JOKER-C2",
+        "phi:devSig": {
+          "phi:algo": "ECDSA-P256(SHA-256)",
+          "phi:kid": ID.kid,
+          "phi:publicJwk": ID.pubJwk,
+          "phi:signedDigestHex": toSign,
+          "phi:signatureHex": signatureHex
+        }
+      },
+      "E_axis": { "phi:envProfile": "CHROMEBOOK-OFFLINE" },
+      "L_axis": {
+        "phi:recordHash": recordHash,
+        "phi:ledgerEntry": led,
+        "phi:publicAnchors": IPR_ANCHOR_SET.actalis_qtsp_tsa.anchors
+      },
+      "phi:payload": payload
     };
 
-    evidence.push(CQD);
-    return CQD;
-  }
+    records.push(CQD);
 
-  // =========================
-  // 9) Chart
-  // =========================
-  function pushSeries(fail){
-    series.push({t, lambda, fail});
-    if(series.length > MAX_POINTS) series.shift();
-  }
-
-  function draw(){
-    const w=canvas.width, h=canvas.height;
-    ctx.clearRect(0,0,w,h);
-    ctx.fillStyle="rgba(0,0,0,.22)"; ctx.fillRect(0,0,w,h);
-
-    const pad=42, X0=pad, Y0=pad, X1=w-pad, Y1=h-pad;
-    const ymin=0.94, ymax=1.02;
-
-    const n=Math.max(1, series.length-1);
-    const xMap=i=>X0+(i/n)*(X1-X0);
-    const yMap=v=>Y1-((v-ymin)/(ymax-ymin))*(Y1-Y0);
-
-    // Valid Ω band
-    const yA=yMap(TH.lambdaMax), yB=yMap(TH.lambdaMin);
-    ctx.fillStyle="rgba(34,197,94,.10)";
-    ctx.fillRect(X0, yA, X1-X0, yB-yA);
-
-    // Axes
-    ctx.strokeStyle="rgba(255,255,255,.15)"; ctx.lineWidth=1;
-    ctx.beginPath(); ctx.moveTo(X0,Y0); ctx.lineTo(X0,Y1); ctx.lineTo(X1,Y1); ctx.stroke();
-
-    ctx.fillStyle="rgba(234,242,255,.78)";
-    ctx.font="12px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace";
-    ctx.fillText("Λ", 16, 18);
-    ctx.fillText(ymax.toFixed(3), 8, Y0+4);
-    ctx.fillText(ymin.toFixed(3), 8, Y1+4);
-
-    if(series.length){
-      ctx.strokeStyle="rgba(234,242,255,.92)"; ctx.lineWidth=2;
-      ctx.beginPath();
-      series.forEach((p,i)=>{
-        const x=xMap(i), y=yMap(p.lambda);
-        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-      });
-      ctx.stroke();
-
-      ctx.strokeStyle="rgba(239,68,68,.85)"; ctx.lineWidth=2;
-      series.forEach((p,i)=>{
-        if(!p.fail) return;
-        const x=xMap(i);
-        ctx.beginPath(); ctx.moveTo(x,Y0); ctx.lineTo(x,Y1); ctx.stroke();
-      });
-
-      const last=series[series.length-1];
-      const x=xMap(series.length-1), y=yMap(last.lambda);
-      ctx.fillStyle=last.fail?"rgba(239,68,68,1)":"rgba(234,242,255,1)";
-      ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2); ctx.fill();
-    }
-  }
-
-  // =========================
-  // 10) UI update
-  // =========================
-  function updateUI(v, action){
-    lambdaBox.textContent = lambda.toFixed(6);
-    kappaBox.textContent = kappa.toFixed(4);
-    sigmaBox.textContent = sigma.toFixed(4);
-    chiBox.textContent = chi.toFixed(3);
-
-    EBox.textContent = E.toFixed(4);
-    IBox.textContent = I.toFixed(4);
-    VBox.textContent = V.toFixed(4);
-    etaBox.textContent = eta.toFixed(4);
-
-    trustView.textContent = trust;
-    kernelState.textContent = trustLabel(trust);
-    streakView.textContent = String(validStreak);
-    lastAction.textContent = action;
-
-    // CQD indicator (strict)
-    const last = evidence.length ? evidence[evidence.length-1] : null;
-    if(!last) cqdView.textContent = "INVALID";
-    else cqdView.textContent = last["phi:cqdAxisValidity"].ok ? "VALID_DEV" : "INVALID";
-
-    if(failClosed){
-      safetyState.innerHTML = `<span class="bad">FAIL_CLOSED</span>`;
-    } else if(v.ok){
-      safetyState.innerHTML = `<span class="good">RUNNABLE</span>`;
-    } else {
-      safetyState.innerHTML = `<span class="warn">DEGRADED</span>`;
-    }
-
-    logArea.value = JSON.stringify(evidence.slice(-10), null, 2);
-  }
-
-  function resetAll(){
-    running=false; t=0.0; tickN=0;
-    trust="L0"; validStreak=0; failClosed=false;
-
-    E=0.85; I=0.80; V=0.60; eta=0.90;
-    kappa=0.990; sigma=0.990; chi=0.300;
-    lambda=0.9800; prevLambda=lambda;
-    injected=false;
-
-    series.length = 0;
-    evidence.length = 0;
-    statusBox.textContent = "";
-
-    modeView.textContent = "OFFLINE_REAL";
-    updateUI({ok:true}, "BOOT");
-    draw();
-  }
-
-  // =========================
-  // 11) Step loop
-  // =========================
-  async function step(){
-    if(!running) return;
-
-    tickN += 1;
-    t = Number((t + dt).toFixed(4));
-
-    const metrics = computeDynamics();
-    const v = lambdaValidity(metrics);
-
-    // streak + promotion
-    if(v.ok){
-      validStreak += 1;
-      const prevTrust = trust;
-      promoteIfEligible(v);
-      if(trust !== prevTrust && ID.ready){
-        await emitCQD("PROMOTE_TRUST", {from:prevTrust, to:trust});
-      }
-    }
-
-    // fail-closed
-    const decision = failClosedIfNeeded(v);
-    if(decision.fail && ID.ready){
-      await emitCQD("FAIL_CLOSED", {reason:decision.reason});
-    }
-
-    // transitions into/out of VALID Ω band (Λ only)
-    const wasValidOmega = (prevLambda >= TH.lambdaMin && prevLambda <= TH.lambdaMax);
-    const isValidOmega = (lambda >= TH.lambdaMin && lambda <= TH.lambdaMax);
-    if(ID.ready){
-      if(!wasValidOmega && isValidOmega) await emitCQD("VALID_OMEGA_ENTER", null);
-      if(wasValidOmega && !isValidOmega) await emitCQD("VALID_OMEGA_EXIT", null);
-    }
-
-    pushSeries(decision.fail);
-    draw();
-    updateUI(v, decision.action);
-
-    setTimeout(step, Math.max(10, dt*1000));
-  }
-
-  // =========================
-  // 12) Buttons
-  // =========================
-  btnIdentity.addEventListener('click', async ()=>{
-    try{
-      await loadOrCreateIdentity();
-      statusBox.innerHTML = `<div class="ok small"><b>Identity ready.</b> kid=<span class="mono">${ID.kid}</span> (ECDSA P-256, offline-real).</div>`;
-    }catch(e){
-      statusBox.innerHTML = `<div class="dangerbox small"><b>Identity init failed.</b> ${String(e)}</div>`;
-    }
-  });
-
-  btnRun.addEventListener('click', ()=>{ running=true; step(); });
-  btnPause.addEventListener('click', ()=>{ running=false; });
-
-  btnReset.addEventListener('click', ()=>{ resetAll(); });
-
-  btnFault.addEventListener('click', ()=>{ injected=true; });
-
-  btnAct.addEventListener('click', async ()=>{
-    try{
-      const r = await emitCQD("ACT", {note:"manual act emission"});
-      statusBox.innerHTML = `<div class="ok small"><b>ACT emitted.</b> <span class="mono">${r["@id"]}</span></div>`;
-      logArea.value = JSON.stringify(evidence.slice(-10), null, 2);
-    }catch(e){
-      statusBox.innerHTML = `<div class="dangerbox small"><b>Emit failed.</b> ${String(e)}</div>`;
-    }
-  });
-
-  btnVerify.addEventListener('click', async ()=>{
-    const res = await verifyLedgerChain();
-    if(res.ok){
-      statusBox.innerHTML = `<div class="ok small"><b>Ledger OK.</b> entries=${res.len}</div>`;
-    } else {
-      statusBox.innerHTML = `<div class="dangerbox small"><b>Ledger BROKEN.</b> badAt=${res.badAt} entries=${res.len}</div>`;
-    }
-  });
-
-  btnExport.addEventListener('click', ()=>{
+    // UI
     const L = loadLedger();
-    const pack = {
-      proto: "HBCE-EVIDENCE-PACK-v1",
+    kidEl.textContent = ID.kid;
+    rcountEl.textContent = String(records.length);
+    ltipEl.textContent = ledgerTipHash(L);
+    previewEl.value = JSON.stringify(CQD, null, 2);
+    statusEl.className = "ok small";
+    statusEl.innerHTML = `<b>Emitted</b> <span class="mono">${eventType}</span> · record_hash=<span class="mono">${recordHash.slice(0,24)}…</span>`;
+  }
+
+  // ---------------------------
+  // Evidence Pack v2 (REAL signed)
+  // ---------------------------
+  async function exportEvidencePackV2(){
+    if(!ID.ready) throw new Error("Identity not initialized.");
+
+    const L = loadLedger();
+    const generatedAt = isoNow();
+
+    // 1) anchor_set_hash (canonical!)
+    const anchor_set_hash = await sha512Hex(new TextEncoder().encode(canonicalStringify(IPR_ANCHOR_SET)));
+
+    // 2) record hashes list (use CQD phi:hashValue, deterministic order = emission order)
+    const record_hashes = records.map(r => r["phi:hashValue"]);
+
+    // 3) ledger tip
+    const ledger_tip = ledgerTipHash(L);
+
+    // 4) preimage (canonical!)
+    const preimage = {
+      proto: "HBCE-EVIDENCE-PACK-v2",
       kind: "JOKER_KERNEL_EVIDENCE",
       issuer: "HERMETICUM B.C.E. S.r.l.",
       mode: "OFFLINE_REAL",
-      generatedAt: isoNow(),
-      identity: { kid: ID.kid || null, algo: "ECDSA-P256", iprId: "IPR-AI-0001", nickname:"JOKER-C2" },
+      generatedAt,
+      identity: { iprId:"IPR-AI-0001", nickname:"JOKER-C2", kid:ID.kid, algo:"ECDSA-P256" },
+      ledger_tip,
+      record_hashes,
+      anchor_set_hash
+    };
+
+    const preimage_canon = canonicalStringify(preimage);
+    const pack_root_hash = await sha512Hex(new TextEncoder().encode(preimage_canon));
+
+    // 5) SIGN pack_root_hash as bytes (REAL)
+    const pack_signature = await signHexAsBytes(pack_root_hash);
+
+    // 6) pack object (data + proof)
+    const pack = {
+      ...preimage,
+      proof: {
+        pack_root_hash,
+        pack_signature,
+        signature_algo: "ECDSA-P256(SHA-256) over pack_root_hash bytes",
+        canonicalization: "recursive key-sort + JSON.stringify",
+        preimage_canonical: preimage_canon
+      },
       ipr_anchor_set: IPR_ANCHOR_SET,
       ledger: L,
-      records: evidence
+      records
     };
+
+    // Download
     const blob = new Blob([JSON.stringify(pack, null, 2)], {type:"application/json"});
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `joker_kernel_evidence_${Date.now()}.json`;
+    a.download = `hbce_evidence_pack_v2_${Date.now()}.json`;
     document.body.appendChild(a);
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
-  });
 
-  btnCopy.addEventListener('click', async ()=>{
+    statusEl.className = "ok small";
+    statusEl.innerHTML = `<b>Exported Pack v2 (REAL signed)</b> root=<span class="mono">${pack_root_hash.slice(0,24)}…</span>`;
+  }
+
+  // ---------------------------
+  // UI wiring
+  // ---------------------------
+  btnId.addEventListener("click", async ()=>{
     try{
-      const L = loadLedger();
-      const pack = {
-        proto:"HBCE-EVIDENCE-PACK-v1",
-        generatedAt: isoNow(),
-        identity:{ kid: ID.kid || null },
-        ipr_anchor_set: IPR_ANCHOR_SET,
-        ledger:L,
-        records:evidence
-      };
-      await navigator.clipboard.writeText(JSON.stringify(pack, null, 2));
-      btnCopy.textContent="Copied ✓";
-      setTimeout(()=>btnCopy.textContent="Copy JSON", 900);
+      await loadOrCreateIdentity();
+      kidEl.textContent = ID.kid;
+      statusEl.className = "ok small";
+      statusEl.innerHTML = `<b>Identity ready</b> kid=<span class="mono">${ID.kid}</span>`;
     }catch(e){
-      btnCopy.textContent="Copy failed";
-      setTimeout(()=>btnCopy.textContent="Copy JSON", 900);
+      statusEl.className = "bad small";
+      statusEl.textContent = "Identity init failed: " + String(e);
     }
   });
 
-  btnWipe.addEventListener('click', ()=>{
-    localStorage.removeItem(LEDGER_KEY);
-    statusBox.innerHTML = `<div class="note small"><b>Local ledger wiped.</b> (Destructive. Dev only.)</div>`;
+  btnAct.addEventListener("click", async ()=>{
+    try{ await emitCQD("ACT", {note:"manual act"}); }
+    catch(e){ statusEl.className="bad small"; statusEl.textContent=String(e); }
   });
 
-  // =========================
-  // 13) Init
-  // =========================
-  resetAll();
+  btnFail.addEventListener("click", async ()=>{
+    try{ await emitCQD("FAIL_CLOSED", {reason:"manual test"}); }
+    catch(e){ statusEl.className="bad small"; statusEl.textContent=String(e); }
+  });
+
+  btnExport.addEventListener("click", async ()=>{
+    try{ await exportEvidencePackV2(); }
+    catch(e){ statusEl.className="bad small"; statusEl.textContent=String(e); }
+  });
+
+  btnWipe.addEventListener("click", ()=>{
+    localStorage.removeItem(ID_STORE);
+    localStorage.removeItem(LEDGER_KEY);
+    records.length = 0;
+    kidEl.textContent = "NOT_READY";
+    rcountEl.textContent = "0";
+    ltipEl.textContent = "GENESIS";
+    previewEl.value = "";
+    statusEl.className = "warn small";
+    statusEl.textContent = "Local state wiped.";
+  });
+
 })();
 </script>
 </body>
