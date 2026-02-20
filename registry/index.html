@@ -70,9 +70,7 @@
       color: rgba(230,237,246,.72);
       background: rgba(255,255,255,.02);
     }
-    .hbce-reg td{
-      color: rgba(230,237,246,.82);
-    }
+    .hbce-reg td{ color: rgba(230,237,246,.82); }
     .hbce-reg .mono{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size: 12.2px;
@@ -80,11 +78,7 @@
     }
     .hbce-reg .muted{ color: rgba(230,237,246,.55); }
 
-    .hbce-rowactions{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
+    .hbce-rowactions{ display:flex; gap:8px; flex-wrap:wrap; }
     .hbce-miniBtn{
       border: 1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.02);
@@ -95,6 +89,10 @@
       cursor: pointer;
       transition: transform .12s ease, border-color .12s ease, background .12s ease, opacity .12s ease;
       user-select: none;
+      text-decoration: none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
     }
     .hbce-miniBtn:hover{
       transform: translateY(-1px);
@@ -119,11 +117,7 @@
     .hbce-pillish.ok{ border-color: rgba(0,255,195,.28); background: rgba(0,255,195,.06); color: rgba(0,255,195,.92); }
     .hbce-pillish.bad{ border-color: rgba(255,45,85,.30); background: rgba(255,45,85,.06); color: rgba(255,45,85,.92); }
 
-    .hbce-empty{
-      padding: 16px 12px;
-      color: rgba(230,237,246,.70);
-      font-size: 13.5px;
-    }
+    .hbce-empty{ padding: 16px 12px; color: rgba(230,237,246,.70); font-size: 13.5px; }
   </style>
 </head>
 
@@ -142,6 +136,7 @@
 
       <div class="hbce-actions">
         <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Open Verify</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/publish/">Publish new entry</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/infrastructure/eu-autonomy-framework.html">EU Autonomy Framework</a>
       </div>
     </section>
@@ -179,6 +174,7 @@
         <div class="hbce-toolbar__right">
           <button class="hbce-btn" type="button" id="btnReload">Reload</button>
           <button class="hbce-btn hbce-btn--ghost" type="button" id="btnExport">Export filtered JSON</button>
+          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/publish/">Publish</a>
         </div>
       </div>
 
@@ -226,21 +222,6 @@
         </div>
       </div>
 
-      <div class="hbce-evidence">
-        <div class="hbce-evidence__top">
-          <h3 class="hbce-evidence__h">System anchor (hash-only)</h3>
-          <span class="hbce-mini">public · minimized</span>
-        </div>
-
-        <div class="hbce-evidence__row">
-          <div class="hbce-evidence__label">ROOT SHA-512</div>
-          <div class="hbce-evidence__value is-hash" id="root-sha512">
-b7929e4d1d9a782c79b473c5311f70d864f0b6ae6a6de38df5ef9b2acbb7e73f2d8c544967fa13b1124c8a93d5c2e77d24dc5b3c91a2e6c8b8f97b90a7b09e99
-          </div>
-          <button class="hbce-copy" type="button" data-hbce-copy="#root-sha512">COPY</button>
-        </div>
-      </div>
-
       <div class="hbce-tablewrap" id="tableWrap">
         <table class="hbce-reg" aria-label="Registry table">
           <thead>
@@ -249,7 +230,7 @@ b7929e4d1d9a782c79b473c5311f70d864f0b6ae6a6de38df5ef9b2acbb7e73f2d8c544967fa13b1
               <th style="width:220px;">Name</th>
               <th>payload_sha256</th>
               <th style="width:220px;">Timestamp</th>
-              <th style="width:210px;">Actions</th>
+              <th style="width:240px;">Actions</th>
             </tr>
           </thead>
           <tbody id="tbody">
@@ -262,7 +243,16 @@ b7929e4d1d9a782c79b473c5311f70d864f0b6ae6a6de38df5ef9b2acbb7e73f2d8c544967fa13b1
         <div class="hbce-callout__h">Deterministic interpretation</div>
         <p style="margin:0;color:rgba(230,237,246,.72);font-size:13.5px;">
           This viewer validates format locally. A VALID row means “required evidence exists and matches the deterministic schema”.
-          It does not guarantee the private payload exists publicly — public surface remains hash-only.
+          Public surface remains hash-only. No public custody of private identity payloads.
+        </p>
+      </div>
+
+      <div class="hbce-callout hbce-callout--warn">
+        <div class="hbce-callout__h">Append-only workflow</div>
+        <p style="margin:0;color:rgba(230,237,246,.72);font-size:13.5px;">
+          To add a proof: generate a release → compute SHA-256 → verify deterministically → publish a minimized entry via
+          <a class="hbce-link" href="/hermeticum-bce-platform/registry/publish/">Publish</a>, then append it to <code>registry.json</code>.
+          Never edit old entries.
         </p>
       </div>
     </section>
@@ -273,7 +263,7 @@ b7929e4d1d9a782c79b473c5311f70d864f0b6ae6a6de38df5ef9b2acbb7e73f2d8c544967fa13b1
 
   <script>
     (function(){
-      // ---- CONFIG (change only this if your registry file is elsewhere)
+      // Canonical registry file
       const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
 
       const q = document.getElementById("q");
@@ -299,16 +289,14 @@ b7929e4d1d9a782c79b473c5311f70d864f0b6ae6a6de38df5ef9b2acbb7e73f2d8c544967fa13b1
         term.setAttribute("data-status", kind);
         termStatus.textContent = msg;
         termSource.textContent = REGISTRY_URL;
-        // refresh protocol badge mapping
         document.dispatchEvent(new Event("DOMContentLoaded"));
       }
 
-      function isSha256(s){
-        return /^[a-f0-9]{64}$/i.test(String(s||"").trim());
+      function isSha256Lower(s){
+        return /^[a-f0-9]{64}$/.test(String(s||"").trim());
       }
 
-      function isRFC3339ish(s){
-        // pragmatic: accept RFC3339-like timestamps; strict parsing handled by ISO Date
+      function isTime(s){
         const v = String(s||"").trim();
         if (!v) return false;
         const d = new Date(v);
@@ -316,10 +304,9 @@ b7929e4d1d9a782c79b473c5311f70d864f0b6ae6a6de38df5ef9b2acbb7e73f2d8c544967fa13b1
       }
 
       function validateEntry(e){
-        // fail-closed: required fields must exist and be valid
         const payload = e && (e.payload_sha256 || e.payloadSha256 || e.payload || e.sha256);
         const ts = e && (e.timestamp || e.time || e.t);
-        const ok = isSha256(payload) && isRFC3339ish(ts);
+        const ok = isSha256Lower(payload) && isTime(ts);
         return {
           ok,
           payload: String(payload || "").trim(),
@@ -330,11 +317,19 @@ b7929e4d1d9a782c79b473c5311f70d864f0b6ae6a6de38df5ef9b2acbb7e73f2d8c544967fa13b1
       }
 
       function normalizeInput(data){
-        // Accept { entries: [...] } or [...] (array)
         if (Array.isArray(data)) return data;
         if (data && Array.isArray(data.entries)) return data.entries;
         if (data && Array.isArray(data.registry)) return data.registry;
         return [];
+      }
+
+      function escapeHtml(s){
+        return String(s||"")
+          .replaceAll("&","&amp;")
+          .replaceAll("<","&lt;")
+          .replaceAll(">","&gt;")
+          .replaceAll('"',"&quot;")
+          .replaceAll("'","&#039;");
       }
 
       function render(){
@@ -351,14 +346,10 @@ b7929e4d1d9a782c79b473c5311f70d864f0b6ae6a6de38df5ef9b2acbb7e73f2d8c544967fa13b1
             if (f === "invalid" && r.v.ok) return false;
             if (!query) return true;
 
-            const hay = [
-              r.v.name, r.v.payload, r.v.ts, r.v.status
-            ].join(" ").toLowerCase();
-
+            const hay = [r.v.name, r.v.payload, r.v.ts, r.v.status].join(" ").toLowerCase();
             return hay.includes(query);
           });
 
-        // KPIs
         const total = raw.length;
         const validCount = raw.reduce((acc, e) => acc + (validateEntry(e).ok ? 1 : 0), 0);
         const invalidCount = total - validCount;
@@ -368,12 +359,10 @@ b7929e4d1d9a782c79b473c5311f70d864f0b6ae6a6de38df5ef9b2acbb7e73f2d8c544967fa13b1
         kInvalid.textContent = String(invalidCount);
         kSource.textContent = REGISTRY_URL;
 
-        // Terminal status
         if (total === 0) setTerm("warn","No entries loaded (empty or missing registry).");
         else if (invalidCount > 0) setTerm("fail","Registry contains INVALID entries (fail-closed posture).");
         else setTerm("pass","Registry schema coherence OK (all entries contain required evidence).");
 
-        // Table
         if (view.length === 0){
           tbody.innerHTML = '<tr><td colspan="5" class="hbce-empty">No matching entries.</td></tr>';
           return;
@@ -388,7 +377,6 @@ b7929e4d1d9a782c79b473c5311f70d864f0b6ae6a6de38df5ef9b2acbb7e73f2d8c544967fa13b1
           const safeTs = escapeHtml(r.v.ts || "—");
           const safeHash = escapeHtml(r.v.payload || "—");
 
-          // copy button uses inline dataset selector based on row index
           const hashId = "h_" + r.idx;
 
           return `
@@ -401,23 +389,14 @@ b7929e4d1d9a782c79b473c5311f70d864f0b6ae6a6de38df5ef9b2acbb7e73f2d8c544967fa13b1
                 <div class="hbce-rowactions">
                   <button class="hbce-miniBtn" type="button" data-hbce-copy="#${hashId}">COPY HASH</button>
                   <a class="hbce-miniBtn" href="/hermeticum-bce-platform/verify/" title="Open Verify">VERIFY</a>
+                  <a class="hbce-miniBtn" href="/hermeticum-bce-platform/registry/publish/" title="Publish new entry">PUBLISH</a>
                 </div>
               </td>
             </tr>
           `;
         }).join("");
 
-        // protocol copy wiring (re-run on new buttons)
         document.dispatchEvent(new Event("DOMContentLoaded"));
-      }
-
-      function escapeHtml(s){
-        return String(s||"")
-          .replaceAll("&","&amp;")
-          .replaceAll("<","&lt;")
-          .replaceAll(">","&gt;")
-          .replaceAll('"',"&quot;")
-          .replaceAll("'","&#039;");
       }
 
       async function load(){
