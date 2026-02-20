@@ -64,7 +64,6 @@
       </p>
     </section>
 
-    <!-- LIVE STATUS (LOCAL ONLY) -->
     <section class="hbce-section">
       <div id="sysBox" class="hbce-status hbce-status--warn">
         <div class="hbce-status__grid">
@@ -98,7 +97,6 @@
       </div>
     </section>
 
-    <!-- WORKFLOW -->
     <section class="hbce-section">
       <div class="hbce-grid">
 
@@ -106,7 +104,7 @@
           <h2 class="hbce-card__title">0) ADS (Deterministic Decisions)</h2>
           <p class="hbce-card__text">
             Deterministic autonomous decision engine. Emits signed decision events into the local append-only ledger.
-            This is the “entity layer” (C): decisions become evidence.
+            This is the “entity layer”: decisions become evidence.
           </p>
           <p class="hbce-card__meta">
             Output: signed decision events (local ledger)
@@ -168,7 +166,6 @@
       </div>
     </section>
 
-    <!-- NOTES -->
     <section class="hbce-section">
       <div class="hbce-note">
         <h2 class="hbce-card__title">Security Notes</h2>
@@ -187,71 +184,6 @@
 
   <div data-hbce="footer"></div>
   <script src="/hermeticum-bce-platform/assets/hbce.js"></script>
-
-  <!-- CSP-safe local status logic (kept inline here only if CSP allows; if CSP blocks inline, move this to /assets/lab-status.js) -->
-  <script>
-  (function(){
-    const KEY_ID = "HBCE_JOKER_ID_V1";
-    const KEY_LEDGER = "HBCE_LOCAL_LEDGER_V1";
-    const KEY_LAST_ROOT = "HBCE_LAST_PACK_ROOT";
-    const KEY_LAST_ROOT_TS = "HBCE_LAST_PACK_ROOT_TS";
-
-    const elLedger = document.getElementById("mLedger");
-    const elKid = document.getElementById("mKid");
-    const elTip = document.getElementById("mTip");
-    const elPackRoot = document.getElementById("mPackRoot");
-
-    const sysBox = document.getElementById("sysBox");
-    const sysStatus = document.getElementById("sysStatus");
-    const sysRoot = document.getElementById("sysRoot");
-
-    function safeJsonParse(s){ try { return JSON.parse(s); } catch { return null; } }
-    function shortHex(h){
-      if(!h || typeof h !== "string") return "—";
-      if(h === "GENESIS") return "GENESIS";
-      return (h.length > 18) ? (h.slice(0,10) + "…" + h.slice(-6)) : h;
-    }
-    function render(){
-      const idObj = safeJsonParse(localStorage.getItem(KEY_ID) || "");
-      if(elKid) elKid.textContent = idObj?.kid ? idObj.kid : "—";
-
-      const ledgerObj = safeJsonParse(localStorage.getItem(KEY_LEDGER) || "");
-      const chain = Array.isArray(ledgerObj?.chain) ? ledgerObj.chain : [];
-      if(elLedger) elLedger.textContent = String(chain.length);
-      const tip = chain.length ? chain[chain.length - 1].chain_hash : "GENESIS";
-      if(elTip) elTip.textContent = shortHex(tip);
-
-      const lastRoot = (localStorage.getItem(KEY_LAST_ROOT) || "").trim();
-      if(elPackRoot) elPackRoot.textContent = shortHex(lastRoot);
-
-      if(sysBox && sysStatus && sysRoot){
-        if(lastRoot){
-          sysBox.classList.remove("hbce-status--warn");
-          sysBox.classList.add("hbce-status--ok");
-          sysStatus.textContent = "VERIFIED";
-          sysStatus.classList.remove("warn");
-          sysStatus.classList.add("ok");
-          sysRoot.textContent = lastRoot.slice(0,32) + "...";
-        }else{
-          sysBox.classList.remove("hbce-status--ok");
-          sysBox.classList.add("hbce-status--warn");
-          sysStatus.textContent = "NO LOCAL PROOF";
-          sysStatus.classList.remove("ok");
-          sysStatus.classList.add("warn");
-          sysRoot.textContent = "none";
-        }
-      }
-    }
-
-    render();
-
-    window.addEventListener("storage", (e)=>{
-      if(e.key === KEY_LAST_ROOT || e.key === KEY_LAST_ROOT_TS){
-        render();
-      }
-    });
-  })();
-  </script>
-
+  <script src="/hermeticum-bce-platform/assets/lab-status.js" defer></script>
 </body>
 </html>
