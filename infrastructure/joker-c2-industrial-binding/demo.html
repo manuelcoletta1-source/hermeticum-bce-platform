@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Joker-C2 Industrial Binding — Demo Scenarios</title>
+  <meta name="description" content="Demo scenarios for Joker-C2 Industrial Binding: allow/deny, dual approval, threshold gating, audit proofs and reproducible verification." />
+
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/demo.html" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+
+  <style>
+    .hbce-grid2{ display:grid; gap:1rem; grid-template-columns: repeat(12, 1fr); }
+    .hbce-col-4{ grid-column: span 4; }
+    .hbce-col-6{ grid-column: span 6; }
+    .hbce-col-8{ grid-column: span 8; }
+    .hbce-col-12{ grid-column: span 12; }
+    @media (max-width: 900px){
+      .hbce-col-4,.hbce-col-6,.hbce-col-8{ grid-column: span 12; }
+    }
+
+    .hbce-pill{
+      display:inline-block;
+      padding:.25rem .55rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.03);
+      color:rgba(255,255,255,.86);
+      font-size:.86rem;
+      font-weight:950;
+      letter-spacing:.02em;
+      text-transform: uppercase;
+    }
+
+    .hbce-divider{ height:1px; background:rgba(255,255,255,.10); margin: 1rem 0; }
+    .hbce-note-box{
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.03);
+      padding:1rem;
+    }
+
+    pre, code{
+      font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+    }
+    pre{
+      margin:.7rem 0 0;
+      padding:.85rem 1rem;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      overflow:auto;
+      font-size:.92rem;
+      line-height:1.35;
+    }
+
+    .hbce-table{
+      width:100%;
+      border-collapse: collapse;
+      overflow:hidden;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.02);
+    }
+    .hbce-table th, .hbce-table td{
+      padding:.75rem .85rem;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      vertical-align: top;
+      text-align:left;
+      font-size:.95rem;
+    }
+    .hbce-table th{
+      font-size:.9rem;
+      text-transform: uppercase;
+      letter-spacing:.02em;
+      opacity:.9;
+      font-weight:950;
+    }
+    .hbce-table tr:last-child td{ border-bottom:none; }
+
+    .hbce-mono{ font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
+    .hbce-list li{ margin:.25rem 0; }
+  </style>
+</head>
+
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <!-- HERO -->
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">DEMO · REAL OPERATIONS · FAIL-CLOSED · AUDIT PROOFS</div>
+      <h1 class="hbce-hero__title">Demo Scenarios</h1>
+      <p class="hbce-hero__lead">
+        These scenarios show how Joker-C2 Industrial Binding operates in real environments:
+        robotics, automation, fleets, and humanoid platforms.
+        The goal is simple: <strong>no verified identity → no execution</strong>.
+      </p>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/">Overview</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/spec.html">Open Spec</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry</a>
+      </div>
+
+      <div class="hbce-note-box" style="margin-top:1rem;">
+        <strong>Core rule:</strong> <span class="hbce-mono">If it cannot be verified deterministically → BLOCK</span>.
+        Public proof is hash-only (GDPR-min). Private evidence remains under customer custody.
+      </div>
+    </section>
+
+    <!-- QUICK MAP -->
+    <section class="hbce-section">
+      <h2>What happens (minimal map)</h2>
+      <div class="hbce-card">
+        <p class="hbce-note">
+          <strong>ActionRequest → Identity Gate → Policy Gate → Decision → Execution Token → Evidence Pack → Hash-only Proof</strong>
+        </p>
+        <div class="hbce-divider"></div>
+        <ul class="hbce-list">
+          <li><strong>Identity Gate</strong>: operator IPR + machine IPR must be VALID.</li>
+          <li><strong>Policy Gate</strong>: role / zone / thresholds / approvals.</li>
+          <li><strong>Fail-closed</strong>: anything non-verifiable is blocked by default.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SCENARIOS -->
+    <section class="hbce-section">
+      <h2>Scenarios</h2>
+
+      <div class="hbce-grid2">
+
+        <!-- S1 -->
+        <div class="hbce-card hbce-col-6">
+          <div class="hbce-pill">Scenario 1</div>
+          <h3 style="margin-top:.55rem;">ALLOW — Verified Operator starts a cycle</h3>
+          <p class="hbce-note">
+            A certified operator requests <span class="hbce-mono">START_CYCLE</span> on an industrial robot cell.
+            Identity and policy are valid → execution token is issued → the controller executes.
+          </p>
+
+<pre>{
+  "command": "START_CYCLE",
+  "operator_ref": "IPR-OP-VALID",
+  "machine_ref": "IPR-M-VALID",
+  "risk_class": "MED"
+}</pre>
+
+          <div class="hbce-divider"></div>
+          <p class="hbce-note">
+            Output: <strong>ALLOW</strong> + short TTL token + evidence pack generated + hash-only proof emitted.
+          </p>
+        </div>
+
+        <!-- S2 -->
+        <div class="hbce-card hbce-col-6">
+          <div class="hbce-pill">Scenario 2</div>
+          <h3 style="margin-top:.55rem;">DENY — Operator identity not VALID</h3>
+          <p class="hbce-note">
+            A request is received, but the operator cannot be verified deterministically.
+            Fail-closed blocks the action.
+          </p>
+
+<pre>{
+  "command": "CHANGE_PARAM",
+  "operator_ref": "IPR-OP-MISSING",
+  "machine_ref": "IPR-M-VALID",
+  "risk_class": "HIGH"
+}</pre>
+
+          <div class="hbce-divider"></div>
+          <p class="hbce-note">
+            Output: <strong>DENY</strong> with <span class="hbce-mono">IDENTITY_INVALID</span>. No token is issued.
+          </p>
+        </div>
+
+        <!-- S3 -->
+        <div class="hbce-card hbce-col-6">
+          <div class="hbce-pill">Scenario 3</div>
+          <h3 style="margin-top:.55rem;">REQUIRE DUAL APPROVAL — High risk action</h3>
+          <p class="hbce-note">
+            A high-risk command requires two-man rule (supervisor approval).
+            The system returns a pending state until both approvals are present.
+          </p>
+
+<pre>{
+  "command": "OVERRIDE_SAFETY_MODE",
+  "operator_ref": "IPR-OP-VALID",
+  "machine_ref": "IPR-M-VALID",
+  "risk_class": "HIGH"
+}</pre>
+
+          <div class="hbce-divider"></div>
+          <p class="hbce-note">
+            Output: <strong>REQUIRE_DUAL_APPROVAL</strong> with strict TTL and audit trace.
+          </p>
+        </div>
+
+        <!-- S4 -->
+        <div class="hbce-card hbce-col-6">
+          <div class="hbce-pill">Scenario 4</div>
+          <h3 style="margin-top:.55rem;">DENY — Threshold gating (torque / speed / zone)</h3>
+          <p class="hbce-note">
+            A command implies exceeding policy thresholds (torque, speed, restricted zone).
+            The Ethical Governor blocks before execution.
+          </p>
+
+<pre>{
+  "command": "MOVE_ARM_FAST",
+  "operator_ref": "IPR-OP-VALID",
+  "machine_ref": "IPR-M-VALID",
+  "context_ref": "IPR-ZONE-RESTRICTED",
+  "risk_class": "HIGH"
+}</pre>
+
+          <div class="hbce-divider"></div>
+          <p class="hbce-note">
+            Output: <strong>DENY</strong> with <span class="hbce-mono">POLICY_FAIL</span> (threshold/zone).
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- EVIDENCE -->
+    <section class="hbce-section">
+      <h2>Evidence & proofs (what auditors care about)</h2>
+      <div class="hbce-card">
+        <table class="hbce-table" aria-label="evidence table">
+          <thead>
+            <tr>
+              <th>Artifact</th>
+              <th>Stored where</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Evidence Pack</strong> (private)</td>
+              <td>Customer custody</td>
+              <td>Receipts, manifests, decision records, local ledger extracts</td>
+            </tr>
+            <tr>
+              <td><strong>Registry proof</strong> (public)</td>
+              <td>Append-only registry</td>
+              <td>Hash-only timestamped proof (GDPR-min)</td>
+            </tr>
+            <tr>
+              <td><strong>Verify path</strong></td>
+              <td>Verifier</td>
+              <td>Deterministic reproduction of validity and integrity</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="hbce-divider"></div>
+        <p class="hbce-note">
+          The public layer is minimal by design. The private layer contains the full audit trail under custody separation.
+        </p>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="hbce-section">
+      <h2>Start (pilot-ready sequence)</h2>
+      <div class="hbce-card">
+        <ol style="padding-left:1.15rem;">
+          <li>Activate operator IPR</li>
+          <li>Create machine identity (IPR-M)</li>
+          <li>Define policy (roles, thresholds, approvals)</li>
+          <li>Run one pilot scenario on a real system</li>
+          <li>Emit proof and verify reproducibility</li>
+        </ol>
+
+        <div class="hbce-divider"></div>
+
+        <div class="hbce-actions">
+          <a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/activate/">Activate</a>
+          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/pricing/">Pricing</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SIGN -->
+    <section class="hbce-section">
+      <div class="hbce-note-box">
+        <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong><br/>
+        HERMETICUM B.C.E. S.r.l.<br/>
+        EU-first · audit-first · fail-closed · hash-only · append-only · GDPR-min
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce.js"></script>
+</body>
+</html>
