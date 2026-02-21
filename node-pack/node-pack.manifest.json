@@ -1,0 +1,155 @@
+{
+  "proto": "HBCE-NODE-PACK-v1",
+  "kind": "AUTONOMOUS_IPR_NODE_DEPLOYMENT_SPEC",
+  "issuer": "HERMETICUM B.C.E. S.r.l.",
+  "jurisdiction": "EU",
+  "policy": [
+    "UE_FIRST",
+    "AUDIT_FIRST",
+    "FAIL_CLOSED",
+    "HASH_ONLY",
+    "APPEND_ONLY",
+    "GDPR_MIN",
+    "NO_PUBLIC_DATA_CUSTODY"
+  ],
+  "version": "1.0.0",
+  "status": "CANONICAL",
+  "scope": [
+    "IPR_BASE_NODE",
+    "OPERATOR_NODE",
+    "INDUSTRIAL_OEM_NODE",
+    "B2G_NODE"
+  ],
+  "public_registry": {
+    "path": "/registry/registry.json",
+    "append_only": true,
+    "public_fields_only": true,
+    "entry_schema": {
+      "required": ["payload_sha256", "timestamp", "type", "status"],
+      "optional": ["anchors", "issuer_sig", "notes"],
+      "type_enum": ["IPR_BASE", "OPERATOR", "NODE"],
+      "status_enum": ["DRAFT", "VERIFIED", "ACTIVE", "SUSPENDED"]
+    }
+  },
+  "artifacts": {
+    "local_only": [
+      {
+        "id": "IPR_RELEASE",
+        "pattern": "HBCE_IPR_RELEASE__*.json",
+        "contains_personal_data": true,
+        "must_never_be_public": true
+      },
+      {
+        "id": "NODE_PRIVATE_KEY",
+        "pattern": "ed25519_priv*.pem",
+        "contains_private_key": true,
+        "must_never_be_public": true
+      }
+    ],
+    "local_and_verifiable": [
+      {
+        "id": "RECEIPT",
+        "pattern": "HBCE_RECEIPT__*.json",
+        "contains_personal_data": false,
+        "verifiable_public_key_required": true
+      }
+    ],
+    "public_hash_only": [
+      {
+        "id": "REGISTRY_ENTRY",
+        "location": "/registry/registry.json#entries[]",
+        "contains_personal_data": false,
+        "stores_hash_only": true
+      }
+    ]
+  },
+  "determinism": {
+    "canonical_json": {
+      "encoding": "UTF-8",
+      "stable_key_order": true,
+      "no_whitespace_dependency": true,
+      "no_float_rounding_dependency": true
+    },
+    "hash": {
+      "algorithm": "SHA-256",
+      "output": "hex_lower"
+    },
+    "signature": {
+      "algorithm": "Ed25519",
+      "public_key_path": "/ed25519_pub.pem"
+    }
+  },
+  "checks": {
+    "required_true_for_valid": [
+      "schema_valid",
+      "integrity_ok",
+      "registry_match",
+      "signature_valid"
+    ],
+    "fail_closed": {
+      "no_partial_state": true,
+      "no_registry_write_on_fail": true,
+      "binary_outcome_only": true
+    }
+  },
+  "health_model": {
+    "outputs": [
+      { "name": "schema_valid", "type": "boolean" },
+      { "name": "integrity_ok", "type": "boolean" },
+      { "name": "registry_match", "type": "boolean" },
+      { "name": "signature_valid", "type": "boolean" },
+      { "name": "node_status", "type": "string", "enum": ["DRAFT", "VERIFIED", "ACTIVE", "SUSPENDED"] }
+    ],
+    "active_rule": "ALL(required_true_for_valid) == true AND node_status == 'ACTIVE'"
+  },
+  "profiles": {
+    "citizen_demo": {
+      "id": "P-CITIZEN-DEMO",
+      "operational": false,
+      "requires": ["IPR_RELEASE", "RECEIPT"],
+      "public_write": ["REGISTRY_ENTRY"],
+      "notes": "Educational / demo profile; must route users to /activate/ for canonical flow."
+    },
+    "operator_node": {
+      "id": "P-OPERATOR",
+      "operational": true,
+      "requires": ["IPR_RELEASE", "RECEIPT", "REGISTRY_ENTRY"],
+      "gates": [
+        "confirm_valid_ipr_base",
+        "manual_payment_confirmed",
+        "issuer_signature_present"
+      ]
+    },
+    "industrial_oem_node": {
+      "id": "P-OEM",
+      "operational": true,
+      "requires": ["IPR_RELEASE", "RECEIPT", "REGISTRY_ENTRY"],
+      "extras": [
+        "local_append_only_ledger",
+        "reproducible_audit_pack",
+        "read_only_health_checks"
+      ],
+      "optional": ["anchors_btc_eth_ipfs", "pqc_signature_layer"]
+    },
+    "b2g_node": {
+      "id": "P-B2G",
+      "operational": true,
+      "requires": ["IPR_RELEASE", "RECEIPT", "REGISTRY_ENTRY"],
+      "extras": [
+        "external_auditor_reproducibility",
+        "change_control_append_only",
+        "incident_fail_closed_procedure"
+      ]
+    }
+  },
+  "routing": {
+    "canonical_entrypoints": [
+      "/activate/",
+      "/create/base/",
+      "/create/operator/",
+      "/registry/",
+      "/verify/"
+    ],
+    "non_canonical_pages_must_route_to": "/activate/"
+  }
+}
