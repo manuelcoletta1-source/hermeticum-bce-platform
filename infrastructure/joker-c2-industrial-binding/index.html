@@ -1,51 +1,69 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>Joker-C2 Industrial Binding — Identity & Governance Layer for Robotics</title>
-  <meta name="description" content="Joker-C2 Industrial Binding: Identity, Authorization and Audit layer above robots, PLC, MES and autonomous systems. Edge-first. Fail-closed. Hash-only." />
+<title>Joker-C2 — Industrial Binding Layer (Identity-Gated Execution)</title>
+<meta name="description" content="Joker-C2 is the industrial binding layer for robotics and autonomous systems: identity-gated execution, policy enforcement, and audit evidence. HBCE / IPR required. Fail-closed." />
 
-  <meta name="robots" content="index,follow" />
-  <meta name="theme-color" content="#0b0f14" />
-  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/" />
+<meta name="robots" content="index,follow" />
+<meta name="theme-color" content="#0b0f14" />
+<link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/" />
 
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 
-  <style>
-    .hbce-grid2{ display:grid; gap:1rem; grid-template-columns: repeat(12, 1fr); }
-    .hbce-col-4{ grid-column: span 4; }
-    .hbce-col-6{ grid-column: span 6; }
-    .hbce-col-8{ grid-column: span 8; }
-    .hbce-col-12{ grid-column: span 12; }
-    @media (max-width: 900px){
-      .hbce-col-4,.hbce-col-6,.hbce-col-8{ grid-column: span 12; }
-    }
-
-    .hbce-pill{
-      display:inline-block;
-      padding:.25rem .55rem;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.03);
-      color:rgba(255,255,255,.86);
-      font-size:.86rem;
-      font-weight:950;
-      letter-spacing:.02em;
-      text-transform: uppercase;
-    }
-
-    .hbce-note-box{
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.03);
-      padding:1rem;
-    }
-
-    .hbce-divider{ height:1px; background:rgba(255,255,255,.10); margin:1rem 0; }
-    .hbce-list li{ margin:.25rem 0; }
-  </style>
+<style>
+.hbce-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:16px;
+  margin-top:20px;
+}
+.hbce-card{
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.02);
+  border-radius:16px;
+  padding:16px;
+}
+.hbce-card h3{margin:0 0 8px 0;font-size:1.05rem;}
+.hbce-card p{margin:0 0 12px 0;opacity:.92;}
+.hbce-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;}
+.hbce-a{
+  display:inline-block;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:12px;
+  padding:10px 12px;
+  text-decoration:none;
+}
+.hbce-a:hover{border-color:rgba(255,255,255,.28);}
+.hbce-divider{height:1px;background:rgba(255,255,255,.10);margin:22px 0;}
+.hbce-kicker2{
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  opacity:.92;
+  font-size:.85rem;
+  margin-bottom:10px;
+}
+.hbce-note{
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.02);
+  border-radius:16px;
+  padding:14px;
+  opacity:.92;
+}
+.hbce-mono{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+  font-size:.92rem;
+}
+.hbce-footerMark{
+  margin-top:28px;
+  padding-top:18px;
+  border-top:1px solid rgba(255,255,255,.10);
+  opacity:.92;
+}
+.hbce-list{ margin:10px 0 0 0; padding-left:18px; opacity:.92; }
+</style>
 </head>
 
 <body>
@@ -53,150 +71,126 @@
 
 <main class="hbce-container hbce-main">
 
-<!-- HERO -->
 <section class="hbce-hero">
-  <div class="hbce-hero__kicker">
-    INDUSTRIAL GOVERNANCE · EDGE-FIRST · FAIL-CLOSED · HASH-ONLY
-  </div>
-
-  <h1 class="hbce-hero__title">
-    Joker-C2 Industrial Binding
-  </h1>
-
+  <div class="hbce-hero__kicker">JOKER-C2 · INDUSTRIAL BINDING · FAIL-CLOSED</div>
+  <h1 class="hbce-hero__title">Identity-Gated Execution for Robotics & Autonomous Systems</h1>
   <p class="hbce-hero__lead">
-    Identity, Authorization and Audit layer positioned above robots, PLC, MES, SCADA and autonomous systems.
-    It does not replace hardware safety. It governs execution rights and accountability.
+    Joker-C2 is the industrial binding layer that enforces: (1) deterministic identity validity, (2) policy-bound execution,
+    (3) auditable evidence. Without a valid IPR and registry proof, execution is blocked.
   </p>
 
-  <div class="hbce-actions">
-
-    <a class="hbce-btn" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/reference-architecture.html">
-      Reference Architecture
-    </a>
-
-    <a class="hbce-btn" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/spec.html">
-      Technical Spec
-    </a>
-
-    <a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/demo.html">
-      Demo Scenarios
-    </a>
-
-    <a class="hbce-btn" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/real-robot-demo.html">
-      Real Robot Demo
-    </a>
-
-    <a class="hbce-btn" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/competitive-positioning.html">
-      Competitive Positioning
-    </a>
-
-    <a class="hbce-btn" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/pilot-piemonte.html">
-      Piemonte Pilot
-    </a>
-
-    <a class="hbce-btn" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/pilot-pricing.html">
-      Pilot Pricing
-    </a>
-
-    <a class="hbce-btn" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/roi.html">
-      ROI
-    </a>
-
-    <a class="hbce-btn" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/integration-checklist.html">
-      Integration Checklist
-    </a>
-
-    <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">
-      Verify
-    </a>
-
-    <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">
-      Registry
-    </a>
-
-  </div>
-
-  <div class="hbce-note-box" style="margin-top:1rem;">
-    <strong>Core rule:</strong><br/>
-    If an action cannot be deterministically verified → it is blocked.
+  <div class="hbce-cta">
+    <a class="hbce-a" href="/hermeticum-bce-platform/activate/">Activate</a>
+    <a class="hbce-a" href="/hermeticum-bce-platform/create/base/">Create IPR</a>
+    <a class="hbce-a" href="/hermeticum-bce-platform/verify/">Verify</a>
+    <a class="hbce-a" href="/hermeticum-bce-platform/registry/">Registry</a>
   </div>
 </section>
-
-<!-- CORE -->
-<section class="hbce-section">
-<h2>Core capabilities</h2>
-
-<div class="hbce-grid2">
-
-<div class="hbce-card hbce-col-6">
-<div class="hbce-pill">Identity Gate</div>
-<ul class="hbce-list">
-<li>Operator identity verification</li>
-<li>Machine identity verification</li>
-<li>Required before execution</li>
-</ul>
-</div>
-
-<div class="hbce-card hbce-col-6">
-<div class="hbce-pill">Policy Engine</div>
-<ul class="hbce-list">
-<li>Role-based access</li>
-<li>Threshold enforcement</li>
-<li>Dual approval workflows</li>
-</ul>
-</div>
-
-<div class="hbce-card hbce-col-6">
-<div class="hbce-pill">Execution Token</div>
-<ul class="hbce-list">
-<li>Short TTL authorization</li>
-<li>No token → no execution</li>
-<li>Fail-closed by default</li>
-</ul>
-</div>
-
-<div class="hbce-card hbce-col-6">
-<div class="hbce-pill">Audit Proof</div>
-<ul class="hbce-list">
-<li>Private evidence pack</li>
-<li>Public hash-only proof</li>
-<li>Deterministic verification</li>
-</ul>
-</div>
-
-</div>
-</section>
-
-<!-- STRATEGIC POSITION -->
-<section class="hbce-section">
-<h2>Strategic positioning</h2>
-<div class="hbce-card">
-<p class="hbce-note">
-Robotics manufacturers build movement.  
-Joker-C2 governs responsibility and authorization.
-</p>
 
 <div class="hbce-divider"></div>
 
-<p class="hbce-note">
-The highest industrial value is not motion.  
-It is accountable execution.
-</p>
-</div>
+<section>
+  <div class="hbce-kicker2">What it is</div>
+  <h2>Binding layer (not a robot, not a PLC)</h2>
+  <p>
+    Joker-C2 sits above devices and software stacks. It does not replace functional safety.
+    It controls execution rights and accountability using deterministic verification and audit evidence.
+  </p>
+
+  <div class="hbce-grid">
+    <article class="hbce-card">
+      <h3>1) Identity Gate</h3>
+      <p>Every actor (operator, machine, service) must be valid. Missing proof → blocked (fail-closed).</p>
+      <div class="hbce-note hbce-mono">VALID(IPR) required for EXECUTE()</div>
+    </article>
+
+    <article class="hbce-card">
+      <h3>2) Policy Engine</h3>
+      <p>Policy decides which commands are permitted, under which constraints, with which approvals.</p>
+      <div class="hbce-note hbce-mono">ALLOW / DENY (deterministic)</div>
+    </article>
+
+    <article class="hbce-card">
+      <h3>3) Evidence & Audit</h3>
+      <p>Private evidence pack + public hash-only proof enable accountability without public identity custody.</p>
+      <div class="hbce-note hbce-mono">evidence_pack_sha256 → registry</div>
+    </article>
+  </div>
 </section>
 
-<!-- SIGN -->
-<section class="hbce-section">
-<div class="hbce-note-box">
-<strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong><br/>
-HERMETICUM B.C.E. S.r.l.<br/>
-EU-first · audit-first · fail-closed · hash-only · append-only
-</div>
+<div class="hbce-divider"></div>
+
+<section>
+  <div class="hbce-kicker2">Canonical industrial flow</div>
+  <h2>From request to execution (strict)</h2>
+
+  <div class="hbce-grid">
+    <article class="hbce-card">
+      <h3>A) Request</h3>
+      <p>Operator or system submits an execution request with target, intent and constraints.</p>
+      <ul class="hbce-list">
+        <li>actor_ipr_id</li>
+        <li>target_ipr_id</li>
+        <li>command_intent</li>
+        <li>constraints</li>
+      </ul>
+    </article>
+
+    <article class="hbce-card">
+      <h3>B) Verify</h3>
+      <p>Joker-C2 verifies validity deterministically. Missing proof or mismatch → stop.</p>
+      <div class="hbce-note hbce-mono">IF !VALID → BLOCK</div>
+    </article>
+
+    <article class="hbce-card">
+      <h3>C) Decide & Execute</h3>
+      <p>Policy resolves ALLOW/DENY. If allowed, execution is emitted as an auditable event.</p>
+      <div class="hbce-note hbce-mono">ALLOW → emit event → execute</div>
+    </article>
+  </div>
+
+  <div class="hbce-cta">
+    <a class="hbce-a" href="./ARCHITECTURE.md">Architecture</a>
+    <a class="hbce-a" href="./SPEC/JOKER-C2-EVENT-v1.json">Event Spec</a>
+  </div>
 </section>
+
+<div class="hbce-divider"></div>
+
+<section>
+  <div class="hbce-kicker2">Industrial pilots</div>
+  <h2>Pilot scopes (safe and auditable)</h2>
+  <p>
+    Joker-C2 pilots focus on accountable automation and identity-gated control flows.
+    No autonomous unsafe behavior is defined here: the system is governance + audit.
+  </p>
+
+  <div class="hbce-grid">
+    <article class="hbce-card">
+      <h3>Robotics Cell</h3>
+      <p>Identity-gated job execution, tool authorization, traceable work orders, evidence proofs.</p>
+    </article>
+
+    <article class="hbce-card">
+      <h3>Autonomous Fleet (non-safety layer)</h3>
+      <p>Governance over permissions, missions, logs, evidence. Safety stays in OEM systems.</p>
+    </article>
+
+    <article class="hbce-card">
+      <h3>Industrial Edge</h3>
+      <p>Policy-bound execution across services, sensors, gateways, with deterministic verification.</p>
+    </article>
+  </div>
+</section>
+
+<div class="hbce-footerMark">
+  <div>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+  <div>HERMETICUM B.C.E. S.r.l.</div>
+  <div>Fail-closed · Hash-only · Append-only · EU-first · Audit-first</div>
+</div>
 
 </main>
 
 <div data-hbce="footer"></div>
-<script src="/hermeticum-bce-platform/assets/hbce.js"></script>
 </body>
 </html>
