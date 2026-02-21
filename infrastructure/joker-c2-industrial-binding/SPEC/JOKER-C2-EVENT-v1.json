@@ -1,0 +1,43 @@
+{
+  "proto": "JOKER-C2-EVENT-v1",
+  "kind": "APPEND_ONLY_EVENT",
+  "network": "HBCE",
+  "mode": "FAIL_CLOSED",
+  "issuer": "HERMETICUM B.C.E. S.r.l.",
+  "jurisdiction": "EU",
+  "policy": ["HASH_ONLY", "APPEND_ONLY", "FAIL_CLOSED", "UE_FIRST", "AUDIT_FIRST", "GDPR_MIN"],
+
+  "schema": {
+    "required": [
+      "event_id",
+      "timestamp",
+      "actor_ipr_id",
+      "target_ipr_id",
+      "intent",
+      "decision",
+      "decision_code",
+      "evidence_pack_sha256"
+    ],
+    "decision_enum": ["ALLOW", "DENY"],
+    "hash_format": "lowercase_hex_64"
+  },
+
+  "event": {
+    "event_id": "JCE-0000000000000000",
+    "timestamp": "2026-02-21T00:00:00Z",
+
+    "actor_ipr_id": "IPR-<ACTOR>",
+    "target_ipr_id": "IPR-<TARGET>",
+
+    "intent": {
+      "command": "STRING",
+      "scope": "STRING",
+      "constraints": ["STRING"]
+    },
+
+    "decision": "DENY",
+    "decision_code": "MISSING_PROOF | INVALID_IDENTITY | POLICY_DENY | FORMAT_ERROR | VERIFY_ERROR",
+
+    "evidence_pack_sha256": "64_hex_chars_lowercase"
+  }
+}
