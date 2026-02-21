@@ -4,8 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<title>Create IPR Base EU (Citizen) — Local Release Wizard</title>
-<meta name="description" content="EU Citizen IPR Base wizard. Collects citizen data locally (owner-controlled), generates deterministic release JSON, computes SHA-256, outputs hash-only registry proof. Fail-closed." />
+<title>Create IPR Base EU (Citizen) — CIE + Codice Fiscale (Dedup)</title>
+<meta name="description" content="EU Citizen IPR Base wizard with CIE + Codice Fiscale. Local-only citizen data, deterministic release, SHA-256 proofs, and dedup via CF hash against the public ledger. Fail-closed." />
 
 <meta name="robots" content="index,follow" />
 <meta name="theme-color" content="#0b0f14" />
@@ -31,6 +31,8 @@
 .hbce-row{display:grid;grid-template-columns:1fr;gap:10px;}
 @media (min-width: 820px){ .hbce-row{ grid-template-columns:1fr 1fr; } }
 pre{white-space:pre-wrap;word-break:break-word;margin:0;}
+.hbce-status{border-radius:16px;padding:14px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.20);}
+.hbce-status__value{font-size:1.05rem;font-weight:700;letter-spacing:.02em;}
 </style>
 </head>
 
@@ -40,11 +42,11 @@ pre{white-space:pre-wrap;word-break:break-word;margin:0;}
 <main class="hbce-container hbce-main">
 
 <section class="hbce-hero">
-  <div class="hbce-hero__kicker">CREATE · IPR BASE EU · CITIZEN (LOCAL ONLY)</div>
-  <h1 class="hbce-hero__title">EU Citizen IPR Base — Release Wizard</h1>
+  <div class="hbce-hero__kicker">CREATE · IPR BASE EU · CITIZEN (CIE + CF)</div>
+  <h1 class="hbce-hero__title">EU Citizen Entry — CIE + Codice Fiscale (Dedup)</h1>
   <p class="hbce-hero__lead">
-    This wizard collects EU citizen data <strong>locally</strong> and generates a deterministic IPR release file.
-    The public registry stores only <strong>hash-only proofs</strong>. Do not publish personal data.
+    Citizen data is collected <strong>locally</strong>. Public registry stores only <strong>hash-only proofs</strong>.
+    Duplicate prevention is enforced via <span class="hbce-mono">SHA-256(CodiceFiscale)</span> checked against the public ledger.
   </p>
 
   <div class="hbce-cta">
@@ -57,22 +59,55 @@ pre{white-space:pre-wrap;word-break:break-word;margin:0;}
 <div class="hbce-divider"></div>
 
 <section>
-  <div class="hbce-kicker2">Data boundary</div>
-  <div class="hbce-note">
-    <strong>Local-only:</strong> everything you type here stays on your device. The site does not upload it anywhere.<br/>
-    <strong>Public registry:</strong> publish only the SHA-256 hash proof (and timestamp). Nothing else.
+  <div class="hbce-kicker2">Ledger link</div>
+  <h2>Public ledger (read-only)</h2>
+
+  <div class="hbce-grid">
+    <article class="hbce-card">
+      <h3>Ledger status</h3>
+      <p>Loads: <span class="hbce-mono">/registry/ledger.json</span></p>
+      <div class="hbce-cta">
+        <a class="hbce-a" href="#" id="loadLedger">Reload Ledger</a>
+      </div>
+      <div class="hbce-status" style="margin-top:12px;">
+        <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Status</div>
+        <div class="hbce-status__value" id="ledgerStatus">NOT LOADED</div>
+        <div class="hbce-mono" style="opacity:.92;margin-top:8px;">entries: <span id="ledgerCount">—</span></div>
+      </div>
+    </article>
+
+    <article class="hbce-card">
+      <h3>Dedup key</h3>
+      <p>Dedup is computed as:</p>
+      <div class="hbce-note hbce-mono">citizen_cf_sha256 = SHA-256(UPPERCASE(TRIM(CF)))</div>
+      <div class="hbce-status" style="margin-top:12px;">
+        <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Dedup check</div>
+        <div class="hbce-status__value" id="dedupStatus">—</div>
+      </div>
+    </article>
+
+    <article class="hbce-card">
+      <h3>Boundary</h3>
+      <p>
+        Public registry: hash-only proofs.<br/>
+        Local release: citizen payload (owner-controlled).
+      </p>
+      <div class="hbce-note">
+        Do not publish CIE number, CF, or personal data in the ledger.
+      </div>
+    </article>
   </div>
 </section>
 
 <div class="hbce-divider"></div>
 
 <section>
-  <div class="hbce-kicker2">Citizen data (EU)</div>
-  <h2>Minimum EU citizen fields</h2>
+  <div class="hbce-kicker2">Citizen data (local)</div>
+  <h2>EU Citizen fields</h2>
 
   <div class="hbce-grid">
     <article class="hbce-card">
-      <h3>Identity (local)</h3>
+      <h3>Core identity</h3>
 
       <div class="hbce-row">
         <div>
@@ -101,11 +136,35 @@ pre{white-space:pre-wrap;word-break:break-word;margin:0;}
           <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Contact email (optional)</div>
           <input id="email" class="hbce-field hbce-mono" placeholder="name@example.com" />
         </div>
+      </div>
 
+      <div class="hbce-divider"></div>
+
+      <h3>EU identifiers (local-only)</h3>
+      <p>
+        These fields are used to generate a local release and an anti-duplicate hash key.
+        Only hashes are intended for the public ledger.
+      </p>
+
+      <div class="hbce-row">
+        <div>
+          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Codice Fiscale (IT)</div>
+          <input id="cf" class="hbce-field hbce-mono" placeholder="16 characters (e.g., CLTMNL88B05A944R)" />
+        </div>
+        <div>
+          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">CIE number (optional, local)</div>
+          <input id="cie" class="hbce-field hbce-mono" placeholder="e.g., CA19311XQ" />
+        </div>
+
+        <div>
+          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">CIE expiry (optional, YYYY-MM-DD)</div>
+          <input id="cie_exp" class="hbce-field hbce-mono" placeholder="2035-02-05" />
+        </div>
         <div>
           <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Citizen IPR ID (your label)</div>
           <input id="ipr_id" class="hbce-field hbce-mono" placeholder="e.g., IPR-CITIZEN-0001" />
         </div>
+
         <div>
           <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Notes (optional, local)</div>
           <input id="notes" class="hbce-field" placeholder="optional local note" />
@@ -113,37 +172,49 @@ pre{white-space:pre-wrap;word-break:break-word;margin:0;}
       </div>
 
       <div class="hbce-note hbce-mono" style="margin-top:12px;">
-        Recommendation: keep this payload minimal. The release file is owner-controlled.
+        Validation: CF must be 16 alphanumeric characters. If ledger already contains CF hash → BLOCK.
       </div>
     </article>
 
     <article class="hbce-card">
       <h3>Build outputs</h3>
-      <p>Generate deterministic JSON → compute SHA-256 → produce registry proof.</p>
+      <p>Generate deterministic JSON → compute SHA-256 → produce registry proofs (release + CF dedup).</p>
+
       <div class="hbce-cta">
         <a class="hbce-a" href="#" id="build">Build Release</a>
         <a class="hbce-a" href="#" id="download">Download Release</a>
         <a class="hbce-a" href="#" id="reset">Reset</a>
       </div>
 
+      <div class="hbce-status" style="margin-top:12px;">
+        <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Build status</div>
+        <div class="hbce-status__value" id="buildStatus">READY</div>
+      </div>
+
       <div class="hbce-note hbce-mono" style="margin-top:12px;">
-        payload_sha256: <span id="sha">—</span>
+        release_payload_sha256: <span id="sha_release">—</span><br/>
+        citizen_cf_sha256: <span id="sha_cf">—</span>
       </div>
 
       <div class="hbce-cta">
-        <a class="hbce-a" href="#" id="copySha">Copy SHA</a>
-        <a class="hbce-a" href="#" id="copyProof">Copy Registry Proof</a>
+        <a class="hbce-a" href="#" id="copyReleaseProof">Copy Release Proof</a>
+        <a class="hbce-a" href="#" id="copyCFProof">Copy CF Dedup Proof</a>
       </div>
 
       <div class="hbce-note hbce-mono" style="margin-top:12px;">
-        Registry proof (hash-only):<br/>
-        <pre id="proof">{}</pre>
+        Proofs (hash-only):<br/>
+        <pre id="proofs">{}</pre>
+      </div>
+
+      <div class="hbce-cta">
+        <a class="hbce-a" href="/hermeticum-bce-platform/registry/">Open Registry</a>
+        <a class="hbce-a" href="/hermeticum-bce-platform/sim/joker-c2/">Open Simulator</a>
       </div>
     </article>
 
     <article class="hbce-card">
       <h3>Release JSON (local)</h3>
-      <p>This is your owner-controlled release file content.</p>
+      <p>Owner-controlled release content. Do not publish it.</p>
       <div class="hbce-note hbce-mono"><pre id="releaseOut">{}</pre></div>
     </article>
   </div>
@@ -160,6 +231,8 @@ pre{white-space:pre-wrap;word-break:break-word;margin:0;}
 <div data-hbce="footer"></div>
 
 <script>
+let LEDGER = null;
+
 function toHex(buf){
   const bytes = new Uint8Array(buf);
   let out = "";
@@ -175,7 +248,6 @@ async function sha256HexFromText(text){
 function nowISO(){ return new Date().toISOString(); }
 
 function stableStringify(obj){
-  // deterministic JSON: recursively sort keys
   const seen = new WeakSet();
   function norm(x){
     if (x && typeof x === "object"){
@@ -193,12 +265,50 @@ function stableStringify(obj){
 }
 
 function getVal(id){ return (document.getElementById(id).value || "").trim(); }
+function setText(id, t){ document.getElementById(id).textContent = t; }
+
+function setLedgerStatus(s){ setText("ledgerStatus", s); }
+function setLedgerCount(n){ setText("ledgerCount", String(n)); }
+
+async function loadLedger(){
+  setLedgerStatus("LOADING…");
+  try{
+    const res = await fetch("/hermeticum-bce-platform/registry/ledger.json", { cache: "no-store" });
+    if (!res.ok) throw new Error("http " + res.status);
+    const data = await res.json();
+    LEDGER = data;
+    const entries = Array.isArray(data.entries) ? data.entries : [];
+    setLedgerCount(entries.length);
+    setLedgerStatus("LOADED");
+  } catch(e){
+    LEDGER = null;
+    setLedgerCount("—");
+    setLedgerStatus("LOAD FAILED");
+  }
+}
+
+function ledgerHasSha(sha){
+  if (!LEDGER) return null;
+  const entries = Array.isArray(LEDGER.entries) ? LEDGER.entries : [];
+  return !!entries.find(x => x && typeof x.sha256 === "string" && x.sha256.toLowerCase() === sha.toLowerCase());
+}
+
+function normalizeCF(cf){
+  return (cf || "").trim().toUpperCase().replace(/\s+/g,"");
+}
+function isValidCF(cf){
+  // strict enough for dedup: 16 alphanumeric
+  return /^[A-Z0-9]{16}$/.test(normalizeCF(cf));
+}
+
+function setBuildStatus(s){ setText("buildStatus", s); }
 
 let LAST_RELEASE_TEXT = "";
-let LAST_SHA = "";
-let LAST_PROOF = "";
+let LAST_SHA_RELEASE = "";
+let LAST_SHA_CF = "";
+let LAST_PROOFS_TEXT = "";
 
-function buildReleaseObject(){
+function buildReleaseObject(cf_sha256){
   const iprId = getVal("ipr_id") || "IPR-CITIZEN-UNSPECIFIED";
 
   const payload = {
@@ -210,6 +320,14 @@ function buildReleaseObject(){
       place_of_birth: getVal("pob"),
       residence: getVal("residence"),
       email: getVal("email")
+    },
+    eu_identifiers: {
+      // LOCAL ONLY: do not publish
+      codice_fiscale: normalizeCF(getVal("cf")),
+      cie_number: getVal("cie"),
+      cie_expiry: getVal("cie_exp"),
+      // HASH ONLY: safe for public dedup
+      citizen_cf_sha256: cf_sha256
     },
     notes: getVal("notes")
   };
@@ -226,43 +344,93 @@ function buildReleaseObject(){
   };
 }
 
-function mkRegistryProof(sha){
+function mkProof(proof_kind, sha256){
   return {
     proto: "HBCE-REGISTRY-v3",
     kind: "HBCE_PUBLIC_PROOF",
     network: "EU",
     issuer: "HERMETICUM B.C.E. S.r.l.",
     policy: ["HASH_ONLY","APPEND_ONLY","FAIL_CLOSED","UE_FIRST","AUDIT_FIRST","GDPR_MIN"],
-    proof_kind: "IPR_RELEASE_SHA256",
-    sha256: sha,
-    timestamp: nowISO(),
-    name: "OPTIONAL_MINIMIZED"
+    proof_kind,
+    sha256,
+    timestamp: nowISO()
   };
 }
 
-function setOut(id, text){ document.getElementById(id).textContent = text; }
+async function computeAndCheckDedup(){
+  const cf = getVal("cf");
+  if (!isValidCF(cf)){
+    setText("dedupStatus", "CF INVALID (FORMAT)");
+    setText("sha_cf", "—");
+    return { ok: false, cf_sha: "" };
+  }
+  const cf_sha = await sha256HexFromText(normalizeCF(cf));
+  setText("sha_cf", cf_sha);
+
+  const present = ledgerHasSha(cf_sha);
+  if (present === null){
+    setText("dedupStatus", "LEDGER NOT LOADED");
+    return { ok: false, cf_sha };
+  }
+  if (present){
+    setText("dedupStatus", "DUPLICATE (CF HASH PRESENT) — BLOCK");
+    return { ok: false, cf_sha };
+  }
+  setText("dedupStatus", "UNIQUE (NOT FOUND)");
+  return { ok: true, cf_sha };
+}
 
 async function build(){
+  setBuildStatus("RUNNING…");
+
+  // hard requirement: ledger must be loaded for dedup
+  if (!LEDGER){
+    setBuildStatus("BLOCKED (LEDGER NOT LOADED)");
+    return;
+  }
+
+  const dedup = await computeAndCheckDedup();
+  if (!dedup.ok){
+    // fail-closed: do not produce outputs if dedup fails
+    LAST_RELEASE_TEXT = "";
+    LAST_SHA_RELEASE = "";
+    LAST_SHA_CF = dedup.cf_sha || "";
+    LAST_PROOFS_TEXT = "";
+    setText("sha_release", "—");
+    setText("releaseOut", "{}");
+    setText("proofs", "{}");
+    setBuildStatus("BLOCKED (DUPLICATE OR INVALID CF)");
+    return;
+  }
+
   try{
-    const releaseObj = buildReleaseObject();
-    const text = stableStringify(releaseObj);
-    const sha = await sha256HexFromText(text);
-    const proof = mkRegistryProof(sha);
+    // release (deterministic)
+    const releaseObj = buildReleaseObject(dedup.cf_sha);
+    const releaseText = stableStringify(releaseObj);
+    const shaRelease = await sha256HexFromText(releaseText);
 
-    LAST_RELEASE_TEXT = text;
-    LAST_SHA = sha;
-    LAST_PROOF = JSON.stringify(proof, null, 2);
+    // proofs (hash-only)
+    const proofRelease = mkProof("IPR_RELEASE_SHA256", shaRelease);
+    const proofCF = mkProof("CITIZEN_CF_SHA256", dedup.cf_sha);
 
-    setOut("releaseOut", text);
-    document.getElementById("sha").textContent = sha;
-    setOut("proof", LAST_PROOF);
+    LAST_RELEASE_TEXT = releaseText;
+    LAST_SHA_RELEASE = shaRelease;
+    LAST_SHA_CF = dedup.cf_sha;
+    LAST_PROOFS_TEXT = JSON.stringify({ release_proof: proofRelease, cf_dedup_proof: proofCF }, null, 2);
+
+    setText("releaseOut", releaseText);
+    setText("sha_release", shaRelease);
+    setText("proofs", LAST_PROOFS_TEXT);
+
+    setBuildStatus("READY (UNIQUE CF)");
   } catch(e){
     LAST_RELEASE_TEXT = "";
-    LAST_SHA = "";
-    LAST_PROOF = "";
-    setOut("releaseOut", "{}");
-    document.getElementById("sha").textContent = "—";
-    setOut("proof", "{}");
+    LAST_SHA_RELEASE = "";
+    LAST_PROOFS_TEXT = "";
+    setText("sha_release", "—");
+    setText("releaseOut", "{}");
+    setText("proofs", "{}");
+    setBuildStatus("ERROR");
   }
 }
 
@@ -284,21 +452,51 @@ function downloadRelease(){
 }
 
 function resetAll(){
-  ["full_name","nationality","dob","pob","residence","email","ipr_id","notes"].forEach(id=>{ document.getElementById(id).value=""; });
+  ["full_name","nationality","dob","pob","residence","email","cf","cie","cie_exp","ipr_id","notes"].forEach(id=>{ document.getElementById(id).value=""; });
   LAST_RELEASE_TEXT = "";
-  LAST_SHA = "";
-  LAST_PROOF = "";
-  setOut("releaseOut", "{}");
-  setOut("proof", "{}");
-  document.getElementById("sha").textContent = "—";
+  LAST_SHA_RELEASE = "";
+  LAST_SHA_CF = "";
+  LAST_PROOFS_TEXT = "";
+  setText("releaseOut", "{}");
+  setText("proofs", "{}");
+  setText("sha_release", "—");
+  setText("sha_cf", "—");
+  setText("dedupStatus", "—");
+  setBuildStatus("READY");
 }
+
+document.getElementById("loadLedger").addEventListener("click",(e)=>{ e.preventDefault(); loadLedger(); });
 
 document.getElementById("build").addEventListener("click",(e)=>{ e.preventDefault(); build(); });
 document.getElementById("download").addEventListener("click",(e)=>{ e.preventDefault(); downloadRelease(); });
 document.getElementById("reset").addEventListener("click",(e)=>{ e.preventDefault(); resetAll(); });
 
-document.getElementById("copySha").addEventListener("click",(e)=>{ e.preventDefault(); if (LAST_SHA) copyText(LAST_SHA); });
-document.getElementById("copyProof").addEventListener("click",(e)=>{ e.preventDefault(); if (LAST_PROOF) copyText(LAST_PROOF); });
+document.getElementById("copyReleaseProof").addEventListener("click",(e)=>{
+  e.preventDefault();
+  try{
+    const obj = JSON.parse(LAST_PROOFS_TEXT || "{}");
+    if (obj.release_proof) copyText(JSON.stringify(obj.release_proof, null, 2));
+  } catch(_){}
+});
+document.getElementById("copyCFProof").addEventListener("click",(e)=>{
+  e.preventDefault();
+  try{
+    const obj = JSON.parse(LAST_PROOFS_TEXT || "{}");
+    if (obj.cf_dedup_proof) copyText(JSON.stringify(obj.cf_dedup_proof, null, 2));
+  } catch(_){}
+});
+
+// live dedup feedback when CF changes (best-effort)
+document.getElementById("cf").addEventListener("input", async ()=>{
+  if (!LEDGER){
+    setText("dedupStatus","LEDGER NOT LOADED");
+    setText("sha_cf","—");
+    return;
+  }
+  await computeAndCheckDedup();
+});
+
+loadLedger();
 </script>
 
 </body>
