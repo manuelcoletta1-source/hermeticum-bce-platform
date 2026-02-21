@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>Sim Verifier — SHA-256 Deterministic Check</title>
+<meta name="description" content="Minimal deterministic verifier: SHA-256(release_text) compared to expected registry hash. PASS/FAIL." />
+
+<meta name="robots" content="index,follow" />
+<meta name="theme-color" content="#0b0f14" />
+<link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/sim/joker-c2/verifier.html" />
+
+<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+
+<style>
+.hbce-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:20px;}
+.hbce-card{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.02);border-radius:16px;padding:16px;}
+.hbce-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;}
+.hbce-a{display:inline-block;border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:10px 12px;text-decoration:none;}
+.hbce-a:hover{border-color:rgba(255,255,255,.28);}
+.hbce-divider{height:1px;background:rgba(255,255,255,.10);margin:22px 0;}
+.hbce-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:.92rem;}
+.hbce-field{width:100%;box-sizing:border-box;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.20);color:inherit;border-radius:12px;padding:10px 12px;outline:none;}
+.hbce-field:focus{border-color:rgba(255,255,255,.30);}
+.hbce-status{border-radius:16px;padding:14px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.20);margin-top:12px;}
+.hbce-status__value{font-size:1.15rem;font-weight:700;letter-spacing:.02em;}
+.hbce-footerMark{margin-top:28px;padding-top:18px;border-top:1px solid rgba(255,255,255,.10);opacity:.92;}
+</style>
+</head>
+
+<body>
+<div data-hbce="header"></div>
+
+<main class="hbce-container hbce-main">
+
+<section class="hbce-hero">
+  <div class="hbce-hero__kicker">SIM VERIFIER · DETERMINISTIC · FAIL-CLOSED</div>
+  <h1 class="hbce-hero__title">SHA-256 Deterministic Check</h1>
+  <p class="hbce-hero__lead">
+    Computes SHA-256 on the exact pasted release text (UTF-8) and compares to expected hash.
+    Output is PASS or FAIL only.
+  </p>
+
+  <div class="hbce-cta">
+    <a class="hbce-a" href="./">Back to Simulator</a>
+    <a class="hbce-a" href="/hermeticum-bce-platform/verify/">Portal Verify</a>
+  </div>
+</section>
+
+<div class="hbce-divider"></div>
+
+<section>
+  <div class="hbce-grid">
+    <article class="hbce-card">
+      <h3>Release text (as-is)</h3>
+      <textarea id="release" class="hbce-field hbce-mono" rows="10" placeholder="paste release JSON text"></textarea>
+    </article>
+
+    <article class="hbce-card">
+      <h3>Expected hash (registry)</h3>
+      <input id="expected" class="hbce-field hbce-mono" placeholder="64 hex chars lowercase" />
+      <div class="hbce-cta">
+        <a class="hbce-a" href="#" id="run">Run</a>
+        <a class="hbce-a" href="#" id="reset">Reset</a>
+      </div>
+
+      <div class="hbce-status">
+        <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Status</div>
+        <div class="hbce-status__value" id="status">MISSING INPUT</div>
+        <div class="hbce-mono" style="opacity:.92;margin-top:8px;">computed_sha256: <span id="computed">—</span></div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<div class="hbce-footerMark">
+  <div>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+  <div>HERMETICUM B.C.E. S.r.l.</div>
+  <div>Fail-closed · Hash-only · Append-only · EU-first · Audit-first</div>
+</div>
+
+</main>
+
+<div data-hbce="footer"></div>
+
+<script>
+function toHex(buf){
+  const bytes = new Uint8Array(buf);
+  let out = "";
+  for (let i = 0; i < bytes.length; i++) out += bytes[i].toString(16).padStart(2, "0");
+  return out;
+}
+function isSha256Hex(s){ return /^[0-9a-f]{64}$/.test(s); }
+async function sha256HexFromText(text){
+  const enc = new TextEncoder();
+  const data = enc.encode(text);
+  const digest = await crypto.subtle.digest("SHA-256", data);
+  return toHex(digest);
+}
+function setStatus(s, c){
+  document.getElementById("status").textContent = s;
+  document.getElementById("computed").textContent = c || "—";
+}
+async function run(){
+  const release = (document.getElementById("release").value || "").trimEnd();
+  const expected = (document.getElementById("expected").value || "").trim().toLowerCase();
+  if (!release || !expected){ setStatus("MISSING INPUT",""); return; }
+  if (!isSha256Hex(expected)){ setStatus("FAIL (INVALID EXPECTED HASH)",""); return; }
+  try{
+    const computed = await sha256HexFromText(release);
+    if (computed === expected) setStatus("PASS (VALID)", computed);
+    else setStatus("FAIL (MISMATCH)", computed);
+  } catch(e){
+    setStatus("FAIL (VERIFY_ERROR)","");
+  }
+}
+document.getElementById("run").addEventListener("click",(e)=>{e.preventDefault(); run();});
+document.getElementById("reset").addEventListener("click",(e)=>{
+  e.preventDefault();
+  document.getElementById("release").value="";
+  document.getElementById("expected").value="";
+  setStatus("MISSING INPUT","");
+});
+</script>
+
+</body>
+</html>
