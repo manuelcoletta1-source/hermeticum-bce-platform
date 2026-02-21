@@ -3,49 +3,27 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HBCE Evidence Lab — Offline-Real Proof (ADS + Kernel + Verifier)</title>
-  <meta name="description" content="HBCE Evidence Lab: deterministic autonomous decisions (ADS), evidence emission (Kernel), independent verification (Verifier). Offline-real Evidence Packs v2: canonical SHA-512 root + ECDSA P-256 signatures + append-only ledger. PASS/FAIL." />
+
+  <title>HBCE LAB — Canonical Experiments (Replicable)</title>
+  <meta name="description" content="Canonical HBCE Lab: replicable experiments with acceptance criteria. Audit-first, fail-closed, hash-only, append-only." />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
   <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/lab/" />
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
   <style>
-    .hbce-mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
-    .hbce-status{
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.03);
-      padding:14px;
-    }
-    .hbce-status--ok{ border-color:rgba(34,197,94,.35); background:rgba(34,197,94,.06); }
-    .hbce-status--warn{ border-color:rgba(245,158,11,.35); background:rgba(245,158,11,.06); }
-    .hbce-status__grid{ display:grid; gap:8px; grid-template-columns: 1fr; }
-    .hbce-status__k{ opacity:.75; font-weight:800; }
-    .hbce-status__v{ font-weight:950; }
-    .hbce-status__v.ok{ color:#22c55e; }
-    .hbce-status__v.warn{ color:#f59e0b; }
-    .hbce-status__small{ opacity:.7; font-size:.92rem; margin-top:8px; }
-    .hbce-metrics{
-      display:grid; gap:12px;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      margin-top:12px;
-    }
-    @media (max-width: 980px){ .hbce-metrics{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
-    .hbce-metric{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.03);
-      border-radius:16px;
-      padding:12px;
-    }
-    .hbce-metric__k{ font-size:.88rem; opacity:.82; }
-    .hbce-metric__v{ font-size:1.05rem; font-weight:950; margin-top:6px; }
-    .hbce-note{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.03);
-      border-radius:16px;
-      padding:14px;
-    }
+    .lab-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));margin-top:16px}
+    .lab-card{border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:16px;background:rgba(0,0,0,.25)}
+    .lab-kicker{letter-spacing:.12em;text-transform:uppercase;font-size:.78rem;opacity:.85}
+    .lab-title{font-size:2.1rem;line-height:1.15;margin:8px 0 10px}
+    .lab-lead{opacity:.92;max-width:80ch}
+    .lab-hr{height:1px;background:rgba(255,255,255,.10);margin:18px 0}
+    .lab-badge{display:inline-block;border:1px solid rgba(255,255,255,.14);padding:6px 10px;border-radius:999px;font-size:.78rem;opacity:.92;margin-right:6px;margin-bottom:6px}
+    .lab-btn{display:inline-block;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.28);text-decoration:none}
+    .lab-btn:hover{border-color:rgba(255,255,255,.28)}
+    .lab-small{font-size:.92rem;opacity:.9}
+    .lab-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.92rem}
+    .callout{border-left:3px solid rgba(255,255,255,.20);padding:12px 12px 12px 14px;background:rgba(255,255,255,.04);border-radius:12px}
   </style>
 </head>
 
@@ -53,137 +31,84 @@
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
-
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">HBCE · EU-FIRST · AUDIT-FIRST · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">Evidence Lab</h1>
-      <p class="hbce-hero__lead">
-        Public, offline-real evidence workflow: deterministic autonomous decisions (ADS), evidence emission (Kernel),
-        and independent verification (Verifier). Deterministic canonicalization, SHA-512 pack root, ECDSA P-256 signatures,
-        append-only hash-chain ledger. Results are binary: <b>PASS/FAIL</b>.
+      <div class="lab-kicker">HBCE LAB · CANONICAL</div>
+      <h1 class="lab-title">Replicable Experiments</h1>
+      <p class="lab-lead">
+        HBCE Lab is a canonical, replicable protocol area. Each experiment is numbered, versionable,
+        and defined by deterministic acceptance criteria. Missing proof → INVALID (fail-closed).
       </p>
-    </section>
 
-    <section class="hbce-section">
-      <div id="sysBox" class="hbce-status hbce-status--warn">
-        <div class="hbce-status__grid">
-          <div class="hbce-status__k">LOCAL SYSTEM STATUS</div>
-          <div class="hbce-status__v warn" id="sysStatus">NO LOCAL PROOF</div>
-          <div class="hbce-status__k">LAST VERIFIED ROOT</div>
-          <div class="hbce-status__v hbce-mono" id="sysRoot">none</div>
-          <div class="hbce-status__small">
-            Local-only indicator. No publication. Mode: HASH-ONLY · APPEND-ONLY · FAIL-CLOSED
+      <div style="margin-top:10px">
+        <span class="lab-badge">AUDIT-FIRST</span>
+        <span class="lab-badge">FAIL-CLOSED</span>
+        <span class="lab-badge">HASH-ONLY</span>
+        <span class="lab-badge">APPEND-ONLY</span>
+      </div>
+
+      <div class="lab-hr"></div>
+
+      <div class="callout lab-small">
+        <b>Canonical rule:</b> <span class="lab-mono">/lab/</span> contains only experiments with procedures + acceptance criteria.
+        For demos and non-canonical material, see <a href="/hermeticum-bce-platform/labs/">/labs/</a>.
+      </div>
+
+      <div class="lab-grid">
+        <div class="lab-card">
+          <h2 style="margin:0 0 8px">EXPERIMENT-0001</h2>
+          <p class="lab-small">
+            Identity-Bound Decision Trace (IBDT). Bind an agent decision to persistent identity, record append-only,
+            verify deterministically (fail-closed).
+          </p>
+          <p class="lab-small muted" style="opacity:.85;margin-top:10px">
+            Status: <b>PAGE READY</b> (if not present yet, publish <span class="lab-mono">lab/experiment-0001.html</span>)
+          </p>
+          <div style="margin-top:12px">
+            <a class="lab-btn" href="/hermeticum-bce-platform/lab/experiment-0001.html">Open →</a>
+          </div>
+        </div>
+
+        <div class="lab-card">
+          <h2 style="margin:0 0 8px">EXPERIMENT-0002</h2>
+          <p class="lab-small">
+            Evidence Pack (Offline Verify). Generate portable evidence (manifest + payload + sha256 + signature),
+            verify offline with deterministic PASS/FAIL.
+          </p>
+          <p class="lab-small muted" style="opacity:.85;margin-top:10px">
+            Status: <b>LIVE</b>
+          </p>
+          <div style="margin-top:12px">
+            <a class="lab-btn" href="/hermeticum-bce-platform/lab/experiment-0002.html">Open →</a>
+          </div>
+        </div>
+
+        <div class="lab-card">
+          <h2 style="margin:0 0 8px">Next (planned)</h2>
+          <p class="lab-small">
+            EXP-0003 Registry Binding: bind Evidence Pack hash to public registry entry (hash-only),
+            and verify pack ↔ registry coherence.
+          </p>
+          <div style="margin-top:12px">
+            <a class="lab-btn" href="/hermeticum-bce-platform/registry/">Registry Hub →</a>
+            <a class="lab-btn" href="/hermeticum-bce-platform/verify/">Verify Hub →</a>
           </div>
         </div>
       </div>
 
-      <div class="hbce-metrics" aria-label="Local metrics">
-        <div class="hbce-metric">
-          <div class="hbce-metric__k">Local Ledger Entries</div>
-          <div class="hbce-metric__v hbce-mono" id="mLedger">—</div>
-        </div>
-        <div class="hbce-metric">
-          <div class="hbce-metric__k">Local Identity (KID)</div>
-          <div class="hbce-metric__v hbce-mono" id="mKid">—</div>
-        </div>
-        <div class="hbce-metric">
-          <div class="hbce-metric__k">Ledger Tip (SHA-512)</div>
-          <div class="hbce-metric__v hbce-mono" id="mTip">—</div>
-        </div>
-        <div class="hbce-metric">
-          <div class="hbce-metric__k">Last Pack Root (seen)</div>
-          <div class="hbce-metric__v hbce-mono" id="mPackRoot">—</div>
-        </div>
-      </div>
-    </section>
+      <div class="lab-hr"></div>
 
-    <section class="hbce-section">
-      <div class="hbce-grid">
-
-        <article class="hbce-card">
-          <h2 class="hbce-card__title">0) ADS (Deterministic Decisions)</h2>
-          <p class="hbce-card__text">
-            Deterministic autonomous decision engine. Emits signed decision events into the local append-only ledger.
-            This is the “entity layer”: decisions become evidence.
-          </p>
-          <p class="hbce-card__meta">
-            Output: signed decision events (local ledger)
-          </p>
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/sim/ads/" rel="noopener">
-            Open ADS →
-          </a>
-        </article>
-
-        <article class="hbce-card">
-          <h2 class="hbce-card__title">1) Kernel (Issuer)</h2>
-          <p class="hbce-card__text">
-            Emits records and exports <span class="hbce-mono">HBCE-EVIDENCE-PACK-v2</span>.
-            Pack-level proof is signed over <span class="hbce-mono">pack_root_hash</span>.
-          </p>
-          <p class="hbce-card__meta">
-            Output: Evidence Pack JSON (download)
-          </p>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/sim/joker-kernel/" rel="noopener">
-            Open Kernel →
-          </a>
-        </article>
-
-        <article class="hbce-card">
-          <h2 class="hbce-card__title">2) Verifier (Auditor)</h2>
-          <p class="hbce-card__text">
-            Independent verification: recomputes canonical preimage and validates SHA-512 root, ECDSA signature,
-            ledger hash-chain, and per-record integrity. Returns <b>PASS/FAIL</b>.
-            On PASS it stores <span class="hbce-mono">HBCE_LAST_PACK_ROOT</span> locally (fail-closed).
-          </p>
-          <p class="hbce-card__meta">
-            Input: Evidence Pack JSON (upload)
-          </p>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/sim/joker-kernel/verifier.html" rel="noopener">
-            Open Verifier →
-          </a>
-        </article>
-
-        <article class="hbce-card">
-          <h2 class="hbce-card__title">3) Audit Flow (Public)</h2>
-          <p class="hbce-card__text">
-            Recommended external audit procedure:
-          </p>
-          <ol class="hbce-list">
-            <li>Run ADS and emit decisions (optional but recommended).</li>
-            <li>Generate a pack in Kernel.</li>
-            <li>Verify in Verifier (must PASS).</li>
-            <li>Mutate one byte and verify again (must FAIL).</li>
-            <li>Store the PASS report alongside the pack.</li>
-          </ol>
-          <p class="hbce-card__meta">
-            Policy: fail-closed, hash-only, append-only
-          </p>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/audit/" rel="noopener">
-            Open Audit Procedure →
-          </a>
-        </article>
-
-      </div>
-    </section>
-
-    <section class="hbce-section">
-      <div class="hbce-note">
-        <h2 class="hbce-card__title">Security Notes</h2>
-        <p class="hbce-card__text">
-          This lab is designed for deterministic verification. It does not claim qualified timestamping by itself.
-          If TSA/QTSP artifacts are attached later, the verifier can evolve to validate them and upgrade
-          <span class="hbce-mono">validation_state</span> from <span class="hbce-mono">ATTACHED_DECLARED</span> to verified.
-        </p>
-        <p class="hbce-card__meta">
-          “Offline-real” means: cryptographic operations occur locally in the browser (WebCrypto). No network dependency.
+      <div class="lab-card">
+        <h2 style="margin:0 0 8px">Operational note</h2>
+        <p class="lab-small">
+          GitHub Pages has no server-side write. Any “append-only” publication step is manual by design:
+          paste a hash-only entry into <span class="lab-mono">registry/registry.json</span> and commit.
         </p>
       </div>
-    </section>
 
+    </section>
   </main>
 
   <div data-hbce="footer"></div>
   <script src="/hermeticum-bce-platform/assets/hbce.js"></script>
-  <script src="/hermeticum-bce-platform/assets/lab-status.js" defer></script>
 </body>
 </html>
