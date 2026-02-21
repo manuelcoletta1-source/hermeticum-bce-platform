@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>HBCE Autonomous Node Standard — NODE-PACK (Canonical Deployment Spec)</title>
+  <meta name="description" content="Canonical standard for deploying an autonomous HBCE IPR node. UE-first, audit-first, fail-closed, hash-only, append-only, GDPR-min." />
+
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/infrastructure/node-pack-standard.html" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+</head>
+
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">HBCE · AUTONOMOUS NODES · UE-FIRST</div>
+      <h1 class="hbce-hero__title">HBCE Autonomous Node Standard (NODE-PACK)</h1>
+      <p class="hbce-hero__lead">
+        NODE-PACK is the canonical deployment specification for autonomous HBCE IPR nodes.
+        It defines deterministic verification, append-only public evidence (hash-only), and strict fail-closed operation.
+      </p>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/activate/">Start at Activate</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Open Public Registry</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verify + Certificate</a>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">1) What a “Node” Means in HBCE</h2>
+      <p class="hbce-text">
+        A node is an operational, verifiable unit that can be audited and validated deterministically.
+        Nodes can represent a person, an operator, an AI unit, a robot, a company department, or critical infrastructure.
+      </p>
+
+      <div class="hbce-card">
+        <div class="hbce-card__title">Operational truth (fail-closed)</div>
+        <p class="hbce-text">
+          A node is <strong>VALID</strong> only if its canonical SHA-256 is present in the public registry and all integrity checks pass.
+          Missing match or failed check → <strong>INVALID</strong> (fail-closed).
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">2) Canonical NODE-PACK Specification</h2>
+      <p class="hbce-text">
+        NODE-PACK is split into:
+      </p>
+
+      <div class="hbce-grid" style="margin-top:14px;">
+        <div class="hbce-card">
+          <div class="hbce-card__title">Human-readable spec</div>
+          <p class="hbce-text">
+            Deployment rules, artifacts, fail-closed behavior, audit reproducibility.
+          </p>
+          <a class="hbce-link" href="/hermeticum-bce-platform/node-pack/NODE-PACK.md">Open NODE-PACK.md →</a>
+        </div>
+
+        <div class="hbce-card">
+          <div class="hbce-card__title">Machine-readable manifest</div>
+          <p class="hbce-text">
+            Deterministic checks, profiles, required outputs, routing constraints.
+          </p>
+          <a class="hbce-link" href="/hermeticum-bce-platform/node-pack/node-pack.manifest.json">Open node-pack.manifest.json →</a>
+        </div>
+      </div>
+
+      <div class="hbce-note" style="margin-top:14px;">
+        <strong>Privacy rule:</strong> public evidence is <strong>hash-only</strong>. Personal data never enters the public registry (GDPR-min).
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">3) Minimum Requirements</h2>
+
+      <div class="hbce-card">
+        <div class="hbce-card__title">Required artifacts</div>
+        <ul class="hbce-list">
+          <li><strong>IPR Release</strong> (local-only, never public)</li>
+          <li><strong>Receipt</strong> (verifiable, includes canonical digest + issuer signature)</li>
+          <li><strong>Registry Entry</strong> (public, hash-only, append-only)</li>
+        </ul>
+      </div>
+
+      <div class="hbce-card" style="margin-top:12px;">
+        <div class="hbce-card__title">Required checks (ALL must be true)</div>
+        <ul class="hbce-list">
+          <li>schema_valid</li>
+          <li>integrity_ok</li>
+          <li>registry_match</li>
+          <li>signature_valid</li>
+        </ul>
+        <p class="hbce-text">
+          The system must be <strong>binary</strong>: no partial issuance, no “almost valid”, no silent downgrade.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">4) Canonical Deployment Route</h2>
+      <p class="hbce-text">
+        All operational deployments must route through the canonical HBCE entry flow:
+      </p>
+
+      <div class="hbce-card">
+        <div class="hbce-card__title">Canonical entrypoints</div>
+        <ul class="hbce-list">
+          <li><a class="hbce-link" href="/hermeticum-bce-platform/activate/">/activate/</a> — start here</li>
+          <li><a class="hbce-link" href="/hermeticum-bce-platform/create/base/">/create/base/</a> — create IPR Base</li>
+          <li><a class="hbce-link" href="/hermeticum-bce-platform/create/operator/">/create/operator/</a> — create Operator (gated)</li>
+          <li><a class="hbce-link" href="/hermeticum-bce-platform/registry/">/registry/</a> — public hash-only ledger</li>
+          <li><a class="hbce-link" href="/hermeticum-bce-platform/verify/">/verify/</a> — deterministic verification + certificate</li>
+        </ul>
+      </div>
+
+      <div class="hbce-warning" style="margin-top:12px;">
+        <strong>Non-canonical pages</strong> must not act as entrypoints. They must route users back to
+        <a class="hbce-link" href="/hermeticum-bce-platform/activate/">/activate/</a>.
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">5) UE Context (Positioning)</h2>
+      <p class="hbce-text">
+        HBCE is an append-only, hash-only operational verification layer designed for auditability and minimization.
+        It does <strong>not</strong> claim to replace eIDAS / EUDI Wallet legal identity schemes.
+        It is designed to support reproducible audits, deterministic checks, and node-based operational deployment.
+      </p>
+
+      <div class="hbce-actions" style="margin-top:14px;">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/activate/">Go to Activate</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/docs/">Open Docs Hub</a>
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce.js"></script>
+</body>
+</html>
