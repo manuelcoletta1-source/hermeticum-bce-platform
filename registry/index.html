@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <title>Registry — Public Hash-only Ledger (Append-only)</title>
-<meta name="description" content="HBCE public registry: append-only ledger storing only hash-only proofs. No public custody of personal data. Fail-closed verification." />
+<meta name="description" content="HBCE public registry: append-only ledger storing only hash-only proofs. Viewer and deterministic lookup. No public custody of personal data." />
 
 <meta name="robots" content="index,follow" />
 <meta name="theme-color" content="#0b0f14" />
@@ -14,66 +14,23 @@
 <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 
 <style>
-.hbce-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:16px;
-  margin-top:20px;
-}
-.hbce-card{
-  border:1px solid rgba(255,255,255,.10);
-  background:rgba(255,255,255,.02);
-  border-radius:16px;
-  padding:16px;
-}
+.hbce-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:20px;}
+.hbce-card{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.02);border-radius:16px;padding:16px;}
 .hbce-card h3{margin:0 0 8px 0;font-size:1.05rem;}
 .hbce-card p{margin:0 0 12px 0;opacity:.92;}
 .hbce-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;}
-.hbce-a{
-  display:inline-block;
-  border:1px solid rgba(255,255,255,.16);
-  border-radius:12px;
-  padding:10px 12px;
-  text-decoration:none;
-}
+.hbce-a{display:inline-block;border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:10px 12px;text-decoration:none;}
 .hbce-a:hover{border-color:rgba(255,255,255,.28);}
 .hbce-divider{height:1px;background:rgba(255,255,255,.10);margin:22px 0;}
-.hbce-kicker2{
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  opacity:.92;
-  font-size:.85rem;
-  margin-bottom:10px;
-}
-.hbce-footerMark{
-  margin-top:28px;
-  padding-top:18px;
-  border-top:1px solid rgba(255,255,255,.10);
-  opacity:.92;
-}
-.hbce-note{
-  border:1px solid rgba(255,255,255,.10);
-  background:rgba(255,255,255,.02);
-  border-radius:16px;
-  padding:14px;
-  opacity:.92;
-}
-.hbce-mono{
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size:.92rem;
-}
-.hbce-field{
-  width:100%;
-  box-sizing:border-box;
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(0,0,0,.20);
-  color:inherit;
-  border-radius:12px;
-  padding:10px 12px;
-  outline:none;
-}
-.hbce-field:focus{ border-color: rgba(255,255,255,.30); }
-.hbce-list{ margin:10px 0 0 0; padding-left:18px; opacity:.92; }
+.hbce-kicker2{letter-spacing:.12em;text-transform:uppercase;opacity:.92;font-size:.85rem;margin-bottom:10px;}
+.hbce-footerMark{margin-top:28px;padding-top:18px;border-top:1px solid rgba(255,255,255,.10);opacity:.92;}
+.hbce-note{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.02);border-radius:16px;padding:14px;opacity:.92;}
+.hbce-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:.92rem;}
+.hbce-field{width:100%;box-sizing:border-box;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.20);color:inherit;border-radius:12px;padding:10px 12px;outline:none;}
+.hbce-field:focus{border-color:rgba(255,255,255,.30);}
+pre{white-space:pre-wrap;word-break:break-word;margin:0;}
+.hbce-status{border-radius:16px;padding:14px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.20);}
+.hbce-status__value{font-size:1.05rem;font-weight:700;letter-spacing:.02em;}
 </style>
 </head>
 
@@ -86,49 +43,46 @@
   <div class="hbce-hero__kicker">REGISTRY · PUBLIC LEDGER · APPEND-ONLY</div>
   <h1 class="hbce-hero__title">Public Registry (Hash-only)</h1>
   <p class="hbce-hero__lead">
-    The HBCE registry is an append-only public ledger that stores only minimized proofs.
-    It does not store personal data. Verification is deterministic and fail-closed.
+    This registry is an append-only public ledger storing only minimized proofs (hash-only).
+    It is designed for deterministic verification and fail-closed execution gating.
   </p>
 </section>
 
 <div class="hbce-divider"></div>
 
 <section>
-  <div class="hbce-kicker2">What is stored</div>
-  <h2>Minimal public entry</h2>
+  <div class="hbce-kicker2">Viewer</div>
+  <h2>Lookup by SHA-256</h2>
 
   <div class="hbce-grid">
     <article class="hbce-card">
-      <h3>Required</h3>
-      <ul class="hbce-list">
-        <li><span class="hbce-mono">payload_sha256</span> (required)</li>
-        <li><span class="hbce-mono">timestamp</span> (required)</li>
-      </ul>
-      <div class="hbce-note hbce-mono" style="margin-top:10px;">
-        If payload_sha256 is missing → entry is invalid for verification.
+      <h3>Search</h3>
+      <p>Paste a SHA-256 (lowercase hex, 64 chars) to check presence in the public ledger.</p>
+      <input id="q" class="hbce-field hbce-mono" placeholder="payload_sha256 or evidence_pack_sha256" />
+      <div class="hbce-cta">
+        <a class="hbce-a" href="#" id="run">Lookup</a>
+        <a class="hbce-a" href="#" id="reload">Reload Ledger</a>
+      </div>
+      <div class="hbce-status" style="margin-top:12px;">
+        <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Status</div>
+        <div class="hbce-status__value" id="status">LEDGER NOT LOADED</div>
+        <div class="hbce-mono" style="opacity:.92;margin-top:8px;">entries: <span id="count">—</span></div>
       </div>
     </article>
 
     <article class="hbce-card">
-      <h3>Optional (minimized)</h3>
-      <ul class="hbce-list">
-        <li><span class="hbce-mono">name</span> (optional, strongly minimized)</li>
-        <li><span class="hbce-mono">network</span> / <span class="hbce-mono">kind</span> (optional metadata)</li>
-      </ul>
-      <div class="hbce-note hbce-mono" style="margin-top:10px;">
-        Public identity custody is out of scope by design.
-      </div>
+      <h3>Ledger (latest)</h3>
+      <p>Read-only view of the latest entries (append-only).</p>
+      <div class="hbce-note hbce-mono"><pre id="latest">—</pre></div>
     </article>
 
     <article class="hbce-card">
-      <h3>What is NOT stored</h3>
-      <ul class="hbce-list">
-        <li>Personal identifiers and documents</li>
-        <li>Private keys, secrets, credentials</li>
-        <li>Raw operational logs (store privately as evidence pack)</li>
-      </ul>
-      <div class="hbce-note hbce-mono" style="margin-top:10px;">
-        Policy: GDPR-MIN · HASH-ONLY
+      <h3>Canonical flow</h3>
+      <p>Identity is operational only with a registry proof.</p>
+      <div class="hbce-cta">
+        <a class="hbce-a" href="/hermeticum-bce-platform/create/base/">Create IPR</a>
+        <a class="hbce-a" href="/hermeticum-bce-platform/verify/">Verify</a>
+        <a class="hbce-a" href="/hermeticum-bce-platform/activate/">Activate</a>
       </div>
     </article>
   </div>
@@ -137,59 +91,30 @@
 <div class="hbce-divider"></div>
 
 <section>
-  <div class="hbce-kicker2">Reference workflow</div>
-  <h2>Canonical sequence</h2>
-
-  <div class="hbce-grid">
-    <article class="hbce-card">
-      <h3>1) Create IPR (local release)</h3>
-      <p>Generate your release file locally.</p>
-      <div class="hbce-cta">
-        <a class="hbce-a" href="/hermeticum-bce-platform/create/base/">Create IPR Base</a>
-      </div>
-    </article>
-
-    <article class="hbce-card">
-      <h3>2) Register proof</h3>
-      <p>Compute SHA-256 on the release bytes and append only the hash proof.</p>
-      <div class="hbce-note hbce-mono">
-        payload_sha256 = SHA-256(release_file_bytes)
-      </div>
-    </article>
-
-    <article class="hbce-card">
-      <h3>3) Verify</h3>
-      <p>Deterministic match: computed hash must equal registry hash. Otherwise: FAIL.</p>
-      <div class="hbce-cta">
-        <a class="hbce-a" href="/hermeticum-bce-platform/verify/">Open Verify</a>
-      </div>
-    </article>
-  </div>
-</section>
-
-<div class="hbce-divider"></div>
-
-<section>
-  <div class="hbce-kicker2">Public entry template</div>
-  <h2>Example JSON (hash-only)</h2>
+  <div class="hbce-kicker2">Append-only rule</div>
+  <h2>How to append (manual, strict)</h2>
+  <p>
+    GitHub Pages is static. Appending is performed by updating the ledger file in the repository.
+    The ledger stores hash-only proofs. Do not publish personal data.
+  </p>
 
   <div class="hbce-note hbce-mono">
 <pre>{
-  "proto": "HBCE-REGISTRY-v2",
-  "kind": "IPR_PUBLIC_PROOF",
+  "proto": "HBCE-REGISTRY-v3",
+  "kind": "HBCE_PUBLIC_PROOF",
   "network": "EU",
-  "mode": "APPEND_ONLY_PUBLIC_LEDGER",
   "issuer": "HERMETICUM B.C.E. S.r.l.",
   "policy": ["HASH_ONLY","APPEND_ONLY","FAIL_CLOSED","UE_FIRST","AUDIT_FIRST","GDPR_MIN"],
-  "payload_sha256": "64_hex_chars_lowercase",
+  "proof_kind": "IPR_RELEASE_SHA256 | EVIDENCE_PACK_SHA256",
+  "sha256": "64_hex_chars_lowercase",
   "timestamp": "2026-02-21T00:00:00Z",
   "name": "OPTIONAL_MINIMIZED"
 }</pre>
   </div>
 
   <div class="hbce-cta">
-    <a class="hbce-a" href="/hermeticum-bce-platform/activate/">Back to Activate</a>
-    <a class="hbce-a" href="/hermeticum-bce-platform/pricing/">Pricing & Access</a>
+    <a class="hbce-a" href="/hermeticum-bce-platform/sim/joker-c2/">Joker-C2 Simulator</a>
+    <a class="hbce-a" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/">Joker-C2 Industrial</a>
   </div>
 </section>
 
@@ -202,5 +127,61 @@
 </main>
 
 <div data-hbce="footer"></div>
+
+<script>
+let LEDGER = null;
+
+function isSha256Hex(s){ return /^[0-9a-f]{64}$/.test(s); }
+
+function setStatus(msg){
+  document.getElementById("status").textContent = msg;
+}
+
+function setCount(n){
+  document.getElementById("count").textContent = String(n);
+}
+
+function renderLatest(entries){
+  const slice = (entries || []).slice(-10).reverse();
+  document.getElementById("latest").textContent = JSON.stringify(slice, null, 2);
+}
+
+async function loadLedger(){
+  setStatus("LOADING…");
+  try{
+    const res = await fetch("/hermeticum-bce-platform/registry/ledger.json", { cache: "no-store" });
+    if (!res.ok) throw new Error("http " + res.status);
+    const data = await res.json();
+    LEDGER = data;
+    const entries = Array.isArray(data.entries) ? data.entries : [];
+    setCount(entries.length);
+    renderLatest(entries);
+    setStatus("LEDGER LOADED");
+  } catch(e){
+    LEDGER = null;
+    setCount("—");
+    document.getElementById("latest").textContent = "—";
+    setStatus("LEDGER LOAD FAILED");
+  }
+}
+
+function lookup(){
+  const q = (document.getElementById("q").value || "").trim().toLowerCase();
+  if (!LEDGER){ setStatus("LEDGER NOT LOADED"); return; }
+  if (!q){ setStatus("MISSING QUERY"); return; }
+  if (!isSha256Hex(q)){ setStatus("INVALID SHA-256 FORMAT"); return; }
+
+  const entries = Array.isArray(LEDGER.entries) ? LEDGER.entries : [];
+  const found = entries.find(x => (x && typeof x.sha256 === "string" && x.sha256.toLowerCase() === q));
+  if (found) setStatus("PRESENT (FOUND)");
+  else setStatus("ABSENT (NOT FOUND)");
+}
+
+document.getElementById("run").addEventListener("click",(e)=>{ e.preventDefault(); lookup(); });
+document.getElementById("reload").addEventListener("click",(e)=>{ e.preventDefault(); loadLedger(); });
+
+loadLedger();
+</script>
+
 </body>
 </html>
