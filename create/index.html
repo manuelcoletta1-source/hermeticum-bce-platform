@@ -1,318 +1,165 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>CREATE — Issue IPR Release (Bank-like Issuance)</title>
-  <meta name="description" content="Create an Identity Primary Record (IPR) Release like a bank issuance: generate Release file (private custody), Receipt (evidence), and a hash-only Registry Entry for append-only publication. Deterministic VERIFY returns VALID/INVALID (fail-closed)." />
+<title>Create — Identity & Operator Issuance</title>
+<meta name="description" content="Create operational identity (IPR) and operator structures. Deterministic infrastructure. Fail-closed." />
 
-  <meta name="robots" content="index,follow" />
-  <meta name="theme-color" content="#0b0f14" />
-  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/create/" />
+<meta name="robots" content="index,follow" />
+<meta name="theme-color" content="#0b0f14" />
+<link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/create/" />
 
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 
-  <style>
-    .hbce-grid2{ display:grid; gap:1rem; grid-template-columns: repeat(12, 1fr); }
-    .hbce-col-4{ grid-column: span 4; }
-    .hbce-col-6{ grid-column: span 6; }
-    .hbce-col-8{ grid-column: span 8; }
-    .hbce-col-12{ grid-column: span 12; }
-    @media (max-width: 900px){
-      .hbce-col-4,.hbce-col-6,.hbce-col-8{ grid-column: span 12; }
-    }
-
-    .hbce-mono{ font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
-
-    .hbce-pill{
-      display:inline-block;
-      padding:.25rem .55rem;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.03);
-      color:rgba(255,255,255,.86);
-      font-size:.86rem;
-      font-weight:950;
-      letter-spacing:.02em;
-      text-transform: uppercase;
-    }
-
-    .hbce-stepbar{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.8rem; }
-    .hbce-step{
-      padding:.35rem .65rem; border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.03);
-      font-weight:900; font-size:.86rem; opacity:.92;
-    }
-
-    .hbce-note-box{
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.03);
-      padding: 1rem;
-    }
-
-    .hbce-divider{ height:1px; background: rgba(255,255,255,.10); margin: 1rem 0; }
-
-    .hbce-table{
-      width:100%;
-      border-collapse: collapse;
-      overflow:hidden;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.02);
-    }
-    .hbce-table th, .hbce-table td{
-      padding:.75rem .85rem;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      vertical-align: top;
-      text-align:left;
-    }
-    .hbce-table th{
-      font-size:.9rem;
-      text-transform: uppercase;
-      letter-spacing:.02em;
-      opacity:.9;
-      font-weight:950;
-    }
-    .hbce-table tr:last-child td{ border-bottom: none; }
-
-    .hbce-kv{ display:grid; grid-template-columns: 210px 1fr; gap:.55rem 1rem; }
-    .hbce-kv div{ padding:.1rem 0; }
-
-    .hbce-code{
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      padding: .85rem .9rem;
-      overflow:auto;
-      font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-      font-size: .92rem;
-      line-height: 1.35;
-      color: rgba(255,255,255,.90);
-      white-space: pre;
-    }
-
-    .hbce-actions-row{ display:flex; flex-wrap:wrap; gap:.6rem; margin-top: .9rem; }
-  </style>
+<style>
+.hbce-grid{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+ gap:16px;
+ margin-top:20px;
+}
+.hbce-card{
+ border:1px solid rgba(255,255,255,.10);
+ background:rgba(255,255,255,.02);
+ border-radius:16px;
+ padding:16px;
+}
+.hbce-card h3{margin:0 0 8px 0;font-size:1.05rem;}
+.hbce-card p{margin:0 0 12px 0;opacity:.92;}
+.hbce-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;}
+.hbce-a{
+ display:inline-block;
+ border:1px solid rgba(255,255,255,.16);
+ border-radius:12px;
+ padding:10px 12px;
+ text-decoration:none;
+}
+.hbce-a:hover{border-color:rgba(255,255,255,.28);}
+.hbce-divider{height:1px;background:rgba(255,255,255,.10);margin:22px 0;}
+.hbce-footerMark{
+ margin-top:28px;
+ padding-top:18px;
+ border-top:1px solid rgba(255,255,255,.10);
+ opacity:.92;
+}
+.hbce-kicker2{
+ letter-spacing:.12em;
+ text-transform:uppercase;
+ opacity:.92;
+ font-size:.85rem;
+ margin-bottom:10px;
+}
+</style>
 </head>
 
 <body>
-  <div data-hbce="header"></div>
+<div data-hbce="header"></div>
 
-  <main class="hbce-container hbce-main">
+<main class="hbce-container hbce-main">
 
-    <!-- HERO -->
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">CREATE · BANK-LIKE ISSUANCE · RELEASE + RECEIPT + REGISTRY ENTRY</div>
-      <h1 class="hbce-hero__title">Issue your IPR Release</h1>
-      <p class="hbce-hero__lead">
-        This page represents the issuance step — like a bank issuing your account contract.
-        The outcome is always the same: a <strong>private Release file</strong>, a <strong>Receipt</strong>, and a
-        <strong>hash-only Registry Entry</strong> to be appended to the public append-only registry.
-        <br />
-        Verification is deterministic and <strong>fail-closed</strong>.
-      </p>
+<section class="hbce-hero">
+<div class="hbce-hero__kicker">CREATE · ISSUE · STRUCTURE</div>
+<h1 class="hbce-hero__title">Identity & Operator Creation</h1>
+<p class="hbce-hero__lead">
+Creation flows generate operational identity and authorization layers.
+All operator and industrial access depends on a valid IPR.
+</p>
+</section>
 
-      <div class="hbce-stepbar" aria-label="issuance steps">
-        <span class="hbce-step">1 · Onboarding done</span>
-        <span class="hbce-step">2 · CREATE Release</span>
-        <span class="hbce-step">3 · Receipt generated</span>
-        <span class="hbce-step">4 · Registry entry prepared (hash-only)</span>
-        <span class="hbce-step">5 · Append → VERIFY → VALID</span>
-      </div>
+<div class="hbce-divider"></div>
 
-      <div class="hbce-actions" style="margin-top:1rem;">
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/activate/">Back to onboarding</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Go to VERIFY</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Open REGISTRY</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">Catalogue</a>
-      </div>
+<section>
+<div class="hbce-kicker2">Identity first</div>
+<h2>Identity Primary Record (mandatory)</h2>
+<p>
+The Identity Primary Record is the base layer of the infrastructure.  
+Without a valid IPR there is no operator role and no system execution.
+</p>
 
-      <p class="hbce-note" style="margin-top:.85rem;">
-        Rule: <span class="hbce-mono">VALID IPR = FILE INTEGRITY OK + PRESENT IN REGISTRY</span>.
-      </p>
-    </section>
+<div class="hbce-grid">
 
-    <!-- WHAT CREATE OUTPUTS -->
-    <section class="hbce-section">
-      <h2>Issuance outputs (what is generated)</h2>
+<article class="hbce-card">
+<h3>Create IPR Base</h3>
+<p>
+Generate the local release file.  
+Compute the hash and prepare registry entry.
+</p>
+<div class="hbce-cta">
+<a class="hbce-a" href="/hermeticum-bce-platform/create/base/">Open IPR Base Generator</a>
+</div>
+</article>
 
-      <div class="hbce-grid2">
-        <div class="hbce-card hbce-col-8">
-          <p>
-            CREATE produces three artifacts. Two are private (custody by the customer). One is public but hash-only.
-          </p>
+<article class="hbce-card">
+<h3>Register proof</h3>
+<p>
+Append hash-only proof into the public registry.  
+No registry proof → identity not operational.
+</p>
+<div class="hbce-cta">
+<a class="hbce-a" href="/hermeticum-bce-platform/registry/">Open Registry</a>
+</div>
+</article>
 
-          <table class="hbce-table" aria-label="create outputs">
-            <thead>
-              <tr>
-                <th>Artifact</th>
-                <th>Custody</th>
-                <th>Purpose</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>IPR Release</strong> (file)</td>
-                <td>Private (local)</td>
-                <td>Operational identity proof. Required to verify integrity.</td>
-              </tr>
-              <tr>
-                <td><strong>Receipt</strong> (evidence)</td>
-                <td>Private (local)</td>
-                <td>Issuance record: shows what was issued and when.</td>
-              </tr>
-              <tr>
-                <td><strong>Registry Entry</strong> (hash-only)</td>
-                <td>Public (append-only)</td>
-                <td>Minimal proof for deterministic verification (GDPR-min).</td>
-              </tr>
-            </tbody>
-          </table>
+<article class="hbce-card">
+<h3>Verify deterministically</h3>
+<p>
+Verification compares local release and registry proof.  
+Mismatch or missing proof → FAIL.
+</p>
+<div class="hbce-cta">
+<a class="hbce-a" href="/hermeticum-bce-platform/verify/">Open Verify</a>
+</div>
+</article>
 
-          <div class="hbce-note-box" style="margin-top:1rem;">
-            <strong>Public minimization:</strong> the registry stores only <span class="hbce-mono">label + payload_sha256 + timestamp</span>.
-            No personal data is stored publicly.
-          </div>
-        </div>
+</div>
+</section>
 
-        <div class="hbce-card hbce-col-4">
-          <h3>Fail-closed policy</h3>
-          <ul class="hbce-list">
-            <li>If Release integrity cannot be proven → <strong>INVALID</strong></li>
-            <li>If hash is not present in registry → <strong>INVALID</strong></li>
-            <li>If VERIFY cannot run deterministically → <strong>INVALID</strong></li>
-          </ul>
-          <div class="hbce-divider"></div>
-          <p class="hbce-note">
-            There is no “partial validity”. Operational access is binary: VALID or BLOCK.
-          </p>
-        </div>
-      </div>
-    </section>
+<div class="hbce-divider"></div>
 
-    <!-- ROLES -->
-    <section class="hbce-section">
-      <h2>Who does what (customer vs operator)</h2>
+<section>
+<div class="hbce-kicker2">Operator layer</div>
+<h2>Operator issuance (after valid IPR)</h2>
+<p>
+Operators are authorized entities that issue, validate and govern identity flows.
+Operator authority requires a valid and verified IPR.
+</p>
 
-      <div class="hbce-grid2">
-        <div class="hbce-card hbce-col-6">
-          <div class="hbce-pill">Customer</div>
-          <h3 style="margin-top:.55rem;">Local custody + verification</h3>
-          <ul class="hbce-list">
-            <li>Keep Release + Receipt securely (local custody)</li>
-            <li>Request append-only publication of the hash-only entry</li>
-            <li>Run VERIFY to obtain deterministic status</li>
-            <li>Use VALID IPR to activate tools and network</li>
-          </ul>
-        </div>
+<div class="hbce-grid">
 
-        <div class="hbce-card hbce-col-6">
-          <div class="hbce-pill">HBCE Certified Operator</div>
-          <h3 style="margin-top:.55rem;">Issuance + registry append governance</h3>
-          <ul class="hbce-list">
-            <li>Perform issuance discipline (Release + Receipt + entry)</li>
-            <li>Append hash-only entry to the public registry (append-only)</li>
-            <li>Ensure audit-ready evidence packs</li>
-            <li>Support node operations (territorial scaling)</li>
-          </ul>
-          <p class="hbce-note">
-            Operator status is a licensed role. It is not automatic. It requires compliance discipline and auditability.
-          </p>
-        </div>
-      </div>
-    </section>
+<article class="hbce-card">
+<h3>Create Operator</h3>
+<p>
+Issue an operator structure linked to a valid IPR release.
+Used for governance, validation and infrastructure deployment.
+</p>
+<div class="hbce-cta">
+<a class="hbce-a" href="/hermeticum-bce-platform/operator/">Operator Overview</a>
+</div>
+</article>
 
-    <!-- EXAMPLE FORMAT (TEMPLATE) -->
-    <section class="hbce-section">
-      <h2>Registry entry (hash-only) — format</h2>
-      <p class="hbce-note">
-        The registry entry is the only public artifact. It must be append-only. The exact registry schema is defined in the registry package.
-      </p>
+<article class="hbce-card">
+<h3>Industrial binding</h3>
+<p>
+Joker-C2 binds identity, decisions and machine execution across robotics and automation.
+</p>
+<div class="hbce-cta">
+<a class="hbce-a" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/">Open Joker-C2</a>
+</div>
+</article>
 
-      <div class="hbce-grid2">
-        <div class="hbce-card hbce-col-8">
-          <div class="hbce-note-box">
-            <strong>Example (template)</strong>
-            <div class="hbce-divider"></div>
-            <div class="hbce-code">{
-  "name": "LABEL (minimal public label)",
-  "payload_sha256": "64-hex sha256",
-  "timestamp": "ISO-8601 UTC"
-}</div>
-          </div>
+</div>
+</section>
 
-          <p class="hbce-note" style="margin-top:.9rem;">
-            Public label should be minimal. Private identity is inside the Release file, not the registry.
-          </p>
-        </div>
+<div class="hbce-footerMark">
+<div>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+<div>HERMETICUM B.C.E. S.r.l.</div>
+<div>Fail-closed · Hash-only · Append-only · EU-first · Audit-first</div>
+</div>
 
-        <div class="hbce-card hbce-col-4">
-          <h3>Integrity requirement</h3>
-          <p class="hbce-note">
-            If <span class="hbce-mono">payload_sha256</span> is missing or invalid → registry is considered invalid for the entry (fail-closed).
-          </p>
-          <div class="hbce-divider"></div>
-          <div class="hbce-actions-row">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Open registry</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">Platform status</a>
-          </div>
-        </div>
-      </div>
-    </section>
+</main>
 
-    <!-- NEXT: VERIFY -->
-    <section class="hbce-section">
-      <h2>Next step: VERIFY (deterministic)</h2>
-
-      <div class="hbce-grid2">
-        <div class="hbce-card hbce-col-8">
-          <p>
-            After the hash-only entry is appended to the registry, verification can be executed deterministically.
-            The result is binary: VALID or INVALID.
-          </p>
-          <ul class="hbce-list">
-            <li><strong>Input:</strong> Release file (private) + registry entry (public hash-only)</li>
-            <li><strong>Process:</strong> compute SHA-256 and compare with registry presence</li>
-            <li><strong>Output:</strong> VALID or INVALID (fail-closed)</li>
-          </ul>
-
-          <div class="hbce-actions" style="margin-top:1rem;">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Run VERIFY</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">Go to Catalogue</a>
-          </div>
-        </div>
-
-        <div class="hbce-card hbce-col-4">
-          <h3>Operational rule</h3>
-          <div class="hbce-note-box">
-            <span class="hbce-mono">VALID IPR</span><br/>
-            file integrity OK<br/>
-            + registry match found<br/>
-            + deterministic verify
-          </div>
-          <div class="hbce-divider"></div>
-          <p class="hbce-note">
-            If any requirement fails, access is blocked by design.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- SIGN -->
-    <section class="hbce-section">
-      <div class="hbce-footnote">
-        <p>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</p>
-        <p>HERMETICUM B.C.E. S.r.l.</p>
-        <p class="hbce-note">EU-first · audit-first · fail-closed · hash-only · append-only · GDPR-min</p>
-      </div>
-    </section>
-
-  </main>
-
-  <div data-hbce="footer"></div>
-  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+<div data-hbce="footer"></div>
 </body>
 </html>
