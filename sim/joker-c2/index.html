@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <title>Joker-C2 Simulator — Request → Verify → Decide → Emit</title>
-<meta name="description" content="Safe simulator for Joker-C2 industrial binding: identity-gated decision and append-only event emission. No hardware control." />
+<meta name="description" content="Safe simulator for Joker-C2 industrial binding: identity-gated decision and append-only event emission. Reads public ledger and outputs ready-to-append proofs." />
 
 <meta name="robots" content="index,follow" />
 <meta name="theme-color" content="#0b0f14" />
@@ -40,17 +40,57 @@ pre{white-space:pre-wrap;word-break:break-word;margin:0;}
 <main class="hbce-container hbce-main">
 
 <section class="hbce-hero">
-  <div class="hbce-hero__kicker">SIM · JOKER-C2 · SAFE PIPELINE</div>
-  <h1 class="hbce-hero__title">Request → Verify → Decide → Emit (No Hardware Control)</h1>
+  <div class="hbce-hero__kicker">SIM · JOKER-C2 · LEDGER-LINKED</div>
+  <h1 class="hbce-hero__title">Request → Verify → Decide → Emit (Safe, Audit-Ready)</h1>
   <p class="hbce-hero__lead">
-    This simulator demonstrates identity-gated decision and append-only event emission.
-    It does not control physical devices. Missing inputs → DENY (fail-closed).
+    This simulator reads the public HBCE ledger and outputs hash-only proofs ready to append.
+    It does not control hardware. Missing inputs → DENY (fail-closed).
   </p>
 
   <div class="hbce-cta">
-    <a class="hbce-a" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/">Joker-C2 Industrial Binding</a>
-    <a class="hbce-a" href="/hermeticum-bce-platform/verify/">Verifier</a>
+    <a class="hbce-a" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/">Joker-C2 Industrial</a>
+    <a class="hbce-a" href="/hermeticum-bce-platform/registry/">Registry</a>
     <a class="hbce-a" href="./verifier.html">Sim Verifier</a>
+  </div>
+</section>
+
+<div class="hbce-divider"></div>
+
+<section>
+  <div class="hbce-kicker2">Ledger status</div>
+  <h2>Public ledger (read-only)</h2>
+
+  <div class="hbce-grid">
+    <article class="hbce-card">
+      <h3>Load</h3>
+      <p>Loads: <span class="hbce-mono">/registry/ledger.json</span></p>
+      <div class="hbce-cta">
+        <a class="hbce-a" href="#" id="loadLedger">Reload Ledger</a>
+      </div>
+      <div class="hbce-status" style="margin-top:12px;">
+        <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Ledger</div>
+        <div class="hbce-status__value" id="ledgerStatus">NOT LOADED</div>
+        <div class="hbce-mono" style="opacity:.92;margin-top:8px;">entries: <span id="ledgerCount">—</span></div>
+      </div>
+    </article>
+
+    <article class="hbce-card">
+      <h3>Actor proof presence</h3>
+      <p>Checks if <span class="hbce-mono">expected payload_sha256</span> exists in ledger.</p>
+      <div class="hbce-status" style="margin-top:12px;">
+        <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Actor hash</div>
+        <div class="hbce-status__value" id="actorPresence">—</div>
+      </div>
+    </article>
+
+    <article class="hbce-card">
+      <h3>Evidence proof presence</h3>
+      <p>Checks if <span class="hbce-mono">evidence_pack_sha256</span> exists in ledger.</p>
+      <div class="hbce-status" style="margin-top:12px;">
+        <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Evidence hash</div>
+        <div class="hbce-status__value" id="evidencePresence">—</div>
+      </div>
+    </article>
   </div>
 </section>
 
@@ -71,17 +111,17 @@ pre{white-space:pre-wrap;word-break:break-word;margin:0;}
 
     <article class="hbce-card">
       <h3>Intent</h3>
-      <p>Command intent and scope (governance layer, not direct control).</p>
+      <p>Governance intent (not direct hardware control).</p>
       <input id="cmd" class="hbce-field hbce-mono" placeholder="command (e.g., START_JOB)" />
       <div style="height:10px"></div>
-      <input id="scope" class="hbce-field hbce-mono" placeholder="scope (e.g., CELL-A / LINE-2 / FLEET-01)" />
+      <input id="scope" class="hbce-field hbce-mono" placeholder="scope (e.g., CELL-A / LINE-2)" />
       <div style="height:10px"></div>
       <input id="constraints" class="hbce-field hbce-mono" placeholder="constraints (comma-separated)" />
     </article>
 
     <article class="hbce-card">
       <h3>Identity verification input (actor)</h3>
-      <p>Paste the actor release text and the expected registry hash.</p>
+      <p>Paste actor release text + expected registry hash.</p>
       <textarea id="release" class="hbce-field hbce-mono" rows="8" placeholder='actor release JSON text (as-is)'></textarea>
       <div style="height:10px"></div>
       <input id="expected" class="hbce-field hbce-mono" placeholder="expected payload_sha256 (64 hex)" />
@@ -93,12 +133,12 @@ pre{white-space:pre-wrap;word-break:break-word;margin:0;}
 
 <section>
   <div class="hbce-kicker2">Decision</div>
-  <h2>Fail-closed decision rule</h2>
+  <h2>Fail-closed pipeline</h2>
 
   <div class="hbce-grid">
     <article class="hbce-card">
-      <h3>Execute</h3>
-      <p>Computes actor SHA-256, verifies match, applies strict policy, emits append-only event.</p>
+      <h3>Run</h3>
+      <p>Verify actor → policy gate → emit event → evidence hash → prepare proofs.</p>
       <div class="hbce-cta">
         <a class="hbce-a" href="#" id="run">Run Pipeline</a>
         <a class="hbce-a" href="#" id="reset">Reset</a>
@@ -111,19 +151,20 @@ pre{white-space:pre-wrap;word-break:break-word;margin:0;}
     </article>
 
     <article class="hbce-card">
-      <h3>Emitted Event (append-only)</h3>
-      <p>Minimal event object (JOKER-C2-EVENT-v1 compatible).</p>
+      <h3>Emitted Event</h3>
+      <p>Append-only event (JOKER-C2-EVENT-v1 compatible).</p>
       <div class="hbce-note hbce-mono"><pre id="eventOut">{}</pre></div>
     </article>
 
     <article class="hbce-card">
-      <h3>Evidence Pack Hash</h3>
-      <p>Hash-only proof for the private evidence pack (owner-controlled).</p>
+      <h3>Evidence + Proofs</h3>
+      <p>Outputs hash-only proofs ready to append to the public ledger.</p>
       <div class="hbce-note hbce-mono"><pre id="evidenceOut">—</pre></div>
       <div class="hbce-cta">
-        <a class="hbce-a" href="/hermeticum-bce-platform/registry/">Registry</a>
-        <a class="hbce-a" href="/hermeticum-bce-platform/verify/">Verify</a>
+        <a class="hbce-a" href="#" id="copyActorProof">Copy Actor Proof</a>
+        <a class="hbce-a" href="#" id="copyEvidenceProof">Copy Evidence Proof</a>
       </div>
+      <div class="hbce-note hbce-mono" style="margin-top:10px;"><pre id="proofOut">{}</pre></div>
     </article>
   </div>
 </section>
@@ -139,6 +180,8 @@ pre{white-space:pre-wrap;word-break:break-word;margin:0;}
 <div data-hbce="footer"></div>
 
 <script>
+let LEDGER = null;
+
 function toHex(buf){
   const bytes = new Uint8Array(buf);
   let out = "";
@@ -152,86 +195,57 @@ async function sha256HexFromText(text){
   const digest = await crypto.subtle.digest("SHA-256", data);
   return toHex(digest);
 }
-function nowISO(){
-  return new Date().toISOString();
-}
+function nowISO(){ return new Date().toISOString(); }
 function mkEventId(){
-  // deterministic enough for demo; production would use a proper monotonic id strategy
   const t = Date.now().toString(16).padStart(12,"0");
   const r = Math.floor(Math.random()*0xffffffff).toString(16).padStart(8,"0");
   return "JCE-" + t + r;
+}
+function safeSplitConstraints(s){
+  return (s||"").split(",").map(x=>x.trim()).filter(Boolean);
 }
 function setDecision(text, computed){
   document.getElementById("decision").textContent = text;
   document.getElementById("computed").textContent = computed || "—";
 }
-function safeSplitConstraints(s){
-  return (s||"").split(",").map(x=>x.trim()).filter(Boolean);
+function setLedgerStatus(s){ document.getElementById("ledgerStatus").textContent = s; }
+function setLedgerCount(n){ document.getElementById("ledgerCount").textContent = String(n); }
+
+async function loadLedger(){
+  setLedgerStatus("LOADING…");
+  try{
+    const res = await fetch("/hermeticum-bce-platform/registry/ledger.json", { cache: "no-store" });
+    if (!res.ok) throw new Error("http " + res.status);
+    const data = await res.json();
+    LEDGER = data;
+    const entries = Array.isArray(data.entries) ? data.entries : [];
+    setLedgerCount(entries.length);
+    setLedgerStatus("LOADED");
+  } catch(e){
+    LEDGER = null;
+    setLedgerCount("—");
+    setLedgerStatus("LOAD FAILED");
+  }
+}
+
+function ledgerHasSha(sha){
+  if (!LEDGER) return null;
+  const entries = Array.isArray(LEDGER.entries) ? LEDGER.entries : [];
+  return !!entries.find(x => x && typeof x.sha256 === "string" && x.sha256.toLowerCase() === sha.toLowerCase());
+}
+
+function setPresence(elId, v){
+  const el = document.getElementById(elId);
+  if (v === null) el.textContent = "LEDGER NOT LOADED";
+  else el.textContent = v ? "PRESENT" : "ABSENT";
 }
 
 function strictPolicyGate(request){
-  // conservative deterministic policy:
-  // - missing command/scope → DENY
-  // - command must be uppercase A-Z0-9_ only → otherwise DENY
-  // - constraints max 12 items → otherwise DENY
-  // - scope max length 64 → otherwise DENY
   if (!request.intent.command || !request.intent.scope) return {decision:"DENY", code:"FORMAT_ERROR"};
   if (!/^[A-Z0-9_]{3,48}$/.test(request.intent.command)) return {decision:"DENY", code:"FORMAT_ERROR"};
   if (request.intent.scope.length > 64) return {decision:"DENY", code:"FORMAT_ERROR"};
   if ((request.intent.constraints||[]).length > 12) return {decision:"DENY", code:"FORMAT_ERROR"};
   return {decision:"ALLOW", code:"POLICY_ALLOW"};
-}
-
-async function run(){
-  const actor = (document.getElementById("actor").value || "").trim();
-  const target = (document.getElementById("target").value || "").trim();
-  const cmd = (document.getElementById("cmd").value || "").trim();
-  const scope = (document.getElementById("scope").value || "").trim();
-  const constraints = safeSplitConstraints(document.getElementById("constraints").value || "");
-  const release = (document.getElementById("release").value || "").trimEnd();
-  const expected = (document.getElementById("expected").value || "").trim().toLowerCase();
-
-  // fail-closed on missing request fields
-  if (!actor || !target || !cmd || !scope || !release || !expected){
-    setDecision("DENY (MISSING INPUT)", "");
-    emitOutputs({}, "—");
-    return;
-  }
-  if (!isSha256Hex(expected)){
-    setDecision("DENY (INVALID EXPECTED HASH)", "");
-    emitOutputs({}, "—");
-    return;
-  }
-
-  // verify identity deterministically (actor release vs expected hash)
-  let computed = "";
-  try{
-    computed = await sha256HexFromText(release);
-  } catch(e){
-    setDecision("DENY (VERIFY_ERROR)", "");
-    emitOutputs({}, "—");
-    return;
-  }
-  if (computed !== expected){
-    setDecision("DENY (INVALID_IDENTITY)", computed);
-    const evt = buildEvent(actor, target, cmd, scope, constraints, "DENY", "INVALID_IDENTITY", computed);
-    const evidenceHash = await evidencePackHash(evt, release, expected, computed);
-    emitOutputs(evt, evidenceHash);
-    return;
-  }
-
-  // policy gate (conservative)
-  const req = {
-    actor_ipr_id: actor,
-    target_ipr_id: target,
-    intent: { command: cmd, scope: scope, constraints: constraints }
-  };
-  const pol = strictPolicyGate(req);
-  const evt = buildEvent(actor, target, cmd, scope, constraints, pol.decision, pol.code, computed);
-  const evidenceHash = await evidencePackHash(evt, release, expected, computed);
-
-  setDecision(pol.decision + " (" + pol.code + ")", computed);
-  emitOutputs(evt, evidenceHash);
 }
 
 function buildEvent(actor, target, cmd, scope, constraints, decision, decision_code, computed){
@@ -250,42 +264,144 @@ function buildEvent(actor, target, cmd, scope, constraints, decision, decision_c
     intent: { command: cmd, scope: scope, constraints: constraints },
     decision: decision,
     decision_code: decision_code,
-    computed_sha256: computed // local-only visibility in this demo; do not publish publicly
+    computed_sha256: computed
   };
 }
 
 async function evidencePackHash(eventObj, releaseText, expected, computed){
-  // evidence pack is private; we only output its hash as proof
-  // pack (deterministic) = JSON string with ordered keys (best-effort)
   const pack = {
     pack_proto: "HBCE-EVIDENCE-PACK-v1",
     timestamp: nowISO(),
-    actor_release_text: releaseText,      // private
-    expected_registry_sha256: expected,   // could be public
-    computed_sha256: computed,            // could be derived, keep private by default
+    actor_release_text: releaseText,
+    expected_registry_sha256: expected,
+    computed_sha256: computed,
     event: eventObj
   };
   const text = JSON.stringify(pack);
+  try{ return await sha256HexFromText(text); } catch(e){ return ""; }
+}
+
+function mkProof(proof_kind, sha256){
+  return {
+    proto: "HBCE-REGISTRY-v3",
+    kind: "HBCE_PUBLIC_PROOF",
+    network: "EU",
+    issuer: "HERMETICUM B.C.E. S.r.l.",
+    policy: ["HASH_ONLY","APPEND_ONLY","FAIL_CLOSED","UE_FIRST","AUDIT_FIRST","GDPR_MIN"],
+    proof_kind,
+    sha256,
+    timestamp: nowISO()
+  };
+}
+
+function emitOutputs(evt, evidenceHash, actorProof, evidenceProof){
+  document.getElementById("eventOut").textContent = JSON.stringify(evt, null, 2);
+  document.getElementById("evidenceOut").textContent = evidenceHash || "—";
+  document.getElementById("proofOut").textContent = JSON.stringify({ actor_proof: actorProof, evidence_proof: evidenceProof }, null, 2);
+
+  // presence checks vs ledger
+  const expected = (document.getElementById("expected").value || "").trim().toLowerCase();
+  if (isSha256Hex(expected)) setPresence("actorPresence", ledgerHasSha(expected));
+  else setPresence("actorPresence", null);
+
+  if (evidenceHash && isSha256Hex(evidenceHash)) setPresence("evidencePresence", ledgerHasSha(evidenceHash));
+  else setPresence("evidencePresence", null);
+}
+
+async function run(){
+  const actor = (document.getElementById("actor").value || "").trim();
+  const target = (document.getElementById("target").value || "").trim();
+  const cmd = (document.getElementById("cmd").value || "").trim();
+  const scope = (document.getElementById("scope").value || "").trim();
+  const constraints = safeSplitConstraints(document.getElementById("constraints").value || "");
+  const release = (document.getElementById("release").value || "").trimEnd();
+  const expected = (document.getElementById("expected").value || "").trim().toLowerCase();
+
+  // hard fail on missing
+  if (!actor || !target || !cmd || !scope || !release || !expected){
+    setDecision("DENY (MISSING INPUT)", "");
+    emitOutputs({}, "", {}, {});
+    return;
+  }
+  if (!isSha256Hex(expected)){
+    setDecision("DENY (INVALID EXPECTED HASH)", "");
+    emitOutputs({}, "", {}, {});
+    return;
+  }
+
+  // verify actor
+  let computed = "";
+  try{ computed = await sha256HexFromText(release); }
+  catch(e){
+    setDecision("DENY (VERIFY_ERROR)", "");
+    emitOutputs({}, "", {}, {});
+    return;
+  }
+
+  if (computed !== expected){
+    setDecision("DENY (INVALID_IDENTITY)", computed);
+    const evt = buildEvent(actor, target, cmd, scope, constraints, "DENY", "INVALID_IDENTITY", computed);
+    const evidenceHash = await evidencePackHash(evt, release, expected, computed);
+    const actorProof = mkProof("IPR_RELEASE_SHA256", expected);
+    const evidenceProof = evidenceHash ? mkProof("EVIDENCE_PACK_SHA256", evidenceHash) : {};
+    emitOutputs(evt, evidenceHash, actorProof, evidenceProof);
+    return;
+  }
+
+  // policy
+  const req = { actor_ipr_id: actor, target_ipr_id: target, intent: { command: cmd, scope: scope, constraints } };
+  const pol = strictPolicyGate(req);
+
+  const evt = buildEvent(actor, target, cmd, scope, constraints, pol.decision, pol.code, computed);
+  const evidenceHash = await evidencePackHash(evt, release, expected, computed);
+
+  setDecision(pol.decision + " (" + pol.code + ")", computed);
+
+  const actorProof = mkProof("IPR_RELEASE_SHA256", expected);
+  const evidenceProof = evidenceHash ? mkProof("EVIDENCE_PACK_SHA256", evidenceHash) : {};
+  emitOutputs(evt, evidenceHash, actorProof, evidenceProof);
+}
+
+async function copyText(text){
   try{
-    return await sha256HexFromText(text);
+    await navigator.clipboard.writeText(text);
   } catch(e){
-    return "—";
+    // fallback: no-op; user can manually copy from the pre blocks
   }
 }
 
-function emitOutputs(evt, evidenceHash){
-  document.getElementById("eventOut").textContent = JSON.stringify(evt, null, 2);
-  document.getElementById("evidenceOut").textContent = evidenceHash;
-}
-
-document.getElementById("run").addEventListener("click", (e)=>{ e.preventDefault(); run(); });
-document.getElementById("reset").addEventListener("click", (e)=>{
+document.getElementById("run").addEventListener("click",(e)=>{ e.preventDefault(); run(); });
+document.getElementById("reset").addEventListener("click",(e)=>{
   e.preventDefault();
   ["actor","target","cmd","scope","constraints","release","expected"].forEach(id=>{ document.getElementById(id).value=""; });
   setDecision("DENY (MISSING INPUT)","");
-  emitOutputs({}, "—");
+  document.getElementById("eventOut").textContent="{}";
+  document.getElementById("evidenceOut").textContent="—";
+  document.getElementById("proofOut").textContent="{}";
+  document.getElementById("actorPresence").textContent="—";
+  document.getElementById("evidencePresence").textContent="—";
 });
+
+document.getElementById("copyActorProof").addEventListener("click",(e)=>{
+  e.preventDefault();
+  try{
+    const obj = JSON.parse(document.getElementById("proofOut").textContent || "{}");
+    copyText(JSON.stringify(obj.actor_proof || {}, null, 2));
+  } catch(_){}
+});
+document.getElementById("copyEvidenceProof").addEventListener("click",(e)=>{
+  e.preventDefault();
+  try{
+    const obj = JSON.parse(document.getElementById("proofOut").textContent || "{}");
+    copyText(JSON.stringify(obj.evidence_proof || {}, null, 2));
+  } catch(_){}
+});
+
+document.getElementById("loadLedger").addEventListener("click",(e)=>{ e.preventDefault(); loadLedger(); });
+
+loadLedger();
 </script>
 
 </body>
 </html>
+
