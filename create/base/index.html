@@ -4,8 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<title>Create IPR Base — Identity Primary Record (Release)</title>
-<meta name="description" content="Create the IPR Base release locally. Produce a release file + hash-only proof for registry and deterministic verification." />
+<title>Create IPR Base EU (Citizen) — Local Release Wizard</title>
+<meta name="description" content="EU Citizen IPR Base wizard. Collects citizen data locally (owner-controlled), generates deterministic release JSON, computes SHA-256, outputs hash-only registry proof. Fail-closed." />
 
 <meta name="robots" content="index,follow" />
 <meta name="theme-color" content="#0b0f14" />
@@ -14,67 +14,23 @@
 <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 
 <style>
-.hbce-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:16px;
-  margin-top:20px;
-}
-.hbce-card{
-  border:1px solid rgba(255,255,255,.10);
-  background:rgba(255,255,255,.02);
-  border-radius:16px;
-  padding:16px;
-}
+.hbce-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:20px;}
+.hbce-card{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.02);border-radius:16px;padding:16px;}
 .hbce-card h3{margin:0 0 8px 0;font-size:1.05rem;}
 .hbce-card p{margin:0 0 12px 0;opacity:.92;}
 .hbce-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;}
-.hbce-a{
-  display:inline-block;
-  border:1px solid rgba(255,255,255,.16);
-  border-radius:12px;
-  padding:10px 12px;
-  text-decoration:none;
-}
+.hbce-a{display:inline-block;border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:10px 12px;text-decoration:none;}
 .hbce-a:hover{border-color:rgba(255,255,255,.28);}
 .hbce-divider{height:1px;background:rgba(255,255,255,.10);margin:22px 0;}
-.hbce-kicker2{
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  opacity:.92;
-  font-size:.85rem;
-  margin-bottom:10px;
-}
-.hbce-footerMark{
-  margin-top:28px;
-  padding-top:18px;
-  border-top:1px solid rgba(255,255,255,.10);
-  opacity:.92;
-}
-code, pre{ white-space:pre-wrap; word-break:break-word; }
-.hbce-mono{
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size:.92rem;
-}
-.hbce-note{
-  border:1px solid rgba(255,255,255,.10);
-  background:rgba(255,255,255,.02);
-  border-radius:16px;
-  padding:14px;
-  opacity:.92;
-}
-.hbce-list{ margin:10px 0 0 0; padding-left:18px; opacity:.92; }
-.hbce-field{
-  width:100%;
-  box-sizing:border-box;
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(0,0,0,.20);
-  color:inherit;
-  border-radius:12px;
-  padding:10px 12px;
-  outline:none;
-}
-.hbce-field:focus{ border-color: rgba(255,255,255,.30); }
+.hbce-kicker2{letter-spacing:.12em;text-transform:uppercase;opacity:.92;font-size:.85rem;margin-bottom:10px;}
+.hbce-footerMark{margin-top:28px;padding-top:18px;border-top:1px solid rgba(255,255,255,.10);opacity:.92;}
+.hbce-note{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.02);border-radius:16px;padding:14px;opacity:.92;}
+.hbce-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:.92rem;}
+.hbce-field{width:100%;box-sizing:border-box;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.20);color:inherit;border-radius:12px;padding:10px 12px;outline:none;}
+.hbce-field:focus{border-color:rgba(255,255,255,.30);}
+.hbce-row{display:grid;grid-template-columns:1fr;gap:10px;}
+@media (min-width: 820px){ .hbce-row{ grid-template-columns:1fr 1fr; } }
+pre{white-space:pre-wrap;word-break:break-word;margin:0;}
 </style>
 </head>
 
@@ -84,115 +40,112 @@ code, pre{ white-space:pre-wrap; word-break:break-word; }
 <main class="hbce-container hbce-main">
 
 <section class="hbce-hero">
-  <div class="hbce-hero__kicker">CREATE · IPR BASE · LOCAL RELEASE</div>
-  <h1 class="hbce-hero__title">Create IPR Base (Release File)</h1>
+  <div class="hbce-hero__kicker">CREATE · IPR BASE EU · CITIZEN (LOCAL ONLY)</div>
+  <h1 class="hbce-hero__title">EU Citizen IPR Base — Release Wizard</h1>
   <p class="hbce-hero__lead">
-    The IPR Base is generated locally. The public network stores only hash-only proofs.
-    This page defines the minimal release workflow required for Registry + Verify.
-  </p>
-</section>
-
-<div class="hbce-divider"></div>
-
-<section>
-  <div class="hbce-kicker2">Output</div>
-  <h2>What you produce</h2>
-
-  <div class="hbce-grid">
-    <article class="hbce-card">
-      <h3>1) IPR Release File</h3>
-      <p>
-        A local file under the owner control (device / repository / private storage).
-        It may contain identity metadata depending on your internal policy.
-      </p>
-      <div class="hbce-note hbce-mono">
-        File example: IPR_BASE_RELEASE.json<br/>
-        Storage: local (owner-controlled)
-      </div>
-    </article>
-
-    <article class="hbce-card">
-      <h3>2) Hash-only Proof</h3>
-      <p>
-        A deterministic hash of the release payload. This is the only data intended for the public registry.
-      </p>
-      <div class="hbce-note hbce-mono">
-        Proof example: payload_sha256 = SHA-256(release_file_bytes)
-      </div>
-    </article>
-
-    <article class="hbce-card">
-      <h3>3) Verification Readiness</h3>
-      <p>
-        Deterministic verification requires: (a) release file, (b) registry proof.
-        Missing one of them → INVALID (fail-closed).
-      </p>
-      <div class="hbce-cta">
-        <a class="hbce-a" href="/hermeticum-bce-platform/verify/">Open Verify</a>
-        <a class="hbce-a" href="/hermeticum-bce-platform/registry/">Open Registry</a>
-      </div>
-    </article>
-  </div>
-</section>
-
-<div class="hbce-divider"></div>
-
-<section>
-  <div class="hbce-kicker2">Minimal release schema</div>
-  <h2>Required fields (recommended minimal set)</h2>
-  <p>
-    Keep public exposure at minimum. Public registry should store only the hash-only proof.
-    The release file is owner-controlled and can include additional fields as needed.
-  </p>
-
-  <div class="hbce-grid">
-    <article class="hbce-card">
-      <h3>Release (local)</h3>
-      <ul class="hbce-list">
-        <li><span class="hbce-mono">proto</span> (e.g., HBCE-CORE-v3)</li>
-        <li><span class="hbce-mono">kind</span> (e.g., IPR_BASE_RELEASE)</li>
-        <li><span class="hbce-mono">issuer</span> (HERMETICUM B.C.E. S.r.l.)</li>
-        <li><span class="hbce-mono">jurisdiction</span> (EU)</li>
-        <li><span class="hbce-mono">policy[]</span> (HASH_ONLY, APPEND_ONLY, FAIL_CLOSED, UE_FIRST, AUDIT_FIRST, GDPR_MIN)</li>
-        <li><span class="hbce-mono">timestamp</span> (ISO 8601)</li>
-        <li><span class="hbce-mono">payload</span> (owner-controlled content)</li>
-      </ul>
-    </article>
-
-    <article class="hbce-card">
-      <h3>Registry entry (public)</h3>
-      <ul class="hbce-list">
-        <li><span class="hbce-mono">payload_sha256</span> (required)</li>
-        <li><span class="hbce-mono">timestamp</span> (required)</li>
-        <li><span class="hbce-mono">name</span> (optional, strongly minimized)</li>
-      </ul>
-    </article>
-
-    <article class="hbce-card">
-      <h3>Failure mode</h3>
-      <p>
-        Any missing required field or mismatch in deterministic computation is a hard failure:
-      </p>
-      <div class="hbce-note hbce-mono">
-        INVALID → BLOCK EXECUTION
-      </div>
-    </article>
-  </div>
-</section>
-
-<div class="hbce-divider"></div>
-
-<section>
-  <div class="hbce-kicker2">Operator note</div>
-  <h2>Operator path depends on IPR validity</h2>
-  <p>
-    Operator access is gated. The operator role is not identity: it is authorization and responsibility.
-    A valid IPR Base is mandatory before any operator issuance/validation workflow.
+    This wizard collects EU citizen data <strong>locally</strong> and generates a deterministic IPR release file.
+    The public registry stores only <strong>hash-only proofs</strong>. Do not publish personal data.
   </p>
 
   <div class="hbce-cta">
-    <a class="hbce-a" href="/hermeticum-bce-platform/activate/">Back to Activate</a>
-    <a class="hbce-a" href="/hermeticum-bce-platform/operator/">Operator Overview</a>
+    <a class="hbce-a" href="/hermeticum-bce-platform/activate/">Activate</a>
+    <a class="hbce-a" href="/hermeticum-bce-platform/registry/">Registry</a>
+    <a class="hbce-a" href="/hermeticum-bce-platform/verify/">Verify</a>
+  </div>
+</section>
+
+<div class="hbce-divider"></div>
+
+<section>
+  <div class="hbce-kicker2">Data boundary</div>
+  <div class="hbce-note">
+    <strong>Local-only:</strong> everything you type here stays on your device. The site does not upload it anywhere.<br/>
+    <strong>Public registry:</strong> publish only the SHA-256 hash proof (and timestamp). Nothing else.
+  </div>
+</section>
+
+<div class="hbce-divider"></div>
+
+<section>
+  <div class="hbce-kicker2">Citizen data (EU)</div>
+  <h2>Minimum EU citizen fields</h2>
+
+  <div class="hbce-grid">
+    <article class="hbce-card">
+      <h3>Identity (local)</h3>
+
+      <div class="hbce-row">
+        <div>
+          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Full legal name</div>
+          <input id="full_name" class="hbce-field" placeholder="e.g., Manuel Coletta" />
+        </div>
+        <div>
+          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Nationality</div>
+          <input id="nationality" class="hbce-field" placeholder="e.g., Italian" />
+        </div>
+
+        <div>
+          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Date of birth (YYYY-MM-DD)</div>
+          <input id="dob" class="hbce-field hbce-mono" placeholder="1988-02-05" />
+        </div>
+        <div>
+          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Place of birth (City, Country)</div>
+          <input id="pob" class="hbce-field" placeholder="Bologna, IT" />
+        </div>
+
+        <div>
+          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Residence (City, Region, Country)</div>
+          <input id="residence" class="hbce-field" placeholder="Torino, Piemonte, IT" />
+        </div>
+        <div>
+          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Contact email (optional)</div>
+          <input id="email" class="hbce-field hbce-mono" placeholder="name@example.com" />
+        </div>
+
+        <div>
+          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Citizen IPR ID (your label)</div>
+          <input id="ipr_id" class="hbce-field hbce-mono" placeholder="e.g., IPR-CITIZEN-0001" />
+        </div>
+        <div>
+          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Notes (optional, local)</div>
+          <input id="notes" class="hbce-field" placeholder="optional local note" />
+        </div>
+      </div>
+
+      <div class="hbce-note hbce-mono" style="margin-top:12px;">
+        Recommendation: keep this payload minimal. The release file is owner-controlled.
+      </div>
+    </article>
+
+    <article class="hbce-card">
+      <h3>Build outputs</h3>
+      <p>Generate deterministic JSON → compute SHA-256 → produce registry proof.</p>
+      <div class="hbce-cta">
+        <a class="hbce-a" href="#" id="build">Build Release</a>
+        <a class="hbce-a" href="#" id="download">Download Release</a>
+        <a class="hbce-a" href="#" id="reset">Reset</a>
+      </div>
+
+      <div class="hbce-note hbce-mono" style="margin-top:12px;">
+        payload_sha256: <span id="sha">—</span>
+      </div>
+
+      <div class="hbce-cta">
+        <a class="hbce-a" href="#" id="copySha">Copy SHA</a>
+        <a class="hbce-a" href="#" id="copyProof">Copy Registry Proof</a>
+      </div>
+
+      <div class="hbce-note hbce-mono" style="margin-top:12px;">
+        Registry proof (hash-only):<br/>
+        <pre id="proof">{}</pre>
+      </div>
+    </article>
+
+    <article class="hbce-card">
+      <h3>Release JSON (local)</h3>
+      <p>This is your owner-controlled release file content.</p>
+      <div class="hbce-note hbce-mono"><pre id="releaseOut">{}</pre></div>
+    </article>
   </div>
 </section>
 
@@ -205,5 +158,148 @@ code, pre{ white-space:pre-wrap; word-break:break-word; }
 </main>
 
 <div data-hbce="footer"></div>
+
+<script>
+function toHex(buf){
+  const bytes = new Uint8Array(buf);
+  let out = "";
+  for (let i = 0; i < bytes.length; i++) out += bytes[i].toString(16).padStart(2, "0");
+  return out;
+}
+async function sha256HexFromText(text){
+  const enc = new TextEncoder();
+  const data = enc.encode(text);
+  const digest = await crypto.subtle.digest("SHA-256", data);
+  return toHex(digest);
+}
+function nowISO(){ return new Date().toISOString(); }
+
+function stableStringify(obj){
+  // deterministic JSON: recursively sort keys
+  const seen = new WeakSet();
+  function norm(x){
+    if (x && typeof x === "object"){
+      if (seen.has(x)) throw new Error("CYCLE");
+      seen.add(x);
+      if (Array.isArray(x)) return x.map(norm);
+      const keys = Object.keys(x).sort();
+      const out = {};
+      for (const k of keys) out[k] = norm(x[k]);
+      return out;
+    }
+    return x;
+  }
+  return JSON.stringify(norm(obj), null, 2);
+}
+
+function getVal(id){ return (document.getElementById(id).value || "").trim(); }
+
+let LAST_RELEASE_TEXT = "";
+let LAST_SHA = "";
+let LAST_PROOF = "";
+
+function buildReleaseObject(){
+  const iprId = getVal("ipr_id") || "IPR-CITIZEN-UNSPECIFIED";
+
+  const payload = {
+    ipr_id: iprId,
+    citizen: {
+      full_name: getVal("full_name"),
+      nationality: getVal("nationality"),
+      date_of_birth: getVal("dob"),
+      place_of_birth: getVal("pob"),
+      residence: getVal("residence"),
+      email: getVal("email")
+    },
+    notes: getVal("notes")
+  };
+
+  return {
+    proto: "HBCE-CORE-v3",
+    kind: "IPR_BASE_RELEASE_EU_CITIZEN",
+    issuer: "HERMETICUM B.C.E. S.r.l.",
+    jurisdiction: "EU",
+    mode: "PERMISSIONLESS",
+    policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","GDPR_MIN","NO_IDENTITY_CUSTODY"],
+    timestamp: nowISO(),
+    payload
+  };
+}
+
+function mkRegistryProof(sha){
+  return {
+    proto: "HBCE-REGISTRY-v3",
+    kind: "HBCE_PUBLIC_PROOF",
+    network: "EU",
+    issuer: "HERMETICUM B.C.E. S.r.l.",
+    policy: ["HASH_ONLY","APPEND_ONLY","FAIL_CLOSED","UE_FIRST","AUDIT_FIRST","GDPR_MIN"],
+    proof_kind: "IPR_RELEASE_SHA256",
+    sha256: sha,
+    timestamp: nowISO(),
+    name: "OPTIONAL_MINIMIZED"
+  };
+}
+
+function setOut(id, text){ document.getElementById(id).textContent = text; }
+
+async function build(){
+  try{
+    const releaseObj = buildReleaseObject();
+    const text = stableStringify(releaseObj);
+    const sha = await sha256HexFromText(text);
+    const proof = mkRegistryProof(sha);
+
+    LAST_RELEASE_TEXT = text;
+    LAST_SHA = sha;
+    LAST_PROOF = JSON.stringify(proof, null, 2);
+
+    setOut("releaseOut", text);
+    document.getElementById("sha").textContent = sha;
+    setOut("proof", LAST_PROOF);
+  } catch(e){
+    LAST_RELEASE_TEXT = "";
+    LAST_SHA = "";
+    LAST_PROOF = "";
+    setOut("releaseOut", "{}");
+    document.getElementById("sha").textContent = "—";
+    setOut("proof", "{}");
+  }
+}
+
+async function copyText(text){
+  try{ await navigator.clipboard.writeText(text); } catch(e){}
+}
+
+function downloadRelease(){
+  if (!LAST_RELEASE_TEXT) return;
+  const blob = new Blob([LAST_RELEASE_TEXT], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "IPR_BASE_RELEASE_EU_CITIZEN.json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function resetAll(){
+  ["full_name","nationality","dob","pob","residence","email","ipr_id","notes"].forEach(id=>{ document.getElementById(id).value=""; });
+  LAST_RELEASE_TEXT = "";
+  LAST_SHA = "";
+  LAST_PROOF = "";
+  setOut("releaseOut", "{}");
+  setOut("proof", "{}");
+  document.getElementById("sha").textContent = "—";
+}
+
+document.getElementById("build").addEventListener("click",(e)=>{ e.preventDefault(); build(); });
+document.getElementById("download").addEventListener("click",(e)=>{ e.preventDefault(); downloadRelease(); });
+document.getElementById("reset").addEventListener("click",(e)=>{ e.preventDefault(); resetAll(); });
+
+document.getElementById("copySha").addEventListener("click",(e)=>{ e.preventDefault(); if (LAST_SHA) copyText(LAST_SHA); });
+document.getElementById("copyProof").addEventListener("click",(e)=>{ e.preventDefault(); if (LAST_PROOF) copyText(LAST_PROOF); });
+</script>
+
 </body>
 </html>
