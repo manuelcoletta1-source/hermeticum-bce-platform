@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Joker-C2 Industrial Binding — Real Robot Demo (Execution Corridor)</title>
+  <meta name="description" content="Real robot demo simulation: request → identity verify → policy gate → token → execution → evidence pack + hash-only proof. Fail-closed by default." />
+
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/real-robot-demo.html" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+
+  <style>
+    .hbce-grid2{ display:grid; gap:1rem; grid-template-columns: repeat(12, 1fr); }
+    .hbce-col-4{ grid-column: span 4; }
+    .hbce-col-6{ grid-column: span 6; }
+    .hbce-col-8{ grid-column: span 8; }
+    .hbce-col-12{ grid-column: span 12; }
+    @media (max-width: 900px){
+      .hbce-col-4,.hbce-col-6,.hbce-col-8{ grid-column: span 12; }
+    }
+
+    .hbce-pill{
+      display:inline-block;
+      padding:.25rem .55rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.03);
+      color:rgba(255,255,255,.86);
+      font-size:.86rem;
+      font-weight:950;
+      letter-spacing:.02em;
+      text-transform: uppercase;
+    }
+
+    .hbce-note-box{
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.03);
+      padding:1rem;
+    }
+
+    .hbce-divider{ height:1px; background:rgba(255,255,255,.10); margin:1rem 0; }
+    .hbce-mono{ font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
+
+    .demo-grid{ display:grid; grid-template-columns: 1.1fr .9fr; gap: 1rem; }
+    @media (max-width: 900px){ .demo-grid{ grid-template-columns: 1fr; } }
+
+    .field{ display:block; width:100%; padding:.65rem .75rem; border-radius:14px; border:1px solid rgba(255,255,255,.14); background:rgba(0,0,0,.20); color:rgba(255,255,255,.90); }
+    .field:focus{ outline:none; border-color: rgba(255,255,255,.28); }
+
+    .row{ display:grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+    @media (max-width: 700px){ .row{ grid-template-columns: 1fr; } }
+
+    .label{ font-weight:900; opacity:.9; margin-bottom:.35rem; display:block; }
+    .small{ opacity:.78; font-size:.92rem; margin-top:.35rem; }
+
+    .log{
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.22);
+      padding: 1rem;
+      max-height: 420px;
+      overflow:auto;
+      font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size:.92rem;
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+
+    .statusbox{
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.03);
+      padding: 1rem;
+    }
+
+    .kpi{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:.6rem;
+      margin-top:.65rem;
+    }
+    .kpi div{
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.02);
+      padding:.6rem .7rem;
+    }
+    .kpi .k{ font-weight:950; opacity:.86; font-size:.85rem; text-transform: uppercase; letter-spacing:.02em; }
+    .kpi .v{ font-weight:1000; font-size:1.05rem; margin-top:.15rem; }
+
+    .badge{
+      display:inline-block;
+      padding:.20rem .55rem;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.03);
+      font-weight:950;
+      font-size:.82rem;
+      letter-spacing:.02em;
+      text-transform: uppercase;
+      opacity:.92;
+    }
+
+    .chips{ display:flex; flex-wrap:wrap; gap:.45rem; margin-top:.6rem; }
+    .chip{
+      padding:.20rem .55rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+      font-weight:900;
+      font-size:.82rem;
+      opacity:.95;
+      cursor:pointer;
+      user-select:none;
+    }
+    .chip[aria-pressed="true"]{ border-color: rgba(255,255,255,.32); background: rgba(255,255,255,.06); }
+  </style>
+</head>
+
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <!-- HERO -->
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">REAL ROBOT DEMO · EXECUTION CORRIDOR · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Real Robot Demo</h1>
+      <p class="hbce-hero__lead">
+        This page simulates a real industrial execution corridor:
+        <span class="hbce-mono">Request → Identity Verify → Policy Gate → Token → Execute → Proof</span>.
+        Default posture is <strong>fail-closed</strong>: if verification is missing, the action is blocked.
+      </p>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/">Industrial Binding</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/reference-architecture.html">Reference Architecture</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/integration-checklist.html">Integration Checklist</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/pilot-pricing.html">Pilot Pricing</a>
+      </div>
+    </section>
+
+    <!-- DEMO -->
+    <section class="hbce-section">
+      <h2>Run a scenario</h2>
+
+      <div class="demo-grid">
+
+        <!-- LEFT: controls -->
+        <div class="hbce-card">
+
+          <div class="row">
+            <div>
+              <span class="label">Operator status</span>
+              <select id="opStatus" class="field">
+                <option value="VALID">VALID</option>
+                <option value="MISSING">MISSING</option>
+                <option value="INVALID">INVALID</option>
+              </select>
+              <div class="small">Simulates operator IPR verification result.</div>
+            </div>
+            <div>
+              <span class="label">Machine status</span>
+              <select id="mStatus" class="field">
+                <option value="VALID">VALID</option>
+                <option value="MISSING">MISSING</option>
+                <option value="INVALID">INVALID</option>
+              </select>
+              <div class="small">Simulates machine IPR-M verification result.</div>
+            </div>
+          </div>
+
+          <div class="hbce-divider"></div>
+
+          <div class="row">
+            <div>
+              <span class="label">Action type</span>
+              <select id="actionType" class="field">
+                <option value="LOW">LOW — telemetry read / non-critical</option>
+                <option value="MED">MED — normal operation command</option>
+                <option value="HIGH">HIGH — override / parameter change / mode switch</option>
+              </select>
+              <div class="small">Policy gate gets stricter with HIGH actions.</div>
+            </div>
+            <div>
+              <span class="label">Approval mode</span>
+              <select id="approvalMode" class="field">
+                <option value="SINGLE">SINGLE (one operator)</option>
+                <option value="DUAL">DUAL (two-man rule)</option>
+              </select>
+              <div class="small">DUAL required for HIGH in strict mode.</div>
+            </div>
+          </div>
+
+          <div class="hbce-divider"></div>
+
+          <span class="label">Preset scenarios (one tap)</span>
+          <div class="chips" role="group" aria-label="preset scenarios">
+            <button class="chip" type="button" id="preset_ok" aria-pressed="false">ALLOW (VALID + MED)</button>
+            <button class="chip" type="button" id="preset_failclosed" aria-pressed="false">BLOCK (missing identity)</button>
+            <button class="chip" type="button" id="preset_high_dual" aria-pressed="false">HIGH + DUAL approval</button>
+            <button class="chip" type="button" id="preset_high_block" aria-pressed="false">HIGH blocked (no dual)</button>
+          </div>
+
+          <div class="hbce-divider"></div>
+
+          <span class="label">Execution corridor</span>
+          <div class="hbce-note-box">
+            <div><span class="badge">1</span> Identity Verify</div>
+            <div class="small">Operator + Machine must be VALID, else <span class="hbce-mono">BLOCK</span>.</div>
+            <div class="hbce-divider"></div>
+            <div><span class="badge">2</span> Policy Gate</div>
+            <div class="small">Role/threshold approval. HIGH may require <span class="hbce-mono">DUAL</span>.</div>
+            <div class="hbce-divider"></div>
+            <div><span class="badge">3</span> Token</div>
+            <div class="small">Short TTL token. No token → no execution.</div>
+            <div class="hbce-divider"></div>
+            <div><span class="badge">4</span> Execute</div>
+            <div class="small">Controller accepts only tokened commands.</div>
+            <div class="hbce-divider"></div>
+            <div><span class="badge">5</span> Proof</div>
+            <div class="small">Evidence pack (private) + hash-only proof (public).</div>
+          </div>
+
+          <div class="hbce-actions" style="margin-top:1rem;">
+            <button class="hbce-btn hbce-btn--alt" id="runBtn" type="button">Run</button>
+            <button class="hbce-btn" id="emitBtn" type="button">Emit 1 proof</button>
+            <button class="hbce-btn hbce-btn--ghost" id="resetBtn" type="button">Reset</button>
+          </div>
+
+        </div>
+
+        <!-- RIGHT: log + status -->
+        <div class="hbce-card">
+
+          <div class="statusbox">
+            <div class="hbce-pill">Status</div>
+            <h3 style="margin-top:.55rem;" id="statusTitle">READY</h3>
+            <p class="hbce-note" id="statusNote">
+              Configure a scenario and press Run.
+            </p>
+
+            <div class="kpi" aria-label="KPIs">
+              <div>
+                <div class="k">Corridor result</div>
+                <div class="v" id="kpiResult">—</div>
+              </div>
+              <div>
+                <div class="k">Proof counter</div>
+                <div class="v" id="kpiProofs">0</div>
+              </div>
+              <div>
+                <div class="k">Last token</div>
+                <div class="v" id="kpiToken">—</div>
+              </div>
+              <div>
+                <div class="k">Failure mode</div>
+                <div class="v" id="kpiFailMode">FAIL-CLOSED</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hbce-divider"></div>
+
+          <div class="hbce-pill">Execution log</div>
+          <div class="log" id="log" aria-label="execution log"></div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- WHAT THIS MEANS -->
+    <section class="hbce-section">
+      <h2>What this demonstrates</h2>
+      <div class="hbce-card">
+        <ul class="hbce-list">
+          <li>Execution is gated by deterministic identity and policy checks.</li>
+          <li>“Fail-closed” is not a slogan: missing verification blocks execution.</li>
+          <li>Proofs are produced as private evidence packs + public hash-only entries.</li>
+        </ul>
+        <div class="hbce-divider"></div>
+        <div class="hbce-actions">
+          <a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/pilot-piemonte.html">Start a Pilot</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/roi.html">ROI</a>
+          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/competitive-positioning.html">Positioning</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SIGN -->
+    <section class="hbce-section">
+      <div class="hbce-note-box">
+        <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong><br/>
+        HERMETICUM B.C.E. S.r.l.<br/>
+        EU-first · audit-first · fail-closed · hash-only · append-only · GDPR-min
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce.js"></script>
+
+  <script>
+    (function(){
+      const $ = (id) => document.getElementById(id);
+
+      const opStatus = $("opStatus");
+      const mStatus = $("mStatus");
+      const actionType = $("actionType");
+      const approvalMode = $("approvalMode");
+
+      const runBtn = $("runBtn");
+      const emitBtn = $("emitBtn");
+      const resetBtn = $("resetBtn");
+
+      const logEl = $("log");
+      const statusTitle = $("statusTitle");
+      const statusNote = $("statusNote");
+
+      const kpiResult = $("kpiResult");
+      const kpiProofs = $("kpiProofs");
+      const kpiToken = $("kpiToken");
+      const kpiFailMode = $("kpiFailMode");
+
+      const preset_ok = $("preset_ok");
+      const preset_failclosed = $("preset_failclosed");
+      const preset_high_dual = $("preset_high_dual");
+      const preset_high_block = $("preset_high_block");
+
+      let proofCounter = 0;
+      let lastToken = "—";
+
+      function nowISO(){
+        const d = new Date();
+        return d.toISOString();
+      }
+
+      function randHex(n){
+        const chars = "abcdef0123456789";
+        let out = "";
+        for(let i=0;i<n;i++) out += chars[Math.floor(Math.random()*chars.length)];
+        return out;
+      }
+
+      function pushLog(line){
+        logEl.textContent += line + "\n";
+        logEl.scrollTop = logEl.scrollHeight;
+      }
+
+      function setStatus(title, note){
+        statusTitle.textContent = title;
+        statusNote.textContent = note;
+      }
+
+      function setKpis(result){
+        kpiResult.textContent = result;
+        kpiProofs.textContent = String(proofCounter);
+        kpiToken.textContent = lastToken;
+        kpiFailMode.textContent = "FAIL-CLOSED";
+      }
+
+      function clearPresets(){
+        [preset_ok,preset_failclosed,preset_high_dual,preset_high_block].forEach(b => b.setAttribute("aria-pressed","false"));
+      }
+
+      function applyPreset(which){
+        clearPresets();
+        which.setAttribute("aria-pressed","true");
+      }
+
+      function corridorRun(){
+        pushLog("=== RUN " + nowISO() + " ===");
+        pushLog("[REQ] action=" + actionType.value + " approval=" + approvalMode.value);
+
+        // 1) Identity Gate
+        pushLog("[1] IdentityGate: operator=" + opStatus.value + " machine=" + mStatus.value);
+        if(opStatus.value !== "VALID" || mStatus.value !== "VALID"){
+          pushLog("[1] RESULT: BLOCK (missing/invalid identity) -> FAIL-CLOSED");
+          setStatus("BLOCKED", "Identity verification failed. No execution token issued.");
+          lastToken = "—";
+          setKpis("BLOCK");
+          return;
+        }
+        pushLog("[1] RESULT: PASS");
+
+        // 2) Policy Gate
+        pushLog("[2] PolicyGate: evaluate risk class...");
+        const a = actionType.value;
+        const appr = approvalMode.value;
+
+        // strict rules:
+        // - HIGH requires DUAL approval
+        // - MED allowed with SINGLE
+        // - LOW always allowed once identity is valid
+        if(a === "HIGH" && appr !== "DUAL"){
+          pushLog("[2] RESULT: BLOCK (HIGH requires DUAL approval) -> FAIL-CLOSED");
+          setStatus("BLOCKED", "Policy gate denied: HIGH action requires DUAL approval.");
+          lastToken = "—";
+          setKpis("BLOCK");
+          return;
+        }
+        pushLog("[2] RESULT: PASS");
+
+        // 3) Token
+        lastToken = "tok_" + randHex(24);
+        const ttlSec = (a === "HIGH") ? 20 : 45;
+        pushLog("[3] Token: issued " + lastToken + " ttl=" + ttlSec + "s");
+
+        // 4) Execute
+        pushLog("[4] Execute: controller accepts token -> EXECUTE");
+        const execId = "exec_" + randHex(16);
+        pushLog("[4] EXECUTION_ID=" + execId + " status=OK");
+
+        // 5) Proof
+        const evPack = "evidence_" + randHex(16) + ".zip";
+        const hashProof = "sha256:" + randHex(64);
+        proofCounter += 1;
+
+        pushLog("[5] EvidencePack: " + evPack + " (private, customer custody)");
+        pushLog("[5] PublicProof: " + hashProof + " (hash-only, append-only)");
+        pushLog("[OK] Corridor result: ALLOW");
+
+        setStatus("ALLOWED", "Execution authorized and proven. Evidence pack generated; hash-only proof emitted.");
+        setKpis("ALLOW");
+      }
+
+      function emitOneProof(){
+        const hashProof = "sha256:" + randHex(64);
+        proofCounter += 1;
+        pushLog("=== EMIT PROOF " + nowISO() + " ===");
+        pushLog("[PROOF] " + hashProof + " (hash-only, append-only)");
+        setStatus("PROOF EMITTED", "A hash-only proof was emitted (append-only).");
+        setKpis(kpiResult.textContent === "—" ? "—" : kpiResult.textContent);
+      }
+
+      function resetAll(){
+        proofCounter = 0;
+        lastToken = "—";
+        logEl.textContent = "";
+        setStatus("READY", "Configure a scenario and press Run.");
+        setKpis("—");
+        clearPresets();
+      }
+
+      // presets
+      preset_ok.addEventListener("click", () => {
+        applyPreset(preset_ok);
+        opStatus.value = "VALID";
+        mStatus.value = "VALID";
+        actionType.value = "MED";
+        approvalMode.value = "SINGLE";
+      });
+
+      preset_failclosed.addEventListener("click", () => {
+        applyPreset(preset_failclosed);
+        opStatus.value = "MISSING";
+        mStatus.value = "VALID";
+        actionType.value = "MED";
+        approvalMode.value = "SINGLE";
+      });
+
+      preset_high_dual.addEventListener("click", () => {
+        applyPreset(preset_high_dual);
+        opStatus.value = "VALID";
+        mStatus.value = "VALID";
+        actionType.value = "HIGH";
+        approvalMode.value = "DUAL";
+      });
+
+      preset_high_block.addEventListener("click", () => {
+        applyPreset(preset_high_block);
+        opStatus.value = "VALID";
+        mStatus.value = "VALID";
+        actionType.value = "HIGH";
+        approvalMode.value = "SINGLE";
+      });
+
+      // buttons
+      runBtn.addEventListener("click", corridorRun);
+      emitBtn.addEventListener("click", emitOneProof);
+      resetBtn.addEventListener("click", resetAll);
+
+      // init
+      resetAll();
+      pushLog("Joker-C2 Industrial Binding — Real Robot Demo");
+      pushLog("Fail-closed: missing verification => BLOCK.");
+      pushLog("Tip: click a preset, then Run.");
+    })();
+  </script>
+</body>
+</html>
