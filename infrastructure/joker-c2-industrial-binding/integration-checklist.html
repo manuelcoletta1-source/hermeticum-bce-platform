@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Joker-C2 Industrial Binding — Integration Checklist (P1 / P2 / P3)</title>
+  <meta name="description" content="Integration checklist for Joker-C2 Industrial Binding across API Gate (P1), ROS2 Gate (P2), and Industrial Bridge (P3). Edge-first, fail-closed, audit-ready." />
+
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/integration-checklist.html" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+
+  <style>
+    .hbce-grid2{ display:grid; gap:1rem; grid-template-columns: repeat(12, 1fr); }
+    .hbce-col-4{ grid-column: span 4; }
+    .hbce-col-6{ grid-column: span 6; }
+    .hbce-col-8{ grid-column: span 8; }
+    .hbce-col-12{ grid-column: span 12; }
+    @media (max-width: 900px){
+      .hbce-col-4,.hbce-col-6,.hbce-col-8{ grid-column: span 12; }
+    }
+
+    .hbce-pill{
+      display:inline-block;
+      padding:.25rem .55rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.03);
+      color:rgba(255,255,255,.86);
+      font-size:.86rem;
+      font-weight:950;
+      letter-spacing:.02em;
+      text-transform: uppercase;
+    }
+
+    .hbce-note-box{
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.03);
+      padding:1rem;
+    }
+
+    .hbce-divider{ height:1px; background:rgba(255,255,255,.10); margin:1rem 0; }
+    .hbce-list li{ margin:.25rem 0; }
+
+    .hbce-table{
+      width:100%;
+      border-collapse: collapse;
+      overflow:hidden;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.02);
+    }
+    .hbce-table th, .hbce-table td{
+      padding:.75rem .85rem;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      vertical-align: top;
+      text-align:left;
+      font-size:.95rem;
+    }
+    .hbce-table th{
+      font-size:.9rem;
+      text-transform: uppercase;
+      letter-spacing:.02em;
+      opacity:.9;
+      font-weight:950;
+    }
+    .hbce-table tr:last-child td{ border-bottom:none; }
+
+    .hbce-mono{ font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
+  </style>
+</head>
+
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <!-- HERO -->
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">INTEGRATION · CHECKLIST · P1 / P2 / P3 · EDGE-FIRST</div>
+      <h1 class="hbce-hero__title">Integration Checklist</h1>
+      <p class="hbce-hero__lead">
+        A practical checklist to integrate Joker-C2 Industrial Binding without rebuilding your robotics stack.
+        Choose the integration profile and follow the steps. Default posture is <span class="hbce-mono">fail-closed</span>.
+      </p>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/">Industrial Binding</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/spec.html">Open Spec</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/demo.html">Open Demo</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/roi.html">ROI</a>
+      </div>
+
+      <div class="hbce-note-box" style="margin-top:1rem;">
+        <strong>Integration principle:</strong><br/>
+        Put the gateway <strong>in front</strong> of execution. If no verified identity → no token → no action.
+      </div>
+    </section>
+
+    <!-- PICK PROFILE -->
+    <section class="hbce-section">
+      <h2>Pick your integration profile</h2>
+
+      <div class="hbce-grid2">
+        <div class="hbce-card hbce-col-4">
+          <div class="hbce-pill">P1</div>
+          <h3 style="margin-top:.55rem;">API Gate</h3>
+          <p class="hbce-note">
+            For systems where robots/fleets accept commands through APIs.
+            Gateway is a reverse-proxy / command broker in front of the API.
+          </p>
+        </div>
+
+        <div class="hbce-card hbce-col-4">
+          <div class="hbce-pill">P2</div>
+          <h3 style="margin-top:.55rem;">ROS2 Gate</h3>
+          <p class="hbce-note">
+            For robotics stacks using ROS2. Gateway is a ROS2 node that authorizes actions before publishing allowed commands.
+          </p>
+        </div>
+
+        <div class="hbce-card hbce-col-4">
+          <div class="hbce-pill">P3</div>
+          <h3 style="margin-top:.55rem;">Industrial Bridge</h3>
+          <p class="hbce-note">
+            For factories: MES/SCADA/OPC-UA → gateway → PLC/robot controller.
+            Add authorization and audit proofs in the execution corridor.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMMON REQUIREMENTS -->
+    <section class="hbce-section">
+      <h2>Common requirements (all profiles)</h2>
+      <div class="hbce-card">
+        <table class="hbce-table" aria-label="common requirements">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Minimum requirement</th>
+              <th>Why it matters</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Operator identity</strong></td>
+              <td>VALID operator IPR</td>
+              <td>Authorization must be attributable</td>
+            </tr>
+            <tr>
+              <td><strong>Machine identity</strong></td>
+              <td>VALID machine IPR (IPR-M)</td>
+              <td>Actions must be bound to a machine</td>
+            </tr>
+            <tr>
+              <td><strong>Policy file</strong></td>
+              <td>Deterministic policy (hash-bound)</td>
+              <td>Governance must be reproducible</td>
+            </tr>
+            <tr>
+              <td><strong>Evidence storage</strong></td>
+              <td>Local private storage (customer custody)</td>
+              <td>Full audit trail remains private</td>
+            </tr>
+            <tr>
+              <td><strong>Public proof</strong></td>
+              <td>Hash-only append entry</td>
+              <td>Independent timestamped proof</td>
+            </tr>
+            <tr>
+              <td><strong>Network posture</strong></td>
+              <td>Gateway must be in front of execution path</td>
+              <td>Prevent bypass by design</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- P1 CHECKLIST -->
+    <section class="hbce-section">
+      <h2>P1 — API Gate checklist</h2>
+      <div class="hbce-grid2">
+        <div class="hbce-card hbce-col-8">
+          <ol style="padding-left:1.15rem;">
+            <li>Identify the command API endpoints used for execution.</li>
+            <li>Place the Binding Gateway as the only reachable command entry point (allowlist).</li>
+            <li>Map command types to risk classes (LOW/MED/HIGH).</li>
+            <li>Implement token requirement: controller accepts execution only with valid token.</li>
+            <li>Enable evidence pack generation and periodic hash-only proof emission.</li>
+            <li>Run demo scenarios (allow/deny, threshold deny, approvals).</li>
+          </ol>
+        </div>
+        <div class="hbce-card hbce-col-4">
+          <div class="hbce-pill">Good for</div>
+          <ul class="hbce-list">
+            <li>Fleet managers</li>
+            <li>Drones</li>
+            <li>Software-controlled robots</li>
+            <li>Cloud robotics APIs</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- P2 CHECKLIST -->
+    <section class="hbce-section">
+      <h2>P2 — ROS2 Gate checklist</h2>
+      <div class="hbce-grid2">
+        <div class="hbce-card hbce-col-8">
+          <ol style="padding-left:1.15rem;">
+            <li>Identify ROS2 actions/services that trigger motion/critical operations.</li>
+            <li>Insert gateway node: it receives ActionRequest and decides ALLOW/DENY.</li>
+            <li>Publish only allowed commands on separate topics (or guarded action server).</li>
+            <li>Bind telemetry snapshot hashes for high-risk actions (optional but strong).</li>
+            <li>Enable evidence pack + hash-only proof.</li>
+            <li>Run reproducible verification path.</li>
+          </ol>
+        </div>
+        <div class="hbce-card hbce-col-4">
+          <div class="hbce-pill">Good for</div>
+          <ul class="hbce-list">
+            <li>Humanoid research platforms</li>
+            <li>Advanced robotics R&D</li>
+            <li>ROS2-based autonomy stacks</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- P3 CHECKLIST -->
+    <section class="hbce-section">
+      <h2>P3 — Industrial Bridge checklist</h2>
+      <div class="hbce-grid2">
+        <div class="hbce-card hbce-col-8">
+          <ol style="padding-left:1.15rem;">
+            <li>Identify execution corridor: MES/SCADA/OPC-UA → PLC/robot controller.</li>
+            <li>Place gateway in the corridor and block direct write paths (segmentation).</li>
+            <li>Define high-risk operations (override, parameter change, mode switch).</li>
+            <li>Enforce dual approval where required.</li>
+            <li>Enable local ledger for resilience (factory network outages).</li>
+            <li>Emit hash-only proofs periodically; verify reproducibility.</li>
+          </ol>
+        </div>
+        <div class="hbce-card hbce-col-4">
+          <div class="hbce-pill">Good for</div>
+          <ul class="hbce-list">
+            <li>Robot cells</li>
+            <li>Automation lines</li>
+            <li>Critical maintenance ops</li>
+            <li>Procurement-grade auditing</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUCCESS CRITERIA -->
+    <section class="hbce-section">
+      <h2>Success criteria (pilot acceptance)</h2>
+      <div class="hbce-card">
+        <ul class="hbce-list">
+          <li>At least one critical action is gated (no token → no execution).</li>
+          <li>Allow/Deny scenarios are reproducible with deterministic verification.</li>
+          <li>Evidence packs are generated under customer custody.</li>
+          <li>Hash-only proofs are emitted in append-only mode.</li>
+          <li>Bypass paths are mitigated (network posture, allowlists).</li>
+        </ul>
+
+        <div class="hbce-divider"></div>
+
+        <div class="hbce-actions">
+          <a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/pilot-piemonte.html">
+            Piemonte Pilot
+          </a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/pricing/">
+            Pricing
+          </a>
+          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">
+            Verify
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SIGN -->
+    <section class="hbce-section">
+      <div class="hbce-note-box">
+        <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong><br/>
+        HERMETICUM B.C.E. S.r.l.<br/>
+        EU-first · audit-first · fail-closed · hash-only · append-only · GDPR-min
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce.js"></script>
+</body>
+</html>
