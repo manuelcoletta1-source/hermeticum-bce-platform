@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>JOKER-C2 Industrial Binding — OEM Pack (Integration + SOW)</title>
+  <meta name="description" content="OEM integration pack for JOKER-C2 Industrial Binding. Deterministic decision binding, fail-closed gating, audit reproducibility. UE-first, hash-only, append-only." />
+
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/oem-pack.html" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <style>
+    .hbce-diagram{
+      margin-top:14px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:14px;
+      padding:14px;
+      overflow:auto;
+      background:rgba(255,255,255,.02);
+    }
+    .hbce-diagram pre{
+      margin:0;
+      white-space:pre;
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:12.5px;
+      line-height:1.35;
+    }
+    .hbce-kpi{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
+    }
+    .hbce-kpi th, .hbce-kpi td{
+      border:1px solid rgba(255,255,255,.10);
+      padding:10px 12px;
+      vertical-align:top;
+    }
+    .hbce-kpi th{
+      text-align:left;
+      font-weight:700;
+      background:rgba(255,255,255,.03);
+    }
+  </style>
+</head>
+
+<body>
+<div data-hbce="header"></div>
+
+<main class="hbce-container hbce-main">
+
+<section class="hbce-hero">
+  <div class="hbce-hero__kicker">HBCE · OEM INTEGRATION · JOKER-C2</div>
+  <h1 class="hbce-hero__title">JOKER-C2 Industrial Binding — OEM Pack</h1>
+  <p class="hbce-hero__lead">
+    This pack defines how OEMs integrate JOKER-C2 as a deterministic binding layer for autonomous systems.
+    It enforces fail-closed gating, produces reproducible evidence, and binds decisions to verifiable operational identity roots (IPR).
+  </p>
+
+  <div class="hbce-actions">
+    <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/activate/">Activate (Canonical Start)</a>
+    <a class="hbce-btn" href="/hermeticum-bce-platform/node-pack/NODE-PACK.md">NODE-PACK Spec</a>
+    <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verify + Certificate</a>
+  </div>
+</section>
+
+<section class="hbce-section">
+  <h2 class="hbce-h2">1) OEM Integration Goal</h2>
+  <p class="hbce-text">
+    Integrate JOKER-C2 as an operational gate between the OEM control stack and physical actuation.
+    The gate is deterministic: every accepted command is attributable (hash + signature), and every rejected command is blocked without partial execution.
+  </p>
+
+  <div class="hbce-card">
+    <div class="hbce-card__title">Binary enforcement</div>
+    <p class="hbce-text">
+      VALID → execute + log + receipt.<br />
+      INVALID → stop (fail-closed) + log (local-only) + no public registry append.
+    </p>
+  </div>
+</section>
+
+<section class="hbce-section">
+  <h2 class="hbce-h2">2) Reference Architecture</h2>
+  <p class="hbce-text">
+    A minimal integration pattern that preserves OEM autonomy while adding deterministic identity binding.
+  </p>
+
+  <div class="hbce-diagram" role="img" aria-label="OEM integration reference architecture (ASCII diagram)">
+<pre>
+┌───────────────────────────────────────────────────────────────────────────┐
+│                            OEM CONTROL STACK                               │
+│  Perception → Planning → Control (SW) → Command Bus                         │
+└───────────────────────────────────────────────────────────────────────────┘
+                     │ commands (candidate actions)
+                     ▼
+┌───────────────────────────────────────────────────────────────────────────┐
+│                    JOKER-C2 INDUSTRIAL BINDING GATE                         │
+│  1) IPR root verify (registry_match)                                        │
+│  2) Integrity checks (schema_valid, integrity_ok)                           │
+│  3) Signature checks (signature_valid)                                      │
+│  4) Risk gating (domain thresholds)                                         │
+│  5) Deterministic log + receipt generation                                  │
+│  6) Optional: public hash-only registry entry (append-only)                 │
+└───────────────────────────────────────────────────────────────────────────┘
+                     │ VALID only
+                     ▼
+┌───────────────────────────────────────────────────────────────────────────┐
+│                           PHYSICAL ACTUATION                                │
+│  Motors / Drives / Arms / Valves / Flight surfaces / Switchgear             │
+└───────────────────────────────────────────────────────────────────────────┘
+</pre>
+  </div>
+
+  <div class="hbce-note" style="margin-top:12px;">
+    OEM systems remain unchanged. JOKER-C2 is a deterministic gate placed before actuation.
+  </div>
+</section>
+
+<section class="hbce-section">
+  <h2 class="hbce-h2">3) Preconditions (PASS/FAIL)</h2>
+
+  <div class="hbce-card">
+    <div class="hbce-card__title">Mandatory</div>
+    <ul class="hbce-list">
+      <li>Valid IPR Base (identity root) for the deploying entity</li>
+      <li>NODE-PACK compliant artifacts and deterministic hashing</li>
+      <li>Public registry match (hash-only) for the identity root</li>
+      <li>ED25519 verifiable signatures for receipts</li>
+      <li>Fail-closed behavior enabled (no degraded silent mode)</li>
+    </ul>
+  </div>
+
+  <div class="hbce-warning" style="margin-top:12px;">
+    If registry_match is false → integration is not operational. Stop.
+  </div>
+</section>
+
+<section class="hbce-section">
+  <h2 class="hbce-h2">4) Interfaces (OEM ↔ JOKER-C2)</h2>
+
+  <div class="hbce-card">
+    <div class="hbce-card__title">Input (from OEM stack)</div>
+    <ul class="hbce-list">
+      <li>command_id</li>
+      <li>command_payload (domain-specific)</li>
+      <li>context snapshot (optional)</li>
+      <li>expected effect (optional)</li>
+    </ul>
+  </div>
+
+  <div class="hbce-card" style="margin-top:12px;">
+    <div class="hbce-card__title">Output (to actuation)</div>
+    <ul class="hbce-list">
+      <li>ALLOW / BLOCK (binary)</li>
+      <li>deterministic decision log entry</li>
+      <li>receipt artifact (local verifiable)</li>
+      <li>optional registry hash-only entry (append-only)</li>
+    </ul>
+  </div>
+</section>
+
+<section class="hbce-section">
+  <h2 class="hbce-h2">5) Evidence Pack (Pilot Deliverable)</h2>
+  <p class="hbce-text">
+    OEM pilots must deliver a reproducible evidence pack that an auditor can replay.
+  </p>
+
+  <div class="hbce-card">
+    <ul class="hbce-list">
+      <li>Sample command set (N decisions)</li>
+      <li>Deterministic logs (local append-only)</li>
+      <li>Receipts (ED25519 verifiable)</li>
+      <li>Registry reference entries (hash-only, append-only)</li>
+      <li>Replay instructions (how to recompute digests and verify)</li>
+    </ul>
+  </div>
+</section>
+
+<section class="hbce-section">
+  <h2 class="hbce-h2">6) KPIs (OEM-facing)</h2>
+
+  <table class="hbce-kpi" aria-label="OEM KPI table">
+    <thead>
+      <tr>
+        <th>KPI</th>
+        <th>Definition</th>
+        <th>Target (pilot)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>KPI-01</strong> Deterministic reproducibility</td>
+        <td>Auditor can recompute canonical SHA-256 and verify receipt signatures.</td>
+        <td>100% reproducible decisions</td>
+      </tr>
+      <tr>
+        <td><strong>KPI-02</strong> Fail-closed correctness</td>
+        <td>Any failed check blocks actuation without partial execution.</td>
+        <td>0 partial execution events</td>
+      </tr>
+      <tr>
+        <td><strong>KPI-03</strong> Registry match rate</td>
+        <td>Identity roots match public registry (hash-only).</td>
+        <td>100% for operational runs</td>
+      </tr>
+      <tr>
+        <td><strong>KPI-04</strong> Decision latency</td>
+        <td>Gate evaluation time from command arrival to ALLOW/BLOCK.</td>
+        <td>Sub-second target (domain-dependent)</td>
+      </tr>
+      <tr>
+        <td><strong>KPI-05</strong> Audit readability</td>
+        <td>Evidence pack understandable without private keys and without personal data.</td>
+        <td>PASS external review</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="hbce-section">
+  <h2 class="hbce-h2">7) Statement of Work (SOW) — Pilot Phases</h2>
+
+  <div class="hbce-card">
+    <div class="hbce-card__title">Phase A — Readiness</div>
+    <ul class="hbce-list">
+      <li>Confirm IPR Base validity (registry match)</li>
+      <li>Confirm NODE-PACK artifact set</li>
+      <li>Define domain thresholds and abort rules</li>
+    </ul>
+  </div>
+
+  <div class="hbce-card" style="margin-top:12px;">
+    <div class="hbce-card__title">Phase B — Integration</div>
+    <ul class="hbce-list">
+      <li>Insert JOKER-C2 gate before actuation</li>
+      <li>Run controlled command sets</li>
+      <li>Generate receipts + deterministic logs</li>
+    </ul>
+  </div>
+
+  <div class="hbce-card" style="margin-top:12px;">
+    <div class="hbce-card__title">Phase C — Evidence + Audit</div>
+    <ul class="hbce-list">
+      <li>Deliver evidence pack</li>
+      <li>External replay verification</li>
+      <li>Publish hash-only references (append-only)</li>
+    </ul>
+  </div>
+
+  <div class="hbce-note" style="margin-top:12px;">
+    HBCE is designed to be audited. If it cannot be reproduced, it is not operational.
+  </div>
+</section>
+
+<section class="hbce-section">
+  <h2 class="hbce-h2">8) UE Context</h2>
+  <p class="hbce-text">
+    This pack is designed for EU auditability contexts and operational minimization.
+    It does not replace eIDAS / EUDI Wallet schemes. It provides deterministic operational traceability.
+  </p>
+</section>
+
+<section class="hbce-section">
+  <div class="hbce-actions">
+    <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/activate/">Start at Activate</a>
+    <a class="hbce-btn" href="/hermeticum-bce-platform/infrastructure/node-pack-standard.html">HBCE Node Standard</a>
+    <a class="hbce-btn" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/pilot-pack.html">Pilot Pack</a>
+  </div>
+</section>
+
+</main>
+
+<div data-hbce="footer"></div>
+<script src="/hermeticum-bce-platform/assets/hbce.js"></script>
+</body>
+</html>
