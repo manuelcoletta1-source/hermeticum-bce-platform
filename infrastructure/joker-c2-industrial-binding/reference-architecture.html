@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Joker-C2 Industrial Binding — Reference Architecture</title>
+  <meta name="description" content="Reference architecture for Joker-C2 Industrial Binding: Identity Gate, Policy Gate, Execution Token and Audit Proof layer above robots, PLC, MES/SCADA and fleets." />
+
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/reference-architecture.html" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+
+  <style>
+    .hbce-grid2{ display:grid; gap:1rem; grid-template-columns: repeat(12, 1fr); }
+    .hbce-col-4{ grid-column: span 4; }
+    .hbce-col-6{ grid-column: span 6; }
+    .hbce-col-8{ grid-column: span 8; }
+    .hbce-col-12{ grid-column: span 12; }
+    @media (max-width: 900px){
+      .hbce-col-4,.hbce-col-6,.hbce-col-8{ grid-column: span 12; }
+    }
+
+    .hbce-pill{
+      display:inline-block;
+      padding:.25rem .55rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.03);
+      color:rgba(255,255,255,.86);
+      font-size:.86rem;
+      font-weight:950;
+      letter-spacing:.02em;
+      text-transform: uppercase;
+    }
+
+    .hbce-note-box{
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.03);
+      padding:1rem;
+    }
+
+    .hbce-divider{ height:1px; background:rgba(255,255,255,.10); margin:1rem 0; }
+    .hbce-list li{ margin:.25rem 0; }
+
+    .hbce-mono{ font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
+
+    /* diagram frame */
+    .hbce-diagram{
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.02);
+      padding:1rem;
+      overflow:auto;
+    }
+    .hbce-diagram svg{
+      width: 100%;
+      height: auto;
+      min-width: 980px; /* keeps readability on desktop */
+      display:block;
+    }
+    .hbce-caption{ opacity:.85; font-size:.95rem; margin-top:.75rem; }
+  </style>
+</head>
+
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <!-- HERO -->
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">REFERENCE ARCHITECTURE · LAYER ABOVE · AUTHORIZATION BEFORE EXECUTION</div>
+      <h1 class="hbce-hero__title">Reference Architecture</h1>
+      <p class="hbce-hero__lead">
+        Joker-C2 Industrial Binding is deployed <strong>in front of execution</strong>.
+        It enforces: <span class="hbce-mono">Identity → Policy → Token → Execution</span>, plus audit proofs.
+      </p>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/">Industrial Binding</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/integration-checklist.html">Integration Checklist</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/demo.html">Demo</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/spec.html">Spec</a>
+      </div>
+
+      <div class="hbce-note-box" style="margin-top:1rem;">
+        <strong>Fail-closed axiom:</strong><br/>
+        If the corridor cannot verify deterministically → it blocks the action.
+      </div>
+    </section>
+
+    <!-- DIAGRAM -->
+    <section class="hbce-section">
+      <h2>Architecture diagram (deployment corridor)</h2>
+
+      <div class="hbce-diagram" aria-label="reference architecture diagram">
+        <!-- Inline SVG: self-contained, no assets needed -->
+        <svg viewBox="0 0 1200 720" role="img" aria-label="Joker-C2 Industrial Binding reference architecture diagram">
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="rgba(255,255,255,.08)"/>
+              <stop offset="1" stop-color="rgba(255,255,255,.02)"/>
+            </linearGradient>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+              <path d="M0,0 L10,5 L0,10 Z" fill="rgba(255,255,255,.65)"></path>
+            </marker>
+          </defs>
+
+          <!-- background -->
+          <rect x="20" y="20" width="1160" height="680" rx="18" fill="url(#g)" stroke="rgba(255,255,255,.14)" />
+
+          <!-- Left: Actors -->
+          <rect x="60" y="90" width="260" height="520" rx="16" fill="rgba(0,0,0,.14)" stroke="rgba(255,255,255,.12)"/>
+          <text x="80" y="125" fill="rgba(255,255,255,.9)" font-size="18" font-weight="800">Actors</text>
+
+          <rect x="85" y="160" width="210" height="80" rx="14" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
+          <text x="105" y="195" fill="rgba(255,255,255,.88)" font-size="16" font-weight="800">Operator (Human)</text>
+          <text x="105" y="220" fill="rgba(255,255,255,.70)" font-size="13">VALID IPR required</text>
+
+          <rect x="85" y="260" width="210" height="80" rx="14" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
+          <text x="105" y="295" fill="rgba(255,255,255,.88)" font-size="16" font-weight="800">Contractor / Supplier</text>
+          <text x="105" y="320" fill="rgba(255,255,255,.70)" font-size="13">Role-limited policies</text>
+
+          <rect x="85" y="360" width="210" height="80" rx="14" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
+          <text x="105" y="395" fill="rgba(255,255,255,.88)" font-size="16" font-weight="800">Automation Client</text>
+          <text x="105" y="420" fill="rgba(255,255,255,.70)" font-size="13">MES/SCADA/API</text>
+
+          <rect x="85" y="460" width="210" height="120" rx="14" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
+          <text x="105" y="495" fill="rgba(255,255,255,.88)" font-size="16" font-weight="800">Identity Inputs</text>
+          <text x="105" y="520" fill="rgba(255,255,255,.70)" font-size="13">Operator IPR</text>
+          <text x="105" y="542" fill="rgba(255,255,255,.70)" font-size="13">Machine IPR-M</text>
+          <text x="105" y="564" fill="rgba(255,255,255,.70)" font-size="13">Policy hash (versioned)</text>
+
+          <!-- Center: Binding Corridor -->
+          <rect x="360" y="90" width="480" height="520" rx="16" fill="rgba(0,0,0,.14)" stroke="rgba(255,255,255,.12)"/>
+          <text x="380" y="125" fill="rgba(255,255,255,.9)" font-size="18" font-weight="800">Joker-C2 Industrial Binding (Edge Corridor)</text>
+
+          <!-- blocks -->
+          <rect x="395" y="160" width="410" height="78" rx="14" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
+          <text x="415" y="195" fill="rgba(255,255,255,.90)" font-size="16" font-weight="900">1) Identity Gate</text>
+          <text x="415" y="220" fill="rgba(255,255,255,.70)" font-size="13">Verify operator + machine (VALID) → else BLOCK</text>
+
+          <rect x="395" y="256" width="410" height="78" rx="14" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
+          <text x="415" y="291" fill="rgba(255,255,255,.90)" font-size="16" font-weight="900">2) Policy Gate</text>
+          <text x="415" y="316" fill="rgba(255,255,255,.70)" font-size="13">Roles · thresholds · zones · approvals (two-man rule)</text>
+
+          <rect x="395" y="352" width="410" height="78" rx="14" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
+          <text x="415" y="387" fill="rgba(255,255,255,.90)" font-size="16" font-weight="900">3) Execution Token</text>
+          <text x="415" y="412" fill="rgba(255,255,255,.70)" font-size="13">Short TTL token required by controller/gateway</text>
+
+          <rect x="395" y="448" width="410" height="120" rx="14" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
+          <text x="415" y="483" fill="rgba(255,255,255,.90)" font-size="16" font-weight="900">4) Audit Proof</text>
+          <text x="415" y="508" fill="rgba(255,255,255,.70)" font-size="13">Private evidence pack (customer custody)</text>
+          <text x="415" y="530" fill="rgba(255,255,255,.70)" font-size="13">Hash-only public proof (append-only)</text>
+          <text x="415" y="552" fill="rgba(255,255,255,.70)" font-size="13">Deterministic verification path</text>
+
+          <!-- Right: Execution targets -->
+          <rect x="880" y="90" width="260" height="520" rx="16" fill="rgba(0,0,0,.14)" stroke="rgba(255,255,255,.12)"/>
+          <text x="900" y="125" fill="rgba(255,255,255,.9)" font-size="18" font-weight="800">Execution Targets</text>
+
+          <rect x="905" y="160" width="210" height="85" rx="14" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
+          <text x="925" y="195" fill="rgba(255,255,255,.88)" font-size="16" font-weight="800">Robot Controller</text>
+          <text x="925" y="220" fill="rgba(255,255,255,.70)" font-size="13">Requires token</text>
+
+          <rect x="905" y="260" width="210" height="85" rx="14" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
+          <text x="925" y="295" fill="rgba(255,255,255,.88)" font-size="16" font-weight="800">PLC / Safety Boundary</text>
+          <text x="925" y="320" fill="rgba(255,255,255,.70)" font-size="13">Hardware safety remains</text>
+
+          <rect x="905" y="360" width="210" height="85" rx="14" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
+          <text x="925" y="395" fill="rgba(255,255,255,.88)" font-size="16" font-weight="800">Fleet / AMR / AGV</text>
+          <text x="925" y="420" fill="rgba(255,255,255,.70)" font-size="13">Multi-machine binding</text>
+
+          <rect x="905" y="460" width="210" height="110" rx="14" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
+          <text x="925" y="495" fill="rgba(255,255,255,.88)" font-size="16" font-weight="800">Industrial Stack</text>
+          <text x="925" y="520" fill="rgba(255,255,255,.70)" font-size="13">MES/SCADA/OPC-UA</text>
+          <text x="925" y="542" fill="rgba(255,255,255,.70)" font-size="13">Vendor systems remain</text>
+
+          <!-- flows: left to corridor -->
+          <line x1="295" y1="200" x2="395" y2="200" stroke="rgba(255,255,255,.60)" stroke-width="2" marker-end="url(#arrow)"/>
+          <line x1="295" y1="300" x2="395" y2="290" stroke="rgba(255,255,255,.45)" stroke-width="2" marker-end="url(#arrow)"/>
+          <line x1="295" y1="400" x2="395" y2="300" stroke="rgba(255,255,255,.45)" stroke-width="2" marker-end="url(#arrow)"/>
+          <line x1="295" y1="520" x2="395" y2="190" stroke="rgba(255,255,255,.35)" stroke-width="2" marker-end="url(#arrow)"/>
+
+          <!-- corridor to right -->
+          <line x1="805" y1="391" x2="905" y2="202" stroke="rgba(255,255,255,.60)" stroke-width="2" marker-end="url(#arrow)"/>
+          <line x1="805" y1="391" x2="905" y2="302" stroke="rgba(255,255,255,.50)" stroke-width="2" marker-end="url(#arrow)"/>
+          <line x1="805" y1="391" x2="905" y2="402" stroke="rgba(255,255,255,.50)" stroke-width="2" marker-end="url(#arrow)"/>
+          <line x1="805" y1="391" x2="905" y2="515" stroke="rgba(255,255,255,.45)" stroke-width="2" marker-end="url(#arrow)"/>
+
+          <!-- bottom note strip -->
+          <rect x="60" y="630" width="1080" height="50" rx="14" fill="rgba(0,0,0,.18)" stroke="rgba(255,255,255,.10)"/>
+          <text x="85" y="662" fill="rgba(255,255,255,.82)" font-size="14" font-weight="800">
+            Rule: verify → authorize → token → execute → evidence pack + hash-only proof (append-only)
+          </text>
+        </svg>
+
+        <div class="hbce-caption">
+          The layer is deliberately positioned as a <strong>corridor</strong>: it does not fight vendor stacks — it governs execution rights across them.
+        </div>
+      </div>
+    </section>
+
+    <!-- KEY POINTS -->
+    <section class="hbce-section">
+      <h2>Key points (what decision makers need to understand)</h2>
+
+      <div class="hbce-grid2">
+        <div class="hbce-card hbce-col-6">
+          <div class="hbce-pill">Security posture</div>
+          <ul class="hbce-list">
+            <li>Execution is denied when identity/policy cannot be verified.</li>
+            <li>Bypass paths are mitigated by network posture (gateway in front of execution).</li>
+            <li>Two-man rule can be enforced for high-risk actions.</li>
+          </ul>
+        </div>
+
+        <div class="hbce-card hbce-col-6">
+          <div class="hbce-pill">Audit posture</div>
+          <ul class="hbce-list">
+            <li>Private evidence packs remain under customer custody.</li>
+            <li>Public trail is hash-only (GDPR-min) and append-only.</li>
+            <li>Verification is deterministic and reproducible.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="hbce-divider"></div>
+
+      <div class="hbce-actions">
+        <a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/pilot-piemonte.html">Piemonte Pilot</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/pilot-pricing.html">Pilot Pricing</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/infrastructure/joker-c2-industrial-binding/integration-checklist.html">Integration Checklist</a>
+      </div>
+    </section>
+
+    <!-- SIGN -->
+    <section class="hbce-section">
+      <div class="hbce-note-box">
+        <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong><br/>
+        HERMETICUM B.C.E. S.r.l.<br/>
+        EU-first · audit-first · fail-closed · hash-only · append-only · GDPR-min
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce.js"></script>
+</body>
+</html>
