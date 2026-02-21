@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>HBCE LAB — EXPERIMENT-0002 (Evidence Pack: Offline Verify)</title>
+  <meta name="description" content="Generate an Evidence Pack (manifest + payload + sha256 + signature) and verify it offline (fail-closed). Zero dependencies." />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/lab/experiment-0002.html" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+
+  <style>
+    .lab-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));margin-top:16px}
+    .lab-card{border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:16px;background:rgba(0,0,0,.25)}
+    .lab-kicker{letter-spacing:.12em;text-transform:uppercase;font-size:.78rem;opacity:.85}
+    .lab-title{font-size:2rem;line-height:1.15;margin:8px 0 10px}
+    .lab-lead{opacity:.92;max-width:80ch}
+    .lab-hr{height:1px;background:rgba(255,255,255,.10);margin:18px 0}
+    .lab-badge{display:inline-block;border:1px solid rgba(255,255,255,.14);padding:6px 10px;border-radius:999px;font-size:.78rem;opacity:.92;margin-right:6px;margin-bottom:6px}
+    .lab-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.92rem}
+    .lab-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .lab-btn{display:inline-block;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.28);cursor:pointer;color:inherit}
+    .lab-btn:hover{border-color:rgba(255,255,255,.28)}
+    textarea,input,select{width:100%;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.28);color:inherit}
+    textarea{min-height:140px;resize:vertical}
+    .lab-small{font-size:.92rem;opacity:.9}
+    .lab-status{padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.04)}
+    .ok{border-color:rgba(120,255,180,.35)}
+    .bad{border-color:rgba(255,120,120,.35)}
+    .muted{opacity:.8}
+    .lab-table{width:100%;border-collapse:collapse;margin-top:10px}
+    .lab-table th,.lab-table td{border-bottom:1px solid rgba(255,255,255,.10);padding:10px 8px;text-align:left;vertical-align:top}
+    .lab-table th{opacity:.9}
+    .pill{display:inline-block;padding:4px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);font-size:.78rem}
+  </style>
+</head>
+
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="lab-kicker">HBCE LAB · REPLICABLE PROTOCOL</div>
+      <h1 class="lab-title">EXPERIMENT-0002 — Evidence Pack (Offline Verify)</h1>
+      <p class="lab-lead">
+        Generate a portable <b>Evidence Pack</b> (manifest + payload + sha256 + signature) and verify it offline.
+        The verifier is deterministic and fail-closed: missing or mismatching proof → <b>INVALID</b>.
+      </p>
+      <div style="margin-top:10px">
+        <span class="lab-badge">AUDIT-FIRST</span>
+        <span class="lab-badge">FAIL-CLOSED</span>
+        <span class="lab-badge">HASH-ONLY</span>
+        <span class="lab-badge">PORTABLE EVIDENCE</span>
+        <span class="lab-badge">ZERO DEPENDENCIES</span>
+      </div>
+
+      <div class="lab-hr"></div>
+
+      <div class="lab-grid">
+
+        <!-- GENERATOR -->
+        <div class="lab-card">
+          <h2 style="margin:0 0 8px">1) Generate Evidence Pack</h2>
+          <p class="lab-small">
+            This produces a single JSON file you can store, email, archive, or attach to a registry entry (hash-only).
+          </p>
+
+          <label class="lab-small muted">Scenario</label>
+          <input id="scenario" value="robot_safety_gate" />
+
+          <div style="height:10px"></div>
+
+          <label class="lab-small muted">Vector (comma numbers)</label>
+          <input id="vector" value="1,0,1,0,3" />
+
+          <div style="height:10px"></div>
+
+          <label class="lab-small muted">Decision / Output (text)</label>
+          <input id="decision" value="ALLOW" />
+
+          <div style="height:10px"></div>
+
+          <label class="lab-small muted">Notes (optional)</label>
+          <textarea id="notes">Working hypothesis: identity-bound decisions enable accountability for autonomous systems.</textarea>
+
+          <div style="height:12px"></div>
+
+          <div class="lab-row">
+            <button class="lab-btn" id="btnGenKeys">Generate Identity Keys</button>
+            <button class="lab-btn" id="btnBuildPack">Build & Download Pack</button>
+          </div>
+
+          <div style="height:12px"></div>
+
+          <div id="genStatus" class="lab-status">
+            Status: <span class="pill">MISSING IDENTITY KEYS</span>
+          </div>
+
+          <div style="height:12px"></div>
+
+          <table class="lab-table">
+            <tr><th style="width:34%">Field</th><th>Value</th></tr>
+            <tr><td class="lab-mono">pubkey_jwk</td><td class="lab-mono" id="pubkeyPreview">—</td></tr>
+            <tr><td class="lab-mono">payload_sha256</td><td class="lab-mono" id="shaPreview">—</td></tr>
+            <tr><td class="lab-mono">signature_b64</td><td class="lab-mono" id="sigPreview">—</td></tr>
+          </table>
+
+          <p class="lab-small muted" style="margin-top:10px">
+            Crypto note: using WebCrypto <b>ECDSA P-256</b> for broad browser support, zero deps. The evidence structure is algorithm-agnostic.
+          </p>
+        </div>
+
+        <!-- VERIFIER -->
+        <div class="lab-card">
+          <h2 style="margin:0 0 8px">2) Offline Verifier</h2>
+          <p class="lab-small">
+            Load an Evidence Pack JSON file. The verifier recomputes SHA-256, checks signatures, and validates structural invariants.
+          </p>
+
+          <div class="lab-row" style="margin-top:8px">
+            <input type="file" id="filePack" accept="application/json" />
+            <button class="lab-btn" id="btnVerify">Verify Pack</button>
+          </div>
+
+          <div style="height:12px"></div>
+
+          <div id="verifyStatus" class="lab-status">
+            Status: <span class="pill">NO PACK LOADED</span>
+          </div>
+
+          <div style="height:12px"></div>
+
+          <label class="lab-small muted">Pack (preview)</label>
+          <textarea id="packPreview" class="lab-mono" readonly></textarea>
+
+          <p class="lab-small muted" style="margin-top:10px">
+            Fail-closed rules: missing fields → INVALID; hash mismatch → INVALID; signature mismatch → INVALID.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="lab-hr"></div>
+
+      <div class="lab-card">
+        <h2 style="margin:0 0 8px">Acceptance Criteria</h2>
+        <ul style="margin:0;padding-left:18px">
+          <li><b>Replicable:</b> anyone can verify a pack offline with deterministic results.</li>
+          <li><b>Portable:</b> one JSON file contains all evidence (manifest + payload + proof).</li>
+          <li><b>Fail-closed:</b> any missing or mismatching proof returns INVALID.</li>
+          <li><b>Hash-only ready:</b> payload_sha256 can be published in a public registry without exposing private content.</li>
+        </ul>
+      </div>
+
+    </section>
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce.js"></script>
+
+  <script>
+    // =============================
+    // EXPERIMENT-0002 — Evidence Pack
+    // - Zero dependencies
+    // - WebCrypto ECDSA P-256
+    // - Single JSON pack download
+    // =============================
+
+    const $ = (id) => document.getElementById(id);
+
+    const state = {
+      keys: null,          // { privateKey, publicKey }
+      pubJwk: null,        // exported public JWK
+      alg: { name: "ECDSA", namedCurve: "P-256" }
+    };
+
+    function nowIso(){
+      return new Date().toISOString();
+    }
+
+    function toUtf8Bytes(str){
+      return new TextEncoder().encode(str);
+    }
+
+    function hex(buf){
+      const b = new Uint8Array(buf);
+      let s = "";
+      for (let i = 0; i < b.length; i++){
+        s += b[i].toString(16).padStart(2,"0");
+      }
+      return s;
+    }
+
+    function b64(buf){
+      const bytes = new Uint8Array(buf);
+      let bin = "";
+      for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+      return btoa(bin);
+    }
+
+    function fromB64(s){
+      const bin = atob(s);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      return bytes.buffer;
+    }
+
+    function setGenStatus(text, ok=null){
+      const el = $("genStatus");
+      el.classList.remove("ok","bad");
+      if (ok === true) el.classList.add("ok");
+      if (ok === false) el.classList.add("bad");
+      el.innerHTML = `Status: <span class="pill">${text}</span>`;
+    }
+
+    function setVerifyStatus(text, ok=null){
+      const el = $("verifyStatus");
+      el.classList.remove("ok","bad");
+      if (ok === true) el.classList.add("ok");
+      if (ok === false) el.classList.add("bad");
+      el.innerHTML = `Status: <span class="pill">${text}</span>`;
+    }
+
+    function stableStringify(obj){
+      // Deterministic JSON stringify: sorts keys recursively.
+      const seen = new WeakSet();
+
+      const sorter = (x) => {
+        if (x && typeof x === "object"){
+          if (seen.has(x)) throw new Error("Cyclic structure not allowed");
+          seen.add(x);
+
+          if (Array.isArray(x)) return x.map(sorter);
+
+          const out = {};
+          Object.keys(x).sort().forEach(k => out[k] = sorter(x[k]));
+          return out;
+        }
+        return x;
+      };
+
+      return JSON.stringify(sorter(obj));
+    }
+
+    async function sha256Hex(dataBytes){
+      const digest = await crypto.subtle.digest("SHA-256", dataBytes);
+      return hex(digest);
+    }
+
+    async function generateKeys(){
+      const kp = await crypto.subtle.generateKey(
+        { name: state.alg.name, namedCurve: state.alg.namedCurve },
+        true,
+        ["sign","verify"]
+      );
+      const pubJwk = await crypto.subtle.exportKey("jwk", kp.publicKey);
+
+      state.keys = kp;
+      state.pubJwk = pubJwk;
+
+      $("pubkeyPreview").textContent = stableStringify(pubJwk).slice(0,180) + "…";
+      setGenStatus("IDENTITY KEYS READY", true);
+    }
+
+    function buildPayload(){
+      const scenario = $("scenario").value.trim();
+      const vector = $("vector").value.trim();
+      const decision = $("decision").value.trim();
+      const notes = $("notes").value;
+
+      // Minimal but meaningful payload structure
+      return {
+        scenario,
+        vector,
+        decision,
+        notes
+      };
+    }
+
+    async function signBytes(bytes){
+      // ECDSA signature is over the bytes of the canonical payload string
+      const sig = await crypto.subtle.sign(
+        { name: "ECDSA", hash: "SHA-256" },
+        state.keys.privateKey,
+        bytes
+      );
+      return sig;
+    }
+
+    function downloadText(filename, text){
+      const blob = new Blob([text], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    }
+
+    async function buildPack(){
+      if (!state.keys || !state.pubJwk){
+        setGenStatus("MISSING IDENTITY KEYS (generate keys first)", false);
+        throw new Error("Missing keys");
+      }
+
+      const payload = buildPayload();
+      const payloadCanonical = stableStringify(payload);
+      const payloadBytes = toUtf8Bytes(payloadCanonical);
+
+      const payload_sha256 = await sha256Hex(payloadBytes);
+      $("shaPreview").textContent = payload_sha256;
+
+      const sigBuf = await signBytes(payloadBytes);
+      const signature_b64 = b64(sigBuf);
+      $("sigPreview").textContent = signature_b64.slice(0,180) + "…";
+
+      const pack = {
+        proto: "HBCE-LAB-PACK-v1",
+        kind: "EVIDENCE_PACK",
+        experiment: "EXPERIMENT-0002",
+        policy: ["AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","NO_PUBLIC_DATA_CUSTODY"],
+        created_at: nowIso(),
+
+        crypto: {
+          alg: "ECDSA_P256_SHA256",
+          pubkey_jwk: state.pubJwk,
+          signature_b64
+        },
+
+        evidence: {
+          payload_sha256,
+          payload_canonical: payloadCanonical
+        },
+
+        payload
+      };
+
+      const packText = stableStringify(pack);
+      $("packPreview").value = packText;
+
+      const fname = `HBCE_LAB_EXPERIMENT-0002_${new Date().toISOString().replaceAll(":","-")}.json`;
+      downloadText(fname, packText);
+
+      setGenStatus("PACK BUILT & DOWNLOADED", true);
+    }
+
+    async function verifyPack(pack){
+      // Fail-closed: check required fields
+      const required = [
+        "proto","kind","experiment","policy","created_at","crypto","evidence","payload"
+      ];
+      for (const k of required){
+        if (!(k in pack)) return { ok:false, reason:`MISSING_FIELD:${k}` };
+      }
+
+      if (pack.proto !== "HBCE-LAB-PACK-v1") return { ok:false, reason:"PROTO_MISMATCH" };
+      if (pack.kind !== "EVIDENCE_PACK") return { ok:false, reason:"KIND_MISMATCH" };
+      if (pack.experiment !== "EXPERIMENT-0002") return { ok:false, reason:"EXPERIMENT_MISMATCH" };
+
+      if (!pack.crypto || !pack.crypto.pubkey_jwk || !pack.crypto.signature_b64) return { ok:false, reason:"MISSING_CRYPTO" };
+      if (!pack.evidence || !pack.evidence.payload_sha256 || !pack.evidence.payload_canonical) return { ok:false, reason:"MISSING_EVIDENCE" };
+
+      // Canonical payload string must match re-stringify(payload)
+      const payloadCanonicalRe = stableStringify(pack.payload);
+      if (payloadCanonicalRe !== pack.evidence.payload_canonical){
+        return { ok:false, reason:"CANONICAL_MISMATCH" };
+      }
+
+      // Hash recompute
+      const bytes = toUtf8Bytes(payloadCanonicalRe);
+      const sha = await sha256Hex(bytes);
+      if (sha !== pack.evidence.payload_sha256){
+        return { ok:false, reason:"SHA256_MISMATCH" };
+      }
+
+      // Import public key and verify signature
+      let pubKey;
+      try{
+        pubKey = await crypto.subtle.importKey(
+          "jwk",
+          pack.crypto.pubkey_jwk,
+          { name:"ECDSA", namedCurve:"P-256" },
+          true,
+          ["verify"]
+        );
+      } catch(e){
+        return { ok:false, reason:"PUBKEY_IMPORT_FAIL" };
+      }
+
+      const sigBuf = fromB64(pack.crypto.signature_b64);
+      const valid = await crypto.subtle.verify(
+        { name:"ECDSA", hash:"SHA-256" },
+        pubKey,
+        sigBuf,
+        bytes
+      );
+
+      if (!valid) return { ok:false, reason:"SIGNATURE_INVALID" };
+
+      return { ok:true, reason:"VALID" };
+    }
+
+    async function readFileAsText(file){
+      return new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(r.result);
+        r.onerror = () => reject(new Error("FILE_READ_FAIL"));
+        r.readAsText(file);
+      });
+    }
+
+    // UI wiring
+    $("btnGenKeys").addEventListener("click", async () => {
+      try{
+        await generateKeys();
+      }catch(e){
+        setGenStatus("KEYGEN_FAILED", false);
+      }
+    });
+
+    $("btnBuildPack").addEventListener("click", async () => {
+      try{
+        await buildPack();
+      }catch(e){
+        // handled via status
+      }
+    });
+
+    $("btnVerify").addEventListener("click", async () => {
+      try{
+        const f = $("filePack").files && $("filePack").files[0];
+        if (!f){
+          setVerifyStatus("NO FILE SELECTED", false);
+          return;
+        }
+        const txt = await readFileAsText(f);
+        $("packPreview").value = txt;
+
+        let pack;
+        try{
+          pack = JSON.parse(txt);
+        }catch(e){
+          setVerifyStatus("INVALID JSON", false);
+          return;
+        }
+
+        const res = await verifyPack(pack);
+        if (res.ok){
+          setVerifyStatus("VALID (offline verification passed)", true);
+        } else {
+          setVerifyStatus(`INVALID (${res.reason})`, false);
+        }
+      }catch(e){
+        setVerifyStatus("VERIFY_FAILED", false);
+      }
+    });
+  </script>
+</body>
+</html>
