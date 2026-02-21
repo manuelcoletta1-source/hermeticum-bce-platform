@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>HBCE LAB — EXPERIMENT-0001 (Identity-Bound Decision Trace)</title>
+  <meta name="description" content="Replicable lab protocol: bind an agent decision to a persistent identity, record it append-only, and verify deterministically (fail-closed, hash-only)." />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/lab/experiment-0001.html" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+
+  <style>
+    .lab-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin-top:16px}
+    .lab-card{border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:16px;background:rgba(0,0,0,.25)}
+    .lab-kicker{letter-spacing:.12em;text-transform:uppercase;font-size:.78rem;opacity:.85}
+    .lab-title{font-size:2rem;line-height:1.15;margin:8px 0 10px}
+    .lab-lead{opacity:.92;max-width:70ch}
+    .lab-hr{height:1px;background:rgba(255,255,255,.10);margin:18px 0}
+    .lab-badge{display:inline-block;border:1px solid rgba(255,255,255,.14);padding:6px 10px;border-radius:999px;font-size:.78rem;opacity:.92}
+    .lab-steps ol{margin:0;padding-left:18px}
+    .lab-steps li{margin:10px 0}
+    .lab-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.92rem}
+    .lab-callout{border-left:3px solid rgba(255,255,255,.20);padding:12px 12px 12px 14px;background:rgba(255,255,255,.04);border-radius:12px}
+    .lab-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+    .lab-actions a{display:inline-block;text-decoration:none}
+    .lab-btn{display:inline-block;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.28)}
+    .lab-btn:hover{border-color:rgba(255,255,255,.28)}
+    .lab-small{font-size:.9rem;opacity:.9}
+    .lab-table{width:100%;border-collapse:collapse;margin-top:10px}
+    .lab-table th,.lab-table td{border-bottom:1px solid rgba(255,255,255,.10);padding:10px 8px;text-align:left;vertical-align:top}
+    .lab-table th{opacity:.9}
+  </style>
+</head>
+
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+
+    <section class="hbce-hero">
+      <div class="lab-kicker">HBCE LAB · REPLICABLE PROTOCOL</div>
+      <h1 class="lab-title">EXPERIMENT-0001 — Identity-Bound Decision Trace (IBDT)</h1>
+      <p class="lab-lead">
+        Goal: demonstrate that an agent decision can be bound to a persistent identity, written append-only,
+        and verified deterministically in a fail-closed pipeline (hash-only public evidence).
+      </p>
+      <div style="margin-top:10px">
+        <span class="lab-badge">AUDIT-FIRST</span>
+        <span class="lab-badge">FAIL-CLOSED</span>
+        <span class="lab-badge">HASH-ONLY</span>
+        <span class="lab-badge">APPEND-ONLY</span>
+      </div>
+
+      <div class="lab-actions">
+        <a class="lab-btn" href="/hermeticum-bce-platform/sim/joker-kernel/">Open Kernel Simulator →</a>
+        <a class="lab-btn" href="/hermeticum-bce-platform/sim/joker-kernel/verifier.html">Open Verifier →</a>
+        <a class="lab-btn" href="/hermeticum-bce-platform/verify/">Verify Hub →</a>
+        <a class="lab-btn" href="/hermeticum-bce-platform/registry/">Registry Hub →</a>
+      </div>
+
+      <div class="lab-hr"></div>
+
+      <div class="lab-grid">
+        <div class="lab-card">
+          <h2 style="margin:0 0 8px">Hypothesis</h2>
+          <p class="lab-small">
+            A decision emitted by an autonomous agent becomes accountable if (and only if) it is:
+            <b>identity-bound</b>, <b>trace-recorded</b>, and <b>independently verifiable</b>.
+          </p>
+          <div class="lab-callout lab-small">
+            This is a working hypothesis. The experiment is designed to falsify it: any missing proof → INVALID.
+          </div>
+        </div>
+
+        <div class="lab-card">
+          <h2 style="margin:0 0 8px">Inputs</h2>
+          <table class="lab-table">
+            <tr>
+              <th style="width:34%">Input</th>
+              <th>Meaning</th>
+            </tr>
+            <tr>
+              <td class="lab-mono">Identity Keys</td>
+              <td>Local keypair used to sign the decision event. If missing → fail-closed.</td>
+            </tr>
+            <tr>
+              <td class="lab-mono">Scenario</td>
+              <td>Named test scenario (e.g., robot safety, autonomy constraint).</td>
+            </tr>
+            <tr>
+              <td class="lab-mono">Vector</td>
+              <td>Comma-separated numbers representing sensor / state features.</td>
+            </tr>
+            <tr>
+              <td class="lab-mono">N decisions</td>
+              <td>Number of events emitted for the run.</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="lab-card">
+          <h2 style="margin:0 0 8px">Outputs</h2>
+          <table class="lab-table">
+            <tr>
+              <th style="width:34%">Output</th>
+              <th>Acceptance criteria</th>
+            </tr>
+            <tr>
+              <td class="lab-mono">Ledger Entry</td>
+              <td>Append-only entry exists after the run; includes timestamp + payload hash.</td>
+            </tr>
+            <tr>
+              <td class="lab-mono">Signature Proof</td>
+              <td>Event includes a signature verifiable with the public key.</td>
+            </tr>
+            <tr>
+              <td class="lab-mono">Deterministic Verify</td>
+              <td>Verifier returns VALID only if hashes + signature match exactly.</td>
+            </tr>
+            <tr>
+              <td class="lab-mono">Fail-Closed</td>
+              <td>Any missing identity keys, missing hash, or mismatch → INVALID (no soft pass).</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="lab-card lab-steps">
+          <h2 style="margin:0 0 8px">Procedure (Replicable)</h2>
+          <ol>
+            <li>
+              Open the <b>Kernel Simulator</b>. Initialize identity keys (required).
+              <div class="lab-small">If the UI shows “MISSING IDENTITY KEYS” the experiment is NOT running.</div>
+            </li>
+            <li>
+              Choose a <b>Scenario</b> and set a <b>Vector</b> (e.g., <span class="lab-mono">1,0,1,0,3</span>).
+            </li>
+            <li>
+              Run <b>N decisions</b> and emit events to the ledger.
+            </li>
+            <li>
+              Open the <b>Verifier</b> and validate the run.
+              <div class="lab-small">Expected: VALID only if identity + hash + signature chain is intact.</div>
+            </li>
+            <li>
+              Repeat with a tiny change (e.g., vector last number +1). Output must change. Old proof must not validate the new payload.
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="lab-hr"></div>
+
+      <div class="lab-card">
+        <h2 style="margin:0 0 8px">Failure Modes (Designed)</h2>
+        <ul style="margin:0;padding-left:18px">
+          <li><b>No identity keys</b> → INVALID (fail-closed).</li>
+          <li><b>No payload hash</b> → INVALID (hash-only).</li>
+          <li><b>Signature mismatch</b> → INVALID (integrity breach).</li>
+          <li><b>Ledger write missing</b> → run considered non-existent for audit.</li>
+        </ul>
+        <p class="lab-small" style="margin-top:10px">
+          In HBCE Lab, the system is allowed to be brutal: <b>no proof = no event</b>.
+        </p>
+      </div>
+
+      <div class="lab-hr"></div>
+
+      <div class="lab-card">
+        <h2 style="margin:0 0 8px">Why this matters (in plain engineering)</h2>
+        <p class="lab-small">
+          Robotics, autonomous fleets, critical infrastructure, and AI governance all converge on the same missing primitive:
+          persistent operational identity. EXPERIMENT-0001 is the minimal proof that an “agent decision” can carry an identity-anchored,
+          verifiable, audit-ready trace — without public custody of private data.
+        </p>
+      </div>
+
+    </section>
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce.js"></script>
+</body>
+</html>
