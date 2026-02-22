@@ -1,184 +1,127 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ECOSYSTEM — Root (hash-only)</title>
-  <meta name="description" content="Ecosystem Root hash-only: membri, hash, timestamp e verifica end-to-end su registry append-only. UE-first, audit-first, fail-closed." />
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>HBCE Ecosystem — Structural Map</title>
+<meta name="description" content="Structural map of the HBCE ecosystem. Root layer, identity layer, AI layer, industrial layer and research layer." />
+
+<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
+
 <body>
-  <div data-hbce="header"></div>
 
-  <main class="hbce-container hbce-main">
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">ECOSYSTEM · ROOT · HASH-ONLY</div>
-      <h1 class="hbce-hero__title">Ecosystem Root (rete completa)</h1>
-      <p class="hbce-hero__lead">
-        Questa pagina legge <strong>ECOSYSTEM_ROOT.json</strong> e verifica end-to-end la presenza di ogni hash
-        nel <strong>registry append-only</strong>. Se un percorso o una prova non è verificabile → <strong>FAIL-CLOSED</strong>.
-      </p>
-    </section>
+<div data-hbce="header"></div>
 
-    <section class="hbce-section">
-      <div class="hbce-card">
-        <div class="hbce-grid" style="grid-template-columns: 1fr; gap: .5rem;">
-          <div><strong>Root:</strong> <code>/hermeticum-bce-platform/ECOSYSTEM_ROOT.json</code></div>
-          <div><strong>Registry:</strong> <a href="/hermeticum-bce-platform/registry/">/registry/</a> · <code>/registry/registry.json</code></div>
-          <div><strong>Verify:</strong> <a href="/hermeticum-bce-platform/verify/">/verify/</a></div>
-          <div><strong>Policy:</strong> UE-first · Audit-first · Fail-closed · Hash-only · No custody · Append-only</div>
-        </div>
-      </div>
-    </section>
+<main class="hbce-container hbce-main">
 
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Stato metrologico (end-to-end)</h2>
-      <div id="statusPanel" class="hbce-card">
-        <div class="hbce-skeleton">Caricamento…</div>
-      </div>
-      <p class="hbce-note" style="margin-top:.75rem;">
-        Modello: <strong>PASS</strong> se <em>tutti</em> gli hash dei membri sono presenti nel registry append-only.
-        <strong>FAIL</strong> se manca anche un solo hash (fail-closed).
-      </p>
-    </section>
+<section class="hbce-hero">
+<div class="hbce-hero__kicker">ECOSYSTEM MAP · STRUCTURAL VIEW</div>
+<h1 class="hbce-hero__title">HBCE System Architecture</h1>
+<p class="hbce-hero__lead">
+This page defines the structural hierarchy of the HBCE ecosystem.
+Not all repositories have the same operational weight.
+</p>
+</section>
 
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Membri (hash-only)</h2>
-      <div id="members" class="hbce-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
-        <div class="hbce-card"><div class="hbce-skeleton">Caricamento…</div></div>
-      </div>
-      <p class="hbce-note" style="margin-top: .75rem;">
-        Nota: il registry pubblico contiene solo <strong>nickname + hash + timestamp</strong>. Nessun dato personale.
-      </p>
-    </section>
-  </main>
+<section class="hbce-section">
+<h2>Layer 0 — Root</h2>
+<div class="hbce-card">
+<p><strong>hermeticum-bce-platform</strong></p>
+<p>Operational identity baseline. Standards. Registry. Deterministic verification layer.</p>
+</div>
+</section>
 
-  <div data-hbce="footer"></div>
+<section class="hbce-section">
+<h2>Layer 1 — Identity Infrastructure</h2>
 
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
-  <script>
-    (function () {
-      const SRC_ROOT = "/hermeticum-bce-platform/ECOSYSTEM_ROOT.json";
-      const SRC_REGISTRY = "/hermeticum-bce-platform/registry/registry.json";
+<div class="hbce-grid">
 
-      const esc = (s) => String(s || "").replace(/[&<>"']/g, (c) => ({
-        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-      }[c]));
+<div class="hbce-card">
+<p><strong>hermeticum-bce-ipr</strong></p>
+<p>Identity Primary Record logic.</p>
+</div>
 
-      const isHex64 = (h) => /^[a-f0-9]{64}$/i.test(String(h || ""));
+<div class="hbce-card">
+<p><strong>ipr-core</strong></p>
+<p>Core identity computation and canonicalization.</p>
+</div>
 
-      const elStatus = document.getElementById("statusPanel");
-      const elMembers = document.getElementById("members");
+<div class="hbce-card">
+<p><strong>ue-ipr-registry</strong></p>
+<p>EU-oriented identity registry architecture.</p>
+</div>
 
-      function toAbs(pathOrUrl) {
-        // accetta verify relativo ("/...") o assoluto
-        if (!pathOrUrl) return "";
-        return String(pathOrUrl);
-      }
+</div>
+</section>
 
-      function badge(ok, labelOk, labelFail) {
-        // senza dipendenze CSS extra: stile inline minimale HBCE
-        const txt = ok ? labelOk : labelFail;
-        const bg = ok ? "rgba(0,0,0,.06)" : "rgba(0,0,0,.06)";
-        const brd = ok ? "rgba(0,0,0,.18)" : "rgba(0,0,0,.18)";
-        return `<span style="display:inline-block;padding:.2rem .5rem;border:1px solid ${brd};border-radius:999px;background:${bg};font-weight:700;">
-          ${esc(txt)}
-        </span>`;
-      }
+<section class="hbce-section">
+<h2>Layer 2 — AI & Execution</h2>
 
-      function cardMember(m, present) {
-        const nick = esc(m.nickname);
-        const h = esc(m.payload_sha256);
-        const verify = toAbs(m.verify) || ("/hermeticum-bce-platform/verify/?h=" + h);
+<div class="hbce-grid">
 
-        const state = present
-          ? badge(true, "PRESENT (REGISTRY)", "MISSING")
-          : badge(false, "PRESENT", "MISSING (FAIL)");
+<div class="hbce-card">
+<p><strong>gitjoker-c2</strong></p>
+<p>Cybernetic decision layer.</p>
+</div>
 
-        return `
-          <div class="hbce-card">
-            <div class="hbce-kicker">${nick}</div>
-            <div style="margin:.25rem 0 .5rem 0; font-weight:700;">IPR (hash-only)</div>
+<div class="hbce-card">
+<p><strong>ai-joker-workers</strong></p>
+<p>Execution workers.</p>
+</div>
 
-            <div style="margin-bottom:.5rem;">${state}</div>
+<div class="hbce-card">
+<p><strong>hermeticum-bce-ai-workers</strong></p>
+<p>Industrial AI orchestration layer.</p>
+</div>
 
-            <div style="font-size:.95rem; line-height:1.25;">
-              <div><strong>payload_sha256</strong></div>
-              <code style="display:block; word-break:break-all;">${h}</code>
-            </div>
+</div>
+</section>
 
-            <div class="hbce-actions" style="margin-top: .75rem;">
-              <a class="hbce-btn hbce-btn--primary" href="${esc(verify)}">VERIFY</a>
-              <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">REGISTRY</a>
-            </div>
-          </div>
-        `;
-      }
+<section class="hbce-section">
+<h2>Layer 3 — Industrial / Governance</h2>
 
-      function failClosed(message) {
-        elStatus.innerHTML = `
-          <div class="hbce-card__text">
-            <div style="margin-bottom:.5rem;">${badge(false, "PASS", "FAIL-CLOSED")}</div>
-            <strong>FAIL-CLOSED:</strong> impossibile verificare ecosistema.<br/>
-            Motivo: <code>${esc(message)}</code>
-          </div>
-        `;
-        elMembers.innerHTML = `
-          <div class="hbce-card">
-            <div class="hbce-card__text">Nessun membro mostrato perché la root o il registry non sono verificabili.</div>
-          </div>
-        `;
-      }
+<div class="hbce-grid">
 
-      Promise.all([
-        fetch(SRC_ROOT, { cache: "no-store" }).then(r => { if (!r.ok) throw new Error("ECOSYSTEM_ROOT non disponibile"); return r.json(); }),
-        fetch(SRC_REGISTRY, { cache: "no-store" }).then(r => { if (!r.ok) throw new Error("REGISTRY non disponibile"); return r.json(); })
-      ])
-      .then(([root, reg]) => {
-        // Validazioni minime (fail-closed)
-        const members = Array.isArray(root.members) ? root.members : null;
-        if (!members) throw new Error("ECOSYSTEM_ROOT.members non valido");
+<div class="hbce-card">
+<p><strong>hermeticum-bce-b2b</strong></p>
+<p>Industrial adoption layer.</p>
+</div>
 
-        const entries = Array.isArray(reg.entries) ? reg.entries : null;
-        if (!entries) throw new Error("registry.entries non valido");
+<div class="hbce-card">
+<p><strong>hermeticum-bce-b2g</strong></p>
+<p>Institutional adoption layer.</p>
+</div>
 
-        // Costruisci set hash dal registry
-        const regSet = new Set();
-        for (const e of entries) {
-          if (e && isHex64(e.payload_sha256)) regSet.add(String(e.payload_sha256).toLowerCase());
-        }
+<div class="hbce-card">
+<p><strong>ipr-gov-eu-standard</strong></p>
+<p>Governance-grade profile.</p>
+</div>
 
-        // Valida membri e verifica presenza
-        let missing = 0;
-        const checked = members.map((m) => {
-          const h = (m && m.payload_sha256) ? String(m.payload_sha256) : "";
-          if (!isHex64(h)) throw new Error("member payload_sha256 non valido");
-          const present = regSet.has(h.toLowerCase());
-          if (!present) missing += 1;
-          return { m, present };
-        });
+</div>
+</section>
 
-        const ts = esc(root.timestamp || "");
-        const issuer = root.issuer || {};
-        const hallmark = esc(issuer.hallmark || "");
-        const legal = esc(issuer.legal_name || "");
-        const total = checked.length;
+<section class="hbce-section">
+<h2>Research / Experimental Layer</h2>
+<p>
+Research repositories exist as experimental domains and do not represent the operational baseline.
+</p>
+</section>
 
-        const ok = (missing === 0);
+<section class="hbce-section">
+<h2>Principle</h2>
+<p>
+Root defines the standard.  
+Other repositories extend capability.  
+Not all components are baseline.
+</p>
+</section>
 
-        elStatus.innerHTML = `
-          <div class="hbce-grid" style="grid-template-columns: 1fr; gap:.6rem;">
-            <div>${ok ? badge(true, "PASS (E2E)", "FAIL") : badge(false, "PASS", "FAIL-CLOSED (E2E)")}</div>
-            <div><strong>Timestamp root:</strong> <code>${ts}</code></div>
-            <div><strong>Issuer:</strong> ${hallmark} · <strong>${legal}</strong></div>
-            <div><strong>Controllo:</strong> ${total} membri · <strong>${missing}</strong> mancanti nel registry</div>
-          </div>
-        `;
+</main>
 
-        elMembers.innerHTML = checked.map(({m, present}) => cardMember(m, present)).join("");
-      })
-      .catch((err) => failClosed(err && err.message ? err.message : "errore sconosciuto"));
-    })();
-  </script>
+<div data-hbce="footer"></div>
+<script src="/hermeticum-bce-platform/assets/hbce.js"></script>
+
 </body>
 </html>
