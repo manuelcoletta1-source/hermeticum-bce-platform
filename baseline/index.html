@@ -1,160 +1,123 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<title>HERMETICUM — Baseline</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Baseline infrastrutturale Hermeticum: stato stabilizzato v1, regime audit-first, hash-only, no data custody. Documento operativo UE-ready.">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<style>
-:root{
-  --bg:#05070a;
-  --panel:#0b0f14;
-  --text:#eaf2ff;
-  --muted:#8aa0b8;
-  --line:#1c2733;
-  --line2:#223140;
-  --accent:#b7c9ff;
-  --max:980px;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;background:var(--bg);color:var(--text);
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;line-height:1.45;
-}
-a{color:inherit;text-decoration:none} a:hover{text-decoration:underline}
-.wrap{max-width:var(--max);margin:0 auto;padding:0 18px}
-header{border-bottom:1px solid var(--line);padding:18px 0;background:rgba(0,0,0,.18)}
-.brand{font-weight:800;letter-spacing:2px}
-.brand small{display:block;color:var(--muted);font-weight:600;letter-spacing:.6px;margin-top:6px;font-size:12px}
-nav{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
-nav a{font-size:12px;color:var(--muted);padding:6px 10px;border:1px solid transparent}
-nav a:hover{border-color:var(--line);color:var(--text);text-decoration:none}
-.policy{border-top:1px solid var(--line);margin-top:14px;padding-top:12px;color:var(--muted);font-size:12px}
-.policy b{color:var(--text);font-weight:800}
+<title>HBCE Baseline v1.0 — EU Operational Identity</title>
+<meta name="description" content="HBCE Baseline v1.0 defines the minimum EU-aligned operational identity requirements: hash-only public evidence, append-only trajectory, deterministic verification and fail-closed enforcement." />
 
-main{padding:22px 0 46px}
-.card{border:1px solid var(--line);background:var(--panel);padding:18px}
-h1{margin:0 0 8px;font-size:20px;letter-spacing:.6px;font-weight:800}
-.sub{margin:0;color:var(--muted);font-size:13px;line-height:1.7}
-.hr{height:1px;background:rgba(255,255,255,.08);margin:16px 0}
-h2{margin:0 0 8px;font-size:12px;letter-spacing:1.2px;color:var(--text);font-weight:900}
-
-.kv{
-  display:grid;
-  grid-template-columns:220px 1fr;
-  gap:10px 14px;
-  border:1px solid var(--line2);
-  background:rgba(0,0,0,.18);
-  padding:14px;
-  margin-top:10px;
-}
-.kv div{padding:6px 0}
-.kv .k{color:var(--muted);font-size:12px;letter-spacing:.6px}
-.kv .v{color:var(--text);font-size:13px}
-
-.note{margin-top:10px;color:var(--muted);font-size:12px;line-height:1.6}
-
-.block{
-  margin-top:12px;
-  padding:14px;
-  border:1px solid var(--line2);
-  background:rgba(0,0,0,.18);
-  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
-  font-size:12px;
-  color:var(--muted);
-  white-space:pre-line;
-}
-
-.footer{
-  border-top:1px solid var(--line);
-  margin-top:60px;
-  padding-top:22px;
-  text-align:center;
-  color:var(--muted);
-  font-size:12px;
-  line-height:1.6;
-}
-.symbol{font-size:22px;letter-spacing:6px;margin:10px 0 8px;color:var(--text)}
-</style>
+<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
 <body>
-<header>
-  <div class="wrap">
-    <div class="brand">HERMETICUM <small>Baseline — Stabilizzazione infrastrutturale (UE-ready)</small></div>
-    <nav>
-      <a href="/hermeticum-bce-platform/">Home</a>
-      <a href="/hermeticum-bce-platform/create/">Create IPR</a>
-      <a href="/hermeticum-bce-platform/verify/">Verify</a>
-      <a href="/hermeticum-bce-platform/audit/">Audit Chain</a>
-      <a href="/hermeticum-bce-platform/seal/">Seal</a>
-      <a href="/hermeticum-bce-platform/company/">Company</a>
-    </nav>
-    <div class="policy"><b>Audit-first</b> · <b>Fail-closed</b> · <b>Hash-only</b> · <b>No data custody</b></div>
+
+<div data-hbce="header"></div>
+
+<main class="hbce-container hbce-main">
+
+<section class="hbce-hero">
+  <div class="hbce-hero__kicker">BASELINE · VERSIONED STANDARD</div>
+  <h1 class="hbce-hero__title">HBCE Baseline v1.0</h1>
+  <p class="hbce-hero__lead">
+    This document defines the minimum operational identity requirements for EU-grade accountability environments.
+    It is a technical baseline (not a marketing claim).
+  </p>
+
+  <div class="hbce-actions">
+    <a class="hbce-btn" href="/hermeticum-bce-platform/standards/">Standards Profiles →</a>
+    <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/tech-position/">Tech Position →</a>
+    <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/executive/">Executive →</a>
   </div>
-</header>
+</section>
 
-<main class="wrap">
-  <div class="card">
-    <h1>Baseline infrastrutturale (v1)</h1>
-    <p class="sub">
-      Questo documento stabilisce lo stato iniziale stabilizzato dell’infrastruttura HERMETICUM
-      prima di ulteriori estensioni e adozione istituzionale. Il baseline definisce continuità strutturale,
-      coerenza evolutiva e principio di non-retroattività operativa (audit-first).
-    </p>
+<section class="hbce-section">
+<h2>Scope</h2>
+<p>
+Applies to: humans, operators, AI units, robots, infrastructures.
+</p>
+<p>
+This baseline concerns: identity continuity, evidence, verification and failure behavior.
+</p>
+</section>
 
-    <div class="hr"></div>
+<section class="hbce-section">
+<h2>Definitions</h2>
+<ul>
+  <li><strong>Operational identity</strong>: a verifiable trajectory (origin + key reference + append-only chain), not a credential.</li>
+  <li><strong>Evidence</strong>: hash-based proof that can be verified independently.</li>
+  <li><strong>Deterministic verification</strong>: same input → same output (PASS/FAIL).</li>
+  <li><strong>Fail-closed</strong>: missing/invalid evidence → block. No silent degradation.</li>
+</ul>
+</section>
 
-    <h2>A) Identità del baseline</h2>
-    <div class="kv">
-      <div class="k">DOCUMENTO</div><div class="v">Hermeticum Infrastructure — Initial Baseline</div>
-      <div class="k">STATUS</div><div class="v">ACTIVE</div>
-      <div class="k">VERSIONE</div><div class="v">BASELINE-v1</div>
-      <div class="k">REGIME</div><div class="v">Audit-first · Fail-closed · Hash-only · No data custody</div>
-      <div class="k">VERIFICABILITÀ</div><div class="v">Client-side verifiable (SHA-256 receipts)</div>
-      <div class="k">SCOPO</div><div class="v">Stabilizzazione e continuità prima di esposizione istituzionale</div>
-    </div>
+<section class="hbce-section">
+<h2>Baseline invariants (MUST)</h2>
+<ul>
+  <li><strong>HASH-ONLY public layer</strong> (GDPR-min posture)</li>
+  <li><strong>APPEND-ONLY trajectory</strong> (no retroactive edits; corrections are new entries)</li>
+  <li><strong>DETERMINISTIC verification</strong> (canonicalize → hash → match)</li>
+  <li><strong>FAIL-CLOSED enforcement</strong> (incoherence → stop)</li>
+  <li><strong>NO public data custody</strong> (public registry stores proofs only)</li>
+</ul>
+</section>
 
-    <div class="note">
-      Nota: il baseline non è un “marketing statement”. È un record operativo di stabilizzazione.
-    </div>
+<section class="hbce-section">
+<h2>Minimum artifacts (MUST)</h2>
+<ul>
+  <li>Canonical manifest (stable representation of payload + metadata)</li>
+  <li>Payload hash (SHA-256 or equivalent deterministic hash)</li>
+  <li>Receipt (human-readable proof bundle)</li>
+  <li>Public registry entry (hash-only evidence)</li>
+</ul>
+</section>
 
-    <div class="hr"></div>
+<section class="hbce-section">
+<h2>Verification rules (MUST)</h2>
+<ul>
+  <li>Canonicalization step MUST be deterministic.</li>
+  <li>Computed hash MUST match the registry entry.</li>
+  <li>If match is missing → INVALID.</li>
+  <li>If evidence is inconsistent → INVALID.</li>
+</ul>
 
-    <h2>B) Capacità incluse nel baseline</h2>
-    <div class="kv">
-      <div class="k">IPR GENERATION</div><div class="v">Emissione IPR PUBLIC/PRIVATE (PRIVATE sigillato nel bundle)</div>
-      <div class="k">RECEIPT VERIFICATION</div><div class="v">Ricalcolo receipt_sha256(json) e confronto (PASS/FAIL)</div>
-      <div class="k">TEMPORAL AUDIT CHAIN</div><div class="v">Catena prev_hash → receipt_sha256(json) con bundle sigillato</div>
-      <div class="k">STANDARD PUBBLICO</div><div class="v">Pubblicazione pagine operative in stile UE (infrastruttura)</div>
-    </div>
+<div class="hbce-card" style="margin-top:12px;">
+  <p style="margin:0;">
+    Baseline rule: if a decision cannot be reproduced independently, it is not admissible for execution.
+  </p>
+</div>
+</section>
 
-    <div class="hr"></div>
+<section class="hbce-section">
+<h2>Compatibility posture (EU)</h2>
+<p>
+HBCE Baseline v1.0 is engineered for structural compatibility with EU accountability environments (GDPR-min, auditability, traceability).
+This is a technical posture, not a legal guarantee.
+</p>
+</section>
 
-    <h2>C) Regole di stabilità</h2>
-    <div class="block">
-1) Fail-closed: input invalido → nessuna emissione.
-2) Hash-only: in pagina si mostrano solo hash/receipt; nessun payload esposto.
-3) No data custody: nessun dato conservato server-side.
-4) Audit-first: ogni evoluzione successiva avviene tramite audit chain.
-5) Non-retroattività: i record emessi restano verificabili nel tempo.
-    </div>
+<section class="hbce-section">
+<h2>Status</h2>
+<ul>
+  <li><strong>Version</strong>: v1.0</li>
+  <li><strong>Mode</strong>: permissionless, open deployment</li>
+  <li><strong>Baseline</strong>: EU-first, audit-first, fail-closed</li>
+</ul>
+</section>
 
-    <div class="hr"></div>
+<section class="hbce-section">
+<h2>Entry points</h2>
+<div class="hbce-actions">
+  <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verify (PASS/FAIL)</a>
+  <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry</a>
+  <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/base/">Create IPR</a>
+</div>
+</section>
 
-    <h2>D) Uso operativo</h2>
-    <div class="note">
-      Uso minimo: emetti un IPR (PRIVATE) → conserva bundle e JSON → condividi solo PUBLIC se serve → usa audit chain per evoluzione temporale.
-      In caso di verifica: usa la console Verify con il JSON originale scaricato (evita copia manuale).
-    </div>
-  </div>
-
-  <div class="footer">
-    <div class="symbol">🜏</div>
-    HERMETICUM — Blindata · Computabile · Evolutiva<br>
-    HERMETICUM B.C.E. S.r.l. · UE
-  </div>
 </main>
+
+<div data-hbce="footer"></div>
+<script src="/hermeticum-bce-platform/assets/hbce.js"></script>
+
 </body>
 </html>
