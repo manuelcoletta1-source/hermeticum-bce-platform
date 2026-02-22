@@ -1,252 +1,113 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HERMETICUM — STATUS (Operativo)</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <meta name="description"
-        content="Stato operativo: registry status, entries count, last entry timestamp, file hash, fail-closed health checks. UE-first, audit-first, hash-only, append-only." />
+<title>HBCE Status — Network Activity</title>
+<meta name="description" content="HBCE operational status: baseline version, verification activity, registry state and network posture." />
 
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+<meta name="robots" content="index,follow" />
 </head>
 
 <body>
-  <div data-hbce="header"></div>
 
-  <main class="hbce-container hbce-main">
+<div data-hbce="header"></div>
 
-    <!-- HERO -->
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">STATUS · LIVE HEALTH · FAIL-CLOSED</div>
+<main class="hbce-container hbce-main">
 
-      <h1 class="hbce-hero__title">Stato operativo (public baseline)</h1>
+<section class="hbce-hero">
+<div class="hbce-hero__kicker">NETWORK STATUS · LIVE BASELINE</div>
+<h1 class="hbce-hero__title">Operational Status</h1>
+<p class="hbce-hero__lead">
+HBCE operates as an append-only verification layer.
+This page reflects structural status, not marketing metrics.
+</p>
+</section>
 
-      <p class="hbce-hero__lead">
-        Questa pagina esegue controlli client-side sul registry pubblico (append-only, hash-only).
-        Se il registry non è leggibile o non è coerente → <strong>FAIL-CLOSED</strong> (stato non operativo).
-      </p>
+<section class="hbce-section">
+<h2>Baseline</h2>
+<div class="hbce-card">
+<ul style="margin:0;padding-left:18px;">
+<li><strong>Baseline version:</strong> v1.0</li>
+<li><strong>Mode:</strong> permissionless</li>
+<li><strong>Policy:</strong> UE-first · audit-first · fail-closed</li>
+<li><strong>Public layer:</strong> hash-only</li>
+</ul>
+</div>
+</section>
 
-      <div class="hbce-actions">
-        <a class="hbce-btn hbce-btn--ghost" href="/registry/">REGISTRY</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/verify/">VERIFY</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/infrastructure/">INFRASTRUCTURE</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/press/">PRESS</a>
-      </div>
+<section class="hbce-section">
+<h2>Verification layer</h2>
+<div class="hbce-grid">
 
-      <p class="hbce-note">
-        Policy: <strong>UE-first</strong> · <strong>audit-first</strong> · <strong>fail-closed</strong> · <strong>hash-only</strong> · <strong>append-only</strong>
-      </p>
-    </section>
+<div class="hbce-card">
+<h3>Deterministic verification</h3>
+<p>Active. PASS/FAIL logic operational.</p>
+<a class="hbce-link" href="/hermeticum-bce-platform/verify/">Run verification →</a>
+</div>
 
-    <!-- SUMMARY -->
-    <section class="hbce-section">
-      <h2>Health summary</h2>
+<div class="hbce-card">
+<h3>Registry state</h3>
+<p>Append-only public evidence ledger active.</p>
+<a class="hbce-link" href="/hermeticum-bce-platform/registry/">Open registry →</a>
+</div>
 
-      <div class="hbce-grid">
+<div class="hbce-card">
+<h3>IPR creation</h3>
+<p>Operational identity issuance available.</p>
+<a class="hbce-link" href="/hermeticum-bce-platform/create/base/">Create IPR →</a>
+</div>
 
-        <div class="hbce-card">
-          <h3>Registry status</h3>
-          <p id="hbce-registry-status" class="hbce-note">Checking…</p>
-          <p class="hbce-note">
-            Source: <code id="hbce-registry-url">/hermeticum-bce-platform/registry/registry.json</code>
-          </p>
-        </div>
+</div>
+</section>
 
-        <div class="hbce-card">
-          <h3>Entries</h3>
-          <p class="hbce-note">
-            Total: <strong id="hbce-entries-count">—</strong><br>
-            Last timestamp: <strong id="hbce-last-ts">—</strong><br>
-            Last nickname: <strong id="hbce-last-nick">—</strong>
-          </p>
-        </div>
+<section class="hbce-section">
+<h2>Network posture</h2>
+<div class="hbce-card">
+<ul style="margin:0;padding-left:18px;">
+<li>Server-independent deployment</li>
+<li>No public data custody</li>
+<li>Append-only evolution</li>
+<li>Deterministic reproducibility</li>
+<li>Fail-closed enforcement</li>
+</ul>
+</div>
+</section>
 
-        <div class="hbce-card">
-          <h3>Registry file hash (SHA-256)</h3>
-          <p class="hbce-note">
-            <strong id="hbce-registry-sha256">—</strong>
-          </p>
-          <p class="hbce-note">
-            Calcolato nel browser (WebCrypto). Se non supportato, resta “—”.
-          </p>
-        </div>
+<section class="hbce-section">
+<h2>Interpretation</h2>
+<p>
+HBCE does not measure success by user count or traffic.
+Operational validity is defined by:
+</p>
 
-        <div class="hbce-card">
-          <h3>Build / page time</h3>
-          <p class="hbce-note">
-            Page last modified: <strong id="hbce-lastmod">—</strong><br>
-            Check run (UTC): <strong id="hbce-run">—</strong>
-          </p>
-        </div>
+<ul>
+<li>verifiable identity trajectories</li>
+<li>deterministic reproducibility</li>
+<li>append-only evidence</li>
+</ul>
 
-      </div>
-    </section>
+<p>
+If these remain valid, the system is considered operational.
+</p>
+</section>
 
-    <!-- FAIL-CLOSED EXPLANATION -->
-    <section class="hbce-section">
-      <h2>Fail-closed policy</h2>
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>Condizioni PASS</h3>
-          <ul class="hbce-list">
-            <li>registry.json recuperabile (HTTP OK)</li>
-            <li>JSON valido e parseabile</li>
-            <li>Struttura valida: <code>entries[]</code></li>
-            <li>Entry valida: <code>nickname</code>, <code>payload_sha256</code>, <code>timestamp</code></li>
-          </ul>
-        </div>
-        <div class="hbce-card">
-          <h3>Condizioni FAIL</h3>
-          <ul class="hbce-list">
-            <li>Errore fetch / CORS / 404</li>
-            <li>JSON corrotto / struttura non conforme</li>
-            <li>Entries non array o vuoto quando non dovrebbe</li>
-            <li>Entry senza campi minimi</li>
-          </ul>
-          <p class="hbce-note">
-            In FAIL il sistema non “inventa”: segnala <strong>NON OPERATIVO</strong>.
-          </p>
-        </div>
-      </div>
-    </section>
+<section class="hbce-section">
+<h2>System links</h2>
+<div class="hbce-actions">
+<a class="hbce-btn" href="/hermeticum-bce-platform/baseline/">Baseline</a>
+<a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/standards/">Standards</a>
+<a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/adoption/">Adoption</a>
+<a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/executive/">Executive</a>
+</div>
+</section>
 
-    <!-- QUICK LINKS -->
-    <section class="hbce-section">
-      <h2>Ingressi operativi</h2>
-      <div class="hbce-actions">
-        <a class="hbce-btn" href="/create/">CREATE</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/receipt/">RECEIPT</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/registry/">REGISTRY</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/verify/">VERIFY</a>
-      </div>
+</main>
 
-      <p class="hbce-note">
-        HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br>
-        HERMETICUM B.C.E. S.r.l.
-      </p>
-    </section>
+<div data-hbce="footer"></div>
+<script src="/hermeticum-bce-platform/assets/hbce.js"></script>
 
-  </main>
-
-  <div data-hbce="footer"></div>
-
-  <script>
-    (function () {
-      const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
-
-      const $ = (id) => document.getElementById(id);
-
-      function setText(id, value) {
-        const el = $(id);
-        if (el) el.textContent = value;
-      }
-
-      function isNonEmptyString(x) {
-        return typeof x === "string" && x.trim().length > 0;
-      }
-
-      function isISODateString(x) {
-        if (!isNonEmptyString(x)) return false;
-        const d = new Date(x);
-        return !Number.isNaN(d.valueOf());
-      }
-
-      async function sha256HexFromText(text) {
-        if (!window.crypto || !window.crypto.subtle) return null;
-        const enc = new TextEncoder();
-        const buf = enc.encode(text);
-        const hashBuf = await crypto.subtle.digest("SHA-256", buf);
-        const hashArr = Array.from(new Uint8Array(hashBuf));
-        return hashArr.map(b => b.toString(16).padStart(2, "0")).join("");
-      }
-
-      function fail(reason) {
-        setText("hbce-registry-status", "FAIL-CLOSED — " + reason);
-        // Optional: you can also add a data-state attribute if hbce.css supports it.
-      }
-
-      function pass(msg) {
-        setText("hbce-registry-status", "OK — " + msg);
-      }
-
-      async function run() {
-        setText("hbce-registry-url", REGISTRY_URL);
-        setText("hbce-run", new Date().toISOString());
-        setText("hbce-lastmod", document.lastModified || "—");
-
-        let resp, text;
-        try {
-          resp = await fetch(REGISTRY_URL, { cache: "no-store" });
-        } catch (e) {
-          fail("registry fetch error");
-          return;
-        }
-
-        if (!resp || !resp.ok) {
-          fail("registry HTTP " + (resp ? resp.status : "error"));
-          return;
-        }
-
-        try {
-          text = await resp.text();
-        } catch (e) {
-          fail("registry read error");
-          return;
-        }
-
-        // Hash (best effort)
-        try {
-          const hex = await sha256HexFromText(text);
-          if (hex) setText("hbce-registry-sha256", hex);
-        } catch (_) {
-          // leave empty
-        }
-
-        let json;
-        try {
-          json = JSON.parse(text);
-        } catch (e) {
-          fail("registry JSON invalid");
-          return;
-        }
-
-        if (!json || !Array.isArray(json.entries)) {
-          fail("registry schema invalid (entries[])");
-          return;
-        }
-
-        const entries = json.entries;
-        setText("hbce-entries-count", String(entries.length));
-
-        if (entries.length === 0) {
-          // Not necessarily an error, but warn.
-          pass("registry valid (0 entries)");
-          setText("hbce-last-ts", "—");
-          setText("hbce-last-nick", "—");
-          return;
-        }
-
-        const last = entries[entries.length - 1];
-
-        // Minimal field validation for last entry
-        const okNick = isNonEmptyString(last.nickname);
-        const okHash = isNonEmptyString(last.payload_sha256);
-        const okTs = isISODateString(last.timestamp);
-
-        setText("hbce-last-nick", okNick ? last.nickname : "—");
-        setText("hbce-last-ts", okTs ? last.timestamp : "—");
-
-        if (!okNick || !okHash || !okTs) {
-          fail("last entry missing required fields");
-          return;
-        }
-
-        pass("registry valid");
-      }
-
-      run();
-    })();
-  </script>
 </body>
 </html>
