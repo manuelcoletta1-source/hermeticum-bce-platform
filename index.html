@@ -12,7 +12,11 @@
 <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/" />
 
 <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+<link rel="stylesheet" href="/hermeticum-bce-platform/assets/space.css" />
 <script defer src="/hermeticum-bce-platform/assets/fx.js"></script>
+
+<!-- Spacefield needs canvas present in DOM -->
+<script defer src="/hermeticum-bce-platform/assets/spacefield.js"></script>
 
 <style>
 /* ===============================
@@ -145,16 +149,8 @@
 @media (max-width: 900px){
   .ufo-side{ border-left:none; border-top:1px solid rgba(255,255,255,.08); }
 }
-.ufo-side h3{
-  margin:0 0 10px;
-  font-size: 14px;
-  letter-spacing:.02em;
-}
-.ufo-side p{
-  margin:0 0 12px;
-  color: rgba(232,238,246,.78);
-  font-size: 13px;
-}
+.ufo-side h3{ margin:0 0 10px; font-size: 14px; letter-spacing:.02em; }
+.ufo-side p{ margin:0 0 12px; color: rgba(232,238,246,.78); font-size: 13px; }
 
 .ufo-btns{ display:flex; gap:10px; flex-wrap:wrap; margin: 10px 0 14px; }
 
@@ -204,7 +200,16 @@
 </style>
 </head>
 
-<body>
+<body class="hbce-space">
+
+<!-- ===============================
+     SPACE BACKGROUND LAYER
+     =============================== -->
+<div class="hbce-space__layer" aria-hidden="true">
+  <canvas id="hbceSpaceCanvas"></canvas>
+  <div class="hbce-space__nebula"></div>
+  <div class="hbce-space__vignette"></div>
+</div>
 
 <header class="hbce-header">
   <div class="hbce-container hbce-header__inner">
@@ -444,8 +449,7 @@
   const rX = document.getElementById("ufoRX");
   const rY = document.getElementById("ufoRY");
 
-  // state
-  let state = "IDLE"; // IDLE | ACTIVE | HOLD
+  let state = "IDLE";
   let visible = false;
 
   let x = 0.50, y = 0.55, z = 0.08;
@@ -461,10 +465,8 @@
   function open(){
     ol.classList.add("is-open");
     ol.setAttribute("aria-hidden","false");
-    // block background scroll
     document.body.style.overflow = "hidden";
   }
-
   function close(){
     ol.classList.remove("is-open");
     ol.setAttribute("aria-hidden","true");
@@ -472,16 +474,14 @@
   }
 
   openBtn.addEventListener("click", open);
-  closeBtn.addEventListener("click", close);
+  closeBtn.addEventListener("click", ()=>{ reset(); close(); });
 
-  // click outside panel closes
   ol.addEventListener("click", (e)=>{
-    if(e.target === ol) close();
+    if(e.target === ol){ reset(); close(); }
   });
 
-  // ESC closes
   window.addEventListener("keydown", (e)=>{
-    if(e.key === "Escape" && ol.classList.contains("is-open")) close();
+    if(e.key === "Escape" && ol.classList.contains("is-open")){ reset(); close(); }
   });
 
   function summon(){
@@ -513,7 +513,6 @@
 
   resetBtn.addEventListener("click", reset);
 
-  // joystick
   let dragging = false;
   function joyRect(){ return joy.getBoundingClientRect(); }
 
@@ -566,7 +565,6 @@
     updateKnob();
   });
 
-  // animation loop
   let last = performance.now();
   function tick(now){
     const dt = Math.min(0.033, (now - last) / 1000);
@@ -637,10 +635,6 @@
 
   updateKnob();
   requestAnimationFrame(tick);
-
-  // expose reset on close to keep it clean
-  closeBtn.addEventListener("click", reset);
-  ol.addEventListener("click", (e)=>{ if(e.target === ol) reset(); });
 })();
 </script>
 
