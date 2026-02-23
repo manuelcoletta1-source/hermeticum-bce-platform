@@ -1,10 +1,45 @@
 /* =========================================================
    HBCE UI SYSTEM — HEADER/FOOTER INJECTOR (FULL REFAC)
    + IPR LOCK (no-translate, anti DPI)
+   + GLOBAL FX BOOTSTRAP (cinematic space / warp)
    ========================================================= */
 
 (function () {
   "use strict";
+
+  /* -------------------------------------------------------
+     GLOBAL FX BOOTSTRAP
+     - loads /assets/fx.js once (even if pages also include it)
+     - keeps "film" consistent across the whole site
+  ------------------------------------------------------- */
+  function ensureScript(src, attrs){
+    try{
+      const abs = new URL(src, window.location.origin).href;
+      const existing = Array.from(document.scripts || []).some(s => {
+        try{ return new URL(s.src, window.location.origin).href === abs; }
+        catch{ return false; }
+      });
+      if(existing) return;
+
+      const s = document.createElement("script");
+      s.src = src;
+
+      if(attrs && typeof attrs === "object"){
+        for(const k of Object.keys(attrs)){
+          s.setAttribute(k, String(attrs[k]));
+        }
+      }
+      // default: non-blocking
+      if(!s.hasAttribute("defer") && !s.hasAttribute("async")) s.defer = true;
+
+      document.head.appendChild(s);
+    }catch{
+      // fail-closed in UI sense: do nothing (site must still work)
+    }
+  }
+
+  // Always attempt to load FX (it is safe if missing, but should exist)
+  ensureScript("/hermeticum-bce-platform/assets/fx.js", { defer: "defer" });
 
   /* -------------------------------------------------------
      UTILS
