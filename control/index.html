@@ -1,59 +1,233 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>HBCE CONTROL — European Network Control Room</title>
-  <meta name="description" content="HBCE European Infrastructure Control Room. Stato rete, nodi attivi, integrità ledger, espansione UE."/>
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css"/>
+  <title>Control Console — Fail-Closed Mode Switch (HBCE)</title>
+  <meta name="description" content="Fail-closed control console. Mode switching under OPC policy packs. No joystick. No ambiguity. Audit-first." />
+
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/control/" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 
   <style>
-    /* HBCE CONTROL — cyberbank */
-    body{
-      background:#070b14;
-    }
-    .control-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-      gap:18px;
-    }
-    .control-card{
-      background:#0b1220;
-      border:1px solid rgba(0,255,200,0.25);
-      border-radius:14px;
-      padding:18px;
-      box-shadow:0 0 25px rgba(0,255,200,0.08);
-    }
-    .control-title{
-      font-size:12px;
-      color:#00ffd5;
-      letter-spacing:.16em;
-      margin-bottom:6px;
-      text-transform:uppercase;
-    }
-    .control-value{
-      font-size:28px;
-      font-weight:800;
-      line-height:1.05;
-      color:#eaf2ff;
-    }
-    .control-pass{ color:#00ff88; }
-    .control-fail{ color:#ff3b3b; }
-    .control-warn{ color:#ffd24a; }
+    /* ===============================
+       HBCE CONTROL CONSOLE — FEAR UI
+       =============================== */
 
-    .node-line{
-      padding:8px 0;
-      border-bottom:1px solid rgba(255,255,255,0.06);
-      font-size:14px;
+    .hbce-console{
+      margin-top: 16px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(0,0,0,.25);
     }
-    .node-line span{ opacity:.72; }
-    .node-line:last-child{ border-bottom:none; }
 
-    .hbce-muted{ opacity:.78; }
+    .hbce-console__top{
+      padding: 16px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,0));
+    }
+
+    .hbce-kicker{
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-size: 12px;
+      opacity: .78;
+    }
+
+    .hbce-title{
+      margin: 8px 0 10px 0;
+      font-size: 28px;
+      line-height: 1.1;
+    }
+
+    .hbce-lead{
+      margin: 0;
+      opacity: .85;
+      max-width: 70ch;
+    }
+
+    .hbce-grid{
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      padding: 16px;
+    }
+
+    .hbce-card{
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      background: rgba(0,0,0,.22);
+      padding: 14px;
+    }
+
+    .hbce-card h2{
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      opacity: .85;
+    }
+
     .hbce-mono{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size: 12px;
+    }
+
+    .hbce-status{
+      display: grid;
+      gap: 10px;
+    }
+
+    .hbce-status__big{
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(0,0,0,.28);
+    }
+
+    .hbce-status__label{
+      font-size: 12px;
+      opacity: .7;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .hbce-status__value{
+      font-size: 30px;
+      line-height: 1;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .hbce-pillrow{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .hbce-pill{
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: rgba(0,0,0,.22);
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      opacity: .9;
+    }
+
+    .hbce-actions{
+      display: grid;
+      gap: 10px;
+    }
+
+    .hbce-btn{
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 14px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.30);
+      color: inherit;
+      text-decoration: none;
+      cursor: pointer;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      transition: transform .06s ease, background .15s ease, border-color .15s ease;
+      user-select: none;
+    }
+
+    .hbce-btn:active{ transform: translateY(1px); }
+
+    .hbce-btn--primary{
+      background: rgba(255,255,255,.06);
+      border-color: rgba(255,255,255,.18);
+    }
+
+    .hbce-btn--ghost{
+      background: rgba(0,0,0,.22);
+      border-color: rgba(255,255,255,.10);
+    }
+
+    .hbce-btn--danger{
+      background: rgba(255,255,255,.02);
+      border-color: rgba(255,255,255,.18);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* “Fear” effect: cold pulse on E-STOP (no red, no colors specified) */
+    .hbce-btn--danger::before{
+      content:"";
+      position:absolute;
+      inset:-60%;
+      background: radial-gradient(circle, rgba(255,255,255,.14), rgba(0,0,0,0) 60%);
+      animation: hbcePulse 2.6s infinite ease-in-out;
+      opacity: .35;
+      pointer-events: none;
+    }
+
+    @keyframes hbcePulse{
+      0%{ transform: scale(0.88); opacity: .22; }
+      50%{ transform: scale(1.08); opacity: .45; }
+      100%{ transform: scale(0.88); opacity: .22; }
+    }
+
+    .hbce-note{
+      margin: 0;
+      opacity: .82;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .hbce-divider{
+      height: 1px;
+      background: rgba(255,255,255,.08);
+      margin: 12px 0;
+    }
+
+    .hbce-log{
+      max-height: 320px;
+      overflow: auto;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px;
+      padding: 10px;
+      background: rgba(0,0,0,.30);
+    }
+
+    .hbce-logline{
+      padding: 8px 6px;
+      border-bottom: 1px dashed rgba(255,255,255,.08);
+      opacity: .92;
+    }
+    .hbce-logline:last-child{ border-bottom: none; }
+
+    .hbce-small{
+      font-size: 12px;
+      opacity: .78;
+    }
+
+    .hbce-json{
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin: 0;
+      opacity: .95;
+    }
+
+    .hbce-footerwarn{
+      padding: 14px 16px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      background: rgba(0,0,0,.25);
     }
   </style>
 </head>
@@ -62,172 +236,375 @@
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
+    <section class="hbce-console">
+      <div class="hbce-console__top">
+        <div class="hbce-kicker">HBCE · CONTROL · FAIL-CLOSED</div>
+        <h1 class="hbce-title">Operational Control Console</h1>
+        <p class="hbce-lead">
+          No joystick. No continuous motion commands. Only <span class="hbce-mono">MODE</span> transitions under policy constraints.
+          If evidence is missing, the system does not “degrade”. It <strong>halts</strong>.
+        </p>
+      </div>
 
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">HBCE · CONTROL ROOM · EU INFRASTRUCTURE</div>
-      <h1 class="hbce-hero__title">European Network Control</h1>
-      <p class="hbce-hero__lead">
-        Plancia operativa rete IPR europea. Stato rete, contatori, nodi attivi e protocollo di espansione.
+      <div class="hbce-grid">
+        <!-- STATUS -->
+        <div class="hbce-card hbce-status">
+          <h2>System State</h2>
+
+          <div class="hbce-status__big">
+            <div class="hbce-status__label">Execution Gate</div>
+            <div id="gateValue" class="hbce-status__value">DENIED</div>
+
+            <div class="hbce-pillrow">
+              <div class="hbce-pill" id="modePill">MODE: HOLD</div>
+              <div class="hbce-pill" id="packPill">OPC PACK: MISSING</div>
+              <div class="hbce-pill" id="sigPill">SIGNATURE: UNSIGNED</div>
+            </div>
+          </div>
+
+          <div class="hbce-divider"></div>
+
+          <p class="hbce-note">
+            This console enforces a simple invariant: <span class="hbce-mono">MISSING → HOLD</span>.
+            A valid policy pack is required to transition modes.
+          </p>
+
+          <p class="hbce-note hbce-small" style="margin-top:10px;">
+            Default: <span class="hbce-mono">FAIL-CLOSED</span>. Any unknown state is treated as <span class="hbce-mono">DENIED</span>.
+          </p>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="hbce-card hbce-actions">
+          <h2>Mode Switch</h2>
+
+          <button class="hbce-btn hbce-btn--primary" id="btnFollow" type="button">
+            FOLLOW (PROXIMITY)
+          </button>
+
+          <button class="hbce-btn hbce-btn--ghost" id="btnExplore" type="button">
+            EXPLORE (SLOW)
+          </button>
+
+          <button class="hbce-btn hbce-btn--ghost" id="btnHold" type="button">
+            HOLD (FREEZE)
+          </button>
+
+          <div class="hbce-divider"></div>
+
+          <button class="hbce-btn hbce-btn--danger" id="btnEstop" type="button" title="Immediate halt. Overrides every mode.">
+            E-STOP (OVERRIDE)
+          </button>
+
+          <p class="hbce-note hbce-small" style="margin-top:10px;">
+            E-STOP is not a vote. Not a suggestion. It is a deterministic override.
+          </p>
+        </div>
+
+        <!-- POLICY PACK -->
+        <div class="hbce-card">
+          <h2>Policy Pack (OPC)</h2>
+          <p class="hbce-note">
+            The console reads a local policy pack (static JSON). If missing or invalid: <span class="hbce-mono">DENY + HOLD</span>.
+          </p>
+
+          <div class="hbce-divider"></div>
+
+          <div class="hbce-pillrow" style="margin-top:0;">
+            <button class="hbce-btn hbce-btn--ghost" id="btnLoadSafe" type="button">Load Pack: OFFICE_SAFE</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btnLoadProx" type="button">Load Pack: HUMAN_PROXIMITY</button>
+          </div>
+
+          <div class="hbce-divider"></div>
+
+          <p class="hbce-note hbce-small">
+            Loaded pack is shown below. This demo does not publish or transmit data. It stores an append-only local log.
+          </p>
+
+          <div style="margin-top:10px;">
+            <pre id="packView" class="hbce-json hbce-mono">{}</pre>
+          </div>
+        </div>
+
+        <!-- LEDGER -->
+        <div class="hbce-card" style="grid-column: 1 / -1;">
+          <h2>Local Append-Only Ledger</h2>
+          <p class="hbce-note">
+            Every transition produces an event record. No edits. No deletions. If the environment is inconsistent: the ledger shows the denial.
+          </p>
+
+          <div class="hbce-divider"></div>
+
+          <div class="hbce-pillrow" style="margin-top:0;">
+            <button class="hbce-btn hbce-btn--ghost" id="btnResetLog" type="button">Reset Local Log</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btnExportLog" type="button">Export Log (JSON)</button>
+          </div>
+
+          <div class="hbce-divider"></div>
+
+          <div id="logBox" class="hbce-log hbce-mono" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <div class="hbce-footerwarn">
+        <p class="hbce-note">
+          WARNING: This console is intentionally strict. It does not “try again”. It does not guess.
+          If policy evidence is missing, the only safe output is <span class="hbce-mono">HALT</span>.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-card" style="margin-top:16px;">
+      <h2>Links</h2>
+      <p class="hbce-note">
+        Use this console as a front-end for policy-gated control. For verification and identity tooling, use the platform core.
       </p>
-
-      <div class="hbce-actions">
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/network/" rel="noopener">Apri NETWORK verifier</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/network/operators-ledger.json" target="_blank" rel="noopener">Apri ledger JSON</a>
+      <div class="hbce-pillrow">
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/" rel="noopener">Platform Home</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/" rel="noopener">Verifier</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/" rel="noopener">Registry</a>
       </div>
     </section>
-
-    <section class="control-grid">
-
-      <div class="control-card">
-        <div class="control-title">Network Status</div>
-        <div class="control-value control-warn" id="netStatus">CHECKING</div>
-        <div class="hbce-muted" id="netStatusNote">verifica in corso…</div>
-      </div>
-
-      <div class="control-card">
-        <div class="control-title">EU Network Expansion</div>
-        <div class="control-value control-pass" id="expansionStatus">EXPANDING</div>
-        <div class="hbce-muted">target: <span class="hbce-mono">270</span> operatori europei</div>
-      </div>
-
-      <div class="control-card">
-        <div class="control-title">Total Nodes</div>
-        <div class="control-value" id="totalNodes">—</div>
-        <div class="hbce-muted">records OPERATOR_ADDED</div>
-      </div>
-
-      <div class="control-card">
-        <div class="control-title">Italy Regions</div>
-        <div class="control-value" id="italyNodes">—</div>
-        <div class="hbce-muted">nodi regionali</div>
-      </div>
-
-      <div class="control-card">
-        <div class="control-title">EU Capitals</div>
-        <div class="control-value" id="euNodes">—</div>
-        <div class="hbce-muted">nodi nazionali</div>
-      </div>
-
-      <div class="control-card">
-        <div class="control-title">AI Coordination</div>
-        <div class="control-value">JOKER-C2</div>
-        <div class="hbce-muted">cybernetic coordination layer</div>
-      </div>
-
-      <div class="control-card">
-        <div class="control-title">Root Node</div>
-        <div class="control-value">IPR-ROOT</div>
-        <div class="hbce-muted">European issuer</div>
-      </div>
-
-      <div class="control-card">
-        <div class="control-title">Ledger Source</div>
-        <div class="control-value hbce-mono" style="font-size:16px;">/network/operators-ledger.json</div>
-        <div class="hbce-muted">append-only · hash-only</div>
-      </div>
-
-    </section>
-
-    <section class="hbce-card" style="margin-top:22px;">
-      <div class="hbce-card__header">
-        <h2 class="hbce-card__title">Expansion Protocol</h2>
-        <p class="hbce-card__subtitle">Distribuzione progressiva rete operatori UE</p>
-      </div>
-
-      <div class="hbce-card__content">
-        <div class="node-line">Italia: rete regionale completa (capoluoghi)</div>
-        <div class="node-line">UE: capitali nazionali pre-attive (placeholder infrastrutturali)</div>
-        <div class="node-line">Operatori reali: emissione licenza + append ledger (append-only)</div>
-        <div class="node-line">Stato: <span class="control-pass"><strong>EXPANDING</strong></span></div>
-      </div>
-    </section>
-
-    <section class="hbce-card" style="margin-top:22px;">
-      <div class="hbce-card__header">
-        <h2 class="hbce-card__title">Active Infrastructure Nodes</h2>
-        <p class="hbce-card__subtitle">Estratti dal ledger append-only</p>
-      </div>
-
-      <div class="hbce-card__content">
-        <div id="nodeList" class="hbce-muted">caricamento…</div>
-      </div>
-    </section>
-
   </main>
 
   <div data-hbce="footer"></div>
 
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
   <script>
-    // Minimal deterministic check (cheap sanity):
-    // - ledger fetch OK
-    // - must contain at least one ROOT record for Manuel Coletta
-    // This is NOT the full hash verifier (that's /network/).
-    async function loadLedger(){
-      const res = await fetch("/hermeticum-bce-platform/network/operators-ledger.json", { cache:"no-store" });
-      if(!res.ok) throw new Error("ledger fetch failed");
-      return await res.json();
+    /* ===============================
+       HBCE CONTROL CONSOLE — DEMO CORE
+       - No backend
+       - No streaming commands
+       - Fail-closed mode switching
+       - Append-only local ledger
+       =============================== */
+
+    const STORAGE_KEY = "hbce_control_ledger_v1";
+    const PACK_KEY = "hbce_opc_pack_v1";
+    const STATE_KEY = "hbce_control_state_v1";
+
+    const elGate = document.getElementById("gateValue");
+    const elMode = document.getElementById("modePill");
+    const elPack = document.getElementById("packPill");
+    const elSig  = document.getElementById("sigPill");
+    const elPackView = document.getElementById("packView");
+    const elLogBox = document.getElementById("logBox");
+
+    const defaultState = {
+      mode: "HOLD",
+      gate: "DENIED",
+      pack_id: "MISSING",
+      signature: "UNSIGNED",
+      last_event: null
+    };
+
+    function nowISO(){
+      // deterministic enough for UI; true opponible time comes from UNEBDO / anchoring layer
+      return new Date().toISOString();
     }
 
-    function setStatus(kind, text, note){
-      const el = document.getElementById("netStatus");
-      const nt = document.getElementById("netStatusNote");
-      el.textContent = text;
-      el.classList.remove("control-pass","control-fail","control-warn");
-      el.classList.add(kind === "pass" ? "control-pass" : kind === "fail" ? "control-fail" : "control-warn");
-      nt.textContent = note || "";
-    }
-
-    async function run(){
-      setStatus("warn","CHECKING","verifica in corso…");
-
-      let j;
+    function loadLedger(){
       try{
-        j = await loadLedger();
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr : [];
       }catch(e){
-        setStatus("fail","FAIL","ledger non raggiungibile o non valido");
-        document.getElementById("nodeList").textContent = "FAIL — impossibile caricare il ledger.";
+        return [];
+      }
+    }
+
+    function saveLedger(arr){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+    }
+
+    function appendEvent(evt){
+      const ledger = loadLedger();
+      ledger.push(evt);
+      saveLedger(ledger);
+      renderLedger();
+    }
+
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(STATE_KEY);
+        const s = raw ? JSON.parse(raw) : null;
+        return s && typeof s === "object" ? { ...defaultState, ...s } : { ...defaultState };
+      }catch(e){
+        return { ...defaultState };
+      }
+    }
+
+    function saveState(s){
+      localStorage.setItem(STATE_KEY, JSON.stringify(s));
+    }
+
+    function loadPack(){
+      try{
+        const raw = localStorage.getItem(PACK_KEY);
+        const p = raw ? JSON.parse(raw) : null;
+        return p && typeof p === "object" ? p : null;
+      }catch(e){
+        return null;
+      }
+    }
+
+    function savePack(p){
+      localStorage.setItem(PACK_KEY, JSON.stringify(p));
+    }
+
+    function gateFailClosed(reason){
+      const s = loadState();
+      s.gate = "DENIED";
+      s.mode = "HOLD";
+      s.last_event = reason;
+      saveState(s);
+
+      appendEvent({
+        kind: "GATE_DENY",
+        timestamp: nowISO(),
+        reason,
+        mode_forced: "HOLD",
+        policy_pack: s.pack_id || "MISSING"
+      });
+      renderState();
+    }
+
+    function validatePack(pack){
+      // minimal validation (fail-closed)
+      if(!pack) return { ok:false, why:"PACK_MISSING" };
+      if(pack.opc !== "HBCE-OPC-v1") return { ok:false, why:"PACK_PROTO_MISMATCH" };
+      if(!pack.pack_id || typeof pack.pack_id !== "string") return { ok:false, why:"PACK_ID_MISSING" };
+      if(!pack.policy || !Array.isArray(pack.policy)) return { ok:false, why:"PACK_POLICY_INVALID" };
+      if(!pack.limits || typeof pack.limits !== "object") return { ok:false, why:"PACK_LIMITS_INVALID" };
+      return { ok:true, why:"OK" };
+    }
+
+    function applyPack(pack){
+      const check = validatePack(pack);
+      if(!check.ok){
+        savePack(null);
+        const s = loadState();
+        s.pack_id = "MISSING";
+        saveState(s);
+        elPackView.textContent = "{}";
+        gateFailClosed(check.why);
         return;
       }
 
-      const rec = Array.isArray(j.records) ? j.records : [];
-      const ops = rec.filter(r => r && r.record_type === "OPERATOR_ADDED");
+      savePack(pack);
 
-      let total = 0, it = 0, eu = 0;
-      let html = "";
-      let hasRoot = false;
+      const s = loadState();
+      s.pack_id = pack.pack_id;
+      s.gate = "ALLOWED";          // pack present = gate can be opened for mode switching (still constrained per-mode)
+      s.signature = pack.signature || "UNSIGNED";
+      saveState(s);
 
-      for(const r of ops){
-        total++;
+      appendEvent({
+        kind: "PACK_LOAD",
+        timestamp: nowISO(),
+        pack_id: pack.pack_id,
+        integrity: "UNVERIFIED_DEMO",
+        note: "In production, pack integrity is verified via signature + hash."
+      });
 
-        const country = (r.country || "").trim();
-        const region  = (r.region || "").trim();
-        const city    = (r.city || "").trim();
-        const name    = (r.operator_name || "").trim();
+      elPackView.textContent = JSON.stringify(pack, null, 2);
+      renderState();
+    }
 
-        if(name === "Manuel Coletta") hasRoot = true;
+    function requestMode(nextMode){
+      const pack = loadPack();
+      const s = loadState();
+      const check = validatePack(pack);
 
-        if(country === "Italy" && region && region !== "National Capital") it++;
-        if(country !== "Italy" && region === "National Capital") eu++;
-
-        html += `<div class="node-line">${escapeHtml(name)} — <span>${escapeHtml(country)} / ${escapeHtml(city)}</span></div>`;
+      if(!check.ok){
+        gateFailClosed(check.why);
+        return;
       }
 
-      document.getElementById("totalNodes").textContent = String(total);
-      document.getElementById("italyNodes").textContent = String(it);
-      document.getElementById("euNodes").textContent = String(eu);
+      // mode must be permitted by pack
+      const allowedModes = pack.allowed_modes || ["HOLD"];
+      if(!allowedModes.includes(nextMode)){
+        appendEvent({
+          kind: "MODE_DENY",
+          timestamp: nowISO(),
+          requested: nextMode,
+          reason: "MODE_NOT_ALLOWED_BY_PACK",
+          pack_id: pack.pack_id
+        });
+        renderState();
+        return;
+      }
 
-      document.getElementById("nodeList").innerHTML = html || "nessun nodo";
+      s.mode = nextMode;
+      s.gate = "ALLOWED";
+      s.signature = pack.signature || "UNSIGNED";
+      s.last_event = "MODE_SET";
+      saveState(s);
 
-      if(!hasRoot){
-        setStatus("fail","FAIL","manca ROOT (Manuel Coletta) nel ledger OPERATOR_ADDED");
-      }else{
-        setStatus("pass","SYNC","ledger coerente (sanity check). Verifica completa: /network/");
+      appendEvent({
+        kind: "MODE_SET",
+        timestamp: nowISO(),
+        mode: nextMode,
+        pack_id: pack.pack_id,
+        limits: pack.limits || {}
+      });
+
+      renderState();
+    }
+
+    function estop(){
+      const s = loadState();
+      s.mode = "HOLD";
+      s.gate = "DENIED";
+      s.last_event = "E_STOP";
+      saveState(s);
+
+      appendEvent({
+        kind: "E_STOP",
+        timestamp: nowISO(),
+        effect: "IMMEDIATE_HALT",
+        note: "Overrides every mode. Requires manual re-arming."
+      });
+
+      renderState();
+    }
+
+    function renderState(){
+      const s = loadState();
+
+      elGate.textContent = s.gate || "DENIED";
+      elMode.textContent = "MODE: " + (s.mode || "HOLD");
+      elPack.textContent = "OPC PACK: " + (s.pack_id || "MISSING");
+      elSig.textContent  = "SIGNATURE: " + (s.signature || "UNSIGNED");
+
+      // If denied, keep it blunt.
+      if(s.gate !== "ALLOWED"){
+        // no color changes; fear is in language + structure
+        // keep mode forced to HOLD (already)
       }
     }
 
-    function escapeHtml(s){
-      return String(s)
+    function renderLedger(){
+      const ledger = loadLedger();
+      if(!ledger.length){
+        elLogBox.innerHTML = '<div class="hbce-logline">[EMPTY] No events recorded.</div>';
+        return;
+      }
+
+      const lines = ledger
+        .slice(-120)
+        .reverse()
+        .map((e, idx) => {
+          const ts = e.timestamp || "UNKNOWN_TIME";
+          const kind = e.kind || "EVENT";
+          const body = JSON.stringify(e);
+          return `<div class="hbce-logline"><div><strong>${ts}</strong> — ${kind}</div><div class="hbce-small">${escapeHtml(body)}</div></div>`;
+        });
+
+      elLogBox.innerHTML = lines.join("");
+    }
+
+    function escapeHtml(str){
+      return String(str)
         .replaceAll("&","&amp;")
         .replaceAll("<","&lt;")
         .replaceAll(">","&gt;")
@@ -235,7 +612,126 @@
         .replaceAll("'","&#039;");
     }
 
-    run();
+    function resetLog(){
+      localStorage.removeItem(STORAGE_KEY);
+      appendEvent({
+        kind: "LOG_RESET",
+        timestamp: nowISO(),
+        note: "Local ledger reset by operator."
+      });
+      renderLedger();
+    }
+
+    function exportLog(){
+      const ledger = loadLedger();
+      const blob = new Blob([JSON.stringify({
+        hbce: "EXPORT",
+        kind: "LOCAL_LEDGER_EXPORT",
+        timestamp: nowISO(),
+        entries: ledger
+      }, null, 2)], { type: "application/json" });
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "hbce_control_ledger_export.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+
+      appendEvent({
+        kind: "LOG_EXPORT",
+        timestamp: nowISO(),
+        entries: ledger.length
+      });
+    }
+
+    // Demo packs (local, static)
+    const PACK_OFFICE_SAFE = {
+      opc: "HBCE-OPC-v1",
+      pack_id: "OFFICE_SAFE",
+      policy: ["FAIL_CLOSED","AUDIT_FIRST","UE_FIRST","HASH_ONLY","APPEND_ONLY","GDPR_MIN"],
+      allowed_modes: ["HOLD","EXPLORE_SLOW"],
+      limits: {
+        max_speed: 0.15,
+        max_distance_m: 2.0,
+        altitude_max_m: 2.0,
+        collision_avoidance: "REQUIRED"
+      },
+      signature: "UNSIGNED_DEMO"
+    };
+
+    const PACK_HUMAN_PROXIMITY = {
+      opc: "HBCE-OPC-v1",
+      pack_id: "HUMAN_PROXIMITY",
+      policy: ["FAIL_CLOSED","AUDIT_FIRST","UE_FIRST","HASH_ONLY","APPEND_ONLY","GDPR_MIN"],
+      allowed_modes: ["HOLD","FOLLOW_PROXIMITY"],
+      limits: {
+        follow_distance_m: 0.20,
+        max_speed: 0.10,
+        altitude_max_m: 2.2,
+        keep_out_zone: "NONE",
+        collision_avoidance: "REQUIRED"
+      },
+      signature: "UNSIGNED_DEMO"
+    };
+
+    // Wire buttons
+    document.getElementById("btnFollow").addEventListener("click", () => requestMode("FOLLOW_PROXIMITY"));
+    document.getElementById("btnExplore").addEventListener("click", () => requestMode("EXPLORE_SLOW"));
+    document.getElementById("btnHold").addEventListener("click", () => requestMode("HOLD"));
+    document.getElementById("btnEstop").addEventListener("click", () => estop());
+
+    document.getElementById("btnLoadSafe").addEventListener("click", () => applyPack(PACK_OFFICE_SAFE));
+    document.getElementById("btnLoadProx").addEventListener("click", () => applyPack(PACK_HUMAN_PROXIMITY));
+
+    document.getElementById("btnResetLog").addEventListener("click", () => {
+      // keep one record of reset itself
+      localStorage.removeItem(STORAGE_KEY);
+      saveLedger([]);
+      renderLedger();
+      appendEvent({ kind:"LOG_RESET", timestamp: nowISO(), note:"Local ledger reset by operator." });
+    });
+
+    document.getElementById("btnExportLog").addEventListener("click", () => exportLog());
+
+    // Boot
+    (function init(){
+      renderLedger();
+
+      const pack = loadPack();
+      if(pack){
+        elPackView.textContent = JSON.stringify(pack, null, 2);
+      }else{
+        elPackView.textContent = "{}";
+      }
+
+      // If pack is missing or invalid, force fail-closed on boot
+      const check = validatePack(pack);
+      if(!check.ok){
+        // record once on first load (avoid spam)
+        const ledger = loadLedger();
+        const already = ledger.some(e => e.kind === "BOOT_FAIL_CLOSED");
+        if(!already){
+          appendEvent({
+            kind: "BOOT_FAIL_CLOSED",
+            timestamp: nowISO(),
+            reason: check.why,
+            effect: "DENY + HOLD"
+          });
+        }
+        gateFailClosed(check.why);
+      }else{
+        // pack valid -> allow gate for mode switching; mode stays whatever state says
+        const s = loadState();
+        s.pack_id = pack.pack_id;
+        s.signature = pack.signature || "UNSIGNED";
+        s.gate = "ALLOWED";
+        saveState(s);
+        renderState();
+      }
+    })();
   </script>
 </body>
 </html>
