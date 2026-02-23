@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>Control Console — Fail-Closed Mode Switch (HBCE)</title>
-  <meta name="description" content="Fail-closed control console. Mode switching under remote OPC policy packs with payload SHA-256 enforcement. No joystick. No ambiguity. Audit-first." />
+  <title>Control Console — Verified Mode Gate (HBCE)</title>
+  <meta name="description" content="Fail-closed control console. Remote OPC packs with payload SHA-256 enforcement. Single-step actions bound to a local Tello bridge." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
@@ -14,114 +14,32 @@
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 
   <style>
-    .hbce-console{
-      margin-top: 16px;
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 16px;
-      overflow: hidden;
-      background: rgba(0,0,0,.25);
-    }
-    .hbce-console__top{
-      padding: 16px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,0));
-    }
-    .hbce-kicker{
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      font-size: 12px;
-      opacity: .78;
-    }
-    .hbce-title{
-      margin: 8px 0 10px 0;
-      font-size: 28px;
-      line-height: 1.1;
-    }
-    .hbce-lead{
-      margin: 0;
-      opacity: .85;
-      max-width: 70ch;
-    }
+    .hbce-console{ margin-top:16px; border:1px solid rgba(255,255,255,.08); border-radius:16px; overflow:hidden; background:rgba(0,0,0,.25); }
+    .hbce-console__top{ padding:16px; border-bottom:1px solid rgba(255,255,255,.08); background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,0)); }
+    .hbce-kicker{ letter-spacing:.12em; text-transform:uppercase; font-size:12px; opacity:.78; }
+    .hbce-title{ margin:8px 0 10px 0; font-size:28px; line-height:1.1; }
+    .hbce-lead{ margin:0; opacity:.85; max-width:72ch; }
 
-    .hbce-grid{
-      display: grid;
-      gap: 12px;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      padding: 16px;
-    }
-    .hbce-card{
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 16px;
-      background: rgba(0,0,0,.22);
-      padding: 14px;
-    }
-    .hbce-card h2{
-      margin: 0 0 10px 0;
-      font-size: 14px;
-      letter-spacing: .10em;
-      text-transform: uppercase;
-      opacity: .85;
-    }
+    .hbce-grid{ display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); padding:16px; }
+    .hbce-card{ border:1px solid rgba(255,255,255,.08); border-radius:16px; background:rgba(0,0,0,.22); padding:14px; }
+    .hbce-card h2{ margin:0 0 10px 0; font-size:14px; letter-spacing:.10em; text-transform:uppercase; opacity:.85; }
 
-    .hbce-mono{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 12px;
-    }
+    .hbce-mono{ font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; font-size:12px; }
 
     .hbce-status{ display:grid; gap:10px; }
-    .hbce-status__big{
-      border: 1px solid rgba(255,255,255,.10);
-      border-radius: 16px;
-      padding: 14px;
-      background: rgba(0,0,0,.28);
-    }
-    .hbce-status__label{
-      font-size: 12px;
-      opacity: .7;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-    .hbce-status__value{
-      font-size: 30px;
-      line-height: 1;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
+    .hbce-status__big{ border:1px solid rgba(255,255,255,.10); border-radius:16px; padding:14px; background:rgba(0,0,0,.28); }
+    .hbce-status__label{ font-size:12px; opacity:.7; letter-spacing:.12em; text-transform:uppercase; margin-bottom:6px; }
+    .hbce-status__value{ font-size:30px; line-height:1; letter-spacing:.06em; text-transform:uppercase; }
 
-    .hbce-pillrow{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:10px;
-    }
-    .hbce-pill{
-      border: 1px solid rgba(255,255,255,.10);
-      border-radius: 999px;
-      padding: 6px 10px;
-      background: rgba(0,0,0,.22);
-      font-size: 12px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      opacity: .9;
-    }
+    .hbce-pillrow{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .hbce-pill{ border:1px solid rgba(255,255,255,.10); border-radius:999px; padding:6px 10px; background:rgba(0,0,0,.22); font-size:12px; letter-spacing:.08em; text-transform:uppercase; opacity:.9; }
 
     .hbce-actions{ display:grid; gap:10px; }
     .hbce-btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      width:100%;
-      padding:14px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.30);
-      color:inherit;
-      text-decoration:none;
-      cursor:pointer;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      font-weight:700;
+      display:inline-flex; align-items:center; justify-content:center; width:100%;
+      padding:14px 12px; border-radius:14px; border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.30); color:inherit; text-decoration:none; cursor:pointer;
+      letter-spacing:.12em; text-transform:uppercase; font-weight:700;
       transition:transform .06s ease, background .15s ease, border-color .15s ease;
       user-select:none;
     }
@@ -153,40 +71,18 @@
     .hbce-note{ margin:0; opacity:.82; font-size:13px; line-height:1.45; }
     .hbce-divider{ height:1px; background:rgba(255,255,255,.08); margin:12px 0; }
 
-    .hbce-log{
-      max-height: 320px;
-      overflow: auto;
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 14px;
-      padding: 10px;
-      background: rgba(0,0,0,.30);
-    }
-    .hbce-logline{
-      padding: 8px 6px;
-      border-bottom: 1px dashed rgba(255,255,255,.08);
-      opacity: .92;
-    }
+    .hbce-log{ max-height:320px; overflow:auto; border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:10px; background:rgba(0,0,0,.30); }
+    .hbce-logline{ padding:8px 6px; border-bottom:1px dashed rgba(255,255,255,.08); opacity:.92; }
     .hbce-logline:last-child{ border-bottom:none; }
-
     .hbce-small{ font-size:12px; opacity:.78; }
-    .hbce-json{ white-space: pre-wrap; word-break: break-word; margin:0; opacity:.95; }
+    .hbce-json{ white-space:pre-wrap; word-break:break-word; margin:0; opacity:.95; }
 
-    .hbce-footerwarn{
-      padding:14px 16px;
-      border-top:1px solid rgba(255,255,255,.08);
-      background: rgba(0,0,0,.25);
-    }
+    .hbce-footerwarn{ padding:14px 16px; border-top:1px solid rgba(255,255,255,.08); background:rgba(0,0,0,.25); }
 
     .hbce-inline{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
     .hbce-input{
-      width:100%;
-      padding:12px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.30);
-      color:inherit;
-      font:inherit;
-      outline:none;
+      width:100%; padding:12px 12px; border-radius:14px; border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.30); color:inherit; font:inherit; outline:none;
     }
   </style>
 </head>
@@ -197,15 +93,16 @@
   <main class="hbce-container hbce-main">
     <section class="hbce-console">
       <div class="hbce-console__top">
-        <div class="hbce-kicker">HBCE · CONTROL · FAIL-CLOSED</div>
+        <div class="hbce-kicker">HBCE · CONTROL · HASH ENFORCED</div>
         <h1 class="hbce-title">Operational Control Console</h1>
         <p class="hbce-lead">
-          Remote OPC packs. Deterministic mode gate. Payload SHA-256 enforced.
-          If evidence is missing, the system does not “degrade”. It <strong>halts</strong>.
+          Remote OPC packs. Payload SHA-256 enforced. Fail-closed gate.
+          Actions are <strong>single-step</strong> and can be bound to a local DJI Tello bridge.
         </p>
       </div>
 
       <div class="hbce-grid">
+        <!-- STATUS -->
         <div class="hbce-card hbce-status">
           <h2>System State</h2>
 
@@ -218,30 +115,32 @@
               <div class="hbce-pill" id="packPill">OPC PACK: MISSING</div>
               <div class="hbce-pill" id="srcPill">SOURCE: NONE</div>
               <div class="hbce-pill" id="intPill">INTEGRITY: UNKNOWN</div>
+              <div class="hbce-pill" id="bridgePill">BRIDGE: UNKNOWN</div>
             </div>
           </div>
 
           <div class="hbce-divider"></div>
 
           <p class="hbce-note">
-            Invariant: <span class="hbce-mono">MISSING → HOLD</span>.
-            Remote pack must be valid AND hash-verifiable to open the gate.
+            Invariant: <span class="hbce-mono">MISSING / MISMATCH → HOLD</span>.
+            Single-step actions are sent to the bridge only if integrity is <span class="hbce-mono">HASH_OK</span>.
           </p>
 
           <p class="hbce-note hbce-small" style="margin-top:10px;">
-            Default: <span class="hbce-mono">FAIL-CLOSED</span>. Any unknown state is treated as <span class="hbce-mono">DENIED</span>.
+            This page can be opened on GitHub Pages, but the bridge requires the same machine (localhost).
           </p>
         </div>
 
+        <!-- ACTIONS -->
         <div class="hbce-card hbce-actions">
-          <h2>Mode Switch</h2>
+          <h2>Single-Step Actions</h2>
 
-          <button class="hbce-btn hbce-btn--primary" id="btnFollow" type="button">
-            FOLLOW (PROXIMITY)
+          <button class="hbce-btn hbce-btn--primary" id="btnExploreStep" type="button">
+            STEP: EXPLORE (SLOW)
           </button>
 
-          <button class="hbce-btn hbce-btn--ghost" id="btnExplore" type="button">
-            EXPLORE (SLOW)
+          <button class="hbce-btn hbce-btn--ghost" id="btnFollowStep" type="button">
+            STEP: FOLLOW (PROXIMITY)
           </button>
 
           <button class="hbce-btn hbce-btn--ghost" id="btnHold" type="button">
@@ -250,20 +149,20 @@
 
           <div class="hbce-divider"></div>
 
-          <button class="hbce-btn hbce-btn--danger" id="btnEstop" type="button" title="Immediate halt. Overrides every mode.">
+          <button class="hbce-btn hbce-btn--danger" id="btnEstop" type="button" title="Immediate halt. Overrides every action.">
             E-STOP (OVERRIDE)
           </button>
 
           <p class="hbce-note hbce-small" style="margin-top:10px;">
-            E-STOP is not a vote. Not a suggestion. It is a deterministic override.
+            E-STOP is deterministic. If the bridge is offline, the console still records the event.
           </p>
         </div>
 
+        <!-- POLICY PACK -->
         <div class="hbce-card">
           <h2>Policy Pack (Remote OPC)</h2>
           <p class="hbce-note">
-            Packs are fetched from the OPC repository. If fetch fails, structure is invalid, or SHA-256 mismatches:
-            <span class="hbce-mono">DENY + HOLD</span>.
+            Fetch packs from the OPC repository. Hash mismatch or invalid structure ⇒ <span class="hbce-mono">DENIED</span>.
           </p>
 
           <div class="hbce-divider"></div>
@@ -285,7 +184,7 @@
 
           <p class="hbce-note hbce-small">
             Integrity scheme: <span class="hbce-mono">HBCE-PAYLOAD-SHA256-CANONICAL-v1</span>.
-            Hash is computed over the pack payload (pack minus <span class="hbce-mono">integrity</span>) after canonical key ordering.
+            Hash is computed over pack payload (pack minus <span class="hbce-mono">integrity</span>) after canonical key ordering.
           </p>
 
           <div style="margin-top:10px;">
@@ -293,10 +192,38 @@
           </div>
         </div>
 
+        <!-- BRIDGE -->
+        <div class="hbce-card">
+          <h2>Local Bridge</h2>
+          <p class="hbce-note">
+            The bridge runs locally and receives events via HTTP.
+            Default endpoint: <span class="hbce-mono">http://127.0.0.1:17777/event</span>.
+          </p>
+
+          <div class="hbce-divider"></div>
+
+          <div class="hbce-inline">
+            <input id="bridgeUrl" class="hbce-input hbce-mono" type="text"
+                   value="http://127.0.0.1:17777/event"
+                   aria-label="Bridge event URL" />
+          </div>
+
+          <div class="hbce-divider"></div>
+
+          <div class="hbce-pillrow" style="margin-top:0;">
+            <button class="hbce-btn hbce-btn--ghost" id="btnBridgePing" type="button">Bridge Ping</button>
+          </div>
+
+          <p class="hbce-note hbce-small" style="margin-top:10px;">
+            If the bridge is offline, the console does not “guess”. It records and continues fail-closed.
+          </p>
+        </div>
+
+        <!-- LEDGER -->
         <div class="hbce-card" style="grid-column: 1 / -1;">
           <h2>Local Append-Only Ledger</h2>
           <p class="hbce-note">
-            Every transition produces an event record. No edits. No deletions. If the environment is inconsistent: the ledger shows the denial.
+            Every event is recorded locally. No edits. No deletions. Audit-first.
           </p>
 
           <div class="hbce-divider"></div>
@@ -314,17 +241,14 @@
 
       <div class="hbce-footerwarn">
         <p class="hbce-note">
-          WARNING: This console is intentionally strict. It does not “try again”. It does not guess.
-          Missing evidence or hash mismatch ⇒ <span class="hbce-mono">HALT</span>.
+          WARNING: This console is strict by design. Missing evidence or hash mismatch ⇒ <span class="hbce-mono">HOLD</span>.
+          Single-step actions require <span class="hbce-mono">HASH_OK</span> integrity.
         </p>
       </div>
     </section>
 
     <section class="hbce-card" style="margin-top:16px;">
       <h2>Links</h2>
-      <p class="hbce-note">
-        Use this console as a front-end for policy-gated control. For verification and identity tooling, use the platform core.
-      </p>
       <div class="hbce-pillrow">
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/" rel="noopener">Platform Home</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/" rel="noopener">Verifier</a>
@@ -336,38 +260,54 @@
   <div data-hbce="footer"></div>
 
   <script>
-    const STORAGE_KEY = "hbce_control_ledger_v3";
-    const PACK_KEY = "hbce_opc_pack_v3";
-    const STATE_KEY = "hbce_control_state_v3";
+    // ===============================
+    // HBCE CONTROL — HASH ENFORCED + BRIDGE BINDING (SINGLE-STEP)
+    // ===============================
+
+    const STORAGE_KEY = "hbce_control_ledger_v4";
+    const PACK_KEY = "hbce_opc_pack_v4";
+    const STATE_KEY = "hbce_control_state_v4";
 
     const elGate = document.getElementById("gateValue");
     const elMode = document.getElementById("modePill");
     const elPack = document.getElementById("packPill");
     const elSrc  = document.getElementById("srcPill");
     const elInt  = document.getElementById("intPill");
+    const elBridge = document.getElementById("bridgePill");
     const elPackView = document.getElementById("packView");
     const elLogBox = document.getElementById("logBox");
     const elOpcBase = document.getElementById("opcBase");
+    const elBridgeUrl = document.getElementById("bridgeUrl");
 
     const defaultState = {
-      mode: "HOLD",
       gate: "DENIED",
+      mode: "HOLD",
       pack_id: "MISSING",
       pack_source: "NONE",
       integrity: "UNKNOWN",
-      last_event: null
+      bridge: "UNKNOWN"
     };
 
     function nowISO(){ return new Date().toISOString(); }
 
-    function loadLedger(){
+    function loadJSON(key, fallback){
       try{
-        const raw = localStorage.getItem(STORAGE_KEY);
-        const arr = raw ? JSON.parse(raw) : [];
-        return Array.isArray(arr) ? arr : [];
-      }catch(e){ return []; }
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      }catch(e){
+        return fallback;
+      }
     }
-    function saveLedger(arr){ localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+    function saveJSON(key, val){
+      localStorage.setItem(key, JSON.stringify(val));
+    }
+
+    function loadLedger(){
+      const arr = loadJSON(STORAGE_KEY, []);
+      return Array.isArray(arr) ? arr : [];
+    }
+    function saveLedger(arr){ saveJSON(STORAGE_KEY, arr); }
+
     function appendEvent(evt){
       const ledger = loadLedger();
       ledger.push(evt);
@@ -376,22 +316,16 @@
     }
 
     function loadState(){
-      try{
-        const raw = localStorage.getItem(STATE_KEY);
-        const s = raw ? JSON.parse(raw) : null;
-        return s && typeof s === "object" ? { ...defaultState, ...s } : { ...defaultState };
-      }catch(e){ return { ...defaultState }; }
+      const s = loadJSON(STATE_KEY, null);
+      return (s && typeof s === "object") ? { ...defaultState, ...s } : { ...defaultState };
     }
-    function saveState(s){ localStorage.setItem(STATE_KEY, JSON.stringify(s)); }
+    function saveState(s){ saveJSON(STATE_KEY, s); }
 
     function loadPack(){
-      try{
-        const raw = localStorage.getItem(PACK_KEY);
-        const p = raw ? JSON.parse(raw) : null;
-        return p && typeof p === "object" ? p : null;
-      }catch(e){ return null; }
+      const p = loadJSON(PACK_KEY, null);
+      return (p && typeof p === "object") ? p : null;
     }
-    function savePack(p){ localStorage.setItem(PACK_KEY, JSON.stringify(p)); }
+    function savePack(p){ saveJSON(PACK_KEY, p); }
 
     function escapeHtml(str){
       return String(str)
@@ -404,11 +338,12 @@
 
     function renderState(){
       const s = loadState();
-      elGate.textContent = s.gate || "DENIED";
-      elMode.textContent = "MODE: " + (s.mode || "HOLD");
-      elPack.textContent = "OPC PACK: " + (s.pack_id || "MISSING");
-      elSrc.textContent  = "SOURCE: " + (s.pack_source || "NONE");
-      elInt.textContent  = "INTEGRITY: " + (s.integrity || "UNKNOWN");
+      elGate.textContent = s.gate;
+      elMode.textContent = "MODE: " + s.mode;
+      elPack.textContent = "OPC PACK: " + s.pack_id;
+      elSrc.textContent  = "SOURCE: " + s.pack_source;
+      elInt.textContent  = "INTEGRITY: " + s.integrity;
+      elBridge.textContent = "BRIDGE: " + s.bridge;
     }
 
     function renderLedger(){
@@ -417,7 +352,7 @@
         elLogBox.innerHTML = '<div class="hbce-logline">[EMPTY] No events recorded.</div>';
         return;
       }
-      const lines = ledger.slice(-140).reverse().map((e) => {
+      const lines = ledger.slice(-160).reverse().map((e) => {
         const ts = e.timestamp || "UNKNOWN_TIME";
         const kind = e.kind || "EVENT";
         const body = JSON.stringify(e);
@@ -430,7 +365,6 @@
       const s = loadState();
       s.gate = "DENIED";
       s.mode = "HOLD";
-      s.last_event = reason;
       saveState(s);
 
       appendEvent({
@@ -438,8 +372,8 @@
         timestamp: nowISO(),
         reason,
         mode_forced: "HOLD",
-        policy_pack: s.pack_id || "MISSING",
-        source: s.pack_source || "NONE"
+        policy_pack: s.pack_id,
+        source: s.pack_source
       });
 
       renderState();
@@ -476,7 +410,6 @@
     }
 
     function stableStringify(obj){
-      // canonical JSON: sorted keys, no whitespace
       const sorted = sortKeysDeep(obj);
       return JSON.stringify(sorted);
     }
@@ -493,11 +426,9 @@
       const expected = String(pack.integrity.payload_sha256 || "").trim().toLowerCase();
       const payload = deepClone(pack);
       delete payload.integrity;
-
       const canon = stableStringify(payload);
       const got = (await sha256Hex(canon)).toLowerCase();
-
-      return { ok: got === expected, expected, got, canonical: canon };
+      return { ok: got === expected, expected, got };
     }
 
     async function applyPack(pack, sourceUrl){
@@ -514,22 +445,7 @@
         return;
       }
 
-      // HASH ENFORCEMENT (the scary part)
-      let v;
-      try{
-        v = await verifyPayloadHash(pack);
-      }catch(e){
-        savePack(null);
-        elPackView.textContent = JSON.stringify({ error:"HASH_VERIFY_EXCEPTION", message:String(e) }, null, 2);
-        const s = loadState();
-        s.pack_id = pack.pack_id || "UNKNOWN";
-        s.pack_source = sourceUrl || "REMOTE";
-        s.integrity = "HASH_FAIL";
-        saveState(s);
-        gateFailClosed("HASH_VERIFY_EXCEPTION");
-        return;
-      }
-
+      const v = await verifyPayloadHash(pack);
       if(!v.ok){
         savePack(null);
         elPackView.textContent = JSON.stringify({
@@ -559,9 +475,8 @@
         return;
       }
 
-      // Pack accepted
+      // accepted
       savePack(pack);
-
       const s = loadState();
       s.pack_id = pack.pack_id;
       s.pack_source = sourceUrl || "REMOTE";
@@ -581,75 +496,11 @@
       renderState();
     }
 
-    function requestMode(nextMode){
-      const pack = loadPack();
-      const s = loadState();
-      const check = validatePackStructure(pack);
-
-      if(!check.ok){
-        gateFailClosed(check.why);
-        return;
-      }
-
-      // If a pack is cached but state says not hash-ok, fail closed.
-      if(s.integrity !== "HASH_OK"){
-        gateFailClosed("INTEGRITY_NOT_OK");
-        return;
-      }
-
-      const allowedModes = pack.allowed_modes || ["HOLD"];
-      if(!allowedModes.includes(nextMode)){
-        appendEvent({
-          kind: "MODE_DENY",
-          timestamp: nowISO(),
-          requested: nextMode,
-          reason: "MODE_NOT_ALLOWED_BY_PACK",
-          pack_id: pack.pack_id,
-          source: s.pack_source || "UNKNOWN"
-        });
-        renderState();
-        return;
-      }
-
-      s.mode = nextMode;
-      s.gate = "ALLOWED";
-      s.last_event = "MODE_SET";
-      saveState(s);
-
-      appendEvent({
-        kind: "MODE_SET",
-        timestamp: nowISO(),
-        mode: nextMode,
-        pack_id: pack.pack_id,
-        source: s.pack_source || "UNKNOWN",
-        limits: pack.limits || {}
-      });
-
-      renderState();
-    }
-
-    function estop(){
-      const s = loadState();
-      s.mode = "HOLD";
-      s.gate = "DENIED";
-      s.last_event = "E_STOP";
-      saveState(s);
-
-      appendEvent({
-        kind: "E_STOP",
-        timestamp: nowISO(),
-        effect: "IMMEDIATE_HALT",
-        note: "Overrides every mode. Requires manual re-arming."
-      });
-
-      renderState();
-    }
-
-    async function fetchPack(packName){
+    async function fetchPack(name){
       const base = normalizeBaseUrl(elOpcBase.value);
-      const url = `${base}/packs/${encodeURIComponent(packName)}.json`;
+      const url = `${base}/packs/${encodeURIComponent(name)}.json`;
 
-      appendEvent({ kind:"PACK_FETCH", timestamp: nowISO(), pack: packName, url });
+      appendEvent({ kind:"PACK_FETCH", timestamp: nowISO(), pack: name, url });
 
       try{
         const res = await fetch(url, { cache: "no-store" });
@@ -664,6 +515,182 @@
         elPackView.textContent = JSON.stringify({ error:"REMOTE_FETCH_EXCEPTION", message:String(e), url }, null, 2);
         gateFailClosed("REMOTE_FETCH_EXCEPTION");
       }
+    }
+
+    // ---- BRIDGE BINDING (single-step) ----
+    async function sendToBridge(evt){
+      const url = String(elBridgeUrl.value || "").trim();
+      if(!url){
+        const s = loadState();
+        s.bridge = "NO_URL";
+        saveState(s);
+        renderState();
+        return false;
+      }
+
+      try{
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "content-type":"application/json" },
+          body: JSON.stringify(evt)
+        });
+
+        const s = loadState();
+        s.bridge = res.ok ? "ONLINE" : ("HTTP_" + res.status);
+        saveState(s);
+        renderState();
+
+        appendEvent({
+          kind: "BRIDGE_SEND",
+          timestamp: nowISO(),
+          ok: res.ok,
+          status: res.status,
+          endpoint: url,
+          payload: evt
+        });
+
+        return res.ok;
+      }catch(e){
+        const s = loadState();
+        s.bridge = "OFFLINE";
+        saveState(s);
+        renderState();
+
+        appendEvent({
+          kind: "BRIDGE_SEND",
+          timestamp: nowISO(),
+          ok: false,
+          status: 0,
+          endpoint: url,
+          error: String(e),
+          payload: evt
+        });
+
+        return false;
+      }
+    }
+
+    function requireHashOkOrDeny(){
+      const s = loadState();
+      if(s.integrity !== "HASH_OK" || s.gate !== "ALLOWED"){
+        gateFailClosed("INTEGRITY_NOT_OK");
+        return false;
+      }
+      return true;
+    }
+
+    function currentLimitsForBridge(pack){
+      // Conservative fixed limits for first real tests
+      // Bridge will clamp anyway.
+      const lim = (pack && pack.limits) ? pack.limits : {};
+      return {
+        max_speed_cm_s: 10,
+        step_cm: 20,
+        yaw_deg: 15,
+        tick_ms: 700,
+        estop_timeout_ms: 1500,
+        // optional: copy a couple of declared limits as metadata
+        declared_altitude_max_m: lim.altitude_max_m ?? null,
+        declared_max_distance_m: lim.max_distance_m ?? null,
+        declared_follow_distance_m: lim.follow_distance_m ?? null
+      };
+    }
+
+    async function stepAction(mode){
+      const pack = loadPack();
+      const s = loadState();
+
+      const check = validatePackStructure(pack);
+      if(!check.ok){ gateFailClosed(check.why); return; }
+
+      if(!requireHashOkOrDeny()) return;
+
+      // must be allowed by pack
+      if(!pack.allowed_modes.includes(mode)){
+        appendEvent({
+          kind: "MODE_DENY",
+          timestamp: nowISO(),
+          requested: mode,
+          reason: "MODE_NOT_ALLOWED_BY_PACK",
+          pack_id: pack.pack_id,
+          source: s.pack_source
+        });
+        return;
+      }
+
+      // Single-step event: bridge executes one action and then holds.
+      s.mode = mode;
+      saveState(s);
+      renderState();
+
+      appendEvent({
+        kind: "STEP_ACTION",
+        timestamp: nowISO(),
+        mode,
+        pack_id: pack.pack_id,
+        source: s.pack_source
+      });
+
+      await sendToBridge({
+        gate: "ALLOWED",
+        integrity: "HASH_OK",
+        mode,
+        estop: false,
+        limits: currentLimitsForBridge(pack)
+      });
+
+      // Immediately force local UI back to HOLD (single-step discipline)
+      s.mode = "HOLD";
+      saveState(s);
+      renderState();
+    }
+
+    async function hold(){
+      const s = loadState();
+      s.mode = "HOLD";
+      saveState(s);
+      renderState();
+
+      appendEvent({ kind:"MODE_SET", timestamp: nowISO(), mode:"HOLD" });
+
+      // Inform bridge (best effort)
+      await sendToBridge({
+        gate: "DENIED",
+        integrity: (s.integrity === "HASH_OK" ? "HASH_OK" : "UNKNOWN"),
+        mode: "HOLD",
+        estop: true,
+        limits: {}
+      });
+    }
+
+    async function estop(){
+      const s = loadState();
+      s.gate = "DENIED";
+      s.mode = "HOLD";
+      saveState(s);
+      renderState();
+
+      appendEvent({ kind:"E_STOP", timestamp: nowISO(), effect:"IMMEDIATE_HALT" });
+
+      await sendToBridge({
+        gate: "DENIED",
+        integrity: (s.integrity === "HASH_OK" ? "HASH_OK" : "UNKNOWN"),
+        mode: "HOLD",
+        estop: true,
+        limits: {}
+      });
+    }
+
+    async function bridgePing(){
+      // best-effort: send harmless HOLD+ESTOP
+      const s = loadState();
+      await sendToBridge({
+        gate: "DENIED",
+        integrity: (s.integrity === "HASH_OK" ? "HASH_OK" : "UNKNOWN"),
+        mode: "HOLD",
+        estop: true,
+        limits: {}
+      });
     }
 
     function exportLog(){
@@ -687,14 +714,16 @@
       appendEvent({ kind:"LOG_EXPORT", timestamp: nowISO(), entries: ledger.length });
     }
 
-    // Wire buttons
-    document.getElementById("btnFollow").addEventListener("click", () => requestMode("FOLLOW_PROXIMITY"));
-    document.getElementById("btnExplore").addEventListener("click", () => requestMode("EXPLORE_SLOW"));
-    document.getElementById("btnHold").addEventListener("click", () => requestMode("HOLD"));
-    document.getElementById("btnEstop").addEventListener("click", () => estop());
-
+    // UI wiring
     document.getElementById("btnFetchSafe").addEventListener("click", () => fetchPack("OFFICE_SAFE"));
     document.getElementById("btnFetchProx").addEventListener("click", () => fetchPack("HUMAN_PROXIMITY"));
+
+    document.getElementById("btnExploreStep").addEventListener("click", () => stepAction("EXPLORE_SLOW"));
+    document.getElementById("btnFollowStep").addEventListener("click", () => stepAction("FOLLOW_PROXIMITY"));
+
+    document.getElementById("btnHold").addEventListener("click", () => hold());
+    document.getElementById("btnEstop").addEventListener("click", () => estop());
+    document.getElementById("btnBridgePing").addEventListener("click", () => bridgePing());
 
     document.getElementById("btnResetLog").addEventListener("click", () => {
       localStorage.removeItem(STORAGE_KEY);
@@ -707,46 +736,22 @@
 
     // Boot
     (function init(){
-      renderLedger();
+      // hard fail-closed baseline
+      saveState({ ...defaultState });
 
-      const pack = loadPack();
-      if(pack){
-        elPackView.textContent = JSON.stringify(pack, null, 2);
+      renderLedger();
+      renderState();
+
+      // show cached pack if present (not trusted until fetched again)
+      const cached = loadPack();
+      if(cached){
+        elPackView.textContent = JSON.stringify(cached, null, 2);
+        appendEvent({ kind:"BOOT_NOTICE", timestamp: nowISO(), note:"Cached pack present. Re-fetch required to open gate." });
       }else{
         elPackView.textContent = "{}";
       }
 
-      // Always start fail-closed.
-      const s0 = loadState();
-      if(!s0 || typeof s0 !== "object"){
-        saveState({ ...defaultState });
-      }
-      renderState();
-
-      // If cached pack exists, do not trust it without re-verification.
-      // For simplicity: cached pack requires re-fetch to re-open the gate.
-      const cached = loadPack();
-      if(cached){
-        appendEvent({
-          kind: "BOOT_NOTICE",
-          timestamp: nowISO(),
-          note: "Cached pack present. Gate remains DENIED until remote fetch + hash verification."
-        });
-        const s = loadState();
-        s.gate = "DENIED";
-        s.mode = "HOLD";
-        s.integrity = "UNKNOWN";
-        saveState(s);
-        renderState();
-      }else{
-        appendEvent({
-          kind: "BOOT_FAIL_CLOSED",
-          timestamp: nowISO(),
-          reason: "NO_PACK",
-          effect: "DENY + HOLD"
-        });
-        gateFailClosed("NO_PACK");
-      }
+      appendEvent({ kind:"BOOT_FAIL_CLOSED", timestamp: nowISO(), reason:"NO_PACK", effect:"DENY + HOLD" });
     })();
   </script>
 </body>
