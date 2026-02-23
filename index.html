@@ -13,6 +13,195 @@
 
 <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 <script defer src="/hermeticum-bce-platform/assets/fx.js"></script>
+
+<style>
+/* ===============================
+   UFO OVERLAY (home-embedded demo)
+   =============================== */
+.ufo-ol{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background: rgba(0,0,0,.62);
+  backdrop-filter: blur(10px);
+}
+.ufo-ol.is-open{ display:flex; }
+
+.ufo-ol__panel{
+  width:min(1100px, 100%);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:18px;
+  overflow:hidden;
+  background: rgba(12,17,24,.92);
+  box-shadow: 0 30px 90px rgba(0,0,0,.55);
+}
+
+.ufo-ol__top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 14px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.ufo-ol__title{
+  font-weight:750;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-size:11px;
+  color: rgba(232,238,246,.86);
+}
+.ufo-ol__top .hbce-btn{ padding:10px 12px; }
+
+.ufo-ol__grid{
+  display:grid;
+  grid-template-columns: 1.25fr .75fr;
+  gap:0;
+}
+@media (max-width: 900px){
+  .ufo-ol__grid{ grid-template-columns: 1fr; }
+}
+
+.ufo-stage{
+  position:relative;
+  overflow:hidden;
+  min-height: 520px;
+  background:
+    radial-gradient(900px 700px at 20% 10%, rgba(120,160,255,.15), rgba(0,0,0,0)),
+    radial-gradient(800px 600px at 120% 20%, rgba(255,60,120,.10), rgba(0,0,0,0)),
+    #070a0f;
+}
+.ufo-stars{
+  position:absolute; inset:0;
+  background-image:
+    radial-gradient(circle at 10% 15%, rgba(255,255,255,.55) 0 1px, transparent 2px),
+    radial-gradient(circle at 32% 75%, rgba(255,255,255,.45) 0 1px, transparent 2px),
+    radial-gradient(circle at 66% 30%, rgba(255,255,255,.50) 0 1px, transparent 2px),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,.40) 0 1px, transparent 2px),
+    radial-gradient(circle at 55% 55%, rgba(255,255,255,.35) 0 1px, transparent 2px),
+    radial-gradient(circle at 25% 40%, rgba(255,255,255,.30) 0 1px, transparent 2px);
+  opacity:.6;
+  filter: blur(.2px);
+  transform: translateZ(0);
+}
+
+.ufo-hud{
+  position:absolute;
+  left:12px;
+  top:12px;
+  padding:10px 12px;
+  border-radius: 14px;
+  border:1px solid rgba(255,255,255,.08);
+  background: rgba(0,0,0,.35);
+  backdrop-filter: blur(10px);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+  font-size: 12px;
+  color: rgba(232,238,246,.85);
+  line-height: 1.35;
+}
+.ufo-hud b{ color: rgba(232,238,246,.95); font-weight: 700; }
+.ufo-hud .row{ display:flex; gap:10px; }
+.ufo-hud .k{ width:92px; color: rgba(154,167,182,.95); }
+
+.ufo-entity{
+  position:absolute;
+  left:50%;
+  top:55%;
+  width: 180px;
+  height: 120px;
+  transform: translate(-50%,-50%) scale(.35);
+  transform-origin: 50% 60%;
+  will-change: transform, filter, opacity;
+  opacity: 0;
+  filter: drop-shadow(0 0 0 rgba(0,0,0,0));
+  pointer-events:none;
+}
+.ufo-entity.is-visible{ opacity:1; }
+
+.ufo-beam{
+  position:absolute;
+  left:50%;
+  top:55%;
+  width: 10px;
+  height: 10px;
+  transform: translate(-50%,-10%) scaleY(0);
+  transform-origin: 50% 0%;
+  opacity:0;
+  pointer-events:none;
+  background: linear-gradient(180deg, rgba(190,255,240,.0), rgba(190,255,240,.32), rgba(190,255,240,0));
+  filter: blur(0.2px);
+  border-radius: 999px;
+}
+
+.ufo-side{
+  padding:14px;
+  border-left:1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.02);
+}
+@media (max-width: 900px){
+  .ufo-side{ border-left:none; border-top:1px solid rgba(255,255,255,.08); }
+}
+.ufo-side h3{
+  margin:0 0 10px;
+  font-size: 14px;
+  letter-spacing:.02em;
+}
+.ufo-side p{
+  margin:0 0 12px;
+  color: rgba(232,238,246,.78);
+  font-size: 13px;
+}
+
+.ufo-btns{ display:flex; gap:10px; flex-wrap:wrap; margin: 10px 0 14px; }
+
+.ufo-joy{
+  width: 190px;
+  height: 190px;
+  border-radius: 999px;
+  border:1px solid rgba(255,255,255,.10);
+  background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  position: relative;
+  touch-action: none;
+  user-select:none;
+  -webkit-user-select:none;
+}
+.ufo-joy::after{
+  content:"";
+  position:absolute; inset: 18px;
+  border-radius: 999px;
+  border:1px dashed rgba(255,255,255,.10);
+  opacity:.7;
+}
+.ufo-knob{
+  width: 62px; height: 62px;
+  position:absolute;
+  left:50%; top:50%;
+  transform: translate(-50%,-50%);
+  border-radius: 999px;
+  border:1px solid rgba(219,231,255,.30);
+  background: linear-gradient(180deg, rgba(219,231,255,.12), rgba(255,255,255,.03));
+  box-shadow: 0 12px 30px rgba(0,0,0,.35);
+}
+.ufo-reads{
+  margin-top: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+  font-size: 12px;
+  color: rgba(232,238,246,.82);
+}
+.ufo-reads .r{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding: 6px 0;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+.ufo-reads .r:first-child{ border-top:none; }
+.ufo-tiny{ font-size: 12px; color: rgba(154,167,182,.95); }
+</style>
 </head>
 
 <body>
@@ -46,38 +235,17 @@
     </p>
 
     <div class="hbce-hero__cta" data-reveal>
-      <a class="hbce-btn hbce-btn--primary" data-shake href="/hermeticum-bce-platform/activate/">
-        Activate IPR
-      </a>
-      <a class="hbce-btn hbce-btn--secondary" href="/hermeticum-bce-platform/verify/">
-        Verify Record
-      </a>
-      <a class="hbce-btn" href="/hermeticum-bce-platform/sim/ufo/">
-        SIM: UFO Approach
-      </a>
+      <a class="hbce-btn hbce-btn--primary" data-shake href="/hermeticum-bce-platform/activate/">Activate IPR</a>
+      <a class="hbce-btn hbce-btn--secondary" href="/hermeticum-bce-platform/verify/">Verify Record</a>
+      <button class="hbce-btn" id="openUfo" type="button">UFO DEMO (Overlay)</button>
     </div>
 
     <div class="hbce-status" data-reveal role="status" aria-label="Operational status">
-      <div class="hbce-status__row">
-        <span class="hbce-status__k">NETWORK</span>
-        <span class="hbce-status__v">EU</span>
-      </div>
-      <div class="hbce-status__row">
-        <span class="hbce-status__k">MODE</span>
-        <span class="hbce-status__v">APPEND_ONLY</span>
-      </div>
-      <div class="hbce-status__row">
-        <span class="hbce-status__k">PUBLIC DATA</span>
-        <span class="hbce-status__v">HASH_ONLY</span>
-      </div>
-      <div class="hbce-status__row">
-        <span class="hbce-status__k">VERIFICATION</span>
-        <span class="hbce-status__v">DETERMINISTIC</span>
-      </div>
-      <div class="hbce-status__row">
-        <span class="hbce-status__k">FAILURE MODE</span>
-        <span class="hbce-status__v">FAIL_CLOSED</span>
-      </div>
+      <div class="hbce-status__row"><span class="hbce-status__k">NETWORK</span><span class="hbce-status__v">EU</span></div>
+      <div class="hbce-status__row"><span class="hbce-status__k">MODE</span><span class="hbce-status__v">APPEND_ONLY</span></div>
+      <div class="hbce-status__row"><span class="hbce-status__k">PUBLIC DATA</span><span class="hbce-status__v">HASH_ONLY</span></div>
+      <div class="hbce-status__row"><span class="hbce-status__k">VERIFICATION</span><span class="hbce-status__v">DETERMINISTIC</span></div>
+      <div class="hbce-status__row"><span class="hbce-status__k">FAILURE MODE</span><span class="hbce-status__v">FAIL_CLOSED</span></div>
     </div>
   </section>
 
@@ -115,36 +283,18 @@
   <section class="hbce-section" data-reveal>
     <h2 class="hbce-h2">Core Principles</h2>
     <div class="hbce-grid">
-      <article class="hbce-card">
-        <h3 class="hbce-h3">UE-FIRST</h3>
-        <p class="hbce-p">Regulatory alignment with EU operational and compliance standards.</p>
-      </article>
-      <article class="hbce-card">
-        <h3 class="hbce-h3">AUDIT-FIRST</h3>
-        <p class="hbce-p">Traceability as a first-class constraint. Verification is reproducible.</p>
-      </article>
-      <article class="hbce-card">
-        <h3 class="hbce-h3">NO IDENTITY CUSTODY</h3>
-        <p class="hbce-p">Public layer contains only hashes. No personal data storage.</p>
-      </article>
+      <article class="hbce-card"><h3 class="hbce-h3">UE-FIRST</h3><p class="hbce-p">Regulatory alignment with EU operational and compliance standards.</p></article>
+      <article class="hbce-card"><h3 class="hbce-h3">AUDIT-FIRST</h3><p class="hbce-p">Traceability as a first-class constraint. Verification is reproducible.</p></article>
+      <article class="hbce-card"><h3 class="hbce-h3">NO IDENTITY CUSTODY</h3><p class="hbce-p">Public layer contains only hashes. No personal data storage.</p></article>
     </div>
   </section>
 
   <section class="hbce-section hbce-section--dark" data-reveal>
     <h2 class="hbce-h2">Target Environments</h2>
     <div class="hbce-grid">
-      <article class="hbce-card">
-        <h3 class="hbce-h3">Robotics & Autonomous Systems</h3>
-        <p class="hbce-p">Pre-execution identity binding for robots, drones and industrial units.</p>
-      </article>
-      <article class="hbce-card">
-        <h3 class="hbce-h3">Enterprise Networks</h3>
-        <p class="hbce-p">Operational traceability across AI-driven infrastructures and org boundaries.</p>
-      </article>
-      <article class="hbce-card">
-        <h3 class="hbce-h3">Public Sector</h3>
-        <p class="hbce-p">Deterministic audit-ready identity layer for institutional environments.</p>
-      </article>
+      <article class="hbce-card"><h3 class="hbce-h3">Robotics & Autonomous Systems</h3><p class="hbce-p">Pre-execution identity binding for robots, drones and industrial units.</p></article>
+      <article class="hbce-card"><h3 class="hbce-h3">Enterprise Networks</h3><p class="hbce-p">Operational traceability across AI-driven infrastructures and org boundaries.</p></article>
+      <article class="hbce-card"><h3 class="hbce-h3">Public Sector</h3><p class="hbce-p">Deterministic audit-ready identity layer for institutional environments.</p></article>
     </div>
   </section>
 
@@ -160,7 +310,6 @@
     <div class="hbce-hero__cta">
       <a class="hbce-btn hbce-btn--primary" data-shake href="/hermeticum-bce-platform/activate/">Start</a>
       <a class="hbce-btn hbce-btn--secondary" href="/hermeticum-bce-platform/registry/">View Registry</a>
-      <a class="hbce-btn" href="/hermeticum-bce-platform/sim/ufo/">Open SIM</a>
     </div>
 
     <p class="hbce-note">
@@ -183,6 +332,317 @@
     </div>
   </div>
 </footer>
+
+<!-- ===============================
+     UFO OVERLAY MARKUP
+     =============================== -->
+<div class="ufo-ol" id="ufoOl" aria-hidden="true">
+  <div class="ufo-ol__panel" role="dialog" aria-modal="true" aria-label="UFO Demo Overlay">
+    <div class="ufo-ol__top">
+      <div class="ufo-ol__title">SIM · UFO APPROACH CONTROLLER</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="hbce-btn hbce-btn--primary" id="ufoSummon" type="button">SUMMON</button>
+        <button class="hbce-btn hbce-btn--secondary" id="ufoHold" type="button">HOLD</button>
+        <button class="hbce-btn" id="ufoClose" type="button">CLOSE</button>
+      </div>
+    </div>
+
+    <div class="ufo-ol__grid">
+      <section class="ufo-stage" aria-label="UFO stage">
+        <div class="ufo-stars"></div>
+
+        <div class="ufo-hud">
+          <div class="row"><span class="k">ENTITY</span> <b>UFO</b></div>
+          <div class="row"><span class="k">STATE</span> <b id="ufoSt">IDLE</b></div>
+          <div class="row"><span class="k">DIST</span> <b id="ufoDist">∞</b></div>
+          <div class="row"><span class="k">THRUST</span> <b id="ufoThr">0.00</b></div>
+          <div class="row"><span class="k">VECTOR</span> <b id="ufoVec">0.00, 0.00</b></div>
+        </div>
+
+        <div class="ufo-beam" id="ufoBeam"></div>
+
+        <svg class="ufo-entity" id="ufoEntity" viewBox="0 0 240 160" aria-hidden="true">
+          <defs>
+            <radialGradient id="og1" cx="50%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="rgba(219,231,255,.85)"/>
+              <stop offset="60%" stop-color="rgba(160,190,255,.30)"/>
+              <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+            </radialGradient>
+            <linearGradient id="og2" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="rgba(255,255,255,.35)"/>
+              <stop offset="100%" stop-color="rgba(255,255,255,.08)"/>
+            </linearGradient>
+            <linearGradient id="og3" x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0%" stop-color="rgba(255,60,120,.35)"/>
+              <stop offset="50%" stop-color="rgba(219,231,255,.25)"/>
+              <stop offset="100%" stop-color="rgba(0,160,255,.28)"/>
+            </linearGradient>
+            <filter id="oblur"><feGaussianBlur stdDeviation="1.2"/></filter>
+          </defs>
+
+          <ellipse cx="120" cy="95" rx="84" ry="50" fill="url(#og1)" filter="url(#oblur)" opacity=".65"/>
+          <ellipse cx="120" cy="92" rx="88" ry="28" fill="url(#og2)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+          <ellipse cx="120" cy="92" rx="74" ry="20" fill="rgba(0,0,0,.22)" stroke="rgba(255,255,255,.10)" stroke-width="1"/>
+          <path d="M70 86 C82 52, 158 52, 170 86 C150 92, 90 92, 70 86Z"
+                fill="rgba(219,231,255,.12)" stroke="rgba(219,231,255,.22)" stroke-width="2"/>
+          <ellipse cx="120" cy="105" rx="92" ry="8" fill="url(#og3)" opacity=".35"/>
+          <circle cx="86" cy="92" r="4.5" fill="rgba(255,255,255,.45)"/>
+          <circle cx="120" cy="92" r="4.5" fill="rgba(255,255,255,.45)"/>
+          <circle cx="154" cy="92" r="4.5" fill="rgba(255,255,255,.45)"/>
+        </svg>
+      </section>
+
+      <aside class="ufo-side">
+        <h3>Controller</h3>
+        <p>Drag the joystick. Up = approach, Down = retreat. Left/Right = lateral vector.</p>
+
+        <div class="ufo-btns">
+          <button class="hbce-btn hbce-btn--primary" id="ufoSummon2" type="button">SUMMON</button>
+          <button class="hbce-btn hbce-btn--secondary" id="ufoReset" type="button">RESET</button>
+        </div>
+
+        <div class="ufo-joy" id="ufoJoy" aria-label="Joystick">
+          <div class="ufo-knob" id="ufoKnob"></div>
+        </div>
+
+        <div class="ufo-reads">
+          <div class="r"><span class="ufo-tiny">Approach</span> <span id="ufoRA">0.00</span></div>
+          <div class="r"><span class="ufo-tiny">X</span> <span id="ufoRX">0.00</span></div>
+          <div class="r"><span class="ufo-tiny">Y</span> <span id="ufoRY">0.00</span></div>
+        </div>
+
+        <p class="ufo-tiny" style="margin-top:12px">Close with ESC. Overlay is isolated from core flows.</p>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const ol = document.getElementById("ufoOl");
+  const openBtn = document.getElementById("openUfo");
+  const closeBtn = document.getElementById("ufoClose");
+
+  const summonBtns = [document.getElementById("ufoSummon"), document.getElementById("ufoSummon2")];
+  const holdBtn = document.getElementById("ufoHold");
+  const resetBtn = document.getElementById("ufoReset");
+
+  const ufo  = document.getElementById("ufoEntity");
+  const beam = document.getElementById("ufoBeam");
+
+  const stEl   = document.getElementById("ufoSt");
+  const distEl = document.getElementById("ufoDist");
+  const thrEl  = document.getElementById("ufoThr");
+  const vecEl  = document.getElementById("ufoVec");
+
+  const joy  = document.getElementById("ufoJoy");
+  const knob = document.getElementById("ufoKnob");
+
+  const rA = document.getElementById("ufoRA");
+  const rX = document.getElementById("ufoRX");
+  const rY = document.getElementById("ufoRY");
+
+  // state
+  let state = "IDLE"; // IDLE | ACTIVE | HOLD
+  let visible = false;
+
+  let x = 0.50, y = 0.55, z = 0.08;
+  let vx = 0, vy = 0, vz = 0;
+
+  let jx = 0, jy = 0;
+  let approach = 0;
+
+  function setState(s){ state = s; stEl.textContent = s; }
+  function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+  function fmt(n){ return (Math.round(n*100)/100).toFixed(2); }
+
+  function open(){
+    ol.classList.add("is-open");
+    ol.setAttribute("aria-hidden","false");
+    // block background scroll
+    document.body.style.overflow = "hidden";
+  }
+
+  function close(){
+    ol.classList.remove("is-open");
+    ol.setAttribute("aria-hidden","true");
+    document.body.style.overflow = "";
+  }
+
+  openBtn.addEventListener("click", open);
+  closeBtn.addEventListener("click", close);
+
+  // click outside panel closes
+  ol.addEventListener("click", (e)=>{
+    if(e.target === ol) close();
+  });
+
+  // ESC closes
+  window.addEventListener("keydown", (e)=>{
+    if(e.key === "Escape" && ol.classList.contains("is-open")) close();
+  });
+
+  function summon(){
+    visible = true;
+    ufo.classList.add("is-visible");
+    beam.style.opacity = "0";
+    beam.style.transform = "translate(-50%,-10%) scaleY(0)";
+    setState("ACTIVE");
+  }
+
+  function reset(){
+    visible = false;
+    ufo.classList.remove("is-visible");
+    beam.style.opacity = "0";
+    beam.style.transform = "translate(-50%,-10%) scaleY(0)";
+    x = 0.50; y = 0.55; z = 0.08;
+    vx = 0; vy = 0; vz = 0;
+    jx = 0; jy = 0;
+    updateKnob();
+    setState("IDLE");
+  }
+
+  summonBtns.forEach(b => b.addEventListener("click", summon));
+
+  holdBtn.addEventListener("click", ()=>{
+    setState(state === "HOLD" ? "ACTIVE" : "HOLD");
+    if(state === "HOLD"){ vx *= 0.15; vy *= 0.15; vz *= 0.15; }
+  });
+
+  resetBtn.addEventListener("click", reset);
+
+  // joystick
+  let dragging = false;
+  function joyRect(){ return joy.getBoundingClientRect(); }
+
+  function updateKnob(){
+    const r = joyRect();
+    const cx = r.width/2, cy = r.height/2;
+    const max = (Math.min(r.width, r.height)/2) - 22;
+    const px = cx + jx * max;
+    const py = cy + jy * max;
+    knob.style.left = px + "px";
+    knob.style.top  = py + "px";
+    knob.style.transform = "translate(-50%,-50%)";
+  }
+
+  function setJoyFromPointer(clientX, clientY){
+    const r = joyRect();
+    const cx = r.left + r.width/2;
+    const cy = r.top + r.height/2;
+    const dx = clientX - cx;
+    const dy = clientY - cy;
+    const max = (Math.min(r.width, r.height)/2) - 22;
+
+    const nx = clamp(dx / max, -1, 1);
+    const ny = clamp(dy / max, -1, 1);
+
+    const dead = 0.08;
+    jx = Math.abs(nx) < dead ? 0 : nx;
+    jy = Math.abs(ny) < dead ? 0 : ny;
+
+    updateKnob();
+  }
+
+  joy.addEventListener("pointerdown", (e)=>{
+    dragging = true;
+    joy.setPointerCapture(e.pointerId);
+    setJoyFromPointer(e.clientX, e.clientY);
+  });
+  joy.addEventListener("pointermove", (e)=>{
+    if(!dragging) return;
+    setJoyFromPointer(e.clientX, e.clientY);
+  });
+  joy.addEventListener("pointerup", ()=>{
+    dragging = false;
+    jx = 0; jy = 0;
+    updateKnob();
+  });
+  joy.addEventListener("pointercancel", ()=>{
+    dragging = false;
+    jx = 0; jy = 0;
+    updateKnob();
+  });
+
+  // animation loop
+  let last = performance.now();
+  function tick(now){
+    const dt = Math.min(0.033, (now - last) / 1000);
+    last = now;
+
+    const mag = Math.sqrt(jx*jx + jy*jy);
+    approach = clamp(mag, 0, 1);
+
+    if(visible && state === "ACTIVE"){
+      const accelXY = 0.9;
+      const accelZ  = 1.2;
+      const damping = 0.88;
+
+      const forward = clamp((-jy + 0.15*approach), -1, 1);
+
+      vx += jx * accelXY * dt;
+      vy += jy * accelXY * dt;
+      vz += forward * accelZ * dt;
+
+      vx *= Math.pow(damping, dt*60);
+      vy *= Math.pow(damping, dt*60);
+      vz *= Math.pow(damping, dt*60);
+
+      x += vx * dt;
+      y += vy * dt;
+      z += vz * dt;
+
+      x = clamp(x, 0.08, 0.92);
+      y = clamp(y, 0.18, 0.90);
+      z = clamp(z, 0.05, 1.0);
+
+      if(z > 0.72){
+        const t = clamp((z - 0.72) / 0.28, 0, 1);
+        beam.style.opacity = String(0.15 + t * 0.55);
+        beam.style.width = (18 + t*42) + "px";
+        beam.style.height = (120 + t*320) + "px";
+        beam.style.transform = "translate(-50%,-10%) scaleY(1)";
+      } else {
+        beam.style.opacity = "0";
+        beam.style.transform = "translate(-50%,-10%) scaleY(0)";
+      }
+    }
+
+    if(state === "HOLD"){
+      vx *= 0.86; vy *= 0.86; vz *= 0.86;
+    }
+
+    const px = (x * 100).toFixed(2) + "%";
+    const py = (y * 100).toFixed(2) + "%";
+    const scale = 0.25 + z * 1.10;
+    const glow = Math.round(4 + z * 22);
+
+    ufo.style.left = px;
+    ufo.style.top  = py;
+    ufo.style.transform = `translate(-50%,-50%) scale(${scale.toFixed(3)})`;
+    ufo.style.filter = `drop-shadow(0 0 ${glow}px rgba(219,231,255,.18)) drop-shadow(0 0 ${Math.round(glow*0.6)}px rgba(255,60,120,.10))`;
+
+    distEl.textContent = visible ? (1.0 - z).toFixed(3) : "∞";
+    thrEl.textContent  = visible ? fmt(approach) : "0.00";
+    vecEl.textContent  = `${fmt(jx)}, ${fmt(jy)}`;
+
+    rA.textContent = fmt(approach);
+    rX.textContent = fmt(jx);
+    rY.textContent = fmt(jy);
+
+    requestAnimationFrame(tick);
+  }
+
+  updateKnob();
+  requestAnimationFrame(tick);
+
+  // expose reset on close to keep it clean
+  closeBtn.addEventListener("click", reset);
+  ol.addEventListener("click", (e)=>{ if(e.target === ol) reset(); });
+})();
+</script>
 
 </body>
 </html>
