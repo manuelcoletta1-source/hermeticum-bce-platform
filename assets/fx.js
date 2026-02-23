@@ -1,79 +1,78 @@
-/* ===============================
-   HBCE FX LAYER (cinematic)
-   =============================== */
+/* HBCE FX — cinematic but deterministic
+   - reveal on scroll
+   - controlled glitch pulse
+   - micro-shake on interactions
+   - auto-degrade on low FPS
+*/
+(function () {
+  "use strict";
 
-:root{
-  --fx-grain-opacity: .08;
-  --fx-scan-opacity: .05;
-}
+  const root = document.documentElement;
+  const prefersReduced =
+    window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/* master switches */
-.fx-off *{
-  animation:none !important;
-  transition:none !important;
-}
-.fx-degraded .fx-heavy{
-  display:none !important;
-}
+  if (prefersReduced) {
+    root.classList.add("fx-off");
+    return;
+  }
 
-/* subtle grain + scanlines overlay */
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:999;
-  opacity:var(--fx-grain-opacity);
-  mix-blend-mode:overlay;
-  background-image:
-    repeating-linear-gradient(0deg,
-      rgba(255,255,255,var(--fx-scan-opacity)) 0px,
-      rgba(255,255,255,0) 2px,
-      rgba(0,0,0,0) 6px);
-}
+  // REVEAL ON SCROLL
+  const revealEls = Array.from(document.querySelectorAll("[data-reveal]"));
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          e.target.classList.add("is-revealed");
+          io.unobserve(e.target);
+        }
+      }
+    },
+    { threshold: 0.12 }
+  );
+  revealEls.forEach((el) => io.observe(el));
 
-/* vignette */
-body::after{
-  content:"";
-  position:fixed;
-  inset:-2px;
-  pointer-events:none;
-  z-index:998;
-  background:radial-gradient(ellipse at center,
-    rgba(0,0,0,0) 55%,
-    rgba(0,0,0,.55) 100%);
-}
+  // GLITCH PULSE (sparse)
+  function pulseGlitch() {
+    if (root.classList.contains("fx-degraded")) return;
+    root.classList.add("fx-glitch");
+    window.setTimeout(() => root.classList.remove("fx-glitch"), 180);
+  }
 
-/* reveal */
-[data-reveal]{
-  opacity:0;
-  transform:translateY(10px);
-  transition:opacity .55s ease, transform .55s ease;
-}
-[data-reveal].is-revealed{
-  opacity:1;
-  transform:none;
-}
+  function scheduleGlitch() {
+    const t = 7000 + Math.random() * 9000;
+    window.setTimeout(() => {
+      pulseGlitch();
+      scheduleGlitch();
+    }, t);
+  }
+  scheduleGlitch();
 
-/* glitch pulse — applied to root for a short time */
-.fx-glitch .hbce-hero__title,
-.fx-glitch h1,
-.fx-glitch .hbce-brand{
-  text-shadow:
-    1px 0 rgba(255,0,80,.35),
-   -1px 0 rgba(0,160,255,.25);
-  transform:translateX(.5px);
-}
+  // MICRO SHAKE (only marked elements)
+  document.addEventListener("click", (ev) => {
+    const t = ev.target && ev.target.closest && ev.target.closest("[data-shake]");
+    if (!t) return;
+    t.classList.remove("fx-shake");
+    void t.offsetWidth; // restart animation
+    t.classList.add("fx-shake");
+  });
 
-/* micro shake */
-.fx-shake{
-  animation:hbceShake 220ms linear 1;
-}
-@keyframes hbceShake{
-  0%{ transform:translate(0,0) }
-  20%{ transform:translate(1px,0) }
-  40%{ transform:translate(-1px,0) }
-  60%{ transform:translate(1px,1px) }
-  80%{ transform:translate(0,-1px) }
-  100%{ transform:translate(0,0) }
-}
+  // PERF GUARD
+  let frames = 0;
+  let last = performance.now();
+
+  function raf(now) {
+    frames++;
+    const dt = now - last;
+
+    if (dt >= 1200) {
+      const fps = (frames * 1000) / dt;
+      frames = 0;
+      last = now;
+
+      if (fps < 45) root.classList.add("fx-degraded");
+    }
+
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
+})();
