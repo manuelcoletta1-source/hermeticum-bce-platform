@@ -1,8 +1,8 @@
 /* =========================================================
-   HBCE SPACEFIELD — CINEMATIC WARP EDITION
-   - parallax stars with hyperspace streaks
-   - warp reacts to scroll velocity (spaceship acceleration feel)
-   - subtle planets + rare constellations
+   HBCE SPACEFIELD — CINEMATIC HYPERSPACE (TUNNEL + LENS)
+   - scroll-reactive warp
+   - star streaks + tunnel rings + subtle lens distortion
+   - rare constellations + faint planets
    - auto-degrade on low FPS
    - respects prefers-reduced-motion
    ========================================================= */
@@ -19,7 +19,7 @@
   const ctx = canvas.getContext("2d", { alpha: true });
   if (!ctx) return;
 
-  // ----- Seeded RNG (stable feel per session)
+  // ----- Seeded RNG
   let seed = 0xC0FFEE ^ 0xBADC0DE;
   function rnd() {
     seed ^= seed << 13; seed |= 0;
@@ -29,6 +29,7 @@
   }
   function r(min, max){ return min + rnd() * (max - min); }
   function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+  function lerp(a, b, t){ return a + (b - a) * t; }
 
   // ----- Resize
   let w = 0, h = 0, dpr = 1;
@@ -45,36 +46,32 @@
   resize();
   window.addEventListener("resize", resize, { passive: true });
 
-  // ----- Motion base vector (cruise drift)
+  // ----- Travel vector (cruise)
   let baseVX = -10; // px/sec
   let baseVY =  2;  // px/sec
 
-  // ----- Warp control (scroll velocity -> warp)
+  // ----- Warp control
   let lastScrollY = window.scrollY || 0;
-  let scrollVel = 0; // px/sec (smoothed)
-  let warp = 0;      // 0..1
+  let warp = 0;
   let warpTarget = 0;
 
   function onScroll(){
     const y = window.scrollY || 0;
     const dy = y - lastScrollY;
     lastScrollY = y;
-
-    // Convert dy to target warp (big scroll -> warp)
-    // clamp around typical mobile scroll speeds
     warpTarget = clamp(Math.abs(dy) / 220, 0, 1);
   }
   window.addEventListener("scroll", onScroll, { passive: true });
 
-  // cinematic "jump" on load (brief hyperspace)
-  let boot = 1.0; // decays to 0
+  // boot jump
   const bootStart = performance.now();
+  let boot = 1.0;
 
-  // ----- Layers (3 parallax star layers)
+  // ----- Layers
   const LAYERS = [
-    { count: 150, speed: 6,  size: [0.6, 1.2], alpha: [0.10, 0.22] }, // far
-    { count: 95,  speed: 14, size: [0.9, 1.9], alpha: [0.14, 0.30] }, // mid
-    { count: 60,  speed: 28, size: [1.2, 2.8], alpha: [0.18, 0.36] }  // near
+    { count: 150, speed: 6,  size: [0.6, 1.2], alpha: [0.10, 0.22] },
+    { count: 95,  speed: 14, size: [0.9, 1.9], alpha: [0.14, 0.30] },
+    { count: 60,  speed: 28, size: [1.2, 2.8], alpha: [0.18, 0.36] }
   ];
 
   const stars = LAYERS.map(L => {
@@ -88,28 +85,27 @@
         a: r(L.alpha[0], L.alpha[1]),
         tw: r(0.2, 1.0),
         tws: r(0.15, 0.5),
-        // a tiny color bias: most white, some slightly cool/warm
         tint: hueBias < 0.84 ? "white" : (hueBias < 0.92 ? "cool" : "warm")
       });
     }
     return arr;
   });
 
-  // ----- Planets (very subtle drifting)
+  // ----- Planets (faint)
   const planets = [];
   for (let i=0; i<3; i++){
     planets.push({
       x: r(-0.15*w, 1.15*w),
       y: r(-0.15*h, 1.15*h),
       r: r(80, 220),
-      vx: r(-1.2, -0.3),  // drift left
+      vx: r(-1.2, -0.3),
       vy: r(-0.15, 0.15),
-      a: r(0.035, 0.095),
+      a: r(0.030, 0.085),
       tint: rnd() < 0.55 ? "cool" : "warm"
     });
   }
 
-  // ----- Constellations (rare, tasteful)
+  // ----- Constellations (rare)
   let constel = null;
   function spawnConstellation(){
     const pointsN = Math.floor(r(5, 9));
@@ -119,10 +115,7 @@
     const spread = r(90, 210);
 
     for (let i=0; i<pointsN; i++){
-      points.push({
-        x: cx + r(-spread, spread),
-        y: cy + r(-spread, spread)
-      });
+      points.push({ x: cx + r(-spread, spread), y: cy + r(-spread, spread) });
     }
 
     const links = [];
@@ -134,6 +127,18 @@
     constel = { points, links, t: 0, life: r(9, 16), a: 0.0 };
   }
 
+  // ----- Tunnel rings (warp-only)
+  // Create rings once; they move along "depth"
+  const rings = [];
+  const RINGS_N = 22;
+  for (let i=0; i<RINGS_N; i++){
+    rings.push({
+      z: r(0, 1),            // 0 close -> 1 far (we'll invert while drawing)
+      phase: r(0, Math.PI*2),
+      w: r(0.8, 1.4)
+    });
+  }
+
   // ----- Perf guard / degrade
   let degraded = false;
   let frames = 0;
@@ -143,7 +148,6 @@
     ctx.clearRect(0, 0, w, h);
   }
 
-  // ----- Helpers for drawing
   function starColor(tint){
     if (tint === "cool") return "rgba(219,231,255,1)";
     if (tint === "warm") return "rgba(255,220,235,1)";
@@ -182,28 +186,90 @@
     }
   }
 
-  // Hyperspace streaks:
-  // draw a star as a line in direction opposite to travel vector,
-  // with length proportional to warp and layer speed.
+  // Lens distortion (subtle): we simulate by scaling/offset based on warp
+  function applyLens(warpBoost){
+    if (degraded) return;
+    const k = warpBoost * 0.035; // subtle
+    if (k <= 0) return;
+
+    // Slight “pull” towards center like a lens
+    // Achieved by drawing on top using composite and soft radial gradient.
+    const cx = w * 0.5;
+    const cy = h * 0.5;
+
+    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h) * 0.55);
+    g.addColorStop(0, `rgba(219,231,255,${0.10 * k / 0.035})`);
+    g.addColorStop(0.45, `rgba(0,0,0,0)`);
+    g.addColorStop(1, `rgba(0,0,0,0)`);
+
+    ctx.globalCompositeOperation = "screen";
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+    ctx.globalCompositeOperation = "source-over";
+  }
+
+  // Tunnel rings: appear only with warp
+  function drawTunnel(time, dt, warpBoost){
+    if (warpBoost < 0.12) return;
+    if (degraded) return;
+
+    const cx = w * 0.5;
+    const cy = h * 0.5;
+
+    // direction: align tunnel slightly with travel vector
+    const tvx = baseVX, tvy = baseVY;
+    const ang = Math.atan2(tvy, tvx) + Math.PI; // invert for "ahead"
+
+    // ring strength
+    const aBase = 0.10 + warpBoost * 0.18;
+    const ringCount = degraded ? 10 : RINGS_N;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(ang * 0.15); // keep it subtle
+    ctx.translate(-cx, -cy);
+
+    for (let i=0; i<ringCount; i++){
+      const rg = rings[i];
+      // move "towards viewer" when warping
+      rg.z -= dt * (0.35 + warpBoost * 1.8) * rg.w;
+      if (rg.z < 0) rg.z += 1;
+
+      // invert for drawing: far->small, near->big
+      const z = 1 - rg.z;
+
+      const radius = lerp(40, Math.max(w,h) * 0.72, z);
+      const wobble = Math.sin(time * 1.2 + rg.phase) * (2 + 10 * warpBoost);
+      const rr = radius + wobble;
+
+      const alpha = aBase * (1 - z) * (0.35 + 0.65 * warpBoost);
+
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = "rgba(219,231,255,1)";
+      ctx.lineWidth = 1;
+
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, rr, rr * (0.86 + 0.08*Math.sin(rg.phase + time)), 0, 0, Math.PI*2);
+      ctx.stroke();
+    }
+
+    ctx.restore();
+    ctx.globalAlpha = 1;
+  }
+
   function drawStars(time, dt){
-    // Smooth warp:
-    // base warp from scroll + boot jump
     const bootT = clamp((performance.now() - bootStart) / 1800, 0, 1);
     boot = 1 - bootT;
 
-    // Approach target with inertia
+    // smooth warp
     warp += (warpTarget - warp) * 0.08;
-    // decay target slowly when not scrolling
     warpTarget *= 0.92;
 
     const warpBoost = clamp(warp + boot * 0.85, 0, 1);
 
-    // Travel direction vector
-    // (slight diagonal gives "ship course" feel)
-    const tvx = baseVX;
-    const tvy = baseVY;
-
-    // streak direction opposite to travel
+    // travel direction
+    const tvx = baseVX, tvy = baseVY;
     const lenDir = Math.sqrt(tvx*tvx + tvy*tvy) || 1;
     const nx = -tvx / lenDir;
     const ny = -tvy / lenDir;
@@ -212,33 +278,26 @@
       const L = LAYERS[li];
       const arr = stars[li];
 
-      // parallax: near layer faster
       const pvx = tvx * (L.speed / 10);
       const pvy = tvy * (L.speed / 10);
 
-      // warp affects speed and streak length
-      const speedMul = 1 + warpBoost * (degraded ? 1.2 : 1.8);
+      const speedMul = 1 + warpBoost * (degraded ? 1.15 : 2.05);
 
       for (const s of arr){
         s.x += pvx * dt * speedMul;
         s.y += pvy * dt * speedMul;
 
-        // wrap
-        if (s.x < -20) s.x = w + 20;
-        if (s.x > w + 20) s.x = -20;
-        if (s.y < -20) s.y = h + 20;
-        if (s.y > h + 20) s.y = -20;
+        if (s.x < -30) s.x = w + 30;
+        if (s.x > w + 30) s.x = -30;
+        if (s.y < -30) s.y = h + 30;
+        if (s.y > h + 30) s.y = -30;
 
-        // twinkle (reduced during warp, because streak dominates)
         const tw = 0.55 + 0.45 * Math.sin((time * s.tws) + s.tw * 6.283);
-        const twMul = 1 - warpBoost * 0.55;
-
-        const alpha = s.a * (0.35 + 0.65 * tw) * (0.7 + 0.3 * twMul);
+        const alpha = s.a * (0.35 + 0.65 * tw) * (1 - warpBoost * 0.25);
         ctx.globalAlpha = alpha;
 
         const color = starColor(s.tint);
 
-        // Choose point vs streak
         const streak = warpBoost > 0.10 && !degraded;
         if (!streak){
           ctx.fillStyle = color;
@@ -246,12 +305,10 @@
           ctx.arc(s.x, s.y, s.s, 0, Math.PI*2);
           ctx.fill();
         } else {
-          // streak length scales by warp and layer speed
-          const Lk = (L.speed / 28); // near -> bigger
-          const len = (8 + warpBoost * 120) * Lk;
+          const Lk = (L.speed / 28);
+          const len = (10 + warpBoost * 150) * Lk;
           const lw  = Math.max(1, s.s * 0.75);
 
-          // slight color intensity for streaks
           ctx.strokeStyle = color;
           ctx.lineWidth = lw;
 
@@ -264,16 +321,32 @@
     }
 
     ctx.globalAlpha = 1;
+
+    // A tiny “flash” when warp climbs quickly (cinema punch)
+    // Implemented as a faint screen blend.
+    if (!degraded && warpBoost > 0.45){
+      const flash = (warpBoost - 0.45) / 0.55; // 0..1
+      ctx.globalCompositeOperation = "screen";
+      ctx.globalAlpha = 0.05 * flash;
+      ctx.fillStyle = "rgba(219,231,255,1)";
+      ctx.fillRect(0, 0, w, h);
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = "source-over";
+    }
+
+    // Draw tunnel rings + lens on top (only during warp)
+    drawTunnel(time, dt, warpBoost);
+    applyLens(warpBoost);
+
+    return warpBoost;
   }
 
   function drawConstellation(dt){
-    // rarer in cinematic mode
     if (!constel && !degraded && rnd() < 0.0016) spawnConstellation();
     if (!constel) return;
 
     constel.t += dt;
 
-    // fade in/out
     const inT = Math.min(1, constel.t / 2.0);
     const outT = Math.max(0, (constel.life - constel.t) / 2.6);
     constel.a = Math.min(inT, outT) * 0.16;
@@ -285,7 +358,6 @@
 
     ctx.globalAlpha = constel.a;
 
-    // points
     ctx.fillStyle = "rgba(232,238,246,1)";
     for (const p of constel.points){
       ctx.beginPath();
@@ -293,7 +365,6 @@
       ctx.fill();
     }
 
-    // links
     ctx.strokeStyle = "rgba(219,231,255,1)";
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -307,16 +378,13 @@
     ctx.globalAlpha = 1;
   }
 
-  // optional: subtle “grain” (cheap and cinematic)
   function drawGrain(){
     if (degraded) return;
-    const n = 80; // tiny specks
+    const n = 80;
     ctx.globalAlpha = 0.035;
     ctx.fillStyle = "rgba(255,255,255,1)";
     for (let i=0; i<n; i++){
-      const x = rnd() * w;
-      const y = rnd() * h;
-      ctx.fillRect(x, y, 1, 1);
+      ctx.fillRect(rnd() * w, rnd() * h, 1, 1);
     }
     ctx.globalAlpha = 1;
   }
@@ -337,8 +405,6 @@
       const fps = (frames * 1000) / perfDt;
       frames = 0;
       perfLast = now;
-
-      // degrade below 45 fps
       if (fps < 45) degraded = true;
     }
 
