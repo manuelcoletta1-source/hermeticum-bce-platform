@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <title>Control Console — Fail-Closed Mode Switch (HBCE)</title>
-  <meta name="description" content="Fail-closed control console. Mode switching under OPC policy packs. No joystick. No ambiguity. Audit-first." />
+  <meta name="description" content="Fail-closed control console. Mode switching under remote OPC policy packs. No joystick. No ambiguity. Audit-first." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
@@ -166,7 +166,6 @@
       overflow: hidden;
     }
 
-    /* “Fear” effect: cold pulse on E-STOP (no red, no colors specified) */
     .hbce-btn--danger::before{
       content:"";
       position:absolute;
@@ -229,6 +228,24 @@
       border-top: 1px solid rgba(255,255,255,.08);
       background: rgba(0,0,0,.25);
     }
+
+    .hbce-inline{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .hbce-input{
+      width: 100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.30);
+      color: inherit;
+      font: inherit;
+      outline: none;
+    }
   </style>
 </head>
 
@@ -241,7 +258,7 @@
         <div class="hbce-kicker">HBCE · CONTROL · FAIL-CLOSED</div>
         <h1 class="hbce-title">Operational Control Console</h1>
         <p class="hbce-lead">
-          No joystick. No continuous motion commands. Only <span class="hbce-mono">MODE</span> transitions under policy constraints.
+          No joystick. No continuous motion commands. Only <span class="hbce-mono">MODE</span> transitions under remote OPC policy packs.
           If evidence is missing, the system does not “degrade”. It <strong>halts</strong>.
         </p>
       </div>
@@ -258,15 +275,16 @@
             <div class="hbce-pillrow">
               <div class="hbce-pill" id="modePill">MODE: HOLD</div>
               <div class="hbce-pill" id="packPill">OPC PACK: MISSING</div>
-              <div class="hbce-pill" id="sigPill">SIGNATURE: UNSIGNED</div>
+              <div class="hbce-pill" id="srcPill">SOURCE: NONE</div>
+              <div class="hbce-pill" id="intPill">INTEGRITY: UNKNOWN</div>
             </div>
           </div>
 
           <div class="hbce-divider"></div>
 
           <p class="hbce-note">
-            This console enforces a simple invariant: <span class="hbce-mono">MISSING → HOLD</span>.
-            A valid policy pack is required to transition modes.
+            Invariant: <span class="hbce-mono">MISSING → HOLD</span>.
+            A valid remote pack is required to transition modes.
           </p>
 
           <p class="hbce-note hbce-small" style="margin-top:10px;">
@@ -303,22 +321,31 @@
 
         <!-- POLICY PACK -->
         <div class="hbce-card">
-          <h2>Policy Pack (OPC)</h2>
+          <h2>Policy Pack (Remote OPC)</h2>
           <p class="hbce-note">
-            The console reads a local policy pack (static JSON). If missing or invalid: <span class="hbce-mono">DENY + HOLD</span>.
+            The console fetches packs from the OPC repository. If the fetch fails or the pack is invalid: <span class="hbce-mono">DENY + HOLD</span>.
           </p>
 
           <div class="hbce-divider"></div>
 
+          <div class="hbce-inline">
+            <input id="opcBase" class="hbce-input hbce-mono" type="text"
+                   value="https://manuelcoletta1-source.github.io/opc"
+                   aria-label="OPC base URL" />
+          </div>
+
+          <div class="hbce-divider"></div>
+
           <div class="hbce-pillrow" style="margin-top:0;">
-            <button class="hbce-btn hbce-btn--ghost" id="btnLoadSafe" type="button">Load Pack: OFFICE_SAFE</button>
-            <button class="hbce-btn hbce-btn--ghost" id="btnLoadProx" type="button">Load Pack: HUMAN_PROXIMITY</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btnFetchSafe" type="button">Fetch Pack: OFFICE_SAFE</button>
+            <button class="hbce-btn hbce-btn--ghost" id="btnFetchProx" type="button">Fetch Pack: HUMAN_PROXIMITY</button>
           </div>
 
           <div class="hbce-divider"></div>
 
           <p class="hbce-note hbce-small">
-            Loaded pack is shown below. This demo does not publish or transmit data. It stores an append-only local log.
+            Loaded pack is shown below. This demo stores an append-only local log only.
+            Integrity is currently <span class="hbce-mono">UNSIGNED</span> until signature rollout.
           </p>
 
           <div style="margin-top:10px;">
@@ -371,34 +398,37 @@
 
   <script>
     /* ===============================
-       HBCE CONTROL CONSOLE — DEMO CORE
+       HBCE CONTROL CONSOLE — REMOTE OPC
        - No backend
        - No streaming commands
        - Fail-closed mode switching
+       - Remote policy packs (OPC repo)
        - Append-only local ledger
        =============================== */
 
-    const STORAGE_KEY = "hbce_control_ledger_v1";
-    const PACK_KEY = "hbce_opc_pack_v1";
-    const STATE_KEY = "hbce_control_state_v1";
+    const STORAGE_KEY = "hbce_control_ledger_v2";
+    const PACK_KEY = "hbce_opc_pack_v2";
+    const STATE_KEY = "hbce_control_state_v2";
 
     const elGate = document.getElementById("gateValue");
     const elMode = document.getElementById("modePill");
     const elPack = document.getElementById("packPill");
-    const elSig  = document.getElementById("sigPill");
+    const elSrc  = document.getElementById("srcPill");
+    const elInt  = document.getElementById("intPill");
     const elPackView = document.getElementById("packView");
     const elLogBox = document.getElementById("logBox");
+    const elOpcBase = document.getElementById("opcBase");
 
     const defaultState = {
       mode: "HOLD",
       gate: "DENIED",
       pack_id: "MISSING",
-      signature: "UNSIGNED",
+      pack_source: "NONE",
+      integrity: "UNKNOWN",
       last_event: null
     };
 
     function nowISO(){
-      // deterministic enough for UI; true opponible time comes from UNEBDO / anchoring layer
       return new Date().toISOString();
     }
 
@@ -463,29 +493,42 @@
         timestamp: nowISO(),
         reason,
         mode_forced: "HOLD",
-        policy_pack: s.pack_id || "MISSING"
+        policy_pack: s.pack_id || "MISSING",
+        source: s.pack_source || "NONE"
       });
+
       renderState();
     }
 
     function validatePack(pack){
-      // minimal validation (fail-closed)
       if(!pack) return { ok:false, why:"PACK_MISSING" };
       if(pack.opc !== "HBCE-OPC-v1") return { ok:false, why:"PACK_PROTO_MISMATCH" };
       if(!pack.pack_id || typeof pack.pack_id !== "string") return { ok:false, why:"PACK_ID_MISSING" };
       if(!pack.policy || !Array.isArray(pack.policy)) return { ok:false, why:"PACK_POLICY_INVALID" };
       if(!pack.limits || typeof pack.limits !== "object") return { ok:false, why:"PACK_LIMITS_INVALID" };
+      if(!pack.allowed_modes || !Array.isArray(pack.allowed_modes)) return { ok:false, why:"PACK_ALLOWED_MODES_INVALID" };
       return { ok:true, why:"OK" };
     }
 
-    function applyPack(pack){
+    function computeIntegrityLabel(pack){
+      try{
+        const st = pack && pack.integrity && typeof pack.integrity === "object" ? pack.integrity.status : "UNKNOWN";
+        return String(st || "UNKNOWN").toUpperCase();
+      }catch(e){
+        return "UNKNOWN";
+      }
+    }
+
+    function applyPack(pack, sourceUrl){
       const check = validatePack(pack);
       if(!check.ok){
         savePack(null);
+        elPackView.textContent = "{}";
         const s = loadState();
         s.pack_id = "MISSING";
+        s.pack_source = "NONE";
+        s.integrity = "UNKNOWN";
         saveState(s);
-        elPackView.textContent = "{}";
         gateFailClosed(check.why);
         return;
       }
@@ -494,16 +537,18 @@
 
       const s = loadState();
       s.pack_id = pack.pack_id;
-      s.gate = "ALLOWED";          // pack present = gate can be opened for mode switching (still constrained per-mode)
-      s.signature = pack.signature || "UNSIGNED";
+      s.pack_source = sourceUrl || "REMOTE";
+      s.integrity = computeIntegrityLabel(pack);
+      s.gate = "ALLOWED";
       saveState(s);
 
       appendEvent({
         kind: "PACK_LOAD",
         timestamp: nowISO(),
         pack_id: pack.pack_id,
-        integrity: "UNVERIFIED_DEMO",
-        note: "In production, pack integrity is verified via signature + hash."
+        source: s.pack_source,
+        integrity: s.integrity,
+        note: "If integrity is missing/invalid, production systems must deny. This console is fail-closed on invalid structure; signature rollout is next."
       });
 
       elPackView.textContent = JSON.stringify(pack, null, 2);
@@ -520,7 +565,6 @@
         return;
       }
 
-      // mode must be permitted by pack
       const allowedModes = pack.allowed_modes || ["HOLD"];
       if(!allowedModes.includes(nextMode)){
         appendEvent({
@@ -528,7 +572,8 @@
           timestamp: nowISO(),
           requested: nextMode,
           reason: "MODE_NOT_ALLOWED_BY_PACK",
-          pack_id: pack.pack_id
+          pack_id: pack.pack_id,
+          source: s.pack_source || "UNKNOWN"
         });
         renderState();
         return;
@@ -536,7 +581,6 @@
 
       s.mode = nextMode;
       s.gate = "ALLOWED";
-      s.signature = pack.signature || "UNSIGNED";
       s.last_event = "MODE_SET";
       saveState(s);
 
@@ -545,6 +589,7 @@
         timestamp: nowISO(),
         mode: nextMode,
         pack_id: pack.pack_id,
+        source: s.pack_source || "UNKNOWN",
         limits: pack.limits || {}
       });
 
@@ -574,13 +619,8 @@
       elGate.textContent = s.gate || "DENIED";
       elMode.textContent = "MODE: " + (s.mode || "HOLD");
       elPack.textContent = "OPC PACK: " + (s.pack_id || "MISSING");
-      elSig.textContent  = "SIGNATURE: " + (s.signature || "UNSIGNED");
-
-      // If denied, keep it blunt.
-      if(s.gate !== "ALLOWED"){
-        // no color changes; fear is in language + structure
-        // keep mode forced to HOLD (already)
-      }
+      elSrc.textContent  = "SOURCE: " + (s.pack_source || "NONE");
+      elInt.textContent  = "INTEGRITY: " + (s.integrity || "UNKNOWN");
     }
 
     function renderLedger(){
@@ -593,7 +633,7 @@
       const lines = ledger
         .slice(-120)
         .reverse()
-        .map((e, idx) => {
+        .map((e) => {
           const ts = e.timestamp || "UNKNOWN_TIME";
           const kind = e.kind || "EVENT";
           const body = JSON.stringify(e);
@@ -610,16 +650,6 @@
         .replaceAll(">","&gt;")
         .replaceAll('"',"&quot;")
         .replaceAll("'","&#039;");
-    }
-
-    function resetLog(){
-      localStorage.removeItem(STORAGE_KEY);
-      appendEvent({
-        kind: "LOG_RESET",
-        timestamp: nowISO(),
-        note: "Local ledger reset by operator."
-      });
-      renderLedger();
     }
 
     function exportLog(){
@@ -647,35 +677,37 @@
       });
     }
 
-    // Demo packs (local, static)
-    const PACK_OFFICE_SAFE = {
-      opc: "HBCE-OPC-v1",
-      pack_id: "OFFICE_SAFE",
-      policy: ["FAIL_CLOSED","AUDIT_FIRST","UE_FIRST","HASH_ONLY","APPEND_ONLY","GDPR_MIN"],
-      allowed_modes: ["HOLD","EXPLORE_SLOW"],
-      limits: {
-        max_speed: 0.15,
-        max_distance_m: 2.0,
-        altitude_max_m: 2.0,
-        collision_avoidance: "REQUIRED"
-      },
-      signature: "UNSIGNED_DEMO"
-    };
+    function normalizeBaseUrl(u){
+      const s = String(u || "").trim();
+      return s.endsWith("/") ? s.slice(0, -1) : s;
+    }
 
-    const PACK_HUMAN_PROXIMITY = {
-      opc: "HBCE-OPC-v1",
-      pack_id: "HUMAN_PROXIMITY",
-      policy: ["FAIL_CLOSED","AUDIT_FIRST","UE_FIRST","HASH_ONLY","APPEND_ONLY","GDPR_MIN"],
-      allowed_modes: ["HOLD","FOLLOW_PROXIMITY"],
-      limits: {
-        follow_distance_m: 0.20,
-        max_speed: 0.10,
-        altitude_max_m: 2.2,
-        keep_out_zone: "NONE",
-        collision_avoidance: "REQUIRED"
-      },
-      signature: "UNSIGNED_DEMO"
-    };
+    async function fetchPack(packName){
+      const base = normalizeBaseUrl(elOpcBase.value);
+      const url = `${base}/packs/${encodeURIComponent(packName)}.json`;
+
+      appendEvent({
+        kind: "PACK_FETCH",
+        timestamp: nowISO(),
+        pack: packName,
+        url
+      });
+
+      try{
+        const res = await fetch(url, { cache: "no-store" });
+        if(!res.ok){
+          elPackView.textContent = JSON.stringify({ error: "REMOTE_FETCH_FAILED", status: res.status, url }, null, 2);
+          gateFailClosed(`REMOTE_FETCH_FAILED_${res.status}`);
+          return;
+        }
+
+        const pack = await res.json();
+        applyPack(pack, url);
+      }catch(e){
+        elPackView.textContent = JSON.stringify({ error: "REMOTE_FETCH_EXCEPTION", message: String(e), url }, null, 2);
+        gateFailClosed("REMOTE_FETCH_EXCEPTION");
+      }
+    }
 
     // Wire buttons
     document.getElementById("btnFollow").addEventListener("click", () => requestMode("FOLLOW_PROXIMITY"));
@@ -683,11 +715,10 @@
     document.getElementById("btnHold").addEventListener("click", () => requestMode("HOLD"));
     document.getElementById("btnEstop").addEventListener("click", () => estop());
 
-    document.getElementById("btnLoadSafe").addEventListener("click", () => applyPack(PACK_OFFICE_SAFE));
-    document.getElementById("btnLoadProx").addEventListener("click", () => applyPack(PACK_HUMAN_PROXIMITY));
+    document.getElementById("btnFetchSafe").addEventListener("click", () => fetchPack("OFFICE_SAFE"));
+    document.getElementById("btnFetchProx").addEventListener("click", () => fetchPack("HUMAN_PROXIMITY"));
 
     document.getElementById("btnResetLog").addEventListener("click", () => {
-      // keep one record of reset itself
       localStorage.removeItem(STORAGE_KEY);
       saveLedger([]);
       renderLedger();
@@ -707,10 +738,8 @@
         elPackView.textContent = "{}";
       }
 
-      // If pack is missing or invalid, force fail-closed on boot
       const check = validatePack(pack);
       if(!check.ok){
-        // record once on first load (avoid spam)
         const ledger = loadLedger();
         const already = ledger.some(e => e.kind === "BOOT_FAIL_CLOSED");
         if(!already){
@@ -723,10 +752,10 @@
         }
         gateFailClosed(check.why);
       }else{
-        // pack valid -> allow gate for mode switching; mode stays whatever state says
         const s = loadState();
         s.pack_id = pack.pack_id;
-        s.signature = pack.signature || "UNSIGNED";
+        s.pack_source = s.pack_source || "CACHED";
+        s.integrity = computeIntegrityLabel(pack);
         s.gate = "ALLOWED";
         saveState(s);
         renderState();
