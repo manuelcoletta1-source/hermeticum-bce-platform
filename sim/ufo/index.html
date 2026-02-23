@@ -8,7 +8,6 @@
 <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 
 <style>
-  /* SIM container */
   .sim-wrap{
     min-height: calc(100vh - 70px);
     display:grid;
@@ -16,11 +15,8 @@
     gap:14px;
     padding: 22px 0 40px;
   }
-  @media (max-width: 900px){
-    .sim-wrap{ grid-template-columns: 1fr; }
-  }
+  @media (max-width: 900px){ .sim-wrap{ grid-template-columns: 1fr; } }
 
-  /* "space" stage */
   .stage{
     position:relative;
     overflow:hidden;
@@ -47,7 +43,6 @@
     transform: translateZ(0);
   }
 
-  /* UFO entity (SVG) */
   .ufo{
     position:absolute;
     left:50%;
@@ -63,7 +58,6 @@
   }
   .ufo.is-visible{ opacity:1; }
 
-  /* Beam */
   .beam{
     position:absolute;
     left:50%;
@@ -97,7 +91,6 @@
   .hud .row{ display:flex; gap:10px; }
   .hud .k{ width:92px; color: rgba(154,167,182,.95); }
 
-  /* Control panel */
   .panel{
     border:1px solid rgba(255,255,255,.08);
     border-radius: 18px;
@@ -108,7 +101,6 @@
   .panel p{ margin:0 0 12px; color: rgba(232,238,246,.78); font-size: 13px; }
   .panel .btns{ display:flex; gap:10px; flex-wrap:wrap; margin: 10px 0 14px; }
 
-  /* Joystick */
   .joy{
     width: 190px;
     height: 190px;
@@ -146,9 +138,7 @@
   .reads .r{ display:flex; justify-content:space-between; gap:10px; padding: 6px 0; border-top:1px solid rgba(255,255,255,.06); }
   .reads .r:first-child{ border-top:none; }
 
-  /* helper */
   .tiny{ font-size: 12px; color: rgba(154,167,182,.95); }
-
 </style>
 </head>
 
@@ -170,7 +160,7 @@
     <section class="stage" aria-label="UFO stage">
       <div class="stars"></div>
 
-      <div class="hud" id="hud">
+      <div class="hud">
         <div class="row"><span class="k">ENTITY</span> <b>UFO</b></div>
         <div class="row"><span class="k">STATE</span> <b id="st">IDLE</b></div>
         <div class="row"><span class="k">DIST</span> <b id="dist">∞</b></div>
@@ -178,10 +168,8 @@
         <div class="row"><span class="k">VECTOR</span> <b id="vec">0.00, 0.00</b></div>
       </div>
 
-      <!-- Beam -->
       <div class="beam" id="beam"></div>
 
-      <!-- UFO SVG -->
       <svg class="ufo" id="ufo" viewBox="0 0 240 160" aria-hidden="true">
         <defs>
           <radialGradient id="g1" cx="50%" cy="40%" r="60%">
@@ -198,36 +186,26 @@
             <stop offset="50%" stop-color="rgba(219,231,255,.25)"/>
             <stop offset="100%" stop-color="rgba(0,160,255,.28)"/>
           </linearGradient>
-          <filter id="blur">
-            <feGaussianBlur stdDeviation="1.2"/>
-          </filter>
+          <filter id="blur"><feGaussianBlur stdDeviation="1.2"/></filter>
         </defs>
 
-        <!-- soft aura -->
         <ellipse cx="120" cy="95" rx="84" ry="50" fill="url(#g1)" filter="url(#blur)" opacity=".65"/>
-
-        <!-- body -->
         <ellipse cx="120" cy="92" rx="88" ry="28" fill="url(#g2)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
         <ellipse cx="120" cy="92" rx="74" ry="20" fill="rgba(0,0,0,.22)" stroke="rgba(255,255,255,.10)" stroke-width="1"/>
-
-        <!-- dome -->
         <path d="M70 86 C82 52, 158 52, 170 86 C150 92, 90 92, 70 86Z"
               fill="rgba(219,231,255,.12)" stroke="rgba(219,231,255,.22)" stroke-width="2"/>
-
-        <!-- rim lights -->
         <ellipse cx="120" cy="105" rx="92" ry="8" fill="url(#g3)" opacity=".35"/>
         <circle cx="86" cy="92" r="4.5" fill="rgba(255,255,255,.45)"/>
         <circle cx="120" cy="92" r="4.5" fill="rgba(255,255,255,.45)"/>
         <circle cx="154" cy="92" r="4.5" fill="rgba(255,255,255,.45)"/>
       </svg>
-
     </section>
 
     <aside class="panel">
       <h2>Controller</h2>
       <p>
-        Press <b>SUMMON</b> and push the joystick to approach.
-        The UFO will move and “zoom” toward you (scale increases) with inertia.
+        Press <b>SUMMON</b>, then push the joystick.
+        Up = approach, Down = retreat.
       </p>
 
       <div class="btns">
@@ -240,15 +218,13 @@
         <div class="knob" id="knob"></div>
       </div>
 
-      <div class="reads" id="reads">
+      <div class="reads">
         <div class="r"><span class="tiny">Approach</span> <span id="rA">0.00</span></div>
         <div class="r"><span class="tiny">X</span> <span id="rX">0.00</span></div>
         <div class="r"><span class="tiny">Y</span> <span id="rY">0.00</span></div>
       </div>
 
-      <p class="tiny" style="margin-top:12px">
-        Tip: On mobile you can drag the joystick with your thumb.
-      </p>
+      <p class="tiny" style="margin-top:12px">Mobile supported: drag the joystick with your thumb.</p>
     </aside>
 
   </div>
@@ -260,7 +236,6 @@
 
   const ufo  = document.getElementById("ufo");
   const beam = document.getElementById("beam");
-
   const stEl   = document.getElementById("st");
   const distEl = document.getElementById("dist");
   const thrEl  = document.getElementById("thr");
@@ -277,41 +252,30 @@
   const rX = document.getElementById("rX");
   const rY = document.getElementById("rY");
 
-  // --- SIM state
   let state = "IDLE"; // IDLE | ACTIVE | HOLD
   let visible = false;
 
-  // UFO position in stage space (0..1), z is "distance" (0 far -> 1 close)
+  // stage-normalized coords
   let x = 0.50, y = 0.55, z = 0.08;
   let vx = 0, vy = 0, vz = 0;
 
-  // joystick output -1..1
+  // joystick -1..1
   let jx = 0, jy = 0;
-  // approach (0..1), from joystick magnitude
   let approach = 0;
 
-  function setState(s){
-    state = s;
-    stEl.textContent = s;
-  }
-
-  function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
-
+  function setState(s){ state = s; stEl.textContent = s; }
+  function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
   function fmt(n){ return (Math.round(n*100)/100).toFixed(2); }
 
-  // --- joystick pointer
   let dragging = false;
   function joyRect(){ return joy.getBoundingClientRect(); }
 
-  function updateKnobFromJoy(){
+  function updateKnob(){
     const r = joyRect();
-    const cx = r.width/2;
-    const cy = r.height/2;
-    const max = (Math.min(r.width, r.height) / 2) - 22;
-
+    const cx = r.width/2, cy = r.height/2;
+    const max = (Math.min(r.width, r.height)/2) - 22;
     const px = cx + jx * max;
     const py = cy + jy * max;
-
     knob.style.left = px + "px";
     knob.style.top  = py + "px";
     knob.style.transform = "translate(-50%,-50%)";
@@ -323,17 +287,16 @@
     const cy = r.top + r.height/2;
     const dx = clientX - cx;
     const dy = clientY - cy;
+    const max = (Math.min(r.width, r.height)/2) - 22;
 
-    const max = (Math.min(r.width, r.height) / 2) - 22;
     const nx = clamp(dx / max, -1, 1);
     const ny = clamp(dy / max, -1, 1);
 
-    // Slight deadzone
     const dead = 0.08;
     jx = Math.abs(nx) < dead ? 0 : nx;
     jy = Math.abs(ny) < dead ? 0 : ny;
 
-    updateKnobFromJoy();
+    updateKnob();
   }
 
   joy.addEventListener("pointerdown", (e)=>{
@@ -348,15 +311,14 @@
   joy.addEventListener("pointerup", ()=>{
     dragging = false;
     jx = 0; jy = 0;
-    updateKnobFromJoy();
+    updateKnob();
   });
   joy.addEventListener("pointercancel", ()=>{
     dragging = false;
     jx = 0; jy = 0;
-    updateKnobFromJoy();
+    updateKnob();
   });
 
-  // --- Buttons
   btnSummon.addEventListener("click", ()=>{
     visible = true;
     ufo.classList.add("is-visible");
@@ -367,10 +329,7 @@
 
   btnHold.addEventListener("click", ()=>{
     setState(state === "HOLD" ? "ACTIVE" : "HOLD");
-    if(state === "HOLD"){
-      // Stop drift quickly
-      vx *= 0.15; vy *= 0.15; vz *= 0.15;
-    }
+    if(state === "HOLD"){ vx *= 0.15; vy *= 0.15; vz *= 0.15; }
   });
 
   btnReset.addEventListener("click", ()=>{
@@ -381,51 +340,41 @@
     x = 0.50; y = 0.55; z = 0.08;
     vx = 0; vy = 0; vz = 0;
     jx = 0; jy = 0;
-    updateKnobFromJoy();
+    updateKnob();
     setState("IDLE");
   });
 
-  // --- Animation loop
   let last = performance.now();
-
   function tick(now){
     const dt = Math.min(0.033, (now - last) / 1000);
     last = now;
 
-    // compute approach from joystick magnitude
     const mag = Math.sqrt(jx*jx + jy*jy);
     approach = clamp(mag, 0, 1);
 
     if(visible && state === "ACTIVE"){
-      // thrust parameters
-      const accelXY = 0.9;  // lateral acceleration
-      const accelZ  = 1.2;  // approach acceleration
-      const damping = 0.88; // inertia damping
+      const accelXY = 0.9;
+      const accelZ  = 1.2;
+      const damping = 0.88;
 
-      // Approach: push up on joystick reduces distance (increase z)
-      // Here we use "up" (negative y) as approach, down as retreat
       const forward = clamp((-jy + 0.15*approach), -1, 1);
 
       vx += jx * accelXY * dt;
       vy += jy * accelXY * dt;
       vz += forward * accelZ * dt;
 
-      // damping
       vx *= Math.pow(damping, dt*60);
       vy *= Math.pow(damping, dt*60);
       vz *= Math.pow(damping, dt*60);
 
-      // integrate
       x += vx * dt;
       y += vy * dt;
       z += vz * dt;
 
-      // bounds
       x = clamp(x, 0.08, 0.92);
       y = clamp(y, 0.18, 0.90);
       z = clamp(z, 0.05, 1.0);
 
-      // Beam activates when close enough
       if(z > 0.72){
         const t = clamp((z - 0.72) / 0.28, 0, 1);
         beam.style.opacity = String(0.15 + t * 0.55);
@@ -439,25 +388,19 @@
     }
 
     if(state === "HOLD"){
-      // freeze-ish
       vx *= 0.86; vy *= 0.86; vz *= 0.86;
     }
 
-    // render transform: translate in stage + scale by z
     const px = (x * 100).toFixed(2) + "%";
     const py = (y * 100).toFixed(2) + "%";
-
-    // scale: far ~0.25, close ~1.35
     const scale = 0.25 + z * 1.10;
-
-    // subtle glow increases as it gets close
     const glow = Math.round(4 + z * 22);
+
     ufo.style.left = px;
     ufo.style.top  = py;
     ufo.style.transform = `translate(-50%,-50%) scale(${scale.toFixed(3)})`;
     ufo.style.filter = `drop-shadow(0 0 ${glow}px rgba(219,231,255,.18)) drop-shadow(0 0 ${Math.round(glow*0.6)}px rgba(255,60,120,.10))`;
 
-    // HUD
     distEl.textContent = visible ? (1.0 - z).toFixed(3) : "∞";
     thrEl.textContent  = visible ? fmt(approach) : "0.00";
     vecEl.textContent  = `${fmt(jx)}, ${fmt(jy)}`;
@@ -468,7 +411,8 @@
 
     requestAnimationFrame(tick);
   }
-  updateKnobFromJoy();
+
+  updateKnob();
   requestAnimationFrame(tick);
 })();
 </script>
