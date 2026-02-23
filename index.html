@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 
   <style>
-    /* Minimal self-contained layout (keeps hbce.css as primary) */
     .hbce-hero__kicker { letter-spacing: .12em; text-transform: uppercase; opacity: .9; }
     .hbce-alert {
       border: 1px solid rgba(255,255,255,.14);
@@ -36,10 +35,8 @@
     .hbce-card p { margin: 0 0 12px; opacity: .9; }
     .hbce-links a { display: inline-block; margin-right: 10px; margin-top: 8px; }
     .hbce-divider { height: 1px; background: rgba(255,255,255,.10); margin: 18px 0; }
-    .hbce-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .hbce-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
     .hbce-small { font-size: .95rem; opacity: .9; }
-    .hbce-fearline { opacity: .95; }
-    .hbce-fearline b { opacity: 1; }
     .hbce-tag {
       display:inline-block;
       padding: 4px 10px;
@@ -58,19 +55,19 @@
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
+
     <section class="hbce-hero">
       <div class="hbce-hero__kicker">EXECUTION ADMISSIBILITY LAYER · FAIL-CLOSED</div>
       <h1 class="hbce-hero__title">Execution Requires Admissibility</h1>
 
-      <p class="hbce-hero__lead hbce-fearline">
+      <p class="hbce-hero__lead">
         HBCE is not “security”. HBCE is <b>permission to execute</b>.
         If an action cannot be reproduced independently, it is <b>non-admissible</b>.
         Non-admissible states are blocked. No silent fallback.
       </p>
 
       <div class="hbce-alert">
-        <strong>ATTENTION — Deterministic enforcement</strong>
-        This system is designed to make “trust me” operationally useless.
+        <strong>Deterministic enforcement</strong>
         Evidence is append-only. Verification is deterministic. Failure mode is fail-closed.
       </div>
 
@@ -94,178 +91,14 @@
     <div class="hbce-divider"></div>
 
     <section>
-      <h2>Admissibility Model</h2>
-      <p class="hbce-small">
-        HBCE does not evaluate intentions. It evaluates reproducibility and integrity.
-        A system that cannot be replayed cannot be trusted to execute.
-      </p>
-
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>Admissible</h3>
-          <p>
-            Deterministic hash matches. Ledger chain intact.
-            Evidence reproducible. Baseline compliant.
-          </p>
-          <div class="hbce-mono hbce-small">
-            PASS = reproducible + intact + compliant
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Non-admissible</h3>
-          <p>
-            Missing evidence. Hash mismatch. Non-reproducible state.
-            Baseline violation.
-          </p>
-          <div class="hbce-mono hbce-small">
-            FAIL = blocked (no fallback)
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Deterministic Rule</h3>
-          <p>
-            If independent recomputation does not match, execution must be refused.
-            This is not opinion. It is arithmetic.
-          </p>
-          <div class="hbce-mono hbce-small">
-            verify(pack_hash) == recompute(pack_hash)
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <div class="hbce-divider"></div>
-
-    <section>
-      <h2>Autonomous Systems Lab</h2>
-      <p class="hbce-small">
-        The lab is where admissibility becomes machine behavior:
-        policy packs + scenario packs + deterministic replay + append-only audit logs.
-        Same logic across drones, ground robots, humanoids.
-      </p>
-
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>Control Core (Simulation)</h3>
-          <p>
-            Browser-based deterministic control environment.
-            Fail-closed safety gate. Audit-first logging. Replayable decisions.
-          </p>
-          <div class="hbce-links">
-            <a class="hbce-btn" href="https://manuelcoletta1-source.github.io/hbce-autonomous-systems-lab/sim/control-core/">Open Control Core</a>
-            <a class="hbce-btn hbce-btn--ghost" href="https://manuelcoletta1-source.github.io/hbce-autonomous-systems-lab/">Lab Home</a>
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Evidence Pack</h3>
-          <p>
-            Export a self-contained evidence object:
-            replay parameters + hash-chained ledger + pack_hash (+ optional signature).
-          </p>
-          <div class="hbce-links">
-            <a class="hbce-btn" href="https://manuelcoletta1-source.github.io/hbce-autonomous-systems-lab/sim/control-core/evidence-pack.html">Open Evidence Pack</a>
-            <a class="hbce-btn hbce-btn--ghost" href="https://manuelcoletta1-source.github.io/hbce-autonomous-systems-lab/sim/control-core/verifier.html">Open Verifier</a>
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Binding + Bridge</h3>
-          <p>
-            Bind Operator ↔ Joker-C2 ↔ Context.
-            Merge binding receipt into evidence pack and re-hash deterministically.
-          </p>
-          <div class="hbce-links">
-            <a class="hbce-btn" href="https://manuelcoletta1-source.github.io/hbce-autonomous-systems-lab/sim/control-core/binding-console.html">Open Binding Console</a>
-            <a class="hbce-btn hbce-btn--ghost" href="https://manuelcoletta1-source.github.io/hbce-autonomous-systems-lab/sim/control-core/pack-bridge.html">Open Pack Bridge</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <div class="hbce-divider"></div>
-
-    <section>
-      <h2>Core System</h2>
-
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>Baseline</h3>
-          <p>Versioned admissibility standard (profiles, invariants, extensions).</p>
-          <div class="hbce-links">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/baseline/">Open →</a>
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Admissibility Check</h3>
-          <p>Deterministic PASS/FAIL execution gate (no narrative trust).</p>
-          <div class="hbce-links">
-            <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Open →</a>
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Registry</h3>
-          <p>Append-only public ledger for hash evidence and reproducible states.</p>
-          <div class="hbce-links">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Open →</a>
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Create IPR</h3>
-          <p>Operational identity anchor (hash-only). Entry point for auditability.</p>
-          <div class="hbce-links">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/base/">Open →</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <div class="hbce-divider"></div>
-
-    <section>
-      <h2>Position</h2>
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>Technical</h3>
-          <p>Architecture and invariants: deterministic verification, fail-closed enforcement.</p>
-          <div class="hbce-links">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/about/">Open →</a>
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Executive</h3>
-          <p>Board-level interpretation: why admissibility becomes a civilization layer.</p>
-          <div class="hbce-links">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/executive/">Open →</a>
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Comparison</h3>
-          <p>Legacy “trust stacks” vs deterministic reproducibility.</p>
-          <div class="hbce-links">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/compare/">Open →</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <div class="hbce-divider"></div>
-
-    <section>
       <h2>Issuer</h2>
       <p class="hbce-small">
         <b>HERMETICUM B.C.E. S.r.l.</b><br />
-        <span>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</span><br />
-        <span class="hbce-small">Project corpus: <b>B.C.E.Hermeticum</b></span>
+        HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br />
+        Project corpus: HBCE
       </p>
     </section>
+
   </main>
 
   <div data-hbce="footer"></div>
