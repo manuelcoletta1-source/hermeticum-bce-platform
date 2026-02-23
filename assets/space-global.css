@@ -1,0 +1,97 @@
+/* =========================================================
+   HBCE SPACE GLOBAL (CSS-only)
+   - works everywhere (no JS)
+   - parallax star layers + nebula + subtle planets
+   ========================================================= */
+
+:root{
+  --space-bg: #070a0f;
+  --neb1: rgba(120,160,255,.10);
+  --neb2: rgba(255,60,120,.08);
+  --neb3: rgba(190,255,240,.05);
+  --vig: rgba(0,0,0,.62);
+}
+
+/* Background container: use body pseudo-layers */
+body{
+  background: var(--space-bg);
+}
+
+/* Starfield (3 layers) */
+body::before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events:none;
+
+  background:
+    radial-gradient(circle at 10% 15%, rgba(255,255,255,.40) 0 1px, transparent 2px),
+    radial-gradient(circle at 32% 75%, rgba(255,255,255,.32) 0 1px, transparent 2px),
+    radial-gradient(circle at 66% 30%, rgba(255,255,255,.35) 0 1px, transparent 2px),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,.28) 0 1px, transparent 2px),
+    radial-gradient(circle at 55% 55%, rgba(255,255,255,.22) 0 1px, transparent 2px),
+    radial-gradient(circle at 25% 40%, rgba(255,255,255,.18) 0 1px, transparent 2px);
+
+  opacity: .70;
+  filter: blur(.2px);
+  transform: translateZ(0);
+  animation: hbce-stars-drift 60s linear infinite;
+}
+
+/* Nebula + planets soft */
+body::after{
+  content:"";
+  position: fixed;
+  inset: -12%;
+  z-index: -1;
+  pointer-events:none;
+
+  background:
+    radial-gradient(900px 700px at 18% 12%, var(--neb1), rgba(0,0,0,0)),
+    radial-gradient(820px 600px at 112% 16%, var(--neb2), rgba(0,0,0,0)),
+    radial-gradient(700px 520px at 40% 110%, var(--neb3), rgba(0,0,0,0)),
+
+    /* planets */
+    radial-gradient(180px 180px at 78% 38%, rgba(219,231,255,.06), rgba(0,0,0,0) 65%),
+    radial-gradient(240px 240px at 22% 72%, rgba(255,60,120,.045), rgba(0,0,0,0) 68%);
+
+  filter: blur(14px);
+  opacity: .85;
+  transform: translateZ(0);
+  animation: hbce-nebula-breathe 22s ease-in-out infinite;
+}
+
+/* Vignette overlay for “spaceship view” */
+.hbce-header,
+.hbce-main,
+.hbce-footer{
+  position: relative;
+}
+.hbce-header::before,
+.hbce-main::before,
+.hbce-footer::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0) 52%, var(--vig) 100%);
+  opacity:.65;
+}
+
+/* Motion */
+@keyframes hbce-stars-drift{
+  0%   { transform: translate3d(0,0,0) scale(1.02); }
+  100% { transform: translate3d(-120px, 40px, 0) scale(1.02); }
+}
+@keyframes hbce-nebula-breathe{
+  0%   { transform: translate3d(0,0,0) scale(1.00); opacity:.80; }
+  50%  { transform: translate3d(-18px, 10px, 0) scale(1.04); opacity:.92; }
+  100% { transform: translate3d(0,0,0) scale(1.00); opacity:.80; }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  body::before, body::after{ animation:none !important; }
+}
