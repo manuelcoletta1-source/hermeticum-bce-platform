@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <title>Control Console — Fail-Closed Mode Switch (HBCE)</title>
-  <meta name="description" content="Fail-closed control console. Mode switching under remote OPC policy packs. No joystick. No ambiguity. Audit-first." />
+  <meta name="description" content="Fail-closed control console. Mode switching under remote OPC policy packs with payload SHA-256 enforcement. No joystick. No ambiguity. Audit-first." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
@@ -14,10 +14,6 @@
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 
   <style>
-    /* ===============================
-       HBCE CONTROL CONSOLE — FEAR UI
-       =============================== */
-
     .hbce-console{
       margin-top: 16px;
       border: 1px solid rgba(255,255,255,.08);
@@ -25,26 +21,22 @@
       overflow: hidden;
       background: rgba(0,0,0,.25);
     }
-
     .hbce-console__top{
       padding: 16px;
       border-bottom: 1px solid rgba(255,255,255,.08);
       background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,0));
     }
-
     .hbce-kicker{
       letter-spacing: .12em;
       text-transform: uppercase;
       font-size: 12px;
       opacity: .78;
     }
-
     .hbce-title{
       margin: 8px 0 10px 0;
       font-size: 28px;
       line-height: 1.1;
     }
-
     .hbce-lead{
       margin: 0;
       opacity: .85;
@@ -57,14 +49,12 @@
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       padding: 16px;
     }
-
     .hbce-card{
       border: 1px solid rgba(255,255,255,.08);
       border-radius: 16px;
       background: rgba(0,0,0,.22);
       padding: 14px;
     }
-
     .hbce-card h2{
       margin: 0 0 10px 0;
       font-size: 14px;
@@ -78,18 +68,13 @@
       font-size: 12px;
     }
 
-    .hbce-status{
-      display: grid;
-      gap: 10px;
-    }
-
+    .hbce-status{ display:grid; gap:10px; }
     .hbce-status__big{
       border: 1px solid rgba(255,255,255,.10);
       border-radius: 16px;
       padding: 14px;
       background: rgba(0,0,0,.28);
     }
-
     .hbce-status__label{
       font-size: 12px;
       opacity: .7;
@@ -97,7 +82,6 @@
       text-transform: uppercase;
       margin-bottom: 6px;
     }
-
     .hbce-status__value{
       font-size: 30px;
       line-height: 1;
@@ -106,12 +90,11 @@
     }
 
     .hbce-pillrow{
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
     }
-
     .hbce-pill{
       border: 1px solid rgba(255,255,255,.10);
       border-radius: 999px;
@@ -123,41 +106,28 @@
       opacity: .9;
     }
 
-    .hbce-actions{
-      display: grid;
-      gap: 10px;
-    }
-
+    .hbce-actions{ display:grid; gap:10px; }
     .hbce-btn{
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      padding: 14px 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.30);
-      color: inherit;
-      text-decoration: none;
-      cursor: pointer;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      font-weight: 700;
-      transition: transform .06s ease, background .15s ease, border-color .15s ease;
-      user-select: none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      padding:14px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.30);
+      color:inherit;
+      text-decoration:none;
+      cursor:pointer;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      font-weight:700;
+      transition:transform .06s ease, background .15s ease, border-color .15s ease;
+      user-select:none;
     }
-
     .hbce-btn:active{ transform: translateY(1px); }
-
-    .hbce-btn--primary{
-      background: rgba(255,255,255,.06);
-      border-color: rgba(255,255,255,.18);
-    }
-
-    .hbce-btn--ghost{
-      background: rgba(0,0,0,.22);
-      border-color: rgba(255,255,255,.10);
-    }
+    .hbce-btn--primary{ background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.18); }
+    .hbce-btn--ghost{ background:rgba(0,0,0,.22); border-color:rgba(255,255,255,.10); }
 
     .hbce-btn--danger{
       background: rgba(255,255,255,.02);
@@ -165,7 +135,6 @@
       position: relative;
       overflow: hidden;
     }
-
     .hbce-btn--danger::before{
       content:"";
       position:absolute;
@@ -175,25 +144,14 @@
       opacity: .35;
       pointer-events: none;
     }
-
     @keyframes hbcePulse{
       0%{ transform: scale(0.88); opacity: .22; }
       50%{ transform: scale(1.08); opacity: .45; }
       100%{ transform: scale(0.88); opacity: .22; }
     }
 
-    .hbce-note{
-      margin: 0;
-      opacity: .82;
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    .hbce-divider{
-      height: 1px;
-      background: rgba(255,255,255,.08);
-      margin: 12px 0;
-    }
+    .hbce-note{ margin:0; opacity:.82; font-size:13px; line-height:1.45; }
+    .hbce-divider{ height:1px; background:rgba(255,255,255,.08); margin:12px 0; }
 
     .hbce-log{
       max-height: 320px;
@@ -203,48 +161,32 @@
       padding: 10px;
       background: rgba(0,0,0,.30);
     }
-
     .hbce-logline{
       padding: 8px 6px;
       border-bottom: 1px dashed rgba(255,255,255,.08);
       opacity: .92;
     }
-    .hbce-logline:last-child{ border-bottom: none; }
+    .hbce-logline:last-child{ border-bottom:none; }
 
-    .hbce-small{
-      font-size: 12px;
-      opacity: .78;
-    }
-
-    .hbce-json{
-      white-space: pre-wrap;
-      word-break: break-word;
-      margin: 0;
-      opacity: .95;
-    }
+    .hbce-small{ font-size:12px; opacity:.78; }
+    .hbce-json{ white-space: pre-wrap; word-break: break-word; margin:0; opacity:.95; }
 
     .hbce-footerwarn{
-      padding: 14px 16px;
-      border-top: 1px solid rgba(255,255,255,.08);
+      padding:14px 16px;
+      border-top:1px solid rgba(255,255,255,.08);
       background: rgba(0,0,0,.25);
     }
 
-    .hbce-inline{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-
+    .hbce-inline{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
     .hbce-input{
-      width: 100%;
-      padding: 12px 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.30);
-      color: inherit;
-      font: inherit;
-      outline: none;
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.30);
+      color:inherit;
+      font:inherit;
+      outline:none;
     }
   </style>
 </head>
@@ -258,13 +200,12 @@
         <div class="hbce-kicker">HBCE · CONTROL · FAIL-CLOSED</div>
         <h1 class="hbce-title">Operational Control Console</h1>
         <p class="hbce-lead">
-          No joystick. No continuous motion commands. Only <span class="hbce-mono">MODE</span> transitions under remote OPC policy packs.
+          Remote OPC packs. Deterministic mode gate. Payload SHA-256 enforced.
           If evidence is missing, the system does not “degrade”. It <strong>halts</strong>.
         </p>
       </div>
 
       <div class="hbce-grid">
-        <!-- STATUS -->
         <div class="hbce-card hbce-status">
           <h2>System State</h2>
 
@@ -284,7 +225,7 @@
 
           <p class="hbce-note">
             Invariant: <span class="hbce-mono">MISSING → HOLD</span>.
-            A valid remote pack is required to transition modes.
+            Remote pack must be valid AND hash-verifiable to open the gate.
           </p>
 
           <p class="hbce-note hbce-small" style="margin-top:10px;">
@@ -292,7 +233,6 @@
           </p>
         </div>
 
-        <!-- ACTIONS -->
         <div class="hbce-card hbce-actions">
           <h2>Mode Switch</h2>
 
@@ -319,11 +259,11 @@
           </p>
         </div>
 
-        <!-- POLICY PACK -->
         <div class="hbce-card">
           <h2>Policy Pack (Remote OPC)</h2>
           <p class="hbce-note">
-            The console fetches packs from the OPC repository. If the fetch fails or the pack is invalid: <span class="hbce-mono">DENY + HOLD</span>.
+            Packs are fetched from the OPC repository. If fetch fails, structure is invalid, or SHA-256 mismatches:
+            <span class="hbce-mono">DENY + HOLD</span>.
           </p>
 
           <div class="hbce-divider"></div>
@@ -344,8 +284,8 @@
           <div class="hbce-divider"></div>
 
           <p class="hbce-note hbce-small">
-            Loaded pack is shown below. This demo stores an append-only local log only.
-            Integrity is currently <span class="hbce-mono">UNSIGNED</span> until signature rollout.
+            Integrity scheme: <span class="hbce-mono">HBCE-PAYLOAD-SHA256-CANONICAL-v1</span>.
+            Hash is computed over the pack payload (pack minus <span class="hbce-mono">integrity</span>) after canonical key ordering.
           </p>
 
           <div style="margin-top:10px;">
@@ -353,7 +293,6 @@
           </div>
         </div>
 
-        <!-- LEDGER -->
         <div class="hbce-card" style="grid-column: 1 / -1;">
           <h2>Local Append-Only Ledger</h2>
           <p class="hbce-note">
@@ -376,7 +315,7 @@
       <div class="hbce-footerwarn">
         <p class="hbce-note">
           WARNING: This console is intentionally strict. It does not “try again”. It does not guess.
-          If policy evidence is missing, the only safe output is <span class="hbce-mono">HALT</span>.
+          Missing evidence or hash mismatch ⇒ <span class="hbce-mono">HALT</span>.
         </p>
       </div>
     </section>
@@ -397,18 +336,9 @@
   <div data-hbce="footer"></div>
 
   <script>
-    /* ===============================
-       HBCE CONTROL CONSOLE — REMOTE OPC
-       - No backend
-       - No streaming commands
-       - Fail-closed mode switching
-       - Remote policy packs (OPC repo)
-       - Append-only local ledger
-       =============================== */
-
-    const STORAGE_KEY = "hbce_control_ledger_v2";
-    const PACK_KEY = "hbce_opc_pack_v2";
-    const STATE_KEY = "hbce_control_state_v2";
+    const STORAGE_KEY = "hbce_control_ledger_v3";
+    const PACK_KEY = "hbce_opc_pack_v3";
+    const STATE_KEY = "hbce_control_state_v3";
 
     const elGate = document.getElementById("gateValue");
     const elMode = document.getElementById("modePill");
@@ -428,24 +358,16 @@
       last_event: null
     };
 
-    function nowISO(){
-      return new Date().toISOString();
-    }
+    function nowISO(){ return new Date().toISOString(); }
 
     function loadLedger(){
       try{
         const raw = localStorage.getItem(STORAGE_KEY);
         const arr = raw ? JSON.parse(raw) : [];
         return Array.isArray(arr) ? arr : [];
-      }catch(e){
-        return [];
-      }
+      }catch(e){ return []; }
     }
-
-    function saveLedger(arr){
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
-    }
-
+    function saveLedger(arr){ localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
     function appendEvent(evt){
       const ledger = loadLedger();
       ledger.push(evt);
@@ -458,27 +380,50 @@
         const raw = localStorage.getItem(STATE_KEY);
         const s = raw ? JSON.parse(raw) : null;
         return s && typeof s === "object" ? { ...defaultState, ...s } : { ...defaultState };
-      }catch(e){
-        return { ...defaultState };
-      }
+      }catch(e){ return { ...defaultState }; }
     }
-
-    function saveState(s){
-      localStorage.setItem(STATE_KEY, JSON.stringify(s));
-    }
+    function saveState(s){ localStorage.setItem(STATE_KEY, JSON.stringify(s)); }
 
     function loadPack(){
       try{
         const raw = localStorage.getItem(PACK_KEY);
         const p = raw ? JSON.parse(raw) : null;
         return p && typeof p === "object" ? p : null;
-      }catch(e){
-        return null;
-      }
+      }catch(e){ return null; }
+    }
+    function savePack(p){ localStorage.setItem(PACK_KEY, JSON.stringify(p)); }
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
     }
 
-    function savePack(p){
-      localStorage.setItem(PACK_KEY, JSON.stringify(p));
+    function renderState(){
+      const s = loadState();
+      elGate.textContent = s.gate || "DENIED";
+      elMode.textContent = "MODE: " + (s.mode || "HOLD");
+      elPack.textContent = "OPC PACK: " + (s.pack_id || "MISSING");
+      elSrc.textContent  = "SOURCE: " + (s.pack_source || "NONE");
+      elInt.textContent  = "INTEGRITY: " + (s.integrity || "UNKNOWN");
+    }
+
+    function renderLedger(){
+      const ledger = loadLedger();
+      if(!ledger.length){
+        elLogBox.innerHTML = '<div class="hbce-logline">[EMPTY] No events recorded.</div>';
+        return;
+      }
+      const lines = ledger.slice(-140).reverse().map((e) => {
+        const ts = e.timestamp || "UNKNOWN_TIME";
+        const kind = e.kind || "EVENT";
+        const body = JSON.stringify(e);
+        return `<div class="hbce-logline"><div><strong>${ts}</strong> — ${kind}</div><div class="hbce-small">${escapeHtml(body)}</div></div>`;
+      });
+      elLogBox.innerHTML = lines.join("");
     }
 
     function gateFailClosed(reason){
@@ -500,28 +445,64 @@
       renderState();
     }
 
-    function validatePack(pack){
+    function validatePackStructure(pack){
       if(!pack) return { ok:false, why:"PACK_MISSING" };
       if(pack.opc !== "HBCE-OPC-v1") return { ok:false, why:"PACK_PROTO_MISMATCH" };
       if(!pack.pack_id || typeof pack.pack_id !== "string") return { ok:false, why:"PACK_ID_MISSING" };
-      if(!pack.policy || !Array.isArray(pack.policy)) return { ok:false, why:"PACK_POLICY_INVALID" };
+      if(!Array.isArray(pack.policy)) return { ok:false, why:"PACK_POLICY_INVALID" };
       if(!pack.limits || typeof pack.limits !== "object") return { ok:false, why:"PACK_LIMITS_INVALID" };
-      if(!pack.allowed_modes || !Array.isArray(pack.allowed_modes)) return { ok:false, why:"PACK_ALLOWED_MODES_INVALID" };
+      if(!Array.isArray(pack.allowed_modes)) return { ok:false, why:"PACK_ALLOWED_MODES_INVALID" };
+      if(!pack.integrity || typeof pack.integrity !== "object") return { ok:false, why:"PACK_INTEGRITY_MISSING" };
+      if(pack.integrity.scheme !== "HBCE-PAYLOAD-SHA256-CANONICAL-v1") return { ok:false, why:"INTEGRITY_SCHEME_MISMATCH" };
+      if(!pack.integrity.payload_sha256 || typeof pack.integrity.payload_sha256 !== "string") return { ok:false, why:"PAYLOAD_SHA256_MISSING" };
       return { ok:true, why:"OK" };
     }
 
-    function computeIntegrityLabel(pack){
-      try{
-        const st = pack && pack.integrity && typeof pack.integrity === "object" ? pack.integrity.status : "UNKNOWN";
-        return String(st || "UNKNOWN").toUpperCase();
-      }catch(e){
-        return "UNKNOWN";
-      }
+    function normalizeBaseUrl(u){
+      const s = String(u || "").trim();
+      return s.endsWith("/") ? s.slice(0, -1) : s;
     }
 
-    function applyPack(pack, sourceUrl){
-      const check = validatePack(pack);
-      if(!check.ok){
+    function deepClone(x){ return JSON.parse(JSON.stringify(x)); }
+
+    function sortKeysDeep(obj){
+      if(Array.isArray(obj)) return obj.map(sortKeysDeep);
+      if(obj && typeof obj === "object"){
+        const out = {};
+        Object.keys(obj).sort().forEach(k => { out[k] = sortKeysDeep(obj[k]); });
+        return out;
+      }
+      return obj;
+    }
+
+    function stableStringify(obj){
+      // canonical JSON: sorted keys, no whitespace
+      const sorted = sortKeysDeep(obj);
+      return JSON.stringify(sorted);
+    }
+
+    async function sha256Hex(str){
+      const enc = new TextEncoder();
+      const bytes = enc.encode(str);
+      const digest = await crypto.subtle.digest("SHA-256", bytes);
+      const arr = Array.from(new Uint8Array(digest));
+      return arr.map(b => b.toString(16).padStart(2,"0")).join("");
+    }
+
+    async function verifyPayloadHash(pack){
+      const expected = String(pack.integrity.payload_sha256 || "").trim().toLowerCase();
+      const payload = deepClone(pack);
+      delete payload.integrity;
+
+      const canon = stableStringify(payload);
+      const got = (await sha256Hex(canon)).toLowerCase();
+
+      return { ok: got === expected, expected, got, canonical: canon };
+    }
+
+    async function applyPack(pack, sourceUrl){
+      const structure = validatePackStructure(pack);
+      if(!structure.ok){
         savePack(null);
         elPackView.textContent = "{}";
         const s = loadState();
@@ -529,16 +510,62 @@
         s.pack_source = "NONE";
         s.integrity = "UNKNOWN";
         saveState(s);
-        gateFailClosed(check.why);
+        gateFailClosed(structure.why);
         return;
       }
 
+      // HASH ENFORCEMENT (the scary part)
+      let v;
+      try{
+        v = await verifyPayloadHash(pack);
+      }catch(e){
+        savePack(null);
+        elPackView.textContent = JSON.stringify({ error:"HASH_VERIFY_EXCEPTION", message:String(e) }, null, 2);
+        const s = loadState();
+        s.pack_id = pack.pack_id || "UNKNOWN";
+        s.pack_source = sourceUrl || "REMOTE";
+        s.integrity = "HASH_FAIL";
+        saveState(s);
+        gateFailClosed("HASH_VERIFY_EXCEPTION");
+        return;
+      }
+
+      if(!v.ok){
+        savePack(null);
+        elPackView.textContent = JSON.stringify({
+          error: "HASH_MISMATCH",
+          expected: v.expected,
+          got: v.got,
+          note: "Fail-closed: pack rejected."
+        }, null, 2);
+
+        const s = loadState();
+        s.pack_id = pack.pack_id;
+        s.pack_source = sourceUrl || "REMOTE";
+        s.integrity = "HASH_FAIL";
+        saveState(s);
+
+        appendEvent({
+          kind: "PACK_REJECT",
+          timestamp: nowISO(),
+          reason: "HASH_MISMATCH",
+          pack_id: pack.pack_id,
+          source: s.pack_source,
+          expected: v.expected,
+          got: v.got
+        });
+
+        gateFailClosed("HASH_MISMATCH");
+        return;
+      }
+
+      // Pack accepted
       savePack(pack);
 
       const s = loadState();
       s.pack_id = pack.pack_id;
       s.pack_source = sourceUrl || "REMOTE";
-      s.integrity = computeIntegrityLabel(pack);
+      s.integrity = "HASH_OK";
       s.gate = "ALLOWED";
       saveState(s);
 
@@ -547,8 +574,7 @@
         timestamp: nowISO(),
         pack_id: pack.pack_id,
         source: s.pack_source,
-        integrity: s.integrity,
-        note: "If integrity is missing/invalid, production systems must deny. This console is fail-closed on invalid structure; signature rollout is next."
+        integrity: "HASH_OK"
       });
 
       elPackView.textContent = JSON.stringify(pack, null, 2);
@@ -558,10 +584,16 @@
     function requestMode(nextMode){
       const pack = loadPack();
       const s = loadState();
-      const check = validatePack(pack);
+      const check = validatePackStructure(pack);
 
       if(!check.ok){
         gateFailClosed(check.why);
+        return;
+      }
+
+      // If a pack is cached but state says not hash-ok, fail closed.
+      if(s.integrity !== "HASH_OK"){
+        gateFailClosed("INTEGRITY_NOT_OK");
         return;
       }
 
@@ -613,43 +645,25 @@
       renderState();
     }
 
-    function renderState(){
-      const s = loadState();
+    async function fetchPack(packName){
+      const base = normalizeBaseUrl(elOpcBase.value);
+      const url = `${base}/packs/${encodeURIComponent(packName)}.json`;
 
-      elGate.textContent = s.gate || "DENIED";
-      elMode.textContent = "MODE: " + (s.mode || "HOLD");
-      elPack.textContent = "OPC PACK: " + (s.pack_id || "MISSING");
-      elSrc.textContent  = "SOURCE: " + (s.pack_source || "NONE");
-      elInt.textContent  = "INTEGRITY: " + (s.integrity || "UNKNOWN");
-    }
+      appendEvent({ kind:"PACK_FETCH", timestamp: nowISO(), pack: packName, url });
 
-    function renderLedger(){
-      const ledger = loadLedger();
-      if(!ledger.length){
-        elLogBox.innerHTML = '<div class="hbce-logline">[EMPTY] No events recorded.</div>';
-        return;
+      try{
+        const res = await fetch(url, { cache: "no-store" });
+        if(!res.ok){
+          elPackView.textContent = JSON.stringify({ error:"REMOTE_FETCH_FAILED", status: res.status, url }, null, 2);
+          gateFailClosed(`REMOTE_FETCH_FAILED_${res.status}`);
+          return;
+        }
+        const pack = await res.json();
+        await applyPack(pack, url);
+      }catch(e){
+        elPackView.textContent = JSON.stringify({ error:"REMOTE_FETCH_EXCEPTION", message:String(e), url }, null, 2);
+        gateFailClosed("REMOTE_FETCH_EXCEPTION");
       }
-
-      const lines = ledger
-        .slice(-120)
-        .reverse()
-        .map((e) => {
-          const ts = e.timestamp || "UNKNOWN_TIME";
-          const kind = e.kind || "EVENT";
-          const body = JSON.stringify(e);
-          return `<div class="hbce-logline"><div><strong>${ts}</strong> — ${kind}</div><div class="hbce-small">${escapeHtml(body)}</div></div>`;
-        });
-
-      elLogBox.innerHTML = lines.join("");
-    }
-
-    function escapeHtml(str){
-      return String(str)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
     }
 
     function exportLog(){
@@ -670,43 +684,7 @@
       a.remove();
       URL.revokeObjectURL(url);
 
-      appendEvent({
-        kind: "LOG_EXPORT",
-        timestamp: nowISO(),
-        entries: ledger.length
-      });
-    }
-
-    function normalizeBaseUrl(u){
-      const s = String(u || "").trim();
-      return s.endsWith("/") ? s.slice(0, -1) : s;
-    }
-
-    async function fetchPack(packName){
-      const base = normalizeBaseUrl(elOpcBase.value);
-      const url = `${base}/packs/${encodeURIComponent(packName)}.json`;
-
-      appendEvent({
-        kind: "PACK_FETCH",
-        timestamp: nowISO(),
-        pack: packName,
-        url
-      });
-
-      try{
-        const res = await fetch(url, { cache: "no-store" });
-        if(!res.ok){
-          elPackView.textContent = JSON.stringify({ error: "REMOTE_FETCH_FAILED", status: res.status, url }, null, 2);
-          gateFailClosed(`REMOTE_FETCH_FAILED_${res.status}`);
-          return;
-        }
-
-        const pack = await res.json();
-        applyPack(pack, url);
-      }catch(e){
-        elPackView.textContent = JSON.stringify({ error: "REMOTE_FETCH_EXCEPTION", message: String(e), url }, null, 2);
-        gateFailClosed("REMOTE_FETCH_EXCEPTION");
-      }
+      appendEvent({ kind:"LOG_EXPORT", timestamp: nowISO(), entries: ledger.length });
     }
 
     // Wire buttons
@@ -738,27 +716,36 @@
         elPackView.textContent = "{}";
       }
 
-      const check = validatePack(pack);
-      if(!check.ok){
-        const ledger = loadLedger();
-        const already = ledger.some(e => e.kind === "BOOT_FAIL_CLOSED");
-        if(!already){
-          appendEvent({
-            kind: "BOOT_FAIL_CLOSED",
-            timestamp: nowISO(),
-            reason: check.why,
-            effect: "DENY + HOLD"
-          });
-        }
-        gateFailClosed(check.why);
-      }else{
+      // Always start fail-closed.
+      const s0 = loadState();
+      if(!s0 || typeof s0 !== "object"){
+        saveState({ ...defaultState });
+      }
+      renderState();
+
+      // If cached pack exists, do not trust it without re-verification.
+      // For simplicity: cached pack requires re-fetch to re-open the gate.
+      const cached = loadPack();
+      if(cached){
+        appendEvent({
+          kind: "BOOT_NOTICE",
+          timestamp: nowISO(),
+          note: "Cached pack present. Gate remains DENIED until remote fetch + hash verification."
+        });
         const s = loadState();
-        s.pack_id = pack.pack_id;
-        s.pack_source = s.pack_source || "CACHED";
-        s.integrity = computeIntegrityLabel(pack);
-        s.gate = "ALLOWED";
+        s.gate = "DENIED";
+        s.mode = "HOLD";
+        s.integrity = "UNKNOWN";
         saveState(s);
         renderState();
+      }else{
+        appendEvent({
+          kind: "BOOT_FAIL_CLOSED",
+          timestamp: nowISO(),
+          reason: "NO_PACK",
+          effect: "DENY + HOLD"
+        });
+        gateFailClosed("NO_PACK");
       }
     })();
   </script>
