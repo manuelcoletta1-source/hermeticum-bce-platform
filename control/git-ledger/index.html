@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HBCE Control — Git Ledger Event Builder (Append-Only)</title>
+  <meta name="description" content="Build append-only control events for HBCE bridge. Generates event file + head.json update. Fail-closed discipline." />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+
+  <style>
+    .hbce-kernel{
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:16px;
+      padding:18px;
+      background: rgba(10,14,20,.8);
+      box-shadow: 0 10px 30px rgba(0,0,0,.4);
+    }
+    .hbce-row{display:grid; grid-template-columns: 1fr 1fr; gap:14px;}
+    .hbce-row3{display:grid; grid-template-columns: 1fr 1fr 1fr; gap:14px;}
+    .hbce-field label{display:block; font-size:.9rem; opacity:.85; margin-bottom:6px;}
+    .hbce-field input,.hbce-field select{
+      width:100%;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.25);
+      color: #e8eef8;
+      outline:none;
+    }
+    .hbce-field input:focus,.hbce-field select:focus{border-color: rgba(255,255,255,.28);}
+    .hbce-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;}
+    .hbce-btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:#e8eef8;
+      cursor:pointer;
+      user-select:none;
+      text-decoration:none;
+    }
+    .hbce-btn:hover{background: rgba(255,255,255,.10);}
+    .hbce-mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:.92rem;
+      line-height:1.35;
+      white-space:pre-wrap;
+      word-break:break-word;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.35);
+      margin:10px 0 0 0;
+    }
+    .hbce-badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      font-size:.9rem;
+    }
+    .hbce-small{opacity:.8; font-size:.92rem;}
+    .hbce-divider{height:1px; background: rgba(255,255,255,.10); margin:14px 0;}
+    .hbce-warn{
+      border:1px solid rgba(255,160,0,.25);
+      background: rgba(255,160,0,.06);
+      padding:12px;
+      border-radius:14px;
+    }
+  </style>
+</head>
+<body>
+  <div data-hbce="header"></div>
+
+  <main class="hbce-container hbce-main">
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">HBCE · CONTROL AUTHORITY</div>
+      <h1 class="hbce-hero__title">Git Ledger Event Builder</h1>
+      <p class="hbce-hero__lead">
+        This page generates <b>append-only</b> control events for the HBCE Bridge.
+        You commit the files into <span class="hbce-badge">hbce-tello-bridge</span>:
+        <span class="hbce-badge">events/00000N.json</span> + <span class="hbce-badge">head.json</span>.
+        <br />
+        Discipline: <b>FAIL-CLOSED</b>, <b>UE-first</b>, <b>audit-first</b>, <b>append-only</b>.
+      </p>
+    </section>
+
+    <section class="hbce-kernel">
+      <div class="hbce-row3">
+        <div class="hbce-field">
+          <label>Next event_id (monotonic)</label>
+          <input id="eventId" type="number" min="1" step="1" value="4" />
+          <div class="hbce-small">Must be greater than last applied id.</div>
+        </div>
+
+        <div class="hbce-field">
+          <label>Mode</label>
+          <select id="mode">
+            <option value="HOLD">HOLD</option>
+            <option value="EXPLORE_SLOW">EXPLORE_SLOW</option>
+            <option value="FOLLOW_PROXIMITY">FOLLOW_PROXIMITY</option>
+          </select>
+          <div class="hbce-small">Single-step / slow modes are safer.</div>
+        </div>
+
+        <div class="hbce-field">
+          <label>Gate</label>
+          <select id="gate">
+            <option value="ALLOWED">ALLOWED</option>
+            <option value="DENIED">DENIED</option>
+          </select>
+          <div class="hbce-small">DENIED forces fail-closed.</div>
+        </div>
+      </div>
+
+      <div class="hbce-row3" style="margin-top:14px;">
+        <div class="hbce-field">
+          <label>Integrity</label>
+          <select id="integrity">
+            <option value="HASH_OK">HASH_OK</option>
+            <option value="FAIL">FAIL</option>
+          </select>
+          <div class="hbce-small">Bridge accepts only HASH_OK.</div>
+        </div>
+
+        <div class="hbce-field">
+          <label>E-STOP</label>
+          <select id="estop">
+            <option value="false">false</option>
+            <option value="true">true</option>
+          </select>
+          <div class="hbce-small">Hard safety override (Mode 1).</div>
+        </div>
+
+        <div class="hbce-field">
+          <label>Timestamp (UTC)</label>
+          <input id="ts" type="text" />
+          <div class="hbce-small">Auto-filled. Keep it deterministic.</div>
+        </div>
+      </div>
+
+      <div class="hbce-divider"></div>
+
+      <div class="hbce-warn">
+        <b>Hard Safety (Mode 1)</b>: if <span class="hbce-badge">estop=true</span> the Bridge will deny+hold immediately,
+        regardless of gate/mode. This does <b>not</b> advance the applied counter (it is a brake, not an action).
+      </div>
+
+      <div class="hbce-actions">
+        <button class="hbce-btn" id="btnBuild">Build</button>
+        <button class="hbce-btn" id="btnCopyEvent">Copy event JSON</button>
+        <button class="hbce-btn" id="btnCopyHead">Copy head.json</button>
+        <button class="hbce-btn" id="btnCopyNames">Copy filenames</button>
+        <button class="hbce-btn" id="btnNow">Refresh timestamp</button>
+      </div>
+
+      <div class="hbce-divider"></div>
+
+      <div class="hbce-row">
+        <div>
+          <div class="hbce-badge">events file</div>
+          <div class="hbce-small" id="eventPath"></div>
+          <div class="hbce-mono" id="eventJson"></div>
+        </div>
+        <div>
+          <div class="hbce-badge">head.json update</div>
+          <div class="hbce-small">Points to the latest event file.</div>
+          <div class="hbce-mono" id="headJson"></div>
+        </div>
+      </div>
+
+      <div class="hbce-divider"></div>
+
+      <div class="hbce-badge">Commit suggestions</div>
+      <div class="hbce-mono" id="commitHints"></div>
+
+      <div class="hbce-divider"></div>
+
+      <div class="hbce-badge">Operational checklist</div>
+      <div class="hbce-mono" id="checklist"></div>
+    </section>
+
+    <section class="hbce-kernel" style="margin-top:14px;">
+      <div class="hbce-badge">Target repository</div>
+      <div class="hbce-mono">hbce-tello-bridge</div>
+      <div class="hbce-small">
+        You commit: <b>events/00000N.json</b> (append-only) and <b>head.json</b> (pointer). Never modify old events.
+      </div>
+    </section>
+  </main>
+
+  <div data-hbce="footer"></div>
+
+  <script>
+    const pad5 = (n) => String(n).padStart(5, "0");
+    const nowISO = () => new Date().toISOString();
+
+    const $ = (id) => document.getElementById(id);
+
+    function build(){
+      const event_id = Number($("eventId").value || 0);
+      const mode = $("mode").value;
+      const gate = $("gate").value;
+      const integrity = $("integrity").value;
+      const estop = $("estop").value === "true";
+      const ts = $("ts").value.trim() || nowISO();
+
+      const fname = `events/${pad5(event_id)}.json`;
+
+      const eventObj = {
+        event_id,
+        gate,
+        integrity,
+        mode,
+        estop,
+        ts,
+        source: "HBCE-PLATFORM-BUILDER"
+      };
+
+      const headObj = {
+        head: {
+          path: fname,
+          event_id,
+          ts
+        }
+      };
+
+      $("eventPath").textContent = fname;
+      $("eventJson").textContent = JSON.stringify(eventObj, null, 2);
+      $("headJson").textContent = JSON.stringify(headObj, null, 2);
+
+      const commits = [
+        `feat(events): add event ${pad5(event_id)} (${estop ? "estop" : mode.toLowerCase()})`,
+        `feat(ledger): move head to ${pad5(event_id)}`
+      ].join("\n");
+
+      $("commitHints").textContent = commits;
+
+      const checklist = [
+        "1) In hbce-tello-bridge create file: " + fname,
+        "2) Paste the event JSON exactly as generated.",
+        "3) Commit (append-only). Do NOT edit older events.",
+        "4) Update head.json to point to the new event file.",
+        "5) Commit head.json change.",
+        "6) Chromebook: git pull && restart bridge (node bridge.js).",
+        "7) Verify /status: last_head_event_url + last_event + last_error."
+      ].join("\n");
+
+      $("checklist").textContent = checklist;
+    }
+
+    async function copyText(txt){
+      try{
+        await navigator.clipboard.writeText(txt);
+      }catch{
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = txt;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+    }
+
+    function refreshTs(){
+      $("ts").value = nowISO();
+    }
+
+    $("btnBuild").addEventListener("click", build);
+    $("btnNow").addEventListener("click", () => { refreshTs(); build(); });
+
+    $("btnCopyEvent").addEventListener("click", async () => {
+      await copyText($("eventJson").textContent);
+    });
+
+    $("btnCopyHead").addEventListener("click", async () => {
+      await copyText($("headJson").textContent);
+    });
+
+    $("btnCopyNames").addEventListener("click", async () => {
+      const event_id = Number($("eventId").value || 0);
+      const fname = `events/${pad5(event_id)}.json`;
+      await copyText(`Repository: hbce-tello-bridge\nFile 1: ${fname}\nFile 2: head.json`);
+    });
+
+    // init
+    refreshTs();
+    build();
+  </script>
+</body>
+</html>
