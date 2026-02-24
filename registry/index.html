@@ -72,7 +72,7 @@
       font-size:12px;
       opacity:.85;
     }
-    .hbce-list .rows{max-height:280px;overflow:auto}
+    .hbce-list .rows{max-height:320px;overflow:auto}
     .hbce-item{
       padding:10px 12px;
       border-bottom:1px dashed rgba(255,255,255,.08);
@@ -98,6 +98,7 @@
     .dot.warn{background:rgba(255,208,138,.85)}
     .hbce-foot{margin-top:18px;opacity:.9}
     code{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace}
+    pre{margin:0}
   </style>
 </head>
 
@@ -119,9 +120,8 @@
     <div class="hbce-badge">REGISTRY · PUBLIC LEDGER · APPEND-ONLY</div>
     <h1 class="hbce-h1">Public Registry (Hash-only)</h1>
     <p class="hbce-sub">
-      This registry is an append-only public ledger storing only minimized proofs (hash-only).
-      It is designed for deterministic verification and fail-closed execution gating.
-      <b>No ledger = non-operational.</b>
+      Append-only public ledger storing minimized proofs (hash-only). Deterministic verification.
+      <b>Fail-closed:</b> if the ledger is unreachable or invalid, the registry is NON-OPERATIONAL.
     </p>
 
     <div class="hbce-grid">
@@ -133,7 +133,8 @@
           <span class="tag" id="tagState"><span class="dot warn" id="dotState"></span><span id="txtState">STATE: LOADING</span></span>
           <span class="tag"><span class="mut">MODE</span>&nbsp;APPEND_ONLY</span>
           <span class="tag"><span class="mut">PUBLIC</span>&nbsp;HASH_ONLY</span>
-          <span class="tag"><span class="mut">FAILURE</span>&nbsp;FAIL_CLOSED</span>
+          <span class="tag"><span class="mut">VERIFY</span>&nbsp;DETERMINISTIC</span>
+          <span class="tag"><span class="mut">FAIL</span>&nbsp;FAIL_CLOSED</span>
         </div>
 
         <div class="hbce-status warn" id="statusBox">LOADING LEDGER…</div>
@@ -143,6 +144,7 @@
           <b>issuer</b><span id="statIssuer">—</span>
           <b>network</b><span id="statNetwork">—</span>
           <b>proto</b><span id="statProto">—</span>
+          <b>rules</b><span id="statRules">—</span>
           <b>source</b><span><code id="statSource">/registry/ledger.json</code></span>
         </div>
 
@@ -174,7 +176,7 @@
     <section class="hbce-card" style="margin-top:14px" aria-label="Latest entries">
       <h2>Ledger (latest)</h2>
       <p class="mut" style="margin-top:0">
-        Read-only view of the latest entries (append-only).
+        Read-only view of the latest entries (append-only). Entries are hash-only proofs.
       </p>
 
       <div class="hbce-list" role="region" aria-label="Ledger latest list">
@@ -203,24 +205,9 @@
         The ledger stores hash-only proofs. Do not publish personal data.
       </p>
 
-      <pre class="hbce-status" style="margin-top:10px;overflow:auto">
-{
-  "proto": "HBCE-REGISTRY-v3",
-  "kind": "IPR_PUBLIC_LEDGER",
-  "network": "EU",
-  "mode": "APPEND_ONLY_PUBLIC_LEDGER",
-  "issuer": "HERMETICUM B.C.E. S.r.l.",
-  "jurisdiction": "EU",
-  "policy": ["HASH_ONLY","APPEND_ONLY","FAIL_CLOSED","UE_FIRST","AUDIT_FIRST","GDPR_MIN"],
-  "entries": [
-    {
-      "proof_kind": "IPR_RELEASE_SHA256 | EVIDENCE_PACK_SHA256",
-      "sha256": "64_hex_chars_lowercase",
-      "timestamp": "2026-02-21T00:00:00Z",
-      "name": "OPTIONAL_MINIMIZED"
-    }
-  ]
-}</pre>
+      <div class="hbce-status" style="margin-top:10px;overflow:auto" id="rulesBox">
+        (rules will be displayed here when ledger loads)
+      </div>
     </section>
 
     <footer class="hbce-foot">
@@ -236,12 +223,11 @@
     "use strict";
 
     const LEDGER_URL = "/hermeticum-bce-platform/registry/ledger.json";
-    const MAX_LATEST = 12;
+    const MAX_LATEST = 14;
 
     const $ = (id) => document.getElementById(id);
 
     const el = {
-      tagState: $("tagState"),
       dotState: $("dotState"),
       txtState: $("txtState"),
       statusBox: $("statusBox"),
@@ -250,6 +236,7 @@
       statIssuer: $("statIssuer"),
       statNetwork: $("statNetwork"),
       statProto: $("statProto"),
+      statRules: $("statRules"),
       statSource: $("statSource"),
 
       btnReload: $("btnReload"),
@@ -262,6 +249,8 @@
 
       latestMeta: $("latestMeta"),
       latestRows: $("latestRows"),
+
+      rulesBox: $("rulesBox"),
     };
 
     const STATE = {
@@ -272,7 +261,6 @@
     };
 
     function setState(kind, msg) {
-      // kind: ok | bad | warn
       el.dotState.className = "dot " + kind;
       el.txtState.textContent = "STATE: " + (kind === "ok" ? "OPERATIONAL" : (kind === "bad" ? "NON-OPERATIONAL" : "LOADING"));
       el.statusBox.className = "hbce-status " + kind;
@@ -285,6 +273,46 @@
 
     function safeText(s){
       return String(s ?? "");
+    }
+
+    function prettyJSON(obj){
+      try { return JSON.stringify(obj, null, 2); } catch { return String(obj); }
+    }
+
+    function renderStats() {
+      const L = STATE.ledger;
+      el.statSource.textContent = STATE.source;
+
+      if (!L) {
+        el.statEntries.textContent = "—";
+        el.statIssuer.textContent = "—";
+        el.statNetwork.textContent = "—";
+        el.statProto.textContent = "—";
+        el.statRules.textContent = "—";
+        return;
+      }
+
+      el.statEntries.textContent = Array.isArray(L.entries) ? String(L.entries.length) : "—";
+      el.statIssuer.textContent = safeText(L.issuer || "—");
+      el.statNetwork.textContent = safeText(L.network || "—");
+      el.statProto.textContent = safeText(L.proto || "—");
+
+      const r = L.rules && typeof L.rules === "object" ? L.rules : null;
+      el.statRules.textContent = r ? `${safeText(r.verification || "—")} / ${safeText(r.failure_mode || "—")}` : "—";
+    }
+
+    function renderRulesBox() {
+      const L = STATE.ledger;
+      const r = (L && L.rules && typeof L.rules === "object") ? L.rules : null;
+
+      if (!r) {
+        el.rulesBox.className = "hbce-status warn";
+        el.rulesBox.textContent = "No rules object present in ledger. (Allowed.)\nFail-closed enforcement remains mandatory at verification layer.";
+        return;
+      }
+
+      el.rulesBox.className = "hbce-status";
+      el.rulesBox.textContent = prettyJSON(r);
     }
 
     function renderLatest() {
@@ -305,43 +333,30 @@
 
       el.latestRows.innerHTML = entries.map((e, i) => {
         const sha = safeText(e.sha256);
-        const kind = safeText(e.proof_kind || "HBCE_PUBLIC_PROOF");
+        const proofKind = safeText(e.proof_kind || "HBCE_PUBLIC_PROOF");
+        const kind = safeText(e.kind || "HBCE_PUBLIC_PROOF");
         const ts = safeText(e.timestamp || "—");
-        const name = safeText(e.name || "");
+
+        const issuer = safeText(e.issuer || "");
+        const net = safeText(e.network || "");
+        const meta = [kind, net, issuer].filter(Boolean).join(" · ");
+
         return `
           <div class="hbce-item">
-            <div><span class="mut">#</span>${String(L.entries.length - i).padStart(6, "0")} <span class="mut">·</span> ${kind}</div>
+            <div><span class="mut">#</span>${String(L.entries.length - i).padStart(6, "0")} <span class="mut">·</span> ${proofKind}</div>
             <div><code>${sha || "—"}</code></div>
-            <div class="mut">${ts}${name ? (" · " + name) : ""}</div>
+            <div class="mut">${ts}${meta ? (" · " + meta) : ""}</div>
           </div>
         `;
       }).join("");
     }
 
-    function renderStats() {
-      const L = STATE.ledger;
-      el.statSource.textContent = STATE.source;
-
-      if (!L) {
-        el.statEntries.textContent = "—";
-        el.statIssuer.textContent = "—";
-        el.statNetwork.textContent = "—";
-        el.statProto.textContent = "—";
-        return;
-      }
-
-      el.statEntries.textContent = Array.isArray(L.entries) ? String(L.entries.length) : "—";
-      el.statIssuer.textContent = safeText(L.issuer || "—");
-      el.statNetwork.textContent = safeText(L.network || "—");
-      el.statProto.textContent = safeText(L.proto || "—");
-    }
-
     async function loadLedger() {
-      // Fail-closed: if ledger cannot be loaded/validated => NON-OPERATIONAL
       setState("warn", "LOADING LEDGER…");
       STATE.loaded = false;
       STATE.ledger = null;
       renderStats();
+      renderRulesBox();
       renderLatest();
 
       try {
@@ -356,10 +371,25 @@
         if (data.mode !== "APPEND_ONLY_PUBLIC_LEDGER") throw new Error("MODE_MISMATCH");
         if (!Array.isArray(data.entries)) throw new Error("ENTRIES_MISSING");
 
-        // ensure hash-only: every entry must have sha256 64 lowercase hex
+        // enforce hash-only: every entry must include sha256 (64 lowercase hex)
+        // We accept verbose entries (with proto/kind/network/issuer/policy), but sha256 remains mandatory.
         for (const e of data.entries) {
-          const sha = (e && typeof e === "object") ? String(e.sha256 || "") : "";
+          if (!e || typeof e !== "object") throw new Error("ENTRY_INVALID_OBJECT");
+          const sha = String(e.sha256 || "");
           if (!isSha256Lower(sha)) throw new Error("ENTRY_SHA256_INVALID");
+
+          // optional extra: if a rules.verification exists and claims deterministic sha256, we accept it;
+          // but we do not require rules to exist (backward compatible).
+        }
+
+        // optional: validate rules if present
+        if (data.rules && typeof data.rules === "object") {
+          if (data.rules.failure_mode && data.rules.failure_mode !== "FAIL_CLOSED") {
+            throw new Error("RULES_FAILURE_MODE_MISMATCH");
+          }
+          if (data.rules.public_data && data.rules.public_data !== "HASH_ONLY") {
+            throw new Error("RULES_PUBLIC_DATA_MISMATCH");
+          }
         }
 
         STATE.ledger = data;
@@ -368,6 +398,7 @@
 
         setState("ok", `LEDGER OPERATIONAL\nsource=${STATE.source}\nloaded=${STATE.lastLoadedIso}\npolicy=FAIL_CLOSED · HASH_ONLY · APPEND_ONLY`);
         renderStats();
+        renderRulesBox();
         renderLatest();
         el.lookupBox.className = "hbce-status warn";
         el.lookupBox.textContent = "Ledger loaded. Paste a SHA-256 to check presence.";
@@ -379,6 +410,7 @@ reason=${code}
 required=reachable_ledger + deterministic_schema + hash_only_entries
 action=fix ledger source and reload`);
         renderStats();
+        renderRulesBox();
         renderLatest();
         el.lookupBox.className = "hbce-status bad";
         el.lookupBox.textContent = "Lookup denied: ledger is NON-OPERATIONAL (fail-closed).";
@@ -401,7 +433,7 @@ action=fix ledger source and reload`);
         return;
       }
 
-      const hit = STATE.ledger.entries.some(e => (e && e.sha256) === sha);
+      const hit = STATE.ledger.entries.some(e => e && e.sha256 === sha);
 
       if (hit) {
         el.lookupBox.className = "hbce-status ok";
@@ -431,7 +463,7 @@ No ledger → no proof → no execution.`;
     });
     el.btnFailClosed.addEventListener("click", showFailClosedRule);
 
-    // auto-load on entry (THIS is the fix)
+    // auto-load on entry
     loadLedger();
   })();
   </script>
