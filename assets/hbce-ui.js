@@ -1,45 +1,11 @@
 /* =========================================================
    HBCE UI SYSTEM — HEADER/FOOTER INJECTOR (FULL REFAC)
    + IPR LOCK (no-translate, anti DPI)
-   + GLOBAL FX BOOTSTRAP (cinematic space / warp)
+   + MINIMAL INFRA NAV (Activate=Entry, Create removed from top nav)
    ========================================================= */
 
 (function () {
   "use strict";
-
-  /* -------------------------------------------------------
-     GLOBAL FX BOOTSTRAP
-     - loads /assets/fx.js once (even if pages also include it)
-     - keeps "film" consistent across the whole site
-  ------------------------------------------------------- */
-  function ensureScript(src, attrs){
-    try{
-      const abs = new URL(src, window.location.origin).href;
-      const existing = Array.from(document.scripts || []).some(s => {
-        try{ return new URL(s.src, window.location.origin).href === abs; }
-        catch{ return false; }
-      });
-      if(existing) return;
-
-      const s = document.createElement("script");
-      s.src = src;
-
-      if(attrs && typeof attrs === "object"){
-        for(const k of Object.keys(attrs)){
-          s.setAttribute(k, String(attrs[k]));
-        }
-      }
-      // default: non-blocking
-      if(!s.hasAttribute("defer") && !s.hasAttribute("async")) s.defer = true;
-
-      document.head.appendChild(s);
-    }catch{
-      // fail-closed in UI sense: do nothing (site must still work)
-    }
-  }
-
-  // Always attempt to load FX (it is safe if missing, but should exist)
-  ensureScript("/hermeticum-bce-platform/assets/fx.js", { defer: "defer" });
 
   /* -------------------------------------------------------
      UTILS
@@ -77,23 +43,26 @@
   }
 
   /* -------------------------------------------------------
-     NAV ITEMS
+     BRAND (CANONICAL)
+  ------------------------------------------------------- */
+  const BRAND = {
+    mark: "HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA",
+    entity: "HERMETICUM B.C.E. S.r.l."
+  };
+
+  /* -------------------------------------------------------
+     NAV ITEMS (MINIMAL INFRASTRUCTURE)
+     - Create is NOT top-level.
+     - Create Release must be reached via /activate/ CTAs.
   ------------------------------------------------------- */
   const NAV = [
     {label:"Home", href:"/hermeticum-bce-platform/"},
-    {label:"Activate "+IPR(), href:"/hermeticum-bce-platform/activate/"},
-    {label:"Create "+IPR(), href:"/hermeticum-bce-platform/create/base/"},
+    {label:`Activate ${IPR()} (Entry)`, href:"/hermeticum-bce-platform/activate/"},
     {label:"Verify", href:"/hermeticum-bce-platform/verify/"},
     {label:"Registry", href:"/hermeticum-bce-platform/registry/"},
-    {label:"Publish", href:"/hermeticum-bce-platform/publish/"},
-    {label:"ΦΩ Pilot", href:"/hermeticum-bce-platform/phiomega/"},
-    {label:"Pricing", href:"/hermeticum-bce-platform/pricing/"}
+    {label:"Pricing", href:"/hermeticum-bce-platform/pricing/"},
+    {label:"About", href:"/hermeticum-bce-platform/about/"}
   ];
-
-  const BRAND = {
-    mark:"HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA",
-    entity:"HERMETICUM B.C.E. S.r.l."
-  };
 
   /* -------------------------------------------------------
      BUILD NAV LINK
@@ -131,45 +100,45 @@
   }
 
   /* -------------------------------------------------------
-     FOOTER
+     FOOTER (NO CREATE LINK)
   ------------------------------------------------------- */
   function footerHTML(){
     const year = new Date().getFullYear();
     return `
 <footer class="hbce-footer">
-<div class="hbce-footer__inner hbce-container">
+  <div class="hbce-footer__inner hbce-container">
 
-<div class="hbce-footer__cols">
+    <div class="hbce-footer__cols">
 
-<div>
-<div class="hbce-footer__mark">${esc(BRAND.mark)}</div>
-<div class="hbce-footer__entity">${esc(BRAND.entity)}</div>
-<div class="hbce-footer__meta">
-EU-first · Audit-first · Fail-closed · Hash-only · Append-only
-</div>
-</div>
+      <div>
+        <div class="hbce-footer__mark">${esc(BRAND.mark)}</div>
+        <div class="hbce-footer__entity">${esc(BRAND.entity)}</div>
+        <div class="hbce-footer__meta">
+          EU-first · Audit-first · Fail-closed · Hash-only · Append-only
+        </div>
+      </div>
 
-<div>
-<strong>Core</strong><br>
-<a href="/hermeticum-bce-platform/activate/">Activate ${IPR()}</a><br>
-<a href="/hermeticum-bce-platform/create/base/">Create ${IPR()}</a><br>
-<a href="/hermeticum-bce-platform/verify/">Verify</a><br>
-<a href="/hermeticum-bce-platform/registry/">Registry</a>
-</div>
+      <div>
+        <strong>Core</strong><br>
+        <a href="/hermeticum-bce-platform/activate/">Activate ${IPR()} (Entry)</a><br>
+        <a href="/hermeticum-bce-platform/verify/">Verify</a><br>
+        <a href="/hermeticum-bce-platform/registry/">Registry</a><br>
+        <a href="/hermeticum-bce-platform/pricing/">Pricing</a>
+      </div>
 
-<div>
-<strong>Industrial</strong><br>
-<a href="/hermeticum-bce-platform/phiomega/">ΦΩ Pilot</a><br>
-<a href="/hermeticum-bce-platform/pricing/">Pricing</a>
-</div>
+      <div>
+        <strong>Company</strong><br>
+        <a href="/hermeticum-bce-platform/about/">About</a><br>
+        <a href="/hermeticum-bce-platform/">Home</a>
+      </div>
 
-</div>
+    </div>
 
-<div class="hbce-footer__bottom">
-© ${year} ${esc(BRAND.entity)}
-</div>
+    <div class="hbce-footer__bottom">
+      © ${year} ${esc(BRAND.entity)}
+    </div>
 
-</div>
+  </div>
 </footer>`;
   }
 
