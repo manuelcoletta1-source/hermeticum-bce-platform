@@ -1,0 +1,922 @@
+<!--
+  FILE: /film/index.html
+  PURPOSE: “Netflix-style” interactive trailer for IPR pre-execution identity layer
+  HOST: GitHub Pages (static)
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FILM — Pre-Execution Identity Layer (IPR)</title>
+  <meta name="description" content="A short, cinematic, interactive trailer demonstrating IPR as a pre-execution identity layer for AI, robots, drones, and autonomous systems." />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#05070a" />
+
+  <style>
+    :root{
+      --bg:#05070a;
+      --bg2:#070a0f;
+      --fg:#e9eef5;
+      --mut:#a9b7c6;
+      --mut2:#7f8fa3;
+      --line:rgba(255,255,255,.12);
+      --ok:#aef5c3;
+      --bad:#ff8f8f;
+      --warn:#ffd08a;
+      --accent:#cfe3ff;
+      --shadow:rgba(0,0,0,.55);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background: radial-gradient(1200px 700px at 60% 30%, #0b1120 0%, var(--bg) 55%, #030407 100%);
+      color:var(--fg);
+      font-family:var(--sans);
+      letter-spacing:.2px;
+      overflow-x:hidden;
+    }
+
+    /* film grain + scanline */
+    .fx-grain, .fx-scan{
+      position:fixed; inset:0; pointer-events:none; z-index:50; mix-blend-mode:overlay;
+    }
+    .fx-grain{
+      opacity:.14;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+      background-size:240px 240px;
+      animation: grain 6s steps(10) infinite;
+    }
+    @keyframes grain{
+      0%{transform:translate(0,0)}
+      10%{transform:translate(-2%,1%)}
+      20%{transform:translate(-4%,-2%)}
+      30%{transform:translate(3%,2%)}
+      40%{transform:translate(2%,-3%)}
+      50%{transform:translate(-3%,0%)}
+      60%{transform:translate(4%,1%)}
+      70%{transform:translate(1%,-2%)}
+      80%{transform:translate(-2%,3%)}
+      90%{transform:translate(3%,-1%)}
+      100%{transform:translate(0,0)}
+    }
+    .fx-scan{
+      opacity:.08;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,.18) 0px,
+        rgba(255,255,255,.18) 1px,
+        rgba(0,0,0,0) 2px,
+        rgba(0,0,0,0) 4px
+      );
+    }
+
+    /* layout */
+    .wrap{min-height:100vh}
+    .topbar{
+      position:fixed; top:0; left:0; right:0;
+      z-index:40;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(to bottom, rgba(2,3,6,.75), rgba(2,3,6,.35));
+      border-bottom:1px solid var(--line);
+    }
+    .topbar-inner{
+      max-width:1100px;
+      margin:0 auto;
+      padding:12px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .brand{
+      display:flex; flex-direction:column; line-height:1.05;
+      user-select:none;
+    }
+    .brand b{font-size:13px; letter-spacing:.6px}
+    .brand span{font-size:11px; color:var(--mut2); letter-spacing:.6px}
+    .controls{
+      display:flex; gap:10px; align-items:center;
+      font-family:var(--mono);
+    }
+    .pill{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color:var(--fg);
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:12px;
+      display:flex; gap:8px; align-items:center;
+      box-shadow:0 12px 30px var(--shadow);
+    }
+    .pill strong{font-weight:700}
+    .btn{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      color:var(--fg);
+      padding:9px 12px;
+      border-radius:12px;
+      font-size:12px;
+      font-family:var(--mono);
+      cursor:pointer;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+      user-select:none;
+    }
+    .btn:hover{transform:translateY(-1px); background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.2)}
+    .btn:active{transform:translateY(0px)}
+    .btn[aria-pressed="true"]{border-color:rgba(174,245,195,.45); box-shadow:0 0 0 3px rgba(174,245,195,.08) inset}
+
+    /* cinematic stage */
+    .stage{
+      position:sticky;
+      top:52px;
+      height:calc(100vh - 52px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:10;
+    }
+    .frame{
+      width:min(1100px, calc(100% - 24px));
+      height:min(620px, calc(100vh - 92px));
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.14);
+      background:
+        radial-gradient(900px 560px at 20% 20%, rgba(207,227,255,.08) 0%, rgba(0,0,0,0) 60%),
+        radial-gradient(700px 520px at 70% 70%, rgba(255,255,255,.06) 0%, rgba(0,0,0,0) 62%),
+        linear-gradient(180deg, rgba(7,9,14,.75) 0%, rgba(5,7,10,.78) 100%);
+      box-shadow: 0 30px 120px rgba(0,0,0,.7);
+      overflow:hidden;
+      position:relative;
+    }
+
+    .hud{
+      position:absolute; inset:18px 18px auto 18px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      color:var(--mut2);
+      font-family:var(--mono);
+      font-size:11px;
+      letter-spacing:.5px;
+      text-transform:uppercase;
+    }
+    .hud .left{display:flex; gap:12px; align-items:center}
+    .dot{
+      width:8px; height:8px; border-radius:50%;
+      background: rgba(255,255,255,.2);
+      box-shadow: 0 0 0 3px rgba(255,255,255,.05);
+    }
+    .dot.ok{background:rgba(174,245,195,.75)}
+    .dot.bad{background:rgba(255,143,143,.75)}
+    .dot.warn{background:rgba(255,208,138,.75)}
+    .hud .right{display:flex; gap:14px; align-items:center}
+    .hud a{
+      color:var(--mut2);
+      text-decoration:none;
+      border-bottom:1px solid rgba(255,255,255,.12);
+    }
+    .hud a:hover{color:var(--fg)}
+
+    .content{
+      position:absolute; inset:0;
+      padding:78px 20px 20px 20px;
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap:16px;
+      height:100%;
+    }
+
+    /* left: cinematic titles */
+    .titles{
+      padding:12px 10px 10px 10px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:14px;
+    }
+    .kicker{
+      font-family:var(--mono);
+      color:var(--mut2);
+      font-size:12px;
+      letter-spacing:1px;
+      text-transform:uppercase;
+    }
+    .headline{
+      font-size:42px;
+      line-height:1.03;
+      letter-spacing:-.5px;
+      margin:0;
+    }
+    .sub{
+      max-width:42ch;
+      color:var(--mut);
+      font-size:15px;
+      line-height:1.45;
+      margin:0;
+    }
+
+    .card{
+      margin-top:10px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.25);
+      border-radius:18px;
+      padding:14px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+      max-width:560px;
+    }
+    .card .row{
+      display:flex; justify-content:space-between; align-items:center;
+      gap:10px;
+      font-family:var(--mono);
+      font-size:12px;
+      color:var(--mut2);
+      padding:6px 0;
+      border-bottom:1px dashed rgba(255,255,255,.08);
+    }
+    .card .row:last-child{border-bottom:none}
+    .tag{
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color:var(--fg);
+      font-size:11px;
+      letter-spacing:.3px;
+    }
+    .tag.ok{border-color:rgba(174,245,195,.28)}
+    .tag.bad{border-color:rgba(255,143,143,.28)}
+    .tag.warn{border-color:rgba(255,208,138,.28)}
+
+    /* right: console + gate */
+    .panel{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      padding:10px;
+      height:100%;
+    }
+    .console{
+      flex:1;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.30);
+      overflow:hidden;
+      position:relative;
+    }
+    .console-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      color:var(--mut2);
+      font-family:var(--mono);
+      font-size:11px;
+      letter-spacing:.6px;
+      text-transform:uppercase;
+    }
+    .console-body{
+      padding:10px 12px;
+      font-family:var(--mono);
+      font-size:12px;
+      line-height:1.42;
+      color:#dbe6f3;
+      height:calc(100% - 42px);
+      overflow:auto;
+      scrollbar-color: rgba(255,255,255,.18) transparent;
+      scrollbar-width: thin;
+    }
+    .line{white-space:pre-wrap; word-break:break-word}
+    .t-dim{color:var(--mut2)}
+    .t-ok{color:var(--ok)}
+    .t-bad{color:var(--bad)}
+    .t-warn{color:var(--warn)}
+
+    .gate{
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      padding:12px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+    }
+    .gate-top{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
+      font-family:var(--mono);
+      font-size:12px;
+      color:var(--mut2);
+    }
+    .gate-badge{
+      font-family:var(--mono);
+      font-size:12px;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.04);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+    .gate-badge b{letter-spacing:.8px}
+    .gate-badge[data-state="DENIED"]{border-color:rgba(255,143,143,.25)}
+    .gate-badge[data-state="ALLOWED"]{border-color:rgba(174,245,195,.25)}
+    .gate-badge[data-state="HOLD"]{border-color:rgba(255,208,138,.25)}
+    .pulse{
+      width:10px; height:10px; border-radius:50%;
+      background: rgba(255,255,255,.2);
+      box-shadow: 0 0 0 3px rgba(255,255,255,.06);
+      animation:pulse 1.1s ease-in-out infinite;
+    }
+    .gate-badge[data-state="DENIED"] .pulse{background:rgba(255,143,143,.8); box-shadow:0 0 0 4px rgba(255,143,143,.12)}
+    .gate-badge[data-state="ALLOWED"] .pulse{background:rgba(174,245,195,.8); box-shadow:0 0 0 4px rgba(174,245,195,.12)}
+    .gate-badge[data-state="HOLD"] .pulse{background:rgba(255,208,138,.85); box-shadow:0 0 0 4px rgba(255,208,138,.12)}
+    @keyframes pulse{
+      0%,100%{transform:scale(1); opacity:.85}
+      50%{transform:scale(1.12); opacity:1}
+    }
+
+    .gate-actions{
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+    .small{
+      font-size:11px;
+      color:var(--mut2);
+      line-height:1.35;
+    }
+
+    /* scroll script */
+    .scrollpad{
+      height:340vh; /* makes the page scroll for “film” pacing */
+    }
+    .chapter{
+      position:fixed;
+      left:18px; right:18px;
+      bottom:14px;
+      z-index:30;
+      max-width:1100px;
+      margin:0 auto;
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      align-items:flex-end;
+      pointer-events:none;
+    }
+    .chapter .cap{
+      pointer-events:none;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.25);
+      border-radius:16px;
+      padding:10px 12px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+      max-width:780px;
+    }
+    .chapter .cap b{
+      display:block;
+      font-family:var(--mono);
+      color:var(--mut2);
+      font-size:11px;
+      letter-spacing:.9px;
+      text-transform:uppercase;
+      margin-bottom:6px;
+    }
+    .chapter .cap span{
+      display:block;
+      font-size:13px;
+      color:var(--fg);
+      line-height:1.35;
+    }
+    .progress{
+      pointer-events:none;
+      width:220px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.25);
+      border-radius:16px;
+      padding:10px 12px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+      font-family:var(--mono);
+      font-size:11px;
+      color:var(--mut2);
+    }
+    .bar{
+      margin-top:8px;
+      height:8px;
+      border-radius:99px;
+      background: rgba(255,255,255,.08);
+      overflow:hidden;
+      position:relative;
+    }
+    .bar > i{
+      display:block;
+      height:100%;
+      width:0%;
+      background: rgba(207,227,255,.35);
+      border-right:1px solid rgba(255,255,255,.22);
+      transition: width .08s linear;
+    }
+
+    /* responsive */
+    @media (max-width: 980px){
+      .content{grid-template-columns:1fr; padding-top:72px}
+      .frame{height:min(760px, calc(100vh - 92px))}
+      .headline{font-size:38px}
+      .progress{display:none}
+      .chapter{bottom:10px}
+    }
+    @media (max-width: 480px){
+      .headline{font-size:32px}
+      .sub{font-size:14px}
+      .btn{padding:9px 10px}
+      .pill{display:none}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="fx-grain" aria-hidden="true"></div>
+  <div class="fx-scan" aria-hidden="true"></div>
+
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+      <div class="brand" aria-label="Film Title">
+        <b>FILM — PRE-EXECUTION IDENTITY</b>
+        <span>IPR is not a log. It is permission to exist.</span>
+      </div>
+
+      <div class="controls" role="group" aria-label="Film Controls">
+        <div class="pill" title="Deterministic demo (static)">
+          MODE <strong>STATIC</strong>
+          <span class="t-dim">/</span>
+          POLICY <strong>FAIL-CLOSED</strong>
+        </div>
+
+        <button class="btn" id="btnSound" aria-pressed="false" title="Enable / disable minimal sound">
+          SOUND: OFF
+        </button>
+
+        <button class="btn" id="btnReset" title="Reset the film state">
+          RESET
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap" role="main">
+    <section class="stage" aria-label="Film Stage">
+      <div class="frame" id="frame">
+        <div class="hud">
+          <div class="left">
+            <span class="dot" id="dot"></span>
+            <span id="hudStatus">SYSTEM: HOLD</span>
+            <span class="t-dim">|</span>
+            <span id="hudTime">TS: --:--:--</span>
+          </div>
+          <div class="right">
+            <span id="hudStep">CHAPTER: 0/6</span>
+            <a href="/hermeticum-bce-platform/" title="Back to platform">BACK</a>
+          </div>
+        </div>
+
+        <div class="content">
+          <!-- LEFT -->
+          <div class="titles">
+            <div class="kicker" id="kicker">A CIVILIZATION PROBLEM</div>
+            <h1 class="headline" id="headline">Execution is cheap.</h1>
+            <p class="sub" id="sub">
+              The dangerous part is not intelligence. It is unverifiable action.
+            </p>
+
+            <div class="card" aria-label="Core Properties">
+              <div class="row"><span>Identity</span><span class="tag" id="tagId">MISSING</span></div>
+              <div class="row"><span>Policy</span><span class="tag warn" id="tagPolicy">BOUND</span></div>
+              <div class="row"><span>Pre-check</span><span class="tag" id="tagCheck">PENDING</span></div>
+              <div class="row"><span>Write mode</span><span class="tag warn">APPEND-ONLY</span></div>
+              <div class="row"><span>Failure mode</span><span class="tag bad">FAIL-CLOSED</span></div>
+            </div>
+
+            <p class="small">
+              Scroll to play the film. The system is deterministic. No backend. No excuses.
+            </p>
+          </div>
+
+          <!-- RIGHT -->
+          <div class="panel">
+            <div class="console" aria-label="System Console">
+              <div class="console-head">
+                <span>CONSOLE</span>
+                <span class="t-dim" id="consoleHint">PRE-EXECUTION GATE</span>
+              </div>
+              <div class="console-body" id="console"></div>
+            </div>
+
+            <div class="gate" aria-label="Gate Panel">
+              <div class="gate-top">
+                <span>GATE</span>
+                <span class="t-dim">REQUEST_EXECUTION</span>
+              </div>
+
+              <div class="gate-badge" id="gateBadge" data-state="HOLD">
+                <span class="pulse" aria-hidden="true"></span>
+                <b id="gateState">HOLD</b>
+                <span class="t-dim" id="gateReason">Awaiting scroll sequence</span>
+              </div>
+
+              <div class="gate-actions">
+                <button class="btn" id="btnRequest" title="Simulate an autonomous system requesting execution">
+                  REQUEST
+                </button>
+                <button class="btn" id="btnLoadReceipt" title="Load a valid IPR receipt (demo)">
+                  LOAD RECEIPT
+                </button>
+                <button class="btn" id="btnEmit" title="Emit an event (append-only)">
+                  EMIT EVENT
+                </button>
+              </div>
+
+              <div class="small" id="footnote">
+                Pre-execution means: no identity → no action. This is the whole point.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- bottom overlay -->
+      <div class="chapter" aria-hidden="true">
+        <div class="cap" id="caption">
+          <b>CHAPTER 0</b>
+          <span>Scroll to begin.</span>
+        </div>
+        <div class="progress">
+          <div>PLAYHEAD</div>
+          <div class="bar"><i id="barFill"></i></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="scrollpad" aria-hidden="true"></div>
+  </main>
+
+  <script>
+  (() => {
+    "use strict";
+
+    /* =========================================================
+       FILM STATE (deterministic)
+    ========================================================= */
+    const S = {
+      sound: false,
+      identity: { present:false, ipr_id:"", receipt_hash:"" },
+      policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","NO_IDENTITY_CUSTODY"],
+      gate: { state:"HOLD", reason:"Awaiting scroll sequence" },
+      ledger: [],
+      lastChapter: -1,
+      chapterCount: 6
+    };
+
+    /* =========================================================
+       DOM
+    ========================================================= */
+    const $ = (id) => document.getElementById(id);
+
+    const el = {
+      kicker: $("kicker"),
+      headline: $("headline"),
+      sub: $("sub"),
+      console: $("console"),
+      dot: $("dot"),
+      hudStatus: $("hudStatus"),
+      hudTime: $("hudTime"),
+      hudStep: $("hudStep"),
+      caption: $("caption"),
+      barFill: $("barFill"),
+      gateBadge: $("gateBadge"),
+      gateState: $("gateState"),
+      gateReason: $("gateReason"),
+      tagId: $("tagId"),
+      tagPolicy: $("tagPolicy"),
+      tagCheck: $("tagCheck"),
+      btnSound: $("btnSound"),
+      btnReset: $("btnReset"),
+      btnRequest: $("btnRequest"),
+      btnLoadReceipt: $("btnLoadReceipt"),
+      btnEmit: $("btnEmit"),
+    };
+
+    /* =========================================================
+       UTIL
+    ========================================================= */
+    function ts(){
+      const d = new Date();
+      const pad = (n) => String(n).padStart(2,"0");
+      return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
+
+    function nowISO(){
+      try { return new Date().toISOString(); } catch { return "ISO:ERR"; }
+    }
+
+    function setGate(state, reason){
+      S.gate.state = state;
+      S.gate.reason = reason;
+
+      el.gateBadge.dataset.state = state;
+      el.gateState.textContent = state;
+      el.gateReason.textContent = reason;
+
+      // dot
+      el.dot.className = "dot";
+      if(state === "ALLOWED") el.dot.classList.add("ok");
+      else if(state === "DENIED") el.dot.classList.add("bad");
+      else el.dot.classList.add("warn");
+
+      el.hudStatus.textContent = `SYSTEM: ${state}`;
+      beep(state);
+    }
+
+    function consoleLine(text, cls=""){
+      const div = document.createElement("div");
+      div.className = "line " + cls;
+      div.textContent = text;
+      el.console.appendChild(div);
+      el.console.scrollTop = el.console.scrollHeight;
+    }
+
+    function clearConsole(){
+      el.console.textContent = "";
+    }
+
+    /* =========================================================
+       SOUND (minimal, optional)
+    ========================================================= */
+    let audioCtx = null;
+
+    function beep(kind){
+      if(!S.sound) return;
+      try{
+        if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = "sine";
+        const freq =
+          kind === "ALLOWED" ? 520 :
+          kind === "DENIED"  ? 160 :
+          260;
+        o.frequency.value = freq;
+        g.gain.value = 0.0001;
+        o.connect(g); g.connect(audioCtx.destination);
+        const t = audioCtx.currentTime;
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.06, t + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.14);
+        o.start(t);
+        o.stop(t + 0.16);
+      }catch{
+        // silent fail
+      }
+    }
+
+    /* =========================================================
+       CORE: PRE-EXECUTION CHECK
+    ========================================================= */
+    function preExecutionCheck(){
+      // deterministic decision, fail-closed
+      if(!S.identity.present){
+        return { ok:false, reason:"MISSING_IDENTITY (no IPR receipt loaded)" };
+      }
+      // policy is “bound” in this demo; we keep it strict anyway
+      const mustHave = ["FAIL_CLOSED","HASH_ONLY","APPEND_ONLY"];
+      for(const p of mustHave){
+        if(!S.policy.includes(p)){
+          return { ok:false, reason:`POLICY_MISMATCH (missing ${p})` };
+        }
+      }
+      return { ok:true, reason:"PRECHECK_OK" };
+    }
+
+    function requestExecution(){
+      consoleLine(`[${ts()}] REQUEST_EXECUTION → pre-check…`, "t-dim");
+      const r = preExecutionCheck();
+      if(!r.ok){
+        setGate("DENIED", r.reason);
+        el.tagCheck.className = "tag bad";
+        el.tagCheck.textContent = "DENIED";
+        consoleLine(`[${ts()}] FAIL-CLOSED → ${r.reason}`, "t-bad");
+        return false;
+      }
+      setGate("ALLOWED", r.reason);
+      el.tagCheck.className = "tag ok";
+      el.tagCheck.textContent = "ALLOWED";
+      consoleLine(`[${ts()}] ALLOW → execution permission granted`, "t-ok");
+      return true;
+    }
+
+    function emitEvent(){
+      const allowed = (S.gate.state === "ALLOWED");
+      const entry = {
+        n: S.ledger.length + 1,
+        ts: nowISO(),
+        kind: allowed ? "EXECUTION_EVENT" : "BLOCKED_EVENT",
+        gate: S.gate.state,
+        ipr: S.identity.present ? S.identity.ipr_id : "NONE",
+        receipt: S.identity.present ? S.identity.receipt_hash : "NONE"
+      };
+      S.ledger.push(entry);
+
+      const flag = allowed ? "t-ok" : "t-warn";
+      consoleLine(`[${ts()}] APPEND → #${String(entry.n).padStart(6,"0")} ${entry.kind} gate=${entry.gate}`, flag);
+      consoleLine(`         ipr=${entry.ipr}`, "t-dim");
+      consoleLine(`         receipt=${entry.receipt}`, "t-dim");
+      beep(allowed ? "ALLOWED" : "HOLD");
+    }
+
+    function loadReceipt(){
+      // Deterministic “receipt” (demo). No backend. No real secret.
+      // The point is experience: identity is required BEFORE action.
+      S.identity.present = true;
+      S.identity.ipr_id = "IPR-JOKER-C2";
+      S.identity.receipt_hash = "RECEIPT_SHA256:9f2c…e1b7 (demo)";
+
+      el.tagId.className = "tag ok";
+      el.tagId.textContent = "PRESENT";
+      consoleLine(`[${ts()}] LOAD_RECEIPT → identity attached`, "t-ok");
+      consoleLine(`         ipr_id=${S.identity.ipr_id}`, "t-dim");
+      consoleLine(`         ${S.identity.receipt_hash}`, "t-dim");
+
+      // After identity load, gate goes to HOLD until a request happens
+      setGate("HOLD", "Identity present. Awaiting REQUEST.");
+      el.tagCheck.className = "tag warn";
+      el.tagCheck.textContent = "PENDING";
+    }
+
+    /* =========================================================
+       FILM CHAPTERS (scroll-driven)
+    ========================================================= */
+    const chapters = [
+      {
+        kicker: "A CIVILIZATION PROBLEM",
+        headline: "Execution is cheap.",
+        sub: "The dangerous part is not intelligence. It is unverifiable action.",
+        caption: { b:"CHAPTER 0", s:"Scroll to begin." },
+        action: () => {
+          setGate("HOLD","Awaiting scroll sequence");
+          el.tagId.className = "tag bad"; el.tagId.textContent = "MISSING";
+          el.tagCheck.className = "tag warn"; el.tagCheck.textContent = "PENDING";
+        }
+      },
+      {
+        kicker: "THE OLD WORLD",
+        headline: "Identity happens after.",
+        sub: "Logs are post-mortem. Accountability is reconstructed. Too late.",
+        caption: { b:"CHAPTER 1", s:"In the old model, identity is an afterthought." },
+        action: () => {
+          consoleLine(`[${ts()}] BOOT → runtime online`, "t-dim");
+          consoleLine(`[${ts()}] NOTE → identity is external (post-hoc)`, "t-warn");
+          setGate("HOLD","No pre-execution constraint (old world)");
+        }
+      },
+      {
+        kicker: "THE SWITCH",
+        headline: "No identity → no action.",
+        sub: "Pre-execution identity means the system cannot proceed without a verifiable state.",
+        caption: { b:"CHAPTER 2", s:"The gate is moved BEFORE execution." },
+        action: () => {
+          setGate("DENIED","MISSING_IDENTITY (pre-execution enforced)");
+          el.tagCheck.className = "tag bad"; el.tagCheck.textContent = "DENIED";
+          consoleLine(`[${ts()}] ENFORCE → pre-execution identity required`, "t-bad");
+        }
+      },
+      {
+        kicker: "FAIL-CLOSED",
+        headline: "Deny by default.",
+        sub: "If verification is incomplete, the system stops. Silence. Determinism.",
+        caption: { b:"CHAPTER 3", s:"Fail-closed is a design law, not a feature." },
+        action: () => {
+          consoleLine(`[${ts()}] REQUEST_EXECUTION (autonomous system)`, "t-dim");
+          requestExecution();
+          emitEvent();
+        }
+      },
+      {
+        kicker: "ATTACH IDENTITY",
+        headline: "Load receipt.",
+        sub: "Identity is bound. Policy is bound. Permission becomes a measurable thing.",
+        caption: { b:"CHAPTER 4", s:"Identity is attached BEFORE the action exists." },
+        action: () => {
+          loadReceipt();
+        }
+      },
+      {
+        kicker: "PRE-EXECUTION LAYER",
+        headline: "Allowed.",
+        sub: "Now execution is permitted — and trace is append-only. Adoptable now.",
+        caption: { b:"CHAPTER 5", s:"This is not an audit. It is a condition of operation." },
+        action: () => {
+          requestExecution();
+          emitEvent();
+          consoleLine(`[${ts()}] RESULT → PRE-EXECUTION IDENTITY LAYER ACTIVE`, "t-ok");
+        }
+      }
+    ];
+
+    function renderChapter(i){
+      if(i === S.lastChapter) return;
+      S.lastChapter = i;
+
+      const ch = chapters[i];
+      el.kicker.textContent = ch.kicker;
+      el.headline.textContent = ch.headline;
+      el.sub.textContent = ch.sub;
+
+      // caption
+      const b = el.caption.querySelector("b");
+      const s = el.caption.querySelector("span");
+      b.textContent = ch.caption.b;
+      s.textContent = ch.caption.s;
+
+      el.hudStep.textContent = `CHAPTER: ${i}/${S.chapterCount}`;
+
+      // run chapter action
+      ch.action();
+    }
+
+    function onScroll(){
+      const max = document.body.scrollHeight - window.innerHeight;
+      const y = window.scrollY;
+      const p = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
+
+      // 6 chapters mapped across scroll
+      const i = Math.min(chapters.length - 1, Math.floor(p * chapters.length));
+      el.barFill.style.width = (p * 100).toFixed(1) + "%";
+
+      renderChapter(i);
+      el.hudTime.textContent = `TS: ${ts()}`;
+    }
+
+    /* =========================================================
+       RESET
+    ========================================================= */
+    function resetAll(){
+      S.identity = { present:false, ipr_id:"", receipt_hash:"" };
+      S.gate = { state:"HOLD", reason:"Awaiting scroll sequence" };
+      S.ledger = [];
+      S.lastChapter = -1;
+
+      clearConsole();
+      consoleLine(`[${ts()}] RESET → state cleared`, "t-dim");
+      consoleLine(`[${ts()}] POLICY → ${S.policy.join(", ")}`, "t-dim");
+      setGate("HOLD","Awaiting scroll sequence");
+
+      el.tagId.className = "tag bad"; el.tagId.textContent = "MISSING";
+      el.tagCheck.className = "tag warn"; el.tagCheck.textContent = "PENDING";
+      el.hudStep.textContent = `CHAPTER: 0/${S.chapterCount}`;
+      // force re-render at current scroll
+      onScroll();
+    }
+
+    /* =========================================================
+       BUTTONS
+    ========================================================= */
+    el.btnSound.addEventListener("click", () => {
+      S.sound = !S.sound;
+      el.btnSound.setAttribute("aria-pressed", String(S.sound));
+      el.btnSound.textContent = "SOUND: " + (S.sound ? "ON" : "OFF");
+      if(S.sound) beep("HOLD");
+    });
+
+    el.btnReset.addEventListener("click", resetAll);
+
+    el.btnRequest.addEventListener("click", () => {
+      requestExecution();
+    });
+
+    el.btnLoadReceipt.addEventListener("click", () => {
+      loadReceipt();
+    });
+
+    el.btnEmit.addEventListener("click", () => {
+      emitEvent();
+    });
+
+    /* =========================================================
+       INIT
+    ========================================================= */
+    consoleLine(`[${ts()}] INIT → film stage online`, "t-dim");
+    consoleLine(`[${ts()}] POLICY → ${S.policy.join(", ")}`, "t-dim");
+    resetAll();
+
+    window.addEventListener("scroll", onScroll, {passive:true});
+    window.addEventListener("resize", onScroll, {passive:true});
+    onScroll();
+  })();
+  </script>
+</body>
+</html>
+https://manuelcoletta1-source.github.io/hermeticum-bce-platform/film/
