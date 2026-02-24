@@ -2,593 +2,183 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>HERMETICUM B.C.E. — Identity before execution</title>
-  <meta name="description" content="A deterministic, fail-closed pre-execution identity layer (IPR) for humans, AI, robots, drones and organizations. Public surface is hash-only. Append-only evolution. No identity custody." />
-
-  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/" />
+  <title>HBCE Research & Development Laboratory — Identity Systems (EU-aligned)</title>
+  <meta name="description" content="HBCE R&D Laboratory. Deterministic identity verification, fail-closed execution, append-only audit. EU-aligned research infrastructure for autonomous and hybrid systems." />
   <meta name="robots" content="index,follow" />
-  <meta name="theme-color" content="#0b0f14" />
-
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <meta name="theme-color" content="#070a0e" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/" />
 
   <style>
-    /* index-only tightening (no redesign, just sharper) */
-    .hbce-hero__lead{ max-width: 88ch; }
-    .hbce-kv2{
-      display:grid;
-      grid-template-columns: 220px 1fr;
-      gap:.5rem 1rem;
-      margin-top:.9rem;
+    :root{
+      --bg:#070a0e;
+      --panel:#0c121a;
+      --panel2:#0a0f16;
+      --fg:#e9eef5;
+      --mut:#a8b3c2;
+      --dim:#7d8897;
+      --line:rgba(255,255,255,.10);
+      --hot:rgba(255,255,255,.18);
+      --ok:#7dffb3;
+      --bad:#ff7d7d;
+      --br:18px;
+      --br2:26px;
+      --mono: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      --sans: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
     }
-    @media (max-width: 720px){
-      .hbce-kv2{ grid-template-columns: 1fr; }
-    }
-    .hbce-kv2 div{ padding:.06rem 0; }
-    .hbce-mono{
-      font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-    }
-    .hbce-gate{
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.03);
-      padding: 1rem;
-    }
-    .hbce-terminal{
-      margin-top:.8rem;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
-      padding: .9rem;
-      overflow:auto;
-      font-size: 12px;
-      line-height: 1.45;
-    }
-    .hbce-terminal .dim{ opacity:.75; }
-    .hbce-terminal .bad{ color: #ffb4b4; } /* subtle; ok even if theme overrides */
-    .hbce-terminal .ok{ color: #b7ffd2; }  /* subtle */
-    .hbce-bullets{ margin:.6rem 0 0; }
-    .hbce-bullets li{ margin:.25rem 0; }
-    .hbce-split{
-      display:grid;
-      gap:14px;
-      grid-template-columns: 1.15fr .85fr;
-      margin-top: 14px;
-    }
-    @media (max-width: 980px){
-      .hbce-split{ grid-template-columns: 1fr; }
-    }
-    .hbce-mini{
-      opacity:.86;
-      font-size:.96rem;
-    }
-    .hbce-chiprow{ display:flex; flex-wrap:wrap; gap:.45rem; margin-top:.8rem; }
-    .hbce-chip{
-      display:inline-flex;
-      align-items:center;
-      gap:.5rem;
-      padding:.25rem .55rem;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.03);
-      font-weight:900;
-      font-size:.82rem;
-      letter-spacing:.01em;
-      white-space:nowrap;
-    }
-    .hbce-dot{ width:8px; height:8px; border-radius:50%; background: rgba(255,255,255,.22); }
-    .hbce-ctaGrid{
-      display:grid;
-      grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
-      gap: 14px;
-      margin-top: 12px;
-    }
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(1200px 600px at 10% 0%, rgba(255,255,255,.06), transparent 60%), var(--bg); color:var(--fg); font-family:var(--sans)}
+    a{color:var(--fg); text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:1100px;margin:0 auto;padding:26px 16px}
+    .top{display:flex;gap:16px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+    .brand{display:flex;flex-direction:column;gap:6px}
+    .h{font-size:22px;letter-spacing:.2px;margin:0}
+    .sub{color:var(--mut);margin:0;max-width:860px;line-height:1.45}
+    .sig{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+    .pill{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);background:rgba(255,255,255,.03);padding:8px 10px;border-radius:999px;color:var(--mut);font-size:12px}
+    .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.45)}
+    .nav{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .nav a{border:1px solid var(--line);background:rgba(255,255,255,.02);padding:10px 12px;border-radius:999px;font-size:12px;color:var(--mut)}
+    .nav a:hover{border-color:var(--hot);color:var(--fg);text-decoration:none}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px;margin-top:16px}
+    .card{border:1px solid var(--line);background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border-radius:var(--br2);padding:14px}
+    .card h2{margin:0 0 8px;font-size:13px;letter-spacing:.2px}
+    .card p{margin:0;color:var(--mut);line-height:1.45;font-size:13px}
+    .mono{font-family:var(--mono);font-size:12px;color:var(--mut)}
+    .mono strong{color:var(--fg);font-weight:700}
+    .hr{height:1px;background:var(--line);margin:18px 0}
+    .k{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:10px}
+    .k .item{border:1px solid var(--line);background:rgba(255,255,255,.02);border-radius:var(--br);padding:12px}
+    .k .item .t{font-size:12px;color:var(--dim);margin:0 0 6px}
+    .k .item .v{margin:0;font-size:13px;color:var(--fg);line-height:1.4}
+    .call{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .btn{display:inline-flex;align-items:center;gap:10px;border-radius:14px;padding:10px 12px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--fg);font-size:12px}
+    .btn:hover{border-color:var(--hot);text-decoration:none}
+    .warn{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);border-radius:var(--br2);padding:12px;margin-top:14px}
+    .warn h3{margin:0 0 6px;font-size:13px}
+    .warn p{margin:0;color:var(--mut);line-height:1.45;font-size:13px}
+    .foot{margin-top:18px;color:var(--dim);font-size:12px}
+    .line{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .line code{font-family:var(--mono);background:rgba(255,255,255,.06);padding:2px 8px;border-radius:10px}
   </style>
 </head>
 
 <body>
-  <div data-hbce="header"></div>
-
-  <main class="hbce-container hbce-main">
-
-    <!-- HERO -->
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">EU OPERATIONAL ROOT · PRE-EXECUTION IDENTITY LAYER · FAIL-CLOSED</div>
-
-      <h1 class="hbce-hero__title">Identity before execution.</h1>
-
-      <p class="hbce-hero__lead">
-        <strong>HERMETICUM</strong> is a deterministic identity infrastructure built to sit <strong>in front of execution</strong>:
-        humans, AI agents, robots, drones, companies, operators.
-        <br />
-        Public surface is <strong>hash-only</strong>. Evolution is <strong>append-only</strong>. Verification is <strong>reproducible</strong>.
-        No identity custody.
-      </p>
-
-      <div class="hbce-actions" style="margin-top:16px;">
-        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/activate/">Activate IPR</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verify</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/">Pricing</a>
-        <button class="hbce-btn hbce-btn--ghost" type="button" data-ufo-open>UFO DEMO (isolated overlay)</button>
-      </div>
-
-      <div class="hbce-chiprow" aria-label="system properties">
-        <span class="hbce-chip"><span class="hbce-dot"></span>NETWORK: EU</span>
-        <span class="hbce-chip"><span class="hbce-dot"></span>MODE: APPEND_ONLY</span>
-        <span class="hbce-chip"><span class="hbce-dot"></span>PUBLIC DATA: HASH_ONLY</span>
-        <span class="hbce-chip"><span class="hbce-dot"></span>VERIFY: DETERMINISTIC</span>
-        <span class="hbce-chip"><span class="hbce-dot"></span>FAILURE: FAIL_CLOSED</span>
-      </div>
-    </section>
-
-    <!-- GATE + WHAT THIS IS -->
-    <section class="hbce-section">
-      <div class="hbce-split">
-
-        <div class="hbce-card">
-          <h2 class="hbce-h2">What changes</h2>
-          <p class="hbce-text">
-            Most systems verify identity <em>after</em> something happens.
-            HERMETICUM enforces identity <strong>before</strong> execution:
-            no valid identity proof → no operation.
-          </p>
-
-          <ul class="hbce-bullets hbce-list">
-            <li><strong>AI / Robots / Drones</strong>: bind agents and devices to accountable identity before actions.</li>
-            <li><strong>Enterprise</strong>: cross-org operations become verifiable without sharing personal data publicly.</li>
-            <li><strong>Public sector</strong>: procurement and audited flows gain deterministic identity gates.</li>
-          </ul>
-
-          <div class="hbce-actions" style="margin-top:12px;">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/about/">About</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/infrastructure/">Infrastructure</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/full/">Full Catalogue</a>
-          </div>
-        </div>
-
-        <div class="hbce-gate" aria-label="fail-closed gate">
-          <div class="hbce-mini">
-            <strong>Execution Gate (fail-closed)</strong><br />
-            Deterministic rule: <span class="hbce-mono">VALID IPR = INTEGRITY OK + PRESENT IN REGISTRY</span>
-          </div>
-
-          <div class="hbce-terminal hbce-mono" role="region" aria-label="gate output">
-<span class="dim"># pre-execution gate</span>
-INPUT:  release.json
-STEP1:  sha256(release.json)  →  0x................................
-STEP2:  registry.match(hash)  →  false
-RESULT: <span class="bad">DENY</span>
-REASON: FAIL_CLOSED (no deterministic proof)
-
-<span class="dim"># if match exists</span>
-STEP2:  registry.match(hash)  →  true
-RESULT: <span class="ok">ALLOW</span>
-REASON: TRACE_OK | PUBLIC_VERIFY_OK | POLICY_OK
-          </div>
-
-          <div class="hbce-actions" style="margin-top:12px;">
-            <a class="hbce-btn hbce-btn--alt" href="/hermeticum-bce-platform/verify/">Run Verifier</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Open Registry</a>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- OPERATIONAL ARCHITECTURE -->
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Operational Architecture</h2>
-      <div class="hbce-ctaGrid">
-
-        <div class="hbce-card">
-          <div class="hbce-card__title">IPR</div>
-          <p class="hbce-card__text">
-            Identity Primary Record. Hash-only public proof. Append-only evolution. Deterministic verification.
-          </p>
-          <div class="hbce-actions" style="margin-top:10px;">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/activate/">Activate</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <div class="hbce-card__title">Node</div>
-          <p class="hbce-card__text">
-            Autonomous deployment surface: server-independent, self-verifiable, no backend required.
-          </p>
-          <div class="hbce-actions" style="margin-top:10px;">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/infrastructure/">Infrastructure</a>
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <div class="hbce-card__title">Operator</div>
-          <p class="hbce-card__text">
-            Licensed execution layer for B2B/B2G integration: issuance discipline, append-only governance, audit-first.
-          </p>
-          <div class="hbce-actions" style="margin-top:10px;">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/pricing/full/#operator">Operator Path</a>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- CORE PRINCIPLES -->
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Core Principles</h2>
-
-      <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
-        <div class="hbce-card">
-          <div class="hbce-card__title">UE-FIRST</div>
-          <p class="hbce-card__text">
-            Regulatory alignment with EU operational and compliance standards as the baseline reference.
-          </p>
-        </div>
-
-        <div class="hbce-card">
-          <div class="hbce-card__title">AUDIT-FIRST</div>
-          <p class="hbce-card__text">
-            Traceability is a first-class constraint. Verification must be reproducible and evidence-friendly.
-          </p>
-        </div>
-
-        <div class="hbce-card">
-          <div class="hbce-card__title">NO IDENTITY CUSTODY</div>
-          <p class="hbce-card__text">
-            Public layer stores hash-only proofs. Identity fields remain with the holder (custody separation).
-          </p>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <h1 class="h">HBCE Research &amp; Development Laboratory</h1>
+        <p class="sub">
+          EU-aligned identity systems research. Deterministic verification, fail-closed execution gating, append-only audit continuity.
+          This site publishes stable interfaces, experimental modules, and operational notes.
+        </p>
+        <div class="sig">
+          <span class="pill"><span class="dot"></span>UE-first</span>
+          <span class="pill"><span class="dot"></span>audit-first</span>
+          <span class="pill"><span class="dot"></span>fail-closed</span>
+          <span class="pill"><span class="dot"></span>hash-only</span>
+          <span class="pill"><span class="dot"></span>append-only</span>
+          <span class="pill"><span class="dot"></span>GDPR-min</span>
         </div>
       </div>
-    </section>
 
-    <!-- EXECUTION PATH -->
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Execution Path</h2>
+      <nav class="nav" aria-label="Primary">
+        <a href="/hermeticum-bce-platform/about/">About</a>
+        <a href="/hermeticum-bce-platform/engines/">Engines</a>
+        <a href="/hermeticum-bce-platform/modules/">Modules</a>
+        <a href="/hermeticum-bce-platform/node/">Node</a>
+        <a href="/hermeticum-bce-platform/verify/">Verify</a>
+      </nav>
+    </div>
 
-      <div class="hbce-card">
-        <ol class="hbce-list" style="list-style:decimal; padding-left:1.2rem;">
-          <li><strong>Activate IPR</strong> (baseline entry)</li>
-          <li><strong>Verify deterministically</strong> (fail-closed gate)</li>
-          <li><strong>Append registry entry</strong> (hash-only public proof)</li>
-          <li><strong>Deploy node</strong> (territorial / enterprise surface)</li>
-          <li><strong>Operate</strong> (humans, AI, robots, organizations)</li>
-        </ol>
+    <div class="hr"></div>
 
-        <div class="hbce-actions" style="margin-top:12px;">
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/activate/">Start</a>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verify</a>
-          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">View Registry</a>
-        </div>
-
-        <p class="hbce-note" style="margin-top:12px;">
-          If verification fails, execution must be blocked. Fail-closed is not a slogan: it is the system.
+    <div class="grid">
+      <div class="card">
+        <h2>Research Scope</h2>
+        <p>
+          Operational identity as a prerequisite to execution. Systems must prove identity deterministically before performing actions.
+          Verification must be reproducible across independent nodes.
         </p>
       </div>
-    </section>
 
-    <!-- SIGN -->
-    <section class="hbce-section">
-      <div class="hbce-footnote">
-        <p>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</p>
-        <p>HERMETICUM B.C.E. S.r.l.</p>
-        <p class="hbce-note">EU-first · audit-first · fail-closed · hash-only · append-only · GDPR-min</p>
+      <div class="card">
+        <h2>Technical Stack</h2>
+        <p>
+          Deterministic hashing, schema validation, append-only logs, offline verification surfaces. No public custody of sensitive identity data.
+        </p>
       </div>
-    </section>
 
-    <!-- UFO OVERLAY (ISOLATED DEMO, INDEX ONLY) -->
-    <section class="hbce-section" aria-hidden="true" style="display:none">
-      <!-- kept intentionally empty; overlay injected by script below -->
-    </section>
+      <div class="card">
+        <h2>Active Engine</h2>
+        <p>
+          HBCE-OIS is maintained as a separate technical pre-standard repository with public verifier, tests and spec.
+        </p>
+        <p class="mono" style="margin-top:8px">
+          Engine: <strong>HBCE-OIS</strong><br/>
+          <a href="https://manuelcoletta1-source.github.io/hbce-ois/" rel="noopener">https://manuelcoletta1-source.github.io/hbce-ois/</a>
+        </p>
+      </div>
+    </div>
 
-  </main>
+    <div class="warn">
+      <h3>WARNING — Critical Technical Review Zone</h3>
+      <p>
+        This laboratory publishes experimental interfaces and verification surfaces. Any system integrating these assets must enforce
+        deterministic verification and fail-closed execution. No claims of institutional endorsement are implied.
+      </p>
+    </div>
 
-  <div data-hbce="footer"></div>
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js" defer></script>
+    <div class="hr"></div>
 
-  <!-- =========================================================
-       INDEX-ONLY DEMO OVERLAY (ISOLATED)
-       - does not touch core flows (activate/verify/registry)
-       - no network calls
-  ========================================================= -->
-  <script>
-  (function(){
-    "use strict";
+    <div class="k">
+      <div class="item">
+        <p class="t">Current Mode</p>
+        <p class="v">R&amp;D Laboratory Publication Surface</p>
+      </div>
+      <div class="item">
+        <p class="t">Execution Rule</p>
+        <p class="v">No execution without deterministic identity verification (fail-closed)</p>
+      </div>
+      <div class="item">
+        <p class="t">Public Data Policy</p>
+        <p class="v">Hash-only publication (GDPR-min)</p>
+      </div>
+      <div class="item">
+        <p class="t">Trace Model</p>
+        <p class="v">Append-only audit continuity</p>
+      </div>
+    </div>
 
-    // Overlay UI
-    const btn = document.querySelector("[data-ufo-open]");
-    if(!btn) return;
+    <div class="call">
+      <a class="btn" href="https://manuelcoletta1-source.github.io/hbce-ois/tools/verifier.html" rel="noopener">Open HBCE-OIS Verifier →</a>
+      <a class="btn" href="https://manuelcoletta1-source.github.io/hbce-ois/tools/tests.html" rel="noopener">Run HBCE-OIS Tests →</a>
+      <a class="btn" href="/hermeticum-bce-platform/verify/">Platform Verify Surface →</a>
+    </div>
 
-    let overlay = null;
+    <div class="hr"></div>
 
-    function el(tag, attrs={}, html=""){
-      const n = document.createElement(tag);
-      for(const [k,v] of Object.entries(attrs)){
-        if(k==="class") n.className = v;
-        else if(k==="style") n.setAttribute("style", v);
-        else n.setAttribute(k, v);
-      }
-      if(html) n.innerHTML = html;
-      return n;
-    }
+    <!-- JOKER-C2 is allowed ONLY on index (per your rule) -->
+    <div class="card">
+      <h2>JOKER-C2 (Index-only)</h2>
+      <p>
+        Index-only reference zone. This page may host experimental operator guidance and decision-layer prototypes.
+        Other pages must remain neutral and purely technical.
+      </p>
+      <p class="mono" style="margin-top:8px">
+        Policy: <strong>index-only</strong> / no distribution across subpages
+      </p>
+    </div>
 
-    function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
-
-    function openOverlay(){
-      if(overlay) return;
-
-      overlay = el("div", {
-        role:"dialog",
-        "aria-modal":"true",
-        class:"hbce-mono",
-        style:[
-          "position:fixed; inset:0; z-index:9999;",
-          "background:rgba(0,0,0,.78);",
-          "backdrop-filter: blur(6px);",
-          "display:flex; align-items:center; justify-content:center;",
-          "padding:18px;"
-        ].join("")
-      });
-
-      const panel = el("div", {
-        style:[
-          "width:min(980px, 100%);",
-          "border:1px solid rgba(255,255,255,.14);",
-          "border-radius:18px;",
-          "background:rgba(12,14,18,.92);",
-          "box-shadow: 0 18px 60px rgba(0,0,0,.55);",
-          "overflow:hidden;"
-        ].join("")
-      });
-
-      const head = el("div", {
-        style:[
-          "display:flex; align-items:center; justify-content:space-between;",
-          "gap:12px; padding:12px 14px;",
-          "border-bottom:1px solid rgba(255,255,255,.10);"
-        ].join("")
-      }, `
-        <div style="font-weight:950; letter-spacing:.02em;">
-          SIM · APPROACH CONTROLLER <span style="opacity:.7">/ isolated overlay</span>
-        </div>
-      `);
-
-      const close = el("button", {
-        type:"button",
-        style:[
-          "border:1px solid rgba(255,255,255,.14);",
-          "background:rgba(255,255,255,.04);",
-          "color:rgba(255,255,255,.92);",
-          "padding:6px 10px; border-radius:12px;",
-          "font-weight:900; cursor:pointer;"
-        ].join("")
-      }, "CLOSE (ESC)");
-      close.addEventListener("click", closeOverlay);
-
-      head.appendChild(close);
-
-      const body = el("div", { style:"padding:14px;" });
-
-      const grid = el("div", { style:"display:grid; grid-template-columns: 1fr 340px; gap:14px; align-items:start;" });
-
-      const stage = el("div", {
-        style:[
-          "border:1px solid rgba(255,255,255,.12); border-radius:16px;",
-          "background:rgba(0,0,0,.22);",
-          "height: 420px; position:relative; overflow:hidden;"
-        ].join("")
-      });
-
-      const hud = el("div", {
-        style:[
-          "position:absolute; left:12px; top:12px;",
-          "padding:8px 10px;",
-          "border:1px solid rgba(255,255,255,.12); border-radius:14px;",
-          "background:rgba(0,0,0,.35); font-size:12px; line-height:1.35;"
-        ].join("")
-      }, `
-        <div style="font-weight:950">ENTITY: UFO</div>
-        <div style="opacity:.78">STATE: <span id="ufoState">IDLE</span></div>
-        <div style="opacity:.78">DIST: <span id="ufoDist">∞</span></div>
-        <div style="opacity:.78">THRUST: <span id="ufoThrust">0.00</span></div>
-        <div style="opacity:.78">VECTOR: <span id="ufoVec">0.00, 0.00</span></div>
-      `);
-
-      const dot = el("div", {
-        style:[
-          "position:absolute; width:14px; height:14px; border-radius:50%;",
-          "background:rgba(255,255,255,.85);",
-          "left:50%; top:50%; transform: translate(-50%,-50%);",
-          "box-shadow: 0 0 22px rgba(255,255,255,.22);"
-        ].join("")
-      });
-
-      stage.appendChild(hud);
-      stage.appendChild(dot);
-
-      const ctrl = el("div", {
-        style:[
-          "border:1px solid rgba(255,255,255,.12); border-radius:16px;",
-          "background:rgba(0,0,0,.14); padding:12px;"
-        ].join("")
-      });
-
-      ctrl.innerHTML = `
-        <div style="font-weight:950; margin-bottom:6px;">Controller</div>
-        <div style="opacity:.78; font-size:12px; line-height:1.35; margin-bottom:10px;">
-          Drag the joystick. Up = approach, Down = retreat. Left/Right = lateral vector.
-          <br/>Overlay is isolated from core flows.
-        </div>
-      `;
-
-      const joy = el("div", {
-        style:[
-          "width: 220px; height: 220px; border-radius: 22px;",
-          "border:1px solid rgba(255,255,255,.12);",
-          "background:rgba(255,255,255,.03);",
-          "position:relative; user-select:none; touch-action:none;"
-        ].join("")
-      });
-
-      const knob = el("div", {
-        style:[
-          "width: 56px; height: 56px; border-radius: 18px;",
-          "border:1px solid rgba(255,255,255,.18);",
-          "background:rgba(255,255,255,.06);",
-          "position:absolute; left:50%; top:50%; transform: translate(-50%,-50%);",
-          "box-shadow: 0 10px 30px rgba(0,0,0,.35);"
-        ].join("")
-      });
-
-      joy.appendChild(knob);
-
-      const btnRow = el("div", { style:"display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;" });
-      const reset = el("button", {
-        type:"button",
-        style:[
-          "border:1px solid rgba(255,255,255,.14);",
-          "background:rgba(255,255,255,.04);",
-          "color:rgba(255,255,255,.92);",
-          "padding:8px 10px; border-radius:14px;",
-          "font-weight:900; cursor:pointer;"
-        ].join("")
-      }, "RESET");
-      const summon = el("button", {
-        type:"button",
-        style:[
-          "border:1px solid rgba(255,255,255,.14);",
-          "background:rgba(255,255,255,.04);",
-          "color:rgba(255,255,255,.92);",
-          "padding:8px 10px; border-radius:14px;",
-          "font-weight:900; cursor:pointer;"
-        ].join("")
-      }, "SUMMON");
-      btnRow.appendChild(summon);
-      btnRow.appendChild(reset);
-
-      const readout = el("div", { style:"margin-top:10px; font-size:12px; line-height:1.45; opacity:.82;" }, `
-        <div>Approach: <span id="rA">0.00</span></div>
-        <div>X: <span id="rX">0.00</span></div>
-        <div>Y: <span id="rY">0.00</span></div>
-      `);
-
-      ctrl.appendChild(joy);
-      ctrl.appendChild(btnRow);
-      ctrl.appendChild(readout);
-
-      grid.appendChild(stage);
-      grid.appendChild(ctrl);
-
-      body.appendChild(grid);
-
-      panel.appendChild(head);
-      panel.appendChild(body);
-      overlay.appendChild(panel);
-      document.body.appendChild(overlay);
-
-      const st = overlay.querySelector("#ufoState");
-      const ds = overlay.querySelector("#ufoDist");
-      const th = overlay.querySelector("#ufoThrust");
-      const ve = overlay.querySelector("#ufoVec");
-      const rA = overlay.querySelector("#rA");
-      const rX = overlay.querySelector("#rX");
-      const rY = overlay.querySelector("#rY");
-
-      // internal state (purely local)
-      let vx = 0, vy = 0, active = false;
-
-      function setKnob(nx, ny){
-        const rect = joy.getBoundingClientRect();
-        const cx = rect.left + rect.width/2;
-        const cy = rect.top + rect.height/2;
-
-        const dx = clamp(nx - cx, -80, 80);
-        const dy = clamp(ny - cy, -80, 80);
-
-        knob.style.left = (50 + (dx/rect.width)*100) + "%";
-        knob.style.top  = (50 + (dy/rect.height)*100) + "%";
-
-        // normalize to [-1,1]
-        vx = clamp(dx/80, -1, 1);
-        vy = clamp(dy/80, -1, 1);
-
-        const approach = clamp((-vy + 1)/2, 0, 1); // up => approach
-        const thrust = Math.sqrt(vx*vx + vy*vy);
-
-        st.textContent = thrust > 0.02 ? "CONTROL" : "IDLE";
-        ds.textContent = thrust > 0.02 ? (1/(approach+0.05)).toFixed(2) : "∞";
-        th.textContent = thrust.toFixed(2);
-        ve.textContent = vx.toFixed(2) + ", " + vy.toFixed(2);
-
-        rA.textContent = approach.toFixed(2);
-        rX.textContent = vx.toFixed(2);
-        rY.textContent = vy.toFixed(2);
-
-        // move dot (visual only)
-        const sx = 50 + vx * 35;
-        const sy = 50 + vy * 35;
-        dot.style.left = sx + "%";
-        dot.style.top = sy + "%";
-      }
-
-      function onDown(e){
-        active = true;
-        const p = (e.touches && e.touches[0]) ? e.touches[0] : e;
-        setKnob(p.clientX, p.clientY);
-        e.preventDefault();
-      }
-      function onMove(e){
-        if(!active) return;
-        const p = (e.touches && e.touches[0]) ? e.touches[0] : e;
-        setKnob(p.clientX, p.clientY);
-        e.preventDefault();
-      }
-      function onUp(){
-        active = false;
-        // reset to center
-        knob.style.left = "50%";
-        knob.style.top = "50%";
-        vx = 0; vy = 0;
-        st.textContent = "IDLE";
-        ds.textContent = "∞";
-        th.textContent = "0.00";
-        ve.textContent = "0.00, 0.00";
-        rA.textContent = "0.00";
-        rX.textContent = "0.00";
-        rY.textContent = "0.00";
-        dot.style.left = "50%";
-        dot.style.top = "50%";
-      }
-
-      joy.addEventListener("mousedown", onDown);
-      window.addEventListener("mousemove", onMove);
-      window.addEventListener("mouseup", onUp);
-
-      joy.addEventListener("touchstart", onDown, {passive:false});
-      window.addEventListener("touchmove", onMove, {passive:false});
-      window.addEventListener("touchend", onUp);
-
-      reset.addEventListener("click", onUp);
-      summon.addEventListener("click", function(){
-        // cosmetic: brief pulse
-        dot.animate([{transform:"translate(-50%,-50%) scale(1)"},{transform:"translate(-50%,-50%) scale(1.25)"},{transform:"translate(-50%,-50%) scale(1)"}], {duration:520});
-      });
-
-      window.addEventListener("keydown", function(ev){
-        if(ev.key === "Escape") closeOverlay();
-      });
-    }
-
-    function closeOverlay(){
-      if(!overlay) return;
-      overlay.remove();
-      overlay = null;
-    }
-
-    btn.addEventListener("click", openOverlay);
-  })();
-  </script>
+    <div class="foot">
+      <div class="line">
+        <span>HBCE Platform — R&amp;D Surface</span>
+        <span>•</span>
+        <span class="mono">Canonical: <code>EU-aligned</code> <code>fail-closed</code> <code>hash-only</code> <code>append-only</code></span>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
