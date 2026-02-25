@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+
+  <title>Torino Robotics Kit — IPR for Robotics & AI | HERMETICUM B.C.E.</title>
+  <meta name="description" content="Torino Robotics outreach kit: problem, demo, offer. Identity before execution for robots, drones and AI agents." />
+
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --panel:#0f1620;
+      --text:#e8eef7;
+      --muted:#9fb0c3;
+      --line:rgba(255,255,255,.08);
+      --accent:#00ffe1;
+      --accent2:#7c5cff;
+      --ok:#3dff93;
+      --danger:#ff3b6b;
+      --shadow:0 20px 60px rgba(0,0,0,.45);
+      --r:18px;
+      --max:1100px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(0,255,225,.12), transparent 60%),
+        radial-gradient(900px 500px at 100% 10%, rgba(124,92,255,.12), transparent 55%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.45;
+    }
+    a{color:inherit}
+    .wrap{max-width:var(--max);margin:0 auto;padding:28px 18px 80px}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:26px}
+    .brand{font-weight:800;font-size:13px;letter-spacing:.5px;text-transform:uppercase}
+    .tag{color:var(--muted);font-size:12px;margin-top:6px}
+    .nav{display:flex;gap:14px;flex-wrap:wrap}
+    .nav a{color:var(--muted);text-decoration:none;font-size:13px}
+    .nav a:hover{color:var(--text)}
+
+    .hero{
+      border:1px solid var(--line);
+      border-radius:calc(var(--r) + 4px);
+      padding:34px 26px;
+      background:rgba(15,22,32,.55);
+      box-shadow:var(--shadow);
+    }
+    h1{margin:0 0 12px;font-size:clamp(28px,4vw,44px);line-height:1.1}
+    .sub{margin:0 0 18px;color:var(--muted);max-width:980px;font-size:15.5px}
+    .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .badge{
+      font-size:12px;padding:7px 10px;border-radius:999px;
+      border:1px solid var(--line);background:rgba(255,255,255,.03);
+      color:var(--muted);
+    }
+    .cta{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+    .btn{
+      display:inline-block;
+      padding:12px 16px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      text-decoration:none;
+      font-weight:800;
+      font-size:13.5px;
+      color:var(--text);
+      background:rgba(255,255,255,.04);
+      transition:.15s;
+    }
+    .btn:hover{transform:translateY(-2px);border-color:rgba(0,255,225,.5)}
+    .btn.primary{
+      border-color:rgba(0,255,225,.7);
+      background:linear-gradient(180deg,rgba(0,255,225,.22),rgba(0,255,225,.06));
+    }
+
+    .section{margin-top:34px}
+    .section h2{margin:0 0 10px;font-size:18px}
+    .section p{margin:0 0 14px;color:var(--muted);max-width:980px}
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(12,1fr);
+      gap:14px;
+      margin-top:16px;
+    }
+    .col-4{grid-column:span 4}
+    .col-6{grid-column:span 6}
+    .col-12{grid-column:span 12}
+    @media (max-width:900px){
+      .col-4,.col-6{grid-column:span 12}
+      .grid{gap:10px}
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:var(--r);
+      padding:18px;
+      background:rgba(255,255,255,.03);
+    }
+    .card h3{margin:0 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:.4px}
+    .card p{margin:0;color:var(--muted);font-size:13.5px}
+
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+    .rule{
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.22);
+      border-radius:var(--r);
+      padding:14px;
+      overflow:auto;
+    }
+    .rule pre{margin:0;min-width:760px;font-size:12.5px;line-height:1.35;color:rgba(232,238,247,.92)}
+
+    .steps{
+      margin:0; padding-left:18px; color:rgba(232,238,247,.88);
+    }
+    .steps li{margin:10px 0}
+    .pillrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .pill{
+      font-size:11.5px;
+      padding:6px 9px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      color: rgba(232,238,247,.88);
+      background: rgba(0,0,0,.16);
+    }
+
+    .quote{
+      border-left:3px solid rgba(0,255,225,.45);
+      padding-left:14px;
+      margin:14px 0 0;
+      color:rgba(232,238,247,.86);
+    }
+
+    footer{
+      margin-top:46px;
+      padding-top:18px;
+      border-top:1px solid var(--line);
+      color:var(--muted);
+      font-size:12px;
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <header class="top">
+      <div>
+        <div class="brand">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+        <div class="tag">HERMETICUM B.C.E. S.r.l. — Torino Robotics Outreach Kit</div>
+      </div>
+      <nav class="nav">
+        <a href="../">Home</a>
+        <a href="../robotics-ai/">Robotics &amp; AI</a>
+        <a href="../pricing/">Pricing</a>
+        <a href="../demo-gate/">Execution Gate demo</a>
+        <a href="../enterprise/">Enterprise / B2G</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <h1>Torino Robotics Kit</h1>
+      <p class="sub">
+        A short, practical kit for labs and robotics companies in Torino/Piemonte.
+        The message is simple: <strong>identity must verify before robots, drones and AI agents execute</strong>.
+        If identity fails, the system blocks — fail-closed.
+      </p>
+
+      <div class="badges">
+        <span class="badge"><strong>Robotics</strong></span>
+        <span class="badge"><strong>Autonomous systems</strong></span>
+        <span class="badge"><strong>Industrial access</strong></span>
+        <span class="badge"><strong>Audit &amp; forensics</strong></span>
+        <span class="badge"><strong>EU-first</strong></span>
+      </div>
+
+      <div class="cta">
+        <a class="btn primary" href="../demo-gate/">Open demo</a>
+        <a class="btn" href="../robotics-ai/">Robotics &amp; AI page</a>
+        <a class="btn" href="../pricing/">Pricing</a>
+      </div>
+    </section>
+
+    <section class="section" aria-label="The problem">
+      <h2>The problem (real world)</h2>
+      <p>
+        Robotics and autonomy increasingly operate in shared physical environments.
+        Without a deterministic identity boundary, the system relies on informal attribution and post-facto logs.
+        That becomes fragile under safety, procurement, and incident response constraints.
+      </p>
+
+      <div class="grid" role="list">
+        <div class="col-4" role="listitem">
+          <div class="card">
+            <h3>Attribution</h3>
+            <p>Who operated the system? Under which scope? With which policy? Post-facto answers are not enough.</p>
+          </div>
+        </div>
+        <div class="col-4" role="listitem">
+          <div class="card">
+            <h3>Safety</h3>
+            <p>Autonomy needs hard gates. Identity must be established before action, not after incidents.</p>
+          </div>
+        </div>
+        <div class="col-4" role="listitem">
+          <div class="card">
+            <h3>Audit</h3>
+            <p>Regulated deployments need deterministic verification and append-only evidence, not editable logs.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="quote">
+        The core claim: <strong>identity is an execution dependency</strong>.  
+        If identity cannot be verified deterministically, the system should not operate.
+      </div>
+    </section>
+
+    <section class="section" aria-label="The rule">
+      <h2>The execution rule</h2>
+      <p>Minimal, deterministic, enforceable at the operational boundary:</p>
+      <div class="rule">
+        <pre class="mono">
+identity_valid == true ? EXECUTE : BLOCK
+failure_mode = FAIL_CLOSED
+evidence_mode = APPEND_ONLY
+public_surface = HASH_ONLY
+        </pre>
+      </div>
+
+      <div class="pillrow">
+        <span class="pill">pre-execution verification</span>
+        <span class="pill">local deterministic checks</span>
+        <span class="pill">audit-ready evidence</span>
+        <span class="pill">no identity custody</span>
+      </div>
+    </section>
+
+    <section class="section" aria-label="Demo script">
+      <h2>Live demo script (5 minutes)</h2>
+      <p>
+        This is the fastest way to make the concept obvious in a meeting.
+        Show the demo, then map it to robotics/drones/AI execution.
+      </p>
+
+      <div class="grid">
+        <div class="col-6">
+          <div class="card">
+            <h3>Step-by-step</h3>
+            <ol class="steps">
+              <li>Open <span class="mono">Execution Gate demo</span>.</li>
+              <li>Click <span class="mono">VALID Identity</span> → show <strong>EXECUTION AUTHORIZED</strong>.</li>
+              <li>Click <span class="mono">INVALID Identity</span> → show <strong>EXECUTION BLOCKED (FAIL-CLOSED)</strong>.</li>
+              <li>Explain: this is the gate that sits before robot/drone/agent execution.</li>
+              <li>Connect to their environment: lab, fleet, industrial access, regulated ops.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="col-6">
+          <div class="card">
+            <h3>What to say (one sentence)</h3>
+            <p class="mono" style="margin:0">
+              “This gate becomes a deterministic identity dependency: no valid IPR, no operation.  
+              That is the minimum layer required for accountable autonomy.”
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-label="Offer">
+      <h2>Offer (what we can deploy)</h2>
+      <p>
+        Start small, deploy fast, and keep it custody-free. Choose the tier that matches your environment.
+      </p>
+
+      <div class="grid" role="list">
+        <div class="col-4" role="listitem">
+          <div class="card">
+            <h3>Operator</h3>
+            <p>For robotics/drone operators. Identity + execution-gate readiness.</p>
+            <div class="pillrow">
+              <span class="pill">operator binding</span>
+              <span class="pill">audit receipts</span>
+              <span class="pill">lab-ready</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-4" role="listitem">
+          <div class="card">
+            <h3>Lab / Node</h3>
+            <p>For labs deploying a verification perimeter and multi-operator workflows.</p>
+            <div class="pillrow">
+              <span class="pill">node perimeter</span>
+              <span class="pill">multi-operator</span>
+              <span class="pill">append-only evidence</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-4" role="listitem">
+          <div class="card">
+            <h3>Enterprise / B2G</h3>
+            <p>For regulated deployments: governance, policy packs, procurement readiness.</p>
+            <div class="pillrow">
+              <span class="pill">policy packs</span>
+              <span class="pill">procurement</span>
+              <span class="pill">forensics</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta" style="margin-top:18px">
+        <a class="btn primary" href="../pricing/">Open pricing</a>
+        <a class="btn" href="../NODE-PACK/">Deploy node</a>
+        <a class="btn" href="../enterprise/">Enterprise / B2G</a>
+      </div>
+    </section>
+
+    <section class="section" aria-label="Local targets">
+      <h2>Local targets (Torino/Piemonte)</h2>
+      <p>
+        Use this kit to open conversations with robotics labs, mechatronics companies, drone operators, and industrial automation groups.
+        The goal is to run a pilot: one environment, one gate, one measurable outcome.
+      </p>
+
+      <div class="grid">
+        <div class="col-12">
+          <div class="card">
+            <h3>Pilot definition (minimal)</h3>
+            <p style="margin:0;color:var(--muted)">
+              A pilot is successful if a robot/drone/agent refuses execution when identity fails, and produces a deterministic,
+              audit-ready record when identity is valid. That’s the baseline.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="mono">Policy: HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · UE_FIRST · AUDIT_FIRST · GDPR_MIN</div>
+      <div>Issuer: <span class="mono">HERMETICUM B.C.E. S.r.l.</span> — Jurisdiction: <span class="mono">EU</span></div>
+    </footer>
+
+  </div>
+</body>
+</html>
