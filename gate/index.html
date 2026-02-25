@@ -1,43 +1,97 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Gate — Metrologia PASS/FAIL (non ingresso)</title>
-  <meta name="description" content="Gate: controllo metrologico PASS/FAIL. Non è un ingresso operativo. Percorso canonico: CREATE→RECEIPT→APPEND→VERIFY." />
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="color-scheme" content="dark"/>
+
+<title>Execution Gate Demo — IPR</title>
+
+<style>
+:root{
+ --bg:#0b0f14;
+ --panel:#0f1620;
+ --text:#e8eef7;
+ --muted:#9fb0c3;
+ --line:rgba(255,255,255,.08);
+ --accent:#00ffe1;
+ --danger:#ff3b6b;
+ --ok:#3dff93;
+ --r:18px;
+}
+body{
+ margin:0;
+ font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+ background:var(--bg);
+ color:var(--text);
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ height:100vh;
+}
+.box{
+ width:520px;
+ border:1px solid var(--line);
+ border-radius:var(--r);
+ padding:30px;
+ background:rgba(15,22,32,.6);
+}
+h1{margin:0 0 20px;font-size:22px}
+.status{
+ padding:18px;
+ border-radius:12px;
+ margin-top:20px;
+ text-align:center;
+ font-weight:800;
+}
+.ok{background:rgba(61,255,147,.1);color:var(--ok);border:1px solid var(--ok)}
+.fail{background:rgba(255,59,107,.1);color:var(--danger);border:1px solid var(--danger)}
+button{
+ padding:10px 14px;
+ border-radius:10px;
+ border:1px solid var(--line);
+ background:rgba(255,255,255,.05);
+ color:var(--text);
+ margin-right:8px;
+ cursor:pointer;
+}
+button:hover{border-color:var(--accent)}
+pre{
+ background:rgba(0,0,0,.4);
+ padding:12px;
+ border-radius:10px;
+ font-size:13px;
+ margin-top:16px;
+}
+</style>
 </head>
+
 <body>
-  <div data-hbce="header"></div>
 
-  <main class="hbce-container hbce-main">
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">METROLOGICAL GATE · PASS/FAIL</div>
-      <h1 class="hbce-hero__title">Gate (non ingresso)</h1>
-      <p class="hbce-hero__lead">
-        Questa pagina è un <strong>controllo</strong> (PASS/FAIL), non un onboarding.
-        L’emissione IPR segue il percorso canonico.
-      </p>
-      <div class="hbce-actions">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/create/">Vai a CREATE</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/status/">STATUS</a>
-      </div>
-      <p class="hbce-note">UE-first · audit-first · fail-closed · hash-only · append-only</p>
-    </section>
+<div class="box">
+<h1>Execution Gate Simulation</h1>
 
-    <section class="hbce-section">
-      <div class="hbce-card">
-        <h3>Regola</h3>
-        <p>
-          Se il controllo non può essere eseguito in modo verificabile, il sistema deve fallire in chiusura:
-          <strong>FAIL-CLOSED</strong>.
-        </p>
-      </div>
-    </section>
-  </main>
+<button onclick="run(true)">Simulate VALID Identity</button>
+<button onclick="run(false)">Simulate INVALID Identity</button>
 
-  <div data-hbce="footer"></div>
-  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+<div id="result"></div>
+
+<pre>
+identity_valid == true ? EXECUTE : BLOCK
+failure_mode = FAIL_CLOSED
+</pre>
+</div>
+
+<script>
+function run(valid){
+ const result = document.getElementById("result");
+ if(valid){
+   result.innerHTML = '<div class="status ok">EXECUTION AUTHORIZED</div>';
+ }else{
+   result.innerHTML = '<div class="status fail">EXECUTION BLOCKED (FAIL-CLOSED)</div>';
+ }
+}
+</script>
+
 </body>
 </html>
