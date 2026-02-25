@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="it">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark" />
 
-  <title>Pricing — IPR Activation Tiers | HERMETICUM B.C.E.</title>
-  <meta name="description" content="IPR activation pricing tiers for operators, robotics labs, and enterprise deployments. EU-first, audit-first, fail-closed." />
+  <title>Pricing — Standard IPR UE | HERMETICUM B.C.E.</title>
+  <meta name="description" content="Prezzi standard IPR UE: 4 strati operativi, 3 classi per strato. UE-first, audit-first, fail-closed." />
 
   <style>
     :root{
@@ -17,10 +17,10 @@
       --line:rgba(255,255,255,.08);
       --accent:#00ffe1;
       --accent2:#7c5cff;
-      --ok:#3dff93;
       --shadow:0 20px 60px rgba(0,0,0,.45);
       --r:18px;
-      --max:1100px;
+      --max:1180px;
+      --ok:rgba(0,255,225,.14);
     }
     *{box-sizing:border-box}
     body{
@@ -34,16 +34,30 @@
       line-height:1.45;
     }
     a{color:inherit}
-    .wrap{max-width:var(--max);margin:0 auto;padding:28px 18px 80px}
+    .wrap{max-width:var(--max);margin:0 auto;padding:28px 18px 86px}
     .top{
       display:flex;justify-content:space-between;align-items:center;
       gap:16px;margin-bottom:26px;flex-wrap:wrap;
     }
     .brand{font-weight:800;font-size:13px;letter-spacing:.5px;text-transform:uppercase}
     .tag{color:var(--muted);font-size:12px;margin-top:6px}
-    .nav{display:flex;gap:14px;flex-wrap:wrap}
-    .nav a{color:var(--muted);text-decoration:none;font-size:13px}
-    .nav a:hover{color:var(--text)}
+    .nav{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .nav a{
+      color:var(--muted);
+      text-decoration:none;
+      font-size:13px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.06);
+      background:rgba(255,255,255,.02);
+      transition:.15s;
+    }
+    .nav a:hover{
+      color:var(--text);
+      border-color:rgba(0,255,225,.35);
+      transform:translateY(-1px);
+    }
+
     .hero{
       border:1px solid var(--line);
       border-radius:calc(var(--r) + 4px);
@@ -51,77 +65,175 @@
       background:rgba(15,22,32,.55);
       box-shadow:var(--shadow);
     }
-    h1{margin:0 0 12px;font-size:clamp(28px,4vw,44px);line-height:1.1}
-    .sub{margin:0 0 18px;color:var(--muted);max-width:820px;font-size:15.5px}
-    .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    h1{margin:0 0 10px;font-size:clamp(28px,4vw,44px);line-height:1.1;letter-spacing:-.02em}
+    .sub{margin:0 0 14px;color:var(--muted);max-width:920px;font-size:15.5px}
+    .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
     .badge{
-      font-size:12px;padding:7px 10px;border-radius:999px;
-      border:1px solid var(--line);background:rgba(255,255,255,.03);
+      font-size:12px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
       color:var(--muted);
     }
+    .badge strong{color:var(--text)}
+
     .section{margin-top:34px}
-    .section h2{margin:0 0 10px;font-size:18px}
-    .section p{margin:0 0 14px;color:var(--muted);max-width:900px}
+    .section h2{margin:0 0 10px;font-size:18px;letter-spacing:-.01em}
+    .section p{margin:0 0 14px;color:var(--muted);max-width:980px}
+
     .grid{
       display:grid;
       grid-template-columns:repeat(12,1fr);
       gap:14px;
       margin-top:16px;
     }
-    @media (max-width: 900px){
+    .col-12{grid-column:span 12}
+    .col-4{grid-column:span 4}
+    @media (max-width: 980px){
+      .col-4{grid-column:span 12}
       .grid{gap:10px}
     }
-    .col-3{grid-column:span 3}
-    .col-4{grid-column:span 4}
-    .col-6{grid-column:span 6}
-    .col-12{grid-column:span 12}
-    @media (max-width: 900px){
-      .col-3,.col-4,.col-6{grid-column:span 12}
+
+    .layer{
+      border:1px solid var(--line);
+      border-radius:calc(var(--r) + 2px);
+      background:rgba(255,255,255,.02);
+      overflow:hidden;
     }
+    .layerHead{
+      padding:16px 18px;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:12px;
+      flex-wrap:wrap;
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,.0));
+      border-bottom:1px solid var(--line);
+    }
+    .layerTitle{
+      margin:0;
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:.45px;
+      font-weight:900;
+    }
+    .layerNote{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:12.5px;
+      max-width:78ch;
+    }
+    .layerTag{
+      font-size:12px;
+      color:rgba(232,238,247,.85);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:999px;
+      padding:7px 10px;
+      background:rgba(0,0,0,.18);
+      white-space:nowrap;
+    }
+
+    .tierRow{
+      padding:16px 18px 18px;
+      display:grid;
+      grid-template-columns:repeat(12,1fr);
+      gap:14px;
+    }
+
     .tier{
+      grid-column:span 4;
       border:1px solid var(--line);
       border-radius:var(--r);
       background:rgba(255,255,255,.03);
-      padding:18px;
+      padding:16px;
+      min-height: 280px;
       position:relative;
       overflow:hidden;
-      min-height: 320px;
     }
+    @media (max-width: 980px){
+      .tier{grid-column:span 12;min-height:auto}
+    }
+
     .tier.highlight{
       border-color:rgba(0,255,225,.55);
-      background:linear-gradient(180deg, rgba(0,255,225,.16), rgba(255,255,255,.03));
-      box-shadow: 0 0 28px rgba(0,255,225,.12);
+      background:linear-gradient(180deg, rgba(0,255,225,.14), rgba(255,255,255,.03));
+      box-shadow: 0 0 28px rgba(0,255,225,.10);
     }
-    .tier .topline{
-      display:flex;align-items:baseline;justify-content:space-between;gap:10px;
-      margin-bottom:10px;flex-wrap:wrap;
+
+    .tTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:baseline;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:8px;
     }
-    .tier h3{margin:0;font-size:14px;text-transform:uppercase;letter-spacing:.4px}
-    .aud{font-size:12px;color:var(--muted)}
+    .tName{
+      margin:0;
+      font-size:14px;
+      letter-spacing:.2px;
+      font-weight:900;
+    }
+    .tCode{
+      font-size:12px;
+      color:var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+    }
+
     .price{
-      margin: 6px 0 12px;
-      font-size: 28px;
-      font-weight: 900;
+      margin:8px 0 8px;
+      font-size:28px;
+      font-weight:950;
       letter-spacing:-.02em;
     }
-    .price small{font-size:12px;color:var(--muted);font-weight:700}
-    .meta{
+    .price small{
+      font-size:12px;
       color:var(--muted);
-      font-size:13px;
-      margin-bottom:12px;
-      max-width: 56ch;
+      font-weight:800;
+    }
+    .subprice{
+      margin:0 0 12px;
+      color:var(--muted);
+      font-size:12.5px;
+    }
+    .desc{
+      margin:0 0 10px;
+      color:var(--muted);
+      font-size:13.5px;
+      max-width: 60ch;
     }
     ul{margin:0;padding-left:16px}
-    li{margin:8px 0;color:rgba(232,238,247,.88);font-size:13.5px}
+    li{margin:7px 0;color:rgba(232,238,247,.90);font-size:13.4px}
     .mut{color:var(--muted)}
-    .btnrow{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
+
+    .noteBox{
+      border:1px solid var(--line);
+      border-radius:var(--r);
+      background:rgba(15,22,32,.45);
+      padding:16px;
+    }
+    .noteBox h3{
+      margin:0 0 8px;
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:.35px;
+    }
+    .noteBox p{margin:0;color:var(--muted);font-size:13.5px}
+
+    .ctaRow{
+      margin-top:16px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
     .btn{
       display:inline-block;
       padding:11px 14px;
       border-radius:14px;
       border:1px solid var(--line);
       text-decoration:none;
-      font-weight:700;
+      font-weight:850;
       font-size:13.5px;
       color:var(--text);
       background:rgba(255,255,255,.04);
@@ -129,18 +241,10 @@
     }
     .btn:hover{border-color:rgba(0,255,225,.5);transform:translateY(-2px)}
     .btn.primary{
-      border-color:rgba(0,255,225,.7);
+      border-color:rgba(0,255,225,.75);
       background:linear-gradient(180deg,rgba(0,255,225,.22),rgba(0,255,225,.06));
     }
-    .note{
-      border:1px solid var(--line);
-      border-radius:var(--r);
-      background:rgba(15,22,32,.45);
-      padding:16px;
-    }
-    .note h4{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.3px}
-    .note p{margin:0;color:var(--muted);font-size:13.5px}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+
     footer{
       margin-top:46px;
       padding-top:18px;
@@ -152,191 +256,371 @@
       gap:14px;
       flex-wrap:wrap;
     }
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;}
   </style>
 </head>
 
 <body>
   <div class="wrap">
-
     <header class="top">
       <div>
         <div class="brand">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-        <div class="tag">HERMETICUM B.C.E. S.r.l. — IPR Activation Pricing (EU-first)</div>
+        <div class="tag">HERMETICUM B.C.E. S.r.l. — Prezzi Standard IPR (UE-first)</div>
       </div>
-      <nav class="nav">
+      <nav class="nav" aria-label="Navigazione principale">
         <a href="../">Home</a>
-        <a href="../robotics-ai/">Robotics &amp; AI</a>
-        <a href="../activate/">Activate IPR</a>
+        <a href="../activate/">Attiva IPR</a>
         <a href="../NODE-PACK/">Deploy Node</a>
         <a href="../verify/">Verify</a>
+        <a href="../robotics-ai/">Robotics &amp; AI</a>
       </nav>
     </header>
 
     <section class="hero">
-      <h1>Pricing — IPR Activation Tiers</h1>
+      <h1>Pricing — Standard IPR UE</h1>
       <p class="sub">
-        Clear activation tiers for operators, labs and enterprises.
-        IPR is an operational identity layer: deterministic verification, append-only evidence and fail-closed execution gates.
+        Prezzi <strong>reset</strong> e ridefiniti: <strong>4 strati operativi</strong> × <strong>3 classi</strong>.
+        Ogni classe implementa capacità e responsabilità superiori rispetto alla precedente.
+        Identità prima dell’esecuzione: <span class="mono">FAIL-CLOSED</span>, evidenza <span class="mono">APPEND-ONLY</span>, superficie pubblica <span class="mono">HASH-ONLY</span>.
       </p>
-
       <div class="badges">
         <span class="badge"><strong>UE-FIRST</strong></span>
         <span class="badge"><strong>AUDIT-FIRST</strong></span>
+        <span class="badge"><strong>GDPR-MIN</strong></span>
         <span class="badge"><strong>HASH-ONLY</strong></span>
         <span class="badge"><strong>APPEND-ONLY</strong></span>
         <span class="badge"><strong>FAIL-CLOSED</strong></span>
         <span class="badge"><strong>NO IDENTITY CUSTODY</strong></span>
       </div>
-    </section>
-
-    <section class="section" aria-label="Tiers">
-      <h2>Choose your tier</h2>
-      <p>
-        These prices are structured for EU-first compliance and operational deployment.
-        Activation is a one-time onboarding fee. Maintenance covers continuous verification tooling, reference updates and node compatibility.
-      </p>
-
-      <div class="grid" role="list">
-        <!-- CIVIL BASE -->
-        <div class="col-3" role="listitem">
-          <div class="tier">
-            <div class="topline">
-              <h3>IPR Civil Base</h3>
-              <div class="aud mono">HUMAN</div>
-            </div>
-            <div class="price">€45 <small>activation</small></div>
-            <div class="meta">Entry identity record with deterministic verification.</div>
-            <ul>
-              <li>IPR record + integrity hash</li>
-              <li>Deterministic verify (SHA-256)</li>
-              <li>Hash-only public surface</li>
-              <li class="mut">No machine binding</li>
-            </ul>
-            <div class="btnrow">
-              <a class="btn" href="../activate/">Activate</a>
-            </div>
-            <p class="mut" style="margin:10px 0 0;font-size:12.5px">Maintenance: €5 / month</p>
-          </div>
-        </div>
-
-        <!-- OPERATOR -->
-        <div class="col-3" role="listitem">
-          <div class="tier">
-            <div class="topline">
-              <h3>IPR Operator</h3>
-              <div class="aud mono">HUMAN</div>
-            </div>
-            <div class="price">€290 <small>activation</small></div>
-            <div class="meta">For technical operators using drones, robots or industrial systems.</div>
-            <ul>
-              <li>Operator-grade identity proof</li>
-              <li>Execution gate readiness</li>
-              <li>Receipts / audit events compatible</li>
-              <li>Lab / fleet ready patterns</li>
-            </ul>
-            <div class="btnrow">
-              <a class="btn primary" href="../activate/">Activate</a>
-              <a class="btn" href="../robotics-ai/">See Robotics &amp; AI</a>
-            </div>
-            <p class="mut" style="margin:10px 0 0;font-size:12.5px">Maintenance: €19 / month</p>
-          </div>
-        </div>
-
-        <!-- LAB / NODE -->
-        <div class="col-3" role="listitem">
-          <div class="tier highlight">
-            <div class="topline">
-              <h3>IPR Lab / Node</h3>
-              <div class="aud mono">LAB</div>
-            </div>
-            <div class="price">€990 <small>activation</small></div>
-            <div class="meta">For labs deploying verification nodes for robotics and AI workflows.</div>
-            <ul>
-              <li>Node deployment readiness</li>
-              <li>Multi-operator workflows</li>
-              <li>Local verification perimeter</li>
-              <li>Append-only evidence pack patterns</li>
-            </ul>
-            <div class="btnrow">
-              <a class="btn primary" href="../NODE-PACK/">Deploy Node</a>
-              <a class="btn" href="../activate/">Activate</a>
-            </div>
-            <p class="mut" style="margin:10px 0 0;font-size:12.5px">Maintenance: €49 / month</p>
-          </div>
-        </div>
-
-        <!-- ENTERPRISE -->
-        <div class="col-3" role="listitem">
-          <div class="tier">
-            <div class="topline">
-              <h3>Enterprise / B2G</h3>
-              <div class="aud mono">ORG</div>
-            </div>
-            <div class="price">Custom <small>on request</small></div>
-            <div class="meta">For enterprises, public bodies and regulated deployments.</div>
-            <ul>
-              <li>Policy packs &amp; governance layer</li>
-              <li>Operator licensing model</li>
-              <li>Interoperability &amp; registry alignment</li>
-              <li>Procurement-ready documentation</li>
-            </ul>
-            <div class="btnrow">
-              <a class="btn" href="../">Contact via repository</a>
-              <a class="btn" href="../robotics-ai/">Robotics &amp; AI</a>
-            </div>
-            <p class="mut" style="margin:10px 0 0;font-size:12.5px">Maintenance: agreement-based</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" aria-label="Notes">
-      <h2>Notes</h2>
-      <div class="grid">
-        <div class="col-6">
-          <div class="note">
-            <h4>What “activation” includes</h4>
-            <p>
-              Activation is onboarding into the IPR structure: canonical record generation, integrity anchoring,
-              and verified compatibility with deterministic verification rules.
-              The public layer remains <span class="mono">HASH-ONLY</span> and custody-free.
-            </p>
-          </div>
-        </div>
-        <div class="col-6">
-          <div class="note">
-            <h4>What “maintenance” covers</h4>
-            <p>
-              Maintenance supports continuous verification tooling, reference updates, compatibility guarantees,
-              and long-term operational stability for nodes and workflows under EU-first constraints.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" aria-label="CTA">
-      <h2>Start now</h2>
-      <p>
-        Activate an IPR and deploy a node when needed. Bind operators, AI agents and machines to a deterministic execution gate.
-      </p>
-      <div class="btnrow">
-        <a class="btn primary" href="../activate/">Activate IPR</a>
+      <div class="ctaRow" aria-label="CTA">
+        <a class="btn primary" href="../activate/">Attiva IPR</a>
+        <a class="btn" href="../verify/">Verifica</a>
         <a class="btn" href="../NODE-PACK/">Deploy Node</a>
-        <a class="btn" href="../robotics-ai/">Robotics &amp; AI</a>
+      </div>
+    </section>
+
+    <!-- STRATO 1 -->
+    <section class="section">
+      <div class="layer">
+        <div class="layerHead">
+          <div>
+            <div class="layerTitle">STRATO 1 — IDENTITÀ STANDARD UE</div>
+            <div class="layerNote">Diffusione e base legale: accesso verificabile e compatibilità rete UE.</div>
+          </div>
+          <div class="layerTag mono">S1 · S2 · S3</div>
+        </div>
+
+        <div class="tierRow">
+          <div class="tier">
+            <div class="tTop">
+              <h3 class="tName">S1 — Identità UE Registrata</h3>
+              <div class="tCode">HUMAN</div>
+            </div>
+            <div class="price">€90 <small>attivazione</small></div>
+            <div class="subprice">€25 / anno (continuità)</div>
+            <p class="desc">Ingresso nel sistema: IPR verificabile e superficie pubblica hash-only.</p>
+            <ul>
+              <li>IPR personale verificabile</li>
+              <li>Hash deterministico pubblico</li>
+              <li>Compatibilità rete UE</li>
+              <li class="mut">Nessun binding operativo</li>
+            </ul>
+            <p class="mut" style="margin:10px 0 0;font-size:12.5px">
+              Differenza: entri nel sistema.
+            </p>
+          </div>
+
+          <div class="tier highlight">
+            <div class="tTop">
+              <h3 class="tName">S2 — Identità UE Verificata</h3>
+              <div class="tCode">HUMAN</div>
+            </div>
+            <div class="price">€240 <small>attivazione</small></div>
+            <div class="subprice">€60 / anno (continuità)</div>
+            <p class="desc">Verifica rafforzata e readiness tecnica per evoluzione operativa.</p>
+            <ul>
+              <li>Verifica rafforzata</li>
+              <li>Tracciabilità eventi personali</li>
+              <li>Compatibilità upgrade operatore</li>
+              <li>Readiness tecnica</li>
+            </ul>
+            <p class="mut" style="margin:10px 0 0;font-size:12.5px">
+              In più di S1: non solo esisti, sei verificato per operare.
+            </p>
+          </div>
+
+          <div class="tier">
+            <div class="tTop">
+              <h3 class="tName">S3 — Identità UE Operativa</h3>
+              <div class="tCode">HUMAN</div>
+            </div>
+            <div class="price">€480 <small>attivazione</small></div>
+            <div class="subprice">€120 / anno (continuità)</div>
+            <p class="desc">Base per passare all’operatività: audit append-only e compatibilità sistemi.</p>
+            <ul>
+              <li>Binding compatibile con sistemi tecnici</li>
+              <li>Audit append-only attivo</li>
+              <li>Compatibilità robot / AI (fase successiva)</li>
+              <li>Prerequisito per accreditamento tecnico</li>
+            </ul>
+            <p class="mut" style="margin:10px 0 0;font-size:12.5px">
+              In più di S2: sei pronto per lo strato operatori.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STRATO 2 -->
+    <section class="section">
+      <div class="layer">
+        <div class="layerHead">
+          <div>
+            <div class="layerTitle">STRATO 2 — OPERATORI E AZIENDE</div>
+            <div class="layerNote">Uso reale: gate di esecuzione, audit operativo, multi-operatore e integrazione processi.</div>
+          </div>
+          <div class="layerTag mono">O1 · O2 · O3</div>
+        </div>
+
+        <div class="tierRow">
+          <div class="tier highlight">
+            <div class="tTop">
+              <h3 class="tName">O1 — Operatore Certificato HBCE</h3>
+              <div class="tCode">HUMAN</div>
+            </div>
+            <div class="price">€1.800 <small>attivazione</small></div>
+            <div class="subprice">€90 / mese (continuità)</div>
+            <p class="desc">Execution gate attivo: se la verifica fallisce, l’operazione è bloccata (fail-closed).</p>
+            <ul>
+              <li>Execution gate attivo</li>
+              <li>Binding operatore–macchina</li>
+              <li>Audit eventi operativi</li>
+              <li>Compatibilità drone / robot / AI</li>
+            </ul>
+            <p class="mut" style="margin:10px 0 0;font-size:12.5px">
+              In più di S3: puoi eseguire sistemi reali sotto standard.
+            </p>
+          </div>
+
+          <div class="tier">
+            <div class="tTop">
+              <h3 class="tName">O2 — Azienda Certificata HBCE</h3>
+              <div class="tCode">ORG</div>
+            </div>
+            <div class="price">€7.500 <small>attivazione</small></div>
+            <div class="subprice">€290 / mese (continuità)</div>
+            <p class="desc">Strato aziendale: operatori multipli, flussi audit e readiness B2B.</p>
+            <ul>
+              <li>Operatori multipli</li>
+              <li>Flussi audit aziendali</li>
+              <li>Integrazione processi interni</li>
+              <li>Accesso layer B2B</li>
+            </ul>
+            <p class="mut" style="margin:10px 0 0;font-size:12.5px">
+              In più di O1: l’azienda entra nel sistema (non solo il singolo).
+            </p>
+          </div>
+
+          <div class="tier">
+            <div class="tTop">
+              <h3 class="tName">O3 — Azienda Infrastrutturale</h3>
+              <div class="tCode">ORG+</div>
+            </div>
+            <div class="price">€18.000 <small>attivazione</small></div>
+            <div class="subprice">€790 / mese (continuità)</div>
+            <p class="desc">Fleet e audit continuo: readiness per nodo locale e uso industriale ad alta responsabilità.</p>
+            <ul>
+              <li>Fleet robot / droni</li>
+              <li>Audit continuo centralizzato</li>
+              <li>Compatibilità nodo locale (step successivo)</li>
+              <li>Readiness infrastrutturale</li>
+            </ul>
+            <p class="mut" style="margin:10px 0 0;font-size:12.5px">
+              In più di O2: non usi solo lo standard, lo integri come infrastruttura.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STRATO 3 -->
+    <section class="section">
+      <div class="layer">
+        <div class="layerHead">
+          <div>
+            <div class="layerTitle">STRATO 3 — INFRASTRUTTURA DI RETE</div>
+            <div class="layerNote">Validazione federata: nodi locali/regionali/nazionali con interoperabilità e governance tecnica.</div>
+          </div>
+          <div class="layerTag mono">I1 · I2 · I3</div>
+        </div>
+
+        <div class="tierRow">
+          <div class="tier">
+            <div class="tTop">
+              <h3 class="tName">I1 — Nodo Città / Laboratorio</h3>
+              <div class="tCode">NODE</div>
+            </div>
+            <div class="price">€60.000 <small>attivazione</small></div>
+            <div class="subprice">€1.900 / mese (continuità)</div>
+            <p class="desc">Nodo verificatore locale: perimetro di verifica e evidenza append-only sul territorio.</p>
+            <ul>
+              <li>Nodo verificatore locale</li>
+              <li>Emissione operatori interni</li>
+              <li>Validazione eventi territoriale</li>
+              <li>Perimetro audit locale</li>
+            </ul>
+            <p class="mut" style="margin:10px 0 0;font-size:12.5px">
+              In più di O3: diventi punto di validazione.
+            </p>
+          </div>
+
+          <div class="tier highlight">
+            <div class="tTop">
+              <h3 class="tName">I2 — Nodo Regionale</h3>
+              <div class="tCode">NODE+</div>
+            </div>
+            <div class="price">€160.000 <small>attivazione</small></div>
+            <div class="subprice">€4.900 / mese (continuità)</div>
+            <p class="desc">Interoperabilità multi-nodo e standardizzazione su area geografica.</p>
+            <ul>
+              <li>Interoperabilità multi-nodo</li>
+              <li>Emissione operatori territoriali</li>
+              <li>Integrazione enti regionali</li>
+              <li>Standardizzazione area</li>
+            </ul>
+            <p class="mut" style="margin:10px 0 0;font-size:12.5px">
+              In più di I1: coordini rete territoriale.
+            </p>
+          </div>
+
+          <div class="tier">
+            <div class="tTop">
+              <h3 class="tName">I3 — Nodo Nazionale Federato</h3>
+              <div class="tCode">FED</div>
+            </div>
+            <div class="price">€420.000 <small>attivazione</small></div>
+            <div class="subprice">€12.000 / mese (continuità)</div>
+            <p class="desc">Coordinamento nazionale: emissione e governance tecnica su scala paese.</p>
+            <ul>
+              <li>Emissione nazionale</li>
+              <li>Coordinamento nodi regionali</li>
+              <li>Interoperabilità standard</li>
+              <li>Posizione federata</li>
+            </ul>
+            <p class="mut" style="margin:10px 0 0;font-size:12.5px">
+              In più di I2: sei componente strutturale della rete.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STRATO 4 -->
+    <section class="section">
+      <div class="layer">
+        <div class="layerHead">
+          <div>
+            <div class="layerTitle">STRATO 4 — GOVERNATIVO / UE (B2G)</div>
+            <div class="layerNote">Livello istituzionale: integrazione sistemi pubblici, procurement-ready, interoperabilità transnazionale.</div>
+          </div>
+          <div class="layerTag mono">G1 · G2 · G3</div>
+        </div>
+
+        <div class="tierRow">
+          <div class="tier">
+            <div class="tTop">
+              <h3 class="tName">G1 — Ente Pubblico Accreditato</h3>
+              <div class="tCode">B2G</div>
+            </div>
+            <div class="price">€650.000 <small>attivazione</small></div>
+            <div class="subprice">€18.000 / mese (continuità)</div>
+            <p class="desc">Integrazione pubblica: governance e interoperabilità regolatoria.</p>
+            <ul>
+              <li>Integrazione sistemi pubblici</li>
+              <li>Governance locale</li>
+              <li>Compatibilità regolatoria</li>
+              <li>Audit pubblico append-only</li>
+            </ul>
+            <p class="mut" style="margin:10px 0 0;font-size:12.5px">
+              In più di I3: accesso istituzionale e responsabilità pubblica.
+            </p>
+          </div>
+
+          <div class="tier highlight">
+            <div class="tTop">
+              <h3 class="tName">G2 — Nodo Statale</h3>
+              <div class="tCode">STATE</div>
+            </div>
+            <div class="price">€1.400.000 <small>attivazione</small></div>
+            <div class="subprice">€45.000 / mese (continuità)</div>
+            <p class="desc">Emissione e interoperabilità su scala statale, multi-ente e multi-sistema.</p>
+            <ul>
+              <li>Emissione nazionale IPR</li>
+              <li>Integrazione multi-ministeriale</li>
+              <li>Interoperabilità completa</li>
+              <li>Procurement-ready</li>
+            </ul>
+            <p class="mut" style="margin:10px 0 0;font-size:12.5px">
+              In più di G1: la rete pubblica diventa sistema.
+            </p>
+          </div>
+
+          <div class="tier">
+            <div class="tTop">
+              <h3 class="tName">G3 — Nodo UE Federato</h3>
+              <div class="tCode">EU</div>
+            </div>
+            <div class="price">€3.000.000 <small>attivazione</small></div>
+            <div class="subprice">€120.000 / mese (continuità)</div>
+            <p class="desc">Nodo UE: coordinamento transnazionale e governance operativa europea.</p>
+            <ul>
+              <li>Coordinamento transnazionale</li>
+              <li>Interoperabilità federata UE</li>
+              <li>Governance standard operativo europeo</li>
+              <li>Posizione strutturale di rete</li>
+            </ul>
+            <p class="mut" style="margin:10px 0 0;font-size:12.5px">
+              In più di G2: non usi lo standard, contribuisci a definirlo.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-label="Note operative">
+      <div class="grid">
+        <div class="col-4">
+          <div class="noteBox">
+            <h3>Regola di esecuzione</h3>
+            <p class="mono">identity_valid == true ? EXECUTE : BLOCK<br/>failure_mode = FAIL_CLOSED</p>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="noteBox">
+            <h3>Superficie pubblica</h3>
+            <p>La rete pubblica rimane <span class="mono">HASH-ONLY</span>. Nessuna custodia identitaria.</p>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="noteBox">
+            <h3>Progressione</h3>
+            <p>Ogni livello aggiunge: capacità, responsabilità, posizione di rete. Non “feature”. Sovranità operativa.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ctaRow" style="margin-top:18px">
+        <a class="btn primary" href="../activate/">Attiva IPR</a>
+        <a class="btn" href="../verify/">Verifica</a>
+        <a class="btn" href="../NODE-PACK/">Deploy Node</a>
       </div>
     </section>
 
     <footer>
-      <div>
-        <div class="mono">Policy: HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · UE_FIRST · AUDIT_FIRST · GDPR_MIN</div>
-      </div>
-      <div>
-        Issuer: <span class="mono">HERMETICUM B.C.E. S.r.l.</span> — Jurisdiction: <span class="mono">EU</span>
-      </div>
+      <div class="mono">Policy: HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · UE_FIRST · AUDIT_FIRST · GDPR_MIN</div>
+      <div>Issuer: <span class="mono">HERMETICUM B.C.E. S.r.l.</span> — Jurisdiction: <span class="mono">EU</span></div>
     </footer>
-
   </div>
 </body>
 </html>
-  
+```0
