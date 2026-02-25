@@ -2,16 +2,14 @@
    HBCE UI SYSTEM — GLOBAL INJECTOR (BASE-PATH AWARE)
    - Works on GitHub Pages project sites (/repo-name/...)
    - Injects header/nav/footer once
-   - Prevents double wrap
    ========================================================= */
 
 (function(){
   "use strict";
 
   function isGithubProjectSite(){
-    try{
-      return /\.github\.io$/i.test(window.location.hostname);
-    }catch{ return false; }
+    try{ return /\.github\.io$/i.test(window.location.hostname); }
+    catch{ return false; }
   }
 
   function inferBasePath(){
@@ -24,24 +22,20 @@
       return v.startsWith("/") ? v.replace(/\/+$/,"") : ("/"+v.replace(/\/+$/,""));
     }
 
-    // Auto-infer on GitHub Pages project site:
-    // /<repo>/...
+    // Auto-infer on GitHub Pages project site: /<repo>/...
     if(!isGithubProjectSite()) return "";
     const parts = (window.location.pathname || "/").split("/").filter(Boolean);
     if(parts.length === 0) return "";
-    return "/" + parts[0]; // e.g. "/hermeticum-bce-platform"
+    return "/" + parts[0]; // "/hermeticum-bce-platform"
   }
 
   function join(base, path){
-    // base: "" or "/repo"
-    // path: "/" | "/about/" | "/pricing/" ...
     const b = (base || "").replace(/\/+$/,"");
     const p = (path || "/").startsWith("/") ? path : ("/"+path);
     return (b + p).replace(/\/{2,}/g,"/");
   }
 
   function inject(){
-    // prevent double injection
     if(document.documentElement.getAttribute("data-hbce-ui") === "1") return;
     document.documentElement.setAttribute("data-hbce-ui","1");
 
@@ -58,9 +52,9 @@
       ["Contact", "/contact/"]
     ];
 
-    const navHtml = navItems.map(([label, href]) => {
-      return `<a href="${join(base, href)}">${label}</a>`;
-    }).join("");
+    const navHtml = navItems.map(([label, href]) =>
+      `<a href="${join(base, href)}">${label}</a>`
+    ).join("");
 
     const header = `
       <div class="hbce-topbar">
@@ -79,17 +73,8 @@
       </footer>
     `;
 
-    // If page already has .wrap, do NOT add another.
-    // We wrap content in <main class="hbce-main"> to keep layout consistent.
     const body = document.body;
-    const hasWrap = !!body.querySelector(".hbce-wrap");
     const existing = body.innerHTML;
-
-    if(hasWrap){
-      // just prepend header and append footer around existing wrap
-      body.innerHTML = header + existing + footer;
-      return;
-    }
 
     body.innerHTML = `
       ${header}
