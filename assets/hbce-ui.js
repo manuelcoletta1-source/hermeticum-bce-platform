@@ -1,60 +1,110 @@
+/* =========================================================
+   HBCE UI SYSTEM — GLOBAL INJECTOR (BASE-PATH AWARE)
+   - Works on GitHub Pages project sites (/repo-name/...)
+   - Injects header/nav/footer once
+   - Prevents double wrap
+   ========================================================= */
+
 (function(){
-"use strict";
+  "use strict";
 
-function inject(){
+  function isGithubProjectSite(){
+    try{
+      return /\.github\.io$/i.test(window.location.hostname);
+    }catch{ return false; }
+  }
 
-const header = `
-<div class="topbar">
-<div>
-<div style="font-size:12px;color:#a7b4cc;letter-spacing:.15em;text-transform:uppercase">
-HBCE R&D · HERMETICUM B.C.E.
-</div>
-<div style="font-size:12px;color:#a7b4cc">
-EU-first · audit-first · fail-closed
-</div>
-</div>
+  function inferBasePath(){
+    // Optional override:
+    // <meta name="hbce-base" content="/hermeticum-bce-platform">
+    const meta = document.querySelector('meta[name="hbce-base"]');
+    if(meta && meta.content){
+      const v = String(meta.content).trim();
+      if(v === "/" || v === "") return "";
+      return v.startsWith("/") ? v.replace(/\/+$/,"") : ("/"+v.replace(/\/+$/,""));
+    }
 
-<nav class="nav">
-<a href="/">Home</a>
-<a href="/about/">About</a>
-<a href="/joker-c2/">Joker-C2</a>
-<a href="/robotics-ai/">Robotics</a>
-<a href="/pricing/">Pricing</a>
-<a href="/operator/">Operator</a>
-<a href="/eu/">EU</a>
-<a href="/contact/">Contact</a>
-</nav>
-</div>
-`;
+    // Auto-infer on GitHub Pages project site:
+    // /<repo>/...
+    if(!isGithubProjectSite()) return "";
+    const parts = (window.location.pathname || "/").split("/").filter(Boolean);
+    if(parts.length === 0) return "";
+    return "/" + parts[0]; // e.g. "/hermeticum-bce-platform"
+  }
 
-const footer = `
-<footer>
-HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br>
-HERMETICUM B.C.E. S.r.l. — EU jurisdiction<br>
-HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · UE_FIRST · AUDIT_FIRST
-</footer>
-`;
+  function join(base, path){
+    // base: "" or "/repo"
+    // path: "/" | "/about/" | "/pricing/" ...
+    const b = (base || "").replace(/\/+$/,"");
+    const p = (path || "/").startsWith("/") ? path : ("/"+path);
+    return (b + p).replace(/\/{2,}/g,"/");
+  }
 
-const wrapStart = `<div class="wrap">`;
-const wrapEnd = `</div>`;
+  function inject(){
+    // prevent double injection
+    if(document.documentElement.getAttribute("data-hbce-ui") === "1") return;
+    document.documentElement.setAttribute("data-hbce-ui","1");
 
-const body = document.body;
+    const base = inferBasePath();
 
-const content = body.innerHTML;
+    const navItems = [
+      ["Home", "/"],
+      ["About", "/about/"],
+      ["Robotics & AI", "/robotics-ai/"],
+      ["Joker-C2", "/joker-c2/"],
+      ["Pricing", "/pricing/"],
+      ["Operator", "/operator/"],
+      ["EU / Horizon", "/eu/"],
+      ["Contact", "/contact/"]
+    ];
 
-body.innerHTML =
-wrapStart +
-header +
-content +
-footer +
-wrapEnd;
+    const navHtml = navItems.map(([label, href]) => {
+      return `<a href="${join(base, href)}">${label}</a>`;
+    }).join("");
 
-}
+    const header = `
+      <div class="hbce-topbar">
+        <div class="hbce-brand">
+          <div class="hbce-seal">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA · HERMETICUM B.C.E. S.r.l.</div>
+          <div class="hbce-subseal">EU-first · audit-first · fail-closed</div>
+        </div>
+        <nav class="hbce-nav" aria-label="Primary">${navHtml}</nav>
+      </div>
+    `;
 
-if(document.readyState==="loading"){
-document.addEventListener("DOMContentLoaded",inject);
-}else{
-inject();
-}
+    const footer = `
+      <footer class="hbce-footer">
+        <div><strong>HERMETICUM B.C.E. S.r.l.</strong></div>
+        <div>HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · UE_FIRST · AUDIT_FIRST · GDPR_MIN</div>
+      </footer>
+    `;
 
+    // If page already has .wrap, do NOT add another.
+    // We wrap content in <main class="hbce-main"> to keep layout consistent.
+    const body = document.body;
+    const hasWrap = !!body.querySelector(".hbce-wrap");
+    const existing = body.innerHTML;
+
+    if(hasWrap){
+      // just prepend header and append footer around existing wrap
+      body.innerHTML = header + existing + footer;
+      return;
+    }
+
+    body.innerHTML = `
+      ${header}
+      <div class="hbce-wrap">
+        <main class="hbce-main">
+          ${existing}
+        </main>
+      </div>
+      ${footer}
+    `;
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", inject);
+  }else{
+    inject();
+  }
 })();
