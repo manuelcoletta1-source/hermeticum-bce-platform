@@ -17,7 +17,6 @@
       --bad:#ff3b3b;
       --card:#101826;
       --line:rgba(255,255,255,.10);
-      --glass:rgba(16,24,38,.72);
     }
     *{box-sizing:border-box}
     body{
@@ -32,14 +31,13 @@
     a{color:var(--acc);text-decoration:none}
     a:hover{text-decoration:underline}
     .wrap{max-width:1120px;margin:0 auto;padding:22px 16px 30px}
+
     .topbar{
       display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;
       margin-bottom:14px;
     }
-    .seal{
-      font-size:12px;color:var(--mut);letter-spacing:.12em;text-transform:uppercase
-    }
-    .brand strong{color:var(--fg)}
+    .seal{font-size:12px;color:var(--mut);letter-spacing:.12em;text-transform:uppercase}
+    .small{font-size:12px;color:var(--mut)}
     .nav{display:flex;flex-wrap:wrap;gap:10px}
     .nav a{
       padding:9px 11px;
@@ -48,6 +46,37 @@
       background:rgba(0,255,225,.06);
     }
     .nav a:hover{background:rgba(0,255,225,.12);text-decoration:none}
+
+    /* ALERT BANNER (hidden by default) */
+    .alert{
+      display:none;
+      margin:0 0 14px;
+      border:1px solid rgba(255,59,59,.35);
+      background:linear-gradient(180deg, rgba(255,59,59,.12), rgba(0,0,0,.22));
+      border-radius:16px;
+      padding:12px 14px;
+      box-shadow:0 18px 60px rgba(0,0,0,.35);
+    }
+    .alert.on{display:block}
+    .alertRow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+    .alertLeft{display:flex;flex-direction:column;gap:4px}
+    .alertTitle{
+      font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--bad);
+      display:flex;align-items:center;gap:10px;
+    }
+    .alertMsg{color:var(--fg);font-size:14px;max-width:85ch}
+    .alertMeta{color:var(--mut);font-size:12px}
+    .chip{
+      display:inline-flex;align-items:center;gap:8px;
+      font-size:12px;color:var(--mut);
+      border:1px solid rgba(255,255,255,.14);
+      padding:6px 10px;border-radius:999px;
+      background:rgba(0,0,0,.18);
+      white-space:nowrap;
+    }
+    .dot{width:8px;height:8px;border-radius:999px;background:var(--bad);display:inline-block}
+    .chip a{color:var(--acc);text-decoration:none}
+    .chip a:hover{text-decoration:underline}
 
     /* OPS HEADER */
     .ops{
@@ -69,9 +98,33 @@
       padding:6px 10px;border-radius:999px;
       background:rgba(0,0,0,.18);
     }
-    .dot{width:7px;height:7px;border-radius:999px;background:var(--acc);display:inline-block}
-    .dot.warn{background:var(--warn)}
-    .dot.bad{background:var(--bad)}
+    .dotAcc{width:7px;height:7px;border-radius:999px;background:var(--acc);display:inline-block}
+    .dotWarn{background:var(--warn)}
+    .ctaRow{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+    .btn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius:12px;
+      border:1px solid rgba(0,255,225,.26);
+      background:rgba(0,255,225,.08);
+      color:var(--fg);
+    }
+    .btn:hover{background:rgba(0,255,225,.14);text-decoration:none}
+    .btn.secondary{
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+    }
+
+    pre{
+      margin:0;
+      padding:10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.30);
+      overflow:auto;
+      color:var(--fg);
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size:12px;
+    }
     .console{
       min-width:320px;flex:0 1 420px;
       background:rgba(0,0,0,.25);
@@ -89,17 +142,8 @@
       color:var(--fg);
       white-space:nowrap;
     }
-    pre{
-      margin:0;
-      padding:10px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.30);
-      overflow:auto;
-      color:var(--fg);
-      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-      font-size:12px;
-    }
+    .hr{height:1px;background:var(--line);margin:12px 0}
+
     .grid{
       display:grid;
       grid-template-columns:repeat(12,1fr);
@@ -120,21 +164,6 @@
     h2{margin:0 0 8px;font-size:16px}
     p{margin:0 0 10px;color:var(--mut);max-width:85ch}
     ul{margin:8px 0 0 18px;color:var(--mut)}
-    .hr{height:1px;background:var(--line);margin:12px 0}
-    .ctaRow{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
-    .btn{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:10px 12px;border-radius:12px;
-      border:1px solid rgba(0,255,225,.26);
-      background:rgba(0,255,225,.08);
-      color:var(--fg);
-    }
-    .btn:hover{background:rgba(0,255,225,.14);text-decoration:none}
-    .btn.secondary{
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.06);
-    }
-    .small{font-size:12px;color:var(--mut)}
     footer{margin-top:18px;color:var(--mut);font-size:12px}
   </style>
 </head>
@@ -143,7 +172,7 @@
   <div class="wrap">
 
     <div class="topbar">
-      <div class="brand">
+      <div>
         <div class="seal">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA · HERMETICUM B.C.E. S.r.l.</div>
         <div class="small">Policy: HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · UE_FIRST · AUDIT_FIRST · GDPR_MIN</div>
       </div>
@@ -160,6 +189,20 @@
       </nav>
     </div>
 
+    <!-- ALERT MODE (query string) -->
+    <section id="hbceAlert" class="alert" aria-live="polite">
+      <div class="alertRow">
+        <div class="alertLeft">
+          <div class="alertTitle"><span class="dot"></span><span id="hbceAlertTitle">INTEGRITY ALERT</span></div>
+          <div class="alertMsg" id="hbceAlertMsg">Execution is blocked until identity integrity is restored.</div>
+          <div class="alertMeta" id="hbceAlertMeta">mode: FAIL-CLOSED · default state: DENY</div>
+        </div>
+        <div class="chip">
+          OPS MODE · <a href="./contact/">Initiate Intake</a>
+        </div>
+      </div>
+    </section>
+
     <!-- OPS HEADER -->
     <section class="ops">
       <div class="opsRow">
@@ -172,10 +215,10 @@
           </p>
 
           <div class="pillRow" aria-label="Status Pills">
-            <span class="pill"><span class="dot"></span>Gate Model: FAIL-CLOSED</span>
-            <span class="pill"><span class="dot"></span>Public Surface: HASH-ONLY</span>
-            <span class="pill"><span class="dot"></span>Evidence: APPEND-ONLY</span>
-            <span class="pill"><span class="dot warn"></span>Default State: DENY</span>
+            <span class="pill"><span class="dotAcc"></span>Gate Model: FAIL-CLOSED</span>
+            <span class="pill"><span class="dotAcc"></span>Public Surface: HASH-ONLY</span>
+            <span class="pill"><span class="dotAcc"></span>Evidence: APPEND-ONLY</span>
+            <span class="pill"><span class="dotAcc dotWarn"></span>Default State: DENY</span>
           </div>
 
           <div class="ctaRow">
@@ -270,7 +313,7 @@ rule:
         <ul>
           <li><a href="./robotics-ai/">1) Pilot (B2B)</a> — prove value in real systems</li>
           <li><a href="./operator/">2) Operator</a> — wire the gate, expand later</li>
-          <li><a href="./eu/">3) Institutional scale (EU)</a> — procurement framing &amp; governance</li>
+          <li><a href="./eu/">3) Institutional scale (EU / Horizon)</a> — procurement framing &amp; governance</li>
         </ul>
       </section>
 
@@ -292,5 +335,54 @@ rule:
     </footer>
 
   </div>
+
+  <script>
+    (function(){
+      "use strict";
+
+      function getParam(name){
+        try{ return new URLSearchParams(window.location.search).get(name); }
+        catch{ return null; }
+      }
+
+      const mode = (getParam("alert") || "").trim();
+      if(!mode) return;
+
+      const box  = document.getElementById("hbceAlert");
+      const tEl  = document.getElementById("hbceAlertTitle");
+      const mEl  = document.getElementById("hbceAlertMsg");
+      const xEl  = document.getElementById("hbceAlertMeta");
+
+      const presets = {
+        "1": {
+          title:"DENY-BY-DEFAULT · INTEGRITY ALERT",
+          msg:"Execution is blocked until identity integrity is restored. This is a FAIL-CLOSED system.",
+          meta:"reason: unspecified · action: BLOCK · mode: FAIL-CLOSED"
+        },
+        "missing_keys": {
+          title:"MISSING IDENTITY KEYS",
+          msg:"Execution is blocked. Identity keys are not initialized for this environment.",
+          meta:"reason: MISSING_KEYS · action: BLOCK · init: REQUIRED"
+        },
+        "mismatch": {
+          title:"INTEGRITY MISMATCH",
+          msg:"Execution is blocked. Computed integrity does not match stored integrity.",
+          meta:"reason: INTEGRITY_MISMATCH · action: BLOCK · remediation: REISSUE / REVERIFY"
+        },
+        "blocked": {
+          title:"EXECUTION BLOCKED",
+          msg:"Execution was denied by policy. Evidence has been recorded in append-only form.",
+          meta:"reason: POLICY_DENY · action: BLOCK · evidence: APPEND-ONLY"
+        }
+      };
+
+      const p = presets[mode] || presets["1"];
+      tEl.textContent = p.title;
+      mEl.textContent = p.msg;
+      xEl.textContent = p.meta;
+
+      box.classList.add("on");
+    })();
+  </script>
 </body>
 </html>
