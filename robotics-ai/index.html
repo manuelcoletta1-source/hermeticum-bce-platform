@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+
+  <title>IPR for Robotics & AI — HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</title>
+  <meta name="description" content="IPR for Robotics & AI: deterministic identity layer for humans, AI and machines. Verify identity before execution. Fail-closed by design." />
+
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --panel:#0f1620;
+      --panel2:#0d131c;
+      --text:#e8eef7;
+      --muted:#a9b6c8;
+      --line:rgba(255,255,255,.10);
+      --accent:#00ffe1;
+      --accent2:#7c5cff;
+      --danger:#ff3b6b;
+      --ok:#3dff93;
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --r:18px;
+      --max:1100px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(0,255,225,.12), transparent 60%),
+        radial-gradient(900px 500px at 100% 10%, rgba(124,92,255,.12), transparent 55%),
+        radial-gradient(800px 500px at 40% 120%, rgba(0,255,225,.08), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.45;
+    }
+    a{color:inherit}
+    .wrap{max-width:var(--max); margin:0 auto; padding:28px 18px 80px}
+    .top{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:16px; padding:10px 0 26px;
+    }
+    .brand{
+      display:flex; flex-direction:column; gap:6px;
+    }
+    .brand .mark{
+      display:flex; align-items:center; gap:10px; letter-spacing:.2px;
+      font-weight:800; font-size:14px; text-transform:uppercase;
+    }
+    .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 0 18px rgba(0,255,225,.25);
+      flex:0 0 auto;
+    }
+    .brand .tag{
+      color:var(--muted);
+      font-size:12.5px;
+    }
+    .nav{
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;
+    }
+    .chip{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      padding:9px 12px;
+      border-radius:999px;
+      text-decoration:none;
+      font-size:12.5px;
+      color:var(--muted);
+      transition: transform .15s ease, border-color .15s ease, color .15s ease;
+      backdrop-filter: blur(8px);
+    }
+    .chip:hover{transform: translateY(-1px); border-color: rgba(0,255,225,.35); color:var(--text)}
+    .hero{
+      border:1px solid var(--line);
+      border-radius: calc(var(--r) + 6px);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)),
+        radial-gradient(900px 320px at 30% 0%, rgba(0,255,225,.12), transparent 55%),
+        radial-gradient(700px 260px at 90% 10%, rgba(124,92,255,.10), transparent 60%),
+        rgba(15,22,32,.55);
+      box-shadow: var(--shadow);
+      padding: 28px 22px;
+      overflow:hidden;
+      position:relative;
+    }
+    .hero:before{
+      content:"";
+      position:absolute; inset:-1px;
+      background: linear-gradient(90deg, rgba(0,255,225,.0), rgba(0,255,225,.18), rgba(124,92,255,.18), rgba(0,255,225,.0));
+      opacity:.35;
+      filter: blur(18px);
+      pointer-events:none;
+    }
+    .hero-grid{
+      position:relative;
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:18px;
+      align-items:start;
+    }
+    @media (max-width: 900px){
+      .hero-grid{grid-template-columns:1fr}
+    }
+    h1{
+      margin:0 0 10px;
+      font-size: clamp(28px, 4vw, 44px);
+      letter-spacing:-.02em;
+      line-height:1.08;
+    }
+    .sub{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size: 15.5px;
+      max-width: 70ch;
+    }
+    .badges{
+      display:flex; flex-wrap:wrap; gap:8px;
+      margin: 14px 0 18px;
+    }
+    .badge{
+      font-size:12px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      color: var(--muted);
+    }
+    .badge strong{color:var(--text); font-weight:700}
+    .cta{
+      display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+      margin-top: 10px;
+    }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:10px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      text-decoration:none;
+      font-weight:700;
+      font-size:13.5px;
+      transition: transform .15s ease, border-color .15s ease, background .15s ease;
+    }
+    .btn:hover{transform: translateY(-1px); border-color: rgba(0,255,225,.38); background: rgba(0,255,225,.06)}
+    .btn.primary{
+      border-color: rgba(0,255,225,.55);
+      background: linear-gradient(180deg, rgba(0,255,225,.18), rgba(0,255,225,.06));
+      box-shadow: 0 0 28px rgba(0,255,225,.12);
+    }
+    .btn.primary:hover{border-color: rgba(0,255,225,.8); background: linear-gradient(180deg, rgba(0,255,225,.22), rgba(0,255,225,.08))}
+    .btn .k{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      color: rgba(232,238,247,.85);
+      padding: 2px 8px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 999px;
+      background: rgba(0,0,0,.22);
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius: var(--r);
+      background: rgba(15,22,32,.45);
+      padding: 16px 16px;
+      box-shadow: 0 14px 40px rgba(0,0,0,.35);
+      backdrop-filter: blur(10px);
+    }
+    .card h3{
+      margin:0 0 8px;
+      font-size: 14px;
+      letter-spacing:.02em;
+      text-transform:uppercase;
+      color: rgba(232,238,247,.88);
+    }
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    .kv{
+      margin:0; padding:0;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+    }
+    .kv li{
+      list-style:none;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      border-radius: 14px;
+      padding: 12px 12px;
+    }
+    .kv .k2{color:var(--muted); font-size:12px; margin-bottom:4px}
+    .kv .v2{font-weight:800; font-size:13.5px}
+    .ok{color: var(--ok)}
+    .danger{color: var(--danger)}
+
+    .section{
+      margin-top: 18px;
+      padding-top: 18px;
+    }
+    .section h2{
+      margin:0 0 8px;
+      font-size: 18px;
+      letter-spacing:-.01em;
+    }
+    .section p{
+      margin:0 0 12px;
+      color: var(--muted);
+      max-width: 85ch;
+      font-size: 14.5px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 900px){
+      .grid{gap:10px}
+    }
+    .col-6{grid-column: span 6}
+    .col-4{grid-column: span 4}
+    .col-8{grid-column: span 8}
+    .col-12{grid-column: span 12}
+    @media (max-width: 900px){
+      .col-6,.col-4,.col-8{grid-column: span 12}
+    }
+
+    .use{
+      padding: 14px 14px;
+      border-radius: var(--r);
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+    }
+    .use h4{
+      margin:0 0 8px;
+      font-size: 14px;
+      letter-spacing:.01em;
+    }
+    .use p{margin:0; color:var(--muted); font-size:13.5px}
+    .pillrow{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+    .pill{
+      font-size:11.5px;
+      padding:6px 9px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      color: rgba(232,238,247,.85);
+      background: rgba(0,0,0,.16);
+    }
+
+    .flow{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.16);
+      border-radius: var(--r);
+      padding: 14px;
+      overflow:auto;
+    }
+    .flow pre{
+      margin:0;
+      min-width: 760px;
+      color: rgba(232,238,247,.92);
+      font-size: 12.5px;
+      line-height: 1.35;
+    }
+    .foot{
+      margin-top: 26px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,.10);
+      color: var(--muted);
+      font-size: 12.5px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+    .seal{
+      font-weight:800;
+      color: rgba(232,238,247,.86);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <header class="top" aria-label="Top navigation">
+      <div class="brand">
+        <div class="mark">
+          <span class="dot" aria-hidden="true"></span>
+          <span>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</span>
+        </div>
+        <div class="tag">HERMETICUM B.C.E. S.r.l. — EU-first operational identity infrastructure</div>
+      </div>
+
+      <nav class="nav" aria-label="Site links">
+        <a class="chip" href="../">Home</a>
+        <a class="chip" href="../activate/">Activate IPR</a>
+        <a class="chip" href="../verify/">Verify</a>
+        <a class="chip" href="../NODE-PACK/">Deploy Node</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" aria-label="Hero">
+        <div class="hero-grid">
+          <div>
+            <h1>IPR for Robotics &amp; AI</h1>
+            <p class="sub">
+              A deterministic identity layer for humans, AI agents and machines.
+              <strong>Verify identity before execution.</strong>
+              If verification fails, the system stops — fail-closed by design.
+            </p>
+
+            <div class="badges" aria-label="Core properties">
+              <span class="badge"><strong>UE-FIRST</strong></span>
+              <span class="badge"><strong>AUDIT-FIRST</strong></span>
+              <span class="badge"><strong>HASH-ONLY</strong></span>
+              <span class="badge"><strong>APPEND-ONLY</strong></span>
+              <span class="badge"><strong>FAIL-CLOSED</strong></span>
+              <span class="badge"><strong>NO IDENTITY CUSTODY</strong></span>
+            </div>
+
+            <div class="cta" aria-label="Primary calls to action">
+              <a class="btn primary" href="../activate/">
+                Activate IPR <span class="k">/activate</span>
+              </a>
+              <a class="btn" href="../NODE-PACK/">
+                Deploy Node <span class="k">/NODE-PACK</span>
+              </a>
+              <a class="btn" href="../verify/">
+                Verify <span class="k">/verify</span>
+              </a>
+            </div>
+          </div>
+
+          <aside class="card" aria-label="Execution gate">
+            <h3>Execution Gate</h3>
+            <ul class="kv">
+              <li>
+                <div class="k2">Rule</div>
+                <div class="v2 mono">identity_valid == true ? EXECUTE : BLOCK</div>
+              </li>
+              <li>
+                <div class="k2">Failure mode</div>
+                <div class="v2 danger mono">FAIL-CLOSED</div>
+              </li>
+              <li>
+                <div class="k2">Outcome</div>
+                <div class="v2 ok mono">deterministic + auditable</div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section" aria-label="Problem and solution">
+        <h2>Why robotics needs identity before action</h2>
+        <p>
+          Most autonomous systems execute first and attempt to explain later.
+          That model collapses under real-world constraints: accountability, safety, forensic audit, and EU compliance.
+          IPR inverts the sequence: identity must validate first — or nothing moves.
+        </p>
+
+        <div class="grid" role="list">
+          <div class="col-6" role="listitem">
+            <div class="use">
+              <h4>Problem: unaudited autonomy</h4>
+              <p>Machines can act without a persistent identity context, making attribution and responsibility fragile.</p>
+              <div class="pillrow">
+                <span class="pill">unclear operator</span>
+                <span class="pill">weak accountability</span>
+                <span class="pill">post-facto logs</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6" role="listitem">
+            <div class="use">
+              <h4>Solution: deterministic identity gate</h4>
+              <p>Execution is conditional: verified identity proof is required before any operation is authorized.</p>
+              <div class="pillrow">
+                <span class="pill">pre-execution verify</span>
+                <span class="pill">fail-closed</span>
+                <span class="pill">audit-ready</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-label="Use cases">
+        <h2>Operational use cases</h2>
+        <p>
+          IPR is designed for real systems: robots, drones, industrial controllers, and AI agents.
+          Below are canonical patterns where identity verification becomes a hard gate.
+        </p>
+
+        <div class="grid" role="list">
+          <div class="col-4" role="listitem">
+            <div class="use">
+              <h4>Robotics Lab</h4>
+              <p>Robots operate only if the operator IPR is valid and the run is recorded as an auditable event chain.</p>
+              <div class="pillrow">
+                <span class="pill">operator binding</span>
+                <span class="pill">lab audit</span>
+                <span class="pill">traceability</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4" role="listitem">
+            <div class="use">
+              <h4>Drones &amp; fleets</h4>
+              <p>Flight authorization is gated by identity proof. If verification fails, the system remains in hold.</p>
+              <div class="pillrow">
+                <span class="pill">pre-flight gate</span>
+                <span class="pill">fleet policy</span>
+                <span class="pill">fail-closed hold</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4" role="listitem">
+            <div class="use">
+              <h4>AI Agents</h4>
+              <p>Agents execute actions only under a persistent identity record, producing deterministic receipts and proofs.</p>
+              <div class="pillrow">
+                <span class="pill">agent identity</span>
+                <span class="pill">receipts</span>
+                <span class="pill">policy gates</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6" role="listitem">
+            <div class="use">
+              <h4>Industrial systems</h4>
+              <p>Machine activation requires valid IPR: operator identity, authorization scope, and audit chain before runtime.</p>
+              <div class="pillrow">
+                <span class="pill">industrial access</span>
+                <span class="pill">traceable starts</span>
+                <span class="pill">incident-ready</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6" role="listitem">
+            <div class="use">
+              <h4>Shared environments</h4>
+              <p>Multiple operators, machines and AI processes can share a verifiable identity perimeter without data custody.</p>
+              <div class="pillrow">
+                <span class="pill">multi-operator</span>
+                <span class="pill">no custody</span>
+                <span class="pill">public compatibility</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-label="How it works">
+        <h2>How it works</h2>
+        <p>
+          IPR is intentionally simple at the execution boundary: deterministic verification, fail-closed outcomes, and append-only evidence.
+          This is the minimum viable identity layer for systems that must act in reality.
+        </p>
+
+        <div class="grid">
+          <div class="col-12">
+            <div class="flow" aria-label="Flow diagram">
+              <pre class="mono">
+[1] CREATE IPR
+    - generate identity record (hash-only public surface)
+    - optional keys for signing events
+
+[2] ANCHOR INTEGRITY
+    - compute deterministic SHA-256 over canonical form
+    - store integrity value in record / receipt
+
+[3] VERIFY (DETERMINISTIC)
+    - recompute SHA-256
+    - match == true ? VALID : INVALID
+
+[4] EXECUTION GATE (FAIL-CLOSED)
+    - VALID  -> EXECUTE + append event
+    - INVALID -> BLOCK   + append refusal (optional)
+
+[5] AUDIT
+    - append-only chain
+    - forensic trace without identity custody
+              </pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-label="Deployment model">
+        <h2>Deployment model</h2>
+        <p>
+          Nodes can run as static deployments. No backend is required. Verification remains local and deterministic.
+          Public compatibility is maintained through standard structures and hash-only data exposure.
+        </p>
+
+        <div class="grid" role="list">
+          <div class="col-6" role="listitem">
+            <div class="use">
+              <h4>Static deploy</h4>
+              <p>Publish on GitHub Pages or any static host. The node remains verifiable even if the original source disappears.</p>
+              <div class="pillrow">
+                <span class="pill">server-independent</span>
+                <span class="pill">portable</span>
+                <span class="pill">resilient</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6" role="listitem">
+            <div class="use">
+              <h4>EU baseline</h4>
+              <p>Designed with UE-first principles: audit-first, GDPR-minimization, and deterministic verification.</p>
+              <div class="pillrow">
+                <span class="pill">UE-first</span>
+                <span class="pill">GDPR-min</span>
+                <span class="pill">audit-first</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-label="Final call to action">
+        <h2>Start with a real operational identity</h2>
+        <p>
+          Activate an IPR and deploy a node. Bind operators, agents, and machines to a deterministic identity gate.
+          This is the minimum layer required for accountable autonomy.
+        </p>
+
+        <div class="cta">
+          <a class="btn primary" href="../activate/">Activate IPR</a>
+          <a class="btn" href="../NODE-PACK/">Deploy Node</a>
+          <a class="btn" href="../">Back to Home</a>
+        </div>
+      </section>
+
+      <footer class="foot" aria-label="Footer">
+        <div>
+          <div class="seal">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+          <div>Issuer: <span class="mono">HERMETICUM B.C.E. S.r.l.</span> — Jurisdiction: <span class="mono">EU</span></div>
+        </div>
+        <div class="mono">
+          Policy: HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · UE_FIRST · AUDIT_FIRST · GDPR_MIN
+        </div>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>
