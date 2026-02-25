@@ -1,388 +1,155 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>HBCE R&D · HERMETICUM B2G/B2B — Operational Identity Infrastructure</title>
-  <meta name="description" content="HBCE is an execution verification layer. When verification fails, execution is blocked. IPR is the operational identity technology. Joker-C2 is the cybernetic operational product layer." />
-  <meta name="robots" content="index,follow" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HBCE — Operational Identity Infrastructure</title>
 
-  <style>
-    :root{
-      --bg:#0b0f14;
-      --fg:#e9f0ff;
-      --mut:#a7b4cc;
-      --acc:#00ffe1;
-      --warn:#ffcc00;
-      --bad:#ff3b3b;
-      --card:#101826;
-      --line:rgba(255,255,255,.10);
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;
-      background:radial-gradient(1200px 800px at 20% 0%, rgba(0,255,225,.06), transparent 60%),
-                 radial-gradient(900px 700px at 85% 10%, rgba(255,59,59,.05), transparent 55%),
-                 var(--bg);
-      color:var(--fg);
-      line-height:1.5;
-    }
-    a{color:var(--acc);text-decoration:none}
-    a:hover{text-decoration:underline}
-    .wrap{max-width:1120px;margin:0 auto;padding:22px 16px 30px}
+<link rel="stylesheet" href="/assets/hbce-style.css">
+<script src="/assets/hbce-ui.js"></script>
 
-    .topbar{
-      display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;
-      margin-bottom:14px;
-    }
-    .seal{font-size:12px;color:var(--mut);letter-spacing:.12em;text-transform:uppercase}
-    .small{font-size:12px;color:var(--mut)}
-    .nav{display:flex;flex-wrap:wrap;gap:10px}
-    .nav a{
-      padding:9px 11px;
-      border:1px solid rgba(0,255,225,.22);
-      border-radius:12px;
-      background:rgba(0,255,225,.06);
-    }
-    .nav a:hover{background:rgba(0,255,225,.12);text-decoration:none}
+<style>
+.hero{
+padding:160px 0 120px 0;
+}
 
-    /* ALERT BANNER (hidden by default) */
-    .alert{
-      display:none;
-      margin:0 0 14px;
-      border:1px solid rgba(255,59,59,.35);
-      background:linear-gradient(180deg, rgba(255,59,59,.12), rgba(0,0,0,.22));
-      border-radius:16px;
-      padding:12px 14px;
-      box-shadow:0 18px 60px rgba(0,0,0,.35);
-    }
-    .alert.on{display:block}
-    .alertRow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
-    .alertLeft{display:flex;flex-direction:column;gap:4px}
-    .alertTitle{
-      font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--bad);
-      display:flex;align-items:center;gap:10px;
-    }
-    .alertMsg{color:var(--fg);font-size:14px;max-width:85ch}
-    .alertMeta{color:var(--mut);font-size:12px}
-    .chip{
-      display:inline-flex;align-items:center;gap:8px;
-      font-size:12px;color:var(--mut);
-      border:1px solid rgba(255,255,255,.14);
-      padding:6px 10px;border-radius:999px;
-      background:rgba(0,0,0,.18);
-      white-space:nowrap;
-    }
-    .dot{width:8px;height:8px;border-radius:999px;background:var(--bad);display:inline-block}
-    .chip a{color:var(--acc);text-decoration:none}
-    .chip a:hover{text-decoration:underline}
+.hero h1{
+font-size:64px;
+letter-spacing:-.03em;
+line-height:1.05;
+margin:0 0 24px 0;
+max-width:900px;
+}
 
-    /* OPS HEADER */
-    .ops{
-      background:linear-gradient(180deg, rgba(16,24,38,.92), rgba(16,24,38,.58));
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:16px;
-      box-shadow:0 20px 60px rgba(0,0,0,.35);
-    }
-    .opsRow{display:flex;flex-wrap:wrap;gap:12px;align-items:stretch;justify-content:space-between}
-    .opsTitle{min-width:280px;flex:1}
-    h1{margin:4px 0 8px;font-size:34px;letter-spacing:-.02em}
-    .lead{margin:0;color:var(--mut);max-width:85ch}
-    .pillRow{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-    .pill{
-      display:inline-flex;align-items:center;gap:8px;
-      font-size:12px;color:var(--mut);
-      border:1px solid rgba(255,255,255,.12);
-      padding:6px 10px;border-radius:999px;
-      background:rgba(0,0,0,.18);
-    }
-    .dotAcc{width:7px;height:7px;border-radius:999px;background:var(--acc);display:inline-block}
-    .dotWarn{background:var(--warn)}
-    .ctaRow{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
-    .btn{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:10px 12px;border-radius:12px;
-      border:1px solid rgba(0,255,225,.26);
-      background:rgba(0,255,225,.08);
-      color:var(--fg);
-    }
-    .btn:hover{background:rgba(0,255,225,.14);text-decoration:none}
-    .btn.secondary{
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.06);
-    }
+.hero p{
+font-size:20px;
+color:#a7b4cc;
+max-width:680px;
+margin-bottom:40px;
+}
 
-    pre{
-      margin:0;
-      padding:10px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.30);
-      overflow:auto;
-      color:var(--fg);
-      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-      font-size:12px;
-    }
-    .console{
-      min-width:320px;flex:0 1 420px;
-      background:rgba(0,0,0,.25);
-      border:1px solid rgba(0,255,225,.14);
-      border-radius:16px;
-      padding:12px;
-    }
-    .consoleHdr{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
-    .consoleHdr .k{font-size:12px;color:var(--mut);letter-spacing:.12em;text-transform:uppercase}
-    .badge{
-      font-size:12px;
-      padding:6px 10px;border-radius:999px;
-      border:1px solid rgba(0,255,225,.28);
-      background:rgba(0,255,225,.08);
-      color:var(--fg);
-      white-space:nowrap;
-    }
-    .hr{height:1px;background:var(--line);margin:12px 0}
+.cta{
+display:flex;
+gap:16px;
+flex-wrap:wrap;
+margin-top:20px;
+}
 
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(12,1fr);
-      gap:14px;
-      margin-top:14px;
-    }
-    .card{
-      grid-column:span 12;
-      background:linear-gradient(180deg, rgba(16,24,38,.88), rgba(16,24,38,.62));
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:16px;
-    }
-    @media(min-width:900px){
-      .half{grid-column:span 6}
-      .third{grid-column:span 4}
-    }
-    h2{margin:0 0 8px;font-size:16px}
-    p{margin:0 0 10px;color:var(--mut);max-width:85ch}
-    ul{margin:8px 0 0 18px;color:var(--mut)}
-    footer{margin-top:18px;color:var(--mut);font-size:12px}
-  </style>
+.btn-main{
+padding:16px 28px;
+background:#00ffe1;
+color:#000;
+font-weight:600;
+border-radius:40px;
+text-decoration:none;
+font-size:16px;
+}
+
+.btn-ghost{
+padding:16px 28px;
+border:1px solid rgba(255,255,255,.2);
+border-radius:40px;
+text-decoration:none;
+color:#e9f0ff;
+font-size:16px;
+}
+
+.section{
+padding:140px 0;
+}
+
+.section h2{
+font-size:40px;
+margin-bottom:16px;
+letter-spacing:-.02em;
+}
+
+.section p{
+color:#a7b4cc;
+font-size:18px;
+max-width:640px;
+}
+
+.divider{
+height:1px;
+background:rgba(255,255,255,.08);
+margin:0;
+}
+</style>
+
 </head>
 
 <body>
-  <div class="wrap">
 
-    <div class="topbar">
-      <div>
-        <div class="seal">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA · HERMETICUM B.C.E. S.r.l.</div>
-        <div class="small">Policy: HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · UE_FIRST · AUDIT_FIRST · GDPR_MIN</div>
-      </div>
+<div class="wrap">
 
-      <nav class="nav" aria-label="Primary">
-        <a href="./">Home</a>
-        <a href="./about/">About</a>
-        <a href="./robotics-ai/">Robotics &amp; AI</a>
-        <a href="./joker-c2/">Joker-C2</a>
-        <a href="./pricing/">Pricing</a>
-        <a href="./operator/">Operators</a>
-        <a href="./eu/">EU / Horizon</a>
-        <a href="./contact/">Contact</a>
-      </nav>
-    </div>
+<!-- HERO -->
+<section class="hero">
 
-    <!-- ALERT MODE (query string) -->
-    <section id="hbceAlert" class="alert" aria-live="polite">
-      <div class="alertRow">
-        <div class="alertLeft">
-          <div class="alertTitle"><span class="dot"></span><span id="hbceAlertTitle">INTEGRITY ALERT</span></div>
-          <div class="alertMsg" id="hbceAlertMsg">Execution is blocked until identity integrity is restored.</div>
-          <div class="alertMeta" id="hbceAlertMeta">mode: FAIL-CLOSED · default state: DENY</div>
-        </div>
-        <div class="chip">
-          OPS MODE · <a href="./contact/">Initiate Intake</a>
-        </div>
-      </div>
-    </section>
+<h1>
+Operational Identity<br>
+for Autonomous Systems
+</h1>
 
-    <!-- OPS HEADER -->
-    <section class="ops">
-      <div class="opsRow">
-        <div class="opsTitle">
-          <div class="seal">EU-first · audit-first · fail-closed</div>
-          <h1>Operational Identity Infrastructure</h1>
-          <p class="lead">
-            Digital systems execute actions with real-world impact. The gap is not “security”. The gap is <strong>legitimacy</strong>:
-            proving who had authority at the moment of execution—deterministically, without narrative.
-          </p>
+<p>
+Execution without identity is undefined.  
+HBCE establishes deterministic authority before action.  
+Fail-closed by design. Persistent by structure.
+</p>
 
-          <div class="pillRow" aria-label="Status Pills">
-            <span class="pill"><span class="dotAcc"></span>Gate Model: FAIL-CLOSED</span>
-            <span class="pill"><span class="dotAcc"></span>Public Surface: HASH-ONLY</span>
-            <span class="pill"><span class="dotAcc"></span>Evidence: APPEND-ONLY</span>
-            <span class="pill"><span class="dotAcc dotWarn"></span>Default State: DENY</span>
-          </div>
+<div class="cta">
+<a href="/contact/" class="btn-main">Request Brief</a>
+<a href="/about/" class="btn-ghost">About Infrastructure</a>
+</div>
 
-          <div class="ctaRow">
-            <a class="btn" href="./contact/">Contact (Intake)</a>
-            <a class="btn secondary" href="./pricing/">Pricing Posture</a>
-            <a class="btn secondary" href="./about/">Founder / Operating Profile</a>
-          </div>
-        </div>
+</section>
 
-        <div class="console" role="region" aria-label="Operational Console">
-          <div class="consoleHdr">
-            <div class="k">OPS CONSOLE</div>
-            <div class="badge">STATUS: READY (DETERMINISTIC)</div>
-          </div>
+<div class="divider"></div>
 
-          <pre>
-identity_valid == true ? EXECUTE : BLOCK
-failure_mode   = FAIL_CLOSED
-public_surface = HASH_ONLY
-evidence       = APPEND_ONLY
+<!-- HBCE -->
+<section class="section">
+<h2>HBCE R&D</h2>
+<p>
+Deep-tech research laboratory developing operational identity systems  
+for AI, robotics and autonomous infrastructures.
+</p>
+</section>
 
-rule:
-  if integrity missing → BLOCK + LOG(reason)
-  if mismatch          → BLOCK + LOG(reason)
-  if valid             → EXECUTE + LOG(event)</pre>
+<div class="divider"></div>
 
-          <div class="hr"></div>
-          <div class="small">
-            HBCE does not sell features. It establishes conditions under which execution becomes verifiable, attributable and auditable.
-          </div>
-        </div>
-      </div>
-    </section>
+<!-- IPR -->
+<section class="section">
+<h2>IPR Technology</h2>
+<p>
+Identity Primary Record is a persistent operational identity layer.  
+Not a login. Not a wallet. Not a profile.  
+A computable authority system for execution environments.
+</p>
+</section>
 
-    <!-- PILLARS -->
-    <div class="grid">
+<div class="divider"></div>
 
-      <section class="card half">
-        <h2>HBCE R&amp;D — Deep-Tech Lab</h2>
-        <p>
-          Research and engineering for operational identity, deterministic verification, and identity binding for AI and autonomous systems.
-        </p>
-        <ul>
-          <li>Execution legitimacy architectures</li>
-          <li>Deterministic verification engines</li>
-          <li>Autonomous systems binding (robots, fleets, drones)</li>
-        </ul>
-      </section>
+<!-- JOKER -->
+<section class="section">
+<h2>Joker-C2</h2>
+<p>
+Cybernetic operational entity bound to identity authority.  
+Designed for real-world systems, not conversational output.
+</p>
+</section>
 
-      <section class="card half">
-        <h2>HERMETICUM — B2G / B2B Deployment Vehicle</h2>
-        <p>
-          Procurement-grade posture for governments and industry: governance, audit exposure, interoperability scope under EU-first constraints.
-        </p>
-        <ul>
-          <li>B2G: institutional nodes, public-sector deployment paths</li>
-          <li>B2B: operators, industrial systems, critical workflows</li>
-          <li>Territorial interoperability via operator nodes</li>
-        </ul>
-      </section>
+<div class="divider"></div>
 
-      <section class="card third">
-        <h2>IPR — New Technology</h2>
-        <p>
-          Identity Primary Record: persistent, computable, verifiable operational identity. Not an account. Not a wallet. Not a login.
-        </p>
-        <div class="hr"></div>
-        <ul>
-          <li>Hash-only public verification</li>
-          <li>Fail-closed integrity model</li>
-          <li>Append-only evidence chain</li>
-        </ul>
-      </section>
+<!-- HERMETICUM -->
+<section class="section">
+<h2>HERMETICUM Infrastructure</h2>
+<p>
+Deployment layer for B2G and industrial environments.  
+Identity-gated execution for critical systems and autonomous operations.
+</p>
+</section>
 
-      <section class="card third">
-        <h2>Joker-C2 — Operational Cybernetic Product</h2>
-        <p>
-          Identity-bound operational entity. Not a chatbot. A constrained execution layer that produces evidence and preserves accountability.
-        </p>
-        <div class="hr"></div>
-        <ul>
-          <li>Human↔AI operational co-identity</li>
-          <li>Decision support under identity gating</li>
-          <li>Integration target: robotics &amp; autonomous execution</li>
-        </ul>
-      </section>
+</div>
 
-      <section class="card third">
-        <h2>Canonical Journey</h2>
-        <p>Real deployment path: pilots validate execution gating, operators integrate it, institutions scale it.</p>
-        <div class="hr"></div>
-        <ul>
-          <li><a href="./robotics-ai/">1) Pilot (B2B)</a> — prove value in real systems</li>
-          <li><a href="./operator/">2) Operator</a> — wire the gate, expand later</li>
-          <li><a href="./eu/">3) Institutional scale (EU / Horizon)</a> — procurement framing &amp; governance</li>
-        </ul>
-      </section>
-
-      <section class="card">
-        <h2>Fast Path</h2>
-        <p>Enter the operational layer: activate identity, deploy a node, or request an institutional brief.</p>
-        <div class="ctaRow">
-          <a class="btn" href="./activate/">Activate</a>
-          <a class="btn secondary" href="./node-pack/">Deploy Node</a>
-          <a class="btn secondary" href="./eu/">Institutional Brief</a>
-        </div>
-      </section>
-
-    </div>
-
-    <footer>
-      <div><strong>HERMETICUM B.C.E. S.r.l.</strong></div>
-      <div>HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · UE_FIRST · AUDIT_FIRST · GDPR_MIN</div>
-    </footer>
-
-  </div>
-
-  <script>
-    (function(){
-      "use strict";
-
-      function getParam(name){
-        try{ return new URLSearchParams(window.location.search).get(name); }
-        catch{ return null; }
-      }
-
-      const mode = (getParam("alert") || "").trim();
-      if(!mode) return;
-
-      const box  = document.getElementById("hbceAlert");
-      const tEl  = document.getElementById("hbceAlertTitle");
-      const mEl  = document.getElementById("hbceAlertMsg");
-      const xEl  = document.getElementById("hbceAlertMeta");
-
-      const presets = {
-        "1": {
-          title:"DENY-BY-DEFAULT · INTEGRITY ALERT",
-          msg:"Execution is blocked until identity integrity is restored. This is a FAIL-CLOSED system.",
-          meta:"reason: unspecified · action: BLOCK · mode: FAIL-CLOSED"
-        },
-        "missing_keys": {
-          title:"MISSING IDENTITY KEYS",
-          msg:"Execution is blocked. Identity keys are not initialized for this environment.",
-          meta:"reason: MISSING_KEYS · action: BLOCK · init: REQUIRED"
-        },
-        "mismatch": {
-          title:"INTEGRITY MISMATCH",
-          msg:"Execution is blocked. Computed integrity does not match stored integrity.",
-          meta:"reason: INTEGRITY_MISMATCH · action: BLOCK · remediation: REISSUE / REVERIFY"
-        },
-        "blocked": {
-          title:"EXECUTION BLOCKED",
-          msg:"Execution was denied by policy. Evidence has been recorded in append-only form.",
-          meta:"reason: POLICY_DENY · action: BLOCK · evidence: APPEND-ONLY"
-        }
-      };
-
-      const p = presets[mode] || presets["1"];
-      tEl.textContent = p.title;
-      mEl.textContent = p.msg;
-      xEl.textContent = p.meta;
-
-      box.classList.add("on");
-    })();
-  </script>
 </body>
 </html>
