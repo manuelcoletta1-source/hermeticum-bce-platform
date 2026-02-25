@@ -1,219 +1,296 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>HBCE R&D · HERMETICUM B2G · IPR · Joker-C2</title>
-<meta name="description" content="HBCE R&D develops IPR: operational digital identity technology for AI and autonomous systems. HERMETICUM deploys for B2G/B2B. Joker-C2 is the cybernetic operational product."/>
-<meta name="robots" content="index,follow"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>HBCE R&D · HERMETICUM B2G/B2B — Operational Identity Infrastructure</title>
+  <meta name="description" content="HBCE is an execution verification layer. When verification fails, execution is blocked. IPR is the operational identity technology. Joker-C2 is the cybernetic operational product layer." />
+  <meta name="robots" content="index,follow" />
 
-<style>
-:root{
---bg:#0b0f14;
---fg:#e9f0ff;
---mut:#a7b4cc;
---acc:#00ffe1;
---card:#101826;
---line:rgba(255,255,255,.10);
-}
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --fg:#e9f0ff;
+      --mut:#a7b4cc;
+      --acc:#00ffe1;
+      --warn:#ffcc00;
+      --bad:#ff3b3b;
+      --card:#101826;
+      --line:rgba(255,255,255,.10);
+      --glass:rgba(16,24,38,.72);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;
+      background:radial-gradient(1200px 800px at 20% 0%, rgba(0,255,225,.06), transparent 60%),
+                 radial-gradient(900px 700px at 85% 10%, rgba(255,59,59,.05), transparent 55%),
+                 var(--bg);
+      color:var(--fg);
+      line-height:1.5;
+    }
+    a{color:var(--acc);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:1120px;margin:0 auto;padding:22px 16px 30px}
+    .topbar{
+      display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;
+      margin-bottom:14px;
+    }
+    .seal{
+      font-size:12px;color:var(--mut);letter-spacing:.12em;text-transform:uppercase
+    }
+    .brand strong{color:var(--fg)}
+    .nav{display:flex;flex-wrap:wrap;gap:10px}
+    .nav a{
+      padding:9px 11px;
+      border:1px solid rgba(0,255,225,.22);
+      border-radius:12px;
+      background:rgba(0,255,225,.06);
+    }
+    .nav a:hover{background:rgba(0,255,225,.12);text-decoration:none}
 
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;background:var(--bg);color:var(--fg)}
-a{color:var(--acc);text-decoration:none}
-a:hover{text-decoration:underline}
-
-.wrap{max-width:1100px;margin:auto;padding:26px 18px}
-
-.top{
-display:flex;
-flex-wrap:wrap;
-align-items:center;
-justify-content:space-between;
-gap:14px;
-margin-bottom:20px
-}
-
-.brand{
-display:flex;
-flex-direction:column;
-gap:4px
-}
-
-.seal{
-font-size:12px;
-letter-spacing:.12em;
-text-transform:uppercase;
-color:var(--mut)
-}
-
-h1{
-margin:6px 0;
-font-size:34px;
-letter-spacing:-.02em
-}
-
-.lead{
-color:var(--mut);
-max-width:70ch
-}
-
-.nav{
-display:flex;
-flex-wrap:wrap;
-gap:10px
-}
-
-.nav a{
-padding:10px 12px;
-border:1px solid rgba(0,255,225,.25);
-border-radius:12px;
-background:rgba(0,255,225,.06)
-}
-
-.nav a:hover{
-background:rgba(0,255,225,.12);
-text-decoration:none
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(12,1fr);
-gap:16px;
-margin-top:20px
-}
-
-.card{
-grid-column:span 12;
-background:linear-gradient(180deg,rgba(16,24,38,.92),rgba(16,24,38,.72));
-border:1px solid var(--line);
-border-radius:16px;
-padding:18px
-}
-
-@media(min-width:900px){
-.half{grid-column:span 6}
-.third{grid-column:span 4}
-}
-
-.tag{
-display:inline-block;
-font-size:12px;
-color:var(--mut);
-border:1px solid rgba(255,255,255,.12);
-padding:4px 8px;
-border-radius:999px;
-margin-right:8px
-}
-
-.hr{
-height:1px;
-background:var(--line);
-margin:12px 0
-}
-
-footer{
-margin-top:28px;
-font-size:12px;
-color:var(--mut)
-}
-</style>
+    /* OPS HEADER */
+    .ops{
+      background:linear-gradient(180deg, rgba(16,24,38,.92), rgba(16,24,38,.58));
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+      box-shadow:0 20px 60px rgba(0,0,0,.35);
+    }
+    .opsRow{display:flex;flex-wrap:wrap;gap:12px;align-items:stretch;justify-content:space-between}
+    .opsTitle{min-width:280px;flex:1}
+    h1{margin:4px 0 8px;font-size:34px;letter-spacing:-.02em}
+    .lead{margin:0;color:var(--mut);max-width:85ch}
+    .pillRow{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      font-size:12px;color:var(--mut);
+      border:1px solid rgba(255,255,255,.12);
+      padding:6px 10px;border-radius:999px;
+      background:rgba(0,0,0,.18);
+    }
+    .dot{width:7px;height:7px;border-radius:999px;background:var(--acc);display:inline-block}
+    .dot.warn{background:var(--warn)}
+    .dot.bad{background:var(--bad)}
+    .console{
+      min-width:320px;flex:0 1 420px;
+      background:rgba(0,0,0,.25);
+      border:1px solid rgba(0,255,225,.14);
+      border-radius:16px;
+      padding:12px;
+    }
+    .consoleHdr{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+    .consoleHdr .k{font-size:12px;color:var(--mut);letter-spacing:.12em;text-transform:uppercase}
+    .badge{
+      font-size:12px;
+      padding:6px 10px;border-radius:999px;
+      border:1px solid rgba(0,255,225,.28);
+      background:rgba(0,255,225,.08);
+      color:var(--fg);
+      white-space:nowrap;
+    }
+    pre{
+      margin:0;
+      padding:10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.30);
+      overflow:auto;
+      color:var(--fg);
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size:12px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(12,1fr);
+      gap:14px;
+      margin-top:14px;
+    }
+    .card{
+      grid-column:span 12;
+      background:linear-gradient(180deg, rgba(16,24,38,.88), rgba(16,24,38,.62));
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+    }
+    @media(min-width:900px){
+      .half{grid-column:span 6}
+      .third{grid-column:span 4}
+    }
+    h2{margin:0 0 8px;font-size:16px}
+    p{margin:0 0 10px;color:var(--mut);max-width:85ch}
+    ul{margin:8px 0 0 18px;color:var(--mut)}
+    .hr{height:1px;background:var(--line);margin:12px 0}
+    .ctaRow{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+    .btn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius:12px;
+      border:1px solid rgba(0,255,225,.26);
+      background:rgba(0,255,225,.08);
+      color:var(--fg);
+    }
+    .btn:hover{background:rgba(0,255,225,.14);text-decoration:none}
+    .btn.secondary{
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+    }
+    .small{font-size:12px;color:var(--mut)}
+    footer{margin-top:18px;color:var(--mut);font-size:12px}
+  </style>
 </head>
 
 <body>
-<div class="wrap">
+  <div class="wrap">
 
-<div class="top">
-<div class="brand">
-<div class="seal">EU-first · audit-first · fail-closed</div>
-<h1>HBCE R&D · HERMETICUM B2G/B2B</h1>
-<div class="lead">
-Operational identity infrastructure for AI, robotics and autonomous systems.  
-IPR is the new technology. Joker-C2 is the operational cybernetic layer.
-</div>
-</div>
+    <div class="topbar">
+      <div class="brand">
+        <div class="seal">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA · HERMETICUM B.C.E. S.r.l.</div>
+        <div class="small">Policy: HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · UE_FIRST · AUDIT_FIRST · GDPR_MIN</div>
+      </div>
 
-<nav class="nav">
-<a href="./about/">About</a>
-<a href="./robotics-ai/">Robotics & AI</a>
-<a href="./joker-c2/">Joker-C2</a>
-<a href="./pricing/">Pricing</a>
-<a href="./operator/">Operator</a>
-<a href="./eu/">EU</a>
-<a href="./contact/">Contact</a>
-</nav>
-</div>
+      <nav class="nav" aria-label="Primary">
+        <a href="./">Home</a>
+        <a href="./about/">About</a>
+        <a href="./robotics-ai/">Robotics &amp; AI</a>
+        <a href="./joker-c2/">Joker-C2</a>
+        <a href="./pricing/">Pricing</a>
+        <a href="./operator/">Operators</a>
+        <a href="./eu/">EU / Horizon</a>
+        <a href="./contact/">Contact</a>
+      </nav>
+    </div>
 
-<div class="grid">
+    <!-- OPS HEADER -->
+    <section class="ops">
+      <div class="opsRow">
+        <div class="opsTitle">
+          <div class="seal">EU-first · audit-first · fail-closed</div>
+          <h1>Operational Identity Infrastructure</h1>
+          <p class="lead">
+            Digital systems execute actions with real-world impact. The gap is not “security”. The gap is <strong>legitimacy</strong>:
+            proving who had authority at the moment of execution—deterministically, without narrative.
+          </p>
 
-<section class="card half">
-<span class="tag">LAB</span><span class="tag">DEEP-TECH</span>
-<h2>HBCE R&D — Research Laboratory</h2>
-<p>
-Development of operational identity systems, AI-bound identity,
-autonomous infrastructure and deterministic verification architectures.
-</p>
-<ul>
-<li>Identity infrastructure for AI and humans</li>
-<li>Autonomous systems binding</li>
-<li>Evidence-based execution systems</li>
-</ul>
-</section>
+          <div class="pillRow" aria-label="Status Pills">
+            <span class="pill"><span class="dot"></span>Gate Model: FAIL-CLOSED</span>
+            <span class="pill"><span class="dot"></span>Public Surface: HASH-ONLY</span>
+            <span class="pill"><span class="dot"></span>Evidence: APPEND-ONLY</span>
+            <span class="pill"><span class="dot warn"></span>Default State: DENY</span>
+          </div>
 
-<section class="card half">
-<span class="tag">B2G</span><span class="tag">B2B</span>
-<h2>HERMETICUM — Operational Infrastructure</h2>
-<p>
-Deployment layer for governments, industry and critical systems.
-Transforms identity into an enforceable operational gate.
-</p>
-<ul>
-<li>Institutional deployment</li>
-<li>Industrial integration</li>
-<li>Operator node network</li>
-</ul>
-</section>
+          <div class="ctaRow">
+            <a class="btn" href="./contact/">Contact (Intake)</a>
+            <a class="btn secondary" href="./pricing/">Pricing Posture</a>
+            <a class="btn secondary" href="./about/">Founder / Operating Profile</a>
+          </div>
+        </div>
 
-<section class="card third">
-<span class="tag">NEW-TECH</span>
-<h2>IPR — Operational Digital Identity</h2>
-<p>
-Persistent, verifiable, computable identity designed for real-world execution.
-</p>
-<div class="hr"></div>
-<pre>
-identity_valid ? EXECUTE : BLOCK
-mode: FAIL-CLOSED
-evidence: APPEND-ONLY
-</pre>
-</section>
+        <div class="console" role="region" aria-label="Operational Console">
+          <div class="consoleHdr">
+            <div class="k">OPS CONSOLE</div>
+            <div class="badge">STATUS: READY (DETERMINISTIC)</div>
+          </div>
 
-<section class="card third">
-<span class="tag">PRODUCT</span>
-<h2>Joker-C2 — Cybernetic Operational Entity</h2>
-<p>
-Operational AI entity bound to identity constraints.  
-Not a chatbot — a persistent cybernetic execution layer.
-</p>
-</section>
+          <pre>
+identity_valid == true ? EXECUTE : BLOCK
+failure_mode   = FAIL_CLOSED
+public_surface = HASH_ONLY
+evidence       = APPEND_ONLY
 
-<section class="card third">
-<h2>Enter System</h2>
-<p>Activate identity, deploy node or access pricing structure.</p>
-<div class="hr"></div>
-<ul>
-<li><a href="./activate/">Activate IPR</a></li>
-<li><a href="./pricing/">View pricing</a></li>
-<li><a href="./node-pack/">Deploy node</a></li>
-</ul>
-</section>
+rule:
+  if integrity missing → BLOCK + LOG(reason)
+  if mismatch          → BLOCK + LOG(reason)
+  if valid             → EXECUTE + LOG(event)</pre>
 
-</div>
+          <div class="hr"></div>
+          <div class="small">
+            HBCE does not sell features. It establishes conditions under which execution becomes verifiable, attributable and auditable.
+          </div>
+        </div>
+      </div>
+    </section>
 
-<footer>
-<div>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-<div>HERMETICUM B.C.E. S.r.l. — EU jurisdiction</div>
-</footer>
+    <!-- PILLARS -->
+    <div class="grid">
 
-</div>
+      <section class="card half">
+        <h2>HBCE R&amp;D — Deep-Tech Lab</h2>
+        <p>
+          Research and engineering for operational identity, deterministic verification, and identity binding for AI and autonomous systems.
+        </p>
+        <ul>
+          <li>Execution legitimacy architectures</li>
+          <li>Deterministic verification engines</li>
+          <li>Autonomous systems binding (robots, fleets, drones)</li>
+        </ul>
+      </section>
+
+      <section class="card half">
+        <h2>HERMETICUM — B2G / B2B Deployment Vehicle</h2>
+        <p>
+          Procurement-grade posture for governments and industry: governance, audit exposure, interoperability scope under EU-first constraints.
+        </p>
+        <ul>
+          <li>B2G: institutional nodes, public-sector deployment paths</li>
+          <li>B2B: operators, industrial systems, critical workflows</li>
+          <li>Territorial interoperability via operator nodes</li>
+        </ul>
+      </section>
+
+      <section class="card third">
+        <h2>IPR — New Technology</h2>
+        <p>
+          Identity Primary Record: persistent, computable, verifiable operational identity. Not an account. Not a wallet. Not a login.
+        </p>
+        <div class="hr"></div>
+        <ul>
+          <li>Hash-only public verification</li>
+          <li>Fail-closed integrity model</li>
+          <li>Append-only evidence chain</li>
+        </ul>
+      </section>
+
+      <section class="card third">
+        <h2>Joker-C2 — Operational Cybernetic Product</h2>
+        <p>
+          Identity-bound operational entity. Not a chatbot. A constrained execution layer that produces evidence and preserves accountability.
+        </p>
+        <div class="hr"></div>
+        <ul>
+          <li>Human↔AI operational co-identity</li>
+          <li>Decision support under identity gating</li>
+          <li>Integration target: robotics &amp; autonomous execution</li>
+        </ul>
+      </section>
+
+      <section class="card third">
+        <h2>Canonical Journey</h2>
+        <p>Real deployment path: pilots validate execution gating, operators integrate it, institutions scale it.</p>
+        <div class="hr"></div>
+        <ul>
+          <li><a href="./robotics-ai/">1) Pilot (B2B)</a> — prove value in real systems</li>
+          <li><a href="./operator/">2) Operator</a> — wire the gate, expand later</li>
+          <li><a href="./eu/">3) Institutional scale (EU)</a> — procurement framing &amp; governance</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Fast Path</h2>
+        <p>Enter the operational layer: activate identity, deploy a node, or request an institutional brief.</p>
+        <div class="ctaRow">
+          <a class="btn" href="./activate/">Activate</a>
+          <a class="btn secondary" href="./node-pack/">Deploy Node</a>
+          <a class="btn secondary" href="./eu/">Institutional Brief</a>
+        </div>
+      </section>
+
+    </div>
+
+    <footer>
+      <div><strong>HERMETICUM B.C.E. S.r.l.</strong></div>
+      <div>HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · UE_FIRST · AUDIT_FIRST · GDPR_MIN</div>
+    </footer>
+
+  </div>
 </body>
 </html>
