@@ -30,69 +30,150 @@ body{
  radial-gradient(900px 500px at 100% 10%, rgba(124,92,255,.12), transparent 55%),
  var(--bg);
  color:var(--text);
+ line-height:1.45;
 }
+a{color:inherit}
 .wrap{max-width:var(--max);margin:auto;padding:28px 18px 80px}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;flex-wrap:wrap}
-.brand{font-weight:800;font-size:13px;text-transform:uppercase}
+
+.top{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:16px;
+ flex-wrap:wrap;
+ margin-bottom:30px;
+}
+.brand{font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.5px}
 .tag{color:var(--muted);font-size:12px;margin-top:6px}
-.nav{display:flex;gap:16px;flex-wrap:wrap}
-.nav a{color:var(--muted);text-decoration:none;font-size:13px}
-.nav a:hover{color:#fff}
+
+.nav{
+ display:flex;
+ gap:14px;
+ flex-wrap:wrap;
+ align-items:center;
+}
+.nav a{
+ color:var(--muted);
+ text-decoration:none;
+ font-size:13px;
+ padding:8px 10px;
+ border-radius:999px;
+ border:1px solid rgba(255,255,255,.06);
+ background:rgba(255,255,255,.02);
+ transition:.15s;
+}
+.nav a:hover{
+ color:var(--text);
+ border-color:rgba(0,255,225,.35);
+ transform:translateY(-1px);
+}
 
 .hero{
  border:1px solid var(--line);
- border-radius:var(--r);
- padding:44px 32px;
+ border-radius:calc(var(--r) + 4px);
+ padding:44px 30px;
  background:rgba(15,22,32,.55);
  box-shadow:var(--shadow);
 }
-h1{font-size:clamp(32px,4vw,48px);margin:0 0 14px;line-height:1.1}
-.sub{color:var(--muted);font-size:16px;max-width:760px}
-.cta{margin-top:22px}
+h1{
+ font-size:clamp(32px,4vw,48px);
+ margin:0 0 14px;
+ line-height:1.08;
+ letter-spacing:-.02em;
+}
+.sub{
+ color:var(--muted);
+ font-size:16px;
+ max-width:820px;
+ margin:0 0 18px;
+}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.badge{
+ font-size:12px;
+ padding:7px 10px;
+ border-radius:999px;
+ border:1px solid rgba(255,255,255,.10);
+ background:rgba(0,0,0,.18);
+ color:var(--muted);
+}
+.badge strong{color:var(--text)}
+
+.cta{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
 .btn{
  display:inline-block;
  padding:12px 16px;
- margin:6px 8px 6px 0;
  border-radius:14px;
  border:1px solid var(--line);
  text-decoration:none;
- font-weight:700;
- font-size:14px;
+ font-weight:800;
+ font-size:13.5px;
  color:var(--text);
  background:rgba(255,255,255,.04);
  transition:.15s;
 }
 .btn:hover{transform:translateY(-2px);border-color:rgba(0,255,225,.5)}
 .btn.primary{
- border-color:rgba(0,255,225,.7);
- background:linear-gradient(180deg,rgba(0,255,225,.25),rgba(0,255,225,.08));
+ border-color:rgba(0,255,225,.75);
+ background:linear-gradient(180deg,rgba(0,255,225,.22),rgba(0,255,225,.06));
 }
 
-.section{margin-top:60px}
-.section h2{font-size:22px;margin-bottom:10px}
-.section p{color:var(--muted);max-width:800px}
+.section{margin-top:46px}
+.section h2{font-size:20px;margin:0 0 10px;letter-spacing:-.01em}
+.section p{color:var(--muted);max-width:900px;margin:0 0 14px}
 
 .grid{
  display:grid;
  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
  gap:18px;
- margin-top:20px;
+ margin-top:18px;
 }
 .card{
  border:1px solid var(--line);
  border-radius:var(--r);
- padding:20px;
+ padding:18px;
  background:rgba(255,255,255,.03);
 }
-.card h3{margin:0 0 8px;font-size:14px;text-transform:uppercase}
+.card h3{margin:0 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:.4px}
+.card p{margin:0;color:var(--muted);font-size:13.5px}
+
+.split{
+ display:grid;
+ grid-template-columns: 1.1fr .9fr;
+ gap:18px;
+ margin-top:18px;
+}
+@media (max-width: 900px){
+ .split{grid-template-columns:1fr}
+}
+
+.rule{
+ border:1px solid rgba(255,255,255,.10);
+ background:rgba(0,0,0,.22);
+ border-radius:var(--r);
+ padding:14px;
+ overflow:auto;
+}
+.rule pre{
+ margin:0;
+ min-width:740px;
+ font-size:12.5px;
+ line-height:1.35;
+ color:rgba(232,238,247,.92);
+ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
 
 footer{
- margin-top:80px;
+ margin-top:70px;
  padding-top:20px;
  border-top:1px solid var(--line);
  color:var(--muted);
  font-size:12px;
+ display:flex;
+ justify-content:space-between;
+ gap:14px;
+ flex-wrap:wrap;
 }
+.mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
 </style>
 </head>
 
@@ -102,11 +183,15 @@ footer{
 <header class="top">
  <div>
   <div class="brand">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-  <div class="tag">HERMETICUM B.C.E. S.r.l. — Operational Identity Infrastructure</div>
+  <div class="tag">HERMETICUM B.C.E. S.r.l. — Operational Identity Infrastructure (EU-first)</div>
  </div>
- <nav class="nav">
-  <a href="/hermeticum-bce-platform/robotics-ai/">Robotics & AI</a>
+
+ <nav class="nav" aria-label="Primary navigation">
+  <a href="/hermeticum-bce-platform/robotics-ai/">Robotics &amp; AI</a>
   <a href="/hermeticum-bce-platform/pricing/">Pricing</a>
+  <a href="/hermeticum-bce-platform/demo-gate/">Demo</a>
+  <a href="/hermeticum-bce-platform/enterprise/">Enterprise / B2G</a>
+  <a href="/hermeticum-bce-platform/torino-robotics-kit/">Torino Kit</a>
   <a href="/hermeticum-bce-platform/activate/">Activate</a>
   <a href="/hermeticum-bce-platform/NODE-PACK/">Deploy Node</a>
   <a href="/hermeticum-bce-platform/verify/">Verify</a>
@@ -114,60 +199,102 @@ footer{
 </header>
 
 <section class="hero">
-<h1>Operational Identity Layer<br>for Humans, AI and Machines</h1>
+ <h1>Operational Identity Layer<br/>for Humans, AI and Machines</h1>
 
-<p class="sub">
-Identity must verify before execution.  
-If identity fails, the system does not operate.  
-Deterministic. Append-only. Fail-closed.
-</p>
+ <p class="sub">
+ Identity must verify before execution. If identity validation fails, operation stops.
+ Deterministic verification, append-only evidence, fail-closed by design.
+ </p>
 
-<div class="cta">
-<a class="btn primary" href="/hermeticum-bce-platform/activate/">Activate IPR</a>
-<a class="btn" href="/hermeticum-bce-platform/pricing/">View Pricing</a>
-<a class="btn" href="/hermeticum-bce-platform/robotics-ai/">Robotics & AI</a>
-</div>
+ <div class="badges" aria-label="Core properties">
+  <span class="badge"><strong>UE-FIRST</strong></span>
+  <span class="badge"><strong>AUDIT-FIRST</strong></span>
+  <span class="badge"><strong>GDPR-MIN</strong></span>
+  <span class="badge"><strong>HASH-ONLY</strong></span>
+  <span class="badge"><strong>APPEND-ONLY</strong></span>
+  <span class="badge"><strong>FAIL-CLOSED</strong></span>
+ </div>
+
+ <div class="cta" aria-label="Primary calls to action">
+  <a class="btn primary" href="/hermeticum-bce-platform/activate/">Activate IPR</a>
+  <a class="btn" href="/hermeticum-bce-platform/pricing/">View Pricing</a>
+  <a class="btn" href="/hermeticum-bce-platform/demo-gate/">Open Demo</a>
+  <a class="btn" href="/hermeticum-bce-platform/robotics-ai/">Robotics &amp; AI</a>
+ </div>
 </section>
 
 <section class="section">
-<h2>Where it applies</h2>
-<p>
-IPR provides a deterministic identity layer required before operation in real-world systems.
-</p>
+ <h2>Identity Before Execution</h2>
+ <p>
+ IPR introduces a deterministic identity dependency for real-world systems: robots, drones, AI agents and industrial controllers.
+ No valid identity proof — no action.
+ </p>
 
-<div class="grid">
-<div class="card"><h3>Robotics</h3>Robot execution only with verified operator identity.</div>
-<div class="card"><h3>Drones</h3>Flight authorization bound to identity proof.</div>
-<div class="card"><h3>AI Agents</h3>Actions gated by persistent identity record.</div>
-<div class="card"><h3>Industrial Systems</h3>Machines operate only with valid IPR.</div>
-</div>
+ <div class="grid">
+  <div class="card">
+   <h3>Robotics</h3>
+   <p>Robot execution only with verified operator identity and auditable evidence.</p>
+  </div>
+  <div class="card">
+   <h3>Drones</h3>
+   <p>Flight authorization gated by identity verification. Fail-closed hold on mismatch.</p>
+  </div>
+  <div class="card">
+   <h3>AI Agents</h3>
+   <p>Actions bound to persistent identity records with deterministic verification.</p>
+  </div>
+  <div class="card">
+   <h3>Industrial Systems</h3>
+   <p>Machine activation requires valid IPR: scope, policy, and traceability.</p>
+  </div>
+ </div>
 </section>
 
 <section class="section">
-<h2>Core properties</h2>
-<div class="grid">
-<div class="card">HASH-ONLY public layer</div>
-<div class="card">APPEND-ONLY evolution</div>
-<div class="card">FAIL-CLOSED logic</div>
-<div class="card">EU-FIRST compliance baseline</div>
-</div>
+ <h2>Execution rule</h2>
+ <p>
+ The operational boundary is intentionally minimal. It must be deterministic.
+ </p>
+
+ <div class="split">
+  <div class="card">
+   <h3>What it enforces</h3>
+   <p>
+    A hard gate before operation. If identity cannot be verified, execution is blocked.
+    This is the minimum identity layer required for accountable autonomy.
+   </p>
+   <div class="cta" style="margin-top:14px">
+    <a class="btn primary" href="/hermeticum-bce-platform/demo-gate/">See it live (Demo)</a>
+    <a class="btn" href="/hermeticum-bce-platform/enterprise/">Enterprise / B2G</a>
+   </div>
+  </div>
+
+  <div class="rule" aria-label="Execution rule">
+   <pre>identity_valid == true ? EXECUTE : BLOCK
+failure_mode = FAIL_CLOSED
+evidence_mode = APPEND_ONLY
+public_surface = HASH_ONLY</pre>
+  </div>
+ </div>
 </section>
 
 <section class="section">
-<h2>Deploy now</h2>
-<p>
-Activate identity. Bind operators. Gate machines and AI before execution.
-</p>
-<div class="cta">
-<a class="btn primary" href="/hermeticum-bce-platform/activate/">Activate IPR</a>
-<a class="btn" href="/hermeticum-bce-platform/NODE-PACK/">Deploy Node</a>
-<a class="btn" href="/hermeticum-bce-platform/pricing/">Pricing</a>
-</div>
+ <h2>Start from Torino. Scale to EU.</h2>
+ <p>
+ Torino/Piemonte is the practical entry point: robotics, mechatronics, automation and labs.
+ Use the Torino Kit to run a minimal pilot: one environment, one gate, one measurable outcome.
+ </p>
+
+ <div class="cta">
+  <a class="btn primary" href="/hermeticum-bce-platform/torino-robotics-kit/">Open Torino Kit</a>
+  <a class="btn" href="/hermeticum-bce-platform/pricing/">Pricing</a>
+  <a class="btn" href="/hermeticum-bce-platform/NODE-PACK/">Deploy Node</a>
+ </div>
 </section>
 
 <footer>
-HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br>
-Issuer: HERMETICUM B.C.E. S.r.l. — EU Infrastructure Layer
+ <div class="mono">Policy: HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · UE_FIRST · AUDIT_FIRST · GDPR_MIN</div>
+ <div>Issuer: <span class="mono">HERMETICUM B.C.E. S.r.l.</span> — Jurisdiction: <span class="mono">EU</span></div>
 </footer>
 
 </div>
