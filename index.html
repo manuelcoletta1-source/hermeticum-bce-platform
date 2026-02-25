@@ -1,439 +1,193 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<meta name="color-scheme" content="dark"/>
-
-<title>HERMETICUM B.C.E. — Operational Identity Layer (IPR)</title>
-<meta name="description" content="EU-first operational identity infrastructure. Identity before execution. Deterministic verification. Append-only evidence. Fail-closed by design."/>
-
-<style>
-:root{
- --bg:#0b0f14;
- --panel:#0f1620;
- --text:#e8eef7;
- --muted:#9fb0c3;
- --line:rgba(255,255,255,.08);
- --accent:#00ffe1;
- --accent2:#7c5cff;
- --shadow:0 20px 60px rgba(0,0,0,.45);
- --r:18px;
- --max:1120px;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
- margin:0;
- font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
- background:
- radial-gradient(1200px 600px at 20% -10%, rgba(0,255,225,.12), transparent 60%),
- radial-gradient(900px 500px at 100% 10%, rgba(124,92,255,.12), transparent 55%),
- var(--bg);
- color:var(--text);
- line-height:1.45;
-}
-a{color:inherit}
-.wrap{max-width:var(--max);margin:auto;padding:28px 18px 84px}
-
-.top{
- display:flex;
- justify-content:space-between;
- align-items:center;
- gap:16px;
- flex-wrap:wrap;
- margin-bottom:26px;
-}
-.brand{font-weight:900;font-size:13px;text-transform:uppercase;letter-spacing:.6px}
-.tag{color:var(--muted);font-size:12px;margin-top:6px}
-
-.nav{
- display:flex;
- gap:12px;
- flex-wrap:wrap;
- align-items:center;
-}
-.nav a{
- color:var(--muted);
- text-decoration:none;
- font-size:13px;
- padding:8px 10px;
- border-radius:999px;
- border:1px solid rgba(255,255,255,.06);
- background:rgba(255,255,255,.02);
- transition:.15s;
-}
-.nav a:hover{
- color:var(--text);
- border-color:rgba(0,255,225,.35);
- transform:translateY(-1px);
-}
-
-.hero{
- border:1px solid var(--line);
- border-radius:calc(var(--r) + 6px);
- padding:46px 30px;
- background:rgba(15,22,32,.55);
- box-shadow:var(--shadow);
- position:relative;
- overflow:hidden;
-}
-.hero:before{
- content:"";
- position:absolute; inset:-2px;
- background:
- radial-gradient(800px 300px at 20% 0%, rgba(0,255,225,.16), transparent 55%),
- radial-gradient(700px 320px at 90% 40%, rgba(124,92,255,.14), transparent 60%);
- pointer-events:none;
- opacity:.75;
-}
-.hero > *{position:relative}
-
-h1{
- font-size:clamp(30px,4vw,46px);
- margin:0 0 14px;
- line-height:1.06;
- letter-spacing:-.02em;
-}
-.sub{
- color:var(--muted);
- font-size:16px;
- max-width:900px;
- margin:0 0 18px;
-}
-.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.badge{
- font-size:12px;
- padding:7px 10px;
- border-radius:999px;
- border:1px solid rgba(255,255,255,.10);
- background:rgba(0,0,0,.18);
- color:var(--muted);
-}
-.badge strong{color:var(--text)}
-
-.cta{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
-.btn{
- display:inline-block;
- padding:12px 16px;
- border-radius:14px;
- border:1px solid var(--line);
- text-decoration:none;
- font-weight:900;
- font-size:13.5px;
- color:var(--text);
- background:rgba(255,255,255,.04);
- transition:.15s;
-}
-.btn:hover{transform:translateY(-2px);border-color:rgba(0,255,225,.5)}
-.btn.primary{
- border-color:rgba(0,255,225,.75);
- background:linear-gradient(180deg,rgba(0,255,225,.22),rgba(0,255,225,.06));
-}
-
-.section{margin-top:44px}
-.section h2{font-size:20px;margin:0 0 10px;letter-spacing:-.01em}
-.section p{color:var(--muted);max-width:980px;margin:0 0 14px}
-
-.grid{
- display:grid;
- grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
- gap:18px;
- margin-top:16px;
-}
-.card{
- border:1px solid var(--line);
- border-radius:var(--r);
- padding:18px;
- background:rgba(255,255,255,.03);
-}
-.card h3{margin:0 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:.45px}
-.card p{margin:0;color:var(--muted);font-size:13.5px}
-
-.split{
- display:grid;
- grid-template-columns: 1.1fr .9fr;
- gap:18px;
- margin-top:16px;
-}
-@media (max-width: 900px){
- .split{grid-template-columns:1fr}
-}
-.rule{
- border:1px solid rgba(255,255,255,.10);
- background:rgba(0,0,0,.22);
- border-radius:var(--r);
- padding:14px;
- overflow:auto;
-}
-.rule pre{
- margin:0;
- min-width:740px;
- font-size:12.5px;
- line-height:1.35;
- color:rgba(232,238,247,.92);
- font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-}
-
-.kv{
- display:grid;
- grid-template-columns: 1fr 1fr;
- gap:10px;
- margin-top:12px;
-}
-@media (max-width:900px){ .kv{grid-template-columns:1fr} }
-.kv .item{
- border:1px solid rgba(255,255,255,.08);
- background:rgba(0,0,0,.18);
- border-radius:14px;
- padding:12px;
-}
-.kv .k{font-size:12px;color:var(--muted);margin-bottom:6px}
-.kv .v{font-size:12.5px;font-weight:900;word-break:break-all}
-.kv .v.mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
-
-.hr{
- margin-top:18px;
- border-top:1px solid var(--line);
- opacity:.9;
-}
-
-footer{
- margin-top:70px;
- padding-top:20px;
- border-top:1px solid var(--line);
- color:var(--muted);
- font-size:12px;
- display:flex;
- justify-content:space-between;
- gap:14px;
- flex-wrap:wrap;
-}
-.mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
-.small{font-size:12px}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <title>HERMETICUM B.C.E. — EU Operational Identity Infrastructure</title>
+  <meta name="description" content="HERMETICUM B.C.E. provides EU-first, audit-first identity-gated execution: HASH-ONLY public surface, APPEND-ONLY evidence, FAIL-CLOSED operations. B2B, Operators, EU / Horizon." />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
 <body>
-<div class="wrap">
+  <header class="hbce-header">
+    <div class="hbce-container hbce-header__row">
+      <a class="hbce-brand" href="/hermeticum-bce-platform/">
+        <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong>
+        <span class="hbce-muted"> · HERMETICUM B.C.E. S.r.l.</span>
+      </a>
 
-<header class="top">
- <div>
-  <div class="brand">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-  <div class="tag">HERMETICUM B.C.E. S.r.l. — EU-first Operational Identity Infrastructure</div>
- </div>
-
- <nav class="nav" aria-label="Primary navigation">
-  <a href="/hermeticum-bce-platform/pricing/">Pricing</a>
-  <a href="/hermeticum-bce-platform/activate/">Activate</a>
-  <a href="/hermeticum-bce-platform/enterprise/">Enterprise / B2G</a>
-  <a href="/hermeticum-bce-platform/robotics-ai/">Robotics &amp; AI</a>
-  <a href="/hermeticum-bce-platform/torino-robotics-kit/">Torino Kit</a>
-  <a href="https://manuelcoletta1-source.github.io/ipr-network/verify/" rel="noopener">Verify Network</a>
-  <a href="https://manuelcoletta1-source.github.io/ipr-network/node-pack/" rel="noopener">Node Pack</a>
- </nav>
-</header>
-
-<section class="hero">
- <h1>Operational Identity Layer<br/>for Humans, AI and Machines</h1>
-
- <p class="sub">
- Identity must verify before execution. If validation fails, operation stops.
- Deterministic verification, append-only evidence, fail-closed by design — aligned to EU-first compliance principles.
- </p>
-
- <div class="badges" aria-label="Core properties">
-  <span class="badge"><strong>UE_FIRST</strong></span>
-  <span class="badge"><strong>AUDIT_FIRST</strong></span>
-  <span class="badge"><strong>GDPR_MIN</strong></span>
-  <span class="badge"><strong>HASH_ONLY</strong></span>
-  <span class="badge"><strong>APPEND_ONLY</strong></span>
-  <span class="badge"><strong>FAIL_CLOSED</strong></span>
- </div>
-
- <div class="cta" aria-label="Primary calls to action">
-  <a class="btn primary" href="/hermeticum-bce-platform/activate/">Activate IPR</a>
-  <a class="btn" href="/hermeticum-bce-platform/pricing/">View Pricing</a>
-  <a class="btn" href="https://manuelcoletta1-source.github.io/ipr-network/verify/" rel="noopener">Run Live Verification</a>
-  <a class="btn" href="/hermeticum-bce-platform/enterprise/">Enterprise / B2G</a>
- </div>
-
- <div class="hr"></div>
-
- <div class="kv" aria-label="Live proofs (canonical)">
-  <div class="item">
-   <div class="k">IPR Network — Registry (canonical sha256)</div>
-   <div class="v mono">898e0ca6fb42265d0b59e50b871988f70ee607437e788e0b7054d884e2b0f13b</div>
-   <div class="small" style="margin-top:8px;color:var(--muted)">
-    Source: <span class="mono">/ipr-network/nodes/registry.json</span>
-   </div>
-  </div>
-  <div class="item">
-   <div class="k">IPR Network — Events Index (canonical sha256)</div>
-   <div class="v mono">1709b2a5f7a70bdd9a72c4bdffccbccdcdc3ecb04a921722d50c21ab9e3a241f</div>
-   <div class="small" style="margin-top:8px;color:var(--muted)">
-    Source: <span class="mono">/ipr-network/events/index.json</span>
-   </div>
-  </div>
- </div>
-</section>
-
-<section class="section">
- <h2>What you are buying (IPR)</h2>
- <p>
- IPR is the minimal operational identity record that can be deterministically verified.
- It is designed to bind execution to identity, policy and evidence — without public data custody.
- </p>
-
- <div class="grid">
-  <div class="card">
-   <h3>IPR Base</h3>
-   <p>For individuals. Identity activation + verification surface. Hash-only, fail-closed, audit-first.</p>
-   <div class="cta" style="margin-top:12px">
-    <a class="btn primary" href="/hermeticum-bce-platform/activate/">Activate</a>
-    <a class="btn" href="/hermeticum-bce-platform/pricing/">Pricing</a>
-   </div>
-  </div>
-
-  <div class="card">
-   <h3>Operator Track</h3>
-   <p>For labs and deployment. Nodes, evidence packs, and operational readiness. Signing can be added later.</p>
-   <div class="cta" style="margin-top:12px">
-    <a class="btn" href="https://manuelcoletta1-source.github.io/ipr-network/node-pack/" rel="noopener">Node Pack</a>
-    <a class="btn" href="https://manuelcoletta1-source.github.io/ipr-network-node-0003/" rel="noopener">NODE-0003</a>
-   </div>
-  </div>
-
-  <div class="card">
-   <h3>Enterprise / B2G</h3>
-   <p>Compliance-first positioning: deterministic verification, auditability, and operational controls for organizations.</p>
-   <div class="cta" style="margin-top:12px">
-    <a class="btn primary" href="/hermeticum-bce-platform/enterprise/">Open Enterprise</a>
-    <a class="btn" href="/hermeticum-bce-platform/pricing/">Pricing</a>
-   </div>
-  </div>
-
-  <div class="card">
-   <h3>Robotics &amp; AI</h3>
-   <p>Bind robots, drones and AI agents to verified identity. No proof — no action. Evidence stays append-only.</p>
-   <div class="cta" style="margin-top:12px">
-    <a class="btn primary" href="/hermeticum-bce-platform/robotics-ai/">Open Track</a>
-    <a class="btn" href="/hermeticum-bce-platform/torino-robotics-kit/">Torino Kit</a>
-   </div>
-  </div>
- </div>
-</section>
-
-<section class="section">
- <h2>Execution rule (deterministic)</h2>
- <p>
- The boundary is intentionally minimal. It must remain deterministic and auditable.
- </p>
-
- <div class="split">
-  <div class="card">
-   <h3>What it enforces</h3>
-   <p>
-    A hard gate before operation. If identity cannot be verified, execution is blocked.
-    This is the minimum identity layer required for accountable autonomy.
-   </p>
-
-   <div class="grid" style="margin-top:14px">
-    <div class="card" style="padding:14px">
-     <h3>Robotics</h3>
-     <p>Execution only with verified operator identity and auditable evidence.</p>
+      <nav class="hbce-nav" aria-label="Primary navigation">
+        <a class="is-active" href="/hermeticum-bce-platform/">Home</a>
+        <a href="/hermeticum-bce-platform/robotics-ai/">Robotics &amp; AI</a>
+        <a href="/hermeticum-bce-platform/joker-c2/">Joker-C2</a>
+        <a href="/hermeticum-bce-platform/pricing/">Pricing</a>
+        <a href="/hermeticum-bce-platform/operators/">Operators</a>
+        <a href="/hermeticum-bce-platform/eu/">EU / Horizon</a>
+        <a href="/hermeticum-bce-platform/contatti/">Contact</a>
+      </nav>
     </div>
-    <div class="card" style="padding:14px">
-     <h3>Drones</h3>
-     <p>Authorization gated by identity verification. Fail-closed hold on mismatch.</p>
+  </header>
+
+  <main class="hbce-container hbce-main">
+    <!-- HERO -->
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">EU-first identity for execution</div>
+      <h1 class="hbce-hero__title">Operational Identity Infrastructure</h1>
+      <p class="hbce-hero__lead">
+        HERMETICUM B.C.E. introduces a deterministic execution gate:
+        systems execute only when identity verification is valid.
+        Public surface is <strong>HASH-ONLY</strong>, evidence is <strong>APPEND-ONLY</strong>,
+        failure mode is <strong>FAIL-CLOSED</strong>.
+      </p>
+
+      <div class="hbce-grid hbce-grid--2" style="margin-top:14px">
+        <div class="hbce-card">
+          <h3>Primary action</h3>
+          <p class="hbce-muted">
+            This is not a chatbot. This is an execution layer.
+            Contact HBCE for a pilot, an operator onboarding, or an institutional brief.
+          </p>
+          <p>
+            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/contatti/">Contact (Intake)</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/pricing/">View Pricing</a>
+          </p>
+        </div>
+
+        <div class="hbce-card">
+          <h3>Execution rule</h3>
+          <p class="hbce-muted">
+            Deterministic behavior. No identity custody. Audit-first by design.
+          </p>
+          <pre class="hbce-muted" style="white-space:pre-wrap; margin:0">
+identity_valid == true ? EXECUTE : BLOCK
+failure_mode = FAIL_CLOSED
+public_surface = HASH_ONLY
+evidence = APPEND_ONLY</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- TARGET JOURNEY -->
+    <section class="hbce-section">
+      <h2>Entry paths</h2>
+      <p class="hbce-muted">
+        The journey is explicit: B2B pilots first, then operators, then institutional scale.
+      </p>
+
+      <div class="hbce-grid hbce-grid--3">
+        <div class="hbce-card">
+          <h3>1) Companies (B2B)</h3>
+          <p class="hbce-muted">
+            Deploy HBCE as a verification layer for robotics, AI systems, autonomous fleets,
+            and security-critical workflows.
+          </p>
+          <p>
+            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/robotics-ai/">Robotics &amp; AI</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/contatti/#pilot">Pilot Request</a>
+          </p>
+        </div>
+
+        <div class="hbce-card">
+          <h3>2) Operators (Dev / Integrators)</h3>
+          <p class="hbce-muted">
+            Integrate identity-gated execution into real systems.
+            Define policy, constraints, failure modes, and deterministic verification.
+          </p>
+          <p>
+            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/operators/">Operators</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/contatti/#operator">Operator Intake</a>
+          </p>
+        </div>
+
+        <div class="hbce-card">
+          <h3>3) Institutions (EU / Horizon)</h3>
+          <p class="hbce-muted">
+            Procurement-ready framing, interoperability scope, and governance alignment
+            under EU-first constraints.
+          </p>
+          <p>
+            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/eu/">EU / Horizon</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/contatti/#institutional">Institutional Brief</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT IS INCLUDED -->
+    <section class="hbce-section">
+      <div class="hbce-grid hbce-grid--2">
+        <div class="hbce-card">
+          <h2>What HBCE is</h2>
+          <p class="hbce-muted">
+            A standardized identity layer that enables verifiable operation across humans, organizations,
+            AI agents, robots, drones, and autonomous systems.
+          </p>
+          <ul class="hbce-muted" style="margin:0; padding-left:18px">
+            <li>EU-first / audit-first posture</li>
+            <li>Hash-only public surface (no identity custody)</li>
+            <li>Append-only evidence and deterministic verification</li>
+            <li>Fail-closed execution as a safety default</li>
+          </ul>
+          <p style="margin-top:12px">
+            <a class="hbce-btn" href="/hermeticum-bce-platform/joker-c2/">Explore Joker-C2</a>
+            <a class="hbce-btn" href="/hermeticum-bce-platform/pricing/">Pricing tiers</a>
+          </p>
+        </div>
+
+        <div class="hbce-card">
+          <h2>What HBCE is not</h2>
+          <p class="hbce-muted">
+            Not a marketing AI demo. Not a data-hungry identity platform.
+            Not a system that “tries” to be safe. It is safe by default through failure behavior.
+          </p>
+          <ul class="hbce-muted" style="margin:0; padding-left:18px">
+            <li>No biometric custody</li>
+            <li>No private-data public exposure</li>
+            <li>No “best effort” security—verification is deterministic</li>
+            <li>No execution when identity integrity fails</li>
+          </ul>
+          <p style="margin-top:12px">
+            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/contatti/">Contact (Intake)</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUICK LINKS -->
+    <section class="hbce-section">
+      <div class="hbce-card">
+        <h2>Quick links</h2>
+        <p class="hbce-muted">Core sections of the platform:</p>
+        <div class="hbce-grid hbce-grid--3">
+          <div class="hbce-card">
+            <h3>Pricing</h3>
+            <p class="hbce-muted">4 layers × 3 classes per layer.</p>
+            <p><a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/pricing/">Open Pricing</a></p>
+          </div>
+          <div class="hbce-card">
+            <h3>Operators</h3>
+            <p class="hbce-muted">Integration and execution-gate onboarding.</p>
+            <p><a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/operators/">Open Operators</a></p>
+          </div>
+          <div class="hbce-card">
+            <h3>Contact</h3>
+            <p class="hbce-muted">Pilot / Institutional / Operator intake templates.</p>
+            <p><a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/contatti/">Open Contact</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="hbce-footer">
+    <div class="hbce-container hbce-footer__row">
+      <div><strong>HERMETICUM B.C.E. S.r.l.</strong></div>
+      <div class="hbce-footer__links">
+        <span class="hbce-muted">Policy:</span>
+        <span class="hbce-muted">HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · UE_FIRST · AUDIT_FIRST · GDPR_MIN</span>
+      </div>
     </div>
-    <div class="card" style="padding:14px">
-     <h3>AI Agents</h3>
-     <p>Actions bound to persistent identity records with deterministic verification.</p>
-    </div>
-    <div class="card" style="padding:14px">
-     <h3>Industrial Systems</h3>
-     <p>Activation requires valid IPR: scope, policy and traceability.</p>
-    </div>
-   </div>
-
-   <div class="cta" style="margin-top:14px">
-    <a class="btn primary" href="https://manuelcoletta1-source.github.io/ipr-network/verify/" rel="noopener">Verify Network (Live)</a>
-    <a class="btn" href="/hermeticum-bce-platform/enterprise/">Enterprise / B2G</a>
-   </div>
-  </div>
-
-  <div class="rule" aria-label="Execution rule">
-   <pre>identity_valid == true ? EXECUTE : BLOCK
-failure_mode   = FAIL_CLOSED
-evidence_mode  = APPEND_ONLY
-public_surface = HASH_ONLY</pre>
-  </div>
- </div>
-</section>
-
-<section class="section">
- <h2>Network entry point (live)</h2>
- <p>
- This is not marketing. This is a public, deterministic surface: registry, nodes and append-only events.
- </p>
-
- <div class="grid">
-  <div class="card">
-   <h3>Verify</h3>
-   <p>Fail-closed verification. Any mismatch or UNSET = INVALID.</p>
-   <div class="cta" style="margin-top:12px">
-    <a class="btn primary" href="https://manuelcoletta1-source.github.io/ipr-network/verify/" rel="noopener">Open Verifier</a>
-    <a class="btn" href="https://manuelcoletta1-source.github.io/ipr-network/tools/sha256/" rel="noopener">SHA-256 Tool</a>
-   </div>
-  </div>
-
-  <div class="card">
-   <h3>Registry</h3>
-   <p>Public node registry (canonical hashing rules, fail-closed).</p>
-   <div class="cta" style="margin-top:12px">
-    <a class="btn primary" href="https://manuelcoletta1-source.github.io/ipr-network/nodes/registry.json" rel="noopener">Open registry.json</a>
-   </div>
-  </div>
-
-  <div class="card">
-   <h3>Events</h3>
-   <p>Append-only ledger index + immutable event files (canonical hashing).</p>
-   <div class="cta" style="margin-top:12px">
-    <a class="btn primary" href="https://manuelcoletta1-source.github.io/ipr-network/events/index.json" rel="noopener">Open events/index.json</a>
-   </div>
-  </div>
-
-  <div class="card">
-   <h3>Deploy</h3>
-   <p>Node deployment surface and independent nodes.</p>
-   <div class="cta" style="margin-top:12px">
-    <a class="btn primary" href="https://manuelcoletta1-source.github.io/ipr-network/node-pack/" rel="noopener">Node Pack</a>
-    <a class="btn" href="https://manuelcoletta1-source.github.io/ipr-network-node-0003/" rel="noopener">NODE-0003</a>
-   </div>
-  </div>
- </div>
-</section>
-
-<section class="section">
- <h2>Start from Torino. Scale to EU.</h2>
- <p>
- Torino/Piemonte is a practical entry point: robotics, mechatronics, automation and labs.
- The Torino Kit is a minimal pilot: one environment, one gate, one measurable outcome.
- </p>
-
- <div class="cta">
-  <a class="btn primary" href="/hermeticum-bce-platform/torino-robotics-kit/">Open Torino Kit</a>
-  <a class="btn" href="/hermeticum-bce-platform/robotics-ai/">Robotics &amp; AI</a>
-  <a class="btn" href="/hermeticum-bce-platform/pricing/">Pricing</a>
- </div>
-</section>
-
-<footer>
- <div class="mono">Policy: HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · UE_FIRST · AUDIT_FIRST · GDPR_MIN</div>
- <div>Issuer: <span class="mono">HERMETICUM B.C.E. S.r.l.</span> — Jurisdiction: <span class="mono">EU</span></div>
-</footer>
-
-</div>
+  </footer>
 </body>
 </html>
