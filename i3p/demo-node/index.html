@@ -76,6 +76,11 @@
     color:var(--warn);
     border:1px solid var(--warn);
   }
+  button.run{
+    background:transparent;
+    color:var(--good);
+    border:1px solid var(--good);
+  }
   button:disabled{
     opacity:0.4;
     cursor:not-allowed;
@@ -141,7 +146,7 @@
   th{color:var(--dim); font-weight:700}
   .small{font-size:12px; color:var(--dim)}
   .footer{
-    margin-top:22px;
+    margin-top:14px;
     color:var(--dim);
     font-size:12px;
   }
@@ -160,6 +165,7 @@
           <button id="btnInit" onclick="HBCE.initIdentity()">Init Identity (IPR)</button>
           <button id="btnEmit" onclick="HBCE.emitEvent()" disabled>Emit Event (Append)</button>
           <button id="btnVerify" onclick="HBCE.verify()" disabled>Verify (Fail-Closed)</button>
+          <button id="btnRun" onclick="HBCE.run()" class="run" disabled>RUN (Gated Execution)</button>
           <button id="btnExport" onclick="HBCE.exportReceipt()" class="secondary" disabled>Export Receipt</button>
           <button id="btnTamper" onclick="HBCE.tamper()" class="warn" disabled>Tamper Test</button>
           <button id="btnReset" onclick="HBCE.reset()" class="danger">Reset Node</button>
@@ -179,6 +185,7 @@
           <div class="k">IPR</div><div><code id="iprId">—</code></div>
           <div class="k">Head Hash</div><div><code id="headHash">—</code></div>
           <div class="k">Ledger Entries</div><div><code id="ledgerCount">0</code></div>
+          <div class="k">Gate</div><div><code id="gateState">DENIED</code></div>
         </div>
 
         <h2 style="margin-top:26px;">LEDGER</h2>
@@ -199,7 +206,7 @@
         </table>
 
         <div class="footer">
-          Tamper Test alters a ledger entry payload without recomputing hashes — verification must fail (FAIL_CLOSED).
+          RUN is unlocked only when verification is <strong>VALID</strong>. Any integrity break → <strong>DENIED (FAIL_CLOSED)</strong>.
         </div>
       </div>
 
