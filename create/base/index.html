@@ -11,226 +11,214 @@
 <meta name="theme-color" content="#0b0f14" />
 <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/create/base/" />
 
-<link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
-
-<style>
-.hbce-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:20px;}
-.hbce-card{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.02);border-radius:16px;padding:16px;}
-.hbce-card h3{margin:0 0 8px 0;font-size:1.05rem;}
-.hbce-card p{margin:0 0 12px 0;opacity:.92;}
-.hbce-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;}
-.hbce-a{display:inline-block;border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:10px 12px;text-decoration:none;}
-.hbce-a:hover{border-color:rgba(255,255,255,.28);}
-.hbce-divider{height:1px;background:rgba(255,255,255,.10);margin:22px 0;}
-.hbce-kicker2{letter-spacing:.12em;text-transform:uppercase;opacity:.92;font-size:.85rem;margin-bottom:10px;}
-.hbce-footerMark{margin-top:28px;padding-top:18px;border-top:1px solid rgba(255,255,255,.10);opacity:.92;}
-.hbce-note{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.02);border-radius:16px;padding:14px;opacity:.92;}
-.hbce-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:.92rem;}
-.hbce-field{width:100%;box-sizing:border-box;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.20);color:inherit;border-radius:12px;padding:10px 12px;outline:none;}
-.hbce-field:focus{border-color:rgba(255,255,255,.30);}
-.hbce-row{display:grid;grid-template-columns:1fr;gap:10px;}
-@media (min-width: 820px){ .hbce-row{ grid-template-columns:1fr 1fr; } }
-pre{white-space:pre-wrap;word-break:break-word;margin:0;}
-.hbce-status{border-radius:16px;padding:14px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.20);}
-.hbce-status__value{font-size:1.05rem;font-weight:700;letter-spacing:.02em;}
-</style>
+<link rel="stylesheet" href="../../assets/hbce.css" />
+<script defer src="../../assets/hbce-ui.js"></script>
 </head>
 
 <body>
-<div data-hbce="header"></div>
+  <div class="hbce-container">
+    <main class="hbce-main">
 
-<main class="hbce-container hbce-main">
+      <section class="hbce-hero">
+        <div class="hbce-hero__kicker">CREATE · IPR BASE EU · CITIZEN (CIE + CF)</div>
+        <h1 class="hbce-hero__title">EU Citizen Entry — CIE + Codice Fiscale (Dedup)</h1>
+        <p class="hbce-hero__lead">
+          Citizen data is collected <strong>locally</strong>. Public registry stores only <strong>hash-only proofs</strong>.
+          Duplicate prevention is enforced via <span class="hbce-mono">SHA-256(CodiceFiscale)</span> checked against the public ledger.
+        </p>
 
-<section class="hbce-hero">
-  <div class="hbce-hero__kicker">CREATE · IPR BASE EU · CITIZEN (CIE + CF)</div>
-  <h1 class="hbce-hero__title">EU Citizen Entry — CIE + Codice Fiscale (Dedup)</h1>
-  <p class="hbce-hero__lead">
-    Citizen data is collected <strong>locally</strong>. Public registry stores only <strong>hash-only proofs</strong>.
-    Duplicate prevention is enforced via <span class="hbce-mono">SHA-256(CodiceFiscale)</span> checked against the public ledger.
-  </p>
-
-  <div class="hbce-cta">
-    <a class="hbce-a" href="/hermeticum-bce-platform/activate/">Activate</a>
-    <a class="hbce-a" href="/hermeticum-bce-platform/registry/">Registry</a>
-    <a class="hbce-a" href="/hermeticum-bce-platform/verify/">Verify</a>
-  </div>
-</section>
-
-<div class="hbce-divider"></div>
-
-<section>
-  <div class="hbce-kicker2">Ledger link</div>
-  <h2>Public ledger (read-only)</h2>
-
-  <div class="hbce-grid">
-    <article class="hbce-card">
-      <h3>Ledger status</h3>
-      <p>Loads: <span class="hbce-mono">/registry/ledger.json</span></p>
-      <div class="hbce-cta">
-        <a class="hbce-a" href="#" id="loadLedger">Reload Ledger</a>
-      </div>
-      <div class="hbce-status" style="margin-top:12px;">
-        <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Status</div>
-        <div class="hbce-status__value" id="ledgerStatus">NOT LOADED</div>
-        <div class="hbce-mono" style="opacity:.92;margin-top:8px;">entries: <span id="ledgerCount">—</span></div>
-      </div>
-    </article>
-
-    <article class="hbce-card">
-      <h3>Dedup key</h3>
-      <p>Dedup is computed as:</p>
-      <div class="hbce-note hbce-mono">citizen_cf_sha256 = SHA-256(UPPERCASE(TRIM(CF)))</div>
-      <div class="hbce-status" style="margin-top:12px;">
-        <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Dedup check</div>
-        <div class="hbce-status__value" id="dedupStatus">—</div>
-      </div>
-    </article>
-
-    <article class="hbce-card">
-      <h3>Boundary</h3>
-      <p>
-        Public registry: hash-only proofs.<br/>
-        Local release: citizen payload (owner-controlled).
-      </p>
-      <div class="hbce-note">
-        Do not publish CIE number, CF, or personal data in the ledger.
-      </div>
-    </article>
-  </div>
-</section>
-
-<div class="hbce-divider"></div>
-
-<section>
-  <div class="hbce-kicker2">Citizen data (local)</div>
-  <h2>EU Citizen fields</h2>
-
-  <div class="hbce-grid">
-    <article class="hbce-card">
-      <h3>Core identity</h3>
-
-      <div class="hbce-row">
-        <div>
-          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Full legal name</div>
-          <input id="full_name" class="hbce-field" placeholder="e.g., Manuel Coletta" />
+        <div style="margin-top:14px;display:flex;gap:12px;flex-wrap:wrap">
+          <a class="hbce-btn hbce-btn--primary" href="../../activate/">Activate</a>
+          <a class="hbce-btn" href="../../registry/">Registry</a>
+          <a class="hbce-btn" href="../../verify/">Verify</a>
         </div>
-        <div>
-          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Nationality</div>
-          <input id="nationality" class="hbce-field" placeholder="e.g., Italian" />
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>Public ledger (read-only)</h2>
+          <p class="hbce-muted">
+            Ledger is loaded from <span class="hbce-mono">/registry/ledger.json</span>. Dedup uses
+            <span class="hbce-mono">citizen_cf_sha256 = SHA-256(UPPERCASE(TRIM(CF)))</span>.
+          </p>
+
+          <div class="hbce-grid hbce-grid--3" style="margin-top:14px">
+
+            <div class="hbce-card">
+              <h3>Ledger status</h3>
+              <p class="hbce-muted">Loads: <span class="hbce-mono">/registry/ledger.json</span></p>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+                <a class="hbce-btn hbce-btn--primary" href="#" id="loadLedger">Reload Ledger</a>
+              </div>
+
+              <div class="hbce-card" style="margin-top:12px">
+                <div class="hbce-mono hbce-muted">Status</div>
+                <div style="font-weight:700;letter-spacing:.02em" id="ledgerStatus">NOT LOADED</div>
+                <div class="hbce-mono hbce-muted" style="margin-top:8px">entries: <span id="ledgerCount">—</span></div>
+              </div>
+            </div>
+
+            <div class="hbce-card">
+              <h3>Dedup key</h3>
+              <p class="hbce-muted">Dedup is computed as:</p>
+              <div class="hbce-mono hbce-muted">citizen_cf_sha256 = SHA-256(UPPERCASE(TRIM(CF)))</div>
+
+              <div class="hbce-card" style="margin-top:12px">
+                <div class="hbce-mono hbce-muted">Dedup check</div>
+                <div style="font-weight:700;letter-spacing:.02em" id="dedupStatus">—</div>
+              </div>
+            </div>
+
+            <div class="hbce-card">
+              <h3>Boundary</h3>
+              <p class="hbce-muted">
+                Public registry: hash-only proofs.<br/>
+                Local release: citizen payload (owner-controlled).
+              </p>
+              <div class="hbce-muted">
+                Do not publish CIE number, CF, or personal data in the ledger.
+              </div>
+            </div>
+
+          </div>
         </div>
+      </section>
 
-        <div>
-          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Date of birth (YYYY-MM-DD)</div>
-          <input id="dob" class="hbce-field hbce-mono" placeholder="1988-02-05" />
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>EU Citizen fields (local)</h2>
+
+          <div class="hbce-grid hbce-grid--3" style="margin-top:14px">
+
+            <div class="hbce-card">
+              <h3>Core identity</h3>
+
+              <div class="hbce-grid hbce-grid--2" style="margin-top:12px">
+                <div>
+                  <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Full legal name</div>
+                  <input id="full_name" class="hbce-mono" style="width:100%;box-sizing:border-box" placeholder="e.g., Manuel Coletta" />
+                </div>
+                <div>
+                  <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Nationality</div>
+                  <input id="nationality" class="hbce-mono" style="width:100%;box-sizing:border-box" placeholder="e.g., Italian" />
+                </div>
+
+                <div>
+                  <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Date of birth (YYYY-MM-DD)</div>
+                  <input id="dob" class="hbce-mono" style="width:100%;box-sizing:border-box" placeholder="1988-02-05" />
+                </div>
+                <div>
+                  <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Place of birth (City, Country)</div>
+                  <input id="pob" class="hbce-mono" style="width:100%;box-sizing:border-box" placeholder="Bologna, IT" />
+                </div>
+
+                <div>
+                  <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Residence (City, Region, Country)</div>
+                  <input id="residence" class="hbce-mono" style="width:100%;box-sizing:border-box" placeholder="Torino, Piemonte, IT" />
+                </div>
+                <div>
+                  <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Contact email (optional)</div>
+                  <input id="email" class="hbce-mono" style="width:100%;box-sizing:border-box" placeholder="name@example.com" />
+                </div>
+              </div>
+
+              <hr style="margin:18px 0;border:0;border-top:1px solid var(--hbce-line)"/>
+
+              <h3>EU identifiers (local-only)</h3>
+              <p class="hbce-muted">
+                These fields are used to generate a local release and an anti-duplicate hash key.
+                Only hashes are intended for the public ledger.
+              </p>
+
+              <div class="hbce-grid hbce-grid--2" style="margin-top:12px">
+                <div>
+                  <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Codice Fiscale (IT)</div>
+                  <input id="cf" class="hbce-mono" style="width:100%;box-sizing:border-box" placeholder="16 characters (e.g., CLTMNL88B05A944R)" />
+                </div>
+                <div>
+                  <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">CIE number (optional, local)</div>
+                  <input id="cie" class="hbce-mono" style="width:100%;box-sizing:border-box" placeholder="e.g., CA19311XQ" />
+                </div>
+
+                <div>
+                  <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">CIE expiry (optional, YYYY-MM-DD)</div>
+                  <input id="cie_exp" class="hbce-mono" style="width:100%;box-sizing:border-box" placeholder="2035-02-05" />
+                </div>
+                <div>
+                  <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Citizen IPR ID (your label)</div>
+                  <input id="ipr_id" class="hbce-mono" style="width:100%;box-sizing:border-box" placeholder="e.g., IPR-CITIZEN-0001" />
+                </div>
+
+                <div style="grid-column:1 / -1">
+                  <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Notes (optional, local)</div>
+                  <input id="notes" class="hbce-mono" style="width:100%;box-sizing:border-box" placeholder="optional local note" />
+                </div>
+              </div>
+
+              <div class="hbce-mono hbce-muted" style="margin-top:12px;">
+                Validation: CF must be 16 alphanumeric characters. If ledger already contains CF hash → BLOCK.
+              </div>
+            </div>
+
+            <div class="hbce-card">
+              <h3>Build outputs</h3>
+              <p class="hbce-muted">
+                Generate deterministic JSON → compute SHA-256 → produce registry proofs (release + CF dedup).
+              </p>
+
+              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+                <a class="hbce-btn hbce-btn--primary" href="#" id="build">Build Release</a>
+                <a class="hbce-btn" href="#" id="download">Download Release</a>
+                <a class="hbce-btn" href="#" id="reset">Reset</a>
+              </div>
+
+              <div class="hbce-card" style="margin-top:12px">
+                <div class="hbce-mono hbce-muted">Build status</div>
+                <div style="font-weight:700;letter-spacing:.02em" id="buildStatus">READY</div>
+              </div>
+
+              <div class="hbce-mono hbce-muted" style="margin-top:12px">
+                release_payload_sha256: <span id="sha_release">—</span><br/>
+                citizen_cf_sha256: <span id="sha_cf">—</span>
+              </div>
+
+              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+                <a class="hbce-btn" href="#" id="copyReleaseProof">Copy Release Proof</a>
+                <a class="hbce-btn" href="#" id="copyCFProof">Copy CF Dedup Proof</a>
+              </div>
+
+              <div class="hbce-card" style="margin-top:12px">
+                <div class="hbce-mono hbce-muted">Proofs (hash-only)</div>
+                <pre id="proofs" class="hbce-mono" style="margin:10px 0 0 0;white-space:pre-wrap;word-break:break-word;">{}</pre>
+              </div>
+
+              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+                <a class="hbce-btn" href="../../registry/">Open Registry</a>
+                <a class="hbce-btn" href="../../sim/joker-c2/">Open Simulator</a>
+              </div>
+            </div>
+
+            <div class="hbce-card">
+              <h3>Release JSON (local)</h3>
+              <p class="hbce-muted">Owner-controlled release content. Do not publish it.</p>
+              <div class="hbce-card" style="margin-top:12px">
+                <pre id="releaseOut" class="hbce-mono" style="margin:0;white-space:pre-wrap;word-break:break-word;">{}</pre>
+              </div>
+            </div>
+
+          </div>
         </div>
-        <div>
-          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Place of birth (City, Country)</div>
-          <input id="pob" class="hbce-field" placeholder="Bologna, IT" />
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <div>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+          <div>HERMETICUM B.C.E. S.r.l.</div>
+          <div class="hbce-muted">Fail-closed · Hash-only · Append-only · EU-first · Audit-first</div>
         </div>
+      </section>
 
-        <div>
-          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Residence (City, Region, Country)</div>
-          <input id="residence" class="hbce-field" placeholder="Torino, Piemonte, IT" />
-        </div>
-        <div>
-          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Contact email (optional)</div>
-          <input id="email" class="hbce-field hbce-mono" placeholder="name@example.com" />
-        </div>
-      </div>
-
-      <div class="hbce-divider"></div>
-
-      <h3>EU identifiers (local-only)</h3>
-      <p>
-        These fields are used to generate a local release and an anti-duplicate hash key.
-        Only hashes are intended for the public ledger.
-      </p>
-
-      <div class="hbce-row">
-        <div>
-          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Codice Fiscale (IT)</div>
-          <input id="cf" class="hbce-field hbce-mono" placeholder="16 characters (e.g., CLTMNL88B05A944R)" />
-        </div>
-        <div>
-          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">CIE number (optional, local)</div>
-          <input id="cie" class="hbce-field hbce-mono" placeholder="e.g., CA19311XQ" />
-        </div>
-
-        <div>
-          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">CIE expiry (optional, YYYY-MM-DD)</div>
-          <input id="cie_exp" class="hbce-field hbce-mono" placeholder="2035-02-05" />
-        </div>
-        <div>
-          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Citizen IPR ID (your label)</div>
-          <input id="ipr_id" class="hbce-field hbce-mono" placeholder="e.g., IPR-CITIZEN-0001" />
-        </div>
-
-        <div>
-          <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Notes (optional, local)</div>
-          <input id="notes" class="hbce-field" placeholder="optional local note" />
-        </div>
-      </div>
-
-      <div class="hbce-note hbce-mono" style="margin-top:12px;">
-        Validation: CF must be 16 alphanumeric characters. If ledger already contains CF hash → BLOCK.
-      </div>
-    </article>
-
-    <article class="hbce-card">
-      <h3>Build outputs</h3>
-      <p>Generate deterministic JSON → compute SHA-256 → produce registry proofs (release + CF dedup).</p>
-
-      <div class="hbce-cta">
-        <a class="hbce-a" href="#" id="build">Build Release</a>
-        <a class="hbce-a" href="#" id="download">Download Release</a>
-        <a class="hbce-a" href="#" id="reset">Reset</a>
-      </div>
-
-      <div class="hbce-status" style="margin-top:12px;">
-        <div class="hbce-mono" style="opacity:.92;margin-bottom:6px;">Build status</div>
-        <div class="hbce-status__value" id="buildStatus">READY</div>
-      </div>
-
-      <div class="hbce-note hbce-mono" style="margin-top:12px;">
-        release_payload_sha256: <span id="sha_release">—</span><br/>
-        citizen_cf_sha256: <span id="sha_cf">—</span>
-      </div>
-
-      <div class="hbce-cta">
-        <a class="hbce-a" href="#" id="copyReleaseProof">Copy Release Proof</a>
-        <a class="hbce-a" href="#" id="copyCFProof">Copy CF Dedup Proof</a>
-      </div>
-
-      <div class="hbce-note hbce-mono" style="margin-top:12px;">
-        Proofs (hash-only):<br/>
-        <pre id="proofs">{}</pre>
-      </div>
-
-      <div class="hbce-cta">
-        <a class="hbce-a" href="/hermeticum-bce-platform/registry/">Open Registry</a>
-        <a class="hbce-a" href="/hermeticum-bce-platform/sim/joker-c2/">Open Simulator</a>
-      </div>
-    </article>
-
-    <article class="hbce-card">
-      <h3>Release JSON (local)</h3>
-      <p>Owner-controlled release content. Do not publish it.</p>
-      <div class="hbce-note hbce-mono"><pre id="releaseOut">{}</pre></div>
-    </article>
-  </div>
-</section>
-
-<div class="hbce-footerMark">
-  <div>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-  <div>HERMETICUM B.C.E. S.r.l.</div>
-  <div>Fail-closed · Hash-only · Append-only · EU-first · Audit-first</div>
-</div>
-
-</main>
-
-<div data-hbce="footer"></div>
-
-<script>
+      <script>
 let LEDGER = null;
 
 function toHex(buf){
@@ -497,7 +485,9 @@ document.getElementById("cf").addEventListener("input", async ()=>{
 });
 
 loadLedger();
-</script>
+      </script>
 
+    </main>
+  </div>
 </body>
 </html>
