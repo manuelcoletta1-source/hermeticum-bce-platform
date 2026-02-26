@@ -1,5 +1,6 @@
 /* =========================================================
    HBCE DEMO NODE — APPEND ONLY + FAIL CLOSED (STATIC)
+   + TAMPER TEST
    - Browser-only, no backend
    - Deterministic SHA-256 via WebCrypto
    ========================================================= */
@@ -18,12 +19,12 @@
     ipr: null,               // { id, created_ts }
     ledger: [],              // entries with {i, ts, type, payload, prev_hash, hash}
     head_hash: null,         // last hash
-    last_verification: null  // {status, reason, at_ts}
+    last_verification: null, // {status, reason, at_ts, ...}
+    tampered: false
   };
 
   /* -----------------------
-     Canonical JSON
-     (stable key order)
+     Canonical JSON (stable)
   ----------------------- */
   function isObj(x){ return x && typeof x === "object" && !Array.isArray(x); }
 
@@ -53,9 +54,24 @@
     const dot = $("stDot");
     const st = $("stText");
     const nt = $("stNote");
-    dot.className = "dot" + (kind==="good" ? " good" : kind==="bad" ? " bad" : "");
+    dot.className = "dot" + (kind==="good" ? " good" : kind==="bad" ? " bad" : kind==="warn" ? " warn" : "");
     st.textContent = text;
     nt.textContent = note || "";
+  }
+
+  function short(h){
+    if(!h) return "—";
+    if(h.length <= 16) return h;
+    return h.slice(0,12) + "…" + h.slice(-6);
+  }
+
+  function escapeHtml(s){
+    return String(s)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#39;");
   }
 
   function updateUI(){
@@ -65,6 +81,7 @@
 
     $("btnEmit").disabled = !STATE.ipr;
     $("btnVerify").disabled = !STATE.ipr;
+    $("btnTamper").disabled = !(STATE.ipr && STATE.ledger.length >= 2 && !STATE.tampered);
     $("btnExport").disabled = !(STATE.ipr && STATE.last_verification && STATE.last_verification.status === "VALID");
 
     // Ledger table
@@ -85,7 +102,8 @@
         const tdI = document.createElement("td"); tdI.textContent = String(e.i);
         const tdT = document.createElement("td"); tdT.textContent = e.ts;
         const tdE = document.createElement("td");
-        tdE.innerHTML = `<code>${escapeHtml(e.type)}</code> <span class="small">· prev=${short(e.prev_hash)} </span>`;
+        const extra = (STATE.tampered && e._tampered) ? " · TAMPERED" : "";
+        tdE.innerHTML = `<code>${escapeHtml(e.type)}</code><span class="small"> · prev=${short(e.prev_hash)}${extra}</span>`;
         const tdH = document.createElement("td"); tdH.innerHTML = `<code>${short(e.hash)}</code>`;
 
         tr.appendChild(tdI);
@@ -97,21 +115,6 @@
     }
 
     $("debug").textContent = JSON.stringify(STATE, null, 2);
-  }
-
-  function short(h){
-    if(!h) return "—";
-    if(h.length <= 16) return h;
-    return h.slice(0,12) + "…" + h.slice(-6);
-  }
-
-  function escapeHtml(s){
-    return String(s)
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#39;");
   }
 
   async function appendEntry(type, payload){
@@ -142,7 +145,6 @@
   }
 
   async function verifyLedger(){
-    // Fail closed by default
     if(!STATE.ipr){
       STATE.last_verification = { status:"INVALID", reason:"MISSING_IDENTITY", at_ts: nowIso() };
       setStatus("bad","Status: DENIED","Missing identity (fail-closed).");
@@ -151,7 +153,6 @@
     }
 
     if(STATE.ledger.length === 0){
-      // Identity exists; ledger empty is still valid for node readiness
       STATE.last_verification = { status:"VALID", reason:"EMPTY_LEDGER_OK", at_ts: nowIso() };
       setStatus("good","Status: VERIFIED (VALID)","Identity present. Ledger empty is acceptable.");
       updateUI();
@@ -160,7 +161,6 @@
 
     let prev = "GENESIS";
     for(const e of STATE.ledger){
-      // 1) chain check
       if(e.prev_hash !== prev){
         STATE.last_verification = { status:"INVALID", reason:"CHAIN_BREAK", at_ts: nowIso(), at_entry: e.i };
         setStatus("bad","Status: DENIED","Chain break detected (fail-closed).");
@@ -168,7 +168,6 @@
         return STATE.last_verification;
       }
 
-      // 2) hash recompute check
       const noHash = { i:e.i, ts:e.ts, type:e.type, payload:e.payload, prev_hash:e.prev_hash };
       const canon = canonicalize(noHash);
       const recomputed = await sha256Hex(canon);
@@ -182,7 +181,6 @@
       prev = e.hash;
     }
 
-    // 3) head check
     const last = STATE.ledger[STATE.ledger.length - 1];
     if(STATE.head_hash !== last.hash){
       STATE.last_verification = { status:"INVALID", reason:"HEAD_MISMATCH", at_ts: nowIso() };
@@ -198,7 +196,6 @@
   }
 
   function randomId(prefix){
-    // Not cryptographic identity. Demo only.
     const a = Math.random().toString(16).slice(2);
     const b = Math.random().toString(16).slice(2);
     return `${prefix}-${a.slice(0,8)}${b.slice(0,8)}`.toUpperCase();
@@ -209,19 +206,25 @@
     STATE.ledger = [];
     STATE.head_hash = null;
     STATE.last_verification = null;
+    STATE.tampered = false;
 
     setStatus("", "Status: IDENTITY INITIALIZED", "IPR created (demo). Execution can now be gated.");
     updateUI();
 
-    // Add an explicit genesis event (optional but helpful)
     await appendEntry("IDENTITY_INIT", {
       ipr_id: STATE.ipr.id,
       note: "Demo identity initialized; node ready."
     });
+
+    // Add one more event so tamper test can work immediately
+    await appendEntry("EXECUTION_EVENT", {
+      op: "RUN_AUTONOMOUS_ACTION",
+      gate: "IDENTITY_REQUIRED",
+      details: "Initial execution event appended."
+    });
   }
 
   async function emitEvent(){
-    // A generic “execution attempt” event
     await appendEntry("EXECUTION_EVENT", {
       op: "RUN_AUTONOMOUS_ACTION",
       gate: "IDENTITY_REQUIRED",
@@ -231,6 +234,22 @@
 
   async function verify(){
     await verifyLedger();
+  }
+
+  function tamper(){
+    // Tamper entry #2 payload WITHOUT recomputing its hash.
+    // Must cause HASH_MISMATCH on verify.
+    if(!STATE.ipr || STATE.ledger.length < 2 || STATE.tampered) return;
+
+    const target = STATE.ledger[1]; // entry i=2
+    if(!target || !target.payload || typeof target.payload !== "object") return;
+
+    target.payload.details = "TAMPERED_PAYLOAD_MODIFICATION";
+    target._tampered = true;
+    STATE.tampered = true;
+
+    setStatus("warn","Status: TAMPER APPLIED","Ledger mutated without hash recomputation. Verify must fail.");
+    updateUI();
   }
 
   function exportReceipt(){
@@ -274,15 +293,14 @@
     STATE.ledger = [];
     STATE.head_hash = null;
     STATE.last_verification = null;
+    STATE.tampered = false;
 
     setStatus("", "Status: IDENTITY NOT INITIALIZED", "");
     updateUI();
   }
 
-  // Expose minimal API for buttons
-  window.HBCE = { initIdentity, emitEvent, verify, exportReceipt, reset };
+  window.HBCE = { initIdentity, emitEvent, verify, exportReceipt, tamper, reset };
 
-  // Init UI
   setStatus("", "Status: IDENTITY NOT INITIALIZED", "");
   updateUI();
 
