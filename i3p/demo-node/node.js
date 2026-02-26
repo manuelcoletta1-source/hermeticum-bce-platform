@@ -1,34 +1,289 @@
-function executeWithoutIdentity(){
+/* =========================================================
+   HBCE DEMO NODE — APPEND ONLY + FAIL CLOSED (STATIC)
+   - Browser-only, no backend
+   - Deterministic SHA-256 via WebCrypto
+   ========================================================= */
 
-  const result = {
-    status: "BLOCKED",
-    reason: "MISSING_IDENTITY",
-    mode: "FAIL_CLOSED"
+(function(){
+  "use strict";
+
+  const $ = (id) => document.getElementById(id);
+
+  const STATE = {
+    proto: "HBCE-DEMO-NODE-v1",
+    kind: "AUTONOMOUS_IDENTITY_EXECUTION_NODE",
+    issuer: "HERMETICUM B.C.E. S.r.l.",
+    jurisdiction: "EU",
+    policy: ["HASH_ONLY","APPEND_ONLY","FAIL_CLOSED","UE_FIRST","AUDIT_FIRST","GDPR_MIN"],
+    ipr: null,               // { id, created_ts }
+    ledger: [],              // entries with {i, ts, type, payload, prev_hash, hash}
+    head_hash: null,         // last hash
+    last_verification: null  // {status, reason, at_ts}
   };
 
-  render(result);
-}
+  /* -----------------------
+     Canonical JSON
+     (stable key order)
+  ----------------------- */
+  function isObj(x){ return x && typeof x === "object" && !Array.isArray(x); }
 
-function executeWithIdentity(){
+  function canonicalize(value){
+    if(Array.isArray(value)){
+      return "[" + value.map(canonicalize).join(",") + "]";
+    }
+    if(isObj(value)){
+      const keys = Object.keys(value).sort();
+      return "{" + keys.map(k => JSON.stringify(k)+":"+canonicalize(value[k])).join(",") + "}";
+    }
+    return JSON.stringify(value);
+  }
 
-  const ipr = {
-    id: "IPR-DEMO-0001",
-    integrity: "VALID",
-    mode: "APPEND_ONLY",
-    verification: "HASH_MATCH"
-  };
+  async function sha256Hex(str){
+    const enc = new TextEncoder().encode(str);
+    const buf = await crypto.subtle.digest("SHA-256", enc);
+    const bytes = Array.from(new Uint8Array(buf));
+    return bytes.map(b => b.toString(16).padStart(2,"0")).join("");
+  }
 
-  const result = {
-    status: "AUTHORIZED",
-    identity: ipr.id,
-    integrity: ipr.integrity,
-    mode: ipr.mode
-  };
+  function nowIso(){
+    return new Date().toISOString();
+  }
 
-  render(result);
-}
+  function setStatus(kind, text, note){
+    const dot = $("stDot");
+    const st = $("stText");
+    const nt = $("stNote");
+    dot.className = "dot" + (kind==="good" ? " good" : kind==="bad" ? " bad" : "");
+    st.textContent = text;
+    nt.textContent = note || "";
+  }
 
-function render(data){
-  document.getElementById("output").innerHTML =
-    "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
-}
+  function updateUI(){
+    $("iprId").textContent = STATE.ipr?.id || "—";
+    $("headHash").textContent = STATE.head_hash || "—";
+    $("ledgerCount").textContent = String(STATE.ledger.length);
+
+    $("btnEmit").disabled = !STATE.ipr;
+    $("btnVerify").disabled = !STATE.ipr;
+    $("btnExport").disabled = !(STATE.ipr && STATE.last_verification && STATE.last_verification.status === "VALID");
+
+    // Ledger table
+    const body = $("ledgerRows");
+    body.innerHTML = "";
+    if(STATE.ledger.length === 0){
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 4;
+      td.className = "small";
+      td.textContent = "No entries yet.";
+      tr.appendChild(td);
+      body.appendChild(tr);
+    }else{
+      for(const e of STATE.ledger){
+        const tr = document.createElement("tr");
+
+        const tdI = document.createElement("td"); tdI.textContent = String(e.i);
+        const tdT = document.createElement("td"); tdT.textContent = e.ts;
+        const tdE = document.createElement("td");
+        tdE.innerHTML = `<code>${escapeHtml(e.type)}</code> <span class="small">· prev=${short(e.prev_hash)} </span>`;
+        const tdH = document.createElement("td"); tdH.innerHTML = `<code>${short(e.hash)}</code>`;
+
+        tr.appendChild(tdI);
+        tr.appendChild(tdT);
+        tr.appendChild(tdE);
+        tr.appendChild(tdH);
+        body.appendChild(tr);
+      }
+    }
+
+    $("debug").textContent = JSON.stringify(STATE, null, 2);
+  }
+
+  function short(h){
+    if(!h) return "—";
+    if(h.length <= 16) return h;
+    return h.slice(0,12) + "…" + h.slice(-6);
+  }
+
+  function escapeHtml(s){
+    return String(s)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#39;");
+  }
+
+  async function appendEntry(type, payload){
+    if(!STATE.ipr){
+      setStatus("bad","Status: DENIED","Missing identity (fail-closed).");
+      STATE.last_verification = { status:"INVALID", reason:"MISSING_IDENTITY", at_ts: nowIso() };
+      updateUI();
+      return;
+    }
+
+    const entryNoHash = {
+      i: STATE.ledger.length + 1,
+      ts: nowIso(),
+      type,
+      payload,
+      prev_hash: STATE.head_hash || "GENESIS"
+    };
+
+    const canon = canonicalize(entryNoHash);
+    const hash = await sha256Hex(canon);
+
+    const entry = { ...entryNoHash, hash };
+    STATE.ledger.push(entry);
+    STATE.head_hash = hash;
+
+    setStatus("", "Status: APPENDED", `Entry #${entry.i} added (append-only).`);
+    updateUI();
+  }
+
+  async function verifyLedger(){
+    // Fail closed by default
+    if(!STATE.ipr){
+      STATE.last_verification = { status:"INVALID", reason:"MISSING_IDENTITY", at_ts: nowIso() };
+      setStatus("bad","Status: DENIED","Missing identity (fail-closed).");
+      updateUI();
+      return STATE.last_verification;
+    }
+
+    if(STATE.ledger.length === 0){
+      // Identity exists; ledger empty is still valid for node readiness
+      STATE.last_verification = { status:"VALID", reason:"EMPTY_LEDGER_OK", at_ts: nowIso() };
+      setStatus("good","Status: VERIFIED (VALID)","Identity present. Ledger empty is acceptable.");
+      updateUI();
+      return STATE.last_verification;
+    }
+
+    let prev = "GENESIS";
+    for(const e of STATE.ledger){
+      // 1) chain check
+      if(e.prev_hash !== prev){
+        STATE.last_verification = { status:"INVALID", reason:"CHAIN_BREAK", at_ts: nowIso(), at_entry: e.i };
+        setStatus("bad","Status: DENIED","Chain break detected (fail-closed).");
+        updateUI();
+        return STATE.last_verification;
+      }
+
+      // 2) hash recompute check
+      const noHash = { i:e.i, ts:e.ts, type:e.type, payload:e.payload, prev_hash:e.prev_hash };
+      const canon = canonicalize(noHash);
+      const recomputed = await sha256Hex(canon);
+      if(recomputed !== e.hash){
+        STATE.last_verification = { status:"INVALID", reason:"HASH_MISMATCH", at_ts: nowIso(), at_entry: e.i };
+        setStatus("bad","Status: DENIED","Hash mismatch detected (fail-closed).");
+        updateUI();
+        return STATE.last_verification;
+      }
+
+      prev = e.hash;
+    }
+
+    // 3) head check
+    const last = STATE.ledger[STATE.ledger.length - 1];
+    if(STATE.head_hash !== last.hash){
+      STATE.last_verification = { status:"INVALID", reason:"HEAD_MISMATCH", at_ts: nowIso() };
+      setStatus("bad","Status: DENIED","Head mismatch (fail-closed).");
+      updateUI();
+      return STATE.last_verification;
+    }
+
+    STATE.last_verification = { status:"VALID", reason:"LEDGER_OK", at_ts: nowIso(), head: STATE.head_hash };
+    setStatus("good","Status: VERIFIED (VALID)","Deterministic integrity match.");
+    updateUI();
+    return STATE.last_verification;
+  }
+
+  function randomId(prefix){
+    // Not cryptographic identity. Demo only.
+    const a = Math.random().toString(16).slice(2);
+    const b = Math.random().toString(16).slice(2);
+    return `${prefix}-${a.slice(0,8)}${b.slice(0,8)}`.toUpperCase();
+  }
+
+  async function initIdentity(){
+    STATE.ipr = { id: randomId("IPR-DEMO"), created_ts: nowIso() };
+    STATE.ledger = [];
+    STATE.head_hash = null;
+    STATE.last_verification = null;
+
+    setStatus("", "Status: IDENTITY INITIALIZED", "IPR created (demo). Execution can now be gated.");
+    updateUI();
+
+    // Add an explicit genesis event (optional but helpful)
+    await appendEntry("IDENTITY_INIT", {
+      ipr_id: STATE.ipr.id,
+      note: "Demo identity initialized; node ready."
+    });
+  }
+
+  async function emitEvent(){
+    // A generic “execution attempt” event
+    await appendEntry("EXECUTION_EVENT", {
+      op: "RUN_AUTONOMOUS_ACTION",
+      gate: "IDENTITY_REQUIRED",
+      details: "Demo event appended to ledger."
+    });
+  }
+
+  async function verify(){
+    await verifyLedger();
+  }
+
+  function exportReceipt(){
+    if(!STATE.ipr || !STATE.last_verification || STATE.last_verification.status !== "VALID"){
+      setStatus("bad","Status: DENIED","Cannot export receipt unless node is VALID.");
+      updateUI();
+      return;
+    }
+
+    const receipt = {
+      proto: "HBCE-RECEIPT-v1",
+      kind: "DEMO_NODE_RECEIPT",
+      issuer: STATE.issuer,
+      jurisdiction: STATE.jurisdiction,
+      policy: STATE.policy,
+      generated_ts: nowIso(),
+      ipr: STATE.ipr,
+      ledger: {
+        entries: STATE.ledger.length,
+        head_hash: STATE.head_hash
+      },
+      verification: STATE.last_verification
+    };
+
+    const blob = new Blob([JSON.stringify(receipt, null, 2)], { type:"application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `HBCE_RECEIPT_${STATE.ipr.id}_${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+
+    setStatus("good","Status: RECEIPT EXPORTED","JSON receipt downloaded.");
+    updateUI();
+  }
+
+  function reset(){
+    STATE.ipr = null;
+    STATE.ledger = [];
+    STATE.head_hash = null;
+    STATE.last_verification = null;
+
+    setStatus("", "Status: IDENTITY NOT INITIALIZED", "");
+    updateUI();
+  }
+
+  // Expose minimal API for buttons
+  window.HBCE = { initIdentity, emitEvent, verify, exportReceipt, reset };
+
+  // Init UI
+  setStatus("", "Status: IDENTITY NOT INITIALIZED", "");
+  updateUI();
+
+})();
