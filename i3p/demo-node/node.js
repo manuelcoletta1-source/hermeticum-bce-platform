@@ -1,6 +1,7 @@
 /* =========================================================
    HBCE DEMO NODE — APPEND ONLY + FAIL CLOSED (STATIC)
    + TAMPER TEST
+   + EXECUTION GATE (RUN)
    - Browser-only, no backend
    - Deterministic SHA-256 via WebCrypto
    ========================================================= */
@@ -16,11 +17,12 @@
     issuer: "HERMETICUM B.C.E. S.r.l.",
     jurisdiction: "EU",
     policy: ["HASH_ONLY","APPEND_ONLY","FAIL_CLOSED","UE_FIRST","AUDIT_FIRST","GDPR_MIN"],
-    ipr: null,               // { id, created_ts }
-    ledger: [],              // entries with {i, ts, type, payload, prev_hash, hash}
-    head_hash: null,         // last hash
-    last_verification: null, // {status, reason, at_ts, ...}
-    tampered: false
+    ipr: null,                // { id, created_ts }
+    ledger: [],               // entries with {i, ts, type, payload, prev_hash, hash}
+    head_hash: null,          // last hash
+    last_verification: null,  // {status, reason, at_ts, ...}
+    tampered: false,
+    gate: "DENIED"            // AUTHORIZED | DENIED
   };
 
   /* -----------------------
@@ -46,9 +48,7 @@
     return bytes.map(b => b.toString(16).padStart(2,"0")).join("");
   }
 
-  function nowIso(){
-    return new Date().toISOString();
-  }
+  function nowIso(){ return new Date().toISOString(); }
 
   function setStatus(kind, text, note){
     const dot = $("stDot");
@@ -74,15 +74,26 @@
       .replaceAll("'","&#39;");
   }
 
+  function setGate(value){
+    STATE.gate = value;
+    const el = $("gateState");
+    if(el) el.textContent = value;
+  }
+
   function updateUI(){
     $("iprId").textContent = STATE.ipr?.id || "—";
     $("headHash").textContent = STATE.head_hash || "—";
     $("ledgerCount").textContent = String(STATE.ledger.length);
+    $("gateState").textContent = STATE.gate;
 
     $("btnEmit").disabled = !STATE.ipr;
     $("btnVerify").disabled = !STATE.ipr;
     $("btnTamper").disabled = !(STATE.ipr && STATE.ledger.length >= 2 && !STATE.tampered);
     $("btnExport").disabled = !(STATE.ipr && STATE.last_verification && STATE.last_verification.status === "VALID");
+
+    // RUN is unlocked only if VALID
+    const isValid = !!(STATE.last_verification && STATE.last_verification.status === "VALID");
+    $("btnRun").disabled = !(STATE.ipr && isValid);
 
     // Ledger table
     const body = $("ledgerRows");
@@ -119,6 +130,7 @@
 
   async function appendEntry(type, payload){
     if(!STATE.ipr){
+      setGate("DENIED");
       setStatus("bad","Status: DENIED","Missing identity (fail-closed).");
       STATE.last_verification = { status:"INVALID", reason:"MISSING_IDENTITY", at_ts: nowIso() };
       updateUI();
@@ -145,6 +157,9 @@
   }
 
   async function verifyLedger(){
+    // Default deny unless proven valid
+    setGate("DENIED");
+
     if(!STATE.ipr){
       STATE.last_verification = { status:"INVALID", reason:"MISSING_IDENTITY", at_ts: nowIso() };
       setStatus("bad","Status: DENIED","Missing identity (fail-closed).");
@@ -154,6 +169,7 @@
 
     if(STATE.ledger.length === 0){
       STATE.last_verification = { status:"VALID", reason:"EMPTY_LEDGER_OK", at_ts: nowIso() };
+      setGate("AUTHORIZED");
       setStatus("good","Status: VERIFIED (VALID)","Identity present. Ledger empty is acceptable.");
       updateUI();
       return STATE.last_verification;
@@ -190,6 +206,7 @@
     }
 
     STATE.last_verification = { status:"VALID", reason:"LEDGER_OK", at_ts: nowIso(), head: STATE.head_hash };
+    setGate("AUTHORIZED");
     setStatus("good","Status: VERIFIED (VALID)","Deterministic integrity match.");
     updateUI();
     return STATE.last_verification;
@@ -207,6 +224,7 @@
     STATE.head_hash = null;
     STATE.last_verification = null;
     STATE.tampered = false;
+    setGate("DENIED");
 
     setStatus("", "Status: IDENTITY INITIALIZED", "IPR created (demo). Execution can now be gated.");
     updateUI();
@@ -216,19 +234,21 @@
       note: "Demo identity initialized; node ready."
     });
 
-    // Add one more event so tamper test can work immediately
     await appendEntry("EXECUTION_EVENT", {
-      op: "RUN_AUTONOMOUS_ACTION",
+      op: "PRECHECK",
       gate: "IDENTITY_REQUIRED",
-      details: "Initial execution event appended."
+      details: "Initial event appended."
     });
+
+    // Auto-verify after init so RUN becomes available immediately
+    await verifyLedger();
   }
 
   async function emitEvent(){
     await appendEntry("EXECUTION_EVENT", {
-      op: "RUN_AUTONOMOUS_ACTION",
+      op: "PLAN",
       gate: "IDENTITY_REQUIRED",
-      details: "Demo event appended to ledger."
+      details: "Planning step appended."
     });
   }
 
@@ -236,9 +256,30 @@
     await verifyLedger();
   }
 
+  async function run(){
+    // Hard gate: must be VALID *now*
+    const v = await verifyLedger();
+    if(!v || v.status !== "VALID"){
+      setGate("DENIED");
+      setStatus("bad","Status: RUN DENIED","Gate is fail-closed. Verification not VALID.");
+      updateUI();
+      return;
+    }
+
+    setGate("AUTHORIZED");
+    await appendEntry("EXECUTION_RUN", {
+      op: "RUN_AUTONOMOUS_ACTION",
+      gate: "AUTHORIZED",
+      decision: "ALLOW",
+      note: "Execution permitted after deterministic verification."
+    });
+
+    setStatus("good","Status: RUN AUTHORIZED","Execution event appended under VALID gate.");
+    updateUI();
+  }
+
   function tamper(){
-    // Tamper entry #2 payload WITHOUT recomputing its hash.
-    // Must cause HASH_MISMATCH on verify.
+    // Tamper entry #2 payload WITHOUT recomputing hash → must fail verification
     if(!STATE.ipr || STATE.ledger.length < 2 || STATE.tampered) return;
 
     const target = STATE.ledger[1]; // entry i=2
@@ -248,7 +289,8 @@
     target._tampered = true;
     STATE.tampered = true;
 
-    setStatus("warn","Status: TAMPER APPLIED","Ledger mutated without hash recomputation. Verify must fail.");
+    setGate("DENIED");
+    setStatus("warn","Status: TAMPER APPLIED","Ledger mutated without hash recomputation. Verify/RUN must fail.");
     updateUI();
   }
 
@@ -271,7 +313,8 @@
         entries: STATE.ledger.length,
         head_hash: STATE.head_hash
       },
-      verification: STATE.last_verification
+      verification: STATE.last_verification,
+      gate: STATE.gate
     };
 
     const blob = new Blob([JSON.stringify(receipt, null, 2)], { type:"application/json" });
@@ -294,13 +337,15 @@
     STATE.head_hash = null;
     STATE.last_verification = null;
     STATE.tampered = false;
+    setGate("DENIED");
 
     setStatus("", "Status: IDENTITY NOT INITIALIZED", "");
     updateUI();
   }
 
-  window.HBCE = { initIdentity, emitEvent, verify, exportReceipt, tamper, reset };
+  window.HBCE = { initIdentity, emitEvent, verify, run, exportReceipt, tamper, reset };
 
+  setGate("DENIED");
   setStatus("", "Status: IDENTITY NOT INITIALIZED", "");
   updateUI();
 
