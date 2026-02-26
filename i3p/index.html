@@ -6,55 +6,100 @@
 <title>HBCE — Autonomous Identity Infrastructure | Torino R&D</title>
 
 <style>
+:root{
+  --bg:#0b0f14;
+  --panel:#0f1620;
+  --line:#1c2633;
+  --text:#e8eef6;
+  --muted:#b8c4d6;
+  --dim:#6f7b8a;
+  --accent:#00ffe1;
+  --good:#6dff8f;
+}
 body{
   margin:0;
-  background:#0b0f14;
-  color:#e8eef6;
+  background:var(--bg);
+  color:var(--text);
   font-family:Arial,Helvetica,sans-serif;
   line-height:1.6;
 }
-
 .container{
-  max-width:900px;
+  max-width:920px;
   margin:auto;
   padding:60px 20px;
 }
-
 h1{
   font-size:34px;
-  margin-bottom:10px;
+  margin:0 0 10px;
 }
-
 h2{
-  margin-top:60px;
-  color:#00ffe1;
+  margin:60px 0 14px;
+  color:var(--accent);
+  letter-spacing:0.5px;
 }
-
-p{
-  color:#b8c4d6;
-}
-
+p{ color:var(--muted); margin:10px 0; }
 .tag{
   display:inline-block;
-  border:1px solid #00ffe1;
+  border:1px solid var(--accent);
   padding:6px 12px;
-  margin-top:15px;
+  margin-top:14px;
   font-size:12px;
   letter-spacing:1px;
-  color:#00ffe1;
+  color:var(--accent);
 }
-
 .block{
-  margin-top:30px;
-  padding:25px;
-  border:1px solid #1c2633;
-  background:#0f1620;
+  margin-top:16px;
+  padding:22px;
+  border:1px solid var(--line);
+  background:var(--panel);
 }
-
+.kv{
+  display:grid;
+  grid-template-columns: 170px 1fr;
+  gap:8px 12px;
+  margin-top:10px;
+  font-size:13px;
+}
+.k{ color:var(--dim); }
+code{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+  color:var(--muted);
+}
+.row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:14px;
+}
+a{ color:var(--accent); text-decoration:none; }
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:12px 14px;
+  border-radius:12px;
+  border:1px solid var(--accent);
+  color:var(--accent);
+  font-weight:700;
+}
+.btn.primary{
+  background:var(--accent);
+  color:#061013;
+}
+.btn.good{
+  border-color:var(--good);
+  color:var(--good);
+}
+.small{
+  font-size:12px;
+  color:var(--dim);
+  margin-top:10px;
+}
 .footer{
   margin-top:80px;
   font-size:12px;
-  color:#6f7b8a;
+  color:var(--dim);
 }
 </style>
 </head>
@@ -70,97 +115,112 @@ p{
 
 <h2>Overview</h2>
 <div class="block">
-<p>
-HBCE is an experimental research and development laboratory focused on persistent operational identity infrastructures for autonomous and hybrid systems.
-</p>
+  <p>
+    HBCE is an experimental research and development laboratory focused on persistent operational identity infrastructures for autonomous and hybrid systems.
+  </p>
+  <p>
+    The research explores identity binding, execution authorization and auditability for next-generation machine environments including artificial intelligence, robotics, drones and distributed software agents.
+  </p>
 
-<p>
-The research explores identity binding, execution authorization and auditability for next-generation machine environments including artificial intelligence, robotics, drones and distributed software agents.
-</p>
+  <div class="kv">
+    <div class="k">Core Thesis</div><div><code>Execution requires identity.</code></div>
+    <div class="k">Failure Mode</div><div><code>FAIL_CLOSED</code> (deny by default)</div>
+    <div class="k">Write Model</div><div><code>APPEND_ONLY</code> (evolution, not overwrite)</div>
+    <div class="k">Integrity</div><div><code>DETERMINISTIC SHA-256 MATCH</code></div>
+  </div>
 </div>
 
 <h2>The Missing Layer</h2>
 <div class="block">
-<p>
-Autonomous systems can execute actions but cannot demonstrate persistent operational identity across time, environments and infrastructures.
-</p>
-
-<p>
-Current architectures rely on device identifiers, accounts or certificates that do not provide continuous, verifiable identity for autonomous execution.
-</p>
-
-<p>
-This structural gap limits secure deployment of:
-<br>• robotics and industrial automation  
-<br>• AI agents and hybrid systems  
-<br>• distributed machine environments  
-<br>• human-machine operational continuity  
-</p>
-
-<p>
-A deterministic identity layer for execution environments is currently absent.
-</p>
+  <p>
+    Autonomous systems can execute actions but cannot demonstrate persistent operational identity across time, environments and infrastructures.
+  </p>
+  <p>
+    Current architectures rely on device identifiers, accounts or certificates that do not provide continuous, verifiable identity for autonomous execution.
+  </p>
+  <p>
+    This structural gap limits secure deployment of:
+    <br>• robotics and industrial automation
+    <br>• AI agents and hybrid systems
+    <br>• distributed machine environments
+    <br>• human-machine operational continuity
+  </p>
+  <p>
+    A deterministic identity layer for execution environments is currently absent.
+  </p>
 </div>
 
 <h2>IPR — Identity Primary Record</h2>
 <div class="block">
-<p>
-HBCE develops the Identity Primary Record (IPR): a persistent, append-only operational identity structure designed for autonomous and hybrid entities.
-</p>
+  <p>
+    HBCE develops the Identity Primary Record (IPR): a persistent, append-only operational identity structure designed for autonomous and hybrid entities.
+  </p>
+  <p>
+    Core properties:
+    <br>• persistent identity anchoring
+    <br>• append-only evolution
+    <br>• fail-closed verification logic
+    <br>• environment-agnostic structure
+    <br>• hash-based integrity
+    <br>• compatible with EU regulatory logic
+  </p>
+  <p>
+    Execution requires identity.
+    <br>Identity must persist beyond devices and sessions.
+  </p>
+</div>
 
-<p>
-Core properties:
-<br>• persistent identity anchoring  
-<br>• append-only evolution  
-<br>• fail-closed verification logic  
-<br>• environment-agnostic structure  
-<br>• hash-based integrity  
-<br>• compatible with EU regulatory logic  
-</p>
+<h2>Proof of Concept</h2>
+<div class="block">
+  <p>
+    The following browser-only micro-node demonstrates the execution gate concept:
+    <br><code>without identity or with invalid ledger → DENIED (FAIL_CLOSED)</code>
+    <br><code>with valid identity + deterministic integrity → RUN AUTHORIZED</code>
+  </p>
 
-<p>
-Execution requires identity.  
-Identity must persist beyond devices and sessions.
-</p>
+  <div class="row">
+    <a class="btn primary" href="./demo-node/">Open Demo Node →</a>
+    <a class="btn good" href="./demo-node/" target="_blank" rel="noopener">Open in New Tab</a>
+  </div>
+
+  <div class="small">
+    Demo node is static and deterministic. It demonstrates append-only audit chaining and gated execution logic.
+  </div>
 </div>
 
 <h2>Torino Context</h2>
 <div class="block">
-<p>
-Torino hosts one of Europe’s most advanced industrial and engineering ecosystems.
-</p>
-
-<p>
-Relevant domains:
-<br>• robotics and automation  
-<br>• aerospace engineering  
-<br>• artificial intelligence  
-<br>• automotive and embedded systems  
-<br>• advanced manufacturing  
-</p>
-
-<p>
-This environment represents an ideal context for early experimental deployment of persistent identity infrastructures for autonomous systems.
-</p>
+  <p>
+    Torino hosts one of Europe’s most advanced industrial and engineering ecosystems.
+  </p>
+  <p>
+    Relevant domains:
+    <br>• robotics and automation
+    <br>• aerospace engineering
+    <br>• artificial intelligence
+    <br>• automotive and embedded systems
+    <br>• advanced manufacturing
+  </p>
+  <p>
+    This environment represents an ideal context for early experimental deployment of persistent identity infrastructures for autonomous systems.
+  </p>
 </div>
 
 <h2>Collaboration Objective</h2>
 <div class="block">
-<p>
-HBCE seeks technical and ecosystem alignment within the Torino innovation environment, including research dialogue, experimental integration contexts and deep-tech incubation frameworks.
-</p>
-
-<p>
-Focus areas:
-<br>• identity infrastructure research  
-<br>• robotics and AI integration  
-<br>• autonomous systems governance  
-<br>• industrial experimentation scenarios  
-</p>
-
-<p>
-HBCE operates as an independent R&D nucleus exploring identity infrastructures for machine environments.
-</p>
+  <p>
+    HBCE seeks technical and ecosystem alignment within the Torino innovation environment, including research dialogue, experimental integration contexts and deep-tech incubation frameworks.
+  </p>
+  <p>
+    Focus areas:
+    <br>• identity infrastructure research
+    <br>• robotics and AI integration
+    <br>• autonomous systems governance
+    <br>• industrial experimentation scenarios
+  </p>
+  <p>
+    HBCE operates as an independent R&D nucleus exploring identity infrastructures for machine environments.
+  </p>
 </div>
 
 <div class="footer">
