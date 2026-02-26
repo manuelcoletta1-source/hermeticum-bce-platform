@@ -1,202 +1,224 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<title>Verify — Deterministic IPR Validation</title>
-<meta name="description" content="Deterministic verification for IPR releases against hash-only registry proofs. PASS/FAIL only. Fail-closed." />
+  <title>Verify — Deterministic IPR Validation</title>
+  <meta name="description" content="Deterministic verification for IPR releases against hash-only registry proofs. PASS/FAIL only. Fail-closed." />
 
-<meta name="robots" content="index,follow" />
-<meta name="theme-color" content="#0b0f14" />
-<link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/verify/" />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/verify/" />
 
-<link rel="stylesheet" href="../assets/hbce.css" />
-<script defer src="../assets/hbce-ui.js"></script>
+  <link rel="stylesheet" href="../assets/hbce.css" />
+  <script defer src="../assets/hbce-ui.js"></script>
+
+  <style>
+    /* Minimal, page-scoped form coherence (no layout overrides). */
+    .hbce-field{
+      width:100%;
+      box-sizing:border-box;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.20);
+      color:inherit;
+      border-radius:12px;
+      padding:10px 12px;
+      outline:none;
+    }
+    .hbce-field:focus{ border-color: rgba(255,255,255,.30); }
+  </style>
 </head>
 
 <body>
-  <div class="hbce-container">
-    <main class="hbce-main">
 
-      <section class="hbce-hero">
-        <div class="hbce-hero__kicker">VERIFY · DETERMINISTIC · FAIL-CLOSED</div>
-        <h1 class="hbce-hero__title">IPR Verification</h1>
-        <p class="hbce-hero__lead">
-          Deterministic validation compares a local IPR release against a hash-only registry proof.
-          Output is binary: PASS or FAIL. Any missing input → FAIL (fail-closed).
+  <section class="hbce-section hbce-hero">
+    <div class="hbce-hero__kicker">VERIFY · DETERMINISTIC · FAIL-CLOSED</div>
+    <h1 class="hbce-hero__title">IPR Verification</h1>
+    <p class="hbce-hero__lead">
+      Deterministic validation compares a local IPR release against a hash-only registry proof.
+      Output is binary: PASS or FAIL. Any missing input → FAIL (fail-closed).
+    </p>
+
+    <div style="margin-top:14px;display:flex;gap:12px;flex-wrap:wrap">
+      <a class="hbce-btn hbce-btn--primary" href="../activate/">Activate</a>
+      <a class="hbce-btn" href="../registry/">Registry</a>
+      <a class="hbce-btn" href="../pricing/">Pricing</a>
+    </div>
+  </section>
+
+  <section class="hbce-section">
+    <div class="hbce-card">
+      <h2>Inputs</h2>
+      <p class="hbce-muted">
+        Provide the minimum required data. The verifier computes SHA-256 on the exact UTF-8 bytes
+        of the pasted release text.
+      </p>
+
+      <div class="hbce-grid hbce-grid--3" style="margin-top:14px">
+
+        <div class="hbce-card">
+          <h3>1) Local release file (JSON)</h3>
+          <p class="hbce-muted">Paste the content of your IPR release file (owner-controlled).</p>
+          <textarea
+            id="release"
+            class="hbce-field hbce-mono"
+            rows="10"
+            placeholder='{"proto":"HBCE-CORE-v3","kind":"IPR_BASE_RELEASE",...}'></textarea>
+        </div>
+
+        <div class="hbce-card">
+          <h3>2) Registry proof (SHA-256)</h3>
+          <p class="hbce-muted">Paste the expected hash from the public registry entry.</p>
+          <input
+            id="expected"
+            class="hbce-field hbce-mono"
+            placeholder="expected payload_sha256 (64 hex chars)" />
+          <div class="hbce-muted hbce-mono" style="margin-top:10px;">
+            Format: lowercase hex, 64 chars. Any mismatch → FAIL.
+          </div>
+        </div>
+
+        <div class="hbce-card">
+          <h3>3) Execute verification</h3>
+          <p class="hbce-muted">Compute SHA-256(release_bytes) and compare to registry proof.</p>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+            <a class="hbce-btn hbce-btn--primary" href="#" id="run">Run Verify</a>
+            <a class="hbce-btn" href="#" id="reset">Reset</a>
+          </div>
+
+          <div class="hbce-card" style="margin-top:12px">
+            <div class="hbce-muted">Status</div>
+            <div style="font-size:1.15rem;font-weight:700;letter-spacing:.02em" id="status">MISSING INPUT</div>
+            <div class="hbce-mono hbce-muted" style="margin-top:8px;">
+              computed_sha256: <span id="computed">—</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="hbce-section">
+    <div class="hbce-grid hbce-grid--3">
+
+      <div class="hbce-card">
+        <h3>Normalization</h3>
+        <p class="hbce-muted">
+          The verifier computes SHA-256 on the exact bytes of the pasted JSON string (UTF-8).
+          If you reformat or change whitespace compared to the original release file, the hash will change.
         </p>
-      </section>
-
-      <section class="hbce-section">
-        <div class="hbce-card">
-          <h2>Inputs</h2>
-          <p class="hbce-muted">
-            Provide the minimum required data. The verifier computes SHA-256 on the exact UTF-8 bytes
-            of the pasted release text.
-          </p>
-
-          <div class="hbce-grid hbce-grid--3" style="margin-top:14px">
-
-            <div class="hbce-card">
-              <h3>1) Local release file (JSON)</h3>
-              <p class="hbce-muted">Paste the content of your IPR release file (owner-controlled).</p>
-              <textarea id="release" class="hbce-mono" rows="10" style="width:100%;box-sizing:border-box"
-                placeholder='{"proto":"HBCE-CORE-v3","kind":"IPR_BASE_RELEASE",...}'></textarea>
-            </div>
-
-            <div class="hbce-card">
-              <h3>2) Registry proof (SHA-256)</h3>
-              <p class="hbce-muted">Paste the expected hash from the public registry entry.</p>
-              <input id="expected" class="hbce-mono" style="width:100%;box-sizing:border-box"
-                placeholder="expected payload_sha256 (64 hex chars)" />
-              <div class="hbce-muted hbce-mono" style="margin-top:10px;">
-                Format: lowercase hex, 64 chars. Any mismatch → FAIL.
-              </div>
-            </div>
-
-            <div class="hbce-card">
-              <h3>3) Execute verification</h3>
-              <p class="hbce-muted">Compute SHA-256(release_bytes) and compare to registry proof.</p>
-
-              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-                <a class="hbce-btn hbce-btn--primary" href="#" id="run">Run Verify</a>
-                <a class="hbce-btn" href="#" id="reset">Reset</a>
-              </div>
-
-              <div class="hbce-card" style="margin-top:12px">
-                <div class="hbce-muted">Status</div>
-                <div style="font-size:1.15rem;font-weight:700;letter-spacing:.02em" id="status">MISSING INPUT</div>
-                <div class="hbce-mono hbce-muted" style="margin-top:8px;">
-                  computed_sha256: <span id="computed">—</span>
-                </div>
-              </div>
-            </div>
-
-          </div>
+        <div class="hbce-mono hbce-muted">
+          Rule: SHA-256(UTF8(release_text_as_provided))
         </div>
-      </section>
+      </div>
 
-      <section class="hbce-section">
-        <div class="hbce-grid hbce-grid--3">
-
-          <div class="hbce-card">
-            <h3>Normalization</h3>
-            <p class="hbce-muted">
-              The verifier computes SHA-256 on the exact bytes of the pasted JSON string (UTF-8).
-              If you reformat or change whitespace compared to the original release file, the hash will change.
-            </p>
-            <div class="hbce-mono hbce-muted">
-              Rule: SHA-256(UTF8(release_text_as_provided))
-            </div>
-          </div>
-
-          <div class="hbce-card">
-            <h3>Fail-closed</h3>
-            <p class="hbce-muted">
-              Missing release or missing expected hash is a hard failure. Any non-hex hash is a hard failure.
-            </p>
-            <div class="hbce-mono hbce-muted">
-              Missing → FAIL<br/>
-              Invalid format → FAIL<br/>
-              Mismatch → FAIL
-            </div>
-          </div>
-
-          <div class="hbce-card">
-            <h3>Next steps</h3>
-            <p class="hbce-muted">
-              PASS enables operator workflows and industrial binding layers (e.g., Joker-C2).
-              FAIL blocks execution and requires correction at the source.
-            </p>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-              <a class="hbce-btn" href="../registry/">Open Registry</a>
-              <a class="hbce-btn" href="../activate/">Back to Activate</a>
-            </div>
-          </div>
-
+      <div class="hbce-card">
+        <h3>Fail-closed</h3>
+        <p class="hbce-muted">
+          Missing release or missing expected hash is a hard failure. Any non-hex hash is a hard failure.
+        </p>
+        <div class="hbce-mono hbce-muted">
+          Missing → FAIL<br/>
+          Invalid format → FAIL<br/>
+          Mismatch → FAIL
         </div>
-      </section>
+      </div>
 
-      <section class="hbce-section">
-        <div class="hbce-card">
-          <div>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-          <div>HERMETICUM B.C.E. S.r.l.</div>
-          <div class="hbce-muted">Fail-closed · Hash-only · Append-only · EU-first · Audit-first</div>
+      <div class="hbce-card">
+        <h3>Next steps</h3>
+        <p class="hbce-muted">
+          PASS enables operator workflows and industrial binding layers (e.g., Joker-C2).
+          FAIL blocks execution and requires correction at the source.
+        </p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+          <a class="hbce-btn" href="../registry/">Open Registry</a>
+          <a class="hbce-btn" href="../activate/">Back to Activate</a>
         </div>
-      </section>
+      </div>
 
-      <script>
-      /*
-        Deterministic verifier:
-        - Computes SHA-256 of the exact UTF-8 bytes of the pasted release text.
-        - Compares against expected registry hash.
-        - PASS/FAIL only.
-      */
-      function toHex(buf){
-        const bytes = new Uint8Array(buf);
-        let out = "";
-        for (let i = 0; i < bytes.length; i++){
-          out += bytes[i].toString(16).padStart(2, "0");
-        }
-        return out;
+    </div>
+  </section>
+
+  <section class="hbce-section">
+    <div class="hbce-card">
+      <div>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+      <div>HERMETICUM B.C.E. S.r.l.</div>
+      <div class="hbce-muted">Fail-closed · Hash-only · Append-only · EU-first · Audit-first</div>
+    </div>
+  </section>
+
+  <script>
+  /*
+    Deterministic verifier:
+    - Computes SHA-256 of the exact UTF-8 bytes of the pasted release text.
+    - Compares against expected registry hash.
+    - PASS/FAIL only.
+  */
+  function toHex(buf){
+    const bytes = new Uint8Array(buf);
+    let out = "";
+    for (let i = 0; i < bytes.length; i++){
+      out += bytes[i].toString(16).padStart(2, "0");
+    }
+    return out;
+  }
+
+  function isSha256Hex(s){
+    return /^[0-9a-f]{64}$/.test(s);
+  }
+
+  function setStatus(label, computed){
+    document.getElementById("status").textContent = label;
+    document.getElementById("computed").textContent = computed || "—";
+  }
+
+  async function sha256HexFromText(text){
+    const enc = new TextEncoder();
+    const data = enc.encode(text);
+    const digest = await crypto.subtle.digest("SHA-256", data);
+    return toHex(digest);
+  }
+
+  async function runVerify(){
+    const release = (document.getElementById("release").value || "").trimEnd();
+    const expectedRaw = (document.getElementById("expected").value || "").trim().toLowerCase();
+
+    if (!release || !expectedRaw){
+      setStatus("MISSING INPUT", "");
+      return;
+    }
+    if (!isSha256Hex(expectedRaw)){
+      setStatus("FAIL (INVALID EXPECTED HASH)", "");
+      return;
+    }
+
+    try{
+      const computed = await sha256HexFromText(release);
+      if (computed === expectedRaw){
+        setStatus("PASS (VALID)", computed);
+      } else {
+        setStatus("FAIL (MISMATCH)", computed);
       }
+    } catch (e){
+      setStatus("FAIL (VERIFY ERROR)", "");
+    }
+  }
 
-      function isSha256Hex(s){
-        return /^[0-9a-f]{64}$/.test(s);
-      }
+  document.getElementById("run").addEventListener("click", (e) => {
+    e.preventDefault();
+    runVerify();
+  });
 
-      function setStatus(label, computed){
-        document.getElementById("status").textContent = label;
-        document.getElementById("computed").textContent = computed || "—";
-      }
+  document.getElementById("reset").addEventListener("click", (e) => {
+    e.preventDefault();
+    document.getElementById("release").value = "";
+    document.getElementById("expected").value = "";
+    setStatus("MISSING INPUT", "");
+  });
+  </script>
 
-      async function sha256HexFromText(text){
-        const enc = new TextEncoder();
-        const data = enc.encode(text);
-        const digest = await crypto.subtle.digest("SHA-256", data);
-        return toHex(digest);
-      }
-
-      async function runVerify(){
-        const release = (document.getElementById("release").value || "").trimEnd();
-        const expectedRaw = (document.getElementById("expected").value || "").trim().toLowerCase();
-
-        if (!release || !expectedRaw){
-          setStatus("MISSING INPUT", "");
-          return;
-        }
-        if (!isSha256Hex(expectedRaw)){
-          setStatus("FAIL (INVALID EXPECTED HASH)", "");
-          return;
-        }
-
-        try{
-          const computed = await sha256HexFromText(release);
-          if (computed === expectedRaw){
-            setStatus("PASS (VALID)", computed);
-          } else {
-            setStatus("FAIL (MISMATCH)", computed);
-          }
-        } catch (e){
-          setStatus("FAIL (VERIFY ERROR)", "");
-        }
-      }
-
-      document.getElementById("run").addEventListener("click", (e) => {
-        e.preventDefault();
-        runVerify();
-      });
-
-      document.getElementById("reset").addEventListener("click", (e) => {
-        e.preventDefault();
-        document.getElementById("release").value = "";
-        document.getElementById("expected").value = "";
-        setStatus("MISSING INPUT", "");
-      });
-      </script>
-
-    </main>
-  </div>
 </body>
 </html>
