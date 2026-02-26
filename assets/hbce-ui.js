@@ -1,7 +1,9 @@
 /* =========================================================
-   HBCE UI SYSTEM — GLOBAL INJECTOR (BASE-PATH AWARE)
-   - Works on GitHub Pages project sites (/repo-name/...)
-   - Injects header/nav/footer once
+   HBCE UI SYSTEM — GLOBAL INJECTOR (CANONICAL + BASE-PATH AWARE)
+   - Safe DOM injection (no body.innerHTML rewrite)
+   - GitHub Pages project site support (/repo-name/...)
+   - Canonical classes only: hbce-header, hbce-header__row, hbce-brand, hbce-nav, hbce-container, hbce-main, hbce-footer
+   - Active link highlight (.is-active)
    ========================================================= */
 
 (function(){
@@ -35,6 +37,51 @@
     return (b + p).replace(/\/{2,}/g,"/");
   }
 
+  function normPath(p){
+    try{
+      const u = new URL(p, window.location.origin);
+      return u.pathname.replace(/\/+$/,"") || "/";
+    }catch{
+      return (p||"/").replace(/\/+$/,"") || "/";
+    }
+  }
+
+  function isActive(href){
+    const here = normPath(window.location.pathname);
+    const target = normPath(href);
+    if(target === "/") return here === "/";
+    return here === target || here.startsWith(target + "/");
+  }
+
+  function ensureMainStructure(){
+    // If the page already has hbce-container/hbce-main, do nothing.
+    const existingMain = document.querySelector(".hbce-main");
+    const existingContainer = document.querySelector(".hbce-container");
+
+    if(existingMain && existingContainer) return;
+
+    // Otherwise wrap all body children (except injected header/footer) into container/main.
+    const container = document.createElement("div");
+    container.className = "hbce-container";
+
+    const main = document.createElement("main");
+    main.className = "hbce-main";
+
+    // Move nodes into main (preserve scripts, listeners attached to nodes remain)
+    const body = document.body;
+    const toMove = [];
+    for(const node of Array.from(body.childNodes)){
+      if(node.nodeType === 1){
+        const el = /** @type {HTMLElement} */ (node);
+        if(el.matches(".hbce-header, .hbce-footer")) continue;
+      }
+      toMove.push(node);
+    }
+    toMove.forEach(n => main.appendChild(n));
+    container.appendChild(main);
+    body.appendChild(container);
+  }
+
   function inject(){
     if(document.documentElement.getAttribute("data-hbce-ui") === "1") return;
     document.documentElement.setAttribute("data-hbce-ui","1");
@@ -52,39 +99,56 @@
       ["Contact", "/contact/"]
     ];
 
-    const navHtml = navItems.map(([label, href]) =>
-      `<a href="${join(base, href)}">${label}</a>`
-    ).join("");
+    // HEADER (canonical)
+    const header = document.createElement("header");
+    header.className = "hbce-header";
+    header.innerHTML = `
+      <div class="hbce-header__row">
+        <a class="hbce-brand" href="${join(base, "/")}">
+          <strong>HBCE</strong>
+          <span>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</span>
+        </a>
+        <nav class="hbce-nav" aria-label="Primary">
+          ${navItems.map(([label, href]) => {
+            const full = join(base, href);
+            return `<a href="${full}" data-href="${full}">${label}</a>`;
+          }).join("")}
+        </nav>
+      </div>
+    `;
 
-    const header = `
-      <div class="hbce-topbar">
-        <div class="hbce-brand">
-          <div class="hbce-seal">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA · HERMETICUM B.C.E. S.r.l.</div>
-          <div class="hbce-subseal">EU-first · audit-first · fail-closed</div>
+    // FOOTER (canonical)
+    const footer = document.createElement("footer");
+    footer.className = "hbce-footer";
+    footer.innerHTML = `
+      <div class="hbce-footer__row">
+        <div>
+          HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br>
+          <span class="hbce-muted">HERMETICUM B.C.E. S.r.l.</span>
         </div>
-        <nav class="hbce-nav" aria-label="Primary">${navHtml}</nav>
+        <div class="hbce-footer__links">
+          <a href="${join(base, "/about/")}">About</a>
+          <a href="${join(base, "/pricing/")}">Pricing</a>
+          <a href="${join(base, "/contact/")}">Contact</a>
+        </div>
       </div>
     `;
 
-    const footer = `
-      <footer class="hbce-footer">
-        <div><strong>HERMETICUM B.C.E. S.r.l.</strong></div>
-        <div>HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · UE_FIRST · AUDIT_FIRST · GDPR_MIN</div>
-      </footer>
-    `;
+    // Inject header at top of body (safe)
+    document.body.insertAdjacentElement("afterbegin", header);
 
-    const body = document.body;
-    const existing = body.innerHTML;
+    // Ensure we have container/main structure (uniform layout)
+    ensureMainStructure();
 
-    body.innerHTML = `
-      ${header}
-      <div class="hbce-wrap">
-        <main class="hbce-main">
-          ${existing}
-        </main>
-      </div>
-      ${footer}
-    `;
+    // Inject footer at end of body (safe)
+    document.body.insertAdjacentElement("beforeend", footer);
+
+    // Active link highlight
+    const links = Array.from(header.querySelectorAll("a[data-href]"));
+    links.forEach(a => {
+      const href = a.getAttribute("data-href") || a.getAttribute("href") || "/";
+      if(isActive(href)) a.classList.add("is-active");
+    });
   }
 
   if(document.readyState === "loading"){
