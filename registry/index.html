@@ -12,144 +12,171 @@
 
   <link rel="stylesheet" href="../assets/hbce.css" />
   <script defer src="../assets/hbce-ui.js"></script>
+
+  <style>
+    /* Minimal, page-scoped input coherence. */
+    .hbce-field{
+      width:100%;
+      box-sizing:border-box;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.20);
+      color:inherit;
+      border-radius:12px;
+      padding:10px 12px;
+      outline:none;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size: .92rem;
+    }
+    .hbce-field:focus{ border-color: rgba(255,255,255,.30); }
+    pre{white-space:pre-wrap;word-break:break-word;margin:0;}
+    .hbce-kv{
+      display:grid;
+      grid-template-columns:140px 1fr;
+      gap:8px;
+    }
+    .hbce-pillrow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:10px;
+    }
+  </style>
 </head>
 
 <body>
-  <div class="hbce-container">
-    <main class="hbce-main">
 
-      <section class="hbce-hero">
-        <div class="hbce-hero__kicker">REGISTRY · PUBLIC LEDGER · APPEND-ONLY</div>
-        <h1 class="hbce-hero__title">Public Registry (Hash-only)</h1>
-        <p class="hbce-hero__lead">
-          Append-only public ledger storing minimized proofs (hash-only). Deterministic verification.
-          <strong>Fail-closed:</strong> if the ledger is unreachable or invalid, the registry is NON-OPERATIONAL.
+  <section class="hbce-section hbce-hero">
+    <div class="hbce-hero__kicker">REGISTRY · PUBLIC LEDGER · APPEND-ONLY</div>
+    <h1 class="hbce-hero__title">Public Registry (Hash-only)</h1>
+    <p class="hbce-hero__lead">
+      Append-only public ledger storing minimized proofs (hash-only). Deterministic verification.
+      <strong>Fail-closed:</strong> if the ledger is unreachable or invalid, the registry is NON-OPERATIONAL.
+    </p>
+
+    <div style="margin-top:14px;display:flex;gap:12px;flex-wrap:wrap">
+      <a class="hbce-btn hbce-btn--primary" href="../activate/">Activate</a>
+      <a class="hbce-btn" href="../verify/">Verify</a>
+      <a class="hbce-btn" href="../pricing/">Pricing</a>
+      <a class="hbce-btn" href="../about/">About</a>
+    </div>
+  </section>
+
+  <section class="hbce-section">
+    <div class="hbce-grid hbce-grid--2">
+
+      <!-- Viewer -->
+      <div class="hbce-card" aria-label="Viewer">
+        <h2>Viewer</h2>
+
+        <div class="hbce-pillrow">
+          <span class="hbce-mono hbce-muted" id="txtState">STATE: LOADING</span>
+          <span class="hbce-mono hbce-muted">MODE: APPEND_ONLY</span>
+          <span class="hbce-mono hbce-muted">PUBLIC: HASH_ONLY</span>
+          <span class="hbce-mono hbce-muted">VERIFY: DETERMINISTIC</span>
+          <span class="hbce-mono hbce-muted">FAIL: FAIL_CLOSED</span>
+        </div>
+
+        <div class="hbce-card" style="margin-top:12px">
+          <pre class="hbce-mono" id="statusBox">LOADING LEDGER…</pre>
+        </div>
+
+        <div class="hbce-card" style="margin-top:12px">
+          <div class="hbce-mono hbce-muted" style="margin-bottom:8px">Ledger stats</div>
+          <div class="hbce-mono hbce-kv">
+            <span class="hbce-muted">entries</span><span id="statEntries">—</span>
+            <span class="hbce-muted">issuer</span><span id="statIssuer">—</span>
+            <span class="hbce-muted">network</span><span id="statNetwork">—</span>
+            <span class="hbce-muted">proto</span><span id="statProto">—</span>
+            <span class="hbce-muted">rules</span><span id="statRules">—</span>
+            <span class="hbce-muted">source</span><span class="hbce-mono" id="statSource">/registry/ledger.json</span>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+          <button class="hbce-btn hbce-btn--primary" id="btnReload" type="button">Reload Ledger</button>
+          <button class="hbce-btn" id="btnFailClosed" type="button" title="Show fail-closed rule">Fail-Closed Rule</button>
+        </div>
+      </div>
+
+      <!-- Lookup -->
+      <div class="hbce-card" aria-label="Lookup by SHA-256">
+        <h2>Lookup by SHA-256</h2>
+        <p class="hbce-muted" style="margin-top:0">
+          Paste a SHA-256 (lowercase hex, 64 chars) to check presence in the public ledger.
         </p>
 
-        <div style="margin-top:14px;display:flex;gap:12px;flex-wrap:wrap">
-          <a class="hbce-btn hbce-btn--primary" href="../activate/">Activate</a>
-          <a class="hbce-btn" href="../verify/">Verify</a>
-          <a class="hbce-btn" href="../pricing/">Pricing</a>
-          <a class="hbce-btn" href="../about/">About</a>
+        <input id="inpSha"
+          class="hbce-field"
+          placeholder="sha256 (64 lowercase hex chars)"
+          autocomplete="off"
+          spellcheck="false" />
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+          <button class="hbce-btn hbce-btn--primary" id="btnLookup" type="button">Lookup</button>
+          <button class="hbce-btn" id="btnClear" type="button">Clear</button>
         </div>
-      </section>
 
-      <section class="hbce-section">
-        <div class="hbce-grid hbce-grid--2">
-
-          <!-- Viewer -->
-          <div class="hbce-card" aria-label="Viewer">
-            <h2>Viewer</h2>
-
-            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px">
-              <span class="hbce-mono hbce-muted" id="txtState">STATE: LOADING</span>
-              <span class="hbce-mono hbce-muted">MODE: APPEND_ONLY</span>
-              <span class="hbce-mono hbce-muted">PUBLIC: HASH_ONLY</span>
-              <span class="hbce-mono hbce-muted">VERIFY: DETERMINISTIC</span>
-              <span class="hbce-mono hbce-muted">FAIL: FAIL_CLOSED</span>
-            </div>
-
-            <div class="hbce-card" style="margin-top:12px">
-              <pre class="hbce-mono" style="margin:0;white-space:pre-wrap;word-break:break-word" id="statusBox">LOADING LEDGER…</pre>
-            </div>
-
-            <div class="hbce-card" style="margin-top:12px">
-              <div class="hbce-mono hbce-muted" style="margin-bottom:8px">Ledger stats</div>
-              <div class="hbce-mono" style="display:grid;grid-template-columns:140px 1fr;gap:8px">
-                <span class="hbce-muted">entries</span><span id="statEntries">—</span>
-                <span class="hbce-muted">issuer</span><span id="statIssuer">—</span>
-                <span class="hbce-muted">network</span><span id="statNetwork">—</span>
-                <span class="hbce-muted">proto</span><span id="statProto">—</span>
-                <span class="hbce-muted">rules</span><span id="statRules">—</span>
-                <span class="hbce-muted">source</span><span><span class="hbce-mono" id="statSource">/registry/ledger.json</span></span>
-              </div>
-            </div>
-
-            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
-              <button class="hbce-btn hbce-btn--primary" id="btnReload" type="button">Reload Ledger</button>
-              <button class="hbce-btn" id="btnFailClosed" type="button" title="Show fail-closed rule">Fail-Closed Rule</button>
-            </div>
-          </div>
-
-          <!-- Lookup -->
-          <div class="hbce-card" aria-label="Lookup by SHA-256">
-            <h2>Lookup by SHA-256</h2>
-            <p class="hbce-muted" style="margin-top:0">
-              Paste a SHA-256 (lowercase hex, 64 chars) to check presence in the public ledger.
-            </p>
-
-            <input id="inpSha"
-              class="hbce-mono"
-              style="width:100%;box-sizing:border-box"
-              placeholder="sha256 (64 lowercase hex chars)"
-              autocomplete="off"
-              spellcheck="false" />
-
-            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
-              <button class="hbce-btn hbce-btn--primary" id="btnLookup" type="button">Lookup</button>
-              <button class="hbce-btn" id="btnClear" type="button">Clear</button>
-            </div>
-
-            <div class="hbce-card" style="margin-top:12px">
-              <pre class="hbce-mono hbce-muted" style="margin:0;white-space:pre-wrap;word-break:break-word" id="lookupBox">Lookup requires a loaded ledger (fail-closed).</pre>
-            </div>
-          </div>
-
+        <div class="hbce-card" style="margin-top:12px">
+          <pre class="hbce-mono hbce-muted" id="lookupBox">Lookup requires a loaded ledger (fail-closed).</pre>
         </div>
-      </section>
+      </div>
 
-      <!-- Latest entries -->
-      <section class="hbce-section">
-        <div class="hbce-card" aria-label="Latest entries">
-          <h2>Ledger (latest)</h2>
-          <p class="hbce-muted" style="margin-top:0">
-            Read-only view of the latest entries (append-only). Entries are hash-only proofs.
-          </p>
+    </div>
+  </section>
 
-          <div class="hbce-card" style="margin-top:12px">
-            <div class="hbce-mono hbce-muted" style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
-              <span>latest entries</span>
-              <span id="latestMeta">—</span>
-            </div>
+  <!-- Latest entries -->
+  <section class="hbce-section">
+    <div class="hbce-card" aria-label="Latest entries">
+      <h2>Ledger (latest)</h2>
+      <p class="hbce-muted" style="margin-top:0">
+        Read-only view of the latest entries (append-only). Entries are hash-only proofs.
+      </p>
 
-            <div id="latestRows" style="margin-top:10px;display:grid;gap:10px">
-              <div class="hbce-mono hbce-muted">—</div>
-            </div>
-          </div>
-
-          <div class="hbce-muted" style="margin-top:12px">
-            Canonical flow:
-            <a href="../create/base/">Create IPR</a> ·
-            <a href="../verify/">Verify</a> ·
-            <a href="../activate/">Activate</a>
-          </div>
+      <div class="hbce-card" style="margin-top:12px">
+        <div class="hbce-mono hbce-muted" style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+          <span>latest entries</span>
+          <span id="latestMeta">—</span>
         </div>
-      </section>
 
-      <!-- Append rules -->
-      <section class="hbce-section">
-        <div class="hbce-card" aria-label="Append-only rule">
-          <h2>Append-only rule</h2>
-          <p class="hbce-muted" style="margin-top:0">
-            GitHub Pages is static. Appending is performed by updating the ledger file in the repository.
-            The ledger stores hash-only proofs. Do not publish personal data.
-          </p>
-
-          <div class="hbce-card" style="margin-top:12px;overflow:auto">
-            <pre class="hbce-mono" style="margin:0;white-space:pre-wrap;word-break:break-word" id="rulesBox">(rules will be displayed here when ledger loads)</pre>
-          </div>
+        <div id="latestRows" style="margin-top:10px;display:grid;gap:10px">
+          <div class="hbce-mono hbce-muted">—</div>
         </div>
-      </section>
+      </div>
 
-      <section class="hbce-section">
-        <div class="hbce-card">
-          <div>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-          <div>HERMETICUM B.C.E. S.r.l.</div>
-          <div class="hbce-muted">Fail-closed · Hash-only · Append-only · EU-first · Audit-first</div>
-        </div>
-      </section>
+      <div class="hbce-muted" style="margin-top:12px">
+        Canonical flow:
+        <a href="../create/base/">Create IPR</a> ·
+        <a href="../verify/">Verify</a> ·
+        <a href="../activate/">Activate</a>
+      </div>
+    </div>
+  </section>
 
-      <script>
+  <!-- Append rules -->
+  <section class="hbce-section">
+    <div class="hbce-card" aria-label="Append-only rule">
+      <h2>Append-only rule</h2>
+      <p class="hbce-muted" style="margin-top:0">
+        GitHub Pages is static. Appending is performed by updating the ledger file in the repository.
+        The ledger stores hash-only proofs. Do not publish personal data.
+      </p>
+
+      <div class="hbce-card" style="margin-top:12px;overflow:auto">
+        <pre class="hbce-mono" id="rulesBox">(rules will be displayed here when ledger loads)</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="hbce-section">
+    <div class="hbce-card">
+      <div>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+      <div>HERMETICUM B.C.E. S.r.l.</div>
+      <div class="hbce-muted">Fail-closed · Hash-only · Append-only · EU-first · Audit-first</div>
+    </div>
+  </section>
+
+  <script>
   (() => {
     "use strict";
 
@@ -191,7 +218,6 @@
     };
 
     function setState(kind, msg) {
-      // kind: ok|bad|warn — maps to text only (visual handled by hbce.css)
       el.txtState.textContent = "STATE: " + (kind === "ok" ? "OPERATIONAL" : (kind === "bad" ? "NON-OPERATIONAL" : "LOADING"));
       el.statusBox.textContent = msg;
     }
@@ -292,20 +318,17 @@
 
         const data = await res.json();
 
-        // minimal schema validation (fail-closed)
         if (!data || typeof data !== "object") throw new Error("INVALID_JSON_OBJECT");
         if (data.proto !== "HBCE-REGISTRY-v3") throw new Error("PROTO_MISMATCH");
         if (data.mode !== "APPEND_ONLY_PUBLIC_LEDGER") throw new Error("MODE_MISMATCH");
         if (!Array.isArray(data.entries)) throw new Error("ENTRIES_MISSING");
 
-        // enforce hash-only: every entry must include sha256 (64 lowercase hex)
         for (const e of data.entries) {
           if (!e || typeof e !== "object") throw new Error("ENTRY_INVALID_OBJECT");
           const sha = String(e.sha256 || "");
           if (!isSha256Lower(sha)) throw new Error("ENTRY_SHA256_INVALID");
         }
 
-        // optional: validate rules if present
         if (data.rules && typeof data.rules === "object") {
           if (data.rules.failure_mode && data.rules.failure_mode !== "FAIL_CLOSED") {
             throw new Error("RULES_FAILURE_MODE_MISMATCH");
@@ -323,7 +346,6 @@
         renderStats();
         renderRulesBox();
         renderLatest();
-
         el.lookupBox.textContent = "Ledger loaded. Paste a SHA-256 to check presence.";
       } catch (err) {
         const code = String(err && err.message ? err.message : err);
@@ -379,9 +401,7 @@ No ledger → no proof → no execution.`);
 
     loadLedger();
   })();
-      </script>
+  </script>
 
-    </main>
-  </div>
 </body>
 </html>
