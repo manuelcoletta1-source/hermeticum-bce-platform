@@ -6,346 +6,16 @@
   <title>HBCE — Operational Identity Infrastructure | HERMETICUM B.C.E.</title>
   <meta name="description" content="HBCE builds operational identity infrastructure for autonomous systems: deterministic verification, append-only evidence, fail-closed execution." />
 
-  <!-- HBCE UI SYSTEM — CANONICAL (FULL)
-       If you already load it globally (assets/hbce.css), keep ONLY the <link>.
-       If not, paste your canonical CSS here (exactly as stored).
-  -->
+  <!-- Canonical HBCE UI SYSTEM (single source of truth) -->
+  <link rel="stylesheet" href="./assets/hbce.css" />
 
-  <!-- Option A (preferred): external canonical stylesheet -->
-  <!-- <link rel="stylesheet" href="./assets/hbce.css" /> -->
-
-  <!-- Option B: inline canonical CSS (paste canonical here if needed) -->
-  <style>
-/* =========================================================
-   HBCE UI SYSTEM — CANONICAL (FULL)
-   - Single design system for all core pages
-   - Dark institutional theme (EU-first posture)
-   - Supports: hbce-grid--2 / hbce-grid--3, hbce-btn, hbce-hero, cards
-   ========================================================= */
-
-:root{
-  --hbce-bg:#0b0f14;
-  --hbce-panel:#0f1620;
-  --hbce-panel2:rgba(15,22,32,.55);
-  --hbce-text:#e8eef7;
-  --hbce-muted:#9fb0c3;
-
-  --hbce-line:rgba(255,255,255,.08);
-  --hbce-line2:rgba(255,255,255,.12);
-
-  --hbce-accent:#00ffe1;
-  --hbce-accent2:#7c5cff;
-
-  --hbce-shadow: 0 20px 60px rgba(0,0,0,.45);
-  --hbce-shadow2: 0 12px 35px rgba(0,0,0,.32);
-
-  --hbce-radius:18px;
-  --hbce-radius2:22px;
-
-  --hbce-max:1180px;
-}
-
-*{ box-sizing:border-box; }
-
-html,body{ height:100%; }
-
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-  color:var(--hbce-text);
-  background:
-    radial-gradient(1200px 600px at 20% -10%, rgba(0,255,225,.12), transparent 60%),
-    radial-gradient(900px 500px at 100% 10%, rgba(124,92,255,.12), transparent 55%),
-    var(--hbce-bg);
-  line-height:1.45;
-}
-
-a{ color:inherit; }
-img{ max-width:100%; height:auto; }
-
-/* =========================================================
-   CONTAINER / LAYOUT
-   ========================================================= */
-
-.hbce-container{
-  max-width:var(--hbce-max);
-  margin:0 auto;
-  padding:0 18px;
-}
-
-.hbce-main{
-  padding:28px 0 86px;
-}
-
-.hbce-section{
-  margin-top:34px;
-}
-
-.hbce-muted{
-  color:var(--hbce-muted);
-}
-
-.hbce-mono,
-pre,
-code{
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-}
-
-/* =========================================================
-   HEADER / NAV
-   ========================================================= */
-
-.hbce-header{
-  position:sticky;
-  top:0;
-  z-index:20;
-  border-bottom:1px solid var(--hbce-line);
-  background:rgba(11,15,20,.75);
-  backdrop-filter: blur(10px);
-}
-
-.hbce-header__row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:16px;
-  padding:16px 0;
-  flex-wrap:wrap;
-}
-
-.hbce-brand{
-  text-decoration:none;
-  font-weight:900;
-  font-size:13px;
-  letter-spacing:.45px;
-  text-transform:uppercase;
-}
-
-.hbce-nav{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  align-items:center;
-}
-
-.hbce-nav a{
-  text-decoration:none;
-  color:var(--hbce-muted);
-  font-size:13px;
-  padding:8px 10px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,.06);
-  background:rgba(255,255,255,.02);
-  transition: transform .15s ease, border-color .15s ease, color .15s ease, background .15s ease;
-}
-
-.hbce-nav a:hover{
-  color:var(--hbce-text);
-  border-color:rgba(0,255,225,.35);
-  transform:translateY(-1px);
-}
-
-.hbce-nav a.is-active{
-  color:var(--hbce-text);
-  border-color:rgba(0,255,225,.55);
-  background:linear-gradient(180deg, rgba(0,255,225,.16), rgba(255,255,255,.02));
-  box-shadow: 0 0 24px rgba(0,255,225,.08);
-}
-
-/* =========================================================
-   HERO
-   ========================================================= */
-
-.hbce-hero{
-  border:1px solid var(--hbce-line);
-  border-radius:calc(var(--hbce-radius) + 4px);
-  padding:34px 26px;
-  background:var(--hbce-panel2);
-  box-shadow:var(--hbce-shadow);
-}
-
-.hbce-hero__kicker{
-  display:inline-block;
-  font-size:12px;
-  color:rgba(232,238,247,.85);
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:999px;
-  padding:7px 10px;
-  background:rgba(0,0,0,.18);
-  margin-bottom:12px;
-}
-
-.hbce-hero__title{
-  margin:0 0 10px;
-  font-size:clamp(28px,4vw,44px);
-  line-height:1.1;
-  letter-spacing:-.02em;
-}
-
-.hbce-hero__lead{
-  margin:0;
-  max-width:980px;
-  color:var(--hbce-muted);
-  font-size:15.5px;
-}
-
-/* =========================================================
-   CARDS
-   ========================================================= */
-
-.hbce-card{
-  border:1px solid var(--hbce-line);
-  border-radius:var(--hbce-radius);
-  background:rgba(255,255,255,.03);
-  padding:16px;
-  box-shadow:var(--hbce-shadow2);
-}
-
-.hbce-card h1,
-.hbce-card h2,
-.hbce-card h3{
-  margin:0 0 8px;
-  letter-spacing:-.01em;
-}
-
-.hbce-card h2{ font-size:18px; }
-.hbce-card h3{ font-size:14px; font-weight:900; }
-
-.hbce-card p{
-  margin:0 0 10px;
-}
-
-.hbce-card p:last-child{
-  margin-bottom:0;
-}
-
-.hbce-card ul{
-  margin:0;
-  padding-left:18px;
-}
-
-.hbce-card li{
-  margin:7px 0;
-  color:rgba(232,238,247,.90);
-  font-size:13.4px;
-}
-
-pre{
-  border:1px solid var(--hbce-line);
-  border-radius:14px;
-  background:rgba(0,0,0,.22);
-  padding:12px 12px;
-  overflow:auto;
-}
-
-/* =========================================================
-   GRID
-   ========================================================= */
-
-.hbce-grid{
-  display:grid;
-  gap:14px;
-  margin-top:16px;
-}
-
-.hbce-grid--2{
-  grid-template-columns:repeat(2, minmax(0,1fr));
-}
-
-.hbce-grid--3{
-  grid-template-columns:repeat(3, minmax(0,1fr));
-}
-
-@media (max-width: 980px){
-  .hbce-grid--2,
-  .hbce-grid--3{
-    grid-template-columns:1fr;
-  }
-  .hbce-grid{ gap:10px; }
-  .hbce-hero{ padding:26px 18px; }
-}
-
-/* =========================================================
-   BUTTONS
-   ========================================================= */
-
-.hbce-btn{
-  display:inline-block;
-  text-decoration:none;
-  font-weight:850;
-  font-size:13.5px;
-  color:var(--hbce-text);
-  padding:11px 14px;
-  border-radius:14px;
-  border:1px solid var(--hbce-line);
-  background:rgba(255,255,255,.04);
-  transition: transform .15s ease, border-color .15s ease, background .15s ease;
-  margin-right:8px;
-  margin-top:6px;
-}
-
-.hbce-btn:hover{
-  transform:translateY(-2px);
-  border-color:rgba(0,255,225,.5);
-}
-
-.hbce-btn--primary{
-  border-color:rgba(0,255,225,.75);
-  background:linear-gradient(180deg,rgba(0,255,225,.22),rgba(0,255,225,.06));
-  box-shadow: 0 0 26px rgba(0,255,225,.10);
-}
-
-.hbce-btn--primary:hover{
-  border-color:rgba(0,255,225,.9);
-}
-
-/* =========================================================
-   FOOTER
-   ========================================================= */
-
-.hbce-footer{
-  margin-top:46px;
-  padding:18px 0;
-  border-top:1px solid var(--hbce-line);
-  color:var(--hbce-muted);
-  font-size:12px;
-}
-
-.hbce-footer__row{
-  display:flex;
-  justify-content:space-between;
-  gap:14px;
-  flex-wrap:wrap;
-  align-items:center;
-}
-
-.hbce-footer__links a{
-  color:inherit;
-  text-decoration:none;
-  border-bottom:1px dotted rgba(255,255,255,.18);
-}
-
-.hbce-footer__links a:hover{
-  border-bottom-color:rgba(0,255,225,.55);
-}
-
-/* =========================================================
-   SMALL UTILITIES
-   ========================================================= */
-
-strong{ font-weight:900; }
-
-hr{
-  border:0;
-  border-top:1px solid var(--hbce-line);
-  margin:18px 0;
-}
-  </style>
+  <!-- If your platform uses a global shell injector, keep it consistent across pages -->
+  <!-- <script defer src="./assets/hbce-shell.js"></script> -->
 </head>
 
 <body>
 
-  <!-- HEADER -->
+  <!-- If your injector builds the header automatically, you can remove this header block. -->
   <header class="hbce-header">
     <div class="hbce-container">
       <div class="hbce-header__row">
@@ -368,7 +38,6 @@ hr{
   <main class="hbce-main">
     <div class="hbce-container">
 
-      <!-- HERO -->
       <section class="hbce-hero">
         <div class="hbce-hero__kicker">EU-FIRST · AUDIT-FIRST · FAIL-CLOSED · APPEND-ONLY · HASH-ONLY</div>
         <h1 class="hbce-hero__title">Operational Identity Infrastructure<br/>for Autonomous Systems</h1>
@@ -388,7 +57,6 @@ evidence = APPEND_ONLY</code></pre>
         <a class="hbce-btn" href="./registry/">Registry →</a>
       </section>
 
-      <!-- PILLARS -->
       <section class="hbce-section hbce-grid hbce-grid--3" aria-label="Pillars">
         <div class="hbce-card">
           <h3>IPR Technology</h3>
@@ -420,7 +88,6 @@ evidence = APPEND_ONLY</code></pre>
         </div>
       </section>
 
-      <!-- TRACKS + FLOW -->
       <section class="hbce-section hbce-grid hbce-grid--2" aria-label="Tracks and Flow">
         <div class="hbce-card">
           <h2>Tracks</h2>
@@ -456,7 +123,6 @@ evidence = APPEND_ONLY</code></pre>
         </div>
       </section>
 
-      <!-- TORINO / I3P -->
       <section class="hbce-section hbce-card" aria-label="Torino R&D">
         <h2>Torino R&amp;D — Proof of Concept</h2>
         <p class="hbce-muted">
@@ -467,7 +133,6 @@ evidence = APPEND_ONLY</code></pre>
         <a class="hbce-btn" href="./i3p/demo-node/">Open Demo Node →</a>
       </section>
 
-      <!-- CONTACT -->
       <section class="hbce-section hbce-card" aria-label="Contact">
         <h2>Contact / Intake</h2>
         <p class="hbce-muted">
@@ -478,7 +143,7 @@ evidence = APPEND_ONLY</code></pre>
         <a class="hbce-btn" href="./about/">About Infrastructure →</a>
       </section>
 
-      <!-- FOOTER -->
+      <!-- If your injector builds the footer automatically, you can remove this footer block. -->
       <footer class="hbce-footer">
         <div class="hbce-footer__row">
           <div>
