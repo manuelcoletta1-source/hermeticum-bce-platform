@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <title>Verify — Deterministic IPR Validation</title>
-  <meta name="description" content="Deterministic verification for IPR releases against hash-only registry proofs. PASS/FAIL only. Fail-closed." />
+  <meta name="description" content="Deterministic verification for IPR releases against hash-only registry proofs. PASS/FAIL only. Fail-closed by design." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
@@ -15,7 +15,7 @@
   <script defer src="../assets/hbce-ui.js"></script>
 
   <style>
-    /* Minimal, page-scoped form coherence (no layout overrides). */
+    /* Page-scoped form coherence (no layout overrides). */
     .hbce-field{
       width:100%;
       box-sizing:border-box;
@@ -27,135 +27,180 @@
       outline:none;
     }
     .hbce-field:focus{ border-color: rgba(255,255,255,.30); }
+    .hbce-kv{
+      display:grid;
+      grid-template-columns:140px 1fr;
+      gap:8px;
+      margin-top:10px;
+    }
+    pre{white-space:pre-wrap;word-break:break-word;margin:0;}
   </style>
 </head>
 
 <body>
+  <div class="hbce-container">
+    <main class="hbce-main">
 
-  <section class="hbce-section hbce-hero">
-    <div class="hbce-hero__kicker">VERIFY · DETERMINISTIC · FAIL-CLOSED</div>
-    <h1 class="hbce-hero__title">IPR Verification</h1>
-    <p class="hbce-hero__lead">
-      Deterministic validation compares a local IPR release against a hash-only registry proof.
-      Output is binary: PASS or FAIL. Any missing input → FAIL (fail-closed).
-    </p>
+      <!-- HERO -->
+      <section class="hbce-section hbce-hero">
+        <div class="hbce-hero__kicker">VERIFY · DETERMINISTIC · FAIL-CLOSED</div>
+        <h1 class="hbce-hero__title">IPR Verification</h1>
+        <p class="hbce-hero__lead">
+          Deterministic validation compares a local IPR Release text against a hash-only registry proof.
+          Output is binary: PASS or FAIL.
+          <br/><br/>
+          <strong>Fail-closed:</strong> any missing or invalid input → FAIL.
+          <br/>
+          <strong>As-is hashing:</strong> the verifier hashes the exact UTF-8 bytes you paste (no normalization).
+        </p>
 
-    <div style="margin-top:14px;display:flex;gap:12px;flex-wrap:wrap">
-      <a class="hbce-btn hbce-btn--primary" href="../activate/">Activate</a>
-      <a class="hbce-btn" href="../registry/">Registry</a>
-      <a class="hbce-btn" href="../pricing/">Pricing</a>
-    </div>
-  </section>
-
-  <section class="hbce-section">
-    <div class="hbce-card">
-      <h2>Inputs</h2>
-      <p class="hbce-muted">
-        Provide the minimum required data. The verifier computes SHA-256 on the exact UTF-8 bytes
-        of the pasted release text.
-      </p>
-
-      <div class="hbce-grid hbce-grid--3" style="margin-top:14px">
-
-        <div class="hbce-card">
-          <h3>1) Local release file (JSON)</h3>
-          <p class="hbce-muted">Paste the content of your IPR release file (owner-controlled).</p>
-          <textarea
-            id="release"
-            class="hbce-field hbce-mono"
-            rows="10"
-            placeholder='{"proto":"HBCE-CORE-v3","kind":"IPR_BASE_RELEASE",...}'></textarea>
+        <div style="margin-top:14px;display:flex;gap:12px;flex-wrap:wrap">
+          <a class="hbce-btn hbce-btn--primary" href="../activate/">Activate</a>
+          <a class="hbce-btn" href="../registry/">Registry</a>
+          <a class="hbce-btn" href="../pricing/">Pricing</a>
+          <a class="hbce-btn" href="../">Home</a>
         </div>
+      </section>
 
+      <section class="hbce-section">
         <div class="hbce-card">
-          <h3>2) Registry proof (SHA-256)</h3>
-          <p class="hbce-muted">Paste the expected hash from the public registry entry.</p>
-          <input
-            id="expected"
-            class="hbce-field hbce-mono"
-            placeholder="expected payload_sha256 (64 hex chars)" />
-          <div class="hbce-muted hbce-mono" style="margin-top:10px;">
-            Format: lowercase hex, 64 chars. Any mismatch → FAIL.
+          <h2>Inputs</h2>
+          <p class="hbce-muted">
+            Paste the Release JSON exactly as stored in your local file. Do not reformat.
+            The verifier computes SHA-256 on the exact UTF-8 bytes of the pasted text.
+          </p>
+
+          <div class="hbce-grid hbce-grid--3" style="margin-top:14px">
+
+            <div class="hbce-card">
+              <h3>1) Local Release text (JSON)</h3>
+              <p class="hbce-muted">
+                Paste the full content of your IPR Release file (holder custody).
+                Any whitespace change will change the hash.
+              </p>
+              <textarea
+                id="release"
+                class="hbce-field hbce-mono"
+                rows="10"
+                placeholder='{"proto":"HBCE-CORE-v3","kind":"IPR_BASE_RELEASE",...}'></textarea>
+
+              <div class="hbce-mono hbce-kv">
+                <span class="hbce-muted">bytes</span><span id="statBytes">0</span>
+                <span class="hbce-muted">lines</span><span id="statLines">0</span>
+              </div>
+            </div>
+
+            <div class="hbce-card">
+              <h3>2) Registry proof (SHA-256)</h3>
+              <p class="hbce-muted">
+                Paste the expected SHA-256 from the public registry entry (hash-only proof).
+              </p>
+              <input
+                id="expected"
+                class="hbce-field hbce-mono"
+                placeholder="expected sha256 (64 lowercase hex chars)" />
+
+              <div class="hbce-muted hbce-mono" style="margin-top:10px;">
+                Format: lowercase hex, 64 chars. Any mismatch → FAIL.
+              </div>
+
+              <div class="hbce-card" style="margin-top:12px">
+                <div class="hbce-mono hbce-muted">Tip</div>
+                <div class="hbce-muted">
+                  You can lookup the SHA-256 presence in <a href="../registry/">Registry</a> before verifying.
+                </div>
+              </div>
+            </div>
+
+            <div class="hbce-card">
+              <h3>3) Execute verification</h3>
+              <p class="hbce-muted">
+                Compute SHA-256(UTF8(release_text_as-is)) and compare to expected registry proof.
+              </p>
+
+              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+                <button class="hbce-btn hbce-btn--primary" type="button" id="run">Run Verify</button>
+                <button class="hbce-btn" type="button" id="reset">Reset</button>
+              </div>
+
+              <div class="hbce-card" style="margin-top:12px">
+                <div class="hbce-muted">Status</div>
+                <div style="font-size:1.15rem;font-weight:700;letter-spacing:.02em" id="status">MISSING INPUT</div>
+
+                <div class="hbce-mono hbce-muted" style="margin-top:8px;">
+                  computed_sha256: <span id="computed">—</span>
+                </div>
+
+                <div class="hbce-mono hbce-muted" style="margin-top:8px;">
+                  compare: <span id="compare">—</span>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
+      </section>
 
-        <div class="hbce-card">
-          <h3>3) Execute verification</h3>
-          <p class="hbce-muted">Compute SHA-256(release_bytes) and compare to registry proof.</p>
+      <section class="hbce-section">
+        <div class="hbce-grid hbce-grid--3">
 
-          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-            <a class="hbce-btn hbce-btn--primary" href="#" id="run">Run Verify</a>
-            <a class="hbce-btn" href="#" id="reset">Reset</a>
-          </div>
-
-          <div class="hbce-card" style="margin-top:12px">
-            <div class="hbce-muted">Status</div>
-            <div style="font-size:1.15rem;font-weight:700;letter-spacing:.02em" id="status">MISSING INPUT</div>
-            <div class="hbce-mono hbce-muted" style="margin-top:8px;">
-              computed_sha256: <span id="computed">—</span>
+          <div class="hbce-card">
+            <h3>Normalization</h3>
+            <p class="hbce-muted">
+              This verifier does <strong>no normalization</strong>.
+              It hashes the exact bytes you provide. This is intentional.
+              Determinism requires byte-level equivalence.
+            </p>
+            <div class="hbce-mono hbce-muted">
+              Rule: SHA-256(UTF8(release_text_as-is))
             </div>
           </div>
+
+          <div class="hbce-card">
+            <h3>Fail-closed</h3>
+            <p class="hbce-muted">
+              Missing Release or missing expected hash is a hard failure.
+              Any invalid hash format is a hard failure.
+            </p>
+            <div class="hbce-mono hbce-muted">
+              Missing → FAIL<br/>
+              Invalid format → FAIL<br/>
+              Mismatch → FAIL
+            </div>
+          </div>
+
+          <div class="hbce-card">
+            <h3>Next steps</h3>
+            <p class="hbce-muted">
+              PASS indicates the local Release matches a public hash-only proof.
+              FAIL blocks execution and requires correction at the source.
+            </p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+              <a class="hbce-btn" href="../registry/">Open Registry</a>
+              <a class="hbce-btn" href="../activate/">Back to Activate</a>
+            </div>
+          </div>
+
         </div>
+      </section>
 
-      </div>
-    </div>
-  </section>
-
-  <section class="hbce-section">
-    <div class="hbce-grid hbce-grid--3">
-
-      <div class="hbce-card">
-        <h3>Normalization</h3>
-        <p class="hbce-muted">
-          The verifier computes SHA-256 on the exact bytes of the pasted JSON string (UTF-8).
-          If you reformat or change whitespace compared to the original release file, the hash will change.
-        </p>
-        <div class="hbce-mono hbce-muted">
-          Rule: SHA-256(UTF8(release_text_as_provided))
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <div>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+          <div>HERMETICUM B.C.E. S.r.l.</div>
+          <div class="hbce-muted">Fail-closed · Hash-only · Append-only · EU-first · Audit-first</div>
         </div>
-      </div>
+      </section>
 
-      <div class="hbce-card">
-        <h3>Fail-closed</h3>
-        <p class="hbce-muted">
-          Missing release or missing expected hash is a hard failure. Any non-hex hash is a hard failure.
-        </p>
-        <div class="hbce-mono hbce-muted">
-          Missing → FAIL<br/>
-          Invalid format → FAIL<br/>
-          Mismatch → FAIL
-        </div>
-      </div>
-
-      <div class="hbce-card">
-        <h3>Next steps</h3>
-        <p class="hbce-muted">
-          PASS enables operator workflows and industrial binding layers (e.g., Joker-C2).
-          FAIL blocks execution and requires correction at the source.
-        </p>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-          <a class="hbce-btn" href="../registry/">Open Registry</a>
-          <a class="hbce-btn" href="../activate/">Back to Activate</a>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <section class="hbce-section">
-    <div class="hbce-card">
-      <div>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-      <div>HERMETICUM B.C.E. S.r.l.</div>
-      <div class="hbce-muted">Fail-closed · Hash-only · Append-only · EU-first · Audit-first</div>
-    </div>
-  </section>
+    </main>
+  </div>
 
   <script>
   /*
-    Deterministic verifier:
-    - Computes SHA-256 of the exact UTF-8 bytes of the pasted release text.
+    Deterministic verifier (as-is):
+    - Computes SHA-256 of the exact UTF-8 bytes of the pasted release text (NO trim/normalize).
     - Compares against expected registry hash.
-    - PASS/FAIL only.
+    - PASS/FAIL only. Fail-closed.
   */
   function toHex(buf){
     const bytes = new Uint8Array(buf);
@@ -170,9 +215,10 @@
     return /^[0-9a-f]{64}$/.test(s);
   }
 
-  function setStatus(label, computed){
+  function setStatus(label, computed, compare){
     document.getElementById("status").textContent = label;
     document.getElementById("computed").textContent = computed || "—";
+    document.getElementById("compare").textContent = compare || "—";
   }
 
   async function sha256HexFromText(text){
@@ -182,42 +228,51 @@
     return toHex(digest);
   }
 
+  function updateStats(){
+    const t = document.getElementById("release").value || "";
+    const bytes = new TextEncoder().encode(t).length;
+    const lines = t.length ? (t.split("\n").length) : 0;
+    document.getElementById("statBytes").textContent = String(bytes);
+    document.getElementById("statLines").textContent = String(lines);
+  }
+
   async function runVerify(){
-    const release = (document.getElementById("release").value || "").trimEnd();
+    const release = (document.getElementById("release").value || "");
     const expectedRaw = (document.getElementById("expected").value || "").trim().toLowerCase();
 
     if (!release || !expectedRaw){
-      setStatus("MISSING INPUT", "");
+      setStatus("FAIL (MISSING INPUT)", "", "");
       return;
     }
     if (!isSha256Hex(expectedRaw)){
-      setStatus("FAIL (INVALID EXPECTED HASH)", "");
+      setStatus("FAIL (INVALID EXPECTED HASH)", "", "");
       return;
     }
 
     try{
       const computed = await sha256HexFromText(release);
       if (computed === expectedRaw){
-        setStatus("PASS (VALID)", computed);
+        setStatus("PASS (VALID)", computed, "computed == expected");
       } else {
-        setStatus("FAIL (MISMATCH)", computed);
+        setStatus("FAIL (MISMATCH)", computed, "computed != expected");
       }
     } catch (e){
-      setStatus("FAIL (VERIFY ERROR)", "");
+      setStatus("FAIL (VERIFY ERROR)", "", "");
     }
   }
 
-  document.getElementById("run").addEventListener("click", (e) => {
-    e.preventDefault();
-    runVerify();
-  });
+  document.getElementById("run").addEventListener("click", () => runVerify());
 
-  document.getElementById("reset").addEventListener("click", (e) => {
-    e.preventDefault();
+  document.getElementById("reset").addEventListener("click", () => {
     document.getElementById("release").value = "";
     document.getElementById("expected").value = "";
-    setStatus("MISSING INPUT", "");
+    updateStats();
+    setStatus("MISSING INPUT", "", "");
   });
+
+  document.getElementById("release").addEventListener("input", updateStats);
+
+  updateStats();
   </script>
 
 </body>
