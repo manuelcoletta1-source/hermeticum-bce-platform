@@ -2,8 +2,10 @@
    HBCE UI SYSTEM — GLOBAL INJECTOR (CANONICAL + BASE-PATH AWARE)
    - Safe DOM injection (no body.innerHTML rewrite)
    - GitHub Pages project site support (/repo-name/...)
-   - Canonical classes only: hbce-header, hbce-header__row, hbce-brand, hbce-nav, hbce-container, hbce-main, hbce-footer
+   - Canonical classes only: hbce-header, hbce-header__row, hbce-brand,
+     hbce-nav, hbce-container, hbce-main, hbce-footer
    - Active link highlight (.is-active)
+   - DG-ready posture: nav avoids fragile/experimental routes (no 404)
    ========================================================= */
 
 (function(){
@@ -25,10 +27,11 @@
     }
 
     // Auto-infer on GitHub Pages project site: /<repo>/...
+    // NOTE: On user sites (username.github.io) there is no repo segment.
     if(!isGithubProjectSite()) return "";
     const parts = (window.location.pathname || "/").split("/").filter(Boolean);
-    if(parts.length === 0) return "";
-    return "/" + parts[0]; // "/hermeticum-bce-platform"
+    if(parts.length === 0) return "";               // user site root
+    return "/" + parts[0];                           // project site base: "/repo"
   }
 
   function join(base, path){
@@ -49,7 +52,11 @@
   function isActive(href){
     const here = normPath(window.location.pathname);
     const target = normPath(href);
+
+    // Home match
     if(target === "/") return here === "/";
+
+    // Exact or subpath match
     return here === target || here.startsWith(target + "/");
   }
 
@@ -57,7 +64,6 @@
     // If the page already has hbce-container/hbce-main, do nothing.
     const existingMain = document.querySelector(".hbce-main");
     const existingContainer = document.querySelector(".hbce-container");
-
     if(existingMain && existingContainer) return;
 
     // Otherwise wrap all body children (except injected header/footer) into container/main.
@@ -67,9 +73,9 @@
     const main = document.createElement("main");
     main.className = "hbce-main";
 
-    // Move nodes into main (preserve scripts, listeners attached to nodes remain)
     const body = document.body;
     const toMove = [];
+
     for(const node of Array.from(body.childNodes)){
       if(node.nodeType === 1){
         const el = /** @type {HTMLElement} */ (node);
@@ -77,25 +83,28 @@
       }
       toMove.push(node);
     }
+
     toMove.forEach(n => main.appendChild(n));
     container.appendChild(main);
     body.appendChild(container);
   }
 
   function inject(){
+    // idempotent
     if(document.documentElement.getAttribute("data-hbce-ui") === "1") return;
     document.documentElement.setAttribute("data-hbce-ui","1");
 
     const base = inferBasePath();
 
+    // DG / Bruxelles-ready: keep navigation minimal and canonical (spine only).
+    // Avoid routes that may be declass/experimental or subject to 404.
     const navItems = [
       ["Home", "/"],
-      ["About", "/about/"],
-      ["Robotics & AI", "/robotics-ai/"],
-      ["Joker-C2", "/joker-c2/"],
+      ["Activate", "/activate/"],
+      ["Registry", "/registry/"],
+      ["Verify", "/verify/"],
       ["Pricing", "/pricing/"],
-      ["Operator", "/operator/"],
-      ["EU / Horizon", "/eu/"],
+      ["About", "/about/"],
       ["Contact", "/contact/"]
     ];
 
@@ -143,7 +152,7 @@
     // Inject footer at end of body (safe)
     document.body.insertAdjacentElement("beforeend", footer);
 
-    // Active link highlight
+    // Active link highlight (base-aware)
     const links = Array.from(header.querySelectorAll("a[data-href]"));
     links.forEach(a => {
       const href = a.getAttribute("data-href") || a.getAttribute("href") || "/";
