@@ -1,8 +1,9 @@
 /* =========================================================
-   HBCE UI SYSTEM — CANONICAL (FULL)
+   HBCE UI SYSTEM — CANONICAL (FULL, DG-HARDENED)
    - Single design system for all core pages
    - Dark institutional theme (EU-first posture)
    - Supports: hbce-grid--2 / hbce-grid--3, hbce-btn, hbce-hero, cards
+   - Hardened: focus states, scroll padding for sticky header, form/button normalization
    ========================================================= */
 
 :root{
@@ -24,10 +25,15 @@
   --hbce-radius:18px;
   --hbce-radius2:26px;
   --hbce-max:1120px;
+
+  /* Sticky header offset for anchor jumps / in-page navigation */
+  --hbce-sticky-offset: 76px;
 }
 
 *{box-sizing:border-box}
 html,body{height:100%}
+html{scroll-padding-top: var(--hbce-sticky-offset);}
+
 body{
   margin:0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
@@ -55,7 +61,9 @@ img{max-width:100%; height:auto; display:block}
 
 .hbce-section{margin:22px 0 0}
 .hbce-muted{color:var(--hbce-muted)}
-.hbce-mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+.hbce-mono{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
 
 hr{
   border:0;
@@ -67,6 +75,14 @@ hr{
 pre,code{
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
+
+code{
+  padding:.12em .38em;
+  border-radius:10px;
+  border:1px solid var(--hbce-line);
+  background:rgba(0,0,0,.18);
+}
+
 pre{
   padding:14px 14px;
   border:1px solid var(--hbce-line);
@@ -75,6 +91,14 @@ pre{
   overflow:auto;
 }
 
+:focus-visible{
+  outline:2px solid rgba(0,255,225,.35);
+  outline-offset:2px;
+}
+
+/* ---------------------------------------------------------
+   HEADER / NAV
+--------------------------------------------------------- */
 .hbce-header{
   position:sticky;
   top:0;
@@ -100,9 +124,7 @@ pre{
   gap:10px;
   letter-spacing:.2px;
 }
-.hbce-brand strong{
-  font-weight:800;
-}
+.hbce-brand strong{font-weight:800;}
 .hbce-brand span{
   color:var(--hbce-muted);
   font-size:13px;
@@ -130,6 +152,9 @@ pre{
   color:var(--hbce-text);
 }
 
+/* ---------------------------------------------------------
+   HERO
+--------------------------------------------------------- */
 .hbce-hero{
   margin:26px 0 8px;
   padding:22px 22px;
@@ -161,6 +186,9 @@ pre{
   font-size:15px;
 }
 
+/* ---------------------------------------------------------
+   CARDS / TYPOGRAPHY
+--------------------------------------------------------- */
 .hbce-card{
   padding:16px 16px;
   border-radius:var(--hbce-radius);
@@ -173,10 +201,15 @@ pre{
   margin:0 0 8px;
   line-height:1.2;
 }
-.hbce-card p{margin:0 0 10px; color:var(--hbce-muted)}
+
+.hbce-card p{margin:0 0 10px;}
+.hbce-card p.hbce-muted{color:var(--hbce-muted);}
 .hbce-card ul{margin:10px 0 0; padding-left:18px; color:var(--hbce-muted)}
 .hbce-card li{margin:6px 0}
 
+/* ---------------------------------------------------------
+   GRID
+--------------------------------------------------------- */
 .hbce-grid{
   display:grid;
   gap:14px;
@@ -188,10 +221,14 @@ pre{
   .hbce-grid--3{grid-template-columns:repeat(2, minmax(0, 1fr))}
 }
 @media (max-width: 640px){
+  :root{ --hbce-sticky-offset: 92px; }
   .hbce-hero__title{font-size:30px}
   .hbce-grid--2, .hbce-grid--3{grid-template-columns:1fr}
 }
 
+/* ---------------------------------------------------------
+   BUTTONS / CONTROLS (a + button normalized)
+--------------------------------------------------------- */
 .hbce-btn{
   display:inline-flex;
   align-items:center;
@@ -205,16 +242,23 @@ pre{
   font-size:13px;
   cursor:pointer;
   user-select:none;
+  text-decoration:none;
+  appearance:none;
 }
+
 .hbce-btn:hover{
   border-color:rgba(0,255,225,.25);
   box-shadow:0 0 0 2px rgba(0,255,225,.10) inset;
 }
+
 .hbce-btn--primary{
   border-color:rgba(0,255,225,.35);
   background:linear-gradient(180deg, rgba(0,255,225,.12), rgba(0,0,0,.10));
 }
 
+/* ---------------------------------------------------------
+   FOOTER
+--------------------------------------------------------- */
 .hbce-footer{
   margin-top:28px;
   padding-top:20px;
