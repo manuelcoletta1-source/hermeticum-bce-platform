@@ -4,246 +4,314 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
 
-  <title>HBCE — Enterprise AI Governance Infrastructure</title>
-  <meta name="description" content="HBCE is a vendor-neutral cryptographic governance layer for enterprise AI: canonicalization, hashing, append-only chaining, Ed25519 signatures, and deterministic PASS/FAIL verification. EU-first posture, fail-closed by design."/>
+  <title>HBCE — Enterprise AI Governance Infrastructure (IPR)</title>
+  <meta name="description" content="HBCE is an operational identity and governance layer for enterprise AI and autonomous systems. IPR enables attestable execution: canonicalization, hashing, append-only chaining, Ed25519 signatures, and deterministic PASS/FAIL verification. EU-first posture. Fail-closed by design."/>
 
-  <meta name="robots" content="index,follow"/>
+  <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14"/>
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/" />
 
-  <!-- Keep canonical stable to your platform root -->
-  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/"/>
-
-  <!-- HBCE canonical design system -->
   <link rel="stylesheet" href="./assets/hbce.css"/>
   <script defer src="./assets/hbce-ui.js"></script>
 </head>
 
 <body>
-  <div class="hbce-container">
-    <main class="hbce-main">
 
-      <!-- HERO -->
-      <section class="hbce-section hbce-hero">
-        <div class="hbce-hero__kicker">ENTERPRISE · AI GOVERNANCE · EU-FIRST</div>
-        <h1 class="hbce-hero__title">Cryptographic governance for enterprise AI</h1>
-        <p class="hbce-hero__lead">
-          HBCE is a vendor-neutral attestation layer that encapsulates AI execution.
-          Every interaction becomes canonicalized, hashed, chain-linked, cryptographically signed,
-          and deterministically verifiable (PASS/FAIL). Fail-closed by design.
-        </p>
+<!-- HERO -->
+<section class="hbce-section hbce-hero">
+  <div class="hbce-hero__kicker">EU-FIRST · AUDIT-FIRST · FAIL-CLOSED · APPEND-ONLY</div>
 
-        <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
-          <a class="hbce-btn hbce-btn--primary" href="https://manuelcoletta1-source.github.io/hbce-llm-gateway/verify/" rel="noopener">View live verification</a>
-          <a class="hbce-btn" href="./registry/" >Public registry</a>
-          <a class="hbce-btn" href="./verify/" >Deterministic verifier</a>
-        </div>
+  <h1 class="hbce-hero__title">
+    Make enterprise AI execution accountable in the real world
+  </h1>
 
-        <p class="hbce-muted" style="margin-top:12px; max-width:72ch;">
-          This platform does not provide a language model. It provides the governance, audit,
-          and cryptographic continuity around any model (OpenAI, Anthropic, xAI, local LLMs).
-        </p>
-      </section>
+  <p class="hbce-hero__lead">
+    Modern systems automate decisions across cyber, energy, cities, finance, space and autonomous fleets.
+    <br/><br/>
+    The structural gap is not performance — it is <b>operational accountability</b>:
+    verifiable identity, bounded authority and evidence-by-design.
+    <br/><br/>
+    HBCE provides that infrastructure via <b>IPR</b> (Identity Primary Record) and an <b>AI execution capsule</b>:
+    canonicalization, hashing, append-only chaining, and cryptographic signature — verified as PASS/FAIL.
+  </p>
 
-      <!-- THE ENTERPRISE RISK -->
-      <section class="hbce-section">
-        <div class="hbce-card">
-          <h2 style="margin:0 0 10px;">Why enterprises need an AI governance layer</h2>
-          <div class="hbce-grid hbce-grid--2" style="margin-top:10px;">
-            <div class="hbce-card">
-              <div class="hbce-muted hbce-mono" style="letter-spacing:.12em; text-transform:uppercase; font-size:.8rem;">RISK</div>
-              <p style="margin:10px 0 0;">
-                Standard AI outputs are not attestable by default: weak provenance, fragmented logs,
-                unclear accountability, and difficult audits in regulated environments.
-              </p>
-            </div>
-            <div class="hbce-card">
-              <div class="hbce-muted hbce-mono" style="letter-spacing:.12em; text-transform:uppercase; font-size:.8rem;">SHIFT</div>
-              <p style="margin:10px 0 0;">
-                HBCE upgrades AI from a volatile response to an operational event:
-                verifiable integrity, cryptographic continuity, and policy enforcement.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- THE SHIFT: STANDARD AI vs HBCE AI -->
-      <section class="hbce-section">
-        <div class="hbce-card">
-          <h2 style="margin:0 0 10px;">From volatile response to attestable operational event</h2>
-
-          <div class="hbce-grid hbce-grid--2" style="margin-top:10px;">
-            <div class="hbce-card">
-              <div class="hbce-muted hbce-mono" style="letter-spacing:.12em; text-transform:uppercase; font-size:.8rem;">STANDARD AI</div>
-              <pre style="margin-top:10px;">Prompt → Model → Output</pre>
-              <p class="hbce-muted" style="margin:10px 0 0;">
-                Powerful, but hard to audit: no deterministic verification layer, weak continuity,
-                and implicit trust in provider runtime.
-              </p>
-            </div>
-
-            <div class="hbce-card">
-              <div class="hbce-muted hbce-mono" style="letter-spacing:.12em; text-transform:uppercase; font-size:.8rem;">HBCE AI</div>
-              <pre style="margin-top:10px;">Prompt → Canonicalization → Hash → Chain → Ed25519 Signature → PASS/FAIL</pre>
-              <p class="hbce-muted" style="margin:10px 0 0;">
-                Governance above the model: integrity proofs, append-only continuity,
-                signature-backed authenticity, and fail-closed enforcement.
-              </p>
-            </div>
-          </div>
-
-          <hr style="margin:16px 0;"/>
-
-          <p class="hbce-muted" style="margin:0;">
-            Normative chain rule:
-            <span class="hbce-mono">sha256(prev|input_sha256|output_sha256|policy_pack_id|ts|ipr_ai|ipr_operator)</span>
-            · signature payload:
-            <span class="hbce-mono">ascii(chain.entry)</span> signed with <span class="hbce-mono">ED25519</span>.
-          </p>
-        </div>
-      </section>
-
-      <!-- ARCHITECTURE: 5 PILLARS -->
-      <section class="hbce-section">
-        <div class="hbce-card">
-          <h2 style="margin:0 0 10px;">Enterprise architecture (five pillars)</h2>
-
-          <div class="hbce-grid hbce-grid--3" style="margin-top:10px;">
-            <div class="hbce-card">
-              <div class="hbce-muted hbce-mono" style="letter-spacing:.12em; text-transform:uppercase; font-size:.8rem;">I · IDENTITY (IPR)</div>
-              <p style="margin:10px 0 0;">
-                Persistent operational identity for AI nodes and human operators.
-                Identity is referenced in every event.
-              </p>
-            </div>
-
-            <div class="hbce-card">
-              <div class="hbce-muted hbce-mono" style="letter-spacing:.12em; text-transform:uppercase; font-size:.8rem;">II · EXECUTION CAPSULE</div>
-              <p style="margin:10px 0 0;">
-                Canonical input/output, deterministic hashing, append-only chaining, and signature.
-                The model remains external; the execution becomes attestable.
-              </p>
-            </div>
-
-            <div class="hbce-card">
-              <div class="hbce-muted hbce-mono" style="letter-spacing:.12em; text-transform:uppercase; font-size:.8rem;">III · POLICY ENFORCEMENT</div>
-              <p style="margin:10px 0 0;">
-                Fail-closed gatekeeping: if integrity, chain, or signature rules fail,
-                the operation is denied.
-              </p>
-            </div>
-
-            <div class="hbce-card">
-              <div class="hbce-muted hbce-mono" style="letter-spacing:.12em; text-transform:uppercase; font-size:.8rem;">IV · PUBLIC REGISTRY</div>
-              <p style="margin:10px 0 0;">
-                Hash-only registry for public verification and audit evidence without exposing
-                sensitive payloads.
-              </p>
-            </div>
-
-            <div class="hbce-card">
-              <div class="hbce-muted hbce-mono" style="letter-spacing:.12em; text-transform:uppercase; font-size:.8rem;">V · FEDERATION READY</div>
-              <p style="margin:10px 0 0;">
-                Provider-neutral governance layer that can wrap OpenAI, Anthropic, xAI,
-                and local/open-weight models under the same verification contract.
-              </p>
-            </div>
-
-            <div class="hbce-card">
-              <div class="hbce-muted hbce-mono" style="letter-spacing:.12em; text-transform:uppercase; font-size:.8rem;">POSTURE</div>
-              <p style="margin:10px 0 0;">
-                EU-first · audit-first · GDPR minimization · hash-only · append-only · fail-closed.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- LIVE PROOF -->
-      <section class="hbce-section">
-        <div class="hbce-card">
-          <h2 style="margin:0 0 10px;">Live proof: deterministic verification</h2>
-          <p class="hbce-muted" style="margin:0 0 12px;">
-            A working verification endpoint is the difference between a claim and an infrastructure.
-          </p>
-
-          <div class="hbce-grid hbce-grid--2" style="margin-top:10px;">
-            <div class="hbce-card">
-              <div class="hbce-muted hbce-mono" style="letter-spacing:.12em; text-transform:uppercase; font-size:.8rem;">HBCE LLM GATEWAY</div>
-              <p style="margin:10px 0 0;">
-                Identity-wrapped AI runtime layer: signed events, hash-linked chain, fail-closed policy.
-              </p>
-              <div style="margin-top:12px;">
-                <a class="hbce-btn hbce-btn--primary" href="https://manuelcoletta1-source.github.io/hbce-llm-gateway/verify/" rel="noopener">Open live verifier</a>
-              </div>
-            </div>
-
-            <div class="hbce-card">
-              <div class="hbce-muted hbce-mono" style="letter-spacing:.12em; text-transform:uppercase; font-size:.8rem;">VENDOR-NEUTRAL CAPSULE STANDARD</div>
-              <p style="margin:10px 0 0;">
-                A neutral execution envelope that can wrap GPT, Claude, Grok, or local LLMs under a single audit contract.
-              </p>
-              <div style="margin-top:12px;">
-                <a class="hbce-btn" href="https://github.com/manuelcoletta1-source/hbce-ai-capsule-standard" rel="noopener">Open capsule standard</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ENTERPRISE DEPLOYMENT PROFILES -->
-      <section class="hbce-section">
-        <div class="hbce-card">
-          <h2 style="margin:0 0 10px;">Deployment profiles</h2>
-
-          <div class="hbce-grid hbce-grid--3" style="margin-top:10px;">
-            <div class="hbce-card">
-              <div class="hbce-muted hbce-mono" style="letter-spacing:.12em; text-transform:uppercase; font-size:.8rem;">SaaS Integration</div>
-              <p style="margin:10px 0 0;">
-                Wrap existing AI workflows with deterministic event attestation and policy enforcement,
-                without changing the provider.
-              </p>
-            </div>
-            <div class="hbce-card">
-              <div class="hbce-muted hbce-mono" style="letter-spacing:.12em; text-transform:uppercase; font-size:.8rem;">Regulated Industry</div>
-              <p style="margin:10px 0 0;">
-                Audit-ready execution: evidence export, integrity proofs, chain continuity,
-                and signature-backed authenticity.
-              </p>
-            </div>
-            <div class="hbce-card">
-              <div class="hbce-muted hbce-mono" style="letter-spacing:.12em; text-transform:uppercase; font-size:.8rem;">Government-Grade</div>
-              <p style="margin:10px 0 0;">
-                Fail-closed operations, strict policy packs, role separation, and federation-ready
-                verification surfaces.
-              </p>
-            </div>
-          </div>
-
-          <hr style="margin:16px 0;"/>
-
-          <p class="hbce-muted" style="margin:0;">
-            HBCE is built for B2B / B2G deployments: auditable by design, minimal by default,
-            and verifiable without trusting a single vendor runtime.
-          </p>
-        </div>
-      </section>
-
-      <!-- FOOTER NOTE -->
-      <section class="hbce-section">
-        <div class="hbce-card">
-          <div class="hbce-muted hbce-mono" style="letter-spacing:.12em; text-transform:uppercase; font-size:.8rem;">HBCE PRINCIPLE</div>
-          <p style="margin:10px 0 0;">
-            Governance before intelligence.
-          </p>
-          <p class="hbce-muted" style="margin:10px 0 0;">
-            If integrity conditions fail, the operation is denied. If verification passes, the event is attestable.
-            No middle states.
-          </p>
-        </div>
-      </section>
-
-    </main>
+  <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
+    <a class="hbce-btn hbce-btn--primary" href="./activate/">Activate IPR</a>
+    <a class="hbce-btn" href="./registry/">Open Registry</a>
+    <a class="hbce-btn" href="./verify/">Verify</a>
+    <a class="hbce-btn" href="./pricing/">Pricing</a>
+    <a class="hbce-btn" href="https://manuelcoletta1-source.github.io/hbce-llm-gateway/verify/" rel="noopener">Live AI verification</a>
   </div>
+
+  <p class="hbce-muted" style="margin-top:12px;max-width:78ch;">
+    HBCE does not replace language models. It encapsulates their execution contract:
+    identity, integrity, policy enforcement, and deterministic verification — vendor-neutral (OpenAI, Anthropic, xAI, local LLMs).
+  </p>
+</section>
+
+<!-- THE QUESTION -->
+<section class="hbce-section">
+  <div class="hbce-card">
+    <h2>The question Europe must answer</h2>
+    <p class="hbce-muted">
+      How do we govern AI and autonomous systems when decisions are fast, distributed, and cross-border —
+      while responsibility must remain explicit, provable and enforceable?
+    </p>
+    <p class="hbce-muted">
+      HBCE makes responsibility <b>computable</b>: identity-bound operations, deterministic gating,
+      and audit-ready evidence. If integrity conditions fail — the operation is denied. No middle states.
+    </p>
+  </div>
+</section>
+
+<!-- CORE PRIMITIVE -->
+<section class="hbce-section">
+  <h2>Core primitive: IPR</h2>
+
+  <p class="hbce-muted">
+    IPR (Identity Primary Record) is not a login. Not a wallet. Not a profile.
+    <br/>
+    It is a <b>persistent operational identity</b> designed for real-world systems — humans, AI units, operators, nodes and modules.
+  </p>
+
+  <div style="margin:10px 0 0;display:flex;gap:10px;flex-wrap:wrap;">
+    <a class="hbce-btn" href="./what-is-ipr/">What is IPR</a>
+    <a class="hbce-btn" href="./sitemap/">Canonical map</a>
+  </div>
+
+  <div class="hbce-grid hbce-grid--3" style="margin-top:14px">
+
+    <div class="hbce-card">
+      <div class="hbce-mono">IDENTITY</div>
+      <h3>Persistent operational entity</h3>
+      <p class="hbce-muted">
+        A stable identity layer for humans, AI units, operators, nodes and modules — referenced in every critical action.
+      </p>
+    </div>
+
+    <div class="hbce-card">
+      <div class="hbce-mono">GATE</div>
+      <h3>Fail-closed execution</h3>
+      <p class="hbce-muted">
+        Operations execute only when identity, integrity and authority scope are valid.
+        Default state: deny.
+      </p>
+    </div>
+
+    <div class="hbce-card">
+      <div class="hbce-mono">EVIDENCE</div>
+      <h3>Audit-ready by design</h3>
+      <p class="hbce-muted">
+        Critical actions generate deterministic receipts and verifiable traces (append-only).
+        Evidence is a first-class primitive, not an afterthought.
+      </p>
+    </div>
+
+  </div>
+
+  <div class="hbce-card" style="margin-top:14px">
+    <div class="hbce-mono">WHY THIS MATTERS</div>
+    <p class="hbce-muted">
+      Without identity-bound accountability, automation remains a collection of isolated tools.
+      With IPR, automation becomes governable infrastructure.
+    </p>
+  </div>
+</section>
+
+<!-- AI EXECUTION CAPSULE (NEW, ENTERPRISE) -->
+<section class="hbce-section">
+  <h2>AI execution capsule (attestable, vendor-neutral)</h2>
+
+  <p class="hbce-muted">
+    Standard AI systems are powerful but volatile: no persistent operational identity, no public audit chain,
+    and no deterministic verification layer.
+    <br/><br/>
+    HBCE upgrades AI execution into an <b>attestable operational event</b>:
+    canonical input/output, deterministic hashing, append-only chaining, and <b>Ed25519 signature</b> —
+    verified as PASS/FAIL.
+  </p>
+
+  <div class="hbce-grid hbce-grid--2" style="margin-top:14px;">
+    <div class="hbce-card">
+      <div class="hbce-mono">STANDARD AI</div>
+      <h3>Volatile responses</h3>
+      <p class="hbce-muted">
+        Prompt → Model → Output.
+        Powerful, but hard to audit: weak provenance and implicit trust in the runtime.
+      </p>
+    </div>
+
+    <div class="hbce-card">
+      <div class="hbce-mono">HBCE AI</div>
+      <h3>Attestable execution</h3>
+      <p class="hbce-muted">
+        Prompt → Canonicalization → Hash → Chain → Signature → PASS/FAIL.
+        Governance above the model — without locking into a single vendor.
+      </p>
+    </div>
+  </div>
+
+  <div class="hbce-card" style="margin-top:14px">
+    <div class="hbce-mono">LIVE PROOF</div>
+    <p class="hbce-muted">
+      A working verifier is the difference between a claim and an infrastructure.
+      HBCE LLM Gateway publishes signed, hash-linked events and enforces fail-closed policy.
+    </p>
+    <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
+      <a class="hbce-btn hbce-btn--primary" href="https://manuelcoletta1-source.github.io/hbce-llm-gateway/verify/" rel="noopener">Open live verifier</a>
+      <a class="hbce-btn" href="https://github.com/manuelcoletta1-source/hbce-llm-gateway" rel="noopener">Gateway repository</a>
+      <a class="hbce-btn" href="https://github.com/manuelcoletta1-source/hbce-ai-capsule-standard" rel="noopener">Capsule standard</a>
+    </div>
+    <p class="hbce-muted" style="margin-top:10px;">
+      Normative rule: <span class="hbce-mono">sha256(prev|input_sha256|output_sha256|policy_pack_id|ts|ipr_ai|ipr_operator)</span>
+      · signature payload: <span class="hbce-mono">ascii(chain.entry)</span> signed with <span class="hbce-mono">ED25519</span>.
+    </p>
+  </div>
+</section>
+
+<!-- WHAT YOU CAN DO -->
+<section class="hbce-section">
+  <h2>What you can do with HBCE</h2>
+
+  <div class="hbce-grid hbce-grid--3">
+    <div class="hbce-card">
+      <div class="hbce-mono">B2B</div>
+      <h3>Enterprise AI governance</h3>
+      <p class="hbce-muted">
+        Identity + evidence for AI workflows, automation pipelines and critical operations —
+        with deterministic verification and policy enforcement.
+      </p>
+    </div>
+
+    <div class="hbce-card">
+      <div class="hbce-mono">B2G</div>
+      <h3>Governable autonomy</h3>
+      <p class="hbce-muted">
+        Fail-closed gating and audit trails for infrastructure-grade autonomy —
+        designed for accountability under EU governance expectations.
+      </p>
+    </div>
+
+    <div class="hbce-card">
+      <div class="hbce-mono">R&amp;D</div>
+      <h3>Verifiable evolution</h3>
+      <p class="hbce-muted">
+        Append-only operational history for systems that evolve over time —
+        identity-bound, chain-linked, signature-backed.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- JOKER-C2 (POSITIONED AS AN OPERATIONAL UNIT + CAPSULED EXECUTION) -->
+<section class="hbce-section">
+  <h2>Joker-C2 (Operational AI Unit)</h2>
+
+  <p class="hbce-muted">
+    Joker-C2 is an HBCE operational unit designed to operate inside IPR constraints:
+    persistent identity, bounded authority and verifiable continuity.
+    <br/><br/>
+    Not “a chatbot”. Joker-C2 is intended to operate as an accountable unit:
+    every critical interaction can be captured as a signed, hash-linked event under fail-closed governance.
+  </p>
+
+  <div class="hbce-grid hbce-grid--2">
+    <div class="hbce-card">
+      <div class="hbce-mono">CONTINUITY</div>
+      <h3>Identity-bound operation</h3>
+      <p class="hbce-muted">
+        Joker-C2 operates with continuity anchored to IPR identity and append-only evidence logs.
+      </p>
+    </div>
+
+    <div class="hbce-card">
+      <div class="hbce-mono">EXECUTION CAPSULE</div>
+      <h3>Attestable AI runtime</h3>
+      <p class="hbce-muted">
+        Canonicalization, hashing, chaining, and Ed25519 signatures transform AI output
+        into deterministic PASS/FAIL verifiable operational events.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- SCALE MODEL -->
+<section class="hbce-section">
+  <h2>Fleets · Swarm · Storm</h2>
+
+  <div class="hbce-grid hbce-grid--3">
+    <div class="hbce-card">
+      <div class="hbce-mono">FLEET</div>
+      <p class="hbce-muted">
+        Coordinated units with identity and evidence per operational action.
+      </p>
+    </div>
+
+    <div class="hbce-card">
+      <div class="hbce-mono">SWARM</div>
+      <p class="hbce-muted">
+        Distributed coordination under bounded authority and deterministic gating.
+      </p>
+    </div>
+
+    <div class="hbce-card">
+      <div class="hbce-mono">STORM</div>
+      <p class="hbce-muted">
+        Infrastructure-scale orchestration across nodes, modules and autonomous fleets —
+        with auditable continuity.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- DUAL-USE (TIGHTER LANGUAGE) -->
+<section class="hbce-section">
+  <div class="hbce-card">
+    <h2>Dual-use posture (EU-first governance)</h2>
+    <p class="hbce-muted">
+      HBCE is built for civil and strategic contexts where accountability is mandatory:
+      critical infrastructure, industry, security, energy and advanced autonomous systems.
+    </p>
+    <p class="hbce-muted">
+      Safety-by-design is enforced by identity-bound execution, deterministic gating and evidence-by-design —
+      aligned with EU governance expectations.
+    </p>
+  </div>
+</section>
+
+<!-- NEXT STEPS -->
+<section class="hbce-section">
+  <div class="hbce-card">
+    <h2>Start operating</h2>
+    <p class="hbce-muted">
+      Step 1: Activate an Identity Primary Record (IPR).
+      <br/>
+      Step 2: Verify registry integrity (append-only, hash-only).
+      <br/>
+      Step 3: Run AI execution under policy enforcement and generate signed, chain-linked evidence.
+    </p>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <a class="hbce-btn hbce-btn--primary" href="./activate/">Activate IPR</a>
+      <a class="hbce-btn" href="./registry/">Registry</a>
+      <a class="hbce-btn" href="./verify/">Verify</a>
+      <a class="hbce-btn" href="./pricing/">Pricing</a>
+      <a class="hbce-btn" href="https://manuelcoletta1-source.github.io/hbce-llm-gateway/verify/" rel="noopener">Live AI verification</a>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="hbce-section">
+  <div class="hbce-card">
+    <h2>Operational statement</h2>
+    <p class="hbce-muted">
+      HBCE is not “AI hype”.
+      <br/>
+      HBCE is identity and governance infrastructure for accountable automation — where AI execution becomes attestable.
+    </p>
+  </div>
+</section>
+
 </body>
 </html>
