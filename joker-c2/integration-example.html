@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+  <title>Joker-C2 Integration Example — 12-minute AI Governance Flow</title>
+  <meta name="description" content="Concrete integration example for Joker-C2: /gate → PASS → model call → /execute → receipt → verify. Includes minimal JSON payloads and a deterministic receipt rule (sha256 + Ed25519)."/>
+
+  <meta name="robots" content="index,follow"/>
+  <meta name="theme-color" content="#0b0f14"/>
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/joker-c2/integration-example.html"/>
+
+  <link rel="stylesheet" href="../assets/hbce.css"/>
+  <script defer src="../assets/hbce-ui.js"></script>
+</head>
+
+<body>
+  <div class="hbce-container">
+    <main class="hbce-main">
+
+      <!-- HERO -->
+      <section class="hbce-section hbce-hero">
+        <div class="hbce-hero__kicker">JOKER-C2 · INTEGRATION EXAMPLE · DETERMINISTIC GOVERNANCE</div>
+
+        <h1 class="hbce-hero__title">Integrate Joker-C2 in 12 minutes</h1>
+
+        <p class="hbce-hero__lead">
+          This page shows a concrete, minimal integration flow:
+          <b>/gate → PASS → model call → /execute → receipt → verify</b>.
+          <br/><br/>
+          Joker-C2 is vendor-neutral: OpenAI, Anthropic, xAI, local LLMs.
+          It does not replace models — it gates execution and produces verifiable evidence receipts.
+        </p>
+
+        <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
+          <a class="hbce-btn hbce-btn--primary" href="#flow">Start flow</a>
+          <a class="hbce-btn" href="./">Joker-C2</a>
+          <a class="hbce-btn" href="../verify/">Verify</a>
+          <a class="hbce-btn" href="../pricing/">Pricing</a>
+          <a class="hbce-btn" href="../">Home</a>
+        </div>
+
+        <p class="hbce-muted" style="margin-top:12px;max-width:92ch;">
+          Prerequisites: IPR activation for the operator and runtime identity. Fail-closed posture: if any check breaks, execution is denied.
+        </p>
+      </section>
+
+      <!-- FLOW -->
+      <section id="flow" class="hbce-section">
+        <h2>Integration flow</h2>
+
+        <div class="hbce-grid hbce-grid--3" style="margin-top:14px;">
+          <div class="hbce-card">
+            <div class="hbce-mono">STEP 1</div>
+            <h3>Call /gate</h3>
+            <p class="hbce-muted">
+              Validate identity, scope, policy pack, and integrity prerequisites.
+              Output is PASS/FAIL only.
+            </p>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">STEP 2</div>
+            <h3>Call your model</h3>
+            <p class="hbce-muted">
+              Execute the vendor model only if /gate returns PASS. Treat the model output as volatile until receipted.
+            </p>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">STEP 3</div>
+            <h3>Call /execute</h3>
+            <p class="hbce-muted">
+              Joker-C2 canonicalizes I/O, computes hashes, appends the chain entry, signs it (Ed25519),
+              and returns a receipt id for verification.
+            </p>
+          </div>
+        </div>
+
+        <div class="hbce-card" style="margin-top:14px;">
+          <div class="hbce-mono">FLOW LINE</div>
+          <p class="hbce-muted">
+            <span class="hbce-mono">Client → /gate → PASS → Model → /execute → Receipt → Verify</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- PAYLOADS -->
+      <section class="hbce-section">
+        <h2>Minimal payloads (JSON)</h2>
+        <p class="hbce-muted">
+          These are minimal examples. Field names reflect the governance contract (identity, scope, policy pack, deterministic hashing).
+          Your implementation can add fields, but must preserve canonical hashing rules.
+        </p>
+
+        <div class="hbce-card" style="margin-top:14px;">
+          <div class="hbce-mono">POST /gate</div>
+          <p class="hbce-muted">Client asks: “May this operation execute?” Joker-C2 answers: PASS or FAIL.</p>
+          <pre><code>{
+  "ts": "2026-03-03T12:00:00Z",
+  "ipr_operator": "IPR-OPERATOR-XXXX",
+  "ipr_ai": "IPR-AI-XXXX",
+  "policy_pack_id": "HBCE-POLICY-PACK-0001",
+  "scope": {
+    "tenant": "ACME-TEAM-01",
+    "node": "NODE-0001",
+    "purpose": "customer-support",
+    "risk": "low"
+  },
+  "input": {
+    "content_type": "text/plain",
+    "prompt": "Summarize the following contract clauses..."
+  }
+}</code></pre>
+          <p class="hbce-muted">
+            Expected response (example):
+          </p>
+          <pre><code>{
+  "result": "PASS",
+  "reason": "TRACE_OK | POLICY_OK | SCOPE_OK",
+  "gate_id": "GATE-0000000001"
+}</code></pre>
+        </div>
+
+        <div class="hbce-card" style="margin-top:14px;">
+          <div class="hbce-mono">Model call (vendor-neutral)</div>
+          <p class="hbce-muted">
+            Execute the model only after PASS. This is a placeholder step; vendor specifics differ.
+          </p>
+          <pre><code>// pseudo-step
+model_output = call_model(prompt)</code></pre>
+        </div>
+
+        <div class="hbce-card" style="margin-top:14px;">
+          <div class="hbce-mono">POST /execute</div>
+          <p class="hbce-muted">
+            Joker-C2 generates the evidence receipt: canonicalization → sha256 → append-only chain → Ed25519 signature.
+          </p>
+          <pre><code>{
+  "ts": "2026-03-03T12:00:02Z",
+  "gate_id": "GATE-0000000001",
+  "ipr_operator": "IPR-OPERATOR-XXXX",
+  "ipr_ai": "IPR-AI-XXXX",
+  "policy_pack_id": "HBCE-POLICY-PACK-0001",
+  "scope": {
+    "tenant": "ACME-TEAM-01",
+    "node": "NODE-0001",
+    "purpose": "customer-support",
+    "risk": "low"
+  },
+  "input_canonical": {
+    "content_type": "text/plain",
+    "prompt": "Summarize the following contract clauses..."
+  },
+  "output_canonical": {
+    "content_type": "text/plain",
+    "text": "Summary: ..."
+  }
+}</code></pre>
+
+          <p class="hbce-muted">Expected response (example):</p>
+          <pre><code>{
+  "result": "PASS",
+  "receipt_id": "RCPT-0000000001",
+  "entry_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "signature": "ed25519:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "prev": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+}</code></pre>
+        </div>
+      </section>
+
+      <!-- RECEIPT RULE -->
+      <section class="hbce-section">
+        <h2>Deterministic receipt rule</h2>
+        <p class="hbce-muted">
+          The receipt hash is computed deterministically. Any mismatch fails closed.
+        </p>
+
+        <div class="hbce-card" style="margin-top:14px;">
+          <div class="hbce-mono">RULE</div>
+          <p class="hbce-muted">
+            <span class="hbce-mono">sha256(prev|input_sha256|output_sha256|policy_pack_id|ts|ipr_ai|ipr_operator)</span>
+            <br/>
+            signature payload:
+            <span class="hbce-mono">ascii(chain.entry)</span>
+            signed with
+            <span class="hbce-mono">ED25519</span>.
+          </p>
+        </div>
+
+        <div class="hbce-card" style="margin-top:14px;">
+          <div class="hbce-mono">VERIFY</div>
+          <p class="hbce-muted">
+            Verification is PASS/FAIL. A verifier checks:
+          </p>
+          <ul class="hbce-muted">
+            <li>canonicalization consistency</li>
+            <li>sha256 recomputation match</li>
+            <li>append-only chain continuity (<span class="hbce-mono">prev</span>)</li>
+            <li>Ed25519 signature validity against the published public key</li>
+          </ul>
+
+          <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+            <a class="hbce-btn hbce-btn--primary" href="../verify/">Open HBCE Verify</a>
+            <a class="hbce-btn" href="https://manuelcoletta1-source.github.io/hbce-llm-gateway/verify/" rel="noopener">Open live verifier</a>
+            <a class="hbce-btn" href="../registry/">Open registry</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- DEPLOYMENT NOTES -->
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>Deployment notes</h2>
+          <p class="hbce-muted">
+            Joker-C2 can be delivered as SaaS, private cloud, or on-prem depending on data locality and audit constraints.
+            Regardless of posture, the contract stays the same: identity-bound scope, fail-closed enforcement, and receipts.
+          </p>
+
+          <div class="hbce-card" style="margin-top:14px;">
+            <div class="hbce-mono">CONTACT</div>
+            <p class="hbce-muted">
+              For enterprise / institutional deployments:
+              <span class="hbce-mono">manuelcoletta@domiciliodigitale.com</span>
+            </p>
+          </div>
+
+          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+            <a class="hbce-btn hbce-btn--primary" href="./#request">Request deployment</a>
+            <a class="hbce-btn" href="./">Back to Joker-C2</a>
+            <a class="hbce-btn" href="../pricing/">Pricing</a>
+            <a class="hbce-btn" href="../">Home</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- FINAL -->
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>Operational statement</h2>
+          <p class="hbce-muted">
+            This page is intentionally concrete. Joker-C2 is governance above models:
+            deterministic gating, signed receipts, and independent verification.
+          </p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</body>
+</html>
