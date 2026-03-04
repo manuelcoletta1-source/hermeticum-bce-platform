@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+  <title>Verify Pack — Evidence Pack Validation (Hash-only)</title>
+  <meta name="description" content="Browser-based Evidence Pack verification. Recomputes entry_hash from canonical preimage (PASS/FAIL). Hash-only, audit-first, fail-closed posture."/>
+
+  <meta name="robots" content="index,follow"/>
+  <meta name="theme-color" content="#0b0f14"/>
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/verify-pack/"/>
+
+  <link rel="stylesheet" href="../assets/hbce.css"/>
+  <script defer src="../assets/hbce-ui.js"></script>
+
+  <style>
+    .hbce-field{ width:100%; box-sizing:border-box; border:1px solid rgba(255,255,255,.14); background:rgba(0,0,0,.20); color:inherit; padding:12px 12px; border-radius:14px; outline:none; }
+    .hbce-field:focus{ border-color:rgba(0,255,225,.45); box-shadow:0 0 0 3px rgba(0,255,225,.08); }
+    .hbce-kv{ display:grid; grid-template-columns: 180px 1fr; gap:10px; }
+    .hbce-k{ color:var(--hbce-muted); font-size:12px; }
+    .hbce-v{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:12px; word-break:break-all; }
+    .hbce-badge{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border:1px solid var(--hbce-line2); border-radius:999px; background:rgba(15,22,32,.55); }
+    .hbce-badge.is-pass{ border-color:rgba(0,255,225,.45); }
+    .hbce-badge.is-fail{ border-color:rgba(255,80,120,.45); }
+  </style>
+</head>
+
+<body>
+  <div class="hbce-container">
+    <main class="hbce-main">
+
+      <header class="hbce-header">
+        <div class="hbce-header__row">
+          <div class="hbce-brand">
+            <div class="hbce-brand__mark">HBCE</div>
+            <div>
+              <div class="hbce-brand__name">Evidence Pack Verifier</div>
+              <div class="hbce-muted">Hash-only · Audit-first · Fail-closed</div>
+            </div>
+          </div>
+
+          <nav class="hbce-nav">
+            <a href="../" class="">Home</a>
+            <a href="../verify/" class="">Verify IPR</a>
+            <a href="./" class="is-active">Verify Pack</a>
+            <a href="../registry/" class="">Registry</a>
+          </nav>
+        </div>
+      </header>
+
+      <section class="hbce-section hbce-hero">
+        <div class="hbce-hero__kicker">VERIFY · EVIDENCE PACK · PREIMAGE HASHING</div>
+        <h1 class="hbce-hero__title">Verify Evidence Pack</h1>
+        <p class="hbce-hero__lead">
+          Paste the 3 JSON blobs (PACK_MANIFEST / RESULT / CHAIN_ENTRY).
+          The verifier reconstructs the canonical preimage and recomputes <span class="hbce-mono">entry_hash</span>.
+          PASS/FAIL only.
+        </p>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2 style="margin-top:0">Inputs</h2>
+
+          <div class="hbce-grid hbce-grid--2">
+            <div>
+              <div class="hbce-muted" style="margin-bottom:8px">Expected entry_hash (folder name / displayed output)</div>
+              <input id="expectedHash" class="hbce-field" placeholder="e.g. df0ee5cb68b7dd64..." />
+            </div>
+
+            <div>
+              <div class="hbce-muted" style="margin-bottom:8px">Mode</div>
+              <select id="mode" class="hbce-field">
+                <option value="hbce-preimage">HBCE preimage (exclude refs.entry_hash + refs.blob_sha256; exclude chain.entry_hash)</option>
+                <option value="raw-files">Raw files hashing (debug)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="height:14px"></div>
+
+          <div class="hbce-grid hbce-grid--3">
+            <div>
+              <div class="hbce-muted" style="margin-bottom:8px">PACK_MANIFEST.json</div>
+              <textarea id="manifest" class="hbce-field" rows="14" spellcheck="false" placeholder="{ ... }"></textarea>
+            </div>
+            <div>
+              <div class="hbce-muted" style="margin-bottom:8px">RESULT.json</div>
+              <textarea id="result" class="hbce-field" rows="14" spellcheck="false" placeholder="{ ... }"></textarea>
+            </div>
+            <div>
+              <div class="hbce-muted" style="margin-bottom:8px">CHAIN_ENTRY.json</div>
+              <textarea id="chain" class="hbce-field" rows="14" spellcheck="false" placeholder="{ ... }"></textarea>
+            </div>
+          </div>
+
+          <div style="height:14px"></div>
+
+          <div style="display:flex; gap:10px; flex-wrap:wrap">
+            <button id="btnVerify" class="hbce-btn hbce-btn--primary">Verify (PASS/FAIL)</button>
+            <button id="btnClear" class="hbce-btn">Clear</button>
+          </div>
+
+          <div style="height:16px"></div>
+
+          <div id="status" class="hbce-badge" style="display:none"></div>
+
+          <div style="height:10px"></div>
+
+          <div class="hbce-card" style="background:rgba(0,0,0,.18)">
+            <h3 style="margin-top:0">Computed</h3>
+            <div class="hbce-kv">
+              <div class="hbce-k">entry_hash</div><div class="hbce-v" id="outEntryHash">—</div>
+              <div class="hbce-k">PACK_MANIFEST sha256</div><div class="hbce-v" id="outManSha">—</div>
+              <div class="hbce-k">RESULT sha256</div><div class="hbce-v" id="outResSha">—</div>
+              <div class="hbce-k">CHAIN_ENTRY sha256</div><div class="hbce-v" id="outChainSha">—</div>
+            </div>
+            <div style="height:10px"></div>
+            <div class="hbce-muted">
+              Note: In HBCE preimage mode, the sha256 values above are computed over canonical preimages,
+              matching the reference CLI behavior.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="hbce-footer">
+        <div class="hbce-footer__row">
+          <div class="hbce-muted">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+          <div class="hbce-footer__links">
+            <a href="../">Platform</a>
+            <a href="../registry/">Registry</a>
+            <a href="../verify/">Verify IPR</a>
+          </div>
+        </div>
+        <div class="hbce-muted" style="margin-top:10px">HERMETICUM B.C.E. S.r.l.</div>
+      </footer>
+
+    </main>
+  </div>
+
+<script>
+  // Deterministic canonical JSON (stable key order) – matches hbce-joker-c2-core canonicalJson()
+  function canonicalJson(obj){
+    const stable = (v) => {
+      if (v === null || typeof v !== "object") return v;
+      if (Array.isArray(v)) return v.map(stable);
+      const out = {};
+      Object.keys(v).sort().forEach((k)=> out[k] = stable(v[k]));
+      return out;
+    };
+    return JSON.stringify(stable(obj), null, 2) + "\n";
+  }
+
+  async function sha256HexUtf8(s){
+    const enc = new TextEncoder();
+    const data = enc.encode(s);
+    const digest = await crypto.subtle.digest("SHA-256", data);
+    const bytes = new Uint8Array(digest);
+    return Array.from(bytes).map(b => b.toString(16).padStart(2,"0")).join("");
+  }
+
+  function safeJsonParse(txt){
+    try{ return JSON.parse(txt); } catch { return null; }
+  }
+
+  function clone(obj){ return JSON.parse(JSON.stringify(obj)); }
+
+  async function computeHbcePreimage(manifestObj, resultObj, chainObj){
+    // Match CLI preimage:
+    // - manifest hash BEFORE refs.entry_hash and refs.blob_sha256
+    // - chain hash BEFORE chain.entry_hash
+    const m = clone(manifestObj);
+    if (m && m.refs && typeof m.refs === "object"){
+      delete m.refs.entry_hash;
+      delete m.refs.blob_sha256;
+    }
+    const c = clone(chainObj);
+    if (c && typeof c === "object"){
+      delete c.entry_hash;
+    }
+
+    const mCanon = canonicalJson(m);
+    const rCanon = canonicalJson(resultObj);
+    const cCanon = canonicalJson(c);
+
+    const mSha = await sha256HexUtf8(mCanon);
+    const rSha = await sha256HexUtf8(rCanon);
+    const cSha = await sha256HexUtf8(cCanon);
+
+    const signingBlob = [mSha, rSha, cSha].join("\n") + "\n";
+    const entryHash = await sha256HexUtf8(signingBlob);
+
+    return { entryHash, mSha, rSha, cSha };
+  }
+
+  async function computeRawFiles(manifestTxt, resultTxt, chainTxt){
+    const mSha = await sha256HexUtf8(manifestTxt);
+    const rSha = await sha256HexUtf8(resultTxt);
+    const cSha = await sha256HexUtf8(chainTxt);
+    const signingBlob = [mSha, rSha, cSha].join("\n") + "\n";
+    const entryHash = await sha256HexUtf8(signingBlob);
+    return { entryHash, mSha, rSha, cSha };
+  }
+
+  function setStatus(kind, text){
+    const el = document.getElementById("status");
+    el.style.display = "inline-flex";
+    el.classList.remove("is-pass","is-fail");
+    el.classList.add(kind === "PASS" ? "is-pass" : "is-fail");
+    el.textContent = kind + " · " + text;
+  }
+
+  function setOut({entryHash, mSha, rSha, cSha}){
+    document.getElementById("outEntryHash").textContent = entryHash;
+    document.getElementById("outManSha").textContent = mSha;
+    document.getElementById("outResSha").textContent = rSha;
+    document.getElementById("outChainSha").textContent = cSha;
+  }
+
+  document.getElementById("btnClear").addEventListener("click", ()=>{
+    ["expectedHash","manifest","result","chain"].forEach(id => document.getElementById(id).value = "");
+    document.getElementById("status").style.display = "none";
+    setOut({entryHash:"—", mSha:"—", rSha:"—", cSha:"—"});
+  });
+
+  document.getElementById("btnVerify").addEventListener("click", async ()=>{
+    const expected = (document.getElementById("expectedHash").value || "").trim();
+    const mode = document.getElementById("mode").value;
+
+    const manifestTxt = document.getElementById("manifest").value.trim();
+    const resultTxt = document.getElementById("result").value.trim();
+    const chainTxt = document.getElementById("chain").value.trim();
+
+    const manifestObj = safeJsonParse(manifestTxt);
+    const resultObj = safeJsonParse(resultTxt);
+    const chainObj = safeJsonParse(chainTxt);
+
+    if (!manifestObj || !resultObj || !chainObj){
+      setStatus("FAIL", "JSON_INVALID (one of the blobs is not valid JSON)");
+      return;
+    }
+
+    try{
+      let out;
+      if (mode === "raw-files"){
+        out = await computeRawFiles(manifestTxt + "\n", resultTxt + "\n", chainTxt + "\n");
+      } else {
+        out = await computeHbcePreimage(manifestObj, resultObj, chainObj);
+      }
+
+      setOut(out);
+
+      // Strong consistency checks (dir hash optional if user provides it)
+      const chainHash = chainObj?.entry_hash || null;
+      const manifestHash = manifestObj?.refs?.entry_hash || null;
+
+      if (chainHash && chainHash !== out.entryHash){
+        setStatus("FAIL", "CHAIN_ENTRY.entry_hash mismatch");
+        return;
+      }
+      if (manifestHash && manifestHash !== out.entryHash){
+        setStatus("FAIL", "PACK_MANIFEST.refs.entry_hash mismatch");
+        return;
+      }
+      if (expected && expected !== out.entryHash){
+        setStatus("FAIL", "Expected entry_hash mismatch");
+        return;
+      }
+
+      setStatus("PASS", "Evidence Pack hash verified");
+    } catch(e){
+      setStatus("FAIL", (e && e.message) ? e.message : String(e));
+    }
+  });
+</script>
+</body>
+</html>
