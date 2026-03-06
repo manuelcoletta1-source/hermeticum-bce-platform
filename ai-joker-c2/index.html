@@ -1,27 +1,378 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AI JOKER C2 — Anchor pubblico</title>
-  <meta name="description" content="Anchor pubblico verificabile: anchor.json + presenza hash nel registry append-only." />
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
-</head>
-<body>
-  <main class="hbce-container hbce-main">
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">Public Anchor · Hash-only · Append-only</div>
-      <h1 class="hbce-hero__title">AI JOKER C2</h1>
-      <p class="hbce-hero__lead">
-        Endpoint pubblico per l’anchor operativo di Joker. La certificazione consiste nella presenza dell’hash nel registry append-only.
-      </p>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
 
-      <div class="hbce-card">
-        <p><strong>Anchor file:</strong> <a href="/hermeticum-bce-platform/ai-joker-c2/anchor.json">anchor.json</a></p>
-        <p><strong>Registry pubblico:</strong> <a href="/hermeticum-bce-platform/registry/">REGISTRY</a></p>
-        <p class="hbce-muted">Verifica: confronta l’hash dell’anchor con l’entry nel registry.</p>
-      </div>
-    </section>
-  </main>
+  <title>Joker-C2 — Deterministic Governance Layer of the HBCE Stack</title>
+  <meta name="description" content="Joker-C2 is the deterministic governance layer of the HBCE stack: identity-bound execution, fail-closed policy gating, and audit-ready evidence through signed, hash-linked receipts. Vendor-neutral. EU-first posture." />
+
+  <meta name="robots" content="index,follow"/>
+  <meta name="theme-color" content="#0b0f14"/>
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/joker-c2/" />
+
+  <link rel="stylesheet" href="../assets/hbce.css"/>
+  <script defer src="../assets/hbce-ui.js"></script>
+</head>
+
+<body>
+  <div class="hbce-container">
+    <main class="hbce-main">
+
+      <header class="hbce-header">
+        <div class="hbce-header__row">
+          <div class="hbce-brand">
+            <div class="hbce-mono">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+            <div class="hbce-muted">HERMETICUM B.C.E. S.r.l.</div>
+          </div>
+
+          <nav class="hbce-nav" aria-label="Primary">
+            <a class="hbce-nav__link" href="../">Home</a>
+            <a class="hbce-nav__link" href="../spec/">Spec</a>
+            <a class="hbce-nav__link" href="../activate/">Activate</a>
+            <a class="hbce-nav__link is-active" href="./">Joker-C2</a>
+            <a class="hbce-nav__link" href="../registry/">Registry</a>
+            <a class="hbce-nav__link" href="../verify/">Verify</a>
+            <a class="hbce-nav__link" href="../pricing/">Pricing</a>
+          </nav>
+        </div>
+      </header>
+
+      <section class="hbce-section hbce-hero">
+        <div class="hbce-hero__kicker">JOKER-C2 · GOVERNANCE LAYER · FAIL-CLOSED · PASS / FAIL · AUDIT-READY</div>
+
+        <h1 class="hbce-hero__title">Deterministic governance layer for accountable execution</h1>
+
+        <p class="hbce-hero__lead">
+          <b>Joker-C2</b> is the governance layer of the HBCE stack.
+          It binds execution to identity, policy, and evidence, converting AI-assisted operations into
+          <b>attestable operational events</b>.
+          <br/><br/>
+          Joker-C2 does not replace models.
+          It governs what they are allowed to execute, under which scope, and with which proof trail.
+        </p>
+
+        <div class="hbce-card" style="margin-top:14px;">
+          <div class="hbce-mono">POSITION IN THE STACK</div>
+          <p class="hbce-muted" style="max-width:92ch;">
+            In the HBCE architecture:
+            <b>IPR</b> provides identity,
+            <b>Joker-C2</b> governs execution,
+            <b>Registry</b> publishes public proof,
+            and <b>Verify</b> reproduces validation deterministically.
+          </p>
+
+          <div class="hbce-card" style="margin-top:12px;">
+            <div class="hbce-mono">GOVERNANCE SEQUENCE</div>
+            <pre class="hbce-mono" style="margin:10px 0 0;white-space:pre-wrap;">
+IPR identity
+  ↓
+scope + policy pack
+  ↓
+Joker-C2 gate
+  ↓
+PASS / FAIL
+  ↓
+execution (only if PASS)
+  ↓
+signed receipt
+  ↓
+registry proof
+  ↓
+verification</pre>
+          </div>
+
+          <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
+            <a class="hbce-btn hbce-btn--primary" href="#request">Request deployment</a>
+            <a class="hbce-btn" href="../pricing/">Pricing</a>
+            <a class="hbce-btn" href="../verify/">Verify</a>
+            <a class="hbce-btn" href="../registry/">Registry</a>
+            <a class="hbce-btn" href="../spec/">Specifications</a>
+            <a class="hbce-btn" href="../">Home</a>
+          </div>
+        </div>
+
+        <p class="hbce-muted" style="margin-top:12px;max-width:92ch;">
+          Vendor-neutral posture: OpenAI, Anthropic, xAI, local LLMs, robotics runtimes, and external execution systems.
+          Same discipline. Same gate. Same proof logic.
+        </p>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>What Joker-C2 does</h2>
+
+          <div class="hbce-grid hbce-grid--3" style="margin-top:14px;">
+            <div class="hbce-card">
+              <div class="hbce-mono">IDENTITY-BOUND</div>
+              <h3>Scoped authority</h3>
+              <p class="hbce-muted">
+                Operations are bound to IPR identities with explicit authority scope for operator and runtime.
+              </p>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">FAIL-CLOSED</div>
+              <h3>Deterministic gating</h3>
+              <p class="hbce-muted">
+                Requests execute only when integrity and policy conditions pass. Default state is deny.
+              </p>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">AUDIT-EVIDENCE</div>
+              <h3>Signed receipts</h3>
+              <p class="hbce-muted">
+                Every permitted execution emits a signed, hash-linked receipt that can be independently verified.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <h2>Service flow</h2>
+        <p class="hbce-muted">
+          Joker-C2 is not a model API.
+          It is a governance layer placed above the model runtime and execution boundary.
+        </p>
+
+        <div class="hbce-grid hbce-grid--3" style="margin-top:14px;">
+          <div class="hbce-card">
+            <div class="hbce-mono">1 · BIND</div>
+            <h3>IPR identity + scope</h3>
+            <p class="hbce-muted">
+              Bind operator and runtime identities to IPR and declare scope and policy pack.
+            </p>
+          </div>
+          <div class="hbce-card">
+            <div class="hbce-mono">2 · GATE</div>
+            <h3>Policy &amp; integrity checks</h3>
+            <p class="hbce-muted">
+              Validate identity, integrity, and policy prerequisites. Output remains PASS / FAIL only.
+            </p>
+          </div>
+          <div class="hbce-card">
+            <div class="hbce-mono">3 · EXECUTE</div>
+            <h3>Attestable execution</h3>
+            <p class="hbce-muted">
+              Execute only after PASS and emit a signed receipt for registry publication and verification.
+            </p>
+          </div>
+        </div>
+
+        <div class="hbce-card" style="margin-top:14px;">
+          <div class="hbce-mono">FLOW</div>
+          <p class="hbce-muted" style="margin-bottom:10px;">
+            <span class="hbce-mono">Client → /gate → PASS → /execute → Receipt → Registry → Verify</span>
+          </p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <a class="hbce-btn hbce-btn--primary" href="../verify/">Open verifier</a>
+            <a class="hbce-btn" href="../registry/">Open registry</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <h2>Minimal governance contract</h2>
+        <p class="hbce-muted">
+          The interface is intentionally narrow.
+          Its role is to gate execution and create reproducible evidence, not to become another opaque service layer.
+        </p>
+
+        <div class="hbce-grid hbce-grid--3" style="margin-top:14px;">
+          <div class="hbce-card">
+            <div class="hbce-mono">POST</div>
+            <h3>/gate</h3>
+            <p class="hbce-muted">
+              Validates identity, scope, integrity, and policy prerequisites. Returns PASS / FAIL only.
+            </p>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">POST</div>
+            <h3>/execute</h3>
+            <p class="hbce-muted">
+              Executes a vendor-neutral AI or runtime call only after PASS and emits a signed receipt.
+            </p>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">GET</div>
+            <h3>/receipt/:id</h3>
+            <p class="hbce-muted">
+              Retrieves canonical receipt for independent reconstruction and deterministic verification.
+            </p>
+          </div>
+        </div>
+
+        <div class="hbce-card" style="margin-top:14px;">
+          <div class="hbce-mono">RECEIPT RULE</div>
+          <p class="hbce-muted">
+            Receipts are generated as canonical evidence entries and signed under Ed25519.
+            The objective is not “logging”. The objective is reproducible proof.
+          </p>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <h2>Deployment model</h2>
+        <p class="hbce-muted">
+          Joker-C2 can be delivered under different operational postures depending on runtime, regulatory, and infrastructure constraints.
+        </p>
+
+        <div class="hbce-grid hbce-grid--3" style="margin-top:14px;">
+          <div class="hbce-card">
+            <div class="hbce-mono">SaaS</div>
+            <h3>Fast start</h3>
+            <p class="hbce-muted">
+              Start with governed execution and receipt generation for first verification workflows.
+            </p>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">PRIVATE CLOUD</div>
+            <h3>Tenant isolation</h3>
+            <p class="hbce-muted">
+              Suitable for regulated environments requiring stronger runtime boundaries and isolated governance posture.
+            </p>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">ON-PREM</div>
+            <h3>Infrastructure posture</h3>
+            <p class="hbce-muted">
+              Suitable for critical operations where locality, audit depth, and strict defaults are mandatory.
+            </p>
+          </div>
+        </div>
+
+        <div class="hbce-card" style="margin-top:14px;">
+          <div class="hbce-mono">PREREQUISITE</div>
+          <p class="hbce-muted">
+            IPR activation is mandatory.
+            Joker-C2 is identity-bound by design and cannot become operational without prior identity discipline.
+          </p>
+          <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
+            <a class="hbce-btn hbce-btn--primary" href="../activate/">Activate IPR</a>
+            <a class="hbce-btn" href="../pricing/">Pricing</a>
+            <a class="hbce-btn" href="../spec/">Specifications</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <h2>Public proof path</h2>
+        <p class="hbce-muted">
+          Joker-C2 is designed to remain verifiable through the rest of the stack.
+          Governance does not end at execution; it continues through registry publication and deterministic verification.
+        </p>
+
+        <div class="hbce-grid hbce-grid--3" style="margin-top:14px;">
+          <div class="hbce-card">
+            <div class="hbce-mono">REGISTRY</div>
+            <h3>Public proof publication</h3>
+            <p class="hbce-muted">Open the public proof registry and inspect hash-only ledger behavior.</p>
+            <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
+              <a class="hbce-btn hbce-btn--primary" href="../registry/">Open registry</a>
+            </div>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">VERIFY</div>
+            <h3>Deterministic reconstruction</h3>
+            <p class="hbce-muted">Validate proofs and reproduce PASS / FAIL behavior deterministically.</p>
+            <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
+              <a class="hbce-btn hbce-btn--primary" href="../verify/">Open verify</a>
+            </div>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">SPEC</div>
+            <h3>Layer definition</h3>
+            <p class="hbce-muted">Read how governance is defined inside the broader HBCE stack.</p>
+            <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
+              <a class="hbce-btn" href="../spec/">Open specifications</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="request" class="hbce-section">
+        <div class="hbce-card">
+          <h2>Request deployment</h2>
+          <p class="hbce-muted">
+            For enterprise, research, institutional, and operator-grade deployments, contact:
+            <span class="hbce-mono">manuelcoletta@domiciliodigitale.com</span>
+          </p>
+
+          <div class="hbce-grid hbce-grid--3" style="margin-top:14px;">
+            <div class="hbce-card">
+              <div class="hbce-mono">STARTER</div>
+              <h3>Pilot posture</h3>
+              <p class="hbce-muted">Single team, first governed workflows, receipts, and verification discipline.</p>
+              <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
+                <a class="hbce-btn hbce-btn--primary" href="../pricing/#starter">View tiers</a>
+              </div>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">INDUSTRIAL</div>
+              <h3>Multi-operator posture</h3>
+              <p class="hbce-muted">Organization identity, distributed governance, and node-grade readiness.</p>
+              <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
+                <a class="hbce-btn hbce-btn--primary" href="../pricing/#industrial">View tiers</a>
+              </div>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">GOVERNANCE</div>
+              <h3>Institutional posture</h3>
+              <p class="hbce-muted">EU-grade accountability expectations, strict defaults, and long-term continuity.</p>
+              <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
+                <a class="hbce-btn hbce-btn--primary" href="../pricing/#governance">View tiers</a>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+            <a class="hbce-btn hbce-btn--primary" href="../activate/">Activate IPR</a>
+            <a class="hbce-btn" href="../verify/">Verify</a>
+            <a class="hbce-btn" href="../registry/">Registry</a>
+            <a class="hbce-btn" href="../spec/">Spec</a>
+            <a class="hbce-btn" href="../">Home</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>Operational statement</h2>
+          <p class="hbce-muted">
+            Joker-C2 is deterministic governance inside the HBCE stack:
+            identity-bound execution, fail-closed policy gating, and audit-ready evidence
+            where automated action becomes reconstructible.
+          </p>
+        </div>
+      </section>
+
+      <footer class="hbce-footer">
+        <div class="hbce-footer__row">
+          <div class="hbce-muted">
+            <span class="hbce-mono">JOKER-C2</span> — governance layer of the HBCE stack
+          </div>
+          <div class="hbce-footer__links">
+            <a href="../">Home</a>
+            <a href="../spec/">Spec</a>
+            <a href="../activate/">Activate</a>
+            <a href="../registry/">Registry</a>
+            <a href="../verify/">Verify</a>
+            <a href="../pricing/">Pricing</a>
+          </div>
+        </div>
+      </footer>
+
+    </main>
+  </div>
 </body>
 </html>
