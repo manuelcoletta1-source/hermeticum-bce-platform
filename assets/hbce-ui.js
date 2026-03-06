@@ -1,168 +1,135 @@
 /* =========================================================
-   HBCE UI SYSTEM — GLOBAL INJECTOR (CANONICAL + BASE-PATH AWARE)
-   - Safe DOM injection (no body.innerHTML rewrite)
-   - GitHub Pages project site support (/repo-name/...)
-   - Canonical classes only: hbce-header, hbce-header__row, hbce-brand,
-     hbce-nav, hbce-container, hbce-main, hbce-footer
-   - Active link highlight (.is-active)
-   - DG-ready posture: nav avoids fragile/experimental routes (no 404)
+   HBCE UI SYSTEM — LIGHT ENHANCER (CANONICAL)
+   - No DOM shell injection
+   - No automatic header/footer generation
+   - No route assumptions
+   - Progressive enhancement only
+   - Supports active nav fallback, external link hygiene,
+     reduced-motion-safe reveal behavior, and small UX helpers
    ========================================================= */
 
 (function(){
   "use strict";
 
-  function isGithubProjectSite(){
-    try{ return /\.github\.io$/i.test(window.location.hostname); }
-    catch{ return false; }
-  }
+  if (document.documentElement.getAttribute("data-hbce-ui") === "1") return;
+  document.documentElement.setAttribute("data-hbce-ui", "1");
 
-  function inferBasePath(){
-    // Optional override:
-    // <meta name="hbce-base" content="/hermeticum-bce-platform">
-    const meta = document.querySelector('meta[name="hbce-base"]');
-    if(meta && meta.content){
-      const v = String(meta.content).trim();
-      if(v === "/" || v === "") return "";
-      return v.startsWith("/") ? v.replace(/\/+$/,"") : ("/"+v.replace(/\/+$/,""));
-    }
-
-    // Auto-infer on GitHub Pages project site: /<repo>/...
-    // NOTE: On user sites (username.github.io) there is no repo segment.
-    if(!isGithubProjectSite()) return "";
-    const parts = (window.location.pathname || "/").split("/").filter(Boolean);
-    if(parts.length === 0) return "";               // user site root
-    return "/" + parts[0];                           // project site base: "/repo"
-  }
-
-  function join(base, path){
-    const b = (base || "").replace(/\/+$/,"");
-    const p = (path || "/").startsWith("/") ? path : ("/"+path);
-    return (b + p).replace(/\/{2,}/g,"/");
-  }
-
-  function normPath(p){
+  function normPath(path){
     try{
-      const u = new URL(p, window.location.origin);
-      return u.pathname.replace(/\/+$/,"") || "/";
+      const u = new URL(path, window.location.origin);
+      return u.pathname.replace(/\/+$/, "") || "/";
     }catch{
-      return (p||"/").replace(/\/+$/,"") || "/";
+      return (path || "/").replace(/\/+$/, "") || "/";
     }
   }
 
-  function isActive(href){
+  function isActiveHref(href){
     const here = normPath(window.location.pathname);
     const target = normPath(href);
 
-    // Home match
-    if(target === "/") return here === "/";
-
-    // Exact or subpath match
+    if (target === "/") return here === "/";
     return here === target || here.startsWith(target + "/");
   }
 
-  function ensureMainStructure(){
-    // If the page already has hbce-container/hbce-main, do nothing.
-    const existingMain = document.querySelector(".hbce-main");
-    const existingContainer = document.querySelector(".hbce-container");
-    if(existingMain && existingContainer) return;
+  function enhanceNav(){
+    const nav = document.querySelector(".hbce-nav");
+    if (!nav) return;
 
-    // Otherwise wrap all body children (except injected header/footer) into container/main.
-    const container = document.createElement("div");
-    container.className = "hbce-container";
+    const links = Array.from(nav.querySelectorAll("a[href]"));
+    links.forEach((link) => {
+      const href = link.getAttribute("href");
+      if (!href) return;
 
-    const main = document.createElement("main");
-    main.className = "hbce-main";
+      // Respect manually assigned active states first.
+      if (link.classList.contains("is-active")) return;
 
-    const body = document.body;
-    const toMove = [];
-
-    for(const node of Array.from(body.childNodes)){
-      if(node.nodeType === 1){
-        const el = /** @type {HTMLElement} */ (node);
-        if(el.matches(".hbce-header, .hbce-footer")) continue;
+      if (isActiveHref(href)) {
+        link.classList.add("is-active");
       }
-      toMove.push(node);
-    }
-
-    toMove.forEach(n => main.appendChild(n));
-    container.appendChild(main);
-    body.appendChild(container);
-  }
-
-  function inject(){
-    // idempotent
-    if(document.documentElement.getAttribute("data-hbce-ui") === "1") return;
-    document.documentElement.setAttribute("data-hbce-ui","1");
-
-    const base = inferBasePath();
-
-    // DG / Bruxelles-ready: keep navigation minimal and canonical (spine only).
-    // Avoid routes that may be declass/experimental or subject to 404.
-    const navItems = [
-      ["Home", "/"],
-      ["Activate", "/activate/"],
-      ["Registry", "/registry/"],
-      ["Verify", "/verify/"],
-      ["Pricing", "/pricing/"],
-      ["About", "/about/"],
-      ["Contact", "/contact/"]
-    ];
-
-    // HEADER (canonical)
-    const header = document.createElement("header");
-    header.className = "hbce-header";
-    header.innerHTML = `
-      <div class="hbce-header__row">
-        <a class="hbce-brand" href="${join(base, "/")}">
-          <strong>HBCE</strong>
-          <span>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</span>
-        </a>
-        <nav class="hbce-nav" aria-label="Primary">
-          ${navItems.map(([label, href]) => {
-            const full = join(base, href);
-            return `<a href="${full}" data-href="${full}">${label}</a>`;
-          }).join("")}
-        </nav>
-      </div>
-    `;
-
-    // FOOTER (canonical)
-    const footer = document.createElement("footer");
-    footer.className = "hbce-footer";
-    footer.innerHTML = `
-      <div class="hbce-footer__row">
-        <div>
-          HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br>
-          <span class="hbce-muted">HERMETICUM B.C.E. S.r.l.</span>
-        </div>
-        <div class="hbce-footer__links">
-          <a href="${join(base, "/about/")}">About</a>
-          <a href="${join(base, "/pricing/")}">Pricing</a>
-          <a href="${join(base, "/contact/")}">Contact</a>
-        </div>
-      </div>
-    `;
-
-    // Inject header at top of body (safe)
-    document.body.insertAdjacentElement("afterbegin", header);
-
-    // Ensure we have container/main structure (uniform layout)
-    ensureMainStructure();
-
-    // Inject footer at end of body (safe)
-    document.body.insertAdjacentElement("beforeend", footer);
-
-    // Active link highlight (base-aware)
-    const links = Array.from(header.querySelectorAll("a[data-href]"));
-    links.forEach(a => {
-      const href = a.getAttribute("data-href") || a.getAttribute("href") || "/";
-      if(isActive(href)) a.classList.add("is-active");
     });
   }
 
-  if(document.readyState === "loading"){
-    document.addEventListener("DOMContentLoaded", inject);
-  }else{
-    inject();
+  function enhanceExternalLinks(){
+    const links = Array.from(document.querySelectorAll('a[href]'));
+    links.forEach((link) => {
+      const href = link.getAttribute("href");
+      if (!href) return;
+
+      const isExternal =
+        href.startsWith("http://") ||
+        href.startsWith("https://");
+
+      if (!isExternal) return;
+
+      // Do not overwrite explicit rel if already strong enough.
+      const rel = (link.getAttribute("rel") || "").trim();
+      const relTokens = new Set(rel.split(/\s+/).filter(Boolean));
+      relTokens.add("noopener");
+      link.setAttribute("rel", Array.from(relTokens).join(" "));
+    });
+  }
+
+  function enhanceButtons(){
+    const buttons = Array.from(document.querySelectorAll(".hbce-btn"));
+    buttons.forEach((btn) => {
+      if (btn.tagName === "BUTTON" && !btn.getAttribute("type")) {
+        btn.setAttribute("type", "button");
+      }
+    });
+  }
+
+  function enhanceReveal(){
+    const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) return;
+
+    const sections = Array.from(document.querySelectorAll(".hbce-section"));
+    if (!sections.length || !("IntersectionObserver" in window)) return;
+
+    sections.forEach((el) => {
+      el.setAttribute("data-hbce-reveal", "pending");
+    });
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.setAttribute("data-hbce-reveal", "visible");
+        io.unobserve(entry.target);
+      });
+    }, {
+      root: null,
+      rootMargin: "0px 0px -8% 0px",
+      threshold: 0.08
+    });
+
+    sections.forEach((el) => io.observe(el));
+  }
+
+  function enhanceCopyables(){
+    const copyNodes = Array.from(document.querySelectorAll("[data-copy-text]"));
+    copyNodes.forEach((node) => {
+      node.addEventListener("click", async () => {
+        const text = node.getAttribute("data-copy-text");
+        if (!text) return;
+        try{
+          await navigator.clipboard.writeText(text);
+        }catch{
+          // Silent fail by design.
+        }
+      });
+    });
+  }
+
+  function init(){
+    enhanceNav();
+    enhanceExternalLinks();
+    enhanceButtons();
+    enhanceReveal();
+    enhanceCopyables();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init, { once:true });
+  } else {
+    init();
   }
 })();
