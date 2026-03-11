@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>Verify — Verification Gateway of the HBCE Stack</title>
-  <meta name="description" content="Verification gateway of the HBCE stack. Deterministic PASS / FAIL validation for local IPR releases against public hash-only registry proofs. Fail-closed by design." />
+  <title>Verify — Deterministic Verification Gateway of the HBCE System</title>
+  <meta name="description" content="Verify is the deterministic verification gateway of the HBCE system. It compares local release content against public hash-only proofs under fail-closed logic." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
@@ -49,47 +49,53 @@
 
           <nav class="hbce-nav" aria-label="Primary">
             <a class="hbce-nav__link" href="../">Home</a>
+            <a class="hbce-nav__link" href="../ARCHITECTURE.md">Architecture</a>
+            <a class="hbce-nav__link" href="../NETWORK.md">Network</a>
             <a class="hbce-nav__link" href="../spec/">Spec</a>
-            <a class="hbce-nav__link" href="../activate/">Activate</a>
-            <a class="hbce-nav__link" href="../joker-c2/">Joker-C2</a>
+            <a class="hbce-nav__link" href="../protocol/">Protocol</a>
             <a class="hbce-nav__link" href="../registry/">Registry</a>
             <a class="hbce-nav__link is-active" href="./">Verify</a>
-            <a class="hbce-nav__link" href="../pricing/">Pricing</a>
           </nav>
         </div>
       </header>
 
       <section class="hbce-section hbce-hero">
-        <div class="hbce-hero__kicker">VERIFY · VERIFICATION GATEWAY · DETERMINISTIC · PASS / FAIL · FAIL-CLOSED</div>
+        <div class="hbce-hero__kicker">VERIFY · DETERMINISTIC · PASS / FAIL · HASH-ONLY · FAIL-CLOSED</div>
         <h1 class="hbce-hero__title">Deterministic verification gateway</h1>
         <p class="hbce-hero__lead">
-          <b>Verify</b> is the verification gateway of the HBCE stack.
-          It reproduces deterministic validation by comparing a local IPR Release text against a public
-          hash-only registry proof.
+          <b>Verify</b> is the deterministic verification gateway of the HBCE system.
+          It compares a local release text against an expected public proof and returns a strict binary result:
+          <strong>PASS</strong> or <strong>FAIL</strong>.
           <br/><br/>
-          Output is binary: <strong>PASS</strong> or <strong>FAIL</strong>.
-          Missing or invalid conditions are treated as failure by design.
-          <br/><br/>
-          <strong>As-is hashing:</strong> the verifier computes SHA-256 on the exact UTF-8 bytes you paste.
+          The verifier computes SHA-256 on the exact UTF-8 bytes you provide.
           No normalization is applied.
+          Missing or invalid conditions are treated as failure by design.
         </p>
 
-        <div class="hbce-card" style="margin-top:14px;">
-          <div class="hbce-mono">POSITION IN THE STACK</div>
-          <p class="hbce-muted" style="max-width:92ch;">
-            In the HBCE architecture:
-            <b>IPR</b> provides attribution,
-            <b>Joker-C2</b> governs execution,
-            <b>Registry</b> publishes public proof,
-            and <b>Verify</b> reproduces deterministic reconstruction.
+        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+          <a class="hbce-btn hbce-btn--primary" href="../registry/">Open registry</a>
+          <a class="hbce-btn" href="../ARCHITECTURE.md">Open architecture</a>
+          <a class="hbce-btn" href="../NETWORK.md">Open network</a>
+          <a class="hbce-btn" href="../SPEC.md">Open spec</a>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>Position in the system</h2>
+          <p class="hbce-muted">
+            Verify is not a standalone utility.
+            It is the reconstruction layer of the HBCE system:
+            identity creates attributable state, registry exposes public proof, and verification reproduces deterministic comparison.
           </p>
 
-          <div style="margin-top:14px;display:flex;gap:12px;flex-wrap:wrap">
-            <a class="hbce-btn hbce-btn--primary" href="../activate/">Activate</a>
-            <a class="hbce-btn" href="../registry/">Registry</a>
-            <a class="hbce-btn" href="../spec/">Specifications</a>
-            <a class="hbce-btn" href="../">Home</a>
-          </div>
+          <pre><code>LOCAL RELEASE
+↓
+SHA-256(UTF8(as-is))
+↓
+EXPECTED PUBLIC PROOF
+↓
+PASS / FAIL</code></pre>
         </div>
       </section>
 
@@ -97,21 +103,18 @@
         <div class="hbce-card">
           <h2>Inputs</h2>
           <p class="hbce-muted">
-            Paste the Release JSON exactly as stored in your local file.
-            Do not reformat.
-            The verifier computes SHA-256 on the exact UTF-8 bytes of the pasted text.
-            <br/>
-            Security note: the Release text is never executed. It is hashed only.
+            Paste the local release content exactly as stored.
+            Do not reformat it.
+            The gateway hashes the exact bytes of the provided text.
           </p>
 
           <div class="hbce-grid hbce-grid--3" style="margin-top:14px">
 
             <div class="hbce-card">
               <div class="hbce-mono">INPUT 01</div>
-              <h3>Local Release text (JSON)</h3>
+              <h3>Local release text</h3>
               <p class="hbce-muted">
-                Paste the full content of your IPR Release file under holder custody.
-                Any whitespace change changes the hash.
+                Paste the full content of the release object under holder custody.
               </p>
               <textarea
                 id="release"
@@ -127,9 +130,9 @@
 
             <div class="hbce-card">
               <div class="hbce-mono">INPUT 02</div>
-              <h3>Registry proof (SHA-256)</h3>
+              <h3>Expected proof hash</h3>
               <p class="hbce-muted">
-                Paste the expected SHA-256 from the public proof registry.
+                Paste the expected SHA-256 from the public registry state.
               </p>
               <input
                 id="expected"
@@ -137,22 +140,22 @@
                 placeholder="expected sha256 (64 lowercase hex chars)" />
 
               <div class="hbce-muted hbce-mono" style="margin-top:10px;">
-                Format: lowercase hex, 64 chars. Any mismatch → FAIL.
+                Lowercase hex only. Invalid format results in FAIL.
               </div>
 
               <div class="hbce-card" style="margin-top:12px">
-                <div class="hbce-mono hbce-muted">Tip</div>
+                <div class="hbce-mono hbce-muted">Reference</div>
                 <div class="hbce-muted">
-                  You can inspect proof presence in <a href="../registry/">Registry</a> before verifying.
+                  Public proof presence can be inspected through <a href="../registry/">Registry</a>.
                 </div>
               </div>
             </div>
 
             <div class="hbce-card">
               <div class="hbce-mono">INPUT 03</div>
-              <h3>Execute verification</h3>
+              <h3>Run verification</h3>
               <p class="hbce-muted">
-                Compute SHA-256(UTF8(release_text_as-is)) and compare it against the expected public proof.
+                Execute deterministic comparison between the local release bytes and the expected public proof.
               </p>
 
               <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
@@ -186,8 +189,7 @@
             <div class="hbce-mono">RULE</div>
             <h3>No normalization</h3>
             <p class="hbce-muted">
-              This verifier hashes the exact bytes you provide.
-              Deterministic reproduction requires byte-level equivalence.
+              The verifier hashes the exact bytes provided by the user. Determinism requires byte-level equivalence.
             </p>
             <div class="hbce-mono hbce-muted">
               SHA-256(UTF8(release_text_as-is))
@@ -198,7 +200,7 @@
             <div class="hbce-mono">FAIL-CLOSED</div>
             <h3>Missing means failure</h3>
             <p class="hbce-muted">
-              Missing Release, missing hash, invalid format, or mismatch all produce failure.
+              Missing release text, invalid hash format, or mismatch always produce failure.
             </p>
             <div class="hbce-mono hbce-muted">
               missing → FAIL<br/>
@@ -208,15 +210,14 @@
           </div>
 
           <div class="hbce-card">
-            <div class="hbce-mono">NEXT STEP</div>
+            <div class="hbce-mono">NEXT</div>
             <h3>Use the result operationally</h3>
             <p class="hbce-muted">
-              PASS means the local Release matches a public proof.
-              FAIL means the stack must block forward operation until corrected.
+              PASS means local content matches a public proof. FAIL means the infrastructure state must not be trusted.
             </p>
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
               <a class="hbce-btn" href="../registry/">Open Registry</a>
-              <a class="hbce-btn" href="../activate/">Back to Activate</a>
+              <a class="hbce-btn" href="../ARCHITECTURE.md">Open Architecture</a>
             </div>
           </div>
 
@@ -226,14 +227,15 @@
       <footer class="hbce-footer">
         <div class="hbce-footer__row">
           <div class="hbce-muted">
-            <span class="hbce-mono">VERIFY</span> — verification gateway of the HBCE stack
+            <span class="hbce-mono">VERIFY</span> — deterministic verification gateway of the HBCE system
           </div>
           <div class="hbce-footer__links">
-            <a href="../">Home</a>
-            <a href="../spec/">Spec</a>
-            <a href="../activate/">Activate</a>
+            <a href="../ARCHITECTURE.md">Architecture</a>
+            <a href="../NETWORK.md">Network</a>
+            <a href="../SPEC.md">Spec</a>
+            <a href="../protocol/">Protocol</a>
             <a href="../registry/">Registry</a>
-            <a href="../pricing/">Pricing</a>
+            <a href="../WHITEPAPER.md">Whitepaper</a>
           </div>
         </div>
       </footer>
@@ -242,12 +244,6 @@
   </div>
 
   <script>
-  /*
-    Deterministic verifier (as-is):
-    - Computes SHA-256 of the exact UTF-8 bytes of the pasted release text (NO trim/normalize).
-    - Compares against expected registry hash.
-    - PASS/FAIL only. Fail-closed.
-  */
   function toHex(buf){
     const bytes = new Uint8Array(buf);
     let out = "";
@@ -277,13 +273,13 @@
   function updateStats(){
     const t = document.getElementById("release").value || "";
     const bytes = new TextEncoder().encode(t).length;
-    const lines = t.length ? (t.split("\n").length) : 0;
+    const lines = t.length ? t.split("\n").length : 0;
     document.getElementById("statBytes").textContent = String(bytes);
     document.getElementById("statLines").textContent = String(lines);
   }
 
   async function runVerify(){
-    const release = (document.getElementById("release").value || "");
+    const release = document.getElementById("release").value || "";
     const expectedRaw = (document.getElementById("expected").value || "").trim().toLowerCase();
 
     document.getElementById("copy").disabled = true;
@@ -292,6 +288,7 @@
       setStatus("FAIL (MISSING INPUT)", "", "");
       return;
     }
+
     if (!isSha256Hex(expectedRaw)){
       setStatus("FAIL (INVALID EXPECTED HASH)", "", "");
       return;
@@ -306,7 +303,7 @@
       } else {
         setStatus("FAIL (MISMATCH)", computed, "computed != expected");
       }
-    } catch (e){
+    }catch{
       setStatus("FAIL (VERIFY ERROR)", "", "");
     }
   }
@@ -317,9 +314,7 @@
     try{
       await navigator.clipboard.writeText(v);
       setStatus(document.getElementById("status").textContent + " · COPIED", v, document.getElementById("compare").textContent);
-    }catch{
-      // Clipboard may be blocked; do nothing.
-    }
+    }catch{}
   }
 
   document.getElementById("run").addEventListener("click", () => runVerify());
