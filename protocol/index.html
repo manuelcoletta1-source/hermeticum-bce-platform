@@ -1,274 +1,239 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
 
-  <title>PROTOCOL — HBCE Deterministic Identity & Evidence</title>
-  <meta name="description" content="HBCE protocol: deterministic operational identity (IPR), release artifacts, hash-only public registry, and fail-closed verification rules for EU-first autonomy governance." />
+  <title>Protocol — HBCE Technical Specifications</title>
+  <meta name="description" content="HBCE protocol hub for technical specifications covering IPR events, node structure, registry rules, and network architecture within the Reality Engineering framework." />
 
-  <meta name="robots" content="index,follow" />
-  <meta name="theme-color" content="#0b0f14" />
+  <meta name="robots" content="index,follow"/>
+  <meta name="theme-color" content="#0b0f14"/>
   <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/protocol/" />
 
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce-protocol.css" />
-
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js" defer></script>
-  <script src="/hermeticum-bce-platform/assets/hbce-protocol.js" defer></script>
-
-  <style>
-    .hbce-two{
-      display:grid;
-      grid-template-columns: 1.02fr .98fr;
-      gap:16px;
-      margin-top:14px;
-    }
-    @media (max-width: 980px){ .hbce-two{ grid-template-columns: 1fr; } }
-
-    .hbce-kv{
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.22);
-      border-radius: 18px;
-      padding: 12px 12px;
-      margin-top: 12px;
-    }
-    .hbce-kv__row{
-      display:flex;
-      gap:12px;
-      padding: 8px 0;
-      border-bottom: 1px solid rgba(255,255,255,.06);
-      align-items:flex-start;
-    }
-    .hbce-kv__row:last-child{ border-bottom:none; }
-    .hbce-kv__k{
-      width: 190px;
-      flex: 0 0 190px;
-      font-size: 11px;
-      letter-spacing: 1.1px;
-      text-transform: uppercase;
-      color: rgba(230,237,246,.62);
-    }
-    .hbce-kv__v{
-      flex:1;
-      color: rgba(230,237,246,.86);
-      font-size: 13.5px;
-      line-height: 1.45;
-    }
-    .mono{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-      font-size: 12.5px;
-      color: rgba(0,183,255,.92);
-      word-break: break-word;
-    }
-  </style>
+  <link rel="stylesheet" href="../assets/hbce.css"/>
+  <script defer src="../assets/hbce-ui.js"></script>
 </head>
 
 <body>
-  <div data-hbce="header"></div>
+  <div class="hbce-container">
+    <main class="hbce-main">
 
-  <main class="hbce-container hbce-main">
-
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">PROTOCOL · DETERMINISTIC · HASH-ONLY · APPEND-ONLY · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">HBCE protocol (public spec)</h1>
-      <p class="hbce-hero__lead">
-        HBCE is a deterministic identity + evidence protocol for operational systems.
-        Private artifacts remain private. Public surface publishes minimized proofs (hash-only) in an append-only ledger.
-      </p>
-
-      <div class="hbce-actions">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/create/base/">Create IPR Base</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/publish/">Publish</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry</a>
-      </div>
-
-      <div class="hbce-note">One path: Generate → Verify → Publish (append-only)</div>
-    </section>
-
-    <section class="hbce-critical">
-      <div class="hbce-critical__kicker">FAIL-CLOSED NOTICE · COMPLIANCE POSTURE</div>
-      <div class="hbce-critical__title">No partial validation</div>
-      <p class="hbce-critical__text">
-        HBCE does not approximate. Missing evidence ⇒ INVALID. This protects auditability and prevents “soft acceptance”
-        in safety-critical autonomy governance.
-      </p>
-    </section>
-
-    <section class="hbce-section">
-      <h2>Protocol stack</h2>
-
-      <div class="hbce-two">
-
-        <!-- LEFT: STACK -->
-        <div>
-          <div class="hbce-grid">
-            <article class="hbce-card">
-              <h3>HBCE-CORE-v3</h3>
-              <p>
-                Canonical release format used to generate private artifacts and deterministic evidence fields.
-              </p>
-              <div class="hbce-kv">
-                <div class="hbce-kv__row">
-                  <div class="hbce-kv__k">purpose</div>
-                  <div class="hbce-kv__v">Private release artifact for IPR Base / Operator / modules.</div>
-                </div>
-                <div class="hbce-kv__row">
-                  <div class="hbce-kv__k">public surface</div>
-                  <div class="hbce-kv__v">Hash-only proof published to registry (never publish private payload).</div>
-                </div>
-                <div class="hbce-kv__row">
-                  <div class="hbce-kv__k">required outputs</div>
-                  <div class="hbce-kv__v"><span class="mono">payload_sha256</span>, <span class="mono">timestamp</span>, <span class="mono">signature</span></div>
-                </div>
-              </div>
-              <div class="hbce-actions" style="margin-top:12px;">
-                <a class="hbce-btn" href="/hermeticum-bce-platform/create/base/">Open generator</a>
-              </div>
-            </article>
-
-            <article class="hbce-card">
-              <h3>HBCE-REGISTRY-v2</h3>
-              <p>
-                Public append-only ledger. Stores minimized proofs only. Deterministic schema validation.
-              </p>
-              <div class="hbce-kv">
-                <div class="hbce-kv__row">
-                  <div class="hbce-kv__k">entry_required</div>
-                  <div class="hbce-kv__v"><span class="mono">payload_sha256</span>, <span class="mono">timestamp</span></div>
-                </div>
-                <div class="hbce-kv__row">
-                  <div class="hbce-kv__k">entry_public_identity</div>
-                  <div class="hbce-kv__v"><span class="mono">name</span> (minimal label only)</div>
-                </div>
-                <div class="hbce-kv__row">
-                  <div class="hbce-kv__k">mode</div>
-                  <div class="hbce-kv__v">Append-only. No edits. Changes become new entries/events.</div>
-                </div>
-              </div>
-              <div class="hbce-actions" style="margin-top:12px;">
-                <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Open viewer</a>
-                <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/publish/">Publish entry</a>
-              </div>
-            </article>
-
-            <article class="hbce-card">
-              <h3>VERIFY rule</h3>
-              <p>
-                Deterministic validation. If required evidence is missing or malformed → INVALID (fail-closed).
-              </p>
-              <div class="hbce-kv">
-                <div class="hbce-kv__row">
-                  <div class="hbce-kv__k">rule</div>
-                  <div class="hbce-kv__v">SHA256(private_release) MUST_MATCH registry.entries[].payload_sha256</div>
-                </div>
-                <div class="hbce-kv__row">
-                  <div class="hbce-kv__k">result</div>
-                  <div class="hbce-kv__v"><span class="mono">VALID</span> or <span class="mono">INVALID</span> (no partial states)</div>
-                </div>
-                <div class="hbce-kv__row">
-                  <div class="hbce-kv__k">failure_mode</div>
-                  <div class="hbce-kv__v">Fail-closed by default.</div>
-                </div>
-              </div>
-              <div class="hbce-actions" style="margin-top:12px;">
-                <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Open Verify</a>
-              </div>
-            </article>
+      <header class="hbce-header">
+        <div class="hbce-header__row">
+          <div class="hbce-brand">
+            <div class="hbce-mono">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+            <div class="hbce-muted">HERMETICUM B.C.E. S.r.l.</div>
           </div>
+
+          <nav class="hbce-nav" aria-label="Primary">
+            <a class="hbce-nav__link" href="../">Home</a>
+            <a class="hbce-nav__link" href="../ARCHITECTURE.md">Architecture</a>
+            <a class="hbce-nav__link" href="../NETWORK.md">Network</a>
+            <a class="hbce-nav__link" href="../spec/">Spec</a>
+            <a class="hbce-nav__link is-active" href="./">Protocol</a>
+            <a class="hbce-nav__link" href="../registry/">Registry</a>
+          </nav>
         </div>
+      </header>
 
-        <!-- RIGHT: TERMINAL + EVIDENCE -->
-        <div>
-          <div class="hbce-terminal" data-status="warn">
-            <div class="hbce-terminal__bar">
-              <div class="hbce-terminal__title">Protocol terminal</div>
-              <div class="hbce-terminal__status">WARN</div>
-            </div>
-            <div class="hbce-terminal__body">
-              <div class="hbce-terminal__line">
-                <div class="hbce-terminal__k">posture</div>
-                <div class="hbce-terminal__v">UE_FIRST · AUDIT_FIRST · FAIL_CLOSED · HASH_ONLY · APPEND_ONLY</div>
-              </div>
-              <div class="hbce-terminal__line">
-                <div class="hbce-terminal__k">stack</div>
-                <div class="hbce-terminal__v">HBCE-CORE-v3 → VERIFY → HBCE-REGISTRY-v2</div>
-              </div>
-              <div class="hbce-terminal__line">
-                <div class="hbce-terminal__k">public surface</div>
-                <div class="hbce-terminal__v">minimized proofs only (hash + time)</div>
-              </div>
-              <div class="hbce-terminal__line">
-                <div class="hbce-terminal__k">rule</div>
-                <div class="hbce-terminal__v">missing evidence ⇒ INVALID</div>
-              </div>
-            </div>
+      <section class="hbce-section hbce-hero">
+        <div class="hbce-hero__kicker">PROTOCOL · EVENTS · NODES · REGISTRY · NETWORK ARCHITECTURE</div>
+        <h1 class="hbce-hero__title">HBCE protocol specifications</h1>
+        <p class="hbce-hero__lead">
+          The <b>Protocol</b> section exposes the technical specifications of the HBCE system.
+          These files define the structured rules used to describe events, nodes, registry state,
+          and network architecture inside the Reality Engineering framework.
+          <br/><br/>
+          This section is not a marketing layer.
+          It is the technical surface through which the infrastructure becomes formally readable.
+        </p>
+
+        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+          <a class="hbce-btn hbce-btn--primary" href="../SPEC.md">Open system spec</a>
+          <a class="hbce-btn" href="../ARCHITECTURE.md">Open architecture</a>
+          <a class="hbce-btn" href="../NETWORK.md">Open network</a>
+          <a class="hbce-btn" href="../registry/">Open registry</a>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>Position in the system</h2>
+          <p class="hbce-muted">
+            Protocol files sit between conceptual documentation and observable infrastructure state.
+            They define the formal structures by which identities, events, nodes, and registry records
+            can be described consistently across the system.
+          </p>
+
+          <pre><code>DOCUMENTATION
+↓
+PROTOCOL SPECIFICATIONS
+↓
+REGISTRY STRUCTURES
+↓
+OBSERVABLE INFRASTRUCTURE STATE</code></pre>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <h2>Core specifications</h2>
+
+        <div class="hbce-grid hbce-grid--2">
+
+          <div class="hbce-card">
+            <div class="hbce-mono">IPR EVENT PROTOCOL</div>
+            <h3>Event structure</h3>
+            <p class="hbce-muted">
+              Defines the minimal event format used to record attributable actions inside the infrastructure.
+            </p>
+            <a class="hbce-btn hbce-btn--primary" href="../protocol/ipr-event-v1.md">Open ipr-event-v1.md</a>
           </div>
 
-          <div class="hbce-evidence" style="margin-top:14px;">
-            <div class="hbce-evidence__top">
-              <h3 class="hbce-evidence__h">System anchor (hash-only)</h3>
-              <span class="hbce-mini">public · minimized</span>
-            </div>
-
-            <div class="hbce-evidence__row">
-              <div class="hbce-evidence__label">ROOT SHA-512</div>
-              <div class="hbce-evidence__value is-hash" id="root-sha512">
-b7929e4d1d9a782c79b473c5311f70d864f0b6ae6a6de38df5ef9b2acbb7e73f2d8c544967fa13b1124c8a93d5c2e77d24dc5b3c91a2e6c8b8f97b90a7b09e99
-              </div>
-              <button class="hbce-copy" type="button" data-hbce-copy="#root-sha512">COPY</button>
-            </div>
+          <div class="hbce-card">
+            <div class="hbce-mono">HBCE NODE SPECIFICATION</div>
+            <h3>Node structure</h3>
+            <p class="hbce-muted">
+              Defines the minimal structure required for an HBCE node to exist inside the network.
+            </p>
+            <a class="hbce-btn hbce-btn--primary" href="../protocol/hbce-node-spec-v1.md">Open hbce-node-spec-v1.md</a>
           </div>
 
-          <div class="hbce-callout hbce-callout--info" style="margin-top:14px;">
-            <div class="hbce-callout__h">EU-first alignment (high level)</div>
-            <p style="margin:0;color:rgba(230,237,246,.72);font-size:13.5px;">
-              The protocol is designed to support regulatory-grade auditability: deterministic validation,
-              minimized public exposure (hash-only), and append-only evidence trails for incident reconstruction.
+          <div class="hbce-card">
+            <div class="hbce-mono">HBCE REGISTRY SPECIFICATION</div>
+            <h3>Registry structure</h3>
+            <p class="hbce-muted">
+              Defines how nodes and events are exposed through the public registry layer.
+            </p>
+            <a class="hbce-btn hbce-btn--primary" href="../protocol/hbce-registry-spec-v1.md">Open hbce-registry-spec-v1.md</a>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">HBCE NETWORK ARCHITECTURE</div>
+            <h3>System topology</h3>
+            <p class="hbce-muted">
+              Describes how identity, events, nodes, registry, and coordination interact across the network.
+            </p>
+            <a class="hbce-btn hbce-btn--primary" href="../protocol/hbce-network-architecture-v1.md">Open hbce-network-architecture-v1.md</a>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <h2>Protocol logic</h2>
+
+        <div class="hbce-grid hbce-grid--3">
+
+          <div class="hbce-card">
+            <div class="hbce-mono">EVENTS</div>
+            <h3>Structured operational actions</h3>
+            <p class="hbce-muted">
+              Protocol logic begins with events: recorded actions associated with identifiable entities.
             </p>
           </div>
 
-          <div class="hbce-callout hbce-callout--warn" style="margin-top:12px;">
-            <div class="hbce-callout__h">Do not publish private payloads</div>
-            <p style="margin:0;color:rgba(230,237,246,.72);font-size:13.5px;">
-              Registry is public. Release artifacts are private. Publish only hashes and minimal labels.
-              This prevents leakage and keeps the system compliant-by-design.
+          <div class="hbce-card">
+            <div class="hbce-mono">NODES</div>
+            <h3>Infrastructure units</h3>
+            <p class="hbce-muted">
+              Nodes provide operational location and infrastructure presence for events and services.
             </p>
           </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">REGISTRY</div>
+            <h3>Public state exposure</h3>
+            <p class="hbce-muted">
+              Registry structures expose the observable state of the infrastructure through nodes and events.
+            </p>
+          </div>
+
         </div>
+      </section>
 
-      </div>
-    </section>
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>Protocol posture</h2>
 
-    <section class="hbce-section">
-      <h2>End-to-end workflow</h2>
-      <div class="hbce-grid">
-        <article class="hbce-card">
-          <h3>1) Generate (private)</h3>
-          <p>Create an IPR Base release artifact and compute SHA-256 evidence.</p>
-          <a class="hbce-link" href="/hermeticum-bce-platform/create/base/">/create/base/</a>
-        </article>
-        <article class="hbce-card">
-          <h3>2) Verify (deterministic)</h3>
-          <p>Paste evidence fields and validate deterministically (fail-closed).</p>
-          <a class="hbce-link" href="/hermeticum-bce-platform/verify/">/verify/</a>
-        </article>
-        <article class="hbce-card">
-          <h3>3) Publish (hash-only)</h3>
-          <p>Build a minimized registry entry and append it to the ledger.</p>
-          <a class="hbce-link" href="/hermeticum-bce-platform/registry/publish/">/registry/publish/</a>
-        </article>
-        <article class="hbce-card">
-          <h3>4) Public matching</h3>
-          <p>Registry viewer shows VALID/INVALID by deterministic schema.</p>
-          <a class="hbce-link" href="/hermeticum-bce-platform/registry/">/registry/</a>
-        </article>
-      </div>
-    </section>
+          <div class="hbce-grid hbce-grid--4" style="margin-top:12px;">
 
-  </main>
+            <div class="hbce-card">
+              <div class="hbce-mono">STRUCTURED</div>
+              <h3>Minimal technical definitions</h3>
+            </div>
 
-  <div data-hbce="footer"></div>
+            <div class="hbce-card">
+              <div class="hbce-mono">APPEND-ONLY</div>
+              <h3>Chronological consistency</h3>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">FAIL-CLOSED</div>
+              <h3>No trusted state without valid structure</h3>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">EU-FIRST</div>
+              <h3>European governance posture</h3>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <h2>Related documents</h2>
+
+        <div class="hbce-grid hbce-grid--3">
+
+          <div class="hbce-card">
+            <div class="hbce-mono">SPEC</div>
+            <h3>System overview</h3>
+            <p class="hbce-muted">
+              General specification connecting the protocol layer to the full HBCE system.
+            </p>
+            <a class="hbce-btn" href="../SPEC.md">Open Spec</a>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">DOCS</div>
+            <h3>Documentation hub</h3>
+            <p class="hbce-muted">
+              Structured documentation covering framework, infrastructure, identity, and glossary.
+            </p>
+            <a class="hbce-btn" href="../docs/">Open Docs</a>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">REGISTRY</div>
+            <h3>Observable public state</h3>
+            <p class="hbce-muted">
+              Public node and event structures exposed by the infrastructure.
+            </p>
+            <a class="hbce-btn" href="../registry/">Open Registry</a>
+          </div>
+
+        </div>
+      </section>
+
+      <footer class="hbce-footer">
+        <div class="hbce-footer__row">
+          <div class="hbce-muted">
+            <span class="hbce-mono">PROTOCOL</span> — technical specification layer of the HBCE system
+          </div>
+          <div class="hbce-footer__links">
+            <a href="../ARCHITECTURE.md">Architecture</a>
+            <a href="../NETWORK.md">Network</a>
+            <a href="../SPEC.md">Spec</a>
+            <a href="../docs/">Docs</a>
+            <a href="../registry/">Registry</a>
+            <a href="../WHITEPAPER.md">Whitepaper</a>
+          </div>
+        </div>
+      </footer>
+
+    </main>
+  </div>
 </body>
 </html>
