@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>Verify — Deterministic Verification Gateway of the HBCE System</title>
-  <meta name="description" content="Verify is the deterministic verification gateway of the HBCE system. It compares local release content against public hash-only proofs under fail-closed logic." />
+  <title>Verify — IPR Verification Gateway of the HBCE System</title>
+  <meta name="description" content="Verify identity state and deterministic proof inside the HBCE system. Public IPR check and technical PASS / FAIL verification." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
@@ -49,34 +49,87 @@
 
           <nav class="hbce-nav" aria-label="Primary">
             <a class="hbce-nav__link" href="../">Home</a>
-            <a class="hbce-nav__link" href="../ARCHITECTURE.md">Architecture</a>
-            <a class="hbce-nav__link" href="../NETWORK.md">Network</a>
-            <a class="hbce-nav__link" href="../spec/">Spec</a>
-            <a class="hbce-nav__link" href="../protocol/">Protocol</a>
-            <a class="hbce-nav__link" href="../registry/">Registry</a>
+            <a class="hbce-nav__link" href="../activate/">Activate</a>
             <a class="hbce-nav__link is-active" href="./">Verify</a>
+            <a class="hbce-nav__link" href="../joker-c2/">Joker-C2</a>
+            <a class="hbce-nav__link" href="../registry/">Registry</a>
+            <a class="hbce-nav__link" href="../spec/">Spec</a>
           </nav>
         </div>
       </header>
 
       <section class="hbce-section hbce-hero">
-        <div class="hbce-hero__kicker">VERIFY · DETERMINISTIC · PASS / FAIL · HASH-ONLY · FAIL-CLOSED</div>
-        <h1 class="hbce-hero__title">Deterministic verification gateway</h1>
+        <div class="hbce-hero__kicker">VERIFY · IPR · PASS / FAIL · HASH-ONLY · FAIL-CLOSED</div>
+        <h1 class="hbce-hero__title">Identity and proof verification gateway</h1>
         <p class="hbce-hero__lead">
-          <b>Verify</b> is the deterministic verification gateway of the HBCE system.
-          It compares a local release text against an expected public proof and returns a strict binary result:
-          <strong>PASS</strong> or <strong>FAIL</strong>.
+          <b>Verify</b> is the verification gateway of the HBCE system.
+          It exposes two complementary surfaces:
           <br/><br/>
-          The verifier computes SHA-256 on the exact UTF-8 bytes you provide.
-          No normalization is applied.
-          Missing or invalid conditions are treated as failure by design.
+          <b>Public verification</b> checks the visible state of an IPR identity object.
+          <br/>
+          <b>Technical verification</b> reproduces deterministic proof through exact byte hashing and strict PASS / FAIL logic.
+          <br/><br/>
+          Missing, invalid, or non-reproducible states are treated as failure by design.
         </p>
 
         <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-          <a class="hbce-btn hbce-btn--primary" href="../registry/">Open registry</a>
-          <a class="hbce-btn" href="../ARCHITECTURE.md">Open architecture</a>
-          <a class="hbce-btn" href="../NETWORK.md">Open network</a>
-          <a class="hbce-btn" href="../SPEC.md">Open spec</a>
+          <a class="hbce-btn hbce-btn--primary" href="#public-verify">Verify IPR ID</a>
+          <a class="hbce-btn" href="#technical-verify">Technical verify</a>
+          <a class="hbce-btn" href="../registry/">Open registry</a>
+          <a class="hbce-btn" href="../joker-c2/">Enter runtime</a>
+        </div>
+      </section>
+
+      <section id="public-verify" class="hbce-section">
+        <div class="hbce-card">
+          <h2>Public IPR verification</h2>
+          <p class="hbce-muted">
+            This surface is designed for readable identity-state checks.
+            Insert an IPR identifier and inspect the visible result.
+            In the MVP, this page performs a strict local-format check and returns a visible state response.
+          </p>
+
+          <div class="hbce-grid hbce-grid--2" style="margin-top:14px;">
+
+            <div class="hbce-card">
+              <div class="hbce-mono">INPUT</div>
+              <h3>IPR identifier</h3>
+              <p class="hbce-muted">
+                Insert an IPR ID in canonical format. Example:
+                <span class="hbce-mono">IPR-USER-002341</span>
+              </p>
+
+              <input
+                id="iprId"
+                class="hbce-field hbce-mono"
+                placeholder="IPR-USER-002341" />
+
+              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+                <button class="hbce-btn hbce-btn--primary" type="button" id="runPublicVerify">Run public verify</button>
+                <button class="hbce-btn" type="button" id="resetPublicVerify">Reset</button>
+              </div>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">RESULT</div>
+              <h3>Visible identity state</h3>
+              <p class="hbce-muted">
+                Public verification returns a readable state. Missing or invalid identifiers are treated as failure.
+              </p>
+
+              <div class="hbce-card" style="margin-top:12px">
+                <div class="hbce-muted">Status</div>
+                <div style="font-size:1.15rem;font-weight:700;letter-spacing:.02em" id="publicStatus">MISSING INPUT</div>
+
+                <div class="hbce-kv" id="publicKV" style="margin-top:12px"></div>
+
+                <div class="hbce-mono hbce-muted" style="margin-top:10px;">
+                  In the current MVP, this surface validates canonical identifier structure and returns a public state response.
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
 
@@ -84,28 +137,30 @@
         <div class="hbce-card">
           <h2>Position in the system</h2>
           <p class="hbce-muted">
-            Verify is not a standalone utility.
+            Verification is not a standalone utility.
             It is the reconstruction layer of the HBCE system:
-            identity creates attributable state, registry exposes public proof, and verification reproduces deterministic comparison.
+            identity establishes attributable state,
+            registry exposes public proof,
+            and verification reproduces deterministic comparison or visible identity status.
           </p>
 
-          <pre><code>LOCAL RELEASE
+          <pre><code>IPR ID / RELEASE
 ↓
-SHA-256(UTF8(as-is))
+VISIBLE STATE OR SHA-256(UTF8(as-is))
 ↓
-EXPECTED PUBLIC PROOF
+PUBLIC PROOF / EXPECTED CONDITION
 ↓
-PASS / FAIL</code></pre>
+VALID / FAIL</code></pre>
         </div>
       </section>
 
-      <section class="hbce-section">
+      <section id="technical-verify" class="hbce-section">
         <div class="hbce-card">
-          <h2>Inputs</h2>
+          <h2>Technical deterministic verification</h2>
           <p class="hbce-muted">
-            Paste the local release content exactly as stored.
-            Do not reformat it.
-            The gateway hashes the exact bytes of the provided text.
+            Paste the local release content exactly as stored and compare it against the expected public hash.
+            No normalization is applied.
+            Determinism requires byte-level equivalence.
           </p>
 
           <div class="hbce-grid hbce-grid--3" style="margin-top:14px">
@@ -153,13 +208,13 @@ PASS / FAIL</code></pre>
 
             <div class="hbce-card">
               <div class="hbce-mono">INPUT 03</div>
-              <h3>Run verification</h3>
+              <h3>Run technical verification</h3>
               <p class="hbce-muted">
-                Execute deterministic comparison between the local release bytes and the expected public proof.
+                Execute deterministic comparison between local release bytes and expected public proof.
               </p>
 
               <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-                <button class="hbce-btn hbce-btn--primary" type="button" id="run">Run Verify</button>
+                <button class="hbce-btn hbce-btn--primary" type="button" id="run">Run technical verify</button>
                 <button class="hbce-btn" type="button" id="copy" title="Copy computed_sha256" disabled>Copy computed</button>
                 <button class="hbce-btn" type="button" id="reset">Reset</button>
               </div>
@@ -189,7 +244,8 @@ PASS / FAIL</code></pre>
             <div class="hbce-mono">RULE</div>
             <h3>No normalization</h3>
             <p class="hbce-muted">
-              The verifier hashes the exact bytes provided by the user. Determinism requires byte-level equivalence.
+              The technical verifier hashes the exact bytes provided by the user.
+              Determinism requires byte-level equivalence.
             </p>
             <div class="hbce-mono hbce-muted">
               SHA-256(UTF8(release_text_as-is))
@@ -200,7 +256,7 @@ PASS / FAIL</code></pre>
             <div class="hbce-mono">FAIL-CLOSED</div>
             <h3>Missing means failure</h3>
             <p class="hbce-muted">
-              Missing release text, invalid hash format, or mismatch always produce failure.
+              Missing release text, invalid identifier format, invalid hash format, or mismatch always produce failure.
             </p>
             <div class="hbce-mono hbce-muted">
               missing → FAIL<br/>
@@ -213,11 +269,12 @@ PASS / FAIL</code></pre>
             <div class="hbce-mono">NEXT</div>
             <h3>Use the result operationally</h3>
             <p class="hbce-muted">
-              PASS means local content matches a public proof. FAIL means the infrastructure state must not be trusted.
+              Valid proof means the visible or technical state can be trusted.
+              Failure means the infrastructure state must not be trusted.
             </p>
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
               <a class="hbce-btn" href="../registry/">Open Registry</a>
-              <a class="hbce-btn" href="../ARCHITECTURE.md">Open Architecture</a>
+              <a class="hbce-btn" href="../joker-c2/">Open Joker-C2</a>
             </div>
           </div>
 
@@ -227,14 +284,13 @@ PASS / FAIL</code></pre>
       <footer class="hbce-footer">
         <div class="hbce-footer__row">
           <div class="hbce-muted">
-            <span class="hbce-mono">VERIFY</span> — deterministic verification gateway of the HBCE system
+            <span class="hbce-mono">VERIFY</span> — identity and deterministic verification gateway of the HBCE system
           </div>
           <div class="hbce-footer__links">
-            <a href="../ARCHITECTURE.md">Architecture</a>
-            <a href="../NETWORK.md">Network</a>
-            <a href="../SPEC.md">Spec</a>
-            <a href="../protocol/">Protocol</a>
+            <a href="../activate/">Activate</a>
+            <a href="../joker-c2/">Joker-C2</a>
             <a href="../registry/">Registry</a>
+            <a href="../SPEC.md">Spec</a>
             <a href="../WHITEPAPER.md">Whitepaper</a>
           </div>
         </div>
@@ -257,10 +313,28 @@ PASS / FAIL</code></pre>
     return /^[0-9a-f]{64}$/.test(s);
   }
 
+  function isCanonicalIprId(s){
+    return /^IPR-[A-Z0-9]+(?:-[A-Z0-9]+)+$/i.test(s);
+  }
+
   function setStatus(label, computed, compare){
     document.getElementById("status").textContent = label;
     document.getElementById("computed").textContent = computed || "—";
     document.getElementById("compare").textContent = compare || "—";
+  }
+
+  function setPublicStatus(label, map){
+    document.getElementById("publicStatus").textContent = label;
+    const kv = document.getElementById("publicKV");
+    kv.innerHTML = "";
+    for (const [k, v] of Object.entries(map || {})){
+      const a = document.createElement("div");
+      a.className = "hbce-muted";
+      a.textContent = k;
+      const b = document.createElement("div");
+      b.textContent = v;
+      kv.append(a, b);
+    }
   }
 
   async function sha256HexFromText(text){
@@ -276,6 +350,32 @@ PASS / FAIL</code></pre>
     const lines = t.length ? t.split("\n").length : 0;
     document.getElementById("statBytes").textContent = String(bytes);
     document.getElementById("statLines").textContent = String(lines);
+  }
+
+  function runPublicVerify(){
+    const raw = (document.getElementById("iprId").value || "").trim();
+
+    if (!raw){
+      setPublicStatus("FAIL (MISSING INPUT)", {});
+      return;
+    }
+
+    if (!isCanonicalIprId(raw)){
+      setPublicStatus("FAIL (INVALID IPR ID)", {
+        "ipr_id": raw,
+        "status": "INVALID FORMAT",
+        "result": "FAIL"
+      });
+      return;
+    }
+
+    setPublicStatus("VALID FORMAT (MVP PUBLIC CHECK)", {
+      "ipr_id": raw.toUpperCase(),
+      "issuer": "HERMETICUM B.C.E. S.r.l.",
+      "status": "FORMAT VALID",
+      "result": "VISIBLE CHECK PASSED",
+      "mode": "MVP local public verification"
+    });
   }
 
   async function runVerify(){
@@ -317,6 +417,12 @@ PASS / FAIL</code></pre>
     }catch{}
   }
 
+  document.getElementById("runPublicVerify").addEventListener("click", () => runPublicVerify());
+  document.getElementById("resetPublicVerify").addEventListener("click", () => {
+    document.getElementById("iprId").value = "";
+    setPublicStatus("MISSING INPUT", {});
+  });
+
   document.getElementById("run").addEventListener("click", () => runVerify());
   document.getElementById("copy").addEventListener("click", () => copyComputed());
 
@@ -331,6 +437,7 @@ PASS / FAIL</code></pre>
   document.getElementById("release").addEventListener("input", updateStats);
 
   updateStats();
+  setPublicStatus("MISSING INPUT", {});
   </script>
 
 </body>
