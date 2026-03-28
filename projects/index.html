@@ -3,12 +3,53 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>IPR Projects — Restricted</title>
+<title>HBCE Dashboard — Verified Access Area</title>
 
 <link rel="stylesheet" href="../assets/css/main.css"/>
 <link rel="stylesheet" href="../assets/css/brand.css"/>
 
 <script src="../assets/js/ipr-access.js" defer></script>
+
+<style>
+.dashboard-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:16px;
+  margin-top:16px;
+}
+.dashboard-panel{
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.03);
+  border-radius:16px;
+  padding:16px;
+}
+.dashboard-status{
+  font-size:1.05rem;
+  font-weight:700;
+  margin-top:8px;
+  letter-spacing:.02em;
+}
+.dashboard-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+.dashboard-kv{
+  display:grid;
+  grid-template-columns:140px 1fr;
+  gap:8px;
+  margin-top:12px;
+}
+.dashboard-kv div{
+  word-break:break-word;
+}
+.muted-small{
+  color:var(--muted);
+  font-size:.95rem;
+  line-height:1.5;
+}
+</style>
 </head>
 
 <body>
@@ -18,21 +59,21 @@
 <div class="row">
 
 <div class="brandmark">
-<img src="../assets/img/hermeticum-mark-neon.svg"/>
-<span>IPR</span>
+<img src="../assets/img/hermeticum-mark-neon.svg" alt="Hermeticum mark"/>
+<span>HBCE</span>
 </div>
 
 <nav class="nav">
 <a href="../">Gateway</a>
 <a href="../activate/">Activate</a>
 <a href="../verify/">Verify</a>
-<a href="../infrastructure/">Infrastructure</a>
+<a href="../joker-c2/">Joker-C2</a>
+<a href="../registry/">Registry</a>
 <a href="../docs/">Docs</a>
-<a href="../status/">Status</a>
 </nav>
 
 <div class="spacer"></div>
-<div class="status active">Restricted Area</div>
+<div class="status active">Verified Area</div>
 
 </div>
 </div>
@@ -41,9 +82,10 @@
 <main class="wrap">
 
 <section class="hero">
-<h1>IPR Verified Access</h1>
+<h1>HBCE Verified Dashboard</h1>
 <p class="lead">
-This area is accessible only with a verified IPR receipt.
+Restricted infrastructure area for identities that have passed verification conditions.
+This surface connects visible identity state, proof status, restricted access, and runtime entry.
 </p>
 </section>
 
@@ -51,12 +93,34 @@ This area is accessible only with a verified IPR receipt.
 
 <div class="panel" id="access_denied">
 <h2>Access locked</h2>
-<div style="color:var(--muted)">
-Valid IPR verification required.
+<div class="muted-small">
+Valid IPR verification required.  
+Restricted infrastructure access remains blocked until a verified identity state is present.
 </div>
 
-<div class="cta">
+<div class="dashboard-grid" style="margin-top:16px;">
+
+<div class="dashboard-panel">
+<div class="muted-small">IDENTITY STATE</div>
+<div class="dashboard-status">NOT VERIFIED</div>
+</div>
+
+<div class="dashboard-panel">
+<div class="muted-small">VERIFICATION STATE</div>
+<div class="dashboard-status">FAIL / MISSING</div>
+</div>
+
+<div class="dashboard-panel">
+<div class="muted-small">RUNTIME ACCESS</div>
+<div class="dashboard-status">BLOCK</div>
+</div>
+
+</div>
+
+<div class="dashboard-actions">
 <a class="btn primary" href="../verify/">Verify IPR</a>
+<a class="btn" href="../activate/">Activate identity</a>
+<a class="btn" href="../joker-c2/">Open runtime gate</a>
 </div>
 </div>
 
@@ -64,27 +128,109 @@ Valid IPR verification required.
 
 <div class="panel">
 <h2>Access granted</h2>
-<div style="color:var(--muted)">
-Your IPR is verified.  
-Infrastructure node active.
+<div class="muted-small">
+Your identity has passed verification conditions.
+Restricted infrastructure surfaces are available under the current MVP posture.
+</div>
+
+<div class="dashboard-grid">
+
+<div class="dashboard-panel">
+<div class="muted-small">IDENTITY STATE</div>
+<div class="dashboard-status">VERIFIED</div>
+</div>
+
+<div class="dashboard-panel">
+<div class="muted-small">VERIFICATION STATE</div>
+<div class="dashboard-status">PASS</div>
+</div>
+
+<div class="dashboard-panel">
+<div class="muted-small">RUNTIME ACCESS</div>
+<div class="dashboard-status">READY</div>
+</div>
+
 </div>
 </div>
 
-<div class="grid">
+<div class="dashboard-grid">
 
-<div class="card">
-AI-JOKER Node  
-<small>evolution layer active</small>
+<div class="dashboard-panel">
+<h3>IPR state</h3>
+<div class="muted-small">
+Visible dashboard state for the current verified identity.
+This MVP surface shows the minimum readable posture for restricted participation.
 </div>
 
-<div class="card">
-Experimental projects  
-<small>restricted infrastructure</small>
+<div class="dashboard-kv">
+<div class="muted-small">IPR status</div><div>ACTIVE / VERIFIED</div>
+<div class="muted-small">Issuer</div><div>HERMETICUM B.C.E. S.r.l.</div>
+<div class="muted-small">Verification mode</div><div>Restricted area access</div>
+<div class="muted-small">Runtime posture</div><div>Eligible for Joker-C2 gateway</div>
 </div>
 
-<div class="card">
-IPR network  
-<small>verified nodes only</small>
+<div class="dashboard-actions">
+<a class="btn" href="../verify/">Run verify again</a>
+</div>
+</div>
+
+<div class="dashboard-panel">
+<h3>Restricted surfaces</h3>
+<div class="muted-small">
+These surfaces become meaningful only after identity proof is present and access state is valid.
+</div>
+
+<div class="dashboard-actions">
+<a class="btn primary" href="../joker-c2/">Enter Joker-C2</a>
+<a class="btn" href="../registry/">Open Registry</a>
+<a class="btn" href="../issuer/">Open Issuer</a>
+</div>
+</div>
+
+<div class="dashboard-panel">
+<h3>Runtime bridge</h3>
+<div class="muted-small">
+This dashboard does not replace the runtime.
+It acts as the bridge between verified identity state and governed execution entry.
+</div>
+
+<div class="dashboard-actions">
+<a class="btn primary" href="../joker-c2/">Go to runtime gate</a>
+</div>
+</div>
+
+</div>
+
+<div class="dashboard-grid">
+
+<div class="dashboard-panel">
+<h3>AI-JOKER surface</h3>
+<div class="muted-small">
+Specialized AI runtime surfaces can be connected after identity verification and runtime readiness.
+</div>
+<div class="dashboard-actions">
+<a class="btn" href="../ai-joker-c2/">Open AI surface</a>
+</div>
+</div>
+
+<div class="dashboard-panel">
+<h3>Experimental projects</h3>
+<div class="muted-small">
+Restricted infrastructure and experimental surfaces are available only inside verified posture.
+</div>
+<div class="dashboard-actions">
+<a class="btn" href="../docs/">Open related docs</a>
+</div>
+</div>
+
+<div class="dashboard-panel">
+<h3>Operational next step</h3>
+<div class="muted-small">
+The correct next move after identity verification is governed runtime participation, not generic browsing.
+</div>
+<div class="dashboard-actions">
+<a class="btn primary" href="../joker-c2/">Enter Joker-C2</a>
+</div>
 </div>
 
 </div>
@@ -93,11 +239,22 @@ IPR network
 
 </section>
 
+<section class="section">
+<div class="panel">
+<h2>Operational statement</h2>
+<div class="muted-small">
+The verified dashboard is the restricted post-verification area of the HBCE system.
+It does not generate identity and does not replace runtime.
+It exposes the minimum readable state through which a verified identity can cross from proof into governed participation.
+</div>
+</div>
+</section>
+
 </main>
 
 <footer class="footer">
 <div class="wrap">
-<strong>IPR Restricted Infrastructure</strong>
+<strong>HBCE Verified Dashboard</strong>
 </div>
 </footer>
 
