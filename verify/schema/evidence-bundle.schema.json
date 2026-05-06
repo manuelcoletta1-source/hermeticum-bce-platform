@@ -1,34 +1,211 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/verify/schema/evidence-bundle.schema.json",
-  "title": "Hermeticum BCE Evidence Bundle (Minimal)",
+  "title": "HBCE Evidence Bundle — Privacy-Minimal Public Verification Schema",
+  "description": "Minimal schema for HBCE public verification evidence bundles. The schema is designed for audit-first, hash-only, fail-closed, privacy-minimal public proof workflows. It must not contain raw personal identifiers, secrets, credentials, private keys, identity documents, production logs, or sensitive operational payloads.",
   "type": "object",
-  "additionalProperties": true,
-  "required": ["HRR", "POLICY", "PAYLOAD_MIN"],
+  "additionalProperties": false,
+  "required": [
+    "proto",
+    "kind",
+    "policy",
+    "payload_sha256",
+    "timestamp",
+    "PAYLOAD_MIN"
+  ],
   "properties": {
-    "HRR": {
+    "proto": {
       "type": "string",
-      "minLength": 8,
-      "description": "Human Root Reference (pseudonymous). Example: HRR-L-... or HRR-S-..."
+      "const": "HBCE-EVIDENCE-BUNDLE-v2",
+      "description": "Schema protocol version."
     },
-    "POLICY": {
+    "kind": {
+      "type": "string",
+      "enum": [
+        "HBCE_PUBLIC_EVIDENCE_BUNDLE",
+        "HBCE_PUBLIC_PROOF_BUNDLE",
+        "HBCE_AUDIT_EVIDENCE_BUNDLE",
+        "HBCE_REGISTRY_PROOF_BUNDLE"
+      ],
+      "description": "Public evidence bundle category."
+    },
+    "policy": {
+      "type": "array",
+      "description": "Governance policy flags applicable to this evidence bundle.",
+      "items": {
+        "type": "string",
+        "enum": [
+          "EU_FIRST",
+          "UE_FIRST",
+          "AUDIT_FIRST",
+          "HASH_ONLY",
+          "FAIL_CLOSED",
+          "GDPR_MIN",
+          "NO_PUBLIC_DATA_CUSTODY",
+          "APPEND_ONLY"
+        ]
+      },
+      "contains": {
+        "const": "HASH_ONLY"
+      },
+      "minItems": 3,
+      "uniqueItems": true
+    },
+    "payload_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 commitment for the minimized canonical payload or controlled proof artifact."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 / RFC 3339 timestamp."
+    },
+    "subject_label": {
       "type": "string",
       "minLength": 3,
-      "description": "Policy string, e.g. UE-first | GDPR-min | hash-only | fail-closed"
+      "maxLength": 96,
+      "pattern": "^[A-Z0-9_\\-:.]+$",
+      "description": "Optional minimized public label. It must not contain raw personal identifiers, names, emails, phone numbers, tax codes, identity document numbers, or private evidence."
     },
-    "NOTE": {
+    "record_scope": {
       "type": "string",
-      "description": "Optional note for human readability."
-    },
-    "CONTACT_SIGNALS": {
-      "type": "object",
-      "additionalProperties": true,
-      "description": "Optional hashed contact signals (never raw PII)."
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[A-Z0-9_\\-:.]+$",
+      "description": "Optional public scope label."
     },
     "PAYLOAD_MIN": {
       "type": "object",
-      "description": "Minimal payload required for audit context.",
-      "additionalProperties": true
+      "description": "Minimal public payload for audit context. Must remain privacy-minimal and must not include sensitive or raw personal fields.",
+      "additionalProperties": false,
+      "properties": {
+        "summary": {
+          "type": "string",
+          "maxLength": 512
+        },
+        "record_type": {
+          "type": "string",
+          "maxLength": 96,
+          "pattern": "^[A-Z0-9_\\-:.]+$"
+        },
+        "source": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "public_reference": {
+          "type": "string",
+          "maxLength": 256
+        }
+      }
+    },
+    "CONTACT_SIGNALS": {
+      "type": "object",
+      "description": "Optional hashed contact signals only. Raw email addresses, phone numbers, names, or contact details are forbidden.",
+      "additionalProperties": false,
+      "properties": {
+        "email_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "phone_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "contact_commitment_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "NOTE": {
+      "type": "string",
+      "maxLength": 512,
+      "description": "Optional public note. Must not include personal data, secrets, credentials, private evidence, or sensitive operational payloads."
     }
+  },
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "name"
+        ]
+      },
+      {
+        "required": [
+          "nickname"
+        ]
+      },
+      {
+        "required": [
+          "territory"
+        ]
+      },
+      {
+        "required": [
+          "raw_identifier"
+        ]
+      },
+      {
+        "required": [
+          "identity_document"
+        ]
+      },
+      {
+        "required": [
+          "private_evidence"
+        ]
+      },
+      {
+        "required": [
+          "personal_payload"
+        ]
+      },
+      {
+        "required": [
+          "api_key"
+        ]
+      },
+      {
+        "required": [
+          "token"
+        ]
+      },
+      {
+        "required": [
+          "password"
+        ]
+      },
+      {
+        "required": [
+          "secret"
+        ]
+      },
+      {
+        "required": [
+          "private_key"
+        ]
+      },
+      {
+        "required": [
+          "credential"
+        ]
+      },
+      {
+        "required": [
+          "production_log"
+        ]
+      },
+      {
+        "required": [
+          "private_communication"
+        ]
+      },
+      {
+        "required": [
+          "sensitive_operational_payload"
+        ]
+      }
+    ]
   }
 }
