@@ -373,20 +373,24 @@ Affected area: Registry and verification logic
 Affected files:
 
 - `registry/`
+- `verify/`
+- `verify/schema/`
 - `protocol/`
 - verification-related files, if present
 
 Description:
 
-Registry and verification files require a dedicated review to confirm that public verification remains hash-only, minimal, and fail-closed.
+Registry and verification files require a dedicated review to confirm that public verification remains hash-only, minimal, fail-closed, and aligned with registry v3 semantics.
 
 Why it matters:
 
-Registry logic is central to the HBCE / MATRIX / IPR governance model. If missing, malformed, or inconsistent records are treated as valid, the platform could create false confidence.
+Registry and verification logic are central to the HBCE / MATRIX / IPR governance model. If missing, malformed, or inconsistent records are treated as valid, the platform could create false confidence.
 
 Review progress:
 
 The first registry remediation cycle has been completed for the main public registry layer and operator registry tools.
+
+The first verification remediation cycle has also been completed for the public verification gateway, direct verifier, receipt verifier, evidence schema, demo evidence bundle, baseline document, and public IPR reference page.
 
 Safe remediation / action completed so far:
 
@@ -399,19 +403,27 @@ Safe remediation / action completed so far:
 - made empty registry interpretation explicit;
 - hardened fail-closed validation in registry viewer and operator tools;
 - blocked or documented forbidden public fields;
-- clarified that public registry entries do not replace private identity verification, contractual qualification, or legal authorization.
+- clarified that public registry entries do not replace private identity verification, contractual qualification, or legal authorization;
+- aligned `verify/index.html` with registry v3 and public proof semantics;
+- aligned `verify/verify.html` with registry v3 and `payload_sha256`;
+- hardened `verify/receipt/index.html` with client-side only fail-closed receipt verification;
+- updated `verify/schema/evidence-bundle.schema.json` to a privacy-minimal v2 evidence schema;
+- updated `verify/demo-evidence.json` to a synthetic, privacy-minimal v2 example;
+- updated `verify/baseline.md` to reflect registry v3 and fail-closed semantics;
+- minimized `verify/ipr-manuel-coletta.html` and clarified that public proof does not equal legal or private identity certification.
 
 Remaining review:
 
-- global `verify/` behavior;
-- `schemas/`;
+- global `schemas/`;
+- `verify-pack/`;
 - protocol consistency;
 - final source-of-truth decision between `ledger.json` and `registry.json`;
-- public page references still using legacy labels.
+- public page references still using legacy labels;
+- link and UI checks across modified registry and verify pages.
 
 Fail-closed relevance:
 
-High. Registry mismatch, missing data, malformed records, or unverifiable hashes should block validation or require manual review.
+High. Registry mismatch, missing data, malformed records, unverifiable hashes, invalid verification inputs, or non-deterministic verification states should block validation or require manual review.
 
 Audit status:
 
@@ -678,18 +690,70 @@ Remaining registry work:
 
 - create or identify canonical JSON Schema files;
 - review `schemas/`;
-- review global `verify/` behavior against updated v3 registry semantics;
+- review global verification behavior against updated v3 registry semantics;
 - confirm whether `ledger.json` or `registry.json` should be the long-term source of truth;
 - update any public page still referencing `nickname`, `operator_sha256`, `territory`, or raw personal labels;
 - run a link and UI check on all modified registry pages.
 
 Registry audit status:
 
-`PARTIALLY_REMEDIATED — FILE-LEVEL REGISTRY HARDENING COMPLETED; SCHEMA AND VERIFY REVIEW PENDING`
+`PARTIALLY_REMEDIATED — FILE-LEVEL REGISTRY HARDENING COMPLETED; SCHEMA AND VERIFY REVIEW IN PROGRESS`
 
 ---
 
-## 7. Current audit summary
+## 7. Verify remediation update — 2026-05-06
+
+The first verification remediation cycle has been completed for the public verification gateway, direct verifier, receipt verifier, evidence schema, demo evidence bundle, baseline document, and public IPR reference page.
+
+Updated files:
+
+- `verify/index.html`
+- `verify/verify.html`
+- `verify/receipt/index.html`
+- `verify/schema/evidence-bundle.schema.json`
+- `verify/demo-evidence.json`
+- `verify/baseline.md`
+- `verify/ipr-manuel-coletta.html`
+
+Verify remediation outcomes:
+
+- aligned public verification with `HBCE-REGISTRY-v3`;
+- made `payload_sha256` the central verification field;
+- removed dependence on `operator_sha256`, `name`, `nickname`, and legacy operator-specific logic;
+- introduced clearer verification states: `PUBLIC_RECORD_PRESENT`, `NO_PUBLIC_RECORD`, `INVALID`, and `NON_OPERATIONAL`;
+- clarified that public proof presence does not replace private evidence review, identity verification, contractual qualification, legal authorization, or institutional validation;
+- hardened receipt verification as local browser-side SHA-256 comparison;
+- clarified that receipt verification does not upload or store files;
+- updated the evidence bundle schema to a privacy-minimal v2 model;
+- updated demo evidence to a synthetic, non-sensitive v2 bundle;
+- updated the verification baseline to include registry v3, fail-closed, no-public-data-custody semantics;
+- minimized the personal IPR verification page and preserved `noindex,nofollow`.
+
+Updated verify finding status:
+
+- `VERIFY-FINDING-001` — REMEDIATED
+- `VERIFY-FINDING-002` — REMEDIATED
+- `VERIFY-FINDING-003` — REMEDIATED
+- `VERIFY-FINDING-004` — REMEDIATED
+- `VERIFY-FINDING-005` — REMEDIATED
+- `VERIFY-FINDING-006` — IN_REVIEW
+
+Remaining verify work:
+
+- review `verify-pack/`;
+- review global `schemas/`;
+- check links between registry pages and verify pages;
+- run UI tests for `sha256` query parameters;
+- confirm whether `verify/index.html` and `verify/verify.html` should remain separate long term;
+- remove or redirect any legacy page still using operator-specific terminology that conflicts with registry v3.
+
+Verify audit status:
+
+`PARTIALLY_REMEDIATED — FILE-LEVEL VERIFY HARDENING COMPLETED; VERIFY-PACK AND GLOBAL SCHEMA REVIEW PENDING`
+
+---
+
+## 8. Current audit summary
 
 Remediated / completed items:
 
@@ -706,12 +770,20 @@ Remediated / completed items:
 - main public registry layer hardened;
 - operator registry tools hardened;
 - public registry privacy semantics improved;
-- public proof labels minimized.
+- public proof labels minimized;
+- public verification gateway hardened;
+- direct verification page hardened;
+- receipt verifier hardened;
+- evidence bundle schema updated;
+- demo evidence bundle updated;
+- verify baseline updated;
+- public IPR reference page minimized.
 
 Pending or in-review items:
 
-- global verification behavior;
-- canonical JSON Schema files;
+- `verify-pack/`;
+- global `schemas/`;
+- protocol consistency;
 - GitHub Pages deployment assumptions;
 - dependency and package configuration;
 - environment variable documentation;
@@ -721,23 +793,23 @@ Pending or in-review items:
 
 ---
 
-## 8. Immediate next actions
+## 9. Immediate next actions
 
 Recommended next actions:
 
-1. Review `verify/index.html`.
-2. Review `verify-pack/`.
-3. Review `schemas/`.
-4. Create or update canonical registry schemas.
-5. Review deployment and workflow configuration.
-6. Review public pages for legacy references to `nickname`, `operator_sha256`, `territory`, `name`, or raw personal labels.
-7. Confirm absence of committed secrets.
-8. Confirm whether `.env.example` is needed.
+1. Review `verify-pack/`.
+2. Review global `schemas/`.
+3. Create or update canonical registry schemas.
+4. Review deployment and workflow configuration.
+5. Review public pages for legacy references to `nickname`, `operator_sha256`, `territory`, `name`, or raw personal labels.
+6. Confirm absence of committed secrets.
+7. Confirm whether `.env.example` is needed.
+8. Confirm whether `verify/verify.html` should remain as compatibility page or redirect.
 9. Update this findings register as each review step is completed.
 
 ---
 
-## 9. Audit-ready event record draft
+## 10. Audit-ready event record draft
 
 ```json
 {
@@ -771,6 +843,7 @@ Recommended next actions:
     "FINDING-014"
   ],
   "registry_remediation_status": "PARTIALLY_REMEDIATED",
+  "verify_remediation_status": "PARTIALLY_REMEDIATED",
   "registry_files_hardened": [
     "registry/index.html",
     "registry/ledger.json",
@@ -788,6 +861,15 @@ Recommended next actions:
     "registry/operators/pack/index.html",
     "registry/operators/status/index.html"
   ],
+  "verify_files_hardened": [
+    "verify/index.html",
+    "verify/verify.html",
+    "verify/receipt/index.html",
+    "verify/schema/evidence-bundle.schema.json",
+    "verify/demo-evidence.json",
+    "verify/baseline.md",
+    "verify/ipr-manuel-coletta.html"
+  ],
   "governance_posture": [
     "EU_FIRST",
     "AUDIT_FIRST",
@@ -798,14 +880,14 @@ Recommended next actions:
     "HUMAN_VALIDATION",
     "RESPONSIBILITY_OWNERSHIP"
   ],
-  "next_action": "Review global verify behavior and schema files",
+  "next_action": "Review verify-pack and global schemas",
   "output_target": "AUDIT_READY_MATRIX_EVENT_RECORD"
 }
 ```
 
 ---
 
-## 10. Maintainer statement
+## 11. Maintainer statement
 
 This findings register is part of a defensive and authorized repository baseline review.
 
