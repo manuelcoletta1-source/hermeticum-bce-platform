@@ -446,10 +446,10 @@ Status: PENDING_REVIEW
 Affected area: GitHub Pages and deployment configuration  
 Affected files:
 
-- GitHub Pages configuration
-- workflow files, if present
-- deployment files, if present
-- static assets and generated files
+- GitHub Pages configuration;
+- workflow files, if present;
+- deployment files, if present;
+- static assets and generated files.
 
 Description:
 
@@ -489,10 +489,10 @@ Status: PENDING_REVIEW
 Affected area: Dependencies and project configuration  
 Affected files:
 
-- `package.json`, if present
-- lockfiles, if present
-- build configuration, if present
-- dependency configuration, if present
+- `package.json`, if present;
+- lockfiles, if present;
+- build configuration, if present;
+- dependency configuration, if present.
 
 Description:
 
@@ -534,10 +534,10 @@ Status: PENDING_REVIEW
 Affected area: Environment and secret handling  
 Affected files:
 
-- `.env.example`, if present
-- deployment documentation
-- README environment sections
-- runtime configuration files, if present
+- `.env.example`, if present;
+- deployment documentation;
+- README environment sections;
+- runtime configuration files, if present.
 
 Description:
 
@@ -573,14 +573,14 @@ PENDING_REVIEW
 ### FINDING-014 — Documentation overclaim review required
 
 Severity: LOW  
-Status: PENDING_REVIEW  
+Status: IN_REVIEW  
 Affected area: Public documentation  
 Affected files:
 
-- `README.md`
-- `docs/`
-- public gateway pages
-- MATRIX / HBCE / IPR / AI JOKER-C2 documentation
+- `README.md`;
+- `docs/`;
+- public gateway pages;
+- MATRIX / HBCE / IPR / AI JOKER-C2 documentation.
 
 Description:
 
@@ -590,23 +590,28 @@ Why it matters:
 
 Overclaiming can create trust, compliance, and security risks if readers interpret conceptual material as operational guarantee.
 
-Required review:
+Review progress:
 
-- identify strong operational claims;
-- identify unsupported production claims;
-- identify unclear implementation status;
-- identify areas requiring “experimental,” “planned,” or “conceptual” labels;
-- verify consistency with README, SECURITY, CONTRIBUTING, and RESPONSIBLE_USE.
+A first public-policy and governance remediation cycle has been completed across privacy, terms, legal, compliance, security, governance, and claims pages.
 
-Safe remediation:
+Safe remediation / action completed so far:
 
-Add explicit status labels where needed:
+- clarified R&D / experimental status across legal and governance pages;
+- clarified that public proof does not replace private evidence review, legal authorization, institutional validation, or regulated certification;
+- aligned privacy and terms pages with registry v3 and no-public-data-custody semantics;
+- aligned security page with defensive security and fail-closed posture;
+- aligned compliance page with EU-first posture while avoiding certification overclaim;
+- aligned governance page with AI accountability, human responsibility, and public/private data separation;
+- aligned claims page with explicit claims and non-claims boundaries;
+- translated and aligned legal notice and cookie/contact pages to the R&D no-custody model.
 
-- Implemented
-- Prototype
-- Planned
-- Conceptual
-- Experimental
+Remaining review:
+
+- full public page legacy terminology scan;
+- protocol pages;
+- B2B/B2G positioning pages;
+- AI JOKER-C2 and MATRIX-specific pages;
+- final link and UI review.
 
 Fail-closed relevance:
 
@@ -614,7 +619,7 @@ If a feature is not implemented, it should not be treated as active governance c
 
 Audit status:
 
-PENDING_REVIEW
+IN_REVIEW
 
 ---
 
@@ -801,7 +806,58 @@ Schema audit status:
 
 ---
 
-## 9. Current audit summary
+## 9. Legal, compliance, security, governance, and claims remediation update — 2026-05-06
+
+The first public policy remediation cycle has been completed for privacy, terms, legal, compliance, security, governance, and claims pages.
+
+Updated files:
+
+- `privacy/index.html`
+- `terms/index.html`
+- `legal/index.html`
+- `legal/privacy.html`
+- `legal/terms.html`
+- `legal/legal-notice.html`
+- `legal/cookies.html`
+- `legal/contact.html`
+- `compliance/index.html`
+- `security/index.html`
+- `governance/index.html`
+- `claims/index.html`
+
+Policy remediation outcomes:
+
+- clarified that HBCE Platform is an experimental R&D public gateway;
+- clarified that public proof does not replace private evidence review, legal authorization, institutional validation, regulated certification, tax documentation, or contractual qualification;
+- aligned privacy pages with GDPR-min, registry v3, `payload_sha256`, hash-only proof, and no-public-data-custody semantics;
+- aligned terms pages with R&D status, defensive authorized use, prohibited use, and fail-closed public proof interpretation;
+- aligned legal overview and legal notice with no automatic legal certification and no public identity custody;
+- aligned cookie policy with no profiling cookies, no advertising cookies, no intentional third-party tracking, and static public gateway assumptions;
+- aligned contact page with no-secrets, no-public-data-custody, and security-reporting guidance;
+- aligned compliance page with EU-first posture while avoiding certification overclaim;
+- aligned security page with defensive security scope, registry v3, `payload_sha256`, and fail-closed interpretation;
+- aligned governance page with responsible AI governance, human validation, responsibility ownership, and public/private data separation;
+- aligned claims page with explicit claims and non-claims boundaries.
+
+Updated documentation-overclaim finding status:
+
+- `FINDING-014` — IN_REVIEW
+
+Remaining public-policy work:
+
+- review protocol pages for certification or implementation overclaim;
+- review B2B/B2G and enterprise positioning pages;
+- review AI JOKER-C2 and MATRIX-specific pages;
+- run link and UI checks across modified pages;
+- scan public pages for legacy terms such as `nickname`, `operator_sha256`, `territory`, `name (public)`, and schema v1 references.
+
+Policy audit status:
+
+`PARTIALLY_REMEDIATED — LEGAL / COMPLIANCE / GOVERNANCE HARDENING COMPLETED; PUBLIC-PAGE OVERCLAIM REVIEW PENDING`
+
+---
+
+## 10. Current audit summary
 
 Remediated / completed items:
 
@@ -830,7 +886,14 @@ Remediated / completed items:
 - global IPR schema upgraded;
 - global receipt schema upgraded;
 - canonical registry entry schema added;
-- canonical EVT schema added.
+- canonical EVT schema added;
+- privacy and terms pages aligned;
+- legal overview and legal notice aligned;
+- cookie and contact pages aligned;
+- compliance page aligned;
+- security page aligned;
+- governance page aligned;
+- claims and non-claims page aligned.
 
 Pending or in-review items:
 
@@ -845,7 +908,7 @@ Pending or in-review items:
 
 ---
 
-## 10. Immediate next actions
+## 11. Immediate next actions
 
 Recommended next actions:
 
@@ -855,13 +918,14 @@ Recommended next actions:
 4. Confirm absence of committed secrets.
 5. Confirm whether `.env.example` is needed.
 6. Review protocol documents for schema v1/v2/v3 consistency.
-7. Review public pages for legacy references to `nickname`, `operator_sha256`, `territory`, `name`, or raw personal labels.
-8. Run link and UI tests on modified registry, verify, and verify-pack pages.
-9. Update this findings register as each review step is completed.
+7. Review public B2B/B2G, enterprise, AI JOKER-C2, MATRIX, and protocol pages for overclaiming.
+8. Review public pages for legacy references to `nickname`, `operator_sha256`, `territory`, `name`, or raw personal labels.
+9. Run link and UI tests on modified registry, verify, legal, compliance, security, governance, and claims pages.
+10. Update this findings register as each review step is completed.
 
 ---
 
-## 11. Audit-ready event record draft
+## 12. Audit-ready event record draft
 
 ```json
 {
@@ -886,17 +950,18 @@ Recommended next actions:
     "FINDING-015"
   ],
   "in_review_findings": [
-    "FINDING-010"
+    "FINDING-010",
+    "FINDING-014"
   ],
   "pending_review_findings": [
     "FINDING-011",
     "FINDING-012",
-    "FINDING-013",
-    "FINDING-014"
+    "FINDING-013"
   ],
   "registry_remediation_status": "PARTIALLY_REMEDIATED",
   "verify_remediation_status": "PARTIALLY_REMEDIATED",
   "schema_remediation_status": "PARTIALLY_REMEDIATED",
+  "policy_remediation_status": "PARTIALLY_REMEDIATED",
   "registry_files_hardened": [
     "registry/index.html",
     "registry/ledger.json",
@@ -930,6 +995,20 @@ Recommended next actions:
     "schemas/hbce-registry-entry.schema.json",
     "schemas/hbce-evt.schema.json"
   ],
+  "policy_files_hardened": [
+    "privacy/index.html",
+    "terms/index.html",
+    "legal/index.html",
+    "legal/privacy.html",
+    "legal/terms.html",
+    "legal/legal-notice.html",
+    "legal/cookies.html",
+    "legal/contact.html",
+    "compliance/index.html",
+    "security/index.html",
+    "governance/index.html",
+    "claims/index.html"
+  ],
   "governance_posture": [
     "EU_FIRST",
     "AUDIT_FIRST",
@@ -940,14 +1019,14 @@ Recommended next actions:
     "HUMAN_VALIDATION",
     "RESPONSIBILITY_OWNERSHIP"
   ],
-  "next_action": "Review deployment, workflows, dependencies, environment handling, and protocol consistency",
+  "next_action": "Review deployment, workflows, dependencies, environment handling, protocol consistency, and remaining public-page overclaims",
   "output_target": "AUDIT_READY_MATRIX_EVENT_RECORD"
 }
 ```
 
 ---
 
-## 12. Maintainer statement
+## 13. Maintainer statement
 
 This findings register is part of a defensive and authorized repository baseline review.
 
