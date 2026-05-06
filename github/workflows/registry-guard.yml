@@ -3,35 +3,60 @@ name: registry-guard
 on:
   pull_request:
     paths:
-      - "registry/registry.json"
-      - ".github/workflows/registry-guard.yml"
+      - "registry/**/*.json"
+      - "schemas/**/*.json"
+      - "verify/schema/**/*.json"
       - "tools/registry-guard.js"
+      - ".github/workflows/registry-guard.yml"
   push:
-    branches: ["main"]
+    branches:
+      - "main"
     paths:
-      - "registry/registry.json"
-      - ".github/workflows/registry-guard.yml"
+      - "registry/**/*.json"
+      - "schemas/**/*.json"
+      - "verify/schema/**/*.json"
       - "tools/registry-guard.js"
+      - ".github/workflows/registry-guard.yml"
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: registry-guard-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   guard:
+    name: Registry and schema guard
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
     steps:
-      - name: Checkout (full history)
+      - name: Checkout repository with full history
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
+      - name: Verify guard script exists
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f tools/registry-guard.js
+
       - name: Run registry guard
+        shell: bash
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           GITHUB_SHA: ${{ github.sha }}
         run: |
+          set -euo pipefail
           node tools/registry-guard.js
