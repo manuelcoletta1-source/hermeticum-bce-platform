@@ -1,92 +1,331 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/schemas/receipt.schema.json",
-  "title": "AI_JOKER_C2 RECEIPT v1",
+  "title": "HBCE Receipt — Privacy-Minimal v2",
+  "description": "Schema for a privacy-minimal HBCE receipt. The schema is designed for EU-first, audit-first, hash-only, fail-closed, no-public-data-custody workflows. It forbids raw personal identifiers, identity documents, secrets, credentials, private keys, production logs, and sensitive operational payloads.",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "proto",
-    "type",
-    "version",
     "kind",
+    "version",
     "issued_at",
-    "payload_hash_sha256",
+    "payload_sha256",
     "payload",
     "signature"
   ],
   "properties": {
-    "proto": { "type": "string", "const": "AI_JOKER_C2" },
-    "type": { "type": "string", "const": "RECEIPT" },
-    "version": { "type": "string", "const": "v1" },
-
-    "kind": { "type": "string", "enum": ["IPR_ISSUANCE", "AI_DECISION"] },
-    "issued_at": { "type": "string", "format": "date-time" },
-
-    "payload_hash_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
-
+    "proto": {
+      "type": "string",
+      "const": "HBCE-RECEIPT"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "IPR_PUBLIC_PROOF_RECEIPT",
+        "AI_DECISION_RECEIPT",
+        "OPERATOR_PUBLIC_PROOF_RECEIPT",
+        "REGISTRY_PUBLIC_PROOF_RECEIPT",
+        "AUDIT_EVENT_RECEIPT"
+      ]
+    },
+    "version": {
+      "type": "string",
+      "const": "v2"
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "payload_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 commitment for the canonical payload or controlled proof artifact."
+    },
     "payload": {
       "type": "object",
-      "additionalProperties": true,
+      "additionalProperties": false,
       "required": [
-        "ipr_subject",
-        "ipr_level",
+        "subject_label",
+        "record_scope",
         "purpose",
         "policy",
-        "consent_scope",
         "issued_at",
-        "ipr_hash_sha256"
+        "proof_sha256"
       ],
       "properties": {
-        "ipr_subject": { "type": "string", "pattern": "^ipr-subject:[a-f0-9]{32}$" },
-        "ipr_level": { "type": "string", "enum": ["BASIC", "STRONG", "INSTITUTION"] },
-        "purpose": { "type": "string", "minLength": 3, "maxLength": 200 },
-
+        "subject_label": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 96,
+          "pattern": "^[A-Z0-9_\\-:.]+$",
+          "description": "Public minimized subject label. Must not contain names, tax codes, emails, phone numbers, document numbers, or private identifiers."
+        },
+        "record_scope": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 128,
+          "pattern": "^[A-Z0-9_\\-:.]+$"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 240
+        },
         "policy": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["UE_FIRST", "GDPR_MIN", "HASH_ONLY", "FAIL_CLOSED", "AUDIT_APPEND_ONLY"],
+          "required": [
+            "EU_FIRST",
+            "GDPR_MIN",
+            "HASH_ONLY",
+            "FAIL_CLOSED",
+            "AUDIT_APPEND_ONLY",
+            "NO_PUBLIC_DATA_CUSTODY"
+          ],
           "properties": {
-            "UE_FIRST": { "type": "boolean", "const": true },
-            "GDPR_MIN": { "type": "boolean", "const": true },
-            "HASH_ONLY": { "type": "boolean", "const": true },
-            "FAIL_CLOSED": { "type": "boolean", "const": true },
-            "AUDIT_APPEND_ONLY": { "type": "boolean", "const": true }
+            "EU_FIRST": {
+              "type": "boolean",
+              "const": true
+            },
+            "UE_FIRST": {
+              "type": "boolean",
+              "const": true
+            },
+            "GDPR_MIN": {
+              "type": "boolean",
+              "const": true
+            },
+            "HASH_ONLY": {
+              "type": "boolean",
+              "const": true
+            },
+            "FAIL_CLOSED": {
+              "type": "boolean",
+              "const": true
+            },
+            "AUDIT_APPEND_ONLY": {
+              "type": "boolean",
+              "const": true
+            },
+            "NO_PUBLIC_DATA_CUSTODY": {
+              "type": "boolean",
+              "const": true
+            }
           }
         },
-
-        "consent_scope": { "type": "string", "enum": ["AI_ACCOUNTABILITY", "PROOF_OF_EXISTENCE", "AUDIT_TRAIL"] },
-        "issued_at": { "type": "string", "format": "date-time" },
-        "ipr_hash_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        "consent_scope": {
+          "type": "string",
+          "enum": [
+            "AI_ACCOUNTABILITY",
+            "PROOF_OF_EXISTENCE",
+            "AUDIT_TRAIL",
+            "PUBLIC_PROOF_COMMITMENT",
+            "OPERATIONAL_IDENTITY_RESEARCH"
+          ]
+        },
+        "issued_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "proof_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "context_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "note": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 512
+        }
       }
     },
-
     "signature": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["scheme"],
+      "required": [
+        "scheme"
+      ],
       "properties": {
-        "scheme": { "type": "string", "enum": ["NONE", "ED25519"] },
-        "kid": { "type": ["string", "null"], "maxLength": 200 },
-        "value": { "type": ["string", "null"], "maxLength": 5000 },
-        "public_key_jwk": { "type": ["object", "null"] },
-        "note": { "type": ["string", "null"], "maxLength": 280 }
+        "scheme": {
+          "type": "string",
+          "enum": [
+            "NONE",
+            "ED25519"
+          ]
+        },
+        "kid": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 200
+        },
+        "value": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 5000
+        },
+        "public_key_jwk": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "note": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 280
+        }
       }
     },
-
     "anchors": {
-      "type": ["array", "null"],
+      "type": [
+        "array",
+        "null"
+      ],
       "default": [],
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["type", "ref"],
+        "required": [
+          "type",
+          "ref"
+        ],
         "properties": {
-          "type": { "type": "string", "enum": ["BTC_TXID", "ETH_TX", "IPFS_CID", "RFC3161"] },
-          "ref": { "type": "string", "minLength": 8, "maxLength": 200 },
-          "at": { "type": ["string", "null"], "format": "date-time" },
-          "note": { "type": ["string", "null"], "maxLength": 280 }
+          "type": {
+            "type": "string",
+            "enum": [
+              "BTC_TXID",
+              "ETH_TX",
+              "IPFS_CID",
+              "RFC3161"
+            ]
+          },
+          "ref": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 200
+          },
+          "at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 280
+          }
         }
       }
     }
+  },
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "name"
+        ]
+      },
+      {
+        "required": [
+          "nickname"
+        ]
+      },
+      {
+        "required": [
+          "territory"
+        ]
+      },
+      {
+        "required": [
+          "raw_identifier"
+        ]
+      },
+      {
+        "required": [
+          "tax_code"
+        ]
+      },
+      {
+        "required": [
+          "fiscal_code"
+        ]
+      },
+      {
+        "required": [
+          "identity_document"
+        ]
+      },
+      {
+        "required": [
+          "private_evidence"
+        ]
+      },
+      {
+        "required": [
+          "personal_payload"
+        ]
+      },
+      {
+        "required": [
+          "api_key"
+        ]
+      },
+      {
+        "required": [
+          "token"
+        ]
+      },
+      {
+        "required": [
+          "password"
+        ]
+      },
+      {
+        "required": [
+          "secret"
+        ]
+      },
+      {
+        "required": [
+          "private_key"
+        ]
+      },
+      {
+        "required": [
+          "credential"
+        ]
+      },
+      {
+        "required": [
+          "production_log"
+        ]
+      },
+      {
+        "required": [
+          "private_communication"
+        ]
+      },
+      {
+        "required": [
+          "sensitive_operational_payload"
+        ]
+      }
+    ]
   }
 }
