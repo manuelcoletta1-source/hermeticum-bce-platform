@@ -1,121 +1,224 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/schemas/hbce-registry-entry.schema.json",
-  "title": "HBCE Registry Entry — v3 Privacy-Minimal",
-  "description": "Canonical JSON Schema for HBCE public registry entries. The schema enforces payload_sha256, minimized public labels, fail-closed registry semantics, and no public custody of sensitive personal or operational data.",
+  "$id": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/schemas/hbce-evt.schema.json",
+  "title": "HBCE EVT — Operational Update v1",
+  "description": "Canonical schema for HBCE EVT operational update records. EVT records are controlled operational preimages used for continuity, audit, anchoring, and public proof commitment generation. Public registries should publish only minimized hash commitments, not raw sensitive or private EVT payloads.",
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "entity_type",
-    "subject_label",
-    "payload_sha256",
-    "timestamp",
-    "status"
+    "evt",
+    "prev",
+    "t",
+    "entity",
+    "ipr",
+    "state",
+    "baseline",
+    "kind",
+    "cycle",
+    "loc",
+    "org",
+    "core",
+    "anchors",
+    "upstream",
+    "continuity"
   ],
   "properties": {
-    "entity_type": {
+    "evt": {
       "type": "string",
-      "enum": [
-        "PUBLIC_IDENTITY_COMMITMENT",
-        "PUBLIC_OPERATOR_COMMITMENT",
-        "PUBLIC_CONTINUITY_CERTIFICATE",
-        "PUBLIC_NODE_COMMITMENT",
-        "PUBLIC_EVENT_COMMITMENT",
-        "HBCE_PUBLIC_PROOF"
-      ],
-      "description": "Public record category."
+      "pattern": "^EVT-[0-9]{4,}$",
+      "description": "Canonical event identifier."
     },
-    "subject_label": {
+    "prev": {
       "type": "string",
-      "minLength": 3,
-      "maxLength": 96,
-      "pattern": "^[A-Z0-9_\\-:.]+$",
-      "description": "Public minimized label only. Must not contain real names, tax codes, emails, phone numbers, identity document numbers, private identifiers, or private evidence."
+      "pattern": "^EVT-[0-9]{4,}$",
+      "description": "Previous event identifier in the continuity chain."
     },
-    "record_scope": {
+    "t": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Event timestamp in ISO 8601 / RFC 3339 format."
+    },
+    "entity": {
       "type": "string",
       "minLength": 3,
       "maxLength": 128,
       "pattern": "^[A-Z0-9_\\-:.]+$",
-      "description": "Optional public scope label."
+      "description": "Operational entity label. Public registries should use minimized labels or hash commitments where appropriate."
     },
-    "payload_sha256": {
+    "ipr": {
       "type": "string",
-      "pattern": "^[a-f0-9]{64}$",
-      "description": "SHA-256 public proof commitment."
+      "minLength": 3,
+      "maxLength": 96,
+      "pattern": "^[A-Z0-9_\\-:.]+$",
+      "description": "Operational IPR label."
     },
-    "timestamp": {
-      "type": "string",
-      "format": "date-time",
-      "description": "ISO 8601 / RFC 3339 timestamp."
-    },
-    "status": {
+    "state": {
       "type": "string",
       "enum": [
+        "LOCKED",
         "ACTIVE",
+        "INACTIVE",
+        "SUSPENDED",
         "REVOKED",
-        "SUSPENDED"
-      ],
-      "description": "Public lifecycle status."
+        "EXPERIMENTAL"
+      ]
     },
-    "note": {
+    "baseline": {
+      "type": "boolean"
+    },
+    "kind": {
       "type": "string",
-      "maxLength": 512,
-      "description": "Optional public note. Must not include personal data, secrets, credentials, private evidence, or sensitive operational payloads."
+      "enum": [
+        "OPERATIONAL_UPDATE",
+        "BASELINE",
+        "REGISTRY_UPDATE",
+        "AUDIT_EVENT",
+        "CONTINUITY_CHECKPOINT",
+        "ANCHOR_EVENT",
+        "STATUS_UPDATE"
+      ]
+    },
+    "cycle": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 64,
+      "pattern": "^[A-Z0-9_\\-:.]+$"
+    },
+    "loc": {
+      "type": "array",
+      "description": "Coarse public location labels only. Do not include street address, exact coordinates, or sensitive location data.",
+      "minItems": 1,
+      "maxItems": 4,
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 64
+      }
+    },
+    "org": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 160
+    },
+    "core": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 96,
+      "pattern": "^[A-Z0-9_\\-:.]+$"
+    },
+    "anchors": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "monthly_hash",
+        "ipfs_cid",
+        "btc_txid",
+        "evm_tx_hash"
+      ],
+      "properties": {
+        "monthly_hash": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 256,
+          "description": "Monthly checkpoint hash or placeholder for the canonical hash commitment."
+        },
+        "ipfs_cid": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 256
+        },
+        "btc_txid": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "evm_tx_hash": {
+          "type": "string",
+          "pattern": "^0x[a-fA-F0-9]{64}$"
+        }
+      }
+    },
+    "upstream": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "root_evt",
+        "root_t",
+        "proto",
+        "t0"
+      ],
+      "properties": {
+        "root_evt": {
+          "type": "string",
+          "pattern": "^EVT-[0-9]{4,}$"
+        },
+        "root_t": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "proto": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 96
+        },
+        "inrim": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 128,
+          "description": "Optional public institutional reference label. Do not include confidential correspondence or private documents."
+        },
+        "t0": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "continuity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "checkpoint_type",
+        "elapsed_months",
+        "origin_ipr",
+        "rule",
+        "note"
+      ],
+      "properties": {
+        "checkpoint_type": {
+          "type": "string",
+          "enum": [
+            "CANONICAL",
+            "EXPERIMENTAL",
+            "DERIVED",
+            "AUDIT",
+            "PUBLIC_REFERENCE"
+          ]
+        },
+        "elapsed_months": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1200
+        },
+        "origin_ipr": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 96,
+          "pattern": "^[A-Z0-9_\\-:.]+$"
+        },
+        "rule": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 512
+        },
+        "note": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 1024
+        }
+      }
     }
   },
   "not": {
     "anyOf": [
-      {
-        "required": [
-          "name"
-        ]
-      },
-      {
-        "required": [
-          "nickname"
-        ]
-      },
-      {
-        "required": [
-          "territory"
-        ]
-      },
-      {
-        "required": [
-          "operator_sha256"
-        ]
-      },
-      {
-        "required": [
-          "raw_identifier"
-        ]
-      },
-      {
-        "required": [
-          "tax_code"
-        ]
-      },
-      {
-        "required": [
-          "fiscal_code"
-        ]
-      },
-      {
-        "required": [
-          "identity_document"
-        ]
-      },
-      {
-        "required": [
-          "private_evidence"
-        ]
-      },
-      {
-        "required": [
-          "personal_payload"
-        ]
-      },
       {
         "required": [
           "api_key"
@@ -144,6 +247,31 @@
       {
         "required": [
           "credential"
+        ]
+      },
+      {
+        "required": [
+          "identity_document"
+        ]
+      },
+      {
+        "required": [
+          "tax_code"
+        ]
+      },
+      {
+        "required": [
+          "fiscal_code"
+        ]
+      },
+      {
+        "required": [
+          "street_address"
+        ]
+      },
+      {
+        "required": [
+          "precise_location"
         ]
       },
       {
