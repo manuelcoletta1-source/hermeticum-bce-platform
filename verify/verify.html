@@ -1,513 +1,276 @@
 <!doctype html>
-<html lang="it">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <title>VERIFY — Public Proof Verification | HBCE</title>
-  <meta name="description" content="VERIFY HBCE: verifica pubblica fail-closed per hash proof commitment. Registry v3, payload_sha256, hash-only, no public data custody." />
-
-  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/verify/" />
-  <meta name="robots" content="index,follow" />
-  <meta name="theme-color" content="#0b0f14" />
-
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
-</head>
-
-<body>
-  <div data-hbce="header"></div>
-
-  <main class="hbce-container hbce-main">
-
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">VERIFY · REGISTRY-v3 · HASH-ONLY · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">VERIFY — public proof verification</h1>
-      <p class="hbce-hero__lead">
-        This page performs deterministic public proof lookup against the HBCE public registry.
-        The verification target is a <code>payload_sha256</code> commitment.
-        <br /><br />
-        A match means that a public proof record is present in the registry.
-        It does not replace private evidence review, identity verification, contractual qualification, legal authorization,
-        or institutional validation.
-      </p>
-
-      <p class="hbce-note" style="margin-top:12px;">
-        Policy:
-        <strong>EU-first</strong> ·
-        <strong>audit-first</strong> ·
-        <strong>append-only</strong> ·
-        <strong>hash-only</strong> ·
-        <strong>fail-closed</strong> ·
-        <strong>GDPR-min</strong> ·
-        <strong>no public data custody</strong>
-      </p>
-
-      <div class="hbce-actions" style="margin-top:12px;">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Activate</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/operator/">Operator</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Registry</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/operators/">Operators</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/root/">Root</a>
-      </div>
-    </section>
-
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Input</h2>
-      <p class="hbce-p">
-        You can verify a public proof in two ways:
-        <strong>(A)</strong> paste a JSON object containing <code>payload_sha256</code>, or
-        <strong>(B)</strong> enter a <code>payload_sha256</code> directly.
-      </p>
-
-      <div class="hbce-card">
-        <div class="hbce-card__body">
-
-          <div class="hbce-grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px;">
-            <label class="hbce-field" style="display:block;">
-              <span class="hbce-label">JSON object — optional</span>
-              <textarea class="hbce-input" id="releaseJson" rows="10" placeholder='Paste a local JSON object containing payload_sha256'></textarea>
-              <span class="hbce-note">
-                If the JSON contains <code>payload_sha256</code>, that value is used.
-                If it does not, a local browser-side SHA-256 commitment is calculated from the JSON.
-                No pasted JSON is uploaded by this page.
-              </span>
-            </label>
-
-            <label class="hbce-field" style="display:block;">
-              <span class="hbce-label">payload_sha256 — optional</span>
-              <input class="hbce-input" id="hashInput" placeholder="64-character lowercase sha256" />
-              <span class="hbce-note">
-                If this field is valid, it takes precedence over the JSON input.
-              </span>
-            </label>
-          </div>
-
-          <div class="hbce-actions" style="margin-top:12px;">
-            <button class="hbce-btn hbce-btn--primary" type="button" id="verifyBtn">VERIFY</button>
-            <button class="hbce-btn" type="button" id="clearBtn">Clear</button>
-          </div>
-
-          <div id="errBox" class="hbce-note" style="margin-top:12px; display:none;"></div>
-
-        </div>
-      </div>
-    </section>
-
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Registry source</h2>
-
-      <div class="hbce-grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px;">
-        <div class="hbce-card">
-          <div class="hbce-card__body">
-            <h3 class="hbce-h3" style="margin-top:0;">Public source</h3>
-            <pre class="hbce-pre" id="sourcePre" style="margin:0; white-space:pre-wrap;">registry/registry.json</pre>
-            <p class="hbce-note">
-              This verifier uses <code>registry/registry.json</code> as the public registry index for
-              <code>payload_sha256</code> matching.
-            </p>
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <div class="hbce-card__body">
-            <h3 class="hbce-h3" style="margin-top:0;">Fail-closed rule</h3>
-            <pre class="hbce-pre" style="margin:0; white-space:pre-wrap;">Missing source → NON_OPERATIONAL
-Invalid registry → NON_OPERATIONAL
-Malformed entry → NON_OPERATIONAL
-No match → NO_PUBLIC_RECORD
-Valid match → PUBLIC_RECORD_PRESENT</pre>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="hbce-section" id="outSection" style="display:none;">
-      <h2 class="hbce-h2">Result</h2>
-
-      <div class="hbce-grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px;">
-
-        <div class="hbce-card">
-          <div class="hbce-card__body">
-            <h3 class="hbce-h3" style="margin-top:0;">Status</h3>
-            <pre class="hbce-pre" id="statusPre" style="margin:0; white-space:pre-wrap;"></pre>
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <div class="hbce-card__body">
-            <h3 class="hbce-h3" style="margin-top:0;">Registry match</h3>
-            <pre class="hbce-pre" id="matchPre" style="margin:0; white-space:pre-wrap;"></pre>
-          </div>
-        </div>
-
-      </div>
-
-      <p class="hbce-note" style="margin-top:12px;">
-        Public proof verification is not a substitute for private evidence review, legal authorization,
-        institutional due diligence, or operator qualification.
-      </p>
-    </section>
-
-  </main>
-
-  <div data-hbce="footer"></div>
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
-
-  <script>
-    (function(){
-      "use strict";
-
-      const releaseTa = document.getElementById("releaseJson");
-      const hashIn = document.getElementById("hashInput");
-      const verifyBtn = document.getElementById("verifyBtn");
-      const clearBtn = document.getElementById("clearBtn");
-      const errBox = document.getElementById("errBox");
-
-      const outSection = document.getElementById("outSection");
-      const statusPre = document.getElementById("statusPre");
-      const matchPre = document.getElementById("matchPre");
-      const sourcePre = document.getElementById("sourcePre");
-
-      const REGISTRY_PATH = "/hermeticum-bce-platform/registry/registry.json";
-      const EXPECTED_PROTO = "HBCE-REGISTRY-v3";
-      const EXPECTED_FAILURE_MODE = "FAIL_CLOSED";
-      const EXPECTED_PUBLIC_DATA = "HASH_ONLY";
-
-      const FORBIDDEN_PUBLIC_FIELDS = [
-        "name",
-        "nickname",
-        "territory",
-        "raw_identifier",
-        "identity_document",
-        "private_evidence",
-        "personal_payload",
-        "api_key",
-        "token",
-        "password",
-        "secret",
-        "private_key",
-        "credential",
-        "production_log",
-        "private_communication",
-        "sensitive_operational_payload",
-        "private_ip",
-        "internal_hostname",
-        "internal_endpoint",
-        "admin_url",
-        "database_url",
-        "ssh_key"
-      ];
-
-      sourcePre.textContent = REGISTRY_PATH;
-
-      function clean(value){
-        return String(value || "").trim();
-      }
-
-      function showErr(message){
-        errBox.style.display = "block";
-        errBox.textContent = message;
-      }
-
-      function clearErr(){
-        errBox.style.display = "none";
-        errBox.textContent = "";
-      }
-
-      function showOut(statusText, matchText){
-        outSection.style.display = "block";
-        statusPre.textContent = statusText;
-        matchPre.textContent = matchText;
-        outSection.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-
-      function hideOut(){
-        outSection.style.display = "none";
-        statusPre.textContent = "";
-        matchPre.textContent = "";
-      }
-
-      function isHex64Lower(value){
-        return /^[0-9a-f]{64}$/.test(clean(value));
-      }
-
-      function normalizeSha256(value){
-        return clean(value).toLowerCase();
-      }
-
-      function hasForbiddenField(object){
-        if (!object || typeof object !== "object") return null;
-
-        for (const key of Object.keys(object)) {
-          if (FORBIDDEN_PUBLIC_FIELDS.includes(key)) return key;
-        }
-
-        return null;
-      }
-
-      async function sha256Hex(text){
-        const encoder = new TextEncoder();
-        const data = encoder.encode(text);
-        const digest = await crypto.subtle.digest("SHA-256", data);
-        const bytes = new Uint8Array(digest);
-        return Array.from(bytes).map((byte) => byte.toString(16).padStart(2, "0")).join("");
-      }
-
-      function stableStringify(value){
-        if (value === null || typeof value !== "object") {
-          return JSON.stringify(value);
-        }
-
-        if (Array.isArray(value)) {
-          return "[" + value.map((item) => stableStringify(item)).join(",") + "]";
-        }
-
-        const keys = Object.keys(value).sort();
-        return "{" + keys.map((key) => JSON.stringify(key) + ":" + stableStringify(value[key])).join(",") + "}";
-      }
-
-      function getParam(name){
-        const url = new URL(window.location.href);
-        return clean(url.searchParams.get(name));
-      }
-
-      function setUrlHashParam(hash){
-        const url = new URL(window.location.href);
-        url.searchParams.set("sha256", hash);
-        window.history.replaceState({}, "", url.toString());
-      }
-
-      function clearUrlParams(){
-        const url = new URL(window.location.href);
-        url.searchParams.delete("sha256");
-        url.searchParams.delete("q");
-        window.history.replaceState({}, "", url.toString());
-      }
-
-      function validateRegistryEntry(entry){
-        if (!entry || typeof entry !== "object") return "ENTRY_INVALID_OBJECT";
-
-        const forbidden = hasForbiddenField(entry);
-        if (forbidden) return "ENTRY_FORBIDDEN_FIELD_" + forbidden;
-
-        if (!isHex64Lower(entry.payload_sha256)) return "ENTRY_INVALID_PAYLOAD_SHA256";
-
-        if (!clean(entry.timestamp)) return "ENTRY_MISSING_TIMESTAMP";
-        if (!Number.isFinite(Date.parse(clean(entry.timestamp)))) return "ENTRY_INVALID_TIMESTAMP";
-
-        if (!clean(entry.status)) return "ENTRY_MISSING_STATUS";
-
-        return null;
-      }
-
-      function validateRegistry(registry){
-        if (!registry || typeof registry !== "object") return "REGISTRY_INVALID_OBJECT";
-        if (registry.proto !== EXPECTED_PROTO) return "REGISTRY_PROTO_MISMATCH";
-        if (!Array.isArray(registry.entries)) return "REGISTRY_ENTRIES_MISSING";
-
-        if (!registry.rules || typeof registry.rules !== "object") return "REGISTRY_RULES_MISSING";
-        if (registry.rules.failure_mode !== EXPECTED_FAILURE_MODE) return "REGISTRY_FAILURE_MODE_MISMATCH";
-        if (registry.rules.public_data !== EXPECTED_PUBLIC_DATA) return "REGISTRY_PUBLIC_DATA_MISMATCH";
-
-        for (const entry of registry.entries) {
-          const err = validateRegistryEntry(entry);
-          if (err) return err;
-        }
-
-        return null;
-      }
-
-      async function loadRegistry(){
-        const response = await fetch(REGISTRY_PATH, { cache: "no-store" });
-
-        if (!response.ok) {
-          throw new Error("REGISTRY_FETCH_ERROR_HTTP_" + response.status);
-        }
-
-        const registry = await response.json();
-        const validationError = validateRegistry(registry);
-
-        if (validationError) {
-          throw new Error(validationError);
-        }
-
-        return registry;
-      }
-
-      async function determineTargetHash(){
-        const urlHash = normalizeSha256(getParam("sha256"));
-        const directHash = normalizeSha256(hashIn.value);
-
-        if (isHex64Lower(directHash)) {
-          return {
-            ok: true,
-            hash: directHash,
-            source: "direct_input"
-          };
-        }
-
-        if (directHash && !isHex64Lower(directHash)) {
-          return {
-            ok: false,
-            reason: "INVALID_DIRECT_PAYLOAD_SHA256"
-          };
-        }
-
-        if (isHex64Lower(urlHash)) {
-          return {
-            ok: true,
-            hash: urlHash,
-            source: "url_sha256"
-          };
-        }
-
-        const raw = clean(releaseTa.value);
-
-        if (!raw) {
-          return {
-            ok: false,
-            reason: "MISSING_INPUT"
-          };
-        }
-
-        let parsed;
-
-        try {
-          parsed = JSON.parse(raw);
-        } catch (error) {
-          return {
-            ok: false,
-            reason: "INVALID_JSON"
-          };
-        }
-
-        if (!parsed || typeof parsed !== "object") {
-          return {
-            ok: false,
-            reason: "JSON_NOT_OBJECT"
-          };
-        }
-
-        if (isHex64Lower(parsed.payload_sha256)) {
-          return {
-            ok: true,
-            hash: normalizeSha256(parsed.payload_sha256),
-            source: "json_payload_sha256"
-          };
-        }
-
-        const copy = JSON.parse(JSON.stringify(parsed));
-        delete copy.payload_sha256;
-        delete copy.receipt_sha256;
-        delete copy.pack_sha256;
-
-        const canonical = stableStringify(copy);
-        const calculated = await sha256Hex(canonical);
-
-        return {
-          ok: true,
-          hash: calculated,
-          source: "calculated_from_local_json_without_hash_fields"
-        };
-      }
-
-      function findRegistryMatch(entries, targetHash){
-        return entries.find((entry) => normalizeSha256(entry.payload_sha256) === targetHash) || null;
-      }
-
-      function renderNonOperational(reason){
-        showOut(
-          "NON_OPERATIONAL — registry verification failed (fail-closed)\n" +
-          "registry_source: " + REGISTRY_PATH + "\n" +
-          "reason: " + reason + "\n" +
-          "result: no operational verification result returned",
-          "—"
-        );
-      }
-
-      function renderInvalid(reason){
-        showOut(
-          "INVALID — input rejected (fail-closed)\n" +
-          "reason: " + reason,
-          "—"
-        );
-      }
-
-      function renderNoPublicRecord(targetHash, source){
-        showOut(
-          "NO_PUBLIC_RECORD — no match in public registry\n" +
-          "payload_sha256: " + targetHash + "\n" +
-          "input_source: " + source + "\n" +
-          "result: no public proof commitment found",
-          "No matching entry found in registry.entries[].payload_sha256"
-        );
-      }
-
-      function renderPresent(targetHash, source, entry){
-        showOut(
-          "PUBLIC_RECORD_PRESENT — deterministic registry match found\n" +
-          "payload_sha256: " + targetHash + "\n" +
-          "input_source: " + source + "\n" +
-          "result: public proof commitment present\n" +
-          "caution: this does not replace private evidence review, identity verification, contractual qualification, or legal authorization",
-          JSON.stringify(entry, null, 2)
-        );
-      }
-
-      async function verifyNow(){
-        clearErr();
-        hideOut();
-
-        const target = await determineTargetHash();
-
-        if (!target.ok) {
-          renderInvalid(target.reason);
-          return;
-        }
-
-        if (!isHex64Lower(target.hash)) {
-          renderInvalid("TARGET_HASH_INVALID");
-          return;
-        }
-
-        setUrlHashParam(target.hash);
-
-        let registry;
-
-        try {
-          registry = await loadRegistry();
-        } catch (error) {
-          renderNonOperational(error && error.message ? error.message : "REGISTRY_EXCEPTION");
-          return;
-        }
-
-        const match = findRegistryMatch(registry.entries, target.hash);
-
-        if (!match) {
-          renderNoPublicRecord(target.hash, target.source);
-          return;
-        }
-
-        renderPresent(target.hash, target.source, match);
-      }
-
-      clearBtn.addEventListener("click", () => {
-        releaseTa.value = "";
-        hashIn.value = "";
-        clearErr();
-        hideOut();
-        clearUrlParams();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
-
-      verifyBtn.addEventListener("click", verifyNow);
-
-      const autoHash = normalizeSha256(getParam("sha256") || getParam("q"));
-      if (isHex64Lower(autoHash)) {
-        hashIn.value = autoHash;
-        verifyNow();
-      }
-    })();
-  </script>
-</body>
+
+<html lang="it">  
+<head>  
+  <meta charset="utf-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />    <title>VERIFY — Validità IPR (Base / Operatore) | HBCE S.r.l.</title>  
+  <meta name="description" content="VERIFY HBCE: verifica fail-closed per IPR Base e Licenza Operatore. Match registry (hash-only), controllo dipendenze e stato operativo." />    <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/verify/" />  
+  <meta name="robots" content="index,follow" />  
+  <meta name="theme-color" content="#0b0f14" />    <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />  
+</head>  <body>  
+  <div data-hbce="header"></div>    <main class="hbce-container hbce-main">  <!-- HERO -->  
+<section class="hbce-hero">  
+  <div class="hbce-hero__kicker">VERIFY · FAIL-CLOSED · HASH-ONLY · REGISTRY-MATCH</div>  
+  <h1 class="hbce-hero__title">VERIFY — validità operativa IPR</h1>  
+  <p class="hbce-hero__lead">  
+    Verifica deterministica: se non c’è match nel registry pubblico → <strong>INVALID</strong>.  
+    Supporta IPR Base e Licenza Operatore (con dipendenza dal Base).  
+  </p>  
+
+  <p class="hbce-note" style="margin-top:12px;">  
+    Servizio sviluppato e gestito da <strong>HBCE S.r.l.</strong> · policy: UE-first, audit-first, append-only · verifica: fail-closed.  
+  </p>  
+
+  <div class="hbce-actions" style="margin-top:12px;">  
+    <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">Attiva IPR Base</a>  
+    <a class="hbce-btn" href="/hermeticum-bce-platform/operator/">Attiva IPR Operatore</a>  
+    <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Registry</a>  
+    <a class="hbce-btn" href="/hermeticum-bce-platform/root/">Root</a>  
+  </div>  
+</section>  
+
+<!-- INPUT -->  
+<section class="hbce-section">  
+  <h2 class="hbce-h2">Input (incolla Release o inserisci hash)</h2>  
+  <p class="hbce-p">  
+    Puoi verificare in 2 modi:  
+    <strong>(A)</strong> incolli un file Release JSON (Base o Operatore) oppure  
+    <strong>(B)</strong> inserisci direttamente il <code>payload_sha256</code>.  
+  </p>  
+
+  <div class="hbce-card">  
+    <div class="hbce-card__body">  
+
+      <div class="hbce-grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px;">  
+        <label class="hbce-field" style="display:block;">  
+          <span class="hbce-label">Release JSON (opzionale)</span>  
+          <textarea class="hbce-input" id="releaseJson" rows="10" placeholder='Incolla qui un Release JSON (Base o Operatore)'></textarea>  
+          <span class="hbce-note">Se il JSON contiene <code>payload_sha256</code> viene usato; altrimenti viene calcolato.</span>  
+        </label>  
+
+        <label class="hbce-field" style="display:block;">  
+          <span class="hbce-label">payload_sha256 (opzionale)</span>  
+          <input class="hbce-input" id="hashInput" placeholder="64-hex sha256" />  
+          <span class="hbce-note">Se compili questo campo, il JSON non è necessario.</span>  
+        </label>  
+      </div>  
+
+      <div class="hbce-actions" style="margin-top:12px;">  
+        <button class="hbce-btn hbce-btn--primary" type="button" id="verifyBtn">VERIFY</button>  
+        <button class="hbce-btn" type="button" id="clearBtn">Pulisci</button>  
+      </div>  
+
+      <div id="errBox" class="hbce-note" style="margin-top:12px; display:none;"></div>  
+
+    </div>  
+  </div>  
+</section>  
+
+<!-- OUTPUT -->  
+<section class="hbce-section" id="outSection" style="display:none;">  
+  <h2 class="hbce-h2">Esito</h2>  
+
+  <div class="hbce-grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px;">  
+
+    <div class="hbce-card">  
+      <div class="hbce-card__body">  
+        <h3 class="hbce-h3" style="margin-top:0;">Stato</h3>  
+        <pre class="hbce-pre" id="statusPre" style="margin:0; white-space:pre-wrap;"></pre>  
+      </div>  
+    </div>  
+
+    <div class="hbce-card">  
+      <div class="hbce-card__body">  
+        <h3 class="hbce-h3" style="margin-top:0;">Dettagli match (registry)</h3>  
+        <pre class="hbce-pre" id="matchPre" style="margin:0; white-space:pre-wrap;"></pre>  
+      </div>  
+    </div>  
+
+  </div>  
+
+  <p class="hbce-note" style="margin-top:12px;">  
+    Fail-closed: se il registry non è leggibile o non contiene il match → INVALID.  
+  </p>  
+</section>
+
+  </main>    <div data-hbce="footer"></div>    <script>  
+    const releaseTa = document.getElementById("releaseJson");  
+    const hashIn = document.getElementById("hashInput");  
+    const verifyBtn = document.getElementById("verifyBtn");  
+    const clearBtn = document.getElementById("clearBtn");  
+    const errBox = document.getElementById("errBox");  
+  
+    const outSection = document.getElementById("outSection");  
+    const statusPre = document.getElementById("statusPre");  
+    const matchPre = document.getElementById("matchPre");  
+  
+    const REGISTRY_PATH = "/hermeticum-bce-platform/registry/registry.json";  
+  
+    function showErr(msg) {  
+      errBox.style.display = "block";  
+      errBox.textContent = msg;  
+    }  
+    function clearErr() {  
+      errBox.style.display = "none";  
+      errBox.textContent = "";  
+    }  
+    function showOut(statusTxt, matchTxt) {  
+      outSection.style.display = "block";  
+      statusPre.textContent = statusTxt;  
+      matchPre.textContent = matchTxt;  
+      outSection.scrollIntoView({ behavior: "smooth", block: "start" });  
+    }  
+    function hideOut() {  
+      outSection.style.display = "none";  
+      statusPre.textContent = "";  
+      matchPre.textContent = "";  
+    }  
+  
+    async function sha256Hex(str) {  
+      const enc = new TextEncoder();  
+      const data = enc.encode(str);  
+      const digest = await crypto.subtle.digest("SHA-256", data);  
+      const bytes = new Uint8Array(digest);  
+      return Array.from(bytes).map(b => b.toString(16).padStart(2, "0")).join("");  
+    }  
+  
+    function isHex64(s) {  
+      return typeof s === "string" && /^[0-9a-f]{64}$/i.test(s.trim());  
+    }  
+  
+    clearBtn.addEventListener("click", () => {  
+      releaseTa.value = "";  
+      hashIn.value = "";  
+      clearErr();  
+      hideOut();  
+      window.scrollTo({ top: 0, behavior: "smooth" });  
+    });  
+  
+    verifyBtn.addEventListener("click", async () => {  
+      clearErr();  
+      hideOut();  
+  
+      // 1) Determine target hash  
+      const directHash = (hashIn.value || "").trim().toLowerCase();  
+      let targetHash = "";  
+  
+      let parsed = null;  
+      let kind = "UNKNOWN";  
+      let refBase = "";  
+  
+      if (isHex64(directHash)) {  
+        targetHash = directHash;  
+      } else {  
+        const raw = (releaseTa.value || "").trim();  
+        if (!raw) {  
+          showErr("BLOCK — Inserisci un payload_sha256 oppure incolla un Release JSON (fail-closed).");  
+          return;  
+        }  
+        try {  
+          parsed = JSON.parse(raw);  
+        } catch (e) {  
+          showErr("BLOCK — JSON non valido (fail-closed).");  
+          return;  
+        }  
+  
+        if (parsed && typeof parsed.kind === "string") kind = parsed.kind;  
+  
+        // if JSON already contains payload_sha256 use it, else compute from object without payload_sha256  
+        if (parsed && isHex64(parsed.payload_sha256)) {  
+          targetHash = parsed.payload_sha256.toLowerCase();  
+        } else {  
+          const tmp = { ...parsed };  
+          delete tmp.payload_sha256;  
+          targetHash = await sha256Hex(JSON.stringify(tmp));  
+        }  
+  
+        // detect operator dependency  
+        // Accept both:  
+        // - requires.ref_payload_sha256  
+        // - requires.ref_payload_sha256 in any similar structure  
+        try {  
+          if (parsed && parsed.requires && isHex64(parsed.requires.ref_payload_sha256)) {  
+            refBase = parsed.requires.ref_payload_sha256.toLowerCase();  
+          }  
+        } catch (_) {}  
+      }  
+  
+      // 2) Fetch registry (fail-closed)  
+      let reg;  
+      try {  
+        const res = await fetch(REGISTRY_PATH, { cache: "no-store" });  
+        if (!res.ok) throw new Error("HTTP " + res.status);  
+        reg = await res.json();  
+      } catch (e) {  
+        showOut(  
+          "INVALID — registry non leggibile (fail-closed)\n" +  
+          "path: " + REGISTRY_PATH + "\n" +  
+          "errore: " + (e && e.message ? e.message : String(e)),  
+          ""  
+        );  
+        return;  
+      }  
+  
+      const entries = Array.isArray(reg.entries) ? reg.entries : [];  
+      const entryMatch = entries.find(x => x && (x.payload_sha256 || "").toLowerCase() === targetHash);  
+  
+      if (!entryMatch) {  
+        showOut(  
+          "INVALID — REGISTRY_MATCH = false (fail-closed)\n" +  
+          "payload_sha256: " + targetHash + "\n" +  
+          "Azione: appendi l’entry nel registry e riprova.",  
+          "Nessun match trovato in registry.entries[]"  
+        );  
+        return;  
+      }  
+  
+      // 3) If operator license: require base ref in registry too  
+      const looksOperator =  
+        (kind === "IPR_OPERATOR_LICENSE") ||  
+        (entryMatch.record_type === "OPERATOR_LICENSE") ||  
+        (typeof entryMatch.ref_payload_sha256 === "string");  
+  
+      if (looksOperator) {  
+        const baseRef = (refBase || (entryMatch.ref_payload_sha256 || "")).toLowerCase();  
+        if (!isHex64(baseRef)) {  
+          showOut(  
+            "INVALID — Licenza Operatore senza riferimento Base valido (fail-closed)\n" +  
+            "payload_sha256: " + targetHash,  
+            JSON.stringify(entryMatch, null, 2)  
+          );  
+          return;  
+        }  
+  
+        const baseMatch = entries.find(x => x && (x.payload_sha256 || "").toLowerCase() === baseRef);  
+        if (!baseMatch) {  
+          showOut(  
+            "INVALID — Operatore trovato, ma Base reference NON presente in registry (fail-closed)\n" +  
+            "operator_payload_sha256: " + targetHash + "\n" +  
+            "ref_base_payload_sha256: " + baseRef,  
+            "Match operatore:\n" + JSON.stringify(entryMatch, null, 2)  
+          );  
+          return;  
+        }  
+  
+        showOut(  
+          "VALID — OPERATOR LICENSE OK\n" +  
+          "REGISTRY_MATCH: true\n" +  
+          "BASE_REF_MATCH: true\n" +  
+          "operator_payload_sha256: " + targetHash + "\n" +  
+          "ref_base_payload_sha256: " + baseRef,  
+          "Operator entry:\n" + JSON.stringify(entryMatch, null, 2) +  
+          "\n\nBase entry:\n" + JSON.stringify(baseMatch, null, 2)  
+        );  
+        return;  
+      }  
+  
+      // 4) Otherwise treat as Base (or generic)  
+      showOut(  
+        "VALID — IPR OK\n" +  
+        "REGISTRY_MATCH: true\n" +  
+        "payload_sha256: " + targetHash,  
+        JSON.stringify(entryMatch, null, 2)  
+      );  
+    });  
+  </script>  </body>  
 </html>
