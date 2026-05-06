@@ -50,6 +50,7 @@ Findings may use the following status values:
 - `ACCEPTED_RISK`
 - `NOT_APPLICABLE`
 - `PENDING_REVIEW`
+- `PARTIALLY_REMEDIATED`
 
 ---
 
@@ -367,7 +368,7 @@ REMEDIATED
 ### FINDING-010 — Registry and verification files require review
 
 Severity: MEDIUM  
-Status: PENDING_REVIEW  
+Status: IN_REVIEW  
 Affected area: Registry and verification logic  
 Affected files:
 
@@ -383,19 +384,30 @@ Why it matters:
 
 Registry logic is central to the HBCE / MATRIX / IPR governance model. If missing, malformed, or inconsistent records are treated as valid, the platform could create false confidence.
 
-Required review:
+Review progress:
 
-- identify all registry files;
-- identify all verification files;
-- confirm whether schemas exist;
-- confirm whether invalid records are rejected;
-- confirm whether public registry data avoids sensitive payloads;
-- confirm whether verification failure produces blocked/invalid state;
-- confirm whether registry documentation matches implementation.
+The first registry remediation cycle has been completed for the main public registry layer and operator registry tools.
 
-Safe remediation:
+Safe remediation / action completed so far:
 
-If registry verification is only conceptual, documentation should state that clearly. If implemented, invalid or malformed records should fail closed.
+- upgraded public registry files toward `HBCE-REGISTRY-v3`;
+- clarified canonical source relationship between `ledger.json` and `registry.json`;
+- replaced direct public personal labels with minimized public labels;
+- introduced `subject_label`, `operator_label`, and public proof commitments;
+- strengthened `NO_PUBLIC_DATA_CUSTODY` posture;
+- strengthened `GDPR_MIN` posture;
+- made empty registry interpretation explicit;
+- hardened fail-closed validation in registry viewer and operator tools;
+- blocked or documented forbidden public fields;
+- clarified that public registry entries do not replace private identity verification, contractual qualification, or legal authorization.
+
+Remaining review:
+
+- global `verify/` behavior;
+- `schemas/`;
+- protocol consistency;
+- final source-of-truth decision between `ledger.json` and `registry.json`;
+- public page references still using legacy labels.
 
 Fail-closed relevance:
 
@@ -403,7 +415,7 @@ High. Registry mismatch, missing data, malformed records, or unverifiable hashes
 
 Audit status:
 
-PENDING_REVIEW
+IN_REVIEW
 
 ---
 
@@ -617,7 +629,67 @@ REMEDIATED
 
 ---
 
-## 6. Current audit summary
+## 6. Registry remediation update — 2026-05-06
+
+The first registry remediation cycle has been completed for the main public registry layer and operator registry tools.
+
+Updated files:
+
+- `registry/index.html`
+- `registry/ledger.json`
+- `registry/registry.json`
+- `registry/ipr_registry.json`
+- `registry/operators.json`
+- `registry/nodes.json`
+- `registry/events.json`
+- `registry/REGISTRY_ENTRY_OPERATOR__1de300e4d826719c9a8708c8dfb2a8e943f19c3d324816b220f149f008ba481b.json`
+- `registry/append/index.html`
+- `registry/publish/index.html`
+- `registry/operators/index.html`
+- `registry/operators/append/index.html`
+- `registry/operators/receipt/index.html`
+- `registry/operators/pack/index.html`
+- `registry/operators/status/index.html`
+
+Registry remediation outcomes:
+
+- upgraded public registry files toward `HBCE-REGISTRY-v3`;
+- clarified canonical source relationship between `ledger.json` and `registry.json`;
+- removed direct public use of `name`, `nickname`, `territory`, and sensitive personal labels from operator-facing registry tools;
+- introduced minimized public labels such as `subject_label`, `operator_label`, and public proof commitments;
+- strengthened `NO_PUBLIC_DATA_CUSTODY` posture;
+- strengthened `GDPR_MIN` posture;
+- made empty registry interpretation explicit;
+- hardened fail-closed validation in registry viewer and operator tools;
+- blocked or documented forbidden public fields;
+- clarified that public registry entries do not replace private identity verification, contractual qualification, or legal authorization;
+- removed legacy output fields such as `operator_sha256` from operator tools in favor of `payload_sha256`.
+
+Updated registry finding status:
+
+- `REGISTRY-FINDING-001` — IN_REVIEW
+- `REGISTRY-FINDING-002` — REMEDIATED
+- `REGISTRY-FINDING-003` — REMEDIATED
+- `REGISTRY-FINDING-004` — IN_REVIEW
+- `REGISTRY-FINDING-005` — IN_REVIEW
+- `REGISTRY-FINDING-006` — REMEDIATED
+
+Remaining registry work:
+
+- create or identify canonical JSON Schema files;
+- review `schemas/`;
+- review global `verify/` behavior against updated v3 registry semantics;
+- confirm whether `ledger.json` or `registry.json` should be the long-term source of truth;
+- update any public page still referencing `nickname`, `operator_sha256`, `territory`, or raw personal labels;
+- run a link and UI check on all modified registry pages.
+
+Registry audit status:
+
+`PARTIALLY_REMEDIATED — FILE-LEVEL REGISTRY HARDENING COMPLETED; SCHEMA AND VERIFY REVIEW PENDING`
+
+---
+
+## 7. Current audit summary
 
 Remediated / completed items:
 
@@ -630,34 +702,42 @@ Remediated / completed items:
 - license attribution clarified;
 - responsible use policy added;
 - OpenAI outreach status recorded;
-- public issue audit trace established.
+- public issue audit trace established;
+- main public registry layer hardened;
+- operator registry tools hardened;
+- public registry privacy semantics improved;
+- public proof labels minimized.
 
-Pending review items:
+Pending or in-review items:
 
-- registry and verification files;
+- global verification behavior;
+- canonical JSON Schema files;
 - GitHub Pages deployment assumptions;
 - dependency and package configuration;
 - environment variable documentation;
-- documentation overclaim review.
+- documentation overclaim review;
+- final registry source-of-truth decision;
+- legacy label/link references across public pages.
 
 ---
 
-## 7. Immediate next actions
+## 8. Immediate next actions
 
 Recommended next actions:
 
-1. Review the repository tree.
-2. Identify registry and verification files.
-3. Identify deployment configuration.
-4. Identify package and dependency files.
-5. Confirm absence of committed secrets.
-6. Confirm whether `.env.example` is needed.
-7. Review `docs/` for overclaiming or unclear implementation status.
-8. Update this findings register as each review step is completed.
+1. Review `verify/index.html`.
+2. Review `verify-pack/`.
+3. Review `schemas/`.
+4. Create or update canonical registry schemas.
+5. Review deployment and workflow configuration.
+6. Review public pages for legacy references to `nickname`, `operator_sha256`, `territory`, `name`, or raw personal labels.
+7. Confirm absence of committed secrets.
+8. Confirm whether `.env.example` is needed.
+9. Update this findings register as each review step is completed.
 
 ---
 
-## 8. Audit-ready event record draft
+## 9. Audit-ready event record draft
 
 ```json
 {
@@ -668,7 +748,7 @@ Recommended next actions:
   "canonical_issue": "#1",
   "maintainer": "Manuel Coletta",
   "organization": "HBCE Research / HERMETICUM B.C.E. R&D initiative",
-  "status": "OPEN",
+  "status": "PARTIALLY_REMEDIATED",
   "completed_findings": [
     "FINDING-001",
     "FINDING-002",
@@ -681,12 +761,32 @@ Recommended next actions:
     "FINDING-009",
     "FINDING-015"
   ],
+  "in_review_findings": [
+    "FINDING-010"
+  ],
   "pending_review_findings": [
-    "FINDING-010",
     "FINDING-011",
     "FINDING-012",
     "FINDING-013",
     "FINDING-014"
+  ],
+  "registry_remediation_status": "PARTIALLY_REMEDIATED",
+  "registry_files_hardened": [
+    "registry/index.html",
+    "registry/ledger.json",
+    "registry/registry.json",
+    "registry/ipr_registry.json",
+    "registry/operators.json",
+    "registry/nodes.json",
+    "registry/events.json",
+    "registry/REGISTRY_ENTRY_OPERATOR__1de300e4d826719c9a8708c8dfb2a8e943f19c3d324816b220f149f008ba481b.json",
+    "registry/append/index.html",
+    "registry/publish/index.html",
+    "registry/operators/index.html",
+    "registry/operators/append/index.html",
+    "registry/operators/receipt/index.html",
+    "registry/operators/pack/index.html",
+    "registry/operators/status/index.html"
   ],
   "governance_posture": [
     "EU_FIRST",
@@ -698,13 +798,14 @@ Recommended next actions:
     "HUMAN_VALIDATION",
     "RESPONSIBILITY_OWNERSHIP"
   ],
+  "next_action": "Review global verify behavior and schema files",
   "output_target": "AUDIT_READY_MATRIX_EVENT_RECORD"
 }
-
+```
 
 ---
 
-9. Maintainer statement
+## 10. Maintainer statement
 
 This findings register is part of a defensive and authorized repository baseline review.
 
