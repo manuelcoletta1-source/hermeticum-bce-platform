@@ -3,20 +3,31 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>APPEND — Operator Registry</title>
-  <meta name="description" content="Tool operativo per generare entry hash-only e appenderle al registry pubblico operatori certificati. UE-first, audit-first, fail-closed, append-only." />
+
+  <title>APPEND — Operator Public Proof Registry</title>
+  <meta name="description" content="Tool per generare entry operatore privacy-minimal, hash-only e fail-closed da appendere manualmente al registry pubblico operatori HBCE." />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
+
 <body>
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
+
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">APPEND TOOL · Operator Registry</div>
-      <h1 class="hbce-hero__title">Append operatore certificato</h1>
+      <div class="hbce-hero__kicker">APPEND TOOL · OPERATOR PUBLIC PROOF · HASH-ONLY · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Append operator proof entry</h1>
       <p class="hbce-hero__lead">
-        Genera una entry <strong>hash-only</strong> pronta da appendere a <code>registry/operators.json</code>.
-        Nessuna custodia dati personali pubblici. Modello: <strong>append-only</strong> · <strong>fail-closed</strong>.
+        Generate a privacy-minimal operator proof entry ready for manual append to
+        <code>registry/operators.json</code>.
+        The tool does not write to the registry automatically.
+        <br /><br />
+        Public operator records must use minimized labels and hash-only commitments.
+        Do not enter real names, emails, phone numbers, tax codes, identity documents, credentials,
+        private evidence, secrets, private keys, production logs, or sensitive operational payloads.
       </p>
     </section>
 
@@ -36,6 +47,7 @@
             <li>HASH_ONLY</li>
             <li>APPEND_ONLY</li>
             <li>FAIL_CLOSED</li>
+            <li>GDPR_MIN</li>
             <li>NO_PUBLIC_DATA_CUSTODY</li>
           </ul>
         </article>
@@ -45,132 +57,233 @@
           <div class="hbce-actions">
             <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
             <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/operators/">REGISTRY</a>
+            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/operators/status/">STATUS</a>
           </div>
-          <div class="hbce-note">La validità è deterministica: match → VALID.</div>
+          <div class="hbce-note">
+            Public proof requires deterministic match. Missing or malformed entry must fail closed.
+          </div>
         </article>
       </div>
     </section>
 
     <section class="hbce-section">
-      <div class="hbce-kicker">Input minimizzato</div>
-      <h2 class="hbce-h2">Dati operativi (non personali)</h2>
+      <div class="hbce-kicker">Privacy-minimal input</div>
+      <h2 class="hbce-h2">Operator proof fields</h2>
 
       <div class="hbce-card">
         <div class="hbce-grid hbce-grid--2">
           <div>
-            <label class="hbce-label" for="nickname">Nickname operativo</label>
-            <input class="hbce-input" id="nickname" placeholder="es. Operator-IT-PIE-0001" />
-            <div class="hbce-note">No nome/cognome, no email. Solo alias operativo.</div>
+            <label class="hbce-label" for="operatorLabel">operator_label</label>
+            <input class="hbce-input" id="operatorLabel" placeholder="HBCE_PUBLIC_OPERATOR_001" />
+            <div class="hbce-note">
+              Public minimized label only. No real name, email, phone, tax code, document number, or raw identifier.
+            </div>
           </div>
 
           <div>
-            <label class="hbce-label" for="territory">Territorio (codice)</label>
-            <input class="hbce-input" id="territory" placeholder="es. IT-PIE-Torino" />
-            <div class="hbce-note">Codice operativo territoriale (minimizzato).</div>
+            <label class="hbce-label" for="recordScope">record_scope</label>
+            <input class="hbce-input" id="recordScope" placeholder="OPERATOR_LICENSE_PUBLIC_PROOF" />
+            <div class="hbce-note">
+              Optional public scope label. Avoid sensitive geography or identifying detail.
+            </div>
           </div>
 
           <div style="grid-column: 1 / -1;">
-            <label class="hbce-label" for="sha256">operator_sha256</label>
-            <input class="hbce-input" id="sha256" placeholder="sha256 del pack / payload operatore" />
+            <label class="hbce-label" for="payloadSha256">payload_sha256</label>
+            <input class="hbce-input" id="payloadSha256" placeholder="64-character lowercase sha256 commitment" />
             <div class="hbce-note">
-              Questo è l’unico identificatore tecnico richiesto (hash-only).
+              Hash-only public proof commitment. Do not enter a raw identifier or preimage.
+            </div>
+          </div>
+
+          <div>
+            <label class="hbce-label" for="statusSelect">status</label>
+            <select class="hbce-input" id="statusSelect">
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="SUSPENDED">SUSPENDED</option>
+              <option value="REVOKED">REVOKED</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="hbce-label" for="note">note</label>
+            <input class="hbce-input" id="note" placeholder="Minimized public proof commitment; private evidence outside public registry" />
+            <div class="hbce-note">
+              Optional public note. Do not include personal data, credentials, secrets, or private evidence.
             </div>
           </div>
         </div>
 
         <div class="hbce-actions" style="margin-top:12px;">
-          <button class="hbce-btn" id="gen">Genera entry</button>
-          <button class="hbce-btn hbce-btn--ghost" id="copy" disabled>Copia blocco</button>
+          <button class="hbce-btn" id="gen" type="button">Generate entry</button>
+          <button class="hbce-btn hbce-btn--ghost" id="clear" type="button">Clear</button>
+          <button class="hbce-btn hbce-btn--ghost" id="copy" type="button" disabled>Copy block</button>
         </div>
 
-        <div class="hbce-note" id="status" style="margin-top:10px;">Pronto.</div>
+        <div class="hbce-note" id="status" style="margin-top:10px;">Ready.</div>
       </div>
     </section>
 
     <section class="hbce-section">
       <div class="hbce-kicker">Output</div>
-      <h2 class="hbce-h2">Blocco da appendere (entries[])</h2>
+      <h2 class="hbce-h2">Object to append into entries[]</h2>
 
       <div class="hbce-card">
         <pre class="hbce-pre" id="out" style="white-space:pre-wrap; word-break:break-word;">—</pre>
         <div class="hbce-note">
-          Incolla questo oggetto dentro <code>registry/operators.json → entries[]</code> (append-only).
+          Append this object manually to <code>registry/operators.json → entries[]</code> after review.
+          This tool never modifies the registry directly.
         </div>
       </div>
     </section>
 
     <section class="hbce-section">
       <div class="hbce-footnote">
-        <p><strong>Fail-closed:</strong> se l’entry non rispetta lo schema minimo → non viene generata.</p>
-        <p><strong>Pubblico:</strong> hash-only. Nessuna custodia dati personali pubblici.</p>
+        <p>
+          <strong>Fail-closed:</strong> if the entry does not satisfy the minimum privacy-safe schema, no valid output is generated.
+        </p>
+        <p>
+          <strong>Public layer:</strong> hash-only commitment and minimized metadata only. No public custody of personal or sensitive data.
+        </p>
       </div>
     </section>
+
   </main>
 
   <div data-hbce="footer"></div>
   <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 
   <script>
-    const $ = (id) => document.getElementById(id);
+    (function(){
+      "use strict";
 
-    const nickname = $("nickname");
-    const territory = $("territory");
-    const sha256 = $("sha256");
-    const out = $("out");
-    const status = $("status");
-    const btnGen = $("gen");
-    const btnCopy = $("copy");
+      const $ = (id) => document.getElementById(id);
 
-    function setStatus(msg){ status.textContent = msg; }
+      const operatorLabel = $("operatorLabel");
+      const recordScope = $("recordScope");
+      const payloadSha256 = $("payloadSha256");
+      const statusSelect = $("statusSelect");
+      const note = $("note");
 
-    function isHex64(s){
-      return /^[a-f0-9]{64}$/i.test(String(s || "").trim());
-    }
+      const out = $("out");
+      const status = $("status");
+      const btnGen = $("gen");
+      const btnClear = $("clear");
+      const btnCopy = $("copy");
 
-    function fail(msg){
-      out.textContent = "—";
-      btnCopy.disabled = true;
-      setStatus("FAIL-CLOSED — " + msg);
-    }
+      const FORBIDDEN_TEXT = [
+        "@",
+        "codice fiscale",
+        "tax code",
+        "passport",
+        "identity card",
+        "document number",
+        "password",
+        "private key",
+        "api key",
+        "token",
+        "secret",
+        "-----begin",
+        "-----end"
+      ];
 
-    function nowISO(){
-      return new Date().toISOString();
-    }
-
-    function buildEntry(){
-      const nn = String(nickname.value || "").trim();
-      const tr = String(territory.value || "").trim();
-      const hs = String(sha256.value || "").trim();
-
-      if(!nn) return fail("nickname mancante");
-      if(!tr) return fail("territory mancante");
-      if(!isHex64(hs)) return fail("operator_sha256 non valido (serve sha256 hex 64)");
-
-      const entry = {
-        nickname: nn,
-        territory: tr,
-        operator_sha256: hs.toLowerCase(),
-        timestamp: nowISO(),
-        status: "ACTIVE"
-      };
-
-      const pretty = JSON.stringify(entry, null, 2);
-      out.textContent = pretty;
-      btnCopy.disabled = false;
-      setStatus("OK — entry pronta da appendere (append-only).");
-    }
-
-    async function copyOut(){
-      try{
-        await navigator.clipboard.writeText(out.textContent);
-        setStatus("Copiato. Incolla in registry/operators.json → entries[] (append-only).");
-      } catch(e){
-        setStatus("Copia non disponibile. Copia manualmente il blocco.");
+      function setStatus(message){
+        status.textContent = message;
       }
-    }
 
-    btnGen.addEventListener("click", buildEntry);
-    btnCopy.addEventListener("click", copyOut);
+      function clean(value){
+        return String(value || "").trim();
+      }
+
+      function hasText(value){
+        return clean(value).length > 0;
+      }
+
+      function isHex64Lower(value){
+        return /^[a-f0-9]{64}$/.test(clean(value));
+      }
+
+      function containsForbiddenText(value){
+        const v = clean(value).toLowerCase();
+        if (!v) return false;
+        return FORBIDDEN_TEXT.some((item) => v.includes(item));
+      }
+
+      function fail(reason){
+        out.textContent = "—";
+        btnCopy.disabled = true;
+        setStatus("FAIL-CLOSED — " + reason);
+      }
+
+      function nowISO(){
+        return new Date().toISOString();
+      }
+
+      function validateEntry(entry){
+        if (!entry || typeof entry !== "object") return "ENTRY_INVALID_OBJECT";
+        if (!hasText(entry.operator_label)) return "MISSING_OPERATOR_LABEL";
+        if (!isHex64Lower(entry.payload_sha256)) return "INVALID_PAYLOAD_SHA256";
+        if (!hasText(entry.timestamp)) return "MISSING_TIMESTAMP";
+        if (!["ACTIVE", "SUSPENDED", "REVOKED"].includes(entry.status)) return "INVALID_STATUS";
+
+        if (containsForbiddenText(entry.operator_label)) return "OPERATOR_LABEL_CONTAINS_FORBIDDEN_OR_SENSITIVE_TEXT";
+        if (containsForbiddenText(entry.record_scope)) return "RECORD_SCOPE_CONTAINS_FORBIDDEN_OR_SENSITIVE_TEXT";
+        if (containsForbiddenText(entry.note)) return "NOTE_CONTAINS_FORBIDDEN_OR_SENSITIVE_TEXT";
+
+        return null;
+      }
+
+      function buildEntry(){
+        const entry = {
+          operator_label: clean(operatorLabel.value),
+          payload_sha256: clean(payloadSha256.value).toLowerCase(),
+          timestamp: nowISO(),
+          status: clean(statusSelect.value)
+        };
+
+        const scope = clean(recordScope.value);
+        const publicNote = clean(note.value);
+
+        if (scope) entry.record_scope = scope;
+        if (publicNote) entry.note = publicNote;
+
+        const validationError = validateEntry(entry);
+        if (validationError) return fail(validationError);
+
+        const pretty = JSON.stringify(entry, null, 2);
+        out.textContent = pretty;
+        btnCopy.disabled = false;
+        setStatus("OK — privacy-minimal entry ready for manual append.");
+      }
+
+      function clearAll(){
+        operatorLabel.value = "";
+        recordScope.value = "";
+        payloadSha256.value = "";
+        statusSelect.value = "ACTIVE";
+        note.value = "";
+
+        out.textContent = "—";
+        btnCopy.disabled = true;
+        setStatus("Ready.");
+      }
+
+      async function copyOut(){
+        const text = out.textContent || "";
+        if (!text || text.trim() === "—") return;
+
+        try {
+          await navigator.clipboard.writeText(text);
+          setStatus("Copied. Append manually to registry/operators.json → entries[] after review.");
+        } catch (error) {
+          setStatus("Copy unavailable. Copy the block manually.");
+        }
+      }
+
+      btnGen.addEventListener("click", buildEntry);
+      btnClear.addEventListener("click", clearAll);
+      btnCopy.addEventListener("click", copyOut);
+    })();
   </script>
 </body>
 </html>
