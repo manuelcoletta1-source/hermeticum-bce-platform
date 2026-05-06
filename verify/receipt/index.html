@@ -1,147 +1,449 @@
 <!doctype html>
 <html lang="it">
 <head>
-  <meta charset="utf-8">
-  <title>HERMETICUM — Verify Receipt</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>VERIFY RECEIPT — Hash-Only Receipt Verification | HBCE</title>
+  <meta name="description" content="Verifica locale fail-closed di receipt SHA-256 per JSON, manifest o proof artifact HBCE. Client-side, hash-only, no public data custody." />
+
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/verify/receipt/" />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 
   <style>
-    :root{--bg:#0b0d10;--paper:#0f1318;--text:#e7edf5;--muted:#9fb0c2;--line:rgba(255,255,255,.12);--soft:rgba(255,255,255,.06);--max:980px}
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;line-height:1.45}
-    a{color:inherit;text-decoration:none} a:hover{text-decoration:underline}
-    .wrap{max-width:var(--max);margin:0 auto;padding:0 16px}
-    header{border-bottom:1px solid var(--line);background:rgba(0,0,0,.22);backdrop-filter:blur(6px)}
-    .head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0}
-    .brand{font-weight:900;letter-spacing:.9px}
-    .brand small{display:block;font-weight:600;letter-spacing:.2px;color:var(--muted);font-size:12px;margin-top:2px}
-    nav{display:flex;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
-    nav a{padding:6px 8px;border-radius:10px}
-    nav a:hover{background:var(--soft);color:var(--text);text-decoration:none}
-    .policy{border-top:1px solid var(--line);padding:10px 0;font-size:12px;color:var(--muted)}
-    .policy b{color:var(--text);font-weight:800}
-
-    main{padding:22px 0 34px}
-    .card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px}
-    h1{margin:0 0 6px;font-size:22px}
-    .subtitle{margin:0;color:var(--muted);max-width:92ch;font-size:13px}
-    .divider{height:1px;background:rgba(255,255,255,.08);margin:14px 0}
-
-    label{display:block;font-size:12px;color:var(--muted);margin-top:10px}
-    input,textarea{
-      width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);
-      background:rgba(0,0,0,.22);color:var(--text);font-size:14px;outline:none
+    .hbce-receipt-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:14px;
     }
-    input[type="file"]{padding:10px}
-    textarea{min-height:110px;resize:vertical}
 
-    .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.03);font-size:14px;cursor:pointer}
-    .btn:hover{background:rgba(255,255,255,.06)}
-    .btn.primary{background:rgba(255,255,255,.06)}
-    .btn.primary:hover{background:rgba(255,255,255,.09)}
+    .hbce-local-field{
+      display:block;
+      margin-top:10px;
+    }
 
-    .out{margin-top:12px;padding:14px;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.18);font-family:ui-monospace,monospace;font-size:13px;white-space:pre-line;overflow:auto}
-    .hint{font-size:12px;color:var(--muted);margin-top:8px}
+    .hbce-local-field input,
+    .hbce-local-field textarea{
+      width:100%;
+      box-sizing:border-box;
+    }
 
-    footer{border-top:1px solid var(--line);background:rgba(0,0,0,.18);padding:18px 0 24px;color:var(--muted)}
-    .sig{margin-top:10px;font-size:12px;opacity:.7;letter-spacing:.4px}
+    .hbce-result{
+      margin-top:12px;
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
   </style>
 </head>
 
 <body>
-<header>
-  <div class="wrap head">
-    <div class="brand">HERMETICUM<small>Verify Receipt — receipt_sha256(json)</small></div>
-    <nav>
-      <a href="../../">Home</a>
-      <a href="../../create/">Create</a>
-      <a href="../">Verify</a>
-      <a href="../../audit/">Audit</a>
-      <a href="../../company/">Company</a>
-    </nav>
-  </div>
-  <div class="wrap policy"><b>Audit-first</b> · <b>Fail-closed</b> · <b>Hash-only</b> · <b>No data custody</b></div>
-</header>
+  <div data-hbce="header"></div>
 
-<main class="wrap">
-  <div class="card">
-    <h1>Verifica receipt (SHA-256)</h1>
-    <p class="subtitle">
-      Carica il file <b>.json</b> dell’IPR (o audit JSON) e fornisci il <b>receipt_sha256(json)</b>.
-      Il calcolo avviene localmente (client-side). Nessun dato viene inviato o conservato.
-    </p>
+  <main class="hbce-container hbce-main">
 
-    <div class="divider"></div>
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">VERIFY RECEIPT · CLIENT-SIDE · HASH-ONLY · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Receipt hash verification</h1>
+      <p class="hbce-hero__lead">
+        This page verifies whether a local JSON file matches an expected SHA-256 receipt.
+        The calculation is performed entirely in the browser.
+        No file, payload, receipt, personal data, private evidence, or operational material is uploaded by this page.
+        <br /><br />
+        A matching hash means <strong>HASH_MATCH</strong>.
+        A mismatch means <strong>HASH_MISMATCH</strong>.
+        Missing or invalid input means <strong>INVALID</strong>.
+      </p>
 
-    <label>JSON (file)</label>
-    <input id="jsonfile" type="file" accept=".json,application/json">
+      <p class="hbce-note" style="margin-top:12px;">
+        Policy:
+        <strong>EU-first</strong> ·
+        <strong>audit-first</strong> ·
+        <strong>fail-closed</strong> ·
+        <strong>hash-only</strong> ·
+        <strong>client-side</strong> ·
+        <strong>no public data custody</strong>
+      </p>
 
-    <label>receipt_sha256(json) (incolla qui) — oppure carica il file receipt sotto</label>
-    <input id="receipt" placeholder="es. 620d9a35... (64 hex)">
+      <div class="hbce-actions" style="margin-top:12px;">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY Gateway</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/audit/">Audit</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/">Home</a>
+      </div>
+    </section>
 
-    <label>receipt file (opzionale) — .txt con 1 riga hash</label>
-    <input id="receiptfile" type="file" accept=".txt,text/plain">
+    <section class="hbce-section">
+      <div class="hbce-grid hbce-grid--3">
+        <article class="hbce-card">
+          <div class="hbce-card__title">Verification model</div>
+          <p class="hbce-note">
+            The verifier computes SHA-256 over the exact bytes of the selected local file and compares it with the expected receipt hash.
+          </p>
+        </article>
 
-    <div class="btnrow">
-      <button class="btn primary" onclick="verify()">Verifica</button>
-    </div>
+        <article class="hbce-card">
+          <div class="hbce-card__title">Privacy posture</div>
+          <p class="hbce-note">
+            The selected file remains local to the browser. This page does not send files to a server and does not store evidence.
+          </p>
+        </article>
 
-    <div id="out" class="out">STATO: IDLE</div>
-    <div class="hint">PASS = JSON integro rispetto al receipt. FAIL = mismatch (file diverso o modificato).</div>
-  </div>
-</main>
+        <article class="hbce-card">
+          <div class="hbce-card__title">Limit</div>
+          <p class="hbce-note">
+            A hash match proves byte-level integrity against the provided receipt. It does not replace legal, institutional, identity, or private evidence review.
+          </p>
+        </article>
+      </div>
+    </section>
 
-<footer>
-  <div class="wrap">
-    <div>HERMETICUM — digital responsibility infrastructure</div>
-    <div class="sig">HERMETICUM B.C.E. S.r.l. · EU</div>
-  </div>
-</footer>
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Input</h2>
 
-<script>
-async function sha256Bytes(uint8){
-  const buf = await crypto.subtle.digest("SHA-256", uint8);
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
-}
-async function readFileAsBytes(file){
-  const ab = await file.arrayBuffer();
-  return new Uint8Array(ab);
-}
-async function readFileAsText(file){
-  return await file.text();
-}
-function normHex(s){
-  return (s || "").trim().toLowerCase().replace(/^0x/,"").replace(/[^0-9a-f]/g,"");
-}
+      <div class="hbce-card">
+        <div class="hbce-card__body">
 
-async function verify(){
-  const out = document.getElementById("out");
-  const jf = document.getElementById("jsonfile").files[0];
-  if(!jf){ out.textContent = "STATO: FAIL\nMOTIVO: manca il file JSON"; return; }
+          <div class="hbce-receipt-grid">
+            <label class="hbce-local-field">
+              <span class="hbce-label">JSON / manifest / proof artifact file</span>
+              <input id="jsonFile" class="hbce-input" type="file" accept=".json,application/json,.txt,text/plain" />
+              <span class="hbce-note">
+                The file is read locally and hashed as exact bytes.
+              </span>
+            </label>
 
-  let r = normHex(document.getElementById("receipt").value);
+            <label class="hbce-local-field">
+              <span class="hbce-label">Expected receipt SHA-256</span>
+              <input id="receiptHash" class="hbce-input" placeholder="64-character lowercase sha256" autocomplete="off" />
+              <span class="hbce-note">
+                Enter a 64-character SHA-256 value. Optional <code>0x</code> prefix is accepted.
+              </span>
+            </label>
 
-  const rf = document.getElementById("receiptfile").files[0];
-  if(!r && rf){
-    const t = await readFileAsText(rf);
-    r = normHex(t);
-  }
+            <label class="hbce-local-field">
+              <span class="hbce-label">Receipt file — optional</span>
+              <input id="receiptFile" class="hbce-input" type="file" accept=".txt,text/plain,.json,application/json" />
+              <span class="hbce-note">
+                Optional receipt file containing either a plain hash or JSON with <code>receipt_sha256</code>, <code>payload_sha256</code>, <code>pack_sha256</code>, or <code>sha256</code>.
+              </span>
+            </label>
+          </div>
 
-  if(!r || r.length !== 64){
-    out.textContent = "STATO: FAIL\nMOTIVO: receipt non valido (serve SHA-256 64 hex)";
-    return;
-  }
+          <div class="hbce-actions" style="margin-top:12px;">
+            <button class="hbce-btn hbce-btn--primary" id="verifyBtn" type="button">Verify receipt</button>
+            <button class="hbce-btn" id="clearBtn" type="button">Clear</button>
+            <button class="hbce-btn hbce-btn--ghost" id="copyBtn" type="button" disabled>Copy computed hash</button>
+          </div>
 
-  const bytes = await readFileAsBytes(jf);
-  const h = await sha256Bytes(bytes);
+          <div id="statusMsg" class="hbce-note" style="margin-top:10px;">Ready.</div>
+        </div>
+      </div>
+    </section>
 
-  if(h === r){
-    out.textContent = "STATO: PASS\nreceipt_sha256(json): " + r + "\ncomputed_sha256(json): " + h;
-  }else{
-    out.textContent = "STATO: FAIL\nreceipt_sha256(json): " + r + "\ncomputed_sha256(json): " + h;
-  }
-}
-</script>
+    <section class="hbce-section">
+      <h2 class="hbce-h2">Result</h2>
+
+      <div class="hbce-grid hbce-grid--2">
+        <article class="hbce-card">
+          <div class="hbce-card__title">Status</div>
+          <pre class="hbce-pre hbce-result" id="resultStatus">STATUS: IDLE</pre>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__title">Details</div>
+          <pre class="hbce-pre hbce-result" id="resultDetails">—</pre>
+        </article>
+      </div>
+
+      <p class="hbce-note" style="margin-top:12px;">
+        Fail-closed: missing file, missing receipt, invalid hash format, unreadable file, or hash mismatch does not produce validity.
+      </p>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-footnote">
+        <p>
+          <strong>Public proof limit:</strong> this verifier only checks hash integrity against the receipt provided by the user.
+          It does not certify identity, authorship, authorization, legal validity, or operator qualification by itself.
+        </p>
+        <p>
+          <strong>No custody:</strong> this page performs local browser-side computation only and does not store evidence.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <script>
+    (function(){
+      "use strict";
+
+      const jsonFile = document.getElementById("jsonFile");
+      const receiptHash = document.getElementById("receiptHash");
+      const receiptFile = document.getElementById("receiptFile");
+      const verifyBtn = document.getElementById("verifyBtn");
+      const clearBtn = document.getElementById("clearBtn");
+      const copyBtn = document.getElementById("copyBtn");
+
+      const statusMsg = document.getElementById("statusMsg");
+      const resultStatus = document.getElementById("resultStatus");
+      const resultDetails = document.getElementById("resultDetails");
+
+      let lastComputedHash = "";
+
+      function setStatus(message){
+        statusMsg.textContent = message;
+      }
+
+      function clean(value){
+        return String(value || "").trim();
+      }
+
+      function stripOptional0x(value){
+        const v = clean(value).toLowerCase();
+        return v.startsWith("0x") ? v.slice(2) : v;
+      }
+
+      function isSha256Lower(value){
+        return /^[0-9a-f]{64}$/.test(clean(value));
+      }
+
+      async function sha256Bytes(bytes){
+        const digest = await crypto.subtle.digest("SHA-256", bytes);
+        return Array.from(new Uint8Array(digest))
+          .map((byte) => byte.toString(16).padStart(2, "0"))
+          .join("");
+      }
+
+      async function readFileAsBytes(file){
+        const buffer = await file.arrayBuffer();
+        return new Uint8Array(buffer);
+      }
+
+      async function readFileAsText(file){
+        return await file.text();
+      }
+
+      function fail(reason){
+        lastComputedHash = "";
+        copyBtn.disabled = true;
+
+        resultStatus.textContent =
+          "STATUS: INVALID\n" +
+          "RESULT: FAIL_CLOSED\n" +
+          "REASON: " + reason;
+
+        resultDetails.textContent = "—";
+        setStatus("FAIL-CLOSED — " + reason);
+      }
+
+      function nonOperational(reason){
+        lastComputedHash = "";
+        copyBtn.disabled = true;
+
+        resultStatus.textContent =
+          "STATUS: NON_OPERATIONAL\n" +
+          "RESULT: FAIL_CLOSED\n" +
+          "REASON: " + reason;
+
+        resultDetails.textContent = "—";
+        setStatus("NON-OPERATIONAL — " + reason);
+      }
+
+      function renderMatch(expected, computed, fileName, fileSize){
+        lastComputedHash = computed;
+        copyBtn.disabled = false;
+
+        resultStatus.textContent =
+          "STATUS: HASH_MATCH\n" +
+          "RESULT: PASS\n" +
+          "CAUTION: HASH_MATCH_IS_NOT_IDENTITY_OR_LEGAL_CERTIFICATION";
+
+        resultDetails.textContent =
+          "expected_sha256: " + expected + "\n" +
+          "computed_sha256: " + computed + "\n" +
+          "file_name: " + fileName + "\n" +
+          "file_size_bytes: " + fileSize + "\n" +
+          "verification_mode: SHA256(EXACT_LOCAL_FILE_BYTES)\n" +
+          "data_custody: CLIENT_SIDE_ONLY";
+
+        setStatus("PASS — hash match.");
+      }
+
+      function renderMismatch(expected, computed, fileName, fileSize){
+        lastComputedHash = computed;
+        copyBtn.disabled = false;
+
+        resultStatus.textContent =
+          "STATUS: HASH_MISMATCH\n" +
+          "RESULT: FAIL_CLOSED";
+
+        resultDetails.textContent =
+          "expected_sha256: " + expected + "\n" +
+          "computed_sha256: " + computed + "\n" +
+          "file_name: " + fileName + "\n" +
+          "file_size_bytes: " + fileSize + "\n" +
+          "verification_mode: SHA256(EXACT_LOCAL_FILE_BYTES)\n" +
+          "data_custody: CLIENT_SIDE_ONLY";
+
+        setStatus("FAIL-CLOSED — hash mismatch.");
+      }
+
+      function extractHashFromReceiptText(text){
+        const raw = clean(text);
+
+        if (!raw) return "";
+
+        const direct = stripOptional0x(raw);
+        if (isSha256Lower(direct)) return direct;
+
+        try {
+          const parsed = JSON.parse(raw);
+
+          const candidates = [
+            parsed.receipt_sha256,
+            parsed.payload_sha256,
+            parsed.pack_sha256,
+            parsed.sha256,
+            parsed.hash
+          ];
+
+          for (const candidate of candidates) {
+            const normalized = stripOptional0x(candidate);
+            if (isSha256Lower(normalized)) return normalized;
+          }
+        } catch (_) {}
+
+        return "";
+      }
+
+      async function resolveExpectedHash(){
+        const direct = stripOptional0x(receiptHash.value);
+
+        if (direct) {
+          if (!isSha256Lower(direct)) {
+            return {
+              ok: false,
+              reason: "INVALID_DIRECT_RECEIPT_SHA256"
+            };
+          }
+
+          return {
+            ok: true,
+            hash: direct,
+            source: "direct_input"
+          };
+        }
+
+        const file = receiptFile.files && receiptFile.files[0];
+
+        if (!file) {
+          return {
+            ok: false,
+            reason: "MISSING_RECEIPT_SHA256"
+          };
+        }
+
+        let text;
+
+        try {
+          text = await readFileAsText(file);
+        } catch (_) {
+          return {
+            ok: false,
+            reason: "RECEIPT_FILE_READ_ERROR"
+          };
+        }
+
+        const extracted = extractHashFromReceiptText(text);
+
+        if (!extracted) {
+          return {
+            ok: false,
+            reason: "RECEIPT_FILE_DOES_NOT_CONTAIN_VALID_SHA256"
+          };
+        }
+
+        return {
+          ok: true,
+          hash: extracted,
+          source: "receipt_file"
+        };
+      }
+
+      async function verify(){
+        const file = jsonFile.files && jsonFile.files[0];
+
+        if (!file) {
+          fail("MISSING_LOCAL_FILE");
+          return;
+        }
+
+        const expected = await resolveExpectedHash();
+
+        if (!expected.ok) {
+          fail(expected.reason);
+          return;
+        }
+
+        let bytes;
+
+        try {
+          bytes = await readFileAsBytes(file);
+        } catch (_) {
+          nonOperational("LOCAL_FILE_READ_ERROR");
+          return;
+        }
+
+        let computed;
+
+        try {
+          computed = await sha256Bytes(bytes);
+        } catch (_) {
+          nonOperational("SHA256_COMPUTE_ERROR");
+          return;
+        }
+
+        if (computed === expected.hash) {
+          renderMatch(expected.hash, computed, file.name || "local_file", bytes.byteLength);
+        } else {
+          renderMismatch(expected.hash, computed, file.name || "local_file", bytes.byteLength);
+        }
+      }
+
+      function clearAll(){
+        jsonFile.value = "";
+        receiptHash.value = "";
+        receiptFile.value = "";
+        lastComputedHash = "";
+        copyBtn.disabled = true;
+
+        resultStatus.textContent = "STATUS: IDLE";
+        resultDetails.textContent = "—";
+        setStatus("Ready.");
+      }
+
+      async function copyComputed(){
+        if (!lastComputedHash || !isSha256Lower(lastComputedHash)) return;
+
+        try {
+          await navigator.clipboard.writeText(lastComputedHash);
+          setStatus("Computed SHA-256 copied.");
+        } catch (_) {
+          setStatus("Copy unavailable. Copy the hash manually.");
+        }
+      }
+
+      verifyBtn.addEventListener("click", verify);
+      clearBtn.addEventListener("click", clearAll);
+      copyBtn.addEventListener("click", copyComputed);
+    })();
+  </script>
 </body>
 </html>
