@@ -1,15 +1,96 @@
 {
-  "network": "hbce",
-  "version": "1.0",
+  "proto": "HBCE-REGISTRY-v3",
+  "kind": "HBCE_PUBLIC_EVENT_REGISTRY",
+  "network": "EU",
+  "mode": "APPEND_ONLY_PUBLIC_REGISTRY",
+  "issuer": {
+    "hallmark": "HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA",
+    "legal": "HERMETICUM B.C.E. S.r.l.",
+    "symbol": "🜏"
+  },
+  "jurisdiction": "EU",
+  "status": "ACTIVE",
+  "policy": [
+    "HASH_ONLY",
+    "APPEND_ONLY",
+    "FAIL_CLOSED",
+    "UE_FIRST",
+    "AUDIT_FIRST",
+    "GDPR_MIN",
+    "NO_PUBLIC_DATA_CUSTODY"
+  ],
+  "rules": {
+    "public_data": "MINIMIZED_PUBLIC_METADATA",
+    "write_mode": "MANUAL_APPEND_ONLY",
+    "verification": "DETERMINISTIC_RECORD_REVIEW",
+    "failure_mode": "FAIL_CLOSED",
+    "empty_entries": "NO_PUBLIC_EVENT_RECORD",
+    "private_evidence_policy": "PRIVATE_EVIDENCE_OUTSIDE_PUBLIC_REGISTRY",
+    "sensitive_event_policy": "NO_PRIVATE_PAYLOADS_OR_SECRETS_IN_PUBLIC_EVENT_REGISTRY"
+  },
+  "privacy_note": "This public event registry must not store private evidence, personal data, credentials, secrets, private keys, production logs, private communications, internal endpoints, or sensitive operational payloads. Public event records should use minimized public labels and high-level governance metadata only.",
+  "created_at": "2026-03-11T12:00:00.000Z",
+  "last_update": "2026-05-06T00:00:00.000Z",
+  "empty_registry_interpretation": "An empty events array means no public event records are currently available in this registry file. It does not certify absence of activity, validity, authorization, or operational status by itself.",
+  "schema": {
+    "event_required": [
+      "event_label",
+      "entity_label",
+      "action",
+      "timestamp",
+      "context",
+      "status",
+      "description"
+    ],
+    "event_optional": [
+      "record_scope",
+      "note"
+    ],
+    "constraints": {
+      "event_label": "Public minimal event label only; must not expose sensitive IDs, secrets, or private evidence",
+      "entity_label": "Public minimal entity label only",
+      "action": "High-level public event action only",
+      "timestamp": "ISO 8601 / RFC 3339 parseable timestamp",
+      "context": "Public context label only",
+      "status": "RECORDED | SUPERSEDED | REVOKED | INVALID | EXPERIMENTAL",
+      "description": "High-level public description only"
+    },
+    "forbidden_public_fields": [
+      "private_key",
+      "api_key",
+      "token",
+      "password",
+      "secret",
+      "credential",
+      "raw_identifier",
+      "identity_document",
+      "private_evidence",
+      "personal_payload",
+      "production_log",
+      "private_communication",
+      "internal_endpoint",
+      "sensitive_operational_payload"
+    ]
+  },
+  "verification": {
+    "rule": "Public event records must be treated as descriptive governance metadata unless independently verified by a canonical proof record.",
+    "valid_result": "PUBLIC_EVENT_RECORD_PRESENT",
+    "invalid_result": "INVALID",
+    "missing_result": "NO_PUBLIC_EVENT_RECORD",
+    "non_operational_result": "NON_OPERATIONAL",
+    "fail_closed_rule": "Missing, malformed, ambiguous, or inconsistent event registry state must not produce operational certainty."
+  },
   "events": [
     {
-      "event_id": "hbce-event-0001",
-      "entity": "hbce-node-001",
-      "action": "node_initialized",
-      "timestamp": "2026-03-11T12:00:00Z",
+      "event_label": "HBCE_PUBLIC_EVENT_0001",
+      "entity_label": "HBCE_PUBLIC_NODE_001",
+      "action": "PUBLIC_NODE_RECORD_INITIALIZED",
+      "timestamp": "2026-03-11T12:00:00.000Z",
       "context": "hbce-platform",
-      "status": "recorded",
-      "description": "Initial registration of the primary HBCE infrastructure node"
+      "status": "EXPERIMENTAL",
+      "description": "Initial public governance record for the primary HBCE platform node.",
+      "record_scope": "PUBLIC_EVENT_METADATA",
+      "note": "This public event record is descriptive and does not expose private evidence, credentials, secrets, internal endpoints, production logs, or privileged operational access."
     }
   ]
 }
