@@ -3,55 +3,232 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Terms — Hermeticum B.C.E.</title>
-  <meta name="description" content="Termini d’uso EU-first: servizi hash-only, no custody, append-only, fail-closed. Chiarimenti su ricevuta operativa e P.IVA in assegnazione." />
+
+  <title>Terms — HERMETICUM B.C.E. / HBCE Platform</title>
+  <meta name="description" content="Termini d’uso HBCE Platform: R&D sperimentale, hash-only public proof, no public data custody, fail-closed, uso difensivo e audit-first." />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/terms/" />
+
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
+
 <body>
   <div data-hbce="header"></div>
 
   <main class="hbce-container hbce-main">
+
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">TERMS · EU-FIRST · HASH-ONLY</div>
+      <div class="hbce-hero__kicker">TERMS · R&D · HASH-ONLY · FAIL-CLOSED · NO PUBLIC DATA CUSTODY</div>
       <h1 class="hbce-hero__title">Termini d’uso</h1>
       <p class="hbce-hero__lead">
-        Servizi di emissione identità operativa (IPR) con prove pubbliche hash-only. Nessuna custodia identità.
-        Fail-closed: se non verificabile → INVALID.
+        HBCE Platform è un gateway pubblico sperimentale di ricerca, documentazione, verifica hash-only,
+        audit trail e governance fail-closed.
+        <br /><br />
+        L’uso della piattaforma deve rimanere difensivo, autorizzato, auditabile e conforme alla separazione
+        tra prova pubblica minimizzata e prova privata.
+      </p>
+
+      <p class="hbce-note" style="margin-top:12px;">
+        Policy:
+        <strong>EU-first</strong> ·
+        <strong>audit-first</strong> ·
+        <strong>hash-only</strong> ·
+        <strong>append-only</strong> ·
+        <strong>fail-closed</strong> ·
+        <strong>GDPR-min</strong> ·
+        <strong>no public data custody</strong>
       </p>
     </section>
 
     <section class="hbce-section">
-      <h2 class="hbce-h2">Servizio</h2>
+      <h2 class="hbce-h2">1. Stato della piattaforma</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          HBCE Platform è attualmente un’infrastruttura pubblica sperimentale di ricerca e sviluppo.
+          Alcune pagine descrivono componenti concettuali, prototipali o pianificati.
+          Salvo indicazione esplicita, tali componenti non devono essere interpretati come controlli produttivi,
+          certificazioni formali, servizi regolamentati o garanzie operative definitive.
+        </p>
+
+        <p class="hbce-card__text">
+          La piattaforma documenta e sperimenta modelli di identità operativa, prova pubblica,
+          registro append-only, verifica hash-only e governance fail-closed.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">2. Servizi e superfici pubbliche</h2>
+
       <div class="hbce-card">
         <ul class="hbce-list">
-          <li><strong>CREATE</strong>: generazione locale (client-side) di payload e hash</li>
-          <li><strong>REGISTRY</strong>: pubblicazione append-only (hash-only)</li>
-          <li><strong>VERIFY</strong>: verifica pubblica con logica fail-closed</li>
+          <li><strong>CREATE</strong> — superfici di generazione locale o documentale di payload, proof commitment e receipt.</li>
+          <li><strong>REGISTRY</strong> — registro pubblico append-only basato su record minimizzati e <code>payload_sha256</code>.</li>
+          <li><strong>VERIFY</strong> — verifica pubblica con logica fail-closed, registry v3 e confronto hash-only.</li>
+          <li><strong>AUDIT</strong> — documentazione di audit, finding, remediation e tracciabilità pubblica.</li>
+          <li><strong>SCHEMAS</strong> — schemi pubblici per validazione documentale e proof commitment.</li>
+        </ul>
+
+        <p class="hbce-card__text">
+          Una corrispondenza nel registro pubblico indica presenza di un proof commitment pubblico.
+          Non sostituisce prova privata, validazione legale, autorizzazione istituzionale, verifica identitaria privata,
+          qualificazione contrattuale o certificazione regolamentare.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">3. Regola hash-only e no-custody</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Il layer pubblico della piattaforma deve usare record minimizzati e riferimenti hash-only.
+          Il registro pubblico non deve custodire prove private, documenti d’identità, identificativi personali grezzi,
+          credenziali, segreti, chiavi private, log di produzione o payload operativi sensibili.
+        </p>
+
+        <p class="hbce-card__text">
+          Se una verifica richiede materiale privato o sensibile, tale verifica deve avvenire fuori dal layer pubblico,
+          tramite canali autorizzati, privati e conformi alla normativa applicabile.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">4. Fail-closed</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          La logica fail-closed significa che la piattaforma non deve produrre validità implicita quando una condizione richiesta è assente,
+          ambigua, non verificabile o malformata.
+        </p>
+
+        <ul class="hbce-list">
+          <li>input mancante → <code>INVALID</code>;</li>
+          <li>hash malformato → <code>INVALID</code>;</li>
+          <li>registro non leggibile → <code>NON_OPERATIONAL</code>;</li>
+          <li>record assente → <code>NO_PUBLIC_RECORD</code>;</li>
+          <li>schema non conforme → <code>INVALID</code> o <code>NON_OPERATIONAL</code>;</li>
+          <li>dato sensibile nel layer pubblico → blocco, rimozione o revisione.</li>
         </ul>
       </div>
     </section>
 
     <section class="hbce-section">
-      <h2 class="hbce-h2">Ricevuta operativa (non fattura)</h2>
+      <h2 class="hbce-h2">5. Uso consentito</h2>
+
       <div class="hbce-card">
         <p class="hbce-card__text">
-          In fase di emissione, l’utente può ricevere un documento <strong>OPERATIONAL_RECEIPT.json</strong>
-          firmato dall’issuer come prova di acquisto del servizio digitale. Tale ricevuta <strong>non è una fattura fiscale</strong>
-          e non sostituisce eventuali adempimenti IVA. <strong>P.IVA: in assegnazione</strong>.
+          L’uso consentito della piattaforma include ricerca, documentazione, verifica hash-only,
+          audit difensivo, modellazione di registri pubblici minimizzati, governance AI responsabile,
+          studio di identità operativa e test su materiali propri, autorizzati o sintetici.
+        </p>
+
+        <p class="hbce-card__text">
+          Gli utenti devono usare la piattaforma in modo lecito, difensivo, autorizzato, proporzionato e coerente
+          con la privacy, la sicurezza e la governance documentate nel repository.
         </p>
       </div>
     </section>
 
     <section class="hbce-section">
-      <h2 class="hbce-h2">Issuer</h2>
+      <h2 class="hbce-h2">6. Usi vietati</h2>
+
       <div class="hbce-card">
         <p class="hbce-card__text">
-          <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong><br/>
-          <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong><br/>
-          VAT: <strong>PENDING_ASSIGNMENT</strong>
+          La piattaforma non deve essere usata per:
+        </p>
+
+        <ul class="hbce-list">
+          <li>accesso non autorizzato;</li>
+          <li>attività offensive di cybersecurity;</li>
+          <li>sviluppo o distribuzione di malware;</li>
+          <li>furto di credenziali;</li>
+          <li>phishing;</li>
+          <li>evasione di controlli di sicurezza;</li>
+          <li>esfiltrazione dati;</li>
+          <li>test distruttivi o non autorizzati;</li>
+          <li>pubblicazione di documenti d’identità o prove private;</li>
+          <li>pubblicazione di segreti, token, password o chiavi private;</li>
+          <li>trattamento illecito di dati personali;</li>
+          <li>automazione dannosa o non autorizzata.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">7. Ricevute operative</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Eventuali ricevute operative, proof receipt o file JSON generati dalla piattaforma devono essere interpretati
+          come artefatti tecnici o documentali collegati alla verifica hash-only e alla tracciabilità.
+        </p>
+
+        <p class="hbce-card__text">
+          Tali ricevute non costituiscono automaticamente fattura fiscale, certificazione legale,
+          qualificazione regolamentare, autorizzazione istituzionale o prova identitaria privata.
+          Eventuali adempimenti fiscali, contrattuali o regolamentari devono essere gestiti separatamente secondo la normativa applicabile.
         </p>
       </div>
     </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">8. Responsabilità dell’utente</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          L’utente è responsabile dei materiali che inserisce, carica, conserva, pubblica o usa in relazione alla piattaforma.
+          Non deve inserire nel layer pubblico dati personali non necessari, segreti, chiavi private, credenziali,
+          documenti d’identità, prove private o payload sensibili.
+        </p>
+
+        <p class="hbce-card__text">
+          L’utente deve verificare di avere diritto o autorizzazione a usare i materiali sottoposti a verifica,
+          audit o pubblicazione.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">9. Limitazione delle garanzie</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          La piattaforma è fornita come ambiente sperimentale di ricerca e documentazione.
+          Non viene fornita alcuna garanzia che i componenti siano idonei a un uso produttivo, regolamentato,
+          critico, fiscale, legale o istituzionale senza ulteriore validazione indipendente.
+        </p>
+
+        <p class="hbce-card__text">
+          I risultati di verifica pubblica devono essere interpretati entro i limiti tecnici dichiarati:
+          presenza di proof commitment, confronto hash, stato di record pubblico o coerenza documentale.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">10. Issuer e stato R&D</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Hallmark:
+          <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong>
+          <br />
+          Public organization label:
+          <strong>HERMETICUM B.C.E. S.r.l.</strong>
+        </p>
+
+        <p class="hbce-card__text">
+          HBCE Research / HERMETICUM B.C.E. opera in questa sede come iniziativa R&D e gateway pubblico sperimentale.
+          Eventuali attivazioni commerciali, fiscali, contrattuali o enterprise devono essere gestite in modo separato,
+          regolare e conforme al contesto applicabile.
+        </p>
+      </div>
+    </section>
+
   </main>
 
   <div data-hbce="footer"></div>
