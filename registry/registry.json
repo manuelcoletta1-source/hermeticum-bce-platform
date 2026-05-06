@@ -1,9 +1,11 @@
 {
-  "proto": "HBCE-REGISTRY-v2",
-  "kind": "IPR_PUBLIC_REGISTRY",
+  "proto": "HBCE-REGISTRY-v3",
+  "kind": "IPR_PUBLIC_REGISTRY_INDEX",
   "network": "EU",
-  "mode": "APPEND_ONLY_PUBLIC_LEDGER",
+  "mode": "APPEND_ONLY_PUBLIC_REGISTRY",
   "issuer": "HERMETICUM B.C.E. S.r.l.",
+  "jurisdiction": "EU",
+  "status": "ACTIVE",
   "policy": [
     "HASH_ONLY",
     "APPEND_ONLY",
@@ -13,70 +15,126 @@
     "GDPR_MIN",
     "NO_PUBLIC_DATA_CUSTODY"
   ],
-  "description": "Registro pubblico append-only europeo. Pubblica solo prove minimizzate (name + payload_sha256 + timestamp). Nessuna custodia pubblica di dati personali. Se SHA256 non presente -> INVALID (fail-closed).",
+  "description": "Public append-only registry index for minimized HBCE / IPR proof records. The registry publishes hash-only or minimized public proof commitments and does not store private evidence, identity documents, credentials, secrets, private keys, or sensitive operational payloads. If a required hash is absent, malformed, or inconsistent, verification must return INVALID or NON_OPERATIONAL according to fail-closed rules.",
+  "source_role": {
+    "canonical_viewer_source": "ledger.json",
+    "supporting_public_registry_index": "registry.json",
+    "verification_rule": "Verification tools must explicitly declare which public source they use. Ambiguous source selection must fail closed."
+  },
   "rules": {
     "public_data": "HASH_ONLY",
     "write_mode": "MANUAL_APPEND_ONLY",
     "verification": "DETERMINISTIC_SHA256_MATCH",
-    "failure_mode": "FAIL_CLOSED"
+    "failure_mode": "FAIL_CLOSED",
+    "empty_entries": "NO_PUBLIC_PROOF",
+    "sensitive_preimage_policy": "NO_RAW_PERSONAL_IDENTIFIER_HASHES_IN_PUBLIC_REGISTRY",
+    "private_evidence_policy": "PRIVATE_EVIDENCE_OUTSIDE_PUBLIC_REGISTRY"
   },
+  "privacy_note": "Public identity labels may appear only when intentionally published for attribution and registry readability. Sensitive identity evidence, private documents, raw personal identifiers, credentials, secrets, private keys, and non-public payloads must not be stored in the public registry. Public hashes should represent minimized proof commitments rather than raw personal identifiers.",
   "schema": {
-    "entry_required": ["payload_sha256", "timestamp"],
-    "entry_public_identity": ["name"],
-    "entry_optional": ["entity_type", "status", "note"],
-    "event_record_types": ["ISSUED", "STATUS_UPDATE"],
-    "event_required": ["record_type", "ref_payload_sha256", "status", "timestamp"],
-    "event_optional": ["note"],
+    "entry_required": [
+      "entity_type",
+      "subject_label",
+      "payload_sha256",
+      "timestamp",
+      "status"
+    ],
+    "entry_optional": [
+      "record_scope",
+      "note"
+    ],
+    "event_record_types": [
+      "ISSUED",
+      "STATUS_UPDATE"
+    ],
+    "event_required": [
+      "record_type",
+      "ref_payload_sha256",
+      "status",
+      "timestamp"
+    ],
+    "event_optional": [
+      "note"
+    ],
     "constraints": {
-      "payload_sha256": "64-hex sha256 lowercase",
-      "ref_payload_sha256": "64-hex sha256 lowercase",
-      "timestamp": "ISO8601 / RFC3339 parseable"
-    }
+      "payload_sha256": "64-character lowercase hexadecimal SHA-256 digest",
+      "ref_payload_sha256": "64-character lowercase hexadecimal SHA-256 digest",
+      "timestamp": "ISO 8601 / RFC 3339 parseable timestamp",
+      "status": "ACTIVE | REVOKED | SUSPENDED",
+      "subject_label": "Public minimal label; must not contain private evidence or raw sensitive identifiers"
+    },
+    "forbidden_public_fields": [
+      "private_key",
+      "api_key",
+      "token",
+      "password",
+      "secret",
+      "credential",
+      "raw_identifier",
+      "identity_document",
+      "private_evidence",
+      "personal_payload",
+      "production_log"
+    ]
   },
   "lifecycle": {
-    "states": ["ACTIVE", "REVOKED", "SUSPENDED"],
-    "events": ["ISSUED", "STATUS_UPDATE"]
+    "states": [
+      "ACTIVE",
+      "REVOKED",
+      "SUSPENDED"
+    ],
+    "events": [
+      "ISSUED",
+      "STATUS_UPDATE"
+    ],
+    "empty_registry_interpretation": "An empty entries array means no public proof entries are currently available in this registry file. It does not certify validity, status, or authorization by itself."
   },
   "verification": {
-    "rule": "SHA256(file_canonico) MUST_MATCH registry.entries[].payload_sha256",
+    "rule": "SHA256(canonical_record_or_commitment) MUST_MATCH registry.entries[].payload_sha256",
     "valid_result": "VALID",
     "invalid_result": "INVALID",
-    "certificate": "HBCE_CERTIFICATE"
+    "missing_result": "NO_PUBLIC_RECORD",
+    "non_operational_result": "NON_OPERATIONAL",
+    "certificate": "HBCE_CERTIFICATE",
+    "fail_closed_rule": "Missing, malformed, ambiguous, or inconsistent registry state must not produce VALID."
   },
   "meta": {
-    "schema_version": "HBCE-REGISTRY-v2",
-    "last_update": "2026-02-19T18:00:00.000Z",
+    "schema_version": "HBCE-REGISTRY-v3",
+    "last_update": "2026-05-06T00:00:00.000Z",
     "counts": {
       "total": 3,
-      "ipr_base_human": 1,
-      "operator_license": 1,
-      "up_mese_certificate": 1
+      "operator_commitment": 1,
+      "identity_commitment": 1,
+      "continuity_certificate": 1
     }
   },
   "entries": [
     {
-      "entity_type": "OPERATOR",
-      "name": "Manuel Coletta",
+      "entity_type": "PUBLIC_OPERATOR_COMMITMENT",
+      "subject_label": "HBCE_PUBLIC_OPERATOR_001",
+      "record_scope": "OPERATOR_LICENSE_PUBLIC_PROOF",
       "payload_sha256": "1de300e4d826719c9a8708c8dfb2a8e943f19c3d324816b220f149f008ba481b",
       "timestamp": "2026-02-14T13:34:15.225Z",
       "status": "ACTIVE",
-      "note": "proto=HBCE-OPERATOR-v1; kind=IPR_OPERATOR_LICENSE; base=4ffea45b96cf"
+      "note": "proto=HBCE-OPERATOR-v1; kind=IPR_OPERATOR_LICENSE; minimized public proof commitment; private evidence outside public registry"
     },
     {
-      "entity_type": "HUMAN",
-      "name": "Manuel Coletta",
+      "entity_type": "PUBLIC_IDENTITY_COMMITMENT",
+      "subject_label": "HBCE_PUBLIC_IDENTITY_001",
+      "record_scope": "IPR_BASE_EU_RELEASE_PUBLIC_PROOF",
       "payload_sha256": "1db2ab1f17e58b96412795cd0451e2a3ac558a99f12e76e82b2f963c94478d00",
       "timestamp": "2026-02-10T19:05:30.849Z",
       "status": "ACTIVE",
-      "note": "proto=HBCE-IPR-RELEASE-v1; kind=IPR_BASE_EU_RELEASE; public_proof=HASH_ONLY"
+      "note": "proto=HBCE-IPR-RELEASE-v1; kind=IPR_BASE_EU_RELEASE; public_proof=HASH_ONLY; private evidence outside public registry"
     },
     {
-      "entity_type": "UPMESE_CERTIFICATE",
-      "name": "Manuel Coletta",
+      "entity_type": "PUBLIC_CONTINUITY_CERTIFICATE",
+      "subject_label": "HBCE_PUBLIC_CONTINUITY_001",
+      "record_scope": "MONTHLY_OPERATIONAL_CONTINUITY_CERTIFICATE_PUBLIC_PROOF",
       "payload_sha256": "cb5b8fea05912004d2bcfd982a2123443ba827e27509d3aae279e94bd97c3f9c",
       "timestamp": "2026-02-19T18:00:00.000Z",
       "status": "ACTIVE",
-      "note": "proto=HBCE-UPMESE-v1; kind=MONTHLY_OPERATIONAL_CONTINUITY_CERTIFICATE; label=UP-MESE-01"
+      "note": "proto=HBCE-UPMESE-v1; kind=MONTHLY_OPERATIONAL_CONTINUITY_CERTIFICATE; label=UP-MESE-01; minimized public proof commitment"
     }
   ],
   "events": [
@@ -85,21 +143,21 @@
       "ref_payload_sha256": "1db2ab1f17e58b96412795cd0451e2a3ac558a99f12e76e82b2f963c94478d00",
       "status": "ACTIVE",
       "timestamp": "2026-02-10T19:05:30.849Z",
-      "note": "IPR Base EU issued (public proof)."
+      "note": "IPR base EU public proof commitment issued."
     },
     {
       "record_type": "ISSUED",
       "ref_payload_sha256": "1de300e4d826719c9a8708c8dfb2a8e943f19c3d324816b220f149f008ba481b",
       "status": "ACTIVE",
       "timestamp": "2026-02-14T13:34:15.225Z",
-      "note": "Operator license issued (public proof)."
+      "note": "Operator license public proof commitment issued."
     },
     {
       "record_type": "ISSUED",
       "ref_payload_sha256": "cb5b8fea05912004d2bcfd982a2123443ba827e27509d3aae279e94bd97c3f9c",
       "status": "ACTIVE",
       "timestamp": "2026-02-19T18:00:00.000Z",
-      "note": "UP-MESE-01 issued (public proof)."
+      "note": "UP-MESE-01 public proof commitment issued."
     }
   ]
 }
