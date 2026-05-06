@@ -11,14 +11,19 @@
     "FAIL_CLOSED",
     "UE_FIRST",
     "AUDIT_FIRST",
-    "GDPR_MIN"
+    "GDPR_MIN",
+    "NO_PUBLIC_DATA_CUSTODY"
   ],
   "rules": {
     "public_data": "HASH_ONLY",
     "write_mode": "MANUAL_APPEND_ONLY",
     "verification": "DETERMINISTIC_SHA256_MATCH",
-    "failure_mode": "FAIL_CLOSED"
+    "failure_mode": "FAIL_CLOSED",
+    "empty_entries": "NO_PUBLIC_PROOF",
+    "sensitive_preimage_policy": "NO_RAW_PERSONAL_IDENTIFIER_HASHES_IN_PUBLIC_LEDGER",
+    "private_evidence_policy": "PRIVATE_EVIDENCE_OUTSIDE_PUBLIC_REGISTRY"
   },
+  "privacy_note": "The public ledger must not expose raw personal identifiers, private evidence, identity documents, credentials, secrets, private keys, or sensitive operational payloads. Public hashes should represent minimized public proof commitments, preferably derived from canonical records or private commitments rather than raw personal identifiers.",
   "entries": [
     {
       "proto": "HBCE-REGISTRY-v3",
@@ -31,11 +36,14 @@
         "FAIL_CLOSED",
         "UE_FIRST",
         "AUDIT_FIRST",
-        "GDPR_MIN"
+        "GDPR_MIN",
+        "NO_PUBLIC_DATA_CUSTODY"
       ],
-      "proof_kind": "CITIZEN_CF_SHA256",
+      "proof_kind": "PUBLIC_IDENTITY_COMMITMENT_SHA256",
       "sha256": "d434aeaca436e1a1db2d28d614b4d0c0e1e91e7954902aa9635564237ac6ba26",
-      "timestamp": "2026-02-21T17:08:53.287Z"
+      "timestamp": "2026-02-21T17:08:53.287Z",
+      "status": "PUBLIC_PROOF_RETAINED_PRIVACY_RELABELED",
+      "note": "Public proof label generalized to avoid exposing raw personal-identifier semantics in the public ledger."
     },
     {
       "proto": "HBCE-REGISTRY-v3",
@@ -48,11 +56,13 @@
         "FAIL_CLOSED",
         "UE_FIRST",
         "AUDIT_FIRST",
-        "GDPR_MIN"
+        "GDPR_MIN",
+        "NO_PUBLIC_DATA_CUSTODY"
       ],
       "proof_kind": "IPR_RELEASE_SHA256",
       "sha256": "840662ddb922c9c314a984879c9474f1e03455e1e4ed5db1e0f2d5751cddb806",
-      "timestamp": "2026-02-21T17:08:53.287Z"
+      "timestamp": "2026-02-21T17:08:53.287Z",
+      "status": "PUBLIC_PROOF_ACTIVE"
     }
   ]
 }
