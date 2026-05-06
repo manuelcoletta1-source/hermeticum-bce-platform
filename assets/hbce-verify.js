@@ -1,182 +1,461 @@
-/* HBCE VERIFY ENGINE — strict deterministic + fail-closed
-   - Loads public registry: /registry/registry.json (HBCE-REGISTRY-v2)
-   - Computes SHA-256 of canonical release file (without payload_sha256 field)
-   - Requires integrity_ok AND registry_match => VALID
-*/
+/* =========================================================
+   HBCE VERIFY ENGINE — registry v3 / privacy-minimal
+   - Loads public registry: /registry/registry.json
+   - Requires HBCE-REGISTRY-v3
+   - Uses payload_sha256 as public proof commitment
+   - Does not use name, nickname, territory, or operator_sha256
+   - Computes SHA-256 locally in the browser
+   - Returns explicit fail-closed states
+   - No upload, no public data custody, no private evidence custody
+   ========================================================= */
 
 (function () {
+  "use strict";
+
   const REGISTRY_URL = "/hermeticum-bce-platform/registry/registry.json";
+  const EXPECTED_PROTO = "HBCE-REGISTRY-v3";
+  const EXPECTED_FAILURE_MODE = "FAIL_CLOSED";
+  const EXPECTED_PUBLIC_DATA = "HASH_ONLY";
 
-  function normalize(s) {
-    return (s || "").toString().trim();
+  const FORBIDDEN_PUBLIC_FIELDS = [
+    "name",
+    "nickname",
+    "territory",
+    "operator_sha256",
+    "raw_identifier",
+    "tax_code",
+    "fiscal_code",
+    "identity_document",
+    "private_evidence",
+    "personal_payload",
+    "api_key",
+    "token",
+    "password",
+    "secret",
+    "private_key",
+    "credential",
+    "production_log",
+    "private_communication",
+    "sensitive_operational_payload",
+    "private_ip",
+    "internal_hostname",
+    "internal_endpoint",
+    "admin_url",
+    "database_url",
+    "ssh_key"
+  ];
+
+  function clean(value) {
+    return String(value || "").trim();
   }
 
-  function isHex64Lower(s) {
-    return typeof s === "string" && /^[0-9a-f]{64}$/.test(s.trim());
+  function normalizeSha256(value) {
+    return clean(value).toLowerCase();
   }
 
-  async function sha256Hex(str) {
-    const enc = new TextEncoder();
-    const data = enc.encode(str);
+  function isSha256Lower(value) {
+    return /^[a-f0-9]{64}$/.test(clean(value));
+  }
+
+  function isIsoLikeTimestamp(value) {
+    const raw = clean(value);
+    if (!raw) return false;
+
+    const parsed = Date.parse(raw);
+    return Number.isFinite(parsed);
+  }
+
+  function fail(reason) {
+    const error = new Error("HBCE_VERIFY_FAIL_CLOSED");
+    error.detail = reason || "FAIL_CLOSED";
+    throw error;
+  }
+
+  function toHex(buffer) {
+    const bytes = new Uint8Array(buffer);
+    return Array.from(bytes)
+      .map((byte) => byte.toString(16).padStart(2, "0"))
+      .join("");
+  }
+
+  async function sha256HexFromText(text) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
     const digest = await crypto.subtle.digest("SHA-256", data);
-    const bytes = new Uint8Array(digest);
-    return Array.from(bytes).map(b => b.toString(16).padStart(2, "0")).join("");
+    return toHex(digest);
   }
 
-  function fail(detail) {
-    const err = new Error("HBCE_VERIFY_FAIL");
-    err.detail = detail || "FAIL-CLOSED";
-    throw err;
+  async function sha256HexFromBytes(bytes) {
+    const digest = await crypto.subtle.digest("SHA-256", bytes);
+    return toHex(digest);
   }
 
-  function stripPayloadSha(obj) {
-    // deterministic: hash of canonical release WITHOUT payload_sha256
-    if (!obj || typeof obj !== "object") return obj;
-    if (!Object.prototype.hasOwnProperty.call(obj, "payload_sha256")) return obj;
+  function stableStringify(value) {
+    if (value === null || typeof value !== "object") {
+      return JSON.stringify(value);
+    }
 
-    const clone = Array.isArray(obj) ? obj.slice() : { ...obj };
-    delete clone.payload_sha256;
-    return clone;
+    if (Array.isArray(value)) {
+      return "[" + value.map((item) => stableStringify(item)).join(",") + "]";
+    }
+
+    const keys = Object.keys(value).sort();
+    return "{" + keys.map((key) => JSON.stringify(key) + ":" + stableStringify(value[key])).join(",") + "}";
   }
 
-  function validateRegistryV2(reg) {
-    if (!reg || typeof reg !== "object") return "Schema invalido: registry non è un oggetto JSON.";
-    if (normalize(reg.proto) !== "HBCE-REGISTRY-v2") return "Schema invalido: proto != HBCE-REGISTRY-v2 (fail-closed).";
-    if (normalize(reg.kind) !== "IPR_PUBLIC_REGISTRY") return "Schema invalido: kind != IPR_PUBLIC_REGISTRY (fail-closed).";
-    if (!Array.isArray(reg.policy) || reg.policy.length === 0) return "Schema invalido: policy[] mancante (fail-closed).";
-    if (!reg.meta || typeof reg.meta !== "object") return "Schema invalido: meta{} mancante (fail-closed).";
-    if (!Array.isArray(reg.entries)) return "Schema invalido: entries[] mancante (fail-closed).";
+  function deepClone(value) {
+    return JSON.parse(JSON.stringify(value));
+  }
 
-    for (const e of reg.entries) {
-      if (!e || typeof e !== "object") return "Schema invalido: entry non-oggetto (fail-closed).";
-      const ts = normalize(e.timestamp);
-      if (!ts) return "Schema invalido: entry senza timestamp (fail-closed).";
-      const h = normalize(e.payload_sha256);
-      if (!isHex64Lower(h)) return "Schema invalido: payload_sha256 non valido (richiesto 64-hex lowercase) (fail-closed).";
-      const name = normalize(e.name);
-      if (!name) return "Schema invalido: name mancante (public identity minimale) (fail-closed).";
+  function removeGeneratedHashFields(value) {
+    if (!value || typeof value !== "object") return value;
+
+    if (Array.isArray(value)) {
+      return value.map(removeGeneratedHashFields);
+    }
+
+    const output = {};
+
+    for (const [key, nestedValue] of Object.entries(value)) {
+      if (
+        key === "payload_sha256" ||
+        key === "receipt_sha256" ||
+        key === "pack_sha256" ||
+        key === "entry_hash" ||
+        key === "blob_sha256" ||
+        key === "operator_sha256"
+      ) {
+        continue;
+      }
+
+      output[key] = removeGeneratedHashFields(nestedValue);
+    }
+
+    return output;
+  }
+
+  function hasForbiddenField(object, pathLabel) {
+    if (!object || typeof object !== "object") return null;
+
+    if (Array.isArray(object)) {
+      for (let index = 0; index < object.length; index += 1) {
+        const found = hasForbiddenField(object[index], `${pathLabel}[${index}]`);
+        if (found) return found;
+      }
+
+      return null;
+    }
+
+    for (const [key, value] of Object.entries(object)) {
+      const currentPath = pathLabel ? `${pathLabel}.${key}` : key;
+
+      if (FORBIDDEN_PUBLIC_FIELDS.includes(key)) {
+        return currentPath;
+      }
+
+      const found = hasForbiddenField(value, currentPath);
+      if (found) return found;
+    }
+
+    return null;
+  }
+
+  function validateRegistryEntry(entry, index) {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+      return `ENTRY_${index}_INVALID_OBJECT`;
+    }
+
+    const forbidden = hasForbiddenField(entry, `entries[${index}]`);
+    if (forbidden) return `ENTRY_FORBIDDEN_FIELD_${forbidden}`;
+
+    if (!clean(entry.entity_type)) return `ENTRY_${index}_MISSING_ENTITY_TYPE`;
+    if (!clean(entry.subject_label)) return `ENTRY_${index}_MISSING_SUBJECT_LABEL`;
+    if (!isSha256Lower(entry.payload_sha256)) return `ENTRY_${index}_INVALID_PAYLOAD_SHA256`;
+    if (!isIsoLikeTimestamp(entry.timestamp)) return `ENTRY_${index}_INVALID_TIMESTAMP`;
+    if (!clean(entry.status)) return `ENTRY_${index}_MISSING_STATUS`;
+
+    return "";
+  }
+
+  function validateRegistry(registry) {
+    if (!registry || typeof registry !== "object" || Array.isArray(registry)) {
+      return "REGISTRY_INVALID_OBJECT";
+    }
+
+    if (registry.proto !== EXPECTED_PROTO) {
+      return "REGISTRY_PROTO_MISMATCH";
+    }
+
+    if (!Array.isArray(registry.entries)) {
+      return "REGISTRY_ENTRIES_MISSING";
+    }
+
+    if (!registry.rules || typeof registry.rules !== "object" || Array.isArray(registry.rules)) {
+      return "REGISTRY_RULES_MISSING";
+    }
+
+    if (registry.rules.failure_mode !== EXPECTED_FAILURE_MODE) {
+      return "REGISTRY_FAILURE_MODE_MISMATCH";
+    }
+
+    if (registry.rules.public_data !== EXPECTED_PUBLIC_DATA) {
+      return "REGISTRY_PUBLIC_DATA_MISMATCH";
+    }
+
+    const forbidden = hasForbiddenField(registry, "");
+    if (forbidden) {
+      return `REGISTRY_FORBIDDEN_FIELD_${forbidden}`;
+    }
+
+    for (let index = 0; index < registry.entries.length; index += 1) {
+      const entryError = validateRegistryEntry(registry.entries[index], index);
+      if (entryError) return entryError;
     }
 
     return "";
   }
 
-  async function loadRegistryV2() {
-    let res, reg;
+  async function loadRegistryV3() {
+    let response;
+    let text;
+    let registry;
+
     try {
-      res = await fetch(REGISTRY_URL, { cache: "no-store" });
-      if (!res.ok) fail("BLOCK — registry non leggibile (HTTP " + res.status + ").");
-      reg = await res.json();
-    } catch (e) {
-      fail("BLOCK — impossibile leggere registry.json (fail-closed).");
+      response = await fetch(REGISTRY_URL, { cache: "no-store" });
+    } catch (_) {
+      fail("NON_OPERATIONAL — registry fetch error");
     }
 
-    const schemaErr = validateRegistryV2(reg);
-    if (schemaErr) fail("BLOCK — " + schemaErr);
+    if (!response || !response.ok) {
+      fail("NON_OPERATIONAL — registry not readable HTTP " + (response ? response.status : "ERROR"));
+    }
 
-    // optional: compute registry sha for transparency
-    let registry_sha256 = "—";
     try {
-      const canonical = JSON.stringify(reg);
-      registry_sha256 = await sha256Hex(canonical);
+      text = await response.text();
+    } catch (_) {
+      fail("NON_OPERATIONAL — registry read error");
+    }
+
+    try {
+      registry = JSON.parse(text);
+    } catch (_) {
+      fail("NON_OPERATIONAL — registry JSON invalid");
+    }
+
+    const validationError = validateRegistry(registry);
+    if (validationError) {
+      fail("NON_OPERATIONAL — " + validationError);
+    }
+
+    let registrySha256 = "—";
+
+    try {
+      registrySha256 = await sha256HexFromText(text);
     } catch (_) {}
 
-    return { reg, registry_sha256 };
+    return {
+      registry,
+      registrySha256
+    };
   }
 
   async function readFileText(file) {
     return await new Promise((resolve, reject) => {
-      const fr = new FileReader();
-      fr.onerror = () => reject(new Error("FILE_READ_ERROR"));
-      fr.onload = () => resolve(String(fr.result || ""));
-      fr.readAsText(file);
+      const reader = new FileReader();
+
+      reader.onerror = () => reject(new Error("FILE_READ_ERROR"));
+      reader.onload = () => resolve(String(reader.result || ""));
+      reader.readAsText(file);
     });
   }
 
-  function extractDisplayName(releaseObj) {
-    // prefer subject first/last name
-    const subj = releaseObj && releaseObj.subject && typeof releaseObj.subject === "object" ? releaseObj.subject : null;
-    const fn = subj ? normalize(subj.first_name) : "";
-    const ln = subj ? normalize(subj.last_name) : "";
-    const directName = normalize(releaseObj && releaseObj.name);
-
-    const name = (fn && ln) ? (fn + " " + ln) : (directName || "—");
-    return name;
+  async function readFileBytes(file) {
+    const buffer = await file.arrayBuffer();
+    return new Uint8Array(buffer);
   }
 
-  async function verifyReleaseObject(releaseObj, registryObj) {
-    if (!releaseObj || typeof releaseObj !== "object") fail("FAIL-CLOSED — file release non valido (non JSON object).");
-
-    const declared = normalize(releaseObj.payload_sha256);
-    const stripped = stripPayloadSha(releaseObj);
-
-    // deterministic canonicalization (client-side baseline): JSON.stringify of stripped object
-    const canonical = JSON.stringify(stripped);
-    const computed = await sha256Hex(canonical);
-
-    const integrity_ok = !!(declared && isHex64Lower(declared) && declared === computed);
-
-    // fail-closed: if declared exists but doesn't match -> integrity mismatch
-    if (declared && isHex64Lower(declared) && !integrity_ok) {
-      // still compute registry match ONLY on computed, but final status will be non-operativo
+  async function determinePayloadSha256FromObject(object) {
+    if (!object || typeof object !== "object" || Array.isArray(object)) {
+      fail("INVALID — release object is not a JSON object");
     }
 
-    // registry match is based on computed hash (source of truth)
-    const matchEntry = registryObj.entries.find(e => normalize(e.payload_sha256) === computed);
-    const registry_match = !!matchEntry;
+    if (isSha256Lower(object.payload_sha256)) {
+      return {
+        payloadSha256: normalizeSha256(object.payload_sha256),
+        source: "declared_payload_sha256"
+      };
+    }
 
-    const name = extractDisplayName(releaseObj);
-    const ts = normalize(releaseObj.timestamp) || "—";
+    const clone = deepClone(object);
+    const stripped = removeGeneratedHashFields(clone);
+    const canonical = stableStringify(stripped);
+    const computed = await sha256HexFromText(canonical);
 
     return {
-      name,
-      timestamp: ts,
-      payload_sha256: {
-        computed,
-        declared: declared || "—",
-        integrity_ok
-      },
-      registry_match,
-      matched_entry: matchEntry || null
+      payloadSha256: computed,
+      source: "computed_from_canonical_json_without_generated_hash_fields"
     };
   }
 
-  // PUBLIC API used by verify/index.html
-  window.hbceVerifyFile = async function hbceVerifyFile(file) {
-    if (!file) fail("FAIL-CLOSED — file mancante.");
+  function findRegistryMatch(entries, payloadSha256) {
+    return entries.find((entry) => normalizeSha256(entry.payload_sha256) === payloadSha256) || null;
+  }
 
-    const text = await readFileText(file);
-    let releaseObj;
-    try {
-      releaseObj = JSON.parse(text);
-    } catch (e) {
-      fail("FAIL-CLOSED — file non è JSON valido.");
-    }
-
-    const { reg, registry_sha256 } = await loadRegistryV2();
-    const r = await verifyReleaseObject(releaseObj, reg);
-
-    // FINAL: VALID only if integrity ok AND registry match
-    const valid = !!(r.payload_sha256.integrity_ok && r.registry_match);
+  function safePublicMatch(entry) {
+    if (!entry) return null;
 
     return {
-      valid,
-      name: r.name,
-      timestamp: r.timestamp,
-      payload_sha256: r.payload_sha256,
-      registry_match: r.registry_match,
-      matched_entry: r.matched_entry ? {
-        entity_type: normalize(r.matched_entry.entity_type) || "—",
-        name: normalize(r.matched_entry.name) || "—",
-        status: normalize(r.matched_entry.status) || "—",
-        timestamp: normalize(r.matched_entry.timestamp) || "—"
-      } : null,
+      entity_type: clean(entry.entity_type) || "—",
+      subject_label: clean(entry.subject_label) || "—",
+      record_scope: clean(entry.record_scope) || "—",
+      payload_sha256: normalizeSha256(entry.payload_sha256) || "—",
+      status: clean(entry.status) || "—",
+      timestamp: clean(entry.timestamp) || "—",
+      note: clean(entry.note) || "—"
+    };
+  }
+
+  function buildResult(status, payloadSha256, source, matchEntry, registryInfo, details) {
+    return {
+      valid: status === "PUBLIC_RECORD_PRESENT",
+      status,
+      payload_sha256: payloadSha256 || "—",
+      input_source: source || "—",
+      registry_match: !!matchEntry,
+      matched_entry: safePublicMatch(matchEntry),
       registry: {
         url: REGISTRY_URL,
-        schema_version: normalize(reg.meta && reg.meta.schema_version) || "—",
-        issuer: normalize(reg.issuer) || "—",
-        entries: Array.isArray(reg.entries) ? reg.entries.length : 0,
-        registry_sha256
-      }
+        proto: EXPECTED_PROTO,
+        entries: registryInfo && registryInfo.registry && Array.isArray(registryInfo.registry.entries)
+          ? registryInfo.registry.entries.length
+          : 0,
+        registry_sha256: registryInfo ? registryInfo.registrySha256 : "—"
+      },
+      details: details || "",
+      caution: "Public proof presence does not replace private evidence review, identity verification, contractual qualification, legal authorization, institutional validation, or regulated certification."
     };
+  }
+
+  async function verifyObjectAgainstRegistry(object) {
+    const target = await determinePayloadSha256FromObject(object);
+    const registryInfo = await loadRegistryV3();
+    const matchEntry = findRegistryMatch(registryInfo.registry.entries, target.payloadSha256);
+
+    if (!matchEntry) {
+      return buildResult(
+        "NO_PUBLIC_RECORD",
+        target.payloadSha256,
+        target.source,
+        null,
+        registryInfo,
+        "No matching registry.entries[].payload_sha256 record was found."
+      );
+    }
+
+    return buildResult(
+      "PUBLIC_RECORD_PRESENT",
+      target.payloadSha256,
+      target.source,
+      matchEntry,
+      registryInfo,
+      "Deterministic public registry match found."
+    );
+  }
+
+  async function verifyHashAgainstRegistry(payloadSha256) {
+    const target = normalizeSha256(payloadSha256);
+
+    if (!isSha256Lower(target)) {
+      fail("INVALID — payload_sha256 must be 64 lowercase hex characters");
+    }
+
+    const registryInfo = await loadRegistryV3();
+    const matchEntry = findRegistryMatch(registryInfo.registry.entries, target);
+
+    if (!matchEntry) {
+      return buildResult(
+        "NO_PUBLIC_RECORD",
+        target,
+        "direct_payload_sha256",
+        null,
+        registryInfo,
+        "No matching registry.entries[].payload_sha256 record was found."
+      );
+    }
+
+    return buildResult(
+      "PUBLIC_RECORD_PRESENT",
+      target,
+      "direct_payload_sha256",
+      matchEntry,
+      registryInfo,
+      "Deterministic public registry match found."
+    );
+  }
+
+  async function verifyFileBytes(file, expectedSha256) {
+    if (!file) fail("INVALID — missing file");
+
+    const expected = normalizeSha256(expectedSha256);
+
+    if (!isSha256Lower(expected)) {
+      fail("INVALID — expected SHA-256 must be 64 lowercase hex characters");
+    }
+
+    let bytes;
+
+    try {
+      bytes = await readFileBytes(file);
+    } catch (_) {
+      fail("NON_OPERATIONAL — file read error");
+    }
+
+    let computed;
+
+    try {
+      computed = await sha256HexFromBytes(bytes);
+    } catch (_) {
+      fail("NON_OPERATIONAL — SHA-256 compute error");
+    }
+
+    return {
+      valid: computed === expected,
+      status: computed === expected ? "HASH_MATCH" : "HASH_MISMATCH",
+      expected_sha256: expected,
+      computed_sha256: computed,
+      file_name: file.name || "local_file",
+      file_size_bytes: bytes.byteLength,
+      verification_mode: "SHA256(EXACT_LOCAL_FILE_BYTES)",
+      data_custody: "CLIENT_SIDE_ONLY",
+      caution: "Hash match does not replace private evidence review, identity verification, contractual qualification, legal authorization, institutional validation, or regulated certification."
+    };
+  }
+
+  window.hbceVerifyFile = async function hbceVerifyFile(file) {
+    if (!file) fail("INVALID — missing file");
+
+    const text = await readFileText(file);
+
+    let object;
+
+    try {
+      object = JSON.parse(text);
+    } catch (_) {
+      fail("INVALID — file is not valid JSON");
+    }
+
+    return verifyObjectAgainstRegistry(object);
+  };
+
+  window.hbceVerifyObject = async function hbceVerifyObject(object) {
+    return verifyObjectAgainstRegistry(object);
+  };
+
+  window.hbceVerifyPayloadSha256 = async function hbceVerifyPayloadSha256(payloadSha256) {
+    return verifyHashAgainstRegistry(payloadSha256);
+  };
+
+  window.hbceVerifyLocalFileHash = async function hbceVerifyLocalFileHash(file, expectedSha256) {
+    return verifyFileBytes(file, expectedSha256);
   };
 })();
