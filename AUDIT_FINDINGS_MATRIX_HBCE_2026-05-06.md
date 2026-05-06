@@ -365,32 +365,36 @@ REMEDIATED
 
 ---
 
-### FINDING-010 — Registry and verification files require review
+### FINDING-010 — Registry, verification, and schema files require review
 
 Severity: MEDIUM  
 Status: IN_REVIEW  
-Affected area: Registry and verification logic  
+Affected area: Registry, verification, and schema logic  
 Affected files:
 
 - `registry/`
 - `verify/`
+- `verify-pack/`
 - `verify/schema/`
+- `schemas/`
 - `protocol/`
 - verification-related files, if present
 
 Description:
 
-Registry and verification files require a dedicated review to confirm that public verification remains hash-only, minimal, fail-closed, and aligned with registry v3 semantics.
+Registry, verification, and schema files require a dedicated review to confirm that public verification remains hash-only, minimal, fail-closed, and aligned with registry v3 semantics.
 
 Why it matters:
 
-Registry and verification logic are central to the HBCE / MATRIX / IPR governance model. If missing, malformed, or inconsistent records are treated as valid, the platform could create false confidence.
+Registry, verification, and schema logic are central to the HBCE / MATRIX / IPR governance model. If missing, malformed, or inconsistent records are treated as valid, the platform could create false confidence.
 
 Review progress:
 
 The first registry remediation cycle has been completed for the main public registry layer and operator registry tools.
 
-The first verification remediation cycle has also been completed for the public verification gateway, direct verifier, receipt verifier, evidence schema, demo evidence bundle, baseline document, and public IPR reference page.
+The first verification remediation cycle has been completed for the public verification gateway, direct verifier, receipt verifier, evidence schema, demo evidence bundle, baseline document, public IPR reference page, and verify-pack verifier.
+
+The first schema remediation cycle has been completed for global IPR, receipt, registry entry, and EVT schemas.
 
 Safe remediation / action completed so far:
 
@@ -410,20 +414,24 @@ Safe remediation / action completed so far:
 - updated `verify/schema/evidence-bundle.schema.json` to a privacy-minimal v2 evidence schema;
 - updated `verify/demo-evidence.json` to a synthetic, privacy-minimal v2 example;
 - updated `verify/baseline.md` to reflect registry v3 and fail-closed semantics;
-- minimized `verify/ipr-manuel-coletta.html` and clarified that public proof does not equal legal or private identity certification.
+- minimized `verify/ipr-manuel-coletta.html` and clarified that public proof does not equal legal or private identity certification;
+- hardened `verify-pack/index.html` with client-side, hash-only, fail-closed verification and forbidden-field checks;
+- upgraded `schemas/ipr.schema.json` to an HBCE IPR Package v2 privacy-minimal model;
+- upgraded `schemas/receipt.schema.json` to an HBCE Receipt v2 privacy-minimal model;
+- added `schemas/hbce-registry-entry.schema.json` as the canonical public registry entry v3 schema;
+- added `schemas/hbce-evt.schema.json` as the canonical EVT operational update schema.
 
 Remaining review:
 
-- global `schemas/`;
-- `verify-pack/`;
 - protocol consistency;
 - final source-of-truth decision between `ledger.json` and `registry.json`;
 - public page references still using legacy labels;
-- link and UI checks across modified registry and verify pages.
+- link and UI checks across modified registry and verify pages;
+- validation consistency between schema files and browser tools.
 
 Fail-closed relevance:
 
-High. Registry mismatch, missing data, malformed records, unverifiable hashes, invalid verification inputs, or non-deterministic verification states should block validation or require manual review.
+High. Registry mismatch, missing data, malformed records, unverifiable hashes, invalid verification inputs, inconsistent schemas, or non-deterministic verification states should block validation or require manual review.
 
 Audit status:
 
@@ -688,22 +696,20 @@ Updated registry finding status:
 
 Remaining registry work:
 
-- create or identify canonical JSON Schema files;
-- review `schemas/`;
-- review global verification behavior against updated v3 registry semantics;
+- review protocol consistency;
 - confirm whether `ledger.json` or `registry.json` should be the long-term source of truth;
 - update any public page still referencing `nickname`, `operator_sha256`, `territory`, or raw personal labels;
 - run a link and UI check on all modified registry pages.
 
 Registry audit status:
 
-`PARTIALLY_REMEDIATED — FILE-LEVEL REGISTRY HARDENING COMPLETED; SCHEMA AND VERIFY REVIEW IN PROGRESS`
+`PARTIALLY_REMEDIATED — FILE-LEVEL REGISTRY HARDENING COMPLETED; PROTOCOL AND SOURCE-OF-TRUTH REVIEW PENDING`
 
 ---
 
 ## 7. Verify remediation update — 2026-05-06
 
-The first verification remediation cycle has been completed for the public verification gateway, direct verifier, receipt verifier, evidence schema, demo evidence bundle, baseline document, and public IPR reference page.
+The first verification remediation cycle has been completed for the public verification gateway, direct verifier, receipt verifier, evidence schema, demo evidence bundle, baseline document, public IPR reference page, and evidence pack verifier.
 
 Updated files:
 
@@ -714,6 +720,7 @@ Updated files:
 - `verify/demo-evidence.json`
 - `verify/baseline.md`
 - `verify/ipr-manuel-coletta.html`
+- `verify-pack/index.html`
 
 Verify remediation outcomes:
 
@@ -727,7 +734,8 @@ Verify remediation outcomes:
 - updated the evidence bundle schema to a privacy-minimal v2 model;
 - updated demo evidence to a synthetic, non-sensitive v2 bundle;
 - updated the verification baseline to include registry v3, fail-closed, no-public-data-custody semantics;
-- minimized the personal IPR verification page and preserved `noindex,nofollow`.
+- minimized the personal IPR verification page and preserved `noindex,nofollow`;
+- hardened `verify-pack/index.html` as client-side, hash-only, fail-closed evidence pack verification.
 
 Updated verify finding status:
 
@@ -736,12 +744,10 @@ Updated verify finding status:
 - `VERIFY-FINDING-003` — REMEDIATED
 - `VERIFY-FINDING-004` — REMEDIATED
 - `VERIFY-FINDING-005` — REMEDIATED
-- `VERIFY-FINDING-006` — IN_REVIEW
+- `VERIFY-FINDING-006` — REMEDIATED
 
 Remaining verify work:
 
-- review `verify-pack/`;
-- review global `schemas/`;
 - check links between registry pages and verify pages;
 - run UI tests for `sha256` query parameters;
 - confirm whether `verify/index.html` and `verify/verify.html` should remain separate long term;
@@ -749,11 +755,53 @@ Remaining verify work:
 
 Verify audit status:
 
-`PARTIALLY_REMEDIATED — FILE-LEVEL VERIFY HARDENING COMPLETED; VERIFY-PACK AND GLOBAL SCHEMA REVIEW PENDING`
+`PARTIALLY_REMEDIATED — FILE-LEVEL VERIFY HARDENING COMPLETED; LINK AND UI REVIEW PENDING`
 
 ---
 
-## 8. Current audit summary
+## 8. Schema remediation update — 2026-05-06
+
+The first schema remediation cycle has been completed for global IPR, receipt, registry entry, and EVT schemas.
+
+Updated files:
+
+- `schemas/ipr.schema.json`
+- `schemas/receipt.schema.json`
+- `schemas/hbce-registry-entry.schema.json`
+- `schemas/hbce-evt.schema.json`
+
+Schema remediation outcomes:
+
+- upgraded IPR schema to `HBCE-IPR-PACKAGE` v2 privacy-minimal model;
+- upgraded receipt schema to `HBCE-RECEIPT` v2 privacy-minimal model;
+- added canonical HBCE registry entry v3 schema;
+- added canonical HBCE EVT operational update schema;
+- introduced minimized public labels such as `subject_label`, `issuer_label`, and `by_label`;
+- standardized `payload_sha256` as the public proof commitment field;
+- added forbidden-field protections against `name`, `nickname`, `territory`, `operator_sha256`, raw identifiers, identity documents, private evidence, secrets, credentials, private keys, production logs, private communications, and sensitive operational payloads;
+- aligned schema posture with `EU_FIRST`, `AUDIT_FIRST`, `HASH_ONLY`, `FAIL_CLOSED`, `GDPR_MIN`, and `NO_PUBLIC_DATA_CUSTODY`.
+
+Updated schema finding status:
+
+- `SCHEMA-FINDING-001` — REMEDIATED
+- `SCHEMA-FINDING-002` — REMEDIATED
+- `SCHEMA-FINDING-003` — REMEDIATED
+- `SCHEMA-FINDING-004` — REMEDIATED
+
+Remaining schema work:
+
+- compare browser-side validation rules against JSON Schema definitions;
+- review protocol documents for schema references;
+- update public pages if they still reference schema v1 terms;
+- decide whether old v1 artifacts remain legacy, archived, or migrated.
+
+Schema audit status:
+
+`PARTIALLY_REMEDIATED — GLOBAL SCHEMA HARDENING COMPLETED; PROTOCOL CONSISTENCY REVIEW PENDING`
+
+---
+
+## 9. Current audit summary
 
 Remediated / completed items:
 
@@ -777,39 +825,43 @@ Remediated / completed items:
 - evidence bundle schema updated;
 - demo evidence bundle updated;
 - verify baseline updated;
-- public IPR reference page minimized.
+- public IPR reference page minimized;
+- verify-pack evidence pack verifier hardened;
+- global IPR schema upgraded;
+- global receipt schema upgraded;
+- canonical registry entry schema added;
+- canonical EVT schema added.
 
 Pending or in-review items:
 
-- `verify-pack/`;
-- global `schemas/`;
 - protocol consistency;
 - GitHub Pages deployment assumptions;
 - dependency and package configuration;
 - environment variable documentation;
 - documentation overclaim review;
 - final registry source-of-truth decision;
-- legacy label/link references across public pages.
+- legacy label/link references across public pages;
+- UI and link testing across modified pages.
 
 ---
 
-## 9. Immediate next actions
+## 10. Immediate next actions
 
 Recommended next actions:
 
-1. Review `verify-pack/`.
-2. Review global `schemas/`.
-3. Create or update canonical registry schemas.
-4. Review deployment and workflow configuration.
-5. Review public pages for legacy references to `nickname`, `operator_sha256`, `territory`, `name`, or raw personal labels.
-6. Confirm absence of committed secrets.
-7. Confirm whether `.env.example` is needed.
-8. Confirm whether `verify/verify.html` should remain as compatibility page or redirect.
+1. Review deployment and workflow configuration.
+2. Review GitHub Pages assumptions.
+3. Review package/dependency configuration, if present.
+4. Confirm absence of committed secrets.
+5. Confirm whether `.env.example` is needed.
+6. Review protocol documents for schema v1/v2/v3 consistency.
+7. Review public pages for legacy references to `nickname`, `operator_sha256`, `territory`, `name`, or raw personal labels.
+8. Run link and UI tests on modified registry, verify, and verify-pack pages.
 9. Update this findings register as each review step is completed.
 
 ---
 
-## 10. Audit-ready event record draft
+## 11. Audit-ready event record draft
 
 ```json
 {
@@ -844,6 +896,7 @@ Recommended next actions:
   ],
   "registry_remediation_status": "PARTIALLY_REMEDIATED",
   "verify_remediation_status": "PARTIALLY_REMEDIATED",
+  "schema_remediation_status": "PARTIALLY_REMEDIATED",
   "registry_files_hardened": [
     "registry/index.html",
     "registry/ledger.json",
@@ -868,7 +921,14 @@ Recommended next actions:
     "verify/schema/evidence-bundle.schema.json",
     "verify/demo-evidence.json",
     "verify/baseline.md",
-    "verify/ipr-manuel-coletta.html"
+    "verify/ipr-manuel-coletta.html",
+    "verify-pack/index.html"
+  ],
+  "schema_files_hardened": [
+    "schemas/ipr.schema.json",
+    "schemas/receipt.schema.json",
+    "schemas/hbce-registry-entry.schema.json",
+    "schemas/hbce-evt.schema.json"
   ],
   "governance_posture": [
     "EU_FIRST",
@@ -880,18 +940,17 @@ Recommended next actions:
     "HUMAN_VALIDATION",
     "RESPONSIBILITY_OWNERSHIP"
   ],
-  "next_action": "Review verify-pack and global schemas",
+  "next_action": "Review deployment, workflows, dependencies, environment handling, and protocol consistency",
   "output_target": "AUDIT_READY_MATRIX_EVENT_RECORD"
 }
 ```
 
 ---
 
-## 11. Maintainer statement
+## 12. Maintainer statement
 
 This findings register is part of a defensive and authorized repository baseline review.
 
 Future updates should remain limited to repository-owned systems, explicitly authorized systems, or synthetic non-sensitive scenarios.
 
 No offensive cybersecurity activity, unauthorized access, exploitation, malware development, credential theft, evasion, data exfiltration, destructive testing, or harmful automation is authorized by this audit.
-
