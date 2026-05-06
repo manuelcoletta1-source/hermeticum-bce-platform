@@ -1,42 +1,26 @@
 {
-  "schema": "EXA-EVIDENCE-PACK-v1",
-  "evidence_id": "11111111-1111-1111-1111-111111111111",
-  "action_id": "00000000-0000-0000-0000-000000000001",
-  "created_at": "2026-02-03T15:20:00.000Z",
-  "hash_algorithm": "SHA-512",
-  "preimage_spec": "stable-json(sorted-keys) of {schema, action, responsibility}",
-  "digest_hex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-  "verifiable_independently": true,
-  "execution_record": null,
-  "notes": {
-    "mode": "OFFLINE_DETERMINISTIC_DEMO",
-    "fail_closed": true,
-    "hash_only": true,
-    "purpose": "Example evidence package for the Verify demo page. Replace digest_hex with actual computed digest when generated.",
-    "requirements": {
-      "REQ-1": "PASS (responsibility declared)",
-      "REQ-2": "PASS (explicit decision statement present)",
-      "REQ-3": "PASS (payload_hash_hex present OR action_type+context present)",
-      "REQ-4": "PASS (cost_marker/liability_marker present)",
-      "REQ-5": "PASS (decision_timestamp <= timestamp_request)"
-    }
+  "proto": "HBCE-EVIDENCE-BUNDLE-v2",
+  "kind": "HBCE_PUBLIC_EVIDENCE_BUNDLE",
+  "policy": [
+    "EU_FIRST",
+    "AUDIT_FIRST",
+    "HASH_ONLY",
+    "FAIL_CLOSED",
+    "GDPR_MIN",
+    "NO_PUBLIC_DATA_CUSTODY"
+  ],
+  "payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "timestamp": "2026-05-06T00:00:00.000Z",
+  "subject_label": "HBCE_PUBLIC_DEMO_001",
+  "record_scope": "VERIFY_DEMO_PUBLIC_PROOF",
+  "PAYLOAD_MIN": {
+    "summary": "Synthetic public verification demo bundle for HBCE Verify. This example contains no real personal data, no private evidence, no credentials, and no sensitive operational payload.",
+    "record_type": "SYNTHETIC_VERIFY_DEMO",
+    "source": "verify/demo-evidence.json",
+    "public_reference": "HBCE_VERIFY_DEMO"
   },
-  "example_preimage_action": {
-    "schema": "EXA-ACTION-v1",
-    "action_id": "00000000-0000-0000-0000-000000000001",
-    "action_type": "EXECUTE_X",
-    "context": "process-Y",
-    "requestor_system": "portal-demo",
-    "timestamp_request": "2026-02-03T15:20:00.000Z",
-    "payload_hash_hex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-    "cost_marker": "LIABILITY-ACK-1"
+  "CONTACT_SIGNALS": {
+    "contact_commitment_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
   },
-  "example_preimage_responsibility": {
-    "schema": "EXA-RESP-v1",
-    "human_subject_id": "HUM-123",
-    "role": "AUTHORIZED_OFFICER",
-    "decision_statement": "Approve execution of X for process-Y",
-    "decision_timestamp": "2026-02-03T15:20:00.000Z",
-    "liability_marker": "RESPONSIBILITY-NON-REVERSIBLE"
-  }
+  "NOTE": "Synthetic evidence bundle for client-side verification testing. Replace payload_sha256 only with a real hash commitment generated from a controlled non-sensitive payload."
 }
