@@ -442,14 +442,14 @@ IN_REVIEW
 ### FINDING-011 — Deployment assumptions require review
 
 Severity: MEDIUM  
-Status: PENDING_REVIEW  
+Status: IN_REVIEW  
 Affected area: GitHub Pages and deployment configuration  
 Affected files:
 
+- `.github/workflows/registry-guard.yml`;
+- `tools/registry-guard.js`;
 - GitHub Pages configuration;
-- workflow files, if present;
-- deployment files, if present;
-- static assets and generated files.
+- static public assets and generated files.
 
 Description:
 
@@ -459,33 +459,49 @@ Why it matters:
 
 A static public deployment cannot enforce private authorization or secure server-side secrets. Documentation and implementation must avoid implying that GitHub Pages provides secure backend enforcement.
 
-Required review:
+Review progress:
 
-- identify GitHub Pages source branch and folder;
+The registry guard workflow and registry guard script have been hardened for registry v3, privacy-minimal records, fail-closed validation, append-only enforcement, and forbidden-field blocking.
+
+Safe remediation / action completed so far:
+
+- hardened `.github/workflows/registry-guard.yml`;
+- restricted workflow permissions to read-only where possible;
+- disabled credential persistence during checkout;
+- expanded workflow paths to include registry and schema files;
+- hardened `tools/registry-guard.js`;
+- aligned guard validation with `HBCE-REGISTRY-v3`;
+- enforced `payload_sha256`;
+- blocked legacy `operator_sha256`;
+- blocked forbidden public fields such as `name`, `nickname`, `territory`, raw identifiers, identity documents, secrets, credentials, private keys, and sensitive operational payloads;
+- enforced append-only behavior for pull requests;
+- enforced non-decreasing timestamps;
+- enforced duplicate `payload_sha256` blocking;
+- documented public proof limitation.
+
+Remaining review:
+
+- confirm GitHub Pages source branch and folder;
 - inspect static assets for secrets or sensitive records;
-- inspect workflows for unsafe token handling;
 - confirm no private evidence is published;
 - confirm no API keys or credentials are embedded;
-- confirm documentation accurately describes public gateway limitations.
-
-Safe remediation:
-
-Move sensitive operations outside the public static layer. Clearly mark static pages as public documentation and verification gateway only.
+- run public-page link and UI checks;
+- confirm deployment documentation accurately describes the public gateway as static and no-custody.
 
 Fail-closed relevance:
 
-Any workflow requiring private authorization, sensitive data, or privileged verification should fail closed outside the public layer.
+Any workflow requiring private authorization, sensitive data, privileged verification, or server-side secrets should fail closed outside the public static layer.
 
 Audit status:
 
-PENDING_REVIEW
+IN_REVIEW
 
 ---
 
 ### FINDING-012 — Dependency and package configuration require review
 
-Severity: MEDIUM  
-Status: PENDING_REVIEW  
+Severity: LOW  
+Status: NOT_APPLICABLE  
 Affected area: Dependencies and project configuration  
 Affected files:
 
@@ -496,47 +512,40 @@ Affected files:
 
 Description:
 
-Dependency and package configuration require review to identify outdated packages, risky scripts, unnecessary dependencies, or build assumptions.
+Dependency and package configuration require review where a package manager, dependency file, or build system is present.
 
 Why it matters:
 
-Dependencies and build scripts may introduce supply-chain risk, unsafe scripts, or deployment inconsistencies.
+Dependencies and build scripts can introduce supply-chain risk, unsafe scripts, unnecessary packages, or deployment inconsistencies.
 
-Required review:
+Review result:
 
-- identify package manager;
-- inspect scripts;
-- inspect dependency list;
-- inspect lockfile presence;
-- check for unnecessary packages;
-- check for unsafe postinstall/build behavior;
-- confirm dependency versions are reasonable;
-- confirm no secrets are included in config.
+At this stage, no root `package.json`, dependency lockfile, or package-managed build configuration has been identified for the public static gateway.
 
-Safe remediation:
+Safe remediation / action completed:
 
-Remove unnecessary dependencies, pin versions where useful, keep lockfiles consistent, and avoid unsafe scripts.
+No dependency remediation is required at this stage. The repository currently operates primarily as a static public gateway with plain HTML, JSON, Markdown, CSS, and browser-side JavaScript.
 
 Fail-closed relevance:
 
-If a required dependency, build step, or configuration is missing or unsafe, the deployment should block or require review.
+If a package-managed build system is introduced later, dependency review should be reopened before treating the build pipeline as clean.
 
 Audit status:
 
-PENDING_REVIEW
+NOT_APPLICABLE
 
 ---
 
 ### FINDING-013 — Environment variable documentation requires review
 
 Severity: MEDIUM  
-Status: PENDING_REVIEW  
+Status: REMEDIATED  
 Affected area: Environment and secret handling  
 Affected files:
 
-- `.env.example`, if present;
-- deployment documentation;
-- README environment sections;
+- `.gitignore`;
+- `.env.example`;
+- environment documentation;
 - runtime configuration files, if present.
 
 Description:
@@ -545,28 +554,23 @@ Environment variable documentation requires review to ensure secrets are documen
 
 Why it matters:
 
-Unsafe environment handling can expose API keys, tokens, credentials, signing keys, or production secrets.
+Unsafe environment handling can expose API keys, tokens, credentials, signing keys, private evidence, or production secrets.
 
-Required review:
+Safe remediation / action completed:
 
-- confirm whether `.env.example` exists;
-- confirm all values are placeholders;
-- confirm no `.env` file is committed;
-- confirm no hardcoded API keys exist;
-- confirm missing variables trigger safe failure;
-- confirm docs explain secure secret storage.
-
-Safe remediation:
-
-Use placeholders only. Add `.env.example` if needed. Add `.env` to `.gitignore` if applicable. Runtime logic should fail closed when required secrets are missing.
+- added `.gitignore` with safeguards against committing `.env`, secret files, private keys, private evidence, identity documents, logs, local build output, dependency folders, temporary files, and local audit workspaces;
+- preserved intentional public artifacts such as public audit files, registry files, schema files, and policy files;
+- added `.env.example` with placeholder-only values;
+- documented that real secrets must be stored only in secure local or deployment environments;
+- documented that API keys, private keys, credentials, tokens, private evidence, and identity documents must not be committed.
 
 Fail-closed relevance:
 
-High. Missing or invalid secrets should not cause insecure defaults.
+High. Missing or invalid secrets should not cause insecure defaults, and real secrets must not be published in the public repository.
 
 Audit status:
 
-PENDING_REVIEW
+REMEDIATED
 
 ---
 
@@ -857,7 +861,35 @@ Policy audit status:
 
 ---
 
-## 10. Current audit summary
+## 10. Environment and secret-handling remediation update — 2026-05-06
+
+The first environment and secret-handling remediation cycle has been completed.
+
+Updated files:
+
+- `.gitignore`
+- `.env.example`
+
+Environment remediation outcomes:
+
+- added repository ignore safeguards for `.env`, local secrets, private evidence, identity documents, logs, temporary files, local audit workspaces, dependency folders, and build outputs;
+- preserved intentional public artifacts such as public audit files, public registry JSON files, public schema JSON files, policy files, and documentation files;
+- added a safe `.env.example` file with placeholder-only values;
+- documented that real secrets must not be committed;
+- documented that OpenAI API keys, private keys, credentials, tokens, identity documents, private evidence, and sensitive operational payloads must remain outside the public repository;
+- clarified example registry and audit environment variables without publishing real values.
+
+Updated environment finding status:
+
+- `FINDING-013` — REMEDIATED
+
+Environment audit status:
+
+`REMEDIATED — SECRET-HANDLING SAFEGUARDS AND PLACEHOLDER ENVIRONMENT DOCUMENTATION ADDED`
+
+---
+
+## 11. Current audit summary
 
 Remediated / completed items:
 
@@ -893,14 +925,15 @@ Remediated / completed items:
 - compliance page aligned;
 - security page aligned;
 - governance page aligned;
-- claims and non-claims page aligned.
+- claims and non-claims page aligned;
+- environment safeguards added;
+- safe `.env.example` added;
+- dependency/package finding marked not applicable for current static public gateway.
 
 Pending or in-review items:
 
 - protocol consistency;
 - GitHub Pages deployment assumptions;
-- dependency and package configuration;
-- environment variable documentation;
 - documentation overclaim review;
 - final registry source-of-truth decision;
 - legacy label/link references across public pages;
@@ -908,24 +941,22 @@ Pending or in-review items:
 
 ---
 
-## 11. Immediate next actions
+## 12. Immediate next actions
 
 Recommended next actions:
 
-1. Review deployment and workflow configuration.
-2. Review GitHub Pages assumptions.
-3. Review package/dependency configuration, if present.
-4. Confirm absence of committed secrets.
-5. Confirm whether `.env.example` is needed.
-6. Review protocol documents for schema v1/v2/v3 consistency.
-7. Review public B2B/B2G, enterprise, AI JOKER-C2, MATRIX, and protocol pages for overclaiming.
-8. Review public pages for legacy references to `nickname`, `operator_sha256`, `territory`, `name`, or raw personal labels.
-9. Run link and UI tests on modified registry, verify, legal, compliance, security, governance, and claims pages.
-10. Update this findings register as each review step is completed.
+1. Review GitHub Pages source branch and deployment settings.
+2. Review static assets for accidental secrets or sensitive material.
+3. Review protocol documents for schema v1/v2/v3 consistency.
+4. Review public B2B/B2G, enterprise, AI JOKER-C2, MATRIX, and protocol pages for overclaiming.
+5. Review public pages for legacy references to `nickname`, `operator_sha256`, `territory`, `name`, or raw personal labels.
+6. Run link and UI tests on modified registry, verify, legal, compliance, security, governance, and claims pages.
+7. Decide whether `ledger.json` or `registry.json` is the long-term canonical source of truth.
+8. Update this findings register as each review step is completed.
 
 ---
 
-## 12. Audit-ready event record draft
+## 13. Audit-ready event record draft
 
 ```json
 {
@@ -947,21 +978,25 @@ Recommended next actions:
     "FINDING-007",
     "FINDING-008",
     "FINDING-009",
+    "FINDING-012",
+    "FINDING-013",
     "FINDING-015"
   ],
   "in_review_findings": [
     "FINDING-010",
+    "FINDING-011",
     "FINDING-014"
   ],
-  "pending_review_findings": [
-    "FINDING-011",
-    "FINDING-012",
-    "FINDING-013"
+  "pending_review_findings": [],
+  "not_applicable_findings": [
+    "FINDING-012"
   ],
   "registry_remediation_status": "PARTIALLY_REMEDIATED",
   "verify_remediation_status": "PARTIALLY_REMEDIATED",
   "schema_remediation_status": "PARTIALLY_REMEDIATED",
   "policy_remediation_status": "PARTIALLY_REMEDIATED",
+  "environment_remediation_status": "REMEDIATED",
+  "dependency_review_status": "NOT_APPLICABLE_STATIC_GATEWAY",
   "registry_files_hardened": [
     "registry/index.html",
     "registry/ledger.json",
@@ -1009,6 +1044,10 @@ Recommended next actions:
     "governance/index.html",
     "claims/index.html"
   ],
+  "environment_files_added": [
+    ".gitignore",
+    ".env.example"
+  ],
   "governance_posture": [
     "EU_FIRST",
     "AUDIT_FIRST",
@@ -1019,14 +1058,14 @@ Recommended next actions:
     "HUMAN_VALIDATION",
     "RESPONSIBILITY_OWNERSHIP"
   ],
-  "next_action": "Review deployment, workflows, dependencies, environment handling, protocol consistency, and remaining public-page overclaims",
+  "next_action": "Review GitHub Pages deployment assumptions, protocol consistency, remaining public-page overclaims, and final source-of-truth decision",
   "output_target": "AUDIT_READY_MATRIX_EVENT_RECORD"
 }
 ```
 
 ---
 
-## 13. Maintainer statement
+## 14. Maintainer statement
 
 This findings register is part of a defensive and authorized repository baseline review.
 
