@@ -1,14 +1,93 @@
 {
-  "network": "hbce",
-  "version": "1.0",
+  "proto": "HBCE-REGISTRY-v3",
+  "kind": "HBCE_PUBLIC_NODE_REGISTRY",
+  "network": "EU",
+  "mode": "APPEND_ONLY_PUBLIC_REGISTRY",
+  "issuer": {
+    "hallmark": "HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA",
+    "legal": "HERMETICUM B.C.E. S.r.l.",
+    "symbol": "🜏"
+  },
+  "jurisdiction": "EU",
+  "status": "ACTIVE",
+  "policy": [
+    "HASH_ONLY",
+    "APPEND_ONLY",
+    "FAIL_CLOSED",
+    "UE_FIRST",
+    "AUDIT_FIRST",
+    "GDPR_MIN",
+    "NO_PUBLIC_DATA_CUSTODY"
+  ],
+  "rules": {
+    "public_data": "MINIMIZED_PUBLIC_METADATA",
+    "write_mode": "MANUAL_APPEND_ONLY",
+    "verification": "DETERMINISTIC_RECORD_REVIEW",
+    "failure_mode": "FAIL_CLOSED",
+    "empty_entries": "NO_PUBLIC_NODE_RECORD",
+    "private_evidence_policy": "PRIVATE_EVIDENCE_OUTSIDE_PUBLIC_REGISTRY",
+    "sensitive_infrastructure_policy": "NO_PRIVATE_ENDPOINTS_OR_SECRETS_IN_PUBLIC_NODE_REGISTRY"
+  },
+  "privacy_note": "This public node registry must not store private endpoints, credentials, secrets, private keys, production logs, internal network details, sensitive infrastructure topology, or non-public operational payloads. Public node records should use minimized public labels and high-level operational metadata only.",
+  "created_at": "2026-02-01T00:00:00.000Z",
+  "last_update": "2026-05-06T00:00:00.000Z",
+  "empty_registry_interpretation": "An empty nodes array means no public node records are currently available in this registry file. It does not certify infrastructure inactivity or security status by itself.",
+  "schema": {
+    "node_required": [
+      "node_label",
+      "environment",
+      "identity_layer",
+      "coordination_engine",
+      "status",
+      "description"
+    ],
+    "node_optional": [
+      "record_scope",
+      "note"
+    ],
+    "constraints": {
+      "node_label": "Public minimal node label only; must not expose internal hostnames, private IPs, secrets, or sensitive infrastructure topology",
+      "environment": "Public environment label only",
+      "identity_layer": "Public architecture label only",
+      "coordination_engine": "Public architecture label only",
+      "status": "ACTIVE | INACTIVE | SUSPENDED | EXPERIMENTAL | PLANNED",
+      "description": "High-level public description only"
+    },
+    "forbidden_public_fields": [
+      "private_ip",
+      "internal_hostname",
+      "secret",
+      "api_key",
+      "token",
+      "password",
+      "private_key",
+      "credential",
+      "ssh_key",
+      "database_url",
+      "admin_url",
+      "internal_endpoint",
+      "production_log",
+      "sensitive_topology"
+    ]
+  },
+  "verification": {
+    "rule": "Public node entries must be treated as descriptive registry metadata unless independently verified by a canonical proof record.",
+    "valid_result": "PUBLIC_NODE_RECORD_PRESENT",
+    "invalid_result": "INVALID",
+    "missing_result": "NO_PUBLIC_NODE_RECORD",
+    "non_operational_result": "NON_OPERATIONAL",
+    "fail_closed_rule": "Missing, malformed, ambiguous, or inconsistent node registry state must not produce operational certainty."
+  },
   "nodes": [
     {
-      "node_id": "hbce-node-001",
+      "node_label": "HBCE_PUBLIC_NODE_001",
       "environment": "hbce-platform",
       "identity_layer": "ipr",
       "coordination_engine": "joker-c2",
-      "status": "active",
-      "description": "HBCE primary infrastructure node"
+      "status": "EXPERIMENTAL",
+      "description": "HBCE primary public infrastructure node record for documentation and governance review.",
+      "record_scope": "PUBLIC_NODE_METADATA",
+      "note": "This public node record is descriptive and does not expose private endpoints, internal topology, credentials, secrets, or privileged infrastructure access."
     }
   ]
 }
