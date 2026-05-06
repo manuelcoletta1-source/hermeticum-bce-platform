@@ -1,68 +1,120 @@
 /* =========================================================
-   HBCE NAV INJECTOR — CANONICAL
-   - Uniform header/footer across all pages
-   - Active link highlight
+   HBCE NAV — COMPATIBILITY ENHANCER
+   - No DOM shell injection
+   - No automatic header/footer generation
+   - No legacy route injection
+   - Progressive enhancement only
+   - Compatible with registry v3 / no-public-data-custody model
    ========================================================= */
-(function(){
+
+(function () {
   "use strict";
 
-  function normPath(p){
-    try{
-      const u = new URL(p, window.location.origin);
-      return u.pathname.replace(/\/+$/,"") || "/";
-    }catch{
-      return (p||"/").replace(/\/+$/,"") || "/";
+  if (document.documentElement.getAttribute("data-hbce-nav") === "1") return;
+  document.documentElement.setAttribute("data-hbce-nav", "1");
+
+  function normPath(path) {
+    try {
+      const url = new URL(path, window.location.origin);
+      return url.pathname.replace(/\/+$/, "") || "/";
+    } catch {
+      return String(path || "/").replace(/\/+$/, "") || "/";
     }
   }
 
-  function isActive(href){
-    const here = normPath(window.location.pathname);
-    const target = normPath(href);
-    if(target==="/") return here==="/";
-    return here===target || here.startsWith(target + "/");
+  function isSameOrigin(href) {
+    try {
+      const url = new URL(href, window.location.href);
+      return url.origin === window.location.origin;
+    } catch {
+      return false;
+    }
   }
 
-  const links = [
-    { href: "/", label: "Home" },
-    { href: "/about/", label: "About" },
-    { href: "/pricing/", label: "Pricing" },
-    { href: "/contact/", label: "Intake" }
-  ];
+  function isActive(href) {
+    if (!href) return false;
 
-  const header = document.createElement("header");
-  header.className = "hbce-header";
-  header.innerHTML = `
-    <div class="hbce-header__row">
-      <a class="hbce-brand" href="/">
-        <strong>HBCE</strong>
-        <span>Operational Identity Infrastructure</span>
-      </a>
-      <nav class="hbce-nav">
-        ${links.map(l => `<a href="${l.href}" data-href="${l.href}">${l.label}</a>`).join("")}
-      </nav>
-    </div>
-  `;
+    const current = normPath(window.location.pathname);
 
-  const footer = document.createElement("footer");
-  footer.className = "hbce-footer";
-  footer.innerHTML = `
-    <div class="hbce-footer__row hbce-container" style="padding-top:0;padding-bottom:0">
-      <div>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA<br><span class="hbce-muted">HERMETICUM B.C.E. S.r.l.</span></div>
-      <div class="hbce-footer__links">
-        <a href="/about/">About</a>
-        <a href="/pricing/">Pricing</a>
-        <a href="/contact/">Intake</a>
-      </div>
-    </div>
-  `;
+    let target;
 
-  document.body.prepend(header);
-  document.body.append(footer);
-
-  // active link
-  Array.from(header.querySelectorAll("a[data-href]")).forEach(a=>{
-    if(isActive(a.getAttribute("data-href"))){
-      a.classList.add("is-active");
+    try {
+      const url = new URL(href, window.location.href);
+      if (url.origin !== window.location.origin) return false;
+      target = normPath(url.pathname);
+    } catch {
+      target = normPath(href);
     }
-  });
+
+    if (target === "/") return current === "/";
+    return current === target || current.startsWith(target + "/");
+  }
+
+  function enhanceNavs() {
+    const navs = Array.from(document.querySelectorAll(".hbce-nav"));
+
+    navs.forEach((nav) => {
+      if (!nav.getAttribute("aria-label")) {
+        nav.setAttribute("aria-label", "HBCE navigation");
+      }
+
+      const links = Array.from(nav.querySelectorAll("a[href]"));
+
+      links.forEach((link) => {
+        const href = link.getAttribute("href");
+        if (!href) return;
+
+        if (link.classList.contains("is-active")) {
+          link.setAttribute("aria-current", "page");
+          return;
+        }
+
+        if (isActive(href)) {
+          link.classList.add("is-active");
+          link.setAttribute("aria-current", "page");
+        }
+      });
+    });
+  }
+
+  function hardenExternalLinks() {
+    const links = Array.from(document.querySelectorAll("a[href]"));
+
+    links.forEach((link) => {
+      const href = link.getAttribute("href");
+      if (!href) return;
+
+      const isHttp = href.startsWith("http://") || href.startsWith("https://");
+      if (!isHttp) return;
+      if (isSameOrigin(href)) return;
+
+      const rel = (link.getAttribute("rel") || "").trim();
+      const relTokens = new Set(rel.split(/\s+/).filter(Boolean));
+
+      relTokens.add("noopener");
+      relTokens.add("noreferrer");
+
+      link.setAttribute("rel", Array.from(relTokens).join(" "));
+
+      if (!link.getAttribute("target")) {
+        link.setAttribute("target", "_blank");
+      }
+    });
+  }
+
+  function markLegacyNavScript() {
+    document.documentElement.setAttribute("data-hbce-nav-mode", "compatibility-no-injection");
+  }
+
+  function init() {
+    markLegacyNavScript();
+    enhanceNavs();
+    hardenExternalLinks();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init, { once: true });
+  } else {
+    init();
+  }
 })();
