@@ -1,18 +1,19 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/schemas/ipr.schema.json",
-  "title": "AI_JOKER_C2 IPR_PACKAGE v1",
+  "title": "HBCE IPR Package — Privacy-Minimal v2",
+  "description": "Schema for a privacy-minimal HBCE IPR package. The schema is designed for EU-first, audit-first, hash-only, fail-closed, no-public-data-custody workflows. It forbids raw personal identifiers, identity documents, secrets, credentials, private keys, production logs, and sensitive operational payloads.",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "proto",
-    "type",
+    "kind",
     "version",
-    "issuer",
+    "issuer_label",
     "seal",
     "issued_at",
     "level",
-    "subject",
+    "subject_label",
     "purpose",
     "policy",
     "consent",
@@ -20,75 +21,314 @@
     "audit"
   ],
   "properties": {
-    "proto": { "type": "string", "const": "AI_JOKER_C2" },
-    "type": { "type": "string", "const": "IPR_PACKAGE" },
-    "version": { "type": "string", "const": "v1" },
-
-    "issuer": { "type": "string", "minLength": 1 },
-    "seal": { "type": "string", "const": "HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA" },
-    "issued_at": { "type": "string", "format": "date-time" },
-
-    "level": { "type": "string", "enum": ["BASIC", "STRONG", "INSTITUTION"] },
-    "subject": { "type": "string", "pattern": "^ipr-subject:[a-f0-9]{32}$" },
-
-    "purpose": { "type": "string", "minLength": 3, "maxLength": 200 },
-
+    "proto": {
+      "type": "string",
+      "const": "HBCE-IPR-PACKAGE"
+    },
+    "kind": {
+      "type": "string",
+      "const": "IPR_PUBLIC_PROOF_PACKAGE"
+    },
+    "version": {
+      "type": "string",
+      "const": "v2"
+    },
+    "issuer_label": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 96,
+      "pattern": "^[A-Z0-9_\\-:.]+$",
+      "description": "Public minimized issuer label. Must not contain raw personal identifiers or private evidence."
+    },
+    "seal": {
+      "type": "string",
+      "const": "HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA"
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "level": {
+      "type": "string",
+      "enum": [
+        "BASIC",
+        "STRONG",
+        "INSTITUTION",
+        "OPERATOR",
+        "NODE",
+        "ENTERPRISE"
+      ]
+    },
+    "subject_label": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 96,
+      "pattern": "^[A-Z0-9_\\-:.]+$",
+      "description": "Public minimized subject label. Must not contain names, tax codes, emails, phone numbers, document numbers, or private identifiers."
+    },
+    "payload_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Optional public hash commitment for the canonical package or controlled proof artifact."
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 240
+    },
     "policy": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["UE_FIRST", "GDPR_MIN", "HASH_ONLY", "FAIL_CLOSED", "AUDIT_APPEND_ONLY"],
+      "required": [
+        "EU_FIRST",
+        "GDPR_MIN",
+        "HASH_ONLY",
+        "FAIL_CLOSED",
+        "AUDIT_APPEND_ONLY",
+        "NO_PUBLIC_DATA_CUSTODY"
+      ],
       "properties": {
-        "UE_FIRST": { "type": "boolean", "const": true },
-        "GDPR_MIN": { "type": "boolean", "const": true },
-        "HASH_ONLY": { "type": "boolean", "const": true },
-        "FAIL_CLOSED": { "type": "boolean", "const": true },
-        "AUDIT_APPEND_ONLY": { "type": "boolean", "const": true }
+        "EU_FIRST": {
+          "type": "boolean",
+          "const": true
+        },
+        "UE_FIRST": {
+          "type": "boolean",
+          "const": true
+        },
+        "GDPR_MIN": {
+          "type": "boolean",
+          "const": true
+        },
+        "HASH_ONLY": {
+          "type": "boolean",
+          "const": true
+        },
+        "FAIL_CLOSED": {
+          "type": "boolean",
+          "const": true
+        },
+        "AUDIT_APPEND_ONLY": {
+          "type": "boolean",
+          "const": true
+        },
+        "NO_PUBLIC_DATA_CUSTODY": {
+          "type": "boolean",
+          "const": true
+        }
       }
     },
-
     "consent": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["scope", "duration_days", "acknowledged"],
+      "required": [
+        "scope",
+        "duration_days",
+        "acknowledged"
+      ],
       "properties": {
-        "scope": { "type": "string", "enum": ["AI_ACCOUNTABILITY", "PROOF_OF_EXISTENCE", "AUDIT_TRAIL"] },
-        "duration_days": { "type": "integer", "minimum": 1, "maximum": 3650 },
-        "note": { "type": ["string", "null"], "maxLength": 280 },
-        "acknowledged": { "type": "boolean", "const": true }
+        "scope": {
+          "type": "string",
+          "enum": [
+            "AI_ACCOUNTABILITY",
+            "PROOF_OF_EXISTENCE",
+            "AUDIT_TRAIL",
+            "PUBLIC_PROOF_COMMITMENT",
+            "OPERATIONAL_IDENTITY_RESEARCH"
+          ]
+        },
+        "duration_days": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3650
+        },
+        "note": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 280
+        },
+        "acknowledged": {
+          "type": "boolean",
+          "const": true
+        }
       }
     },
-
     "context": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "hash_sha256", "fields_present"],
+      "required": [
+        "kind",
+        "context_sha256",
+        "fields_present"
+      ],
       "properties": {
-        "kind": { "type": "string", "const": "COARSE_GEO" },
-        "hash_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "PUBLIC_CONTEXT_COMMITMENT",
+            "COARSE_GEO_COMMITMENT",
+            "INSTITUTIONAL_CONTEXT_COMMITMENT",
+            "RESEARCH_CONTEXT_COMMITMENT"
+          ]
+        },
+        "context_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
         "fields_present": {
           "type": "array",
-          "items": { "type": "string", "enum": ["country", "region", "city", "district"] },
+          "items": {
+            "type": "string",
+            "enum": [
+              "country",
+              "region",
+              "city",
+              "public_label",
+              "institutional_context",
+              "research_context"
+            ]
+          },
           "uniqueItems": true
         }
       }
     },
-
-    "notes": { "type": ["string", "null"], "maxLength": 2000 },
-
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 2000
+    },
     "audit": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["evt", "at", "by", "hash_sha256"],
+        "required": [
+          "evt",
+          "at",
+          "by_label",
+          "hash_sha256"
+        ],
         "properties": {
-          "evt": { "type": "string", "minLength": 3, "maxLength": 64 },
-          "at": { "type": "string", "format": "date-time" },
-          "by": { "type": "string", "minLength": 3, "maxLength": 64 },
-          "hash_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+          "evt": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 64
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "by_label": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 96,
+            "pattern": "^[A-Z0-9_\\-:.]+$"
+          },
+          "hash_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
         }
       }
     }
+  },
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "name"
+        ]
+      },
+      {
+        "required": [
+          "nickname"
+        ]
+      },
+      {
+        "required": [
+          "territory"
+        ]
+      },
+      {
+        "required": [
+          "raw_identifier"
+        ]
+      },
+      {
+        "required": [
+          "tax_code"
+        ]
+      },
+      {
+        "required": [
+          "fiscal_code"
+        ]
+      },
+      {
+        "required": [
+          "identity_document"
+        ]
+      },
+      {
+        "required": [
+          "private_evidence"
+        ]
+      },
+      {
+        "required": [
+          "personal_payload"
+        ]
+      },
+      {
+        "required": [
+          "api_key"
+        ]
+      },
+      {
+        "required": [
+          "token"
+        ]
+      },
+      {
+        "required": [
+          "password"
+        ]
+      },
+      {
+        "required": [
+          "secret"
+        ]
+      },
+      {
+        "required": [
+          "private_key"
+        ]
+      },
+      {
+        "required": [
+          "credential"
+        ]
+      },
+      {
+        "required": [
+          "production_log"
+        ]
+      },
+      {
+        "required": [
+          "private_communication"
+        ]
+      },
+      {
+        "required": [
+          "sensitive_operational_payload"
+        ]
+      }
+    ]
   }
 }
