@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/schemas/hbce-registry-entry.schema.json",
+  "title": "HBCE Registry Entry — v3 Privacy-Minimal",
+  "description": "Canonical JSON Schema for HBCE public registry entries. The schema enforces payload_sha256, minimized public labels, fail-closed registry semantics, and no public custody of sensitive personal or operational data.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "entity_type",
+    "subject_label",
+    "payload_sha256",
+    "timestamp",
+    "status"
+  ],
+  "properties": {
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "PUBLIC_IDENTITY_COMMITMENT",
+        "PUBLIC_OPERATOR_COMMITMENT",
+        "PUBLIC_CONTINUITY_CERTIFICATE",
+        "PUBLIC_NODE_COMMITMENT",
+        "PUBLIC_EVENT_COMMITMENT",
+        "HBCE_PUBLIC_PROOF"
+      ],
+      "description": "Public record category."
+    },
+    "subject_label": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 96,
+      "pattern": "^[A-Z0-9_\\-:.]+$",
+      "description": "Public minimized label only. Must not contain real names, tax codes, emails, phone numbers, identity document numbers, private identifiers, or private evidence."
+    },
+    "record_scope": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[A-Z0-9_\\-:.]+$",
+      "description": "Optional public scope label."
+    },
+    "payload_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 public proof commitment."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 / RFC 3339 timestamp."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ACTIVE",
+        "REVOKED",
+        "SUSPENDED"
+      ],
+      "description": "Public lifecycle status."
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 512,
+      "description": "Optional public note. Must not include personal data, secrets, credentials, private evidence, or sensitive operational payloads."
+    }
+  },
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "name"
+        ]
+      },
+      {
+        "required": [
+          "nickname"
+        ]
+      },
+      {
+        "required": [
+          "territory"
+        ]
+      },
+      {
+        "required": [
+          "operator_sha256"
+        ]
+      },
+      {
+        "required": [
+          "raw_identifier"
+        ]
+      },
+      {
+        "required": [
+          "tax_code"
+        ]
+      },
+      {
+        "required": [
+          "fiscal_code"
+        ]
+      },
+      {
+        "required": [
+          "identity_document"
+        ]
+      },
+      {
+        "required": [
+          "private_evidence"
+        ]
+      },
+      {
+        "required": [
+          "personal_payload"
+        ]
+      },
+      {
+        "required": [
+          "api_key"
+        ]
+      },
+      {
+        "required": [
+          "token"
+        ]
+      },
+      {
+        "required": [
+          "password"
+        ]
+      },
+      {
+        "required": [
+          "secret"
+        ]
+      },
+      {
+        "required": [
+          "private_key"
+        ]
+      },
+      {
+        "required": [
+          "credential"
+        ]
+      },
+      {
+        "required": [
+          "production_log"
+        ]
+      },
+      {
+        "required": [
+          "private_communication"
+        ]
+      },
+      {
+        "required": [
+          "sensitive_operational_payload"
+        ]
+      }
+    ]
+  }
+}
