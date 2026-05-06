@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>Verify — IPR Verification Gateway of the HBCE System</title>
-  <meta name="description" content="Verify identity state and deterministic proof inside the HBCE system. Public IPR check and technical PASS / FAIL verification." />
+  <title>Verify — Public Proof Verification Gateway of the HBCE System</title>
+  <meta name="description" content="HBCE Verify gateway. Registry v3 public proof lookup, payload_sha256 verification, deterministic SHA-256 comparison, hash-only and fail-closed." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
@@ -24,15 +24,31 @@
       border-radius:12px;
       padding:10px 12px;
       outline:none;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size:.92rem;
     }
-    .hbce-field:focus{ border-color: rgba(255,255,255,.30); }
+
+    .hbce-field:focus{
+      border-color:rgba(255,255,255,.30);
+    }
+
     .hbce-kv{
       display:grid;
-      grid-template-columns:140px 1fr;
+      grid-template-columns:160px 1fr;
       gap:8px;
       margin-top:10px;
     }
-    pre{white-space:pre-wrap;word-break:break-word;margin:0;}
+
+    pre{
+      white-space:pre-wrap;
+      word-break:break-word;
+      margin:0;
+    }
+
+    .hbce-small{
+      font-size:.88rem;
+      line-height:1.55;
+    }
   </style>
 </head>
 
@@ -59,72 +75,89 @@
       </header>
 
       <section class="hbce-section hbce-hero">
-        <div class="hbce-hero__kicker">VERIFY · IPR · PASS / FAIL · HASH-ONLY · FAIL-CLOSED</div>
-        <h1 class="hbce-hero__title">Identity and proof verification gateway</h1>
+        <div class="hbce-hero__kicker">VERIFY · REGISTRY-v3 · PAYLOAD_SHA256 · HASH-ONLY · FAIL-CLOSED</div>
+        <h1 class="hbce-hero__title">Public proof verification gateway</h1>
         <p class="hbce-hero__lead">
-          <b>Verify</b> is the verification gateway of the HBCE system.
+          <b>Verify</b> is the public proof verification gateway of the HBCE system.
           It exposes two complementary surfaces:
           <br/><br/>
-          <b>Public verification</b> checks the visible state of an IPR identity object.
+          <b>Registry verification</b> checks whether a <code>payload_sha256</code> commitment is present in the public registry.
           <br/>
-          <b>Technical verification</b> reproduces deterministic proof through exact byte hashing and strict PASS / FAIL logic.
+          <b>Technical verification</b> computes SHA-256 over local text and compares it with an expected hash.
           <br/><br/>
-          Missing, invalid, or non-reproducible states are treated as failure by design.
+          Missing, invalid, malformed, ambiguous, or non-reproducible states are treated as failure by design.
         </p>
 
+        <div class="hbce-card hbce-small" style="margin-top:14px;">
+          <div class="hbce-mono">PUBLIC VERIFICATION LIMIT</div>
+          <p class="hbce-muted" style="margin-bottom:0;">
+            A public registry match means that a public proof commitment is present.
+            It does not replace private evidence review, identity verification, contractual qualification,
+            legal authorization, or institutional validation.
+          </p>
+        </div>
+
         <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-          <a class="hbce-btn hbce-btn--primary" href="#public-verify">Verify IPR ID</a>
+          <a class="hbce-btn hbce-btn--primary" href="#registry-verify">Registry verify</a>
           <a class="hbce-btn" href="#technical-verify">Technical verify</a>
           <a class="hbce-btn" href="../registry/">Open registry</a>
           <a class="hbce-btn" href="../joker-c2/">Enter runtime</a>
         </div>
       </section>
 
-      <section id="public-verify" class="hbce-section">
+      <section id="registry-verify" class="hbce-section">
         <div class="hbce-card">
-          <h2>Public IPR verification</h2>
+          <h2>Registry public proof verification</h2>
           <p class="hbce-muted">
-            This surface is designed for readable identity-state checks.
-            Insert an IPR identifier and inspect the visible result.
-            In the MVP, this page performs a strict local-format check and returns a visible state response.
+            This surface checks whether a <code>payload_sha256</code> commitment is present in the HBCE public registry.
+            The verification source is <code>registry/registry.json</code> and must satisfy the registry v3 fail-closed schema.
           </p>
 
           <div class="hbce-grid hbce-grid--2" style="margin-top:14px;">
 
             <div class="hbce-card">
               <div class="hbce-mono">INPUT</div>
-              <h3>IPR identifier</h3>
+              <h3>payload_sha256 or JSON object</h3>
               <p class="hbce-muted">
-                Insert an IPR ID in canonical format. Example:
-                <span class="hbce-mono">IPR-USER-002341</span>
+                Insert a 64-character lowercase SHA-256 value, or paste a JSON object containing <code>payload_sha256</code>.
+                If the JSON does not contain <code>payload_sha256</code>, the verifier computes a local SHA-256 commitment from the JSON after removing common hash-output fields.
               </p>
 
+              <label class="hbce-muted" for="publicHash">payload_sha256</label>
               <input
-                id="iprId"
-                class="hbce-field hbce-mono"
-                placeholder="IPR-USER-002341" />
+                id="publicHash"
+                class="hbce-field"
+                placeholder="64-character lowercase sha256" />
+
+              <label class="hbce-muted" for="publicJson" style="display:block;margin-top:12px;">JSON object — optional</label>
+              <textarea
+                id="publicJson"
+                class="hbce-field"
+                rows="10"
+                placeholder='{"payload_sha256":"64-character lowercase sha256", ...}'></textarea>
 
               <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
-                <button class="hbce-btn hbce-btn--primary" type="button" id="runPublicVerify">Run public verify</button>
-                <button class="hbce-btn" type="button" id="resetPublicVerify">Reset</button>
+                <button class="hbce-btn hbce-btn--primary" type="button" id="runRegistryVerify">Run registry verify</button>
+                <button class="hbce-btn" type="button" id="resetRegistryVerify">Reset</button>
               </div>
             </div>
 
             <div class="hbce-card">
               <div class="hbce-mono">RESULT</div>
-              <h3>Visible identity state</h3>
+              <h3>Public proof state</h3>
               <p class="hbce-muted">
-                Public verification returns a readable state. Missing or invalid identifiers are treated as failure.
+                Missing match returns <code>NO_PUBLIC_RECORD</code>.
+                Invalid registry state returns <code>NON_OPERATIONAL</code>.
               </p>
 
               <div class="hbce-card" style="margin-top:12px">
                 <div class="hbce-muted">Status</div>
-                <div style="font-size:1.15rem;font-weight:700;letter-spacing:.02em" id="publicStatus">MISSING INPUT</div>
+                <div style="font-size:1.15rem;font-weight:700;letter-spacing:.02em" id="registryStatus">MISSING INPUT</div>
 
-                <div class="hbce-kv" id="publicKV" style="margin-top:12px"></div>
+                <div class="hbce-kv" id="registryKV" style="margin-top:12px"></div>
 
-                <div class="hbce-mono hbce-muted" style="margin-top:10px;">
-                  In the current MVP, this surface validates canonical identifier structure and returns a public state response.
+                <div class="hbce-card" style="margin-top:12px">
+                  <pre class="hbce-mono hbce-muted" id="registryDetails">—</pre>
                 </div>
               </div>
             </div>
@@ -139,18 +172,16 @@
           <p class="hbce-muted">
             Verification is not a standalone utility.
             It is the reconstruction layer of the HBCE system:
-            identity establishes attributable state,
-            registry exposes public proof,
-            and verification reproduces deterministic comparison or visible identity status.
+            registry exposes public proof commitments, while verification reproduces deterministic comparison or public proof lookup.
           </p>
 
-          <pre><code>IPR ID / RELEASE
+          <pre><code>LOCAL RECORD OR PAYLOAD_SHA256
 ↓
-VISIBLE STATE OR SHA-256(UTF8(as-is))
+SHA-256 COMMITMENT / REGISTRY LOOKUP
 ↓
-PUBLIC PROOF / EXPECTED CONDITION
+PUBLIC PROOF SOURCE
 ↓
-VALID / FAIL</code></pre>
+PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
         </div>
       </section>
 
@@ -158,24 +189,23 @@ VALID / FAIL</code></pre>
         <div class="hbce-card">
           <h2>Technical deterministic verification</h2>
           <p class="hbce-muted">
-            Paste the local release content exactly as stored and compare it against the expected public hash.
-            No normalization is applied.
-            Determinism requires byte-level equivalence.
+            Paste local content exactly as stored and compare it against the expected SHA-256 value.
+            This tool hashes the exact UTF-8 text inserted by the user. No normalization is applied.
           </p>
 
           <div class="hbce-grid hbce-grid--3" style="margin-top:14px">
 
             <div class="hbce-card">
               <div class="hbce-mono">INPUT 01</div>
-              <h3>Local release text</h3>
+              <h3>Local text</h3>
               <p class="hbce-muted">
-                Paste the full content of the release object under holder custody.
+                Paste the full local text to hash. This may be a local release object, manifest, receipt, or controlled proof artifact.
               </p>
               <textarea
                 id="release"
-                class="hbce-field hbce-mono"
+                class="hbce-field"
                 rows="10"
-                placeholder='{"proto":"HBCE-CORE-v3","kind":"IPR_BASE_RELEASE",...}'></textarea>
+                placeholder='{"proto":"HBCE-REGISTRY-v3","kind":"PUBLIC_PROOF_COMMITMENT",...}'></textarea>
 
               <div class="hbce-mono hbce-kv">
                 <span class="hbce-muted">bytes</span><span id="statBytes">0</span>
@@ -187,15 +217,15 @@ VALID / FAIL</code></pre>
               <div class="hbce-mono">INPUT 02</div>
               <h3>Expected proof hash</h3>
               <p class="hbce-muted">
-                Paste the expected SHA-256 from the public registry state.
+                Paste the expected SHA-256 from the public registry or controlled proof record.
               </p>
               <input
                 id="expected"
-                class="hbce-field hbce-mono"
-                placeholder="expected sha256 (64 lowercase hex chars)" />
+                class="hbce-field"
+                placeholder="expected sha256 — 64 lowercase hex chars" />
 
               <div class="hbce-muted hbce-mono" style="margin-top:10px;">
-                Lowercase hex only. Invalid format results in FAIL.
+                Lowercase hex only. Invalid format returns FAIL.
               </div>
 
               <div class="hbce-card" style="margin-top:12px">
@@ -210,7 +240,7 @@ VALID / FAIL</code></pre>
               <div class="hbce-mono">INPUT 03</div>
               <h3>Run technical verification</h3>
               <p class="hbce-muted">
-                Execute deterministic comparison between local release bytes and expected public proof.
+                Execute deterministic comparison between local text bytes and expected public proof.
               </p>
 
               <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
@@ -244,11 +274,11 @@ VALID / FAIL</code></pre>
             <div class="hbce-mono">RULE</div>
             <h3>No normalization</h3>
             <p class="hbce-muted">
-              The technical verifier hashes the exact bytes provided by the user.
+              The technical verifier hashes the exact UTF-8 bytes provided by the user.
               Determinism requires byte-level equivalence.
             </p>
             <div class="hbce-mono hbce-muted">
-              SHA-256(UTF8(release_text_as-is))
+              SHA-256(UTF8(text_as_inserted))
             </div>
           </div>
 
@@ -256,21 +286,22 @@ VALID / FAIL</code></pre>
             <div class="hbce-mono">FAIL-CLOSED</div>
             <h3>Missing means failure</h3>
             <p class="hbce-muted">
-              Missing release text, invalid identifier format, invalid hash format, or mismatch always produce failure.
+              Missing text, invalid hash format, invalid registry state, no public match, or mismatch never produces implicit validity.
             </p>
             <div class="hbce-mono hbce-muted">
               missing → FAIL<br/>
               invalid → FAIL<br/>
-              mismatch → FAIL
+              mismatch → FAIL<br/>
+              no registry match → NO_PUBLIC_RECORD
             </div>
           </div>
 
           <div class="hbce-card">
             <div class="hbce-mono">NEXT</div>
-            <h3>Use the result operationally</h3>
+            <h3>Use the result carefully</h3>
             <p class="hbce-muted">
-              Valid proof means the visible or technical state can be trusted.
-              Failure means the infrastructure state must not be trusted.
+              Public proof presence confirms only that a public proof commitment exists.
+              It does not replace private evidence, legal validation, operator qualification, or institutional review.
             </p>
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
               <a class="hbce-btn" href="../registry/">Open Registry</a>
@@ -284,7 +315,7 @@ VALID / FAIL</code></pre>
       <footer class="hbce-footer">
         <div class="hbce-footer__row">
           <div class="hbce-muted">
-            <span class="hbce-mono">VERIFY</span> — identity and deterministic verification gateway of the HBCE system
+            <span class="hbce-mono">VERIFY</span> — public proof and deterministic verification gateway of the HBCE system
           </div>
           <div class="hbce-footer__links">
             <a href="../activate/">Activate</a>
@@ -300,144 +331,371 @@ VALID / FAIL</code></pre>
   </div>
 
   <script>
-  function toHex(buf){
-    const bytes = new Uint8Array(buf);
-    let out = "";
-    for (let i = 0; i < bytes.length; i++){
-      out += bytes[i].toString(16).padStart(2, "0");
-    }
-    return out;
-  }
+  (function(){
+    "use strict";
 
-  function isSha256Hex(s){
-    return /^[0-9a-f]{64}$/.test(s);
-  }
+    const REGISTRY_URL = new URL("../registry/registry.json", window.location.href).href;
+    const EXPECTED_PROTO = "HBCE-REGISTRY-v3";
+    const EXPECTED_FAILURE_MODE = "FAIL_CLOSED";
+    const EXPECTED_PUBLIC_DATA = "HASH_ONLY";
 
-  function isCanonicalIprId(s){
-    return /^IPR-[A-Z0-9]+(?:-[A-Z0-9]+)+$/i.test(s);
-  }
+    const FORBIDDEN_PUBLIC_FIELDS = [
+      "name",
+      "nickname",
+      "territory",
+      "raw_identifier",
+      "identity_document",
+      "private_evidence",
+      "personal_payload",
+      "api_key",
+      "token",
+      "password",
+      "secret",
+      "private_key",
+      "credential",
+      "production_log",
+      "private_communication",
+      "sensitive_operational_payload",
+      "private_ip",
+      "internal_hostname",
+      "internal_endpoint",
+      "admin_url",
+      "database_url",
+      "ssh_key"
+    ];
 
-  function setStatus(label, computed, compare){
-    document.getElementById("status").textContent = label;
-    document.getElementById("computed").textContent = computed || "—";
-    document.getElementById("compare").textContent = compare || "—";
-  }
+    const $ = (id) => document.getElementById(id);
 
-  function setPublicStatus(label, map){
-    document.getElementById("publicStatus").textContent = label;
-    const kv = document.getElementById("publicKV");
-    kv.innerHTML = "";
-    for (const [k, v] of Object.entries(map || {})){
-      const a = document.createElement("div");
-      a.className = "hbce-muted";
-      a.textContent = k;
-      const b = document.createElement("div");
-      b.textContent = v;
-      kv.append(a, b);
-    }
-  }
-
-  async function sha256HexFromText(text){
-    const enc = new TextEncoder();
-    const data = enc.encode(text);
-    const digest = await crypto.subtle.digest("SHA-256", data);
-    return toHex(digest);
-  }
-
-  function updateStats(){
-    const t = document.getElementById("release").value || "";
-    const bytes = new TextEncoder().encode(t).length;
-    const lines = t.length ? t.split("\n").length : 0;
-    document.getElementById("statBytes").textContent = String(bytes);
-    document.getElementById("statLines").textContent = String(lines);
-  }
-
-  function runPublicVerify(){
-    const raw = (document.getElementById("iprId").value || "").trim();
-
-    if (!raw){
-      setPublicStatus("FAIL (MISSING INPUT)", {});
-      return;
-    }
-
-    if (!isCanonicalIprId(raw)){
-      setPublicStatus("FAIL (INVALID IPR ID)", {
-        "ipr_id": raw,
-        "status": "INVALID FORMAT",
-        "result": "FAIL"
-      });
-      return;
-    }
-
-    setPublicStatus("VALID FORMAT (MVP PUBLIC CHECK)", {
-      "ipr_id": raw.toUpperCase(),
-      "issuer": "HERMETICUM B.C.E. S.r.l.",
-      "status": "FORMAT VALID",
-      "result": "VISIBLE CHECK PASSED",
-      "mode": "MVP local public verification"
-    });
-  }
-
-  async function runVerify(){
-    const release = document.getElementById("release").value || "";
-    const expectedRaw = (document.getElementById("expected").value || "").trim().toLowerCase();
-
-    document.getElementById("copy").disabled = true;
-
-    if (!release || !expectedRaw){
-      setStatus("FAIL (MISSING INPUT)", "", "");
-      return;
-    }
-
-    if (!isSha256Hex(expectedRaw)){
-      setStatus("FAIL (INVALID EXPECTED HASH)", "", "");
-      return;
-    }
-
-    try{
-      const computed = await sha256HexFromText(release);
-      document.getElementById("copy").disabled = !computed;
-
-      if (computed === expectedRaw){
-        setStatus("PASS (VALID)", computed, "computed == expected");
-      } else {
-        setStatus("FAIL (MISMATCH)", computed, "computed != expected");
+    function toHex(buffer){
+      const bytes = new Uint8Array(buffer);
+      let output = "";
+      for (let i = 0; i < bytes.length; i++){
+        output += bytes[i].toString(16).padStart(2, "0");
       }
-    }catch{
-      setStatus("FAIL (VERIFY ERROR)", "", "");
+      return output;
     }
-  }
 
-  async function copyComputed(){
-    const v = document.getElementById("computed").textContent || "";
-    if (!/^[0-9a-f]{64}$/.test(v)) return;
-    try{
-      await navigator.clipboard.writeText(v);
-      setStatus(document.getElementById("status").textContent + " · COPIED", v, document.getElementById("compare").textContent);
-    }catch{}
-  }
+    function clean(value){
+      return String(value || "").trim();
+    }
 
-  document.getElementById("runPublicVerify").addEventListener("click", () => runPublicVerify());
-  document.getElementById("resetPublicVerify").addEventListener("click", () => {
-    document.getElementById("iprId").value = "";
-    setPublicStatus("MISSING INPUT", {});
-  });
+    function isSha256HexLower(value){
+      return /^[0-9a-f]{64}$/.test(clean(value));
+    }
 
-  document.getElementById("run").addEventListener("click", () => runVerify());
-  document.getElementById("copy").addEventListener("click", () => copyComputed());
+    function normalizeSha(value){
+      return clean(value).toLowerCase();
+    }
 
-  document.getElementById("reset").addEventListener("click", () => {
-    document.getElementById("release").value = "";
-    document.getElementById("expected").value = "";
-    document.getElementById("copy").disabled = true;
+    function hasForbiddenField(object){
+      if (!object || typeof object !== "object") return null;
+
+      for (const key of Object.keys(object)) {
+        if (FORBIDDEN_PUBLIC_FIELDS.includes(key)) return key;
+      }
+
+      return null;
+    }
+
+    function setRegistryStatus(label, map, details){
+      $("registryStatus").textContent = label;
+
+      const kv = $("registryKV");
+      kv.innerHTML = "";
+
+      for (const [key, value] of Object.entries(map || {})){
+        const a = document.createElement("div");
+        a.className = "hbce-muted";
+        a.textContent = key;
+
+        const b = document.createElement("div");
+        b.textContent = String(value);
+
+        kv.append(a, b);
+      }
+
+      $("registryDetails").textContent = details || "—";
+    }
+
+    function setStatus(label, computed, compare){
+      $("status").textContent = label;
+      $("computed").textContent = computed || "—";
+      $("compare").textContent = compare || "—";
+    }
+
+    async function sha256HexFromText(text){
+      const encoder = new TextEncoder();
+      const data = encoder.encode(text);
+      const digest = await crypto.subtle.digest("SHA-256", data);
+      return toHex(digest);
+    }
+
+    function stableStringify(value){
+      if (value === null || typeof value !== "object") {
+        return JSON.stringify(value);
+      }
+
+      if (Array.isArray(value)) {
+        return "[" + value.map((item) => stableStringify(item)).join(",") + "]";
+      }
+
+      const keys = Object.keys(value).sort();
+      return "{" + keys.map((key) => JSON.stringify(key) + ":" + stableStringify(value[key])).join(",") + "}";
+    }
+
+    function validateRegistryEntry(entry){
+      if (!entry || typeof entry !== "object") return "ENTRY_INVALID_OBJECT";
+
+      const forbidden = hasForbiddenField(entry);
+      if (forbidden) return "ENTRY_FORBIDDEN_FIELD_" + forbidden;
+
+      if (!isSha256HexLower(entry.payload_sha256)) return "ENTRY_INVALID_PAYLOAD_SHA256";
+      if (!clean(entry.timestamp)) return "ENTRY_MISSING_TIMESTAMP";
+
+      const parsedTime = Date.parse(clean(entry.timestamp));
+      if (!Number.isFinite(parsedTime)) return "ENTRY_INVALID_TIMESTAMP";
+
+      if (!clean(entry.status)) return "ENTRY_MISSING_STATUS";
+
+      return null;
+    }
+
+    function validateRegistry(registry){
+      if (!registry || typeof registry !== "object") return "REGISTRY_INVALID_OBJECT";
+      if (registry.proto !== EXPECTED_PROTO) return "REGISTRY_PROTO_MISMATCH";
+      if (!Array.isArray(registry.entries)) return "REGISTRY_ENTRIES_MISSING";
+
+      if (!registry.rules || typeof registry.rules !== "object") return "REGISTRY_RULES_MISSING";
+      if (registry.rules.failure_mode !== EXPECTED_FAILURE_MODE) return "REGISTRY_FAILURE_MODE_MISMATCH";
+      if (registry.rules.public_data !== EXPECTED_PUBLIC_DATA) return "REGISTRY_PUBLIC_DATA_MISMATCH";
+
+      for (const entry of registry.entries) {
+        const entryError = validateRegistryEntry(entry);
+        if (entryError) return entryError;
+      }
+
+      return null;
+    }
+
+    async function loadRegistry(){
+      const response = await fetch(REGISTRY_URL, { cache: "no-store" });
+      if (!response.ok) throw new Error("REGISTRY_FETCH_ERROR_HTTP_" + response.status);
+
+      const registry = await response.json();
+      const validationError = validateRegistry(registry);
+
+      if (validationError) throw new Error(validationError);
+
+      return registry;
+    }
+
+    async function determinePublicHash(){
+      const directHash = normalizeSha($("publicHash").value);
+
+      if (directHash) {
+        if (!isSha256HexLower(directHash)) {
+          return {
+            ok: false,
+            reason: "INVALID_DIRECT_PAYLOAD_SHA256"
+          };
+        }
+
+        return {
+          ok: true,
+          hash: directHash,
+          source: "direct_payload_sha256"
+        };
+      }
+
+      const rawJson = clean($("publicJson").value);
+
+      if (!rawJson) {
+        return {
+          ok: false,
+          reason: "MISSING_INPUT"
+        };
+      }
+
+      let parsed;
+
+      try {
+        parsed = JSON.parse(rawJson);
+      } catch {
+        return {
+          ok: false,
+          reason: "INVALID_JSON"
+        };
+      }
+
+      if (!parsed || typeof parsed !== "object") {
+        return {
+          ok: false,
+          reason: "JSON_NOT_OBJECT"
+        };
+      }
+
+      if (isSha256HexLower(parsed.payload_sha256)) {
+        return {
+          ok: true,
+          hash: normalizeSha(parsed.payload_sha256),
+          source: "json_payload_sha256"
+        };
+      }
+
+      const copy = JSON.parse(JSON.stringify(parsed));
+      delete copy.payload_sha256;
+      delete copy.receipt_sha256;
+      delete copy.pack_sha256;
+
+      const canonical = stableStringify(copy);
+      const computed = await sha256HexFromText(canonical);
+
+      return {
+        ok: true,
+        hash: computed,
+        source: "computed_from_local_json_without_hash_fields"
+      };
+    }
+
+    function findRegistryMatch(registry, hash){
+      return registry.entries.find((entry) => normalizeSha(entry.payload_sha256) === hash) || null;
+    }
+
+    async function runRegistryVerify(){
+      setRegistryStatus("LOADING", {}, "Loading registry and checking target hash…");
+
+      const target = await determinePublicHash();
+
+      if (!target.ok) {
+        setRegistryStatus(
+          "INVALID",
+          {
+            result: "INPUT_REJECTED",
+            reason: target.reason
+          },
+          "Fail-closed: missing or invalid input does not produce public proof validity."
+        );
+        return;
+      }
+
+      let registry;
+
+      try {
+        registry = await loadRegistry();
+      } catch (error) {
+        setRegistryStatus(
+          "NON_OPERATIONAL",
+          {
+            result: "REGISTRY_REJECTED",
+            reason: error && error.message ? error.message : "REGISTRY_EXCEPTION",
+            source: REGISTRY_URL
+          },
+          "Fail-closed: registry is unreachable, malformed, non-v3, or inconsistent."
+        );
+        return;
+      }
+
+      const match = findRegistryMatch(registry, target.hash);
+
+      if (!match) {
+        setRegistryStatus(
+          "NO_PUBLIC_RECORD",
+          {
+            payload_sha256: target.hash,
+            input_source: target.source,
+            result: "NO_MATCH"
+          },
+          "No matching registry.entries[].payload_sha256 record was found."
+        );
+        return;
+      }
+
+      setRegistryStatus(
+        "PUBLIC_RECORD_PRESENT",
+        {
+          payload_sha256: target.hash,
+          input_source: target.source,
+          result: "MATCH_FOUND",
+          caution: "PUBLIC_PROOF_ONLY"
+        },
+        JSON.stringify(match, null, 2)
+      );
+    }
+
+    function resetRegistryVerify(){
+      $("publicHash").value = "";
+      $("publicJson").value = "";
+      setRegistryStatus("MISSING INPUT", {}, "—");
+    }
+
+    function updateStats(){
+      const text = $("release").value || "";
+      const bytes = new TextEncoder().encode(text).length;
+      const lines = text.length ? text.split("\n").length : 0;
+
+      $("statBytes").textContent = String(bytes);
+      $("statLines").textContent = String(lines);
+    }
+
+    async function runTechnicalVerify(){
+      const release = $("release").value || "";
+      const expectedRaw = normalizeSha($("expected").value);
+
+      $("copy").disabled = true;
+
+      if (!release || !expectedRaw) {
+        setStatus("FAIL (MISSING INPUT)", "", "");
+        return;
+      }
+
+      if (!isSha256HexLower(expectedRaw)) {
+        setStatus("FAIL (INVALID EXPECTED HASH)", "", "");
+        return;
+      }
+
+      try {
+        const computed = await sha256HexFromText(release);
+        $("copy").disabled = !computed;
+
+        if (computed === expectedRaw) {
+          setStatus("PASS (HASH MATCH)", computed, "computed == expected");
+        } else {
+          setStatus("FAIL (HASH MISMATCH)", computed, "computed != expected");
+        }
+      } catch {
+        setStatus("FAIL (VERIFY ERROR)", "", "");
+      }
+    }
+
+    async function copyComputed(){
+      const value = $("computed").textContent || "";
+      if (!/^[0-9a-f]{64}$/.test(value)) return;
+
+      try {
+        await navigator.clipboard.writeText(value);
+        setStatus($("status").textContent + " · COPIED", value, $("compare").textContent);
+      } catch {}
+    }
+
+    function resetTechnicalVerify(){
+      $("release").value = "";
+      $("expected").value = "";
+      $("copy").disabled = true;
+      updateStats();
+      setStatus("MISSING INPUT", "", "");
+    }
+
+    $("runRegistryVerify").addEventListener("click", runRegistryVerify);
+    $("resetRegistryVerify").addEventListener("click", resetRegistryVerify);
+
+    $("run").addEventListener("click", runTechnicalVerify);
+    $("copy").addEventListener("click", copyComputed);
+    $("reset").addEventListener("click", resetTechnicalVerify);
+    $("release").addEventListener("input", updateStats);
+
     updateStats();
-    setStatus("MISSING INPUT", "", "");
-  });
-
-  document.getElementById("release").addEventListener("input", updateStats);
-
-  updateStats();
-  setPublicStatus("MISSING INPUT", {});
+    resetRegistryVerify();
+  })();
   </script>
 
 </body>
