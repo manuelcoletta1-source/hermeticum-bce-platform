@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>COMPLIANCE — EU-first Audit & Evidence Posture</title>
-  <meta name="description" content="HBCE compliance posture: EU-first, audit-first, deterministic validation, hash-only public surface, append-only evidence. Fail-closed by design." />
+  <title>Compliance — EU-first Audit & Evidence Posture | HBCE Platform</title>
+  <meta name="description" content="HBCE compliance posture: experimental R&D, EU-first, audit-first, registry v3, payload_sha256, hash-only public proof, append-only evidence, fail-closed governance, no public data custody." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
@@ -20,70 +20,96 @@
   <style>
     .hbce-two{
       display:grid;
-      grid-template-columns: 1.02fr .98fr;
+      grid-template-columns:1.02fr .98fr;
       gap:16px;
       margin-top:14px;
     }
-    @media (max-width: 980px){ .hbce-two{ grid-template-columns: 1fr; } }
+
+    @media (max-width:980px){
+      .hbce-two{grid-template-columns:1fr;}
+    }
 
     .mono{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-      font-size: 12.5px;
-      color: rgba(0,183,255,.92);
-      word-break: break-word;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size:12.5px;
+      color:rgba(0,183,255,.92);
+      word-break:break-word;
     }
 
     .hbce-list{
-      margin: 10px 0 0;
-      padding-left: 18px;
-      color: rgba(230,237,246,.78);
-      font-size: 13.5px;
-      line-height: 1.55;
+      margin:10px 0 0;
+      padding-left:18px;
+      color:rgba(230,237,246,.78);
+      font-size:13.5px;
+      line-height:1.55;
     }
-    .hbce-list li{ margin: 6px 0; }
+
+    .hbce-list li{margin:6px 0;}
 
     .hbce-matrix{
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.22);
-      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.22);
+      border-radius:18px;
       overflow:hidden;
-      margin-top: 12px;
+      margin-top:12px;
     }
+
     .hbce-matrix table{
       width:100%;
       border-collapse:collapse;
-      font-size: 13px;
+      font-size:13px;
     }
-    .hbce-matrix th,.hbce-matrix td{
-      padding: 10px 10px;
-      border-bottom: 1px solid rgba(255,255,255,.06);
+
+    .hbce-matrix th,
+    .hbce-matrix td{
+      padding:10px 10px;
+      border-bottom:1px solid rgba(255,255,255,.06);
       text-align:left;
       vertical-align:top;
     }
+
     .hbce-matrix th{
-      font-size: 11px;
-      letter-spacing: 1.1px;
-      text-transform: uppercase;
-      color: rgba(230,237,246,.72);
-      background: rgba(255,255,255,.02);
+      font-size:11px;
+      letter-spacing:1.1px;
+      text-transform:uppercase;
+      color:rgba(230,237,246,.72);
+      background:rgba(255,255,255,.02);
     }
-    .hbce-matrix td{ color: rgba(230,237,246,.82); }
+
+    .hbce-matrix td{color:rgba(230,237,246,.82);}
+
     .hbce-chip{
       display:inline-flex;
       align-items:center;
       gap:8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.02);
-      font-size: 11px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      white-space: nowrap;
-      margin: 4px 6px 0 0;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.02);
+      font-size:11px;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      white-space:nowrap;
+      margin:4px 6px 0 0;
     }
-    .hbce-chip.ok{ border-color: rgba(0,255,195,.28); background: rgba(0,255,195,.06); color: rgba(0,255,195,.92); }
-    .hbce-chip.bad{ border-color: rgba(255,45,85,.30); background: rgba(255,45,85,.06); color: rgba(255,45,85,.92); }
+
+    .hbce-chip.ok{
+      border-color:rgba(0,255,195,.28);
+      background:rgba(0,255,195,.06);
+      color:rgba(0,255,195,.92);
+    }
+
+    .hbce-chip.warn{
+      border-color:rgba(255,210,80,.35);
+      background:rgba(255,210,80,.06);
+      color:rgba(255,210,80,.95);
+    }
+
+    .hbce-chip.bad{
+      border-color:rgba(255,45,85,.30);
+      background:rgba(255,45,85,.06);
+      color:rgba(255,45,85,.92);
+    }
   </style>
 </head>
 
@@ -93,11 +119,19 @@
   <main class="hbce-container hbce-main">
 
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">COMPLIANCE · EU-FIRST · AUDIT-FIRST · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">Compliance posture (high-level)</h1>
+      <div class="hbce-hero__kicker">COMPLIANCE · R&D · EU-FIRST · AUDIT-FIRST · FAIL-CLOSED</div>
+      <h1 class="hbce-hero__title">Compliance posture</h1>
       <p class="hbce-hero__lead">
-        HBCE is designed to support auditability and accountability for operational identity in autonomous systems.
-        It does this through deterministic validation, minimized public exposure (hash-only), and append-only evidence trails.
+        HBCE Platform is an experimental R&D public gateway designed to support auditability,
+        accountability, public proof verification, operational identity research, and responsible AI governance.
+        <br /><br />
+        The platform uses minimized public records, <code>payload_sha256</code> proof commitments,
+        registry v3 semantics, append-only evidence logic, and fail-closed validation.
+      </p>
+
+      <p class="hbce-note" style="margin-top:12px;">
+        This page describes a compliance posture and design direction. It is not a formal certification,
+        legal opinion, regulatory approval, audit attestation, or institutional authorization.
       </p>
 
       <div class="hbce-actions">
@@ -105,30 +139,34 @@
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/create/base/">Create</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
         <a class="hbce-btn" href="/hermeticum-bce-platform/registry/publish/">Publish</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/legal/">Legal</a>
       </div>
 
-      <div class="hbce-note">Compliance-by-design: minimize, verify deterministically, write append-only</div>
+      <div class="hbce-note">
+        Compliance-by-design posture: minimize public data, verify deterministically, record append-only, fail closed.
+      </div>
     </section>
 
     <section class="hbce-critical">
       <div class="hbce-critical__kicker">FAIL-CLOSED NOTICE · SAFETY POSTURE</div>
-      <div class="hbce-critical__title">No evidence ⇒ no validity</div>
+      <div class="hbce-critical__title">No evidence does not create validity</div>
       <p class="hbce-critical__text">
-        HBCE is engineered to deny validation when required evidence is missing or malformed.
-        This prevents “soft acceptance” and supports incident reconstruction under audit constraints.
+        HBCE Platform is designed to deny or withhold validation when required evidence is missing,
+        malformed, ambiguous, inconsistent, or non-verifiable.
+        This reduces soft acceptance and supports later incident reconstruction under audit constraints.
       </p>
     </section>
 
     <section class="hbce-section">
-      <h2>Core principles</h2>
+      <h2>1. Core principles</h2>
 
       <div class="hbce-two">
         <div class="hbce-card">
           <h3>Public surface is hash-only</h3>
           <ul class="hbce-list">
-            <li>Registry stores minimized proofs only: <span class="mono">payload_sha256</span>, <span class="mono">timestamp</span>, optional <span class="mono">name/status</span>.</li>
-            <li>Private release artifacts never need to be public.</li>
-            <li>This reduces exposure while enabling public matching of evidence.</li>
+            <li>Public registry entries use minimized fields such as <span class="mono">entity_type</span>, <span class="mono">subject_label</span>, <span class="mono">payload_sha256</span>, <span class="mono">timestamp</span>, and <span class="mono">status</span>.</li>
+            <li>Private release artifacts, private evidence, identity documents, credentials, and sensitive payloads must remain outside the public repository.</li>
+            <li>Public matching proves public proof presence only; it does not replace private validation.</li>
           </ul>
           <div>
             <span class="hbce-chip ok">HASH_ONLY</span>
@@ -140,9 +178,9 @@
         <div class="hbce-card">
           <h3>Append-only evidence</h3>
           <ul class="hbce-list">
-            <li>No edits: changes become new entries/events.</li>
-            <li>Evidence trails become auditable timelines.</li>
-            <li>Supports “who did what, when” reconstruction.</li>
+            <li>Public evidence history should be extended, not silently rewritten.</li>
+            <li>Changes should become new entries, events, status updates, or audit traces.</li>
+            <li>Append-only discipline supports reconstruction of public proof chronology.</li>
           </ul>
           <div>
             <span class="hbce-chip ok">APPEND_ONLY</span>
@@ -155,9 +193,9 @@
         <div class="hbce-card">
           <h3>Deterministic verification</h3>
           <ul class="hbce-list">
-            <li>Validation is a rule, not an opinion.</li>
-            <li>Required fields missing ⇒ <strong>INVALID</strong>.</li>
-            <li>Same input yields same result (determinism).</li>
+            <li>Verification is based on explicit fields and deterministic comparison, not interpretation.</li>
+            <li>Missing or malformed required fields produce <strong>INVALID</strong> or <strong>NON_OPERATIONAL</strong>.</li>
+            <li>Same valid input should produce the same verification result.</li>
           </ul>
           <div>
             <span class="hbce-chip ok">DETERMINISTIC</span>
@@ -168,20 +206,22 @@
         <div class="hbce-card">
           <h3>Fail-closed by default</h3>
           <ul class="hbce-list">
-            <li>If the system cannot prove validity, it denies.</li>
-            <li>This is the baseline posture for safety-critical autonomy governance.</li>
+            <li>If the system cannot verify a required condition, it must not infer validity.</li>
+            <li>Fail-closed behavior is the baseline posture for registry, verification, receipt, and audit workflows.</li>
           </ul>
           <div>
             <span class="hbce-chip ok">FAIL_CLOSED</span>
+            <span class="hbce-chip warn">NO_IMPLICIT_VALIDITY</span>
           </div>
         </div>
       </div>
     </section>
 
     <section class="hbce-section">
-      <h2>Evidence model</h2>
+      <h2>2. Evidence model</h2>
       <p>
-        HBCE separates private artifacts from public proofs. This is the core compliance-by-design mechanism.
+        HBCE separates private artifacts from public proof commitments.
+        This separation is the core of the compliance-by-design posture.
       </p>
 
       <div class="hbce-matrix">
@@ -192,30 +232,37 @@
               <th>Artifact</th>
               <th>Visibility</th>
               <th>Stored fields</th>
-              <th>Why</th>
+              <th>Meaning</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><strong>Release</strong></td>
-              <td>IPR Base / Operator / module release JSON</td>
-              <td>Private</td>
-              <td class="mono">full payload</td>
-              <td>Operational truth. Kept private to avoid data leakage.</td>
+              <td><strong>Private evidence</strong></td>
+              <td>Release, receipt preimage, identity evidence, operational record</td>
+              <td>Private / controlled</td>
+              <td class="mono">full payload where lawfully retained</td>
+              <td>Private evidence may support deeper review but should not be stored in the public registry.</td>
             </tr>
             <tr>
-              <td><strong>Evidence</strong></td>
-              <td>Deterministic fields</td>
-              <td>Portable</td>
-              <td class="mono">payload_sha256, timestamp, signature</td>
-              <td>Verification gate. Minimal set required to prove integrity and time.</td>
-            </tr>
-            <tr>
-              <td><strong>Registry</strong></td>
-              <td>Append-only entry</td>
+              <td><strong>Public proof</strong></td>
+              <td>Registry entry / proof commitment</td>
               <td>Public</td>
-              <td class="mono">payload_sha256, timestamp (+ name/status)</td>
-              <td>Public matching surface with minimized proof exposure.</td>
+              <td class="mono">entity_type, subject_label, payload_sha256, timestamp, status</td>
+              <td>Public matching surface with minimized exposure.</td>
+            </tr>
+            <tr>
+              <td><strong>Verification</strong></td>
+              <td>Browser-side hash comparison / registry lookup</td>
+              <td>Public or local</td>
+              <td class="mono">payload_sha256, computed_sha256, match state</td>
+              <td>Deterministic check of public proof presence or hash consistency.</td>
+            </tr>
+            <tr>
+              <td><strong>Audit</strong></td>
+              <td>Issue trace, findings register, remediation record</td>
+              <td>Public where non-sensitive</td>
+              <td class="mono">scope, finding, remediation, status</td>
+              <td>Reviewable evidence of repository hardening and governance posture.</td>
             </tr>
           </tbody>
         </table>
@@ -223,99 +270,176 @@
     </section>
 
     <section class="hbce-section">
-      <h2>Responsibilities (operational)</h2>
+      <h2>3. Compliance interpretation</h2>
+
       <div class="hbce-grid">
         <article class="hbce-card">
-          <h3>Issuer / Operator</h3>
+          <h3>What public proof can show</h3>
           <ul class="hbce-list">
-            <li>Generates release artifacts.</li>
-            <li>Keeps private payload private.</li>
-            <li>Publishes minimized proof (hash-only) to registry.</li>
+            <li>A public proof commitment is present.</li>
+            <li>A hash matches an expected commitment.</li>
+            <li>A timestamped public record exists.</li>
+            <li>A public status field is declared.</li>
+            <li>A public audit trace records a remediation or review step.</li>
           </ul>
         </article>
+
+        <article class="hbce-card">
+          <h3>What public proof does not show by itself</h3>
+          <ul class="hbce-list">
+            <li>It does not certify legal identity.</li>
+            <li>It does not replace private evidence review.</li>
+            <li>It does not create automatic institutional approval.</li>
+            <li>It does not replace qualified trust services or regulated certification.</li>
+            <li>It does not validate the truthfulness of private claims without supporting evidence.</li>
+          </ul>
+        </article>
+
+        <article class="hbce-card">
+          <h3>What must remain private</h3>
+          <ul class="hbce-list">
+            <li>Identity documents.</li>
+            <li>Raw personal identifiers.</li>
+            <li>Credentials, secrets, tokens, private keys.</li>
+            <li>Private communications.</li>
+            <li>Production logs with personal data.</li>
+            <li>Sensitive operational payloads.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>4. Operational responsibilities</h2>
+
+      <div class="hbce-grid">
+        <article class="hbce-card">
+          <h3>Issuer / Maintainer</h3>
+          <ul class="hbce-list">
+            <li>Maintains documentation and public proof surfaces.</li>
+            <li>Avoids public custody of private evidence.</li>
+            <li>Publishes minimized proof records only.</li>
+            <li>Documents changes through commits, audit traces, and findings.</li>
+          </ul>
+        </article>
+
         <article class="hbce-card">
           <h3>Verifier</h3>
           <ul class="hbce-list">
-            <li>Checks deterministic evidence fields.</li>
-            <li>Denies validity when required evidence is missing (fail-closed).</li>
+            <li>Checks deterministic proof fields.</li>
+            <li>Uses <span class="mono">payload_sha256</span> for public proof matching.</li>
+            <li>Denies validity when required evidence or registry state is missing.</li>
+            <li>Does not infer identity, authorization, or legal effect from public proof alone.</li>
           </ul>
         </article>
+
         <article class="hbce-card">
           <h3>Public / Auditor</h3>
           <ul class="hbce-list">
-            <li>Reads registry as append-only evidence trail.</li>
-            <li>Matches hashes, timestamps, and status updates.</li>
+            <li>Reads registry as minimized public proof trail.</li>
+            <li>Checks audit findings and remediation history.</li>
+            <li>Understands public proof as technical commitment, not automatic certification.</li>
           </ul>
         </article>
       </div>
     </section>
 
     <section class="hbce-section">
-      <h2>Limitations (explicit)</h2>
+      <h2>5. Explicit limitations</h2>
+
       <div class="hbce-grid">
         <article class="hbce-card">
-          <h3>HBCE does not</h3>
+          <h3>HBCE Platform does not</h3>
           <ul class="hbce-list">
-            <li>store public personal data (beyond minimized labels).</li>
-            <li>guarantee the truthfulness of private claims without evidence.</li>
-            <li>replace legal accountability; it supports auditability.</li>
-            <li>perform “probabilistic” validation: it is deterministic or it denies.</li>
+            <li>store public personal data beyond minimized public labels;</li>
+            <li>store identity documents in the public registry;</li>
+            <li>replace legal accountability;</li>
+            <li>replace private identity verification;</li>
+            <li>provide legal, tax, or regulatory advice;</li>
+            <li>perform probabilistic validation where deterministic proof is required;</li>
+            <li>authorize offensive cybersecurity activity.</li>
           </ul>
         </article>
+
         <article class="hbce-card">
-          <h3>HBCE assumes</h3>
+          <h3>HBCE Platform assumes</h3>
           <ul class="hbce-list">
-            <li>operators keep private artifacts protected.</li>
-            <li>registry is treated as append-only (no rewrites).</li>
-            <li>verification uses the canonical deterministic rules.</li>
+            <li>private artifacts are protected by the holder or authorized process;</li>
+            <li>public registry entries remain minimized;</li>
+            <li>verification uses canonical deterministic rules;</li>
+            <li>sensitive material is not placed in public repository files or public issues;</li>
+            <li>legal, contractual, fiscal, or institutional effects are handled separately where required.</li>
           </ul>
         </article>
       </div>
     </section>
 
     <section class="hbce-section">
-      <h2>Incident reconstruction (workflow)</h2>
+      <h2>6. Incident reconstruction workflow</h2>
       <p>
-        When something goes wrong (autonomy incident), the minimum viable reconstruction path is:
+        When a technical or governance incident requires reconstruction, the minimum viable path is:
       </p>
+
       <div class="hbce-terminal" data-status="warn">
         <div class="hbce-terminal__bar">
           <div class="hbce-terminal__title">Reconstruction terminal</div>
           <div class="hbce-terminal__status">WARN</div>
         </div>
+
         <div class="hbce-terminal__body">
           <div class="hbce-terminal__line">
             <div class="hbce-terminal__k">1</div>
-            <div class="hbce-terminal__v">Identify registry entry (hash + time) for the incident artifact.</div>
+            <div class="hbce-terminal__v">Identify the public registry entry or audit trace connected to the artifact.</div>
           </div>
+
           <div class="hbce-terminal__line">
             <div class="hbce-terminal__k">2</div>
-            <div class="hbce-terminal__v">Retrieve private release artifact from operator custody.</div>
+            <div class="hbce-terminal__v">Retrieve private evidence only through authorized private channels.</div>
           </div>
+
           <div class="hbce-terminal__line">
             <div class="hbce-terminal__k">3</div>
-            <div class="hbce-terminal__v">Compute SHA-256 and compare with registry payload_sha256 (deterministic match).</div>
+            <div class="hbce-terminal__v">Compute SHA-256 and compare with registry <span class="mono">payload_sha256</span>.</div>
           </div>
+
           <div class="hbce-terminal__line">
             <div class="hbce-terminal__k">4</div>
-            <div class="hbce-terminal__v">Use append-only event trail (ISSUED / STATUS_UPDATE) to reconstruct timeline.</div>
+            <div class="hbce-terminal__v">Use append-only event trail and audit findings to reconstruct public timeline.</div>
           </div>
+
           <div class="hbce-terminal__line">
             <div class="hbce-terminal__k">rule</div>
-            <div class="hbce-terminal__v">missing evidence ⇒ INVALID (fail-closed)</div>
+            <div class="hbce-terminal__v">missing, malformed, or unverifiable evidence ⇒ fail closed</div>
           </div>
         </div>
       </div>
     </section>
 
     <section class="hbce-section">
-      <h2>Direct links</h2>
+      <h2>7. Regulatory alignment statement</h2>
+
+      <div class="hbce-card">
+        <p>
+          HBCE Platform is designed to be compatible with EU-oriented governance principles such as minimization,
+          accountability, auditability, traceability, human responsibility, and operational resilience.
+        </p>
+
+        <p>
+          This compatibility statement is a design posture. It is not a formal legal opinion,
+          regulatory certification, conformity assessment, public authority approval, or qualified trust service designation.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>8. Direct links</h2>
       <div class="hbce-actions">
         <a class="hbce-btn" href="/hermeticum-bce-platform/create/base/">Create</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
         <a class="hbce-btn" href="/hermeticum-bce-platform/registry/publish/">Publish</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry</a>
         <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/protocol/">Protocol</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/legal/">Legal</a>
       </div>
     </section>
 
