@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>SECURITY — HERMETICUM (Fail-Closed by design)</title>
-  <meta name="description" content="Modello sicurezza HERMETICUM: fail-closed, integrità deterministica, hash-only pubblico, append-only, audit-first, GDPR-min. Security posture per Registro IPR, nodi e IO-SPACE." />
+  <title>Security — HBCE Platform</title>
+  <meta name="description" content="HBCE security model: defensive security, fail-closed validation, registry v3, payload_sha256, hash-only public proof, append-only audit, GDPR-min, no public data custody." />
 
   <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/security/" />
   <meta name="robots" content="index,follow" />
@@ -20,61 +20,263 @@
   <main class="hbce-container hbce-main">
 
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">SECURITY · AUDIT-FIRST · FAIL-CLOSED</div>
+      <div class="hbce-hero__kicker">SECURITY · DEFENSIVE · AUDIT-FIRST · FAIL-CLOSED</div>
       <h1 class="hbce-hero__title">Security model</h1>
       <p class="hbce-hero__lead">
-        Sicurezza come proprietà architetturale: integrità deterministica, minimizzazione pubblica e blocco in caso di ambiguità.
-        Se non verificabile → non passa.
+        HBCE Platform treats security as a governance and verification property:
+        deterministic integrity, minimized public exposure, append-only audit traces, and fail-closed validation.
+        <br /><br />
+        If a required condition is missing, malformed, unverifiable, ambiguous, or inconsistent, the system must not infer validity.
       </p>
-    </section>
 
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Principi</h2>
-      <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
-        <div class="hbce-card"><div class="hbce-card__title">Fail-closed</div><div class="hbce-card__text">Default INVALID. Riduce attacchi e falsi positivi.</div></div>
-        <div class="hbce-card"><div class="hbce-card__title">Hash-only</div><div class="hbce-card__text">In pubblico solo prove minimizzate: niente dati personali.</div></div>
-        <div class="hbce-card"><div class="hbce-card__title">Append-only</div><div class="hbce-card__text">No riscrittura: audit permanente e tracciabilità.</div></div>
+      <p class="hbce-note" style="margin-top:12px;">
+        Policy:
+        <strong>defensive security</strong> ·
+        <strong>registry v3</strong> ·
+        <strong>payload_sha256</strong> ·
+        <strong>hash-only</strong> ·
+        <strong>append-only</strong> ·
+        <strong>fail-closed</strong> ·
+        <strong>no public data custody</strong>
+      </p>
+
+      <div class="hbce-actions" style="margin-top:12px;">
+        <a class="hbce-btn" href="/hermeticum-bce-platform/SECURITY.md">Security policy</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry</a>
+        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/AUDIT_FINDINGS_MATRIX_HBCE_2026-05-06.md">Audit findings</a>
       </div>
     </section>
 
     <section class="hbce-section">
-      <h2 class="hbce-h2">Superfici principali</h2>
+      <h2 class="hbce-h2">1. Security principles</h2>
+
       <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
-        <div class="hbce-card">
+        <article class="hbce-card">
+          <div class="hbce-card__title">Fail-closed</div>
+          <div class="hbce-card__text">
+            Missing input, malformed hash, invalid registry state, absent public record, or inconsistent proof must not produce validity.
+          </div>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__title">Hash-only public proof</div>
+          <div class="hbce-card__text">
+            Public verification uses minimized proof commitments, primarily <code>payload_sha256</code>, instead of exposing private evidence.
+          </div>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__title">Append-only audit</div>
+          <div class="hbce-card__text">
+            Public history should be extended through new entries, events, commits, or findings rather than silently rewritten.
+          </div>
+        </article>
+      </div>
+
+      <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
+        <article class="hbce-card">
+          <div class="hbce-card__title">No public data custody</div>
+          <div class="hbce-card__text">
+            The public layer must not store identity documents, raw personal identifiers, credentials, secrets, private keys, production logs, or sensitive payloads.
+          </div>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__title">Defensive scope</div>
+          <div class="hbce-card__text">
+            Security work must remain defensive, authorized, non-offensive, and limited to repository-owned, explicitly authorized, or synthetic scenarios.
+          </div>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__title">Audit-first</div>
+          <div class="hbce-card__text">
+            Relevant changes should be traceable through commits, issues, audit files, findings registers, and reviewable public documentation.
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">2. Main security surfaces</h2>
+
+      <div class="hbce-grid hbce-grid--3" style="margin-top:12px;">
+        <article class="hbce-card">
           <div class="hbce-card__title">Verify</div>
-          <div class="hbce-card__text">Controllo deterministico: match o blocco. Nessuna “interpretazione”.</div>
+          <div class="hbce-card__text">
+            Deterministic public proof lookup and local hash comparison. The verifier returns explicit states such as
+            <code>PUBLIC_RECORD_PRESENT</code>, <code>NO_PUBLIC_RECORD</code>, <code>INVALID</code>, or <code>NON_OPERATIONAL</code>.
+          </div>
           <div class="hbce-actions" style="margin-top:10px;">
             <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">Open Verify</a>
           </div>
-        </div>
-        <div class="hbce-card">
+        </article>
+
+        <article class="hbce-card">
           <div class="hbce-card__title">Registry</div>
-          <div class="hbce-card__text">Ledger pubblico minimizzato. Se fonte non valida → fail-closed.</div>
+          <div class="hbce-card__text">
+            Public registry v3 layer using minimized public records and <code>payload_sha256</code> commitments.
+            Invalid or malformed registry state must fail closed.
+          </div>
           <div class="hbce-actions" style="margin-top:10px;">
             <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/registry/">Open Registry</a>
           </div>
-        </div>
-        <div class="hbce-card">
-          <div class="hbce-card__title">Nodes map</div>
-          <div class="hbce-card__text">Mappa nodi: source-of-truth pubblico. Incoerenza → blocco.</div>
-          <div class="hbce-actions" style="margin-top:10px;">
-            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/network/">Open Network</a>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__title">Schemas</div>
+          <div class="hbce-card__text">
+            JSON schemas define privacy-minimal records for IPR, receipts, registry entries, evidence bundles, and EVT operational updates.
           </div>
+          <div class="hbce-actions" style="margin-top:10px;">
+            <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/schemas/hbce-registry-entry.schema.json">Open Registry Schema</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">3. Public data minimization</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-text">
+          The public layer should expose only minimized proof data. Public records should use fields such as:
+        </p>
+
+        <ul class="hbce-list">
+          <li><code>entity_type</code></li>
+          <li><code>subject_label</code></li>
+          <li><code>operator_label</code>, where applicable</li>
+          <li><code>record_scope</code></li>
+          <li><code>payload_sha256</code></li>
+          <li><code>timestamp</code></li>
+          <li><code>status</code></li>
+        </ul>
+
+        <p class="hbce-text">
+          A public label is not a full identity record and does not replace private identity verification, contractual qualification,
+          institutional validation, or legal authorization.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">4. Data forbidden in the public layer</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-text">
+          The public repository, public registry, public pages, and public issues must not contain:
+        </p>
+
+        <ul class="hbce-list">
+          <li>API keys;</li>
+          <li>authentication tokens;</li>
+          <li>passwords;</li>
+          <li>credentials;</li>
+          <li>private keys;</li>
+          <li>seed phrases;</li>
+          <li>identity documents;</li>
+          <li>raw personal identifiers;</li>
+          <li>tax codes or fiscal codes;</li>
+          <li>private evidence;</li>
+          <li>private communications;</li>
+          <li>confidential customer data;</li>
+          <li>production logs containing personal data;</li>
+          <li>private endpoints, database URLs, admin URLs, or internal infrastructure details;</li>
+          <li>sensitive operational payloads.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">5. Fail-closed interpretation</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-text">
+          The fail-closed model avoids uncertain success states.
+          When a required condition is not satisfied, the workflow must block, deny, escalate, or require manual review.
+        </p>
+
+        <ul class="hbce-list">
+          <li>missing input → <code>INVALID</code>;</li>
+          <li>malformed hash → <code>INVALID</code>;</li>
+          <li>registry unavailable → <code>NON_OPERATIONAL</code>;</li>
+          <li>registry schema mismatch → <code>NON_OPERATIONAL</code>;</li>
+          <li>missing public record → <code>NO_PUBLIC_RECORD</code>;</li>
+          <li>hash mismatch → <code>HASH_MISMATCH</code> or <code>INVALID</code>;</li>
+          <li>forbidden public field detected → block or review.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">6. Defensive security scope</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-text">
+          Authorized security review is limited to defensive analysis of repository-owned code, documentation, public pages,
+          registry records, schemas, tools, and explicitly authorized systems.
+        </p>
+
+        <p class="hbce-text">
+          The project does not authorize unauthorized access, exploitation of third-party systems, malware development,
+          credential theft, evasion, data exfiltration, destructive testing, or offensive cybersecurity operations.
+        </p>
+
+        <div class="hbce-actions" style="margin-top:10px;">
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/SECURITY.md">Read SECURITY.md</a>
+          <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/RESPONSIBLE_USE.md">Read RESPONSIBLE_USE.md</a>
         </div>
       </div>
     </section>
 
     <section class="hbce-section">
-      <h2 class="hbce-h2">Minimizzazione e privacy (GDPR-min)</h2>
-      <p class="hbce-text">
-        La piattaforma evita custodia pubblica di dati personali. La prova pubblica è hash + timestamp.
-        Dati completi rimangono nel dominio dell’operatore/cliente secondo policy e base giuridica applicabile.
-      </p>
+      <h2 class="hbce-h2">7. Incident reconstruction</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-text">
+          When a technical or governance incident requires reconstruction, the minimum review path is:
+        </p>
+
+        <ol class="hbce-list">
+          <li>identify the relevant public registry entry or audit trace;</li>
+          <li>retrieve private evidence only through authorized private channels;</li>
+          <li>compute SHA-256 over the controlled artifact;</li>
+          <li>compare the result against the public <code>payload_sha256</code> commitment;</li>
+          <li>review append-only history, audit findings, commits, and issue traces;</li>
+          <li>fail closed if required evidence is missing, inconsistent, or unverifiable.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">8. Security reports</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-text">
+          Security reports should follow the repository security policy.
+          Reports must remain defensive and should not include secrets, private keys, credentials,
+          identity documents, private communications, or sensitive payloads in public issues.
+        </p>
+
+        <p class="hbce-text">
+          If sensitive material is discovered, do not copy, redistribute, exploit, or amplify it.
+          Report the issue according to <a href="/hermeticum-bce-platform/SECURITY.md">SECURITY.md</a>.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2 class="hbce-h2">9. Security status</h2>
 
       <div class="hbce-card hbce-card--subtle">
-        <div class="hbce-card__title">Regola semplice</div>
+        <div class="hbce-card__title">Current posture</div>
         <div class="hbce-card__text">
-          Pubblico = <strong>prove</strong> (minimizzate). Operatività = <strong>responsabilità</strong> (licenza + governance).
+          HBCE Platform is an experimental R&D public gateway.
+          Its security model is designed around deterministic verification, public data minimization,
+          no public evidence custody, and fail-closed behavior.
+          This page is not a formal security certification or third-party audit attestation.
         </div>
       </div>
     </section>
@@ -82,5 +284,6 @@
   </main>
 
   <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </body>
 </html>
