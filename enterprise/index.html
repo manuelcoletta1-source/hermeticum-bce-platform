@@ -2,312 +2,323 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="color-scheme" content="dark" />
 
-  <title>Enterprise / B2G — Operational Identity Infrastructure | HERMETICUM B.C.E.</title>
-  <meta name="description" content="Enterprise/B2G operational identity infrastructure. Identity before execution for humans, AI and machines. EU-first, audit-first, fail-closed." />
+  <title>Enterprise / B2B — MATRIX AI Audit Trail | HERMETICUM B.C.E.</title>
+  <meta name="description" content="Enterprise and B2B positioning for MATRIX AI Audit Trail: internal R&D self-pilot completed, pilot-ready AI document audit workflow with human validation, EVT, OPC and audit-ready report." />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/enterprise/" />
 
-  <style>
-    :root{
-      --bg:#0b0f14;
-      --panel:#0f1620;
-      --text:#e8eef7;
-      --muted:#9fb0c3;
-      --line:rgba(255,255,255,.08);
-      --accent:#00ffe1;
-      --accent2:#7c5cff;
-      --ok:#3dff93;
-      --danger:#ff3b6b;
-      --shadow:0 20px 60px rgba(0,0,0,.45);
-      --r:18px;
-      --max:1100px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-      background:
-        radial-gradient(1200px 600px at 20% -10%, rgba(0,255,225,.12), transparent 60%),
-        radial-gradient(900px 500px at 100% 10%, rgba(124,92,255,.12), transparent 55%),
-        var(--bg);
-      color:var(--text);
-      line-height:1.45;
-    }
-    a{color:inherit}
-    .wrap{max-width:var(--max);margin:0 auto;padding:28px 18px 80px}
-    .top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:26px}
-    .brand{font-weight:800;font-size:13px;letter-spacing:.5px;text-transform:uppercase}
-    .tag{color:var(--muted);font-size:12px;margin-top:6px}
-    .nav{display:flex;gap:14px;flex-wrap:wrap}
-    .nav a{color:var(--muted);text-decoration:none;font-size:13px}
-    .nav a:hover{color:var(--text)}
-
-    .hero{
-      border:1px solid var(--line);
-      border-radius:calc(var(--r) + 4px);
-      padding:34px 26px;
-      background:rgba(15,22,32,.55);
-      box-shadow:var(--shadow);
-    }
-    h1{margin:0 0 12px;font-size:clamp(28px,4vw,44px);line-height:1.1}
-    .sub{margin:0 0 18px;color:var(--muted);max-width:900px;font-size:15.5px}
-    .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-    .badge{
-      font-size:12px;padding:7px 10px;border-radius:999px;
-      border:1px solid var(--line);background:rgba(255,255,255,.03);
-      color:var(--muted);
-    }
-    .cta{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
-    .btn{
-      display:inline-block;
-      padding:12px 16px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      text-decoration:none;
-      font-weight:800;
-      font-size:13.5px;
-      color:var(--text);
-      background:rgba(255,255,255,.04);
-      transition:.15s;
-    }
-    .btn:hover{transform:translateY(-2px);border-color:rgba(0,255,225,.5)}
-    .btn.primary{
-      border-color:rgba(0,255,225,.7);
-      background:linear-gradient(180deg,rgba(0,255,225,.22),rgba(0,255,225,.06));
-    }
-
-    .section{margin-top:34px}
-    .section h2{margin:0 0 10px;font-size:18px}
-    .section p{margin:0 0 14px;color:var(--muted);max-width:960px}
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(12,1fr);
-      gap:14px;
-      margin-top:16px;
-    }
-    .col-4{grid-column:span 4}
-    .col-6{grid-column:span 6}
-    .col-12{grid-column:span 12}
-    @media (max-width:900px){
-      .col-4,.col-6{grid-column:span 12}
-      .grid{gap:10px}
-    }
-
-    .card{
-      border:1px solid var(--line);
-      border-radius:var(--r);
-      padding:18px;
-      background:rgba(255,255,255,.03);
-    }
-    .card h3{margin:0 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:.4px}
-    .card p{margin:0;color:var(--muted);font-size:13.5px}
-
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
-    .rule{
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.22);
-      border-radius:var(--r);
-      padding:14px;
-      overflow:auto;
-    }
-    .rule pre{margin:0;min-width:760px;font-size:12.5px;line-height:1.35;color:rgba(232,238,247,.92)}
-
-    .stack{
-      border-left:3px solid rgba(0,255,225,.45);
-      padding-left:14px;
-      margin:14px 0 0;
-      color:rgba(232,238,247,.86);
-    }
-    .pillrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-    .pill{
-      font-size:11.5px;
-      padding:6px 9px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      color: rgba(232,238,247,.88);
-      background: rgba(0,0,0,.16);
-    }
-
-    footer{
-      margin-top:46px;
-      padding-top:18px;
-      border-top:1px solid var(--line);
-      color:var(--muted);
-      font-size:12px;
-      display:flex;
-      justify-content:space-between;
-      gap:14px;
-      flex-wrap:wrap;
-    }
-  </style>
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
 <body>
-  <div class="wrap">
+  <div data-hbce="header"></div>
 
-    <header class="top">
-      <div>
-        <div class="brand">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-        <div class="tag">HERMETICUM B.C.E. S.r.l. — Enterprise / B2G Operational Identity</div>
-      </div>
-      <nav class="nav">
-        <a href="../">Home</a>
-        <a href="../robotics-ai/">Robotics &amp; AI</a>
-        <a href="../pricing/">Pricing</a>
-        <a href="../activate/">Activate</a>
-        <a href="../NODE-PACK/">Deploy Node</a>
-        <a href="../verify/">Verify</a>
-      </nav>
-    </header>
+  <main class="hbce-container hbce-main">
 
-    <section class="hero">
-      <h1>Enterprise / B2G</h1>
-      <p class="sub">
-        Operational identity infrastructure for regulated deployments:
-        humans, AI agents and machines must verify identity <strong>before execution</strong>.
-        Deterministic verification, append-only evidence, fail-closed by design — aligned with EU-first constraints.
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">ENTERPRISE · B2B · MATRIX AI AUDIT TRAIL · PILOT-READY</div>
+
+      <h1 class="hbce-hero__title">AI document workflows with an audit trail</h1>
+
+      <p class="hbce-hero__lead">
+        This page describes the B2B / enterprise-facing positioning of <strong>MATRIX AI Audit Trail</strong>,
+        the first operational MVP extracted from the MATRIX / HBCE / AI JOKER-C2 architecture.
+        <br /><br />
+        The MVP turns AI-assisted document analysis into a traceable workflow:
+        document hash, AI action, governance decision, human validation, EVT event, OPC proof and audit-ready report.
       </p>
 
-      <div class="badges">
-        <span class="badge"><strong>UE-FIRST</strong></span>
-        <span class="badge"><strong>AUDIT-FIRST</strong></span>
-        <span class="badge"><strong>GDPR-MIN</strong></span>
-        <span class="badge"><strong>HASH-ONLY</strong></span>
-        <span class="badge"><strong>APPEND-ONLY</strong></span>
-        <span class="badge"><strong>FAIL-CLOSED</strong></span>
-      </div>
+      <p class="hbce-note" style="margin-top:12px;">
+        Status:
+        <strong>working MVP</strong> ·
+        <strong>internal R&D self-pilot completed</strong> ·
+        <strong>pilot-ready concept</strong> ·
+        <strong>not production SaaS</strong> ·
+        <strong>not legal certification</strong>
+      </p>
 
-      <div class="cta">
-        <a class="btn primary" href="../pricing/">View tiers</a>
-        <a class="btn" href="../demo-gate/">Execution Gate demo</a>
-        <a class="btn" href="../robotics-ai/">Robotics &amp; AI</a>
+      <div class="hbce-actions" style="margin-top:16px;">
+        <a
+          class="hbce-btn hbce-btn--primary"
+          href="https://hbce-ai-joker-c2.vercel.app/matrix-audit-trail"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Launch MATRIX AI Audit Trail Demo
+        </a>
+
+        <a class="hbce-btn" href="/hermeticum-bce-platform/matrix-audit-trail/">
+          Public demo bridge
+        </a>
+
+        <a class="hbce-btn" href="/hermeticum-bce-platform/i3p/">
+          I3P MVP page
+        </a>
+
+        <a class="hbce-btn" href="/hermeticum-bce-platform/claims/">
+          Claims & Non-Claims
+        </a>
       </div>
     </section>
 
-    <section class="section" aria-label="Why">
-      <h2>Why this exists</h2>
-      <p>
-        Many systems execute first and explain later. That model fails in regulated environments:
-        accountability, safety, procurement, incident response and forensic audit require identity to be established before action.
-      </p>
+    <section class="hbce-section">
+      <h2>1. Enterprise problem</h2>
 
-      <div class="grid" role="list">
-        <div class="col-6" role="listitem">
-          <div class="card">
-            <h3>Problem</h3>
-            <p>
-              Autonomous and semi-autonomous systems can perform actions without a persistent identity context.
-              Attribution becomes fragile and post-facto logs are insufficient for high-stakes operations.
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Enterprise teams are increasingly using AI to summarize, classify and review documents.
+          However, ordinary AI usage is often not sufficiently auditable.
+        </p>
+
+        <p class="hbce-card__text">
+          A compliance, cybersecurity, legal operations or internal audit team may need to prove:
+        </p>
+
+        <ul class="hbce-list">
+          <li>which document was analyzed;</li>
+          <li>which AI action was requested;</li>
+          <li>which governance decision was applied;</li>
+          <li>whether human validation occurred;</li>
+          <li>which event and proof records were generated;</li>
+          <li>whether a final audit report exists.</li>
+        </ul>
+
+        <p class="hbce-card__text">
+          MATRIX AI Audit Trail addresses this gap by turning AI document work into an audit-ready technical trace.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>2. Current MVP</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          The current MVP has already completed a first internal self-pilot run.
+          The first pilot client is <strong>HERMETICUM B.C.E. S.r.l.</strong> itself.
+        </p>
+
+        <div class="hbce-grid hbce-grid--2" style="margin-top:14px;">
+          <article class="hbce-card">
+            <div class="hbce-card__kicker">FIRST PILOT CLIENT</div>
+            <h3>HERMETICUM B.C.E. S.r.l.</h3>
+            <p class="hbce-card__text">
+              Internal R&D self-audit pilot before external customer pilots.
             </p>
-            <div class="pillrow">
-              <span class="pill">weak attribution</span>
-              <span class="pill">post-facto logging</span>
-              <span class="pill">procurement risk</span>
-            </div>
-          </div>
-        </div>
+          </article>
 
-        <div class="col-6" role="listitem">
-          <div class="card">
-            <h3>Solution</h3>
-            <p>
-              Identity must validate first. If verification fails, execution is blocked.
-              Outcomes are deterministic and auditable. Public surfaces remain hash-only and custody-free.
+          <article class="hbce-card">
+            <div class="hbce-card__kicker">FIRST RESULT</div>
+            <h3>AUDIT_READY</h3>
+            <p class="hbce-card__text">
+              The first run generated document hash, governance decision, human validation, EVT, OPC and report.
             </p>
-            <div class="pillrow">
-              <span class="pill">pre-execution verify</span>
-              <span class="pill">fail-closed</span>
-              <span class="pill">audit-ready</span>
-            </div>
-          </div>
+          </article>
+        </div>
+
+        <div class="hbce-grid hbce-grid--2" style="margin-top:14px;">
+          <article class="hbce-card">
+            <div class="hbce-card__kicker">EVT</div>
+            <p class="hbce-mono" style="word-break:break-word;">EVT-20260507121131-5ABF693B</p>
+          </article>
+
+          <article class="hbce-card">
+            <div class="hbce-card__kicker">OPC</div>
+            <p class="hbce-mono" style="word-break:break-word;">OPC-20260507121131-9DF07633</p>
+          </article>
+
+          <article class="hbce-card">
+            <div class="hbce-card__kicker">DOCUMENT HASH</div>
+            <p class="hbce-mono" style="word-break:break-word;">
+              sha256:829084cb740c21c1cc5b59ffdb4c220169e05627a5f7abf469f4ede96e8aae32
+            </p>
+          </article>
+
+          <article class="hbce-card">
+            <div class="hbce-card__kicker">DECISION</div>
+            <p class="hbce-mono">MEDIUM / ALLOW / APPROVED</p>
+          </article>
         </div>
       </div>
     </section>
 
-    <section class="section" aria-label="Rule">
-      <h2>Execution rule</h2>
-      <p>
-        At the operational boundary the rule is intentionally minimal — it must remain deterministic.
-      </p>
+    <section class="hbce-section">
+      <h2>3. B2B use cases</h2>
 
-      <div class="rule">
-        <pre class="mono">
-identity_valid == true ? EXECUTE : BLOCK
-failure_mode = FAIL_CLOSED
-evidence_mode = APPEND_ONLY
-public_surface = HASH_ONLY
-jurisdiction_baseline = EU (UE_FIRST + AUDIT_FIRST + GDPR_MIN)
-        </pre>
-      </div>
+      <div class="hbce-grid hbce-grid--4">
+        <article class="hbce-card">
+          <div class="hbce-card__kicker">COMPLIANCE</div>
+          <h3>Document review</h3>
+          <p class="hbce-card__text">
+            Analyze governance, policy or compliance documents and export audit-ready reports.
+          </p>
+        </article>
 
-      <div class="stack">
-        This single rule becomes a policy gate for robotics, fleets, AI agents and industrial controllers.
-        It is not a product feature — it is an infrastructure constraint.
-      </div>
-    </section>
+        <article class="hbce-card">
+          <div class="hbce-card__kicker">CYBERSECURITY</div>
+          <h3>Security documentation</h3>
+          <p class="hbce-card__text">
+            Review defensive security documents, policies and incident notes with traceable AI support.
+          </p>
+        </article>
 
-    <section class="section" aria-label="What you get">
-      <h2>What Enterprise/B2G deployments get</h2>
-      <p>
-        Enterprise and public-sector deployments typically require governance, policy packs and procurement-grade documentation.
-        The system is designed to support that without storing identity data (no custody).
-      </p>
+        <article class="hbce-card">
+          <div class="hbce-card__kicker">LEGAL OPS</div>
+          <h3>Controlled analysis</h3>
+          <p class="hbce-card__text">
+            Support legal operations document review while preserving human validation boundaries.
+          </p>
+        </article>
 
-      <div class="grid" role="list">
-        <div class="col-4" role="listitem">
-          <div class="card">
-            <h3>Governance layer</h3>
-            <p>Policy packs, execution scopes, operator roles, and audit constraints aligned with regulated environments.</p>
-          </div>
-        </div>
-        <div class="col-4" role="listitem">
-          <div class="card">
-            <h3>Interoperability</h3>
-            <p>Compatibility with public registry patterns and deterministic verification rules for multi-node ecosystems.</p>
-          </div>
-        </div>
-        <div class="col-4" role="listitem">
-          <div class="card">
-            <h3>Procurement readiness</h3>
-            <p>Documentation sets for risk, audit, and traceability: designed for enterprise and public procurement flows.</p>
-          </div>
-        </div>
-
-        <div class="col-6" role="listitem">
-          <div class="card">
-            <h3>Incident &amp; forensics</h3>
-            <p>Append-only evidence chains support incident response and forensic verification without identity custody.</p>
-          </div>
-        </div>
-        <div class="col-6" role="listitem">
-          <div class="card">
-            <h3>Operational roll-out</h3>
-            <p>Nodes deploy on static infrastructure. Verification remains local and deterministic. Long-term stability is prioritized.</p>
-          </div>
-        </div>
+        <article class="hbce-card">
+          <div class="hbce-card__kicker">INTERNAL AUDIT</div>
+          <h3>AI usage trace</h3>
+          <p class="hbce-card__text">
+            Show how AI was used, which document was processed, and who validated the output.
+          </p>
+        </article>
       </div>
     </section>
 
-    <section class="section" aria-label="CTA">
-      <h2>Next steps</h2>
-      <p>
-        Start from the operational tier that matches your environment. For regulated deployments, use a node perimeter and policy packs.
-      </p>
+    <section class="hbce-section">
+      <h2>4. Workflow</h2>
 
-      <div class="cta">
-        <a class="btn primary" href="../pricing/">Pricing</a>
-        <a class="btn" href="../NODE-PACK/">Deploy Node</a>
-        <a class="btn" href="../demo-gate/">Execution Gate demo</a>
+      <div class="hbce-card">
+        <pre class="hbce-pre" style="white-space:pre-wrap;word-break:break-word;">Document upload
+→ document hash
+→ AI document analysis
+→ governance decision
+→ human validation
+→ EVT event
+→ OPC proof
+→ audit report export</pre>
+
+        <p class="hbce-card__text" style="margin-top:14px;">
+          The MVP is deliberately narrow. It proves one concrete workflow before moving toward broader productization.
+        </p>
       </div>
     </section>
 
-    <footer>
-      <div class="mono">Policy: HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · UE_FIRST · AUDIT_FIRST · GDPR_MIN</div>
-      <div>Issuer: <span class="mono">HERMETICUM B.C.E. S.r.l.</span> — Jurisdiction: <span class="mono">EU</span></div>
-    </footer>
+    <section class="hbce-section">
+      <h2>5. 30-day pilot model</h2>
 
-  </div>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          A possible external B2B pilot should remain small and testable:
+        </p>
+
+        <ul class="hbce-list">
+          <li>duration: 30 days;</li>
+          <li>users: 1–3 authorized operators;</li>
+          <li>documents: 10–20 synthetic, public or explicitly authorized documents;</li>
+          <li>workflow: one AI-assisted document analysis process;</li>
+          <li>output: audit-ready report package;</li>
+          <li>review: usability, traceability, report clarity, validation workflow and governance value.</li>
+        </ul>
+
+        <p class="hbce-card__text">
+          Any pilot involving confidential, personal, regulated, client or sensitive operational data requires prior legal,
+          privacy and security review.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>6. What the MVP is not</h2>
+
+      <div class="hbce-card">
+        <ul class="hbce-list">
+          <li>It is not production-grade enterprise SaaS yet.</li>
+          <li>It is not legal certification.</li>
+          <li>It is not regulated compliance automation.</li>
+          <li>It is not external audit certification.</li>
+          <li>It is not public-sector adoption.</li>
+          <li>It is not eIDAS or qualified trust service functionality.</li>
+          <li>It does not replace legal, security, privacy or institutional review.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>7. Productization path</h2>
+
+      <div class="hbce-grid hbce-grid--3">
+        <article class="hbce-card">
+          <div class="hbce-card__kicker">PHASE 1</div>
+          <h3>Self-pilot</h3>
+          <p class="hbce-card__text">
+            Run additional internal reports using HERMETICUM B.C.E. documents.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__kicker">PHASE 2</div>
+          <h3>External pilot</h3>
+          <p class="hbce-card__text">
+            Test one document workflow with one external B2B user profile.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__kicker">PHASE 3</div>
+          <h3>Hardening</h3>
+          <p class="hbce-card__text">
+            Add storage, authentication, access control, security review and report verification.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>8. Direct links</h2>
+
+      <div class="hbce-card">
+        <div class="hbce-actions">
+          <a
+            class="hbce-btn hbce-btn--primary"
+            href="https://hbce-ai-joker-c2.vercel.app/matrix-audit-trail"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Launch MATRIX AI Audit Trail Demo
+          </a>
+
+          <a class="hbce-btn" href="/hermeticum-bce-platform/matrix-audit-trail/">
+            Public demo bridge
+          </a>
+
+          <a class="hbce-btn" href="/hermeticum-bce-platform/i3p/">
+            I3P MVP page
+          </a>
+
+          <a class="hbce-btn" href="/hermeticum-bce-platform/b2g/">
+            Public-sector positioning
+          </a>
+
+          <a class="hbce-btn" href="/hermeticum-bce-platform/claims/">
+            Claims & Non-Claims
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-card">
+        <h2>Operational statement</h2>
+        <p class="hbce-card__text">
+          The current B2B value proposition is simple:
+          <strong>AI-assisted document work can become traceable, attributable, human-validated and audit-reportable.</strong>
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </body>
 </html>
