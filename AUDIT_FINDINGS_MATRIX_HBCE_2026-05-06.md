@@ -13,7 +13,7 @@ Audit cycle: Audit Cycle 001 — Repository baseline review
 
 This document records the first baseline audit findings for the MATRIX / HBCE public platform.
 
-The audit is defensive, authorized, non-offensive, and limited to repository-owned code, documentation, configuration, registry assumptions, GitHub Pages deployment assumptions, and public governance materials.
+The audit is defensive, authorized, non-offensive, and limited to repository-owned code, documentation, configuration, registry assumptions, GitHub Pages deployment assumptions, public governance materials, browser-side tools, public assets, and static gateway behavior.
 
 The purpose of this document is to create an audit-ready finding register that can later be converted into MATRIX event records.
 
@@ -34,7 +34,9 @@ The current audit scope includes:
 - GitHub Pages static deployment assumptions;
 - absence of exposed secrets;
 - environment variable documentation;
-- dependency and configuration review;
+- dependency and package configuration;
+- static asset behavior;
+- browser-side script behavior;
 - fail-closed wording and implementation alignment;
 - hash-only / no public data custody posture.
 
@@ -365,11 +367,11 @@ REMEDIATED
 
 ---
 
-### FINDING-010 — Registry, verification, and schema files require review
+### FINDING-010 — Registry, verification, schema, and browser-side logic require review
 
 Severity: MEDIUM  
 Status: IN_REVIEW  
-Affected area: Registry, verification, and schema logic  
+Affected area: Registry, verification, schema, and browser-side proof logic  
 Affected files:
 
 - `registry/`
@@ -377,16 +379,17 @@ Affected files:
 - `verify-pack/`
 - `verify/schema/`
 - `schemas/`
+- `assets/`
 - `protocol/`
 - verification-related files, if present
 
 Description:
 
-Registry, verification, and schema files require a dedicated review to confirm that public verification remains hash-only, minimal, fail-closed, and aligned with registry v3 semantics.
+Registry, verification, schema, and browser-side logic require a dedicated review to confirm that public verification remains hash-only, minimal, fail-closed, and aligned with registry v3 semantics.
 
 Why it matters:
 
-Registry, verification, and schema logic are central to the HBCE / MATRIX / IPR governance model. If missing, malformed, or inconsistent records are treated as valid, the platform could create false confidence.
+Registry, verification, schema, and browser-side proof logic are central to the HBCE / MATRIX / IPR governance model. If missing, malformed, or inconsistent records are treated as valid, the platform could create false confidence.
 
 Review progress:
 
@@ -395,6 +398,8 @@ The first registry remediation cycle has been completed for the main public regi
 The first verification remediation cycle has been completed for the public verification gateway, direct verifier, receipt verifier, evidence schema, demo evidence bundle, baseline document, public IPR reference page, and verify-pack verifier.
 
 The first schema remediation cycle has been completed for global IPR, receipt, registry entry, and EVT schemas.
+
+The first UI / assets / partials remediation cycle has been completed for navigation, shell behavior, include loading, browser-side verification helpers, local status helpers, crypto helpers, IPR generation, and visual-only scripts.
 
 Safe remediation / action completed so far:
 
@@ -419,19 +424,25 @@ Safe remediation / action completed so far:
 - upgraded `schemas/ipr.schema.json` to an HBCE IPR Package v2 privacy-minimal model;
 - upgraded `schemas/receipt.schema.json` to an HBCE Receipt v2 privacy-minimal model;
 - added `schemas/hbce-registry-entry.schema.json` as the canonical public registry entry v3 schema;
-- added `schemas/hbce-evt.schema.json` as the canonical EVT operational update schema.
+- added `schemas/hbce-evt.schema.json` as the canonical EVT operational update schema;
+- aligned shared browser-side verification helpers with registry v3 semantics;
+- aligned IPR generator with v2 privacy-minimal receipt and registry v3 entry output;
+- aligned crypto helpers with client-side, same-origin, hash-only, no-custody behavior;
+- removed or disabled legacy shell injection behavior;
+- aligned navigation and link registries with the new policy surfaces;
+- marked visual scripts as local visual-only enhancers.
 
 Remaining review:
 
 - protocol consistency;
 - final source-of-truth decision between `ledger.json` and `registry.json`;
 - public page references still using legacy labels;
-- link and UI checks across modified registry and verify pages;
+- link and UI checks across modified registry, verify, policy, and asset-driven pages;
 - validation consistency between schema files and browser tools.
 
 Fail-closed relevance:
 
-High. Registry mismatch, missing data, malformed records, unverifiable hashes, invalid verification inputs, inconsistent schemas, or non-deterministic verification states should block validation or require manual review.
+High. Registry mismatch, missing data, malformed records, unverifiable hashes, invalid verification inputs, inconsistent schemas, browser-side legacy logic, or non-deterministic verification states should block validation or require manual review.
 
 Audit status:
 
@@ -448,6 +459,8 @@ Affected files:
 
 - `.github/workflows/registry-guard.yml`;
 - `tools/registry-guard.js`;
+- `DEPLOYMENT_STATIC_GATEWAY_REVIEW_2026-05-06.md`;
+- `assets/`;
 - GitHub Pages configuration;
 - static public assets and generated files.
 
@@ -463,6 +476,10 @@ Review progress:
 
 The registry guard workflow and registry guard script have been hardened for registry v3, privacy-minimal records, fail-closed validation, append-only enforcement, and forbidden-field blocking.
 
+The static gateway deployment review has been added.
+
+The first UI / assets / partials remediation cycle has been completed to remove legacy shell injection, align navigation, align shared verification helpers, and mark visual scripts as local-only or client-side helpers.
+
 Safe remediation / action completed so far:
 
 - hardened `.github/workflows/registry-guard.yml`;
@@ -477,12 +494,17 @@ Safe remediation / action completed so far:
 - enforced append-only behavior for pull requests;
 - enforced non-decreasing timestamps;
 - enforced duplicate `payload_sha256` blocking;
-- documented public proof limitation.
+- documented public proof limitation;
+- added `DEPLOYMENT_STATIC_GATEWAY_REVIEW_2026-05-06.md`;
+- documented that GitHub Pages and the public gateway are static, public, no-custody, and not a secure backend;
+- disabled legacy header/footer shell injection in asset scripts;
+- hardened same-origin include loading;
+- aligned assets with no external calls, no tracking, no upload, and no data custody where applicable.
 
 Remaining review:
 
 - confirm GitHub Pages source branch and folder;
-- inspect static assets for secrets or sensitive records;
+- inspect any remaining static assets for secrets or sensitive records;
 - confirm no private evidence is published;
 - confirm no API keys or credentials are embedded;
 - run public-page link and UI checks;
@@ -598,6 +620,8 @@ Review progress:
 
 A first public-policy and governance remediation cycle has been completed across privacy, terms, legal, compliance, security, governance, and claims pages.
 
+The homepage and navigation / partials have also been aligned with R&D, registry v3, public proof, and no-custody language.
+
 Safe remediation / action completed so far:
 
 - clarified R&D / experimental status across legal and governance pages;
@@ -607,7 +631,9 @@ Safe remediation / action completed so far:
 - aligned compliance page with EU-first posture while avoiding certification overclaim;
 - aligned governance page with AI accountability, human responsibility, and public/private data separation;
 - aligned claims page with explicit claims and non-claims boundaries;
-- translated and aligned legal notice and cookie/contact pages to the R&D no-custody model.
+- translated and aligned legal notice and cookie/contact pages to the R&D no-custody model;
+- aligned root homepage with R&D public gateway, registry v3, `payload_sha256`, and public proof limitations;
+- aligned navigation and shell partials with policy-first surfaces.
 
 Remaining review:
 
@@ -889,7 +915,72 @@ Environment audit status:
 
 ---
 
-## 11. Current audit summary
+## 11. UI, assets, and partials remediation update — 2026-05-06
+
+The first UI / assets / partials remediation cycle has been completed for public navigation, browser-side helpers, local proof displays, partial loaders, link registries, visual enhancers, and shared client-side verification utilities.
+
+Updated files:
+
+- `index.html`
+- `NAV.html`
+- `partials/header.html`
+- `partials/footer.html`
+- `partials/hbce-shell.html`
+- `assets/hbce-ui.js`
+- `assets/hbce-verify.js`
+- `assets/ipr-gen.js`
+- `assets/hbce-nav.js`
+- `assets/hbce-shell.js`
+- `assets/include.js`
+- `assets/header.html`
+- `assets/footer.html`
+- `assets/links.js`
+- `assets/hbce-crypto.js`
+- `assets/app.js`
+- `assets/hbce-header-badge.js`
+- `assets/hbce-counters.js`
+- `assets/index-status.js`
+- `assets/lab-status.js`
+- `assets/hbce-protocol.js`
+- `assets/fx.js`
+- `assets/spacefield.js`
+
+UI / assets remediation outcomes:
+
+- aligned the root homepage with R&D public gateway, registry v3, `payload_sha256`, hash-only public proof, fail-closed verification, and no-public-data-custody language;
+- aligned primary navigation and partial navigation with Verify, Registry, Claims, Compliance, Governance, Security, Legal, Protocol, and Audit surfaces;
+- removed or disabled legacy shell injection behavior;
+- removed legacy route injection assumptions from navigation scripts;
+- hardened partial include loading as same-origin and fail-closed;
+- aligned shared verification engine with registry v3 and `payload_sha256`;
+- aligned IPR generation helpers with v2 privacy-minimal receipt and registry entry models;
+- aligned crypto helpers with client-side, same-origin, hash-only, no-custody behavior;
+- aligned local status panels with local-only proof semantics rather than public validation semantics;
+- aligned node badge and counters with `registry/nodes.json` v3 rather than legacy deployment node files;
+- marked visual scripts as local visual-only enhancers with no fetch, no tracking, no upload, and no data custody;
+- hardened protocol UI status helpers for `PUBLIC_RECORD_PRESENT`, `NO_PUBLIC_RECORD`, `HASH_MATCH`, `HASH_MISMATCH`, `NON_OPERATIONAL`, and fail-closed states;
+- updated canonical link registry to prioritize internal policy, registry, verify, schema, audit, and legal surfaces.
+
+Updated deployment / browser-side finding status:
+
+- `FINDING-010` — IN_REVIEW
+- `FINDING-011` — IN_REVIEW
+- `FINDING-014` — IN_REVIEW
+
+Remaining UI / assets work:
+
+- run public link audit;
+- run browser render checks on modified pages;
+- review additional asset folders such as `assets/js`, `assets/css`, and `assets/partials` if they are actively referenced;
+- scan remaining public pages for legacy labels or obsolete link targets.
+
+UI / assets audit status:
+
+`PARTIALLY_REMEDIATED — UI / ASSETS / PARTIALS HARDENING COMPLETED; LINK AND RENDER REVIEW PENDING`
+
+---
+
+## 12. Current audit summary
 
 Remediated / completed items:
 
@@ -928,7 +1019,11 @@ Remediated / completed items:
 - claims and non-claims page aligned;
 - environment safeguards added;
 - safe `.env.example` added;
-- dependency/package finding marked not applicable for current static public gateway.
+- dependency/package finding marked not applicable for current static public gateway;
+- static deployment review added;
+- navigation and partials aligned;
+- shared assets and browser-side helpers hardened;
+- visual scripts marked local-only.
 
 Pending or in-review items:
 
@@ -936,27 +1031,28 @@ Pending or in-review items:
 - GitHub Pages deployment assumptions;
 - documentation overclaim review;
 - final registry source-of-truth decision;
-- legacy label/link references across public pages;
+- legacy label/link references across remaining public pages;
 - UI and link testing across modified pages.
 
 ---
 
-## 12. Immediate next actions
+## 13. Immediate next actions
 
 Recommended next actions:
 
-1. Review GitHub Pages source branch and deployment settings.
-2. Review static assets for accidental secrets or sensitive material.
-3. Review protocol documents for schema v1/v2/v3 consistency.
-4. Review public B2B/B2G, enterprise, AI JOKER-C2, MATRIX, and protocol pages for overclaiming.
-5. Review public pages for legacy references to `nickname`, `operator_sha256`, `territory`, `name`, or raw personal labels.
-6. Run link and UI tests on modified registry, verify, legal, compliance, security, governance, and claims pages.
-7. Decide whether `ledger.json` or `registry.json` is the long-term canonical source of truth.
-8. Update this findings register as each review step is completed.
+1. Run the link audit tool at `tools/index.html`.
+2. Review GitHub Pages source branch and deployment settings.
+3. Review `assets/js`, `assets/css`, and `assets/partials` if actively referenced.
+4. Review protocol documents for schema v1/v2/v3 consistency.
+5. Review public B2B/B2G, enterprise, AI JOKER-C2, MATRIX, and protocol pages for overclaiming.
+6. Review remaining public pages for legacy references to `nickname`, `operator_sha256`, `territory`, `name`, or raw personal labels.
+7. Run browser render checks on modified registry, verify, legal, compliance, security, governance, claims, and asset-driven pages.
+8. Decide whether `ledger.json` or `registry.json` is the long-term canonical source of truth.
+9. Update this findings register as each review step is completed.
 
 ---
 
-## 13. Audit-ready event record draft
+## 14. Audit-ready event record draft
 
 ```json
 {
@@ -997,6 +1093,7 @@ Recommended next actions:
   "policy_remediation_status": "PARTIALLY_REMEDIATED",
   "environment_remediation_status": "REMEDIATED",
   "dependency_review_status": "NOT_APPLICABLE_STATIC_GATEWAY",
+  "ui_assets_remediation_status": "PARTIALLY_REMEDIATED",
   "registry_files_hardened": [
     "registry/index.html",
     "registry/ledger.json",
@@ -1048,6 +1145,31 @@ Recommended next actions:
     ".gitignore",
     ".env.example"
   ],
+  "ui_asset_files_hardened": [
+    "index.html",
+    "NAV.html",
+    "partials/header.html",
+    "partials/footer.html",
+    "partials/hbce-shell.html",
+    "assets/hbce-ui.js",
+    "assets/hbce-verify.js",
+    "assets/ipr-gen.js",
+    "assets/hbce-nav.js",
+    "assets/hbce-shell.js",
+    "assets/include.js",
+    "assets/header.html",
+    "assets/footer.html",
+    "assets/links.js",
+    "assets/hbce-crypto.js",
+    "assets/app.js",
+    "assets/hbce-header-badge.js",
+    "assets/hbce-counters.js",
+    "assets/index-status.js",
+    "assets/lab-status.js",
+    "assets/hbce-protocol.js",
+    "assets/fx.js",
+    "assets/spacefield.js"
+  ],
   "governance_posture": [
     "EU_FIRST",
     "AUDIT_FIRST",
@@ -1058,14 +1180,14 @@ Recommended next actions:
     "HUMAN_VALIDATION",
     "RESPONSIBILITY_OWNERSHIP"
   ],
-  "next_action": "Review GitHub Pages deployment assumptions, protocol consistency, remaining public-page overclaims, and final source-of-truth decision",
+  "next_action": "Run link audit, confirm GitHub Pages deployment settings, review remaining asset subfolders and protocol pages, and decide final registry source of truth",
   "output_target": "AUDIT_READY_MATRIX_EVENT_RECORD"
 }
 ```
 
 ---
 
-## 14. Maintainer statement
+## 15. Maintainer statement
 
 This findings register is part of a defensive and authorized repository baseline review.
 
