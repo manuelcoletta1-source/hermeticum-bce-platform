@@ -3,7 +3,7 @@
 Review date: 2026-05-07  
 Repository: hermeticum-bce-platform  
 Maintainer: Manuel Coletta  
-Status: IN_REVIEW  
+Status: MAJOR_ROUTE_CLASSIFICATION_COMPLETED  
 Purpose: classify duplicate, legacy, canonical, declassed and redirect-worthy public routes before deletion.
 
 ---
@@ -140,16 +140,16 @@ The following IO-SPACE routes have now been classified or reframed.
 
 ---
 
-## 9. Routes still requiring review
+## 9. Institutional / industry route decisions
 
-These routes may be historical pages, commercial surfaces, institutional pages, or pages requiring overclaim review.
+The following institutional and industry-facing routes have now been classified or reframed.
 
-| Route | Proposed status | Review reason |
+| Route | Status | Decision |
 |---|---|---|
-| `/banca-cibernetica-europea/` | REVIEW | Strong institutional wording likely needs boundary review. |
-| `/eu-pilot/` | REVIEW | Pilot language needs no-adoption boundary. |
-| `/industry/` | REVIEW | Industrial claims need R&D/pilot boundary. |
-| `/horizon/` | REVIEW | Institutional claims need R&D/pilot boundary. |
+| `/banca-cibernetica-europea/` | R_AND_D_OPERATIONAL_DATA_CLEARING_CONCEPT | Reframed as “European Cybernetic Bank” metaphor for operational data clearing. Not a bank, not financial institution, not payment service, not EU institution. |
+| `/eu-pilot/` | R_AND_D_EU_PILOT_CONCEPT | Reframed as EU pilot concept. No EU adoption, no European Commission approval, no public authority endorsement, no procurement/grant award. |
+| `/industry/` | INDUSTRIAL_R_AND_D_POSITIONING | Reframed as industrial R&D / pilot positioning. No production deployment, no OEM integration claim, no robotics authorization, no critical-infrastructure authorization. |
+| `/horizon/` | R_AND_D_FUNDING_AND_PILOT_POSITIONING | Reframed as Horizon / EU funding and pilot positioning. No Horizon Europe award, no European Commission endorsement, no EU adoption, no procurement award. |
 
 ---
 
@@ -270,7 +270,7 @@ First successful state:
 AUDIT_READY
 ```
 
-Current B2B/B2G positioning should start from this MVP, not from operator licensing, network deployment, institutional adoption, defense authorization or critical-infrastructure deployment.
+Current B2B/B2G, institutional, industry, security and funding positioning should start from this MVP, not from operator licensing, network deployment, institutional adoption, defense authorization, EU adoption, banking language or critical-infrastructure deployment.
 
 ---
 
@@ -319,6 +319,10 @@ Updated files:
 - `io-space/spec/index.html`
 - `io-space/use-cases/index.html`
 - `io-space/future/index.html`
+- `banca-cibernetica-europea/index.html`
+- `eu-pilot/index.html`
+- `industry/index.html`
+- `horizon/index.html`
 
 ---
 
@@ -362,6 +366,12 @@ IO-SPACE R&D CONCEPTS
 /io-space/use-cases/
 /io-space/future/
 
+INSTITUTIONAL / INDUSTRY / FUNDING R&D POSITIONING
+/banca-cibernetica-europea/
+/eu-pilot/
+/industry/
+/horizon/
+
 OPERATOR R&D BOUNDARY
 /operator/
 
@@ -395,14 +405,18 @@ OPERATOR R&D CONCEPT ROUTES
 
 ---
 
-## 16. Next review order
+## 16. Remaining review order
 
-Next recommended review order:
+Major route classification is complete.
 
-1. `/banca-cibernetica-europea/`
-2. `/eu-pilot/`
-3. `/industry/`
-4. `/horizon/`
+Remaining work should focus on:
+
+1. link audit;
+2. sitemap audit;
+3. remaining asset subfolders;
+4. protocol consistency;
+5. final source-of-truth decision for `ledger.json` vs `registry.json`;
+6. deletion decision only after link and archive review.
 
 ---
 
@@ -413,7 +427,7 @@ Deletion is not approved yet.
 Current status:
 
 ```text
-IN_REVIEW — AI / JOKER / GATE / ENTRY / PHASE-1 / OPERATOR / B2B / B2G / DEFENSE / IO-SPACE ROUTES CLASSIFIED; REMAINING INSTITUTIONAL / INDUSTRY ROUTES STILL REQUIRE REVIEW
+MAJOR_ROUTE_CLASSIFICATION_COMPLETED — LINK / SITEMAP / ASSET / PROTOCOL REVIEW PENDING
 ```
 
 The AI / Joker duplication issue is partially remediated because the canonical route has been established and legacy routes have been declassed instead of deleted.
@@ -422,5 +436,7 @@ The Gate / Entry / Phase-1 issue is partially remediated because old operational
 
 The operator route issue is partially remediated because the `/operator/` subtree and related legacy operator routes have been reframed as R&D, local tooling, concept material, historical compatibility or future pilot interest, without deleting historical artifacts.
 
-The B2B / B2G / defense / IO-SPACE issue is partially remediated because broad strategic pages have been reframed around R&D, pilot boundaries, defensive governance, no public data custody, and the current concrete MATRIX AI Audit Trail MVP.
+The B2B / B2G / defense / IO-SPACE / institutional route issue is partially remediated because broad strategic pages have been reframed around R&D, pilot boundaries, defensive governance, no public data custody, and the current concrete MATRIX AI Audit Trail MVP.
+
+The current canonical commercial and institutional demonstration is MATRIX AI Audit Trail.
 
