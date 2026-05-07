@@ -1,10 +1,15 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PACK VERIFY — NUCLEAR (Hash+Name+Size+MIME+Registry+Chain+Sig)</title>
-  <meta name="description" content="NUCLEAR verifier: recompute SHA-256, strict filename, strict size_bytes, strict mime, registry snapshot enforced, chain continuity enforced, optional signature gate, local chain log replay. Fail-closed." />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>Operator Pack Verify — High-Strictness Local Verifier | HBCE Platform</title>
+  <meta name="description" content="HBCE high-strictness local evidence-pack verifier. Local-only, no backend, no operator certification, no license validation, no public authority approval, no public data custody." />
+  <meta name="robots" content="noindex,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/operator/" />
+
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
 
@@ -14,119 +19,172 @@
   <main class="hbce-container hbce-main">
 
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">NUCLEAR · HASH · FILENAME · SIZE · MIME · REGISTRY · CHAIN · SIGNATURE · LOG REPLAY</div>
-      <h1 class="hbce-hero__title">Evidence Pack Verifier (NUCLEAR)</h1>
+      <div class="hbce-hero__kicker">OPERATOR · HIGH-STRICTNESS LOCAL VERIFIER · R&D BOUNDARY</div>
+
+      <h1 class="hbce-hero__title">High-strictness local evidence pack verifier</h1>
+
       <p class="hbce-hero__lead">
-        Questo è il verificatore “bunker assoluto”: il manifest diventa un contratto computabile
-        su <strong>hash</strong>, <strong>nome file</strong>, <strong>dimensione</strong> e <strong>MIME</strong>.
-        In più: <strong>registry snapshot</strong> obbligatorio, <strong>continuità chain</strong> obbligatoria,
-        e (opzionale) gate di <strong>firma</strong>.
+        This route is a local R&D verifier for evidence-pack concepts. It performs strict local checks over selected files:
+        hash, filename, size, MIME, registry snapshot, chain continuity and optional signature-field presence.
+        <br /><br />
+        This route was previously named with a stronger label. It is now explicitly framed as a
+        <strong>high-strictness local verifier</strong>. It is not related to nuclear systems, nuclear safety,
+        nuclear infrastructure, military operations, regulated critical-infrastructure authorization or public authority approval.
       </p>
-      <p class="hbce-note">
-        Se il tuo pack passa qui, passa ovunque (a patto di non cambiare un singolo byte).
+
+      <p class="hbce-note" style="margin-top:12px;">
+        Status:
+        <strong>R&D local verifier</strong> ·
+        <strong>noindex</strong> ·
+        <strong>no backend</strong> ·
+        <strong>no license validation</strong> ·
+        <strong>no public data custody</strong>
       </p>
-    </section>
 
-    <section class="hbce-section">
-      <h2>Nuclear controls</h2>
+      <div class="hbce-actions" style="margin-top:16px;">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/operator/">
+          Operator boundary
+        </a>
 
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>Strict enforcement (default ON)</h3>
-          <label style="display:flex;gap:10px;align-items:center;">
-            <input type="checkbox" id="strict_name" checked />
-            <span><strong>ENFORCE filename</strong></span>
-          </label>
-          <label style="display:flex;gap:10px;align-items:center;margin-top:10px;">
-            <input type="checkbox" id="strict_size" checked />
-            <span><strong>ENFORCE size_bytes</strong></span>
-          </label>
-          <label style="display:flex;gap:10px;align-items:center;margin-top:10px;">
-            <input type="checkbox" id="strict_mime" checked />
-            <span><strong>ENFORCE mime</strong></span>
-          </label>
-          <label style="display:flex;gap:10px;align-items:center;margin-top:10px;">
-            <input type="checkbox" id="strict_registry" checked />
-            <span><strong>ENFORCE registry snapshot</strong> (se manifest.registry_snapshot.included=true)</span>
-          </label>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/operator/pack-verify/">
+          Standard local pack verifier
+        </a>
 
-          <p class="hbce-note">
-            Nuclear = ON su tutto. Spegnere un check lo rende meno “atomico”.
-          </p>
-        </div>
+        <a
+          class="hbce-btn"
+          href="https://hbce-ai-joker-c2.vercel.app/matrix-audit-trail"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          MATRIX AI Audit Trail Demo
+        </a>
 
-        <div class="hbce-card">
-          <h3>Chain & signature</h3>
-          <label style="display:flex;gap:10px;align-items:center;">
-            <input type="checkbox" id="sig_gate" />
-            <span><strong>Require signature fields</strong> (se signature.mode != NONE)</span>
-          </label>
-
-          <label style="display:flex;gap:10px;align-items:center;margin-top:10px;">
-            <input type="checkbox" id="enforce_chain" checked />
-            <span><strong>ENFORCE chain continuity</strong> (prev must equal local last if exists)</span>
-          </label>
-
-          <label style="display:flex;gap:10px;align-items:center;margin-top:10px;">
-            <input type="checkbox" id="log_replay" checked />
-            <span><strong>Replay local chain log</strong> (verifica consistenza log append-only)</span>
-          </label>
-
-          <p class="hbce-note">
-            Replay log: controlla che la local chain log sia coerente (hash presenti, ordine append-only).
-          </p>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Decision</h3>
-          <div class="hbce-actions">
-            <button class="hbce-btn" id="btnVerify" type="button">VERIFY (NUCLEAR)</button>
-            <button class="hbce-btn hbce-btn--ghost" id="btnSaveLocal" type="button" disabled>SAVE CHAIN AS LAST (local)</button>
-          </div>
-          <ul class="hbce-list">
-            <li><strong>RESULT:</strong> <span id="result">—</span></li>
-            <li><strong>Reason:</strong> <span id="reason">—</span></li>
-          </ul>
-        </div>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/claims/">
+          Claims & Non-Claims
+        </a>
       </div>
     </section>
 
     <section class="hbce-section">
-      <h2>Input</h2>
+      <h2>1. Route classification</h2>
 
-      <div class="hbce-grid">
-        <div class="hbce-card">
-          <h3>1) PACK_MANIFEST.json (required)</h3>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          <strong>/operator/pack-verify-nuclear/</strong> is retained as a legacy route name, but its current meaning is:
+          <strong>high-strictness local evidence-pack verifier</strong>.
+        </p>
+
+        <p class="hbce-card__text">
+          It verifies local artifacts selected by the user in the browser. It does not validate an operator license,
+          does not certify an operator, does not publish registry records, does not submit data to a backend,
+          and does not replace private evidence review, legal review, security review, institutional validation or regulated certification.
+        </p>
+
+        <pre class="hbce-pre" style="white-space:pre-wrap;word-break:break-word;">route: /operator/pack-verify-nuclear/
+classification: R&D_HIGH_STRICTNESS_LOCAL_EVIDENCE_PACK_VERIFIER
+legacy route name: retained for compatibility only
+storage: local browser only
+backend: none
+public data custody: none
+operator license validation: not active
+critical infrastructure authorization: not active
+canonical operator boundary: /operator/
+current MVP: /matrix-audit-trail/</pre>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>2. Strict local controls</h2>
+
+      <div class="hbce-grid hbce-grid--3">
+        <article class="hbce-card">
+          <h3>File checks</h3>
+          <label style="display:flex;gap:10px;align-items:center;">
+            <input type="checkbox" id="strict_name" checked />
+            <span>Require filename match</span>
+          </label>
+          <label style="display:flex;gap:10px;align-items:center;margin-top:10px;">
+            <input type="checkbox" id="strict_size" checked />
+            <span>Require size_bytes match</span>
+          </label>
+          <label style="display:flex;gap:10px;align-items:center;margin-top:10px;">
+            <input type="checkbox" id="strict_mime" checked />
+            <span>Require MIME match</span>
+          </label>
+        </article>
+
+        <article class="hbce-card">
+          <h3>Registry and chain checks</h3>
+          <label style="display:flex;gap:10px;align-items:center;">
+            <input type="checkbox" id="strict_registry" checked />
+            <span>Require registry snapshot when declared</span>
+          </label>
+          <label style="display:flex;gap:10px;align-items:center;margin-top:10px;">
+            <input type="checkbox" id="enforce_chain" checked />
+            <span>Require local chain continuity when local last exists</span>
+          </label>
+          <label style="display:flex;gap:10px;align-items:center;margin-top:10px;">
+            <input type="checkbox" id="log_replay" checked />
+            <span>Replay local chain log</span>
+          </label>
+        </article>
+
+        <article class="hbce-card">
+          <h3>Signature-field check</h3>
+          <label style="display:flex;gap:10px;align-items:center;">
+            <input type="checkbox" id="sig_gate" />
+            <span>Require signature fields when signature mode is not NONE</span>
+          </label>
+
+          <div class="hbce-actions" style="margin-top:12px;">
+            <button class="hbce-btn hbce-btn--primary" id="btnVerify" type="button">Verify local pack</button>
+            <button class="hbce-btn" id="btnSaveLocal" type="button" disabled>Save chain as last local</button>
+          </div>
+
+          <ul class="hbce-list">
+            <li><strong>Result:</strong> <span id="result">—</span></li>
+            <li><strong>Reason:</strong> <span id="reason">—</span></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>3. Input artifacts</h2>
+
+      <div class="hbce-grid hbce-grid--2">
+        <article class="hbce-card">
+          <h3>1) PACK_MANIFEST.json — required</h3>
           <input type="file" id="f_manifest" accept=".json,application/json" />
           <ul class="hbce-list">
             <li><strong>Status:</strong> <span id="m_status">—</span></li>
             <li><strong>kind:</strong> <span id="m_kind">—</span></li>
             <li><strong>pack_id:</strong> <span id="m_pack">—</span></li>
-            <li><strong>operator_id:</strong> <span id="m_op">—</span></li>
+            <li><strong>operator_label:</strong> <span id="m_op">—</span></li>
             <li><strong>payload_sha256:</strong> <span id="m_payload">—</span></li>
-            <li><strong>manifest_sha256 (computed):</strong> <span id="m_sha">—</span></li>
+            <li><strong>manifest_sha256:</strong> <span id="m_sha">—</span></li>
             <li><strong>registry_snapshot.included:</strong> <span id="m_reg_inc">—</span></li>
             <li><strong>registry_snapshot.sha256:</strong> <span id="m_reg_sha">—</span></li>
           </ul>
-        </div>
+        </article>
 
-        <div class="hbce-card">
-          <h3>2) PACK_CHAIN.json (required)</h3>
+        <article class="hbce-card">
+          <h3>2) PACK_CHAIN.json — required</h3>
           <input type="file" id="f_chain" accept=".json,application/json" />
           <ul class="hbce-list">
             <li><strong>Status:</strong> <span id="c_status">—</span></li>
             <li><strong>pack_id:</strong> <span id="c_pack">—</span></li>
-            <li><strong>manifest_sha256 (in chain):</strong> <span id="c_msha">—</span></li>
+            <li><strong>manifest_sha256:</strong> <span id="c_msha">—</span></li>
             <li><strong>prev_chain_sha256:</strong> <span id="c_prev">—</span></li>
-            <li><strong>chain_sha256 (computed):</strong> <span id="c_sha">—</span></li>
+            <li><strong>chain_sha256:</strong> <span id="c_sha">—</span></li>
           </ul>
-        </div>
+        </article>
 
-        <div class="hbce-card">
-          <h3>3) Files referenced in manifest (required)</h3>
+        <article class="hbce-card">
+          <h3>3) Files referenced in manifest — required</h3>
           <input type="file" id="f_files" multiple />
           <p class="hbce-note">
-            Carica i file reali del pack. Nuclear controlla hash + filename + size + mime.
+            Load only synthetic, public or authorized non-sensitive files.
           </p>
           <ul class="hbce-list">
             <li><strong>Loaded files:</strong> <span id="f_count">0</span></li>
@@ -136,27 +194,27 @@
             <li><strong>Size mismatches:</strong> <span id="f_size_miss">—</span></li>
             <li><strong>MIME mismatches:</strong> <span id="f_mime_miss">—</span></li>
           </ul>
-        </div>
+        </article>
 
-        <div class="hbce-card">
-          <h3>4) Registry snapshot file (optional / required if enforced)</h3>
+        <article class="hbce-card">
+          <h3>4) Registry snapshot — optional / required if enforced</h3>
           <input type="file" id="f_registry_snapshot" accept=".json,application/json" />
           <ul class="hbce-list">
             <li><strong>Status:</strong> <span id="rs_status">—</span></li>
-            <li><strong>SHA-256 (computed):</strong> <span id="rs_sha">—</span></li>
+            <li><strong>SHA-256:</strong> <span id="rs_sha">—</span></li>
             <li><strong>Matches manifest:</strong> <span id="rs_match">—</span></li>
             <li><strong>MIME:</strong> <span id="rs_mime">—</span></li>
             <li><strong>Size:</strong> <span id="rs_size">—</span></li>
           </ul>
-        </div>
+        </article>
       </div>
     </section>
 
     <section class="hbce-section">
-      <h2>Local chain state</h2>
+      <h2>4. Local chain state</h2>
 
-      <div class="hbce-grid">
-        <div class="hbce-card">
+      <div class="hbce-grid hbce-grid--2">
+        <article class="hbce-card">
           <h3>Local chain</h3>
           <ul class="hbce-list">
             <li><strong>local last_chain_sha256:</strong> <span id="l_last">—</span></li>
@@ -164,17 +222,65 @@
             <li><strong>log replay:</strong> <span id="l_log">—</span></li>
           </ul>
           <div class="hbce-actions">
-            <button class="hbce-btn hbce-btn--ghost" id="btnClearLocal" type="button">CLEAR LOCAL CHAIN</button>
-            <button class="hbce-btn hbce-btn--ghost" id="btnExportLocal" type="button">EXPORT LOCAL CHAIN LOG</button>
+            <button class="hbce-btn" id="btnClearLocal" type="button">Clear local chain</button>
+            <button class="hbce-btn" id="btnExportLocal" type="button">Export local chain log</button>
           </div>
           <p class="hbce-note">
-            Local storage = chain operativa del browser (append-only). Non è “cloud”: è un’arma di integrità locale.
+            Local storage is used only for browser-side chain testing. It is not a cloud ledger or public registry.
           </p>
-        </div>
+        </article>
 
-        <div class="hbce-card">
+        <article class="hbce-card">
           <h3>Report</h3>
           <pre class="hbce-pre"><code id="report">—</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>5. Non-claims</h2>
+
+      <div class="hbce-card">
+        <ul class="hbce-list">
+          <li>This verifier does not certify an operator.</li>
+          <li>This verifier does not validate a legal license.</li>
+          <li>This verifier does not create regulated certification.</li>
+          <li>This verifier does not create public authority approval.</li>
+          <li>This verifier does not submit data to HERMETICUM B.C.E. S.r.l.</li>
+          <li>This verifier does not publish registry records.</li>
+          <li>This verifier does not authorize critical-infrastructure or public-sector operations.</li>
+          <li>This verifier does not relate to nuclear systems, nuclear safety or nuclear infrastructure.</li>
+          <li>This verifier does not replace private evidence, legal, security or institutional review.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>6. Recommended current path</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          For current product validation, use the working MVP:
+          <strong>MATRIX AI Audit Trail</strong>.
+        </p>
+
+        <div class="hbce-actions" style="margin-top:12px;">
+          <a
+            class="hbce-btn hbce-btn--primary"
+            href="https://hbce-ai-joker-c2.vercel.app/matrix-audit-trail"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Launch MATRIX AI Audit Trail
+          </a>
+
+          <a class="hbce-btn" href="/hermeticum-bce-platform/operator/">
+            Operator boundary
+          </a>
+
+          <a class="hbce-btn" href="/hermeticum-bce-platform/claims/">
+            Claims & Non-Claims
+          </a>
         </div>
       </div>
     </section>
@@ -182,487 +288,701 @@
   </main>
 
   <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 
-<script>
-(function(){
-  const $ = (id) => document.getElementById(id);
+  <script>
+    (function () {
+      "use strict";
 
-  const CHAIN_LAST_KEY = "HBCE_PACK_CHAIN_LAST_SHA256_V1";
-  const CHAIN_LOG_KEY  = "HBCE_PACK_CHAIN_LOG_V1";
+      const CHAIN_LAST_KEY = "HBCE_OPERATOR_PACK_CHAIN_LAST_SHA256_V2";
+      const CHAIN_LOG_KEY = "HBCE_OPERATOR_PACK_CHAIN_LOG_V2";
 
-  function setText(id, v){ const el = $(id); if(el) el.textContent = v; }
-  function isNonEmptyString(x){ return typeof x === "string" && x.trim().length > 0; }
-  function isHex64(x){ return typeof x === "string" && /^[a-f0-9]{64}$/i.test(String(x||"").trim()); }
+      const $ = (id) => document.getElementById(id);
 
-  async function sha256HexFromText(text){
-    const enc = new TextEncoder();
-    const buf = enc.encode(text);
-    const hashBuf = await crypto.subtle.digest("SHA-256", buf);
-    const hashArr = Array.from(new Uint8Array(hashBuf));
-    return hashArr.map(b => b.toString(16).padStart(2,"0")).join("");
-  }
+      let manifestObj = null;
+      let manifestText = null;
+      let manifestSha = null;
 
-  async function sha256HexFromBlob(blob){
-    const buf = await blob.arrayBuffer();
-    const hashBuf = await crypto.subtle.digest("SHA-256", buf);
-    const hashArr = Array.from(new Uint8Array(hashBuf));
-    return hashArr.map(b => b.toString(16).padStart(2,"0")).join("");
-  }
+      let chainObj = null;
+      let chainText = null;
+      let chainSha = null;
 
-  function getLastChainSha(){
-    try { return localStorage.getItem(CHAIN_LAST_KEY) || null; } catch(_) { return null; }
-  }
+      let loadedFiles = [];
+      let regSnapSha = null;
+      let regSnapSize = null;
+      let regSnapMime = null;
 
-  function setLastChainSha(sha){
-    try { localStorage.setItem(CHAIN_LAST_KEY, sha); } catch(_) {}
-  }
-
-  function loadChainLog(){
-    try{
-      const raw = localStorage.getItem(CHAIN_LOG_KEY);
-      if(!raw) return [];
-      const obj = JSON.parse(raw);
-      return Array.isArray(obj) ? obj : [];
-    }catch(_){ return []; }
-  }
-
-  function appendChainLog(entry){
-    const log = loadChainLog();
-    log.push(entry);
-    try { localStorage.setItem(CHAIN_LOG_KEY, JSON.stringify(log)); } catch(_) {}
-  }
-
-  $("btnClearLocal").addEventListener("click", () => {
-    try{
-      localStorage.removeItem(CHAIN_LAST_KEY);
-      localStorage.removeItem(CHAIN_LOG_KEY);
-    }catch(_){}
-    setText("l_last","—");
-    setText("l_ok","—");
-    setText("l_log","—");
-  });
-
-  $("btnExportLocal").addEventListener("click", () => {
-    const log = loadChainLog();
-    const ts = new Date().toISOString().replace(/[:.]/g,"-");
-    const blob = new Blob([JSON.stringify(log, null, 2)], {type:"application/json;charset=utf-8"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `HBCE_PACK_CHAIN_LOG_${ts}.json`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  });
-
-  let manifestObj=null, manifestText=null, manifestSha=null;
-  let chainObj=null, chainText=null, chainSha=null;
-
-  let loadedFiles = []; // {name, sha256, size, mime}
-  let regSnapSha=null, regSnapSize=null, regSnapMime=null;
-
-  function resetResult(){
-    setText("result","—");
-    setText("reason","—");
-    setText("report","—");
-    $("btnSaveLocal").disabled = true;
-  }
-
-  async function loadManifest(){
-    resetResult();
-    const f = $("f_manifest").files && $("f_manifest").files[0];
-    manifestObj=null; manifestText=null; manifestSha=null;
-
-    if(!f){ setText("m_status","—"); return; }
-
-    try{ manifestText = await f.text(); }
-    catch(_){ setText("m_status","FAIL — read"); return; }
-
-    try{ manifestSha = await sha256HexFromText(manifestText); setText("m_sha", manifestSha); }
-    catch(_){ setText("m_sha","—"); }
-
-    try{ manifestObj = JSON.parse(manifestText); }
-    catch(_){ setText("m_status","FAIL — JSON"); return; }
-
-    setText("m_kind", String(manifestObj.kind || "—"));
-    setText("m_pack", manifestObj.pack_id || "—");
-    setText("m_op", manifestObj.operator_id || "—");
-    setText("m_payload", (manifestObj.linkage && manifestObj.linkage.payload_sha256) ? manifestObj.linkage.payload_sha256 : "—");
-
-    const inc = !!(manifestObj.registry_snapshot && manifestObj.registry_snapshot.included);
-    const rsha = manifestObj.registry_snapshot ? manifestObj.registry_snapshot.registry_sha256 : null;
-    setText("m_reg_inc", inc ? "true" : "false");
-    setText("m_reg_sha", rsha ? String(rsha) : "—");
-
-    if(!manifestObj.proto || !manifestObj.kind || !manifestObj.pack_id || !manifestObj.operator_id) {
-      setText("m_status","FAIL — schema");
-      return;
-    }
-    if(!manifestObj.files || !Array.isArray(manifestObj.files)) {
-      setText("m_status","FAIL — files[]");
-      return;
-    }
-
-    setText("m_status","OK");
-  }
-
-  async function loadChain(){
-    resetResult();
-    const f = $("f_chain").files && $("f_chain").files[0];
-    chainObj=null; chainText=null; chainSha=null;
-
-    if(!f){ setText("c_status","—"); return; }
-
-    try{ chainText = await f.text(); }
-    catch(_){ setText("c_status","FAIL — read"); return; }
-
-    try{ chainSha = await sha256HexFromText(chainText); setText("c_sha", chainSha); }
-    catch(_){ setText("c_sha","—"); }
-
-    try{ chainObj = JSON.parse(chainText); }
-    catch(_){ setText("c_status","FAIL — JSON"); return; }
-
-    setText("c_pack", chainObj.pack_id || "—");
-    setText("c_msha", chainObj.manifest_sha256 || "—");
-    setText("c_prev", chainObj.prev_chain_sha256 || "—");
-
-    if(!chainObj.proto || !chainObj.kind || !chainObj.pack_id || !chainObj.manifest_sha256) {
-      setText("c_status","FAIL — schema");
-      return;
-    }
-    if(!isHex64(chainObj.manifest_sha256)) {
-      setText("c_status","FAIL — manifest_sha256 invalid");
-      return;
-    }
-    if(chainObj.prev_chain_sha256 && !isHex64(chainObj.prev_chain_sha256)) {
-      setText("c_status","FAIL — prev_chain_sha256 invalid");
-      return;
-    }
-
-    setText("c_status","OK");
-    setText("l_last", getLastChainSha() || "—");
-    setText("l_ok","—");
-    setText("l_log","—");
-  }
-
-  async function loadFiles(){
-    resetResult();
-    const list = $("f_files").files ? Array.from($("f_files").files) : [];
-    loadedFiles = [];
-    setText("f_count", String(list.length));
-    setText("f_match", "0");
-    setText("f_missing", "—");
-    setText("f_name_miss", "—");
-    setText("f_size_miss", "—");
-    setText("f_mime_miss", "—");
-
-    for(const f of list){
-      try{
-        const sha = await sha256HexFromBlob(f);
-        loadedFiles.push({ name: f.name, sha256: sha, size: f.size, mime: f.type || "application/octet-stream" });
-      }catch(_){
-        loadedFiles.push({ name: f.name, sha256: null, size: f.size, mime: f.type || "application/octet-stream" });
+      function setText(id, value) {
+        const element = $(id);
+        if (element) element.textContent = String(value);
       }
-    }
-  }
 
-  async function loadRegistrySnapshot(){
-    resetResult();
-    const f = $("f_registry_snapshot").files && $("f_registry_snapshot").files[0];
+      function clean(value) {
+        return String(value || "").trim();
+      }
 
-    regSnapSha=null; regSnapSize=null; regSnapMime=null;
-    setText("rs_status","—");
-    setText("rs_sha","—");
-    setText("rs_match","—");
-    setText("rs_mime","—");
-    setText("rs_size","—");
+      function normalizeSha(value) {
+        const raw = clean(value).toLowerCase();
+        if (!raw) return "";
+        return raw.startsWith("sha256:") ? raw : "sha256:" + raw;
+      }
 
-    if(!f) return;
+      function stripShaPrefix(value) {
+        return clean(value).toLowerCase().replace(/^sha256:/, "");
+      }
 
-    try{
-      regSnapSha = await sha256HexFromBlob(f);
-      regSnapSize = f.size;
-      regSnapMime = f.type || "application/octet-stream";
-      setText("rs_sha", regSnapSha);
-      setText("rs_mime", regSnapMime);
-      setText("rs_size", String(regSnapSize));
-      setText("rs_status","OK");
-    }catch(_){
-      setText("rs_status","FAIL — read/hash");
-    }
-  }
+      function isSha256(value) {
+        return /^[a-f0-9]{64}$/.test(stripShaPrefix(value));
+      }
 
-  $("f_manifest").addEventListener("change", loadManifest);
-  $("f_chain").addEventListener("change", loadChain);
-  $("f_files").addEventListener("change", loadFiles);
-  $("f_registry_snapshot").addEventListener("change", loadRegistrySnapshot);
+      function isNonEmptyString(value) {
+        return typeof value === "string" && value.trim().length > 0;
+      }
 
-  function fail(reason, details){
-    setText("result","FAIL-CLOSED");
-    setText("reason", reason);
-    setText("report", details ? JSON.stringify(details, null, 2) : "—");
-    $("btnSaveLocal").disabled = true;
-  }
+      function hasForbiddenField(obj, path) {
+        const forbidden = [
+          "name",
+          "nickname",
+          "territory",
+          "operator_sha256",
+          "tax_code",
+          "fiscal_code",
+          "identity_document",
+          "private_key",
+          "secret",
+          "password",
+          "token",
+          "credential",
+          "customer_data",
+          "production_log",
+          "private_evidence",
+          "sensitive_operational_payload"
+        ];
 
-  function pass(details){
-    setText("result","PASS");
-    setText("reason","ALL CHECKS OK");
-    setText("report", JSON.stringify(details, null, 2));
-    $("btnSaveLocal").disabled = false;
-  }
+        if (!obj || typeof obj !== "object") return null;
 
-  function replayLogCheck(){
-    const log = loadChainLog();
-    if(!Array.isArray(log)) return { ok:false, reason:"log invalid (not array)", log_len: 0 };
+        if (Array.isArray(obj)) {
+          for (let index = 0; index < obj.length; index += 1) {
+            const found = hasForbiddenField(obj[index], path + "[" + index + "]");
+            if (found) return found;
+          }
+          return null;
+        }
 
-    // basic: each entry must have chain_sha256 64hex
-    for(let i=0;i<log.length;i++){
-      const e = log[i];
-      if(!e || !isHex64(e.chain_sha256)) return { ok:false, reason:`log entry ${i} missing/invalid chain_sha256`, log_len: log.length };
-      // append-only sanity: if prev present, it should equal previous chain_sha256 (best effort)
-      if(i>0){
-        const prev = e.prev_chain_sha256 || null;
-        const prevExpected = log[i-1].chain_sha256;
-        if(prev && isHex64(prev) && String(prev).toLowerCase() !== String(prevExpected).toLowerCase()){
-          return { ok:false, reason:`log discontinuity at ${i} (prev != log[i-1])`, log_len: log.length };
+        for (const key of Object.keys(obj)) {
+          const currentPath = path ? path + "." + key : key;
+
+          if (forbidden.includes(key)) {
+            return currentPath;
+          }
+
+          const found = hasForbiddenField(obj[key], currentPath);
+          if (found) return found;
+        }
+
+        return null;
+      }
+
+      async function sha256HexFromText(text) {
+        const encoded = new TextEncoder().encode(String(text || ""));
+        const digest = await crypto.subtle.digest("SHA-256", encoded);
+        const bytes = Array.from(new Uint8Array(digest));
+
+        return bytes.map((byte) => byte.toString(16).padStart(2, "0")).join("");
+      }
+
+      async function sha256HexFromBlob(blob) {
+        const buffer = await blob.arrayBuffer();
+        const digest = await crypto.subtle.digest("SHA-256", buffer);
+        const bytes = Array.from(new Uint8Array(digest));
+
+        return bytes.map((byte) => byte.toString(16).padStart(2, "0")).join("");
+      }
+
+      function getLastChainSha() {
+        try {
+          return localStorage.getItem(CHAIN_LAST_KEY) || null;
+        } catch {
+          return null;
         }
       }
-    }
 
-    return { ok:true, reason:"log OK", log_len: log.length };
-  }
+      function setLastChainSha(sha) {
+        try {
+          localStorage.setItem(CHAIN_LAST_KEY, sha);
+        } catch {}
+      }
 
-  $("btnVerify").addEventListener("click", async () => {
-    resetResult();
+      function loadChainLog() {
+        try {
+          const raw = localStorage.getItem(CHAIN_LOG_KEY);
+          if (!raw) return [];
 
-    const strictName = $("strict_name").checked;
-    const strictSize = $("strict_size").checked;
-    const strictMime = $("strict_mime").checked;
-    const strictRegistry = $("strict_registry").checked;
-    const sigGate = $("sig_gate").checked;
-    const enforceChain = $("enforce_chain").checked;
-    const logReplay = $("log_replay").checked;
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      }
 
-    if(!manifestObj || !manifestText || !manifestSha) return fail("missing manifest", {});
-    if(!chainObj || !chainText || !chainSha) return fail("missing chain", {});
-    if(!Array.isArray(manifestObj.files)) return fail("manifest files[] invalid", {});
+      function appendChainLog(entry) {
+        const log = loadChainLog();
+        log.push(entry);
 
-    // chain->manifest link
-    if(String(chainObj.manifest_sha256).trim().toLowerCase() !== String(manifestSha).trim().toLowerCase()){
-      return fail("chain.manifest_sha256 != computed manifest sha", {
-        chain_manifest_sha256: chainObj.manifest_sha256,
-        computed_manifest_sha256: manifestSha
+        try {
+          localStorage.setItem(CHAIN_LOG_KEY, JSON.stringify(log));
+        } catch {}
+      }
+
+      function downloadText(filename, text, mime) {
+        const blob = new Blob([text], { type: mime || "application/json;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+
+        anchor.href = url;
+        anchor.download = filename;
+
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+
+        URL.revokeObjectURL(url);
+      }
+
+      function resetResult() {
+        setText("result", "—");
+        setText("reason", "—");
+        setText("report", "—");
+        $("btnSaveLocal").disabled = true;
+      }
+
+      async function loadManifest() {
+        resetResult();
+
+        const file = $("f_manifest").files && $("f_manifest").files[0];
+        manifestObj = null;
+        manifestText = null;
+        manifestSha = null;
+
+        if (!file) {
+          setText("m_status", "—");
+          return;
+        }
+
+        try {
+          manifestText = await file.text();
+          manifestSha = "sha256:" + await sha256HexFromText(manifestText);
+          manifestObj = JSON.parse(manifestText);
+        } catch {
+          setText("m_status", "FAIL — read or JSON error");
+          return;
+        }
+
+        const forbidden = hasForbiddenField(manifestObj, "manifest");
+        if (forbidden) {
+          setText("m_status", "FAIL — forbidden field: " + forbidden);
+          return;
+        }
+
+        setText("m_status", "OK");
+        setText("m_kind", manifestObj.kind || "—");
+        setText("m_pack", manifestObj.pack_id || "—");
+        setText("m_op", manifestObj.operator_label || "—");
+        setText("m_payload", manifestObj.linkage?.payload_sha256 || "—");
+        setText("m_sha", manifestSha);
+        setText("m_reg_inc", manifestObj.registry_snapshot?.included ? "true" : "false");
+        setText("m_reg_sha", manifestObj.registry_snapshot?.registry_sha256 || "—");
+      }
+
+      async function loadChain() {
+        resetResult();
+
+        const file = $("f_chain").files && $("f_chain").files[0];
+        chainObj = null;
+        chainText = null;
+        chainSha = null;
+
+        if (!file) {
+          setText("c_status", "—");
+          return;
+        }
+
+        try {
+          chainText = await file.text();
+          chainSha = "sha256:" + await sha256HexFromText(chainText);
+          chainObj = JSON.parse(chainText);
+        } catch {
+          setText("c_status", "FAIL — read or JSON error");
+          return;
+        }
+
+        const forbidden = hasForbiddenField(chainObj, "chain");
+        if (forbidden) {
+          setText("c_status", "FAIL — forbidden field: " + forbidden);
+          return;
+        }
+
+        setText("c_status", "OK");
+        setText("c_pack", chainObj.pack_id || "—");
+        setText("c_msha", chainObj.manifest_sha256 || "—");
+        setText("c_prev", chainObj.prev_chain_sha256 || "—");
+        setText("c_sha", chainSha);
+
+        setText("l_last", getLastChainSha() || "—");
+        setText("l_ok", "—");
+        setText("l_log", "—");
+      }
+
+      async function loadFiles() {
+        resetResult();
+
+        const list = $("f_files").files ? Array.from($("f_files").files) : [];
+        loadedFiles = [];
+
+        setText("f_count", String(list.length));
+        setText("f_match", "0");
+        setText("f_missing", "—");
+        setText("f_name_miss", "—");
+        setText("f_size_miss", "—");
+        setText("f_mime_miss", "—");
+
+        for (const file of list) {
+          try {
+            const sha = "sha256:" + await sha256HexFromBlob(file);
+            loadedFiles.push({
+              name: file.name,
+              sha256: sha,
+              size: file.size,
+              mime: file.type || "application/octet-stream"
+            });
+          } catch {
+            loadedFiles.push({
+              name: file.name,
+              sha256: null,
+              size: file.size,
+              mime: file.type || "application/octet-stream"
+            });
+          }
+        }
+      }
+
+      async function loadRegistrySnapshot() {
+        resetResult();
+
+        const file = $("f_registry_snapshot").files && $("f_registry_snapshot").files[0];
+
+        regSnapSha = null;
+        regSnapSize = null;
+        regSnapMime = null;
+
+        setText("rs_status", "—");
+        setText("rs_sha", "—");
+        setText("rs_match", "—");
+        setText("rs_mime", "—");
+        setText("rs_size", "—");
+
+        if (!file) return;
+
+        try {
+          const text = await file.text();
+          JSON.parse(text);
+
+          regSnapSha = "sha256:" + await sha256HexFromText(text);
+          regSnapSize = file.size;
+          regSnapMime = file.type || "application/json";
+
+          setText("rs_sha", regSnapSha);
+          setText("rs_mime", regSnapMime);
+          setText("rs_size", String(regSnapSize));
+          setText("rs_status", "OK");
+        } catch {
+          setText("rs_status", "FAIL — read/hash/JSON error");
+        }
+      }
+
+      function fail(reason, details) {
+        setText("result", "FAIL-CLOSED");
+        setText("reason", reason);
+        setText("report", details ? JSON.stringify(details, null, 2) : "—");
+        $("btnSaveLocal").disabled = true;
+      }
+
+      function pass(details) {
+        setText("result", "PASS");
+        setText("reason", "LOCAL PACK CHECKS OK");
+        setText("report", JSON.stringify(details, null, 2));
+        $("btnSaveLocal").disabled = false;
+      }
+
+      function buildExpectedManifestFiles() {
+        if (!manifestObj || !Array.isArray(manifestObj.files)) return [];
+
+        return manifestObj.files
+          .map((item) => ({
+            label: item.label || null,
+            sha256: item.sha256 ? normalizeSha(item.sha256) : null,
+            filename: item.filename || null,
+            kind: item.kind || null,
+            size_bytes: typeof item.size_bytes === "number" ? item.size_bytes : null,
+            mime: item.mime || null
+          }))
+          .filter((item) => item.sha256 && isSha256(item.sha256));
+      }
+
+      function replayLogCheck() {
+        const log = loadChainLog();
+
+        if (!Array.isArray(log)) {
+          return { ok: false, reason: "log invalid", log_len: 0 };
+        }
+
+        for (let index = 0; index < log.length; index += 1) {
+          const entry = log[index];
+
+          if (!entry || !isSha256(entry.chain_sha256)) {
+            return {
+              ok: false,
+              reason: "log entry " + index + " missing or invalid chain_sha256",
+              log_len: log.length
+            };
+          }
+
+          if (index > 0) {
+            const previous = log[index - 1];
+            const expectedPrevious = previous.chain_sha256;
+            const declaredPrevious = entry.prev_chain_sha256 || null;
+
+            if (
+              declaredPrevious &&
+              isSha256(declaredPrevious) &&
+              normalizeSha(declaredPrevious) !== normalizeSha(expectedPrevious)
+            ) {
+              return {
+                ok: false,
+                reason: "log discontinuity at " + index,
+                log_len: log.length
+              };
+            }
+          }
+        }
+
+        return {
+          ok: true,
+          reason: "log OK",
+          log_len: log.length
+        };
+      }
+
+      async function verifyPack() {
+        resetResult();
+
+        const strictName = $("strict_name").checked;
+        const strictSize = $("strict_size").checked;
+        const strictMime = $("strict_mime").checked;
+        const strictRegistry = $("strict_registry").checked;
+        const sigGate = $("sig_gate").checked;
+        const enforceChain = $("enforce_chain").checked;
+        const logReplay = $("log_replay").checked;
+
+        if (!manifestObj || !manifestText || !manifestSha) return fail("missing manifest", {});
+        if (!chainObj || !chainText || !chainSha) return fail("missing chain", {});
+        if (!Array.isArray(manifestObj.files)) return fail("manifest files[] invalid", {});
+
+        if (!manifestObj.pack_id || !manifestObj.kind || !manifestObj.operator_label) {
+          return fail("manifest missing pack_id, kind or operator_label", {});
+        }
+
+        if (normalizeSha(chainObj.manifest_sha256) !== normalizeSha(manifestSha)) {
+          return fail("chain.manifest_sha256 != computed manifest sha", {
+            chain_manifest_sha256: chainObj.manifest_sha256,
+            computed_manifest_sha256: manifestSha
+          });
+        }
+
+        if (String(chainObj.pack_id || "") !== String(manifestObj.pack_id || "")) {
+          return fail("pack_id mismatch between chain and manifest", {
+            chain_pack_id: chainObj.pack_id,
+            manifest_pack_id: manifestObj.pack_id
+          });
+        }
+
+        if (sigGate) {
+          const signature = manifestObj.signature || null;
+          const mode = signature ? signature.mode || "NONE" : "NONE";
+
+          if (mode && String(mode) !== "NONE") {
+            const publicKey = signature ? signature.public_key : null;
+            const signatureValue = signature ? signature.signature : null;
+
+            if (!isNonEmptyString(publicKey) || !isNonEmptyString(signatureValue)) {
+              return fail("signature field check failed", { signature });
+            }
+          }
+        }
+
+        const localLast = getLastChainSha();
+        const prev = chainObj.prev_chain_sha256 || null;
+
+        if (enforceChain) {
+          if (localLast) {
+            if (!prev) {
+              return fail("local chain exists but pack has no prev_chain_sha256", {
+                local_last_chain_sha256: localLast
+              });
+            }
+
+            if (normalizeSha(prev) !== normalizeSha(localLast)) {
+              return fail("prev_chain_sha256 != local last_chain_sha256", {
+                prev_chain_sha256: prev,
+                local_last_chain_sha256: localLast
+              });
+            }
+
+            setText("l_ok", "OK");
+          } else {
+            setText("l_ok", prev ? "OK (import)" : "OK (genesis)");
+          }
+        } else {
+          setText("l_ok", "SKIPPED");
+        }
+
+        let logCheck = { ok: true, reason: "skipped", log_len: null };
+
+        if (logReplay) {
+          logCheck = replayLogCheck();
+          setText("l_log", logCheck.ok ? "OK (" + logCheck.log_len + ")" : "FAIL (" + logCheck.log_len + ")");
+
+          if (!logCheck.ok) {
+            return fail("local chain log replay failed", logCheck);
+          }
+        } else {
+          setText("l_log", "SKIPPED");
+        }
+
+        if (loadedFiles.length === 0) {
+          return fail("no files loaded", {
+            expected_count: manifestObj.files.length
+          });
+        }
+
+        const expectedFiles = buildExpectedManifestFiles();
+        const expectedHashes = expectedFiles.map((item) => normalizeSha(item.sha256));
+        const providedHashes = loadedFiles
+          .filter((item) => item.sha256 && isSha256(item.sha256))
+          .map((item) => normalizeSha(item.sha256));
+
+        const missing = expectedHashes.filter((hash) => !providedHashes.includes(hash));
+
+        const nameMismatches = [];
+        const sizeMismatches = [];
+        const mimeMismatches = [];
+
+        const map = new Map();
+
+        for (const expected of expectedFiles) {
+          if (expected.sha256 && !map.has(normalizeSha(expected.sha256))) {
+            map.set(normalizeSha(expected.sha256), expected);
+          }
+        }
+
+        for (const loaded of loadedFiles) {
+          if (!loaded.sha256 || !isSha256(loaded.sha256)) continue;
+
+          const key = normalizeSha(loaded.sha256);
+          if (!map.has(key)) continue;
+
+          const expected = map.get(key);
+
+          if (strictName && expected.filename && loaded.name !== expected.filename) {
+            nameMismatches.push({
+              sha256: key,
+              expected: expected.filename,
+              got: loaded.name
+            });
+          }
+
+          if (strictSize && typeof expected.size_bytes === "number" && Number(loaded.size) !== Number(expected.size_bytes)) {
+            sizeMismatches.push({
+              sha256: key,
+              expected: expected.size_bytes,
+              got: loaded.size
+            });
+          }
+
+          if (strictMime && expected.mime && loaded.mime !== expected.mime) {
+            mimeMismatches.push({
+              sha256: key,
+              expected: expected.mime,
+              got: loaded.mime
+            });
+          }
+        }
+
+        setText("f_match", String(expectedHashes.length - missing.length));
+        setText("f_missing", missing.length ? missing.join(", ") : "0");
+        setText("f_name_miss", nameMismatches.length ? String(nameMismatches.length) : "0");
+        setText("f_size_miss", sizeMismatches.length ? String(sizeMismatches.length) : "0");
+        setText("f_mime_miss", mimeMismatches.length ? String(mimeMismatches.length) : "0");
+
+        if (missing.length) {
+          return fail("missing files by hash", {
+            missing_sha256: missing,
+            expected_count: expectedHashes.length,
+            loaded: loadedFiles.length
+          });
+        }
+
+        if (strictName && nameMismatches.length) return fail("filename mismatch", { mismatches: nameMismatches });
+        if (strictSize && sizeMismatches.length) return fail("size_bytes mismatch", { mismatches: sizeMismatches });
+        if (strictMime && mimeMismatches.length) return fail("mime mismatch", { mismatches: mimeMismatches });
+
+        const labels = expectedFiles.map((item) => item.label).filter(Boolean);
+        const requiredLabels = ["RELEASE_OR_PROOF_ARTIFACT", "REGISTRY_ENTRY"];
+
+        for (const label of requiredLabels) {
+          if (!labels.includes(label)) {
+            return fail("manifest missing mandatory label: " + label, { labels });
+          }
+        }
+
+        const payloadHash = manifestObj.linkage?.payload_sha256;
+
+        if (!payloadHash || !isSha256(payloadHash)) {
+          return fail("manifest.linkage.payload_sha256 missing or invalid", {
+            linkage: manifestObj.linkage || {}
+          });
+        }
+
+        const registryIncluded = Boolean(manifestObj.registry_snapshot?.included);
+        const registryExpected = manifestObj.registry_snapshot?.registry_sha256
+          ? normalizeSha(manifestObj.registry_snapshot.registry_sha256)
+          : null;
+
+        if (registryIncluded && strictRegistry) {
+          if (!registryExpected || !isSha256(registryExpected)) {
+            return fail("manifest registry_snapshot included but registry_sha256 missing or invalid", {
+              registry_snapshot: manifestObj.registry_snapshot
+            });
+          }
+
+          if (!regSnapSha) {
+            return fail("registry snapshot required but not provided", {
+              expected_registry_sha256: registryExpected
+            });
+          }
+
+          setText("rs_match", normalizeSha(regSnapSha) === registryExpected ? "YES" : "NO");
+
+          if (normalizeSha(regSnapSha) !== registryExpected) {
+            return fail("registry snapshot hash mismatch", {
+              expected_registry_sha256: registryExpected,
+              computed_registry_sha256: regSnapSha,
+              size: regSnapSize,
+              mime: regSnapMime
+            });
+          }
+        }
+
+        pass({
+          result: "PASS",
+          strict: {
+            filename: strictName,
+            size_bytes: strictSize,
+            mime: strictMime,
+            registry_snapshot: strictRegistry,
+            chain_continuity: enforceChain,
+            log_replay: logReplay,
+            signature_field_check: sigGate
+          },
+          pack_id: manifestObj.pack_id,
+          operator_label: manifestObj.operator_label,
+          manifest_sha256_computed: manifestSha,
+          chain_sha256_computed: chainSha,
+          prev_chain_sha256: prev || null,
+          local_last_chain_sha256: localLast || null,
+          log: logCheck,
+          files_loaded: loadedFiles.length,
+          files_expected: expectedHashes.length,
+          boundary:
+            "Local R&D verification only. Not operator certification, not license validation, not public authority approval, not nuclear-system verification."
+        });
+      }
+
+      $("f_manifest").addEventListener("change", loadManifest);
+      $("f_chain").addEventListener("change", loadChain);
+      $("f_files").addEventListener("change", loadFiles);
+      $("f_registry_snapshot").addEventListener("change", loadRegistrySnapshot);
+
+      $("btnVerify").addEventListener("click", verifyPack);
+
+      $("btnSaveLocal").addEventListener("click", () => {
+        if (!chainSha) return;
+
+        setLastChainSha(chainSha);
+
+        appendChainLog({
+          chain_sha256: chainSha,
+          pack_id: chainObj ? chainObj.pack_id : null,
+          created_at: chainObj ? chainObj.created_at : null,
+          manifest_sha256: chainObj ? chainObj.manifest_sha256 : null,
+          prev_chain_sha256: chainObj ? chainObj.prev_chain_sha256 : null
+        });
+
+        setText("l_last", chainSha);
       });
-    }
 
-    // pack_id match
-    if(String(chainObj.pack_id||"") !== String(manifestObj.pack_id||"")){
-      return fail("pack_id mismatch (chain vs manifest)", { chain_pack_id: chainObj.pack_id, manifest_pack_id: manifestObj.pack_id });
-    }
+      $("btnClearLocal").addEventListener("click", () => {
+        try {
+          localStorage.removeItem(CHAIN_LAST_KEY);
+          localStorage.removeItem(CHAIN_LOG_KEY);
+        } catch {}
 
-    // signature gate
-    if(sigGate){
-      const sig = manifestObj.signature || null;
-      const mode = sig ? (sig.mode || "NONE") : "NONE";
-      if(mode && String(mode) !== "NONE"){
-        const pk = sig ? sig.public_key : null;
-        const sv = sig ? sig.signature : null;
-        if(!isNonEmptyString(pk) || !isNonEmptyString(sv)){
-          return fail("signature gate failed (mode!=NONE but missing public_key/signature)", { signature: sig });
-        }
-      }
-    }
+        setText("l_last", "—");
+        setText("l_ok", "—");
+        setText("l_log", "—");
+      });
 
-    // chain continuity
-    const localLast = getLastChainSha();
-    const prev = chainObj.prev_chain_sha256 || null;
+      $("btnExportLocal").addEventListener("click", () => {
+        const log = loadChainLog();
+        const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
 
-    if(enforceChain){
-      if(localLast){
-        if(!prev) return fail("local chain exists but pack has no prev_chain_sha256", { local_last_chain_sha256: localLast });
-        if(String(prev).toLowerCase() !== String(localLast).toLowerCase()){
-          return fail("prev_chain_sha256 != local last_chain_sha256", { prev_chain_sha256: prev, local_last_chain_sha256: localLast });
-        }
-        setText("l_ok","OK");
-      } else {
-        setText("l_ok", prev ? "OK (import)" : "OK (genesis)");
-      }
-    } else {
-      setText("l_ok","SKIPPED");
-    }
+        const blob = new Blob([JSON.stringify(log, null, 2)], {
+          type: "application/json;charset=utf-8"
+        });
 
-    // replay local log
-    let logCheck = { ok:true, reason:"skipped", log_len: null };
-    if(logReplay){
-      logCheck = replayLogCheck();
-      setText("l_log", logCheck.ok ? ("OK ("+logCheck.log_len+")") : ("FAIL ("+logCheck.log_len+")"));
-      if(!logCheck.ok){
-        return fail("local chain log replay failed", logCheck);
-      }
-    } else {
-      setText("l_log","SKIPPED");
-    }
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
 
-    // require files loaded
-    if(loadedFiles.length === 0) return fail("no files loaded", { expected_count: manifestObj.files.length });
+        anchor.href = url;
+        anchor.download = `HBCE_HIGH_STRICTNESS_PACK_CHAIN_LOG_${timestamp}.json`;
 
-    // expected from manifest: sha256 + filename + size_bytes + mime
-    const mf = manifestObj.files.map(x => ({
-      label: x.label || null,
-      sha256: x.sha256 || null,
-      filename: x.filename || null,
-      kind: x.kind || null,
-      size_bytes: (typeof x.size_bytes === "number") ? x.size_bytes : null,
-      mime: x.mime || null
-    }));
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
 
-    const expectedHashes = mf.filter(x => isHex64(x.sha256)).map(x => String(x.sha256).toLowerCase());
-    const providedHashes = loadedFiles.filter(x => isHex64(x.sha256)).map(x => String(x.sha256).toLowerCase());
-    const missing = expectedHashes.filter(h => !providedHashes.includes(h));
+        URL.revokeObjectURL(url);
+      });
 
-    // mismatch trackers
-    const nameMismatches = [];
-    const sizeMismatches = [];
-    const mimeMismatches = [];
+      setText("m_status", "—");
+      setText("c_status", "—");
+      setText("f_count", "0");
+      setText("f_match", "0");
+      setText("f_missing", "—");
+      setText("f_name_miss", "—");
+      setText("f_size_miss", "—");
+      setText("f_mime_miss", "—");
+      setText("rs_status", "—");
+      setText("rs_sha", "—");
+      setText("rs_match", "—");
+      setText("rs_mime", "—");
+      setText("rs_size", "—");
+      setText("l_last", getLastChainSha() || "—");
+      setText("l_ok", "—");
+      setText("l_log", "—");
 
-    // map sha -> expected attrs (first)
-    const map = new Map();
-    for(const x of mf){
-      if(isHex64(x.sha256) && !map.has(String(x.sha256).toLowerCase())){
-        map.set(String(x.sha256).toLowerCase(), x);
-      }
-    }
-
-    for(const lf of loadedFiles){
-      if(!isHex64(lf.sha256)) continue;
-      const key = String(lf.sha256).toLowerCase();
-      if(!map.has(key)) continue;
-      const ex = map.get(key);
-
-      if(strictName && isNonEmptyString(ex.filename) && String(lf.name) !== String(ex.filename)){
-        nameMismatches.push({ sha256:key, expected: ex.filename, got: lf.name });
-      }
-      if(strictSize && typeof ex.size_bytes === "number" && Number(lf.size) !== Number(ex.size_bytes)){
-        sizeMismatches.push({ sha256:key, expected: ex.size_bytes, got: lf.size });
-      }
-      if(strictMime && isNonEmptyString(ex.mime) && String(lf.mime) !== String(ex.mime)){
-        mimeMismatches.push({ sha256:key, expected: ex.mime, got: lf.mime });
-      }
-    }
-
-    // ensure each expected entry is present with strict attrs satisfied
-    for(const [sha, ex] of map.entries()){
-      const lf = loadedFiles.find(x => isHex64(x.sha256) && String(x.sha256).toLowerCase() === sha);
-      if(!lf) continue;
-
-      if(strictName && isNonEmptyString(ex.filename) && String(lf.name) !== String(ex.filename)){
-        // already tracked
-      }
-      if(strictSize && typeof ex.size_bytes === "number" && Number(lf.size) !== Number(ex.size_bytes)){
-        // already tracked
-      }
-      if(strictMime && isNonEmptyString(ex.mime) && String(lf.mime) !== String(ex.mime)){
-        // already tracked
-      }
-    }
-
-    setText("f_match", String(expectedHashes.length - missing.length));
-    setText("f_missing", missing.length ? missing.join(", ") : "0");
-    setText("f_name_miss", nameMismatches.length ? String(nameMismatches.length) : "0");
-    setText("f_size_miss", sizeMismatches.length ? String(sizeMismatches.length) : "0");
-    setText("f_mime_miss", mimeMismatches.length ? String(mimeMismatches.length) : "0");
-
-    if(missing.length){
-      return fail("missing files (hash)", { missing_sha256: missing, expected_count: expectedHashes.length, loaded: loadedFiles.length });
-    }
-    if(strictName && nameMismatches.length) return fail("filename mismatch", { mismatches: nameMismatches });
-    if(strictSize && sizeMismatches.length) return fail("size_bytes mismatch", { mismatches: sizeMismatches });
-    if(strictMime && mimeMismatches.length) return fail("mime mismatch", { mismatches: mimeMismatches });
-
-    // mandatory labels
-    const labels = mf.map(x => x.label).filter(Boolean);
-    const must = ["RELEASE","REGISTRY_ENTRY","CERTIFICATE"];
-    for(const m of must){
-      if(!labels.includes(m)){
-        return fail("manifest missing mandatory label: " + m, { labels });
-      }
-    }
-
-    // linkage sanity
-    const link = manifestObj.linkage || {};
-    if(!isHex64(link.payload_sha256)) return fail("manifest.linkage.payload_sha256 missing/invalid", { linkage: link });
-
-    // registry snapshot enforcement
-    const regInc = !!(manifestObj.registry_snapshot && manifestObj.registry_snapshot.included);
-    const regShaExp = manifestObj.registry_snapshot ? manifestObj.registry_snapshot.registry_sha256 : null;
-
-    if(regInc && strictRegistry){
-      if(!isHex64(regShaExp)) return fail("manifest registry_snapshot included but registry_sha256 missing/invalid", { registry_snapshot: manifestObj.registry_snapshot });
-      if(!regSnapSha) return fail("registry snapshot required but not provided", { expected_registry_sha256: regShaExp });
-      setText("rs_match", (String(regSnapSha).toLowerCase() === String(regShaExp).toLowerCase()) ? "YES" : "NO");
-      if(String(regSnapSha).toLowerCase() !== String(regShaExp).toLowerCase()){
-        return fail("registry snapshot hash mismatch", { expected_registry_sha256: regShaExp, computed_registry_sha256: regSnapSha, size: regSnapSize, mime: regSnapMime });
-      }
-    }
-
-    pass({
-      result: "PASS",
-      nuclear: {
-        strict_filename: strictName,
-        strict_size_bytes: strictSize,
-        strict_mime: strictMime,
-        strict_registry_snapshot: strictRegistry,
-        enforce_chain_continuity: enforceChain,
-        log_replay: logReplay,
-        signature_gate: sigGate
-      },
-      pack_id: manifestObj.pack_id,
-      operator_id: manifestObj.operator_id,
-      manifest_sha256_computed: manifestSha,
-      chain_sha256_computed: chainSha,
-      prev_chain_sha256: prev || null,
-      local_last_chain_sha256: localLast || null,
-      log: logCheck,
-      files_loaded: loadedFiles.length,
-      files_expected: expectedHashes.length,
-      note: "NUCLEAR PASS: hash+name+size+mime ok, registry snapshot ok, chain ok, log ok"
-    });
-  });
-
-  $("btnSaveLocal").addEventListener("click", () => {
-    if(!chainSha) return;
-    setLastChainSha(chainSha);
-    appendChainLog({
-      chain_sha256: chainSha,
-      pack_id: chainObj ? chainObj.pack_id : null,
-      created_at: chainObj ? chainObj.created_at : null,
-      manifest_sha256: chainObj ? chainObj.manifest_sha256 : null,
-      prev_chain_sha256: chainObj ? chainObj.prev_chain_sha256 : null
-    });
-    setText("l_last", chainSha);
-  });
-
-  // init
-  setText("m_status","—");
-  setText("c_status","—");
-  setText("f_count","0");
-  setText("f_match","0");
-  setText("f_missing","—");
-  setText("f_name_miss","—");
-  setText("f_size_miss","—");
-  setText("f_mime_miss","—");
-  setText("rs_status","—");
-  setText("rs_sha","—");
-  setText("rs_match","—");
-  setText("rs_mime","—");
-  setText("rs_size","—");
-  setText("l_last", getLastChainSha() || "—");
-  setText("l_ok","—");
-  setText("l_log","—");
-  resetResult();
-})();
-</script>
+      resetResult();
+    })();
+  </script>
 
 </body>
 </html>
