@@ -1,145 +1,208 @@
-/* HBCE HEADER BADGE — CATTIVA++ MODE (schema + node_hash policy)
- * Source-of-truth: /deployment/nodes.json
- *
- * FAIL-CLOSED if:
- *  1) Any status not in {ACTIVE, PILOT, PLANNED}
- *  2) Any country not ISO-2
- *  3) timestamp not ISO-8601 (light sanity)
- *  4) node_hash invalid for ANY node:
- *       - empty or "PENDING"
- *       - invalid charset/length
- *  5) Any ACTIVE node is dirty:
- *       - operator empty or "PENDING"
- *       - (IT) region empty
- *       - ACTIVE node_hash must start with HBCE- or ORIGIN-
- */
+/* =========================================================
+   HBCE HEADER BADGE — PUBLIC NODE STATUS BADGE
+   - Defensive public status display
+   - Source: /registry/nodes.json
+   - Registry v3 / privacy-minimal compatible
+   - No private endpoints
+   - No private topology
+   - No secrets
+   - Fail-closed on malformed source
+   ========================================================= */
 
 (function () {
   "use strict";
 
-  const SOURCE = "/hermeticum-bce-platform/deployment/nodes.json";
-  const ALLOWED_STATUS = new Set(["ACTIVE", "PILOT", "PLANNED"]);
+  const SOURCE = "/hermeticum-bce-platform/registry/nodes.json";
+  const EXPECTED_PROTO = "HBCE-REGISTRY-v3";
+  const EXPECTED_KIND = "HBCE_PUBLIC_NODE_REGISTRY";
 
-  const el = (id) => document.getElementById(id);
-  const setText = (id, v) => { const x = el(id); if (x) x.textContent = String(v); };
+  const ALLOWED_STATUS = new Set([
+    "ACTIVE",
+    "INACTIVE",
+    "SUSPENDED",
+    "EXPERIMENTAL",
+    "PLANNED"
+  ]);
 
-  function s(x) { return String(x || "").trim(); }
-  function up(x) { return s(x).toUpperCase(); }
+  const FORBIDDEN_FIELDS = [
+    "private_ip",
+    "internal_hostname",
+    "secret",
+    "api_key",
+    "token",
+    "password",
+    "private_key",
+    "credential",
+    "ssh_key",
+    "database_url",
+    "admin_url",
+    "internal_endpoint",
+    "production_log",
+    "sensitive_topology"
+  ];
 
-  function isISO2Country(x) {
-    const v = up(x);
-    return v.length === 2 && /^[A-Z]{2}$/.test(v);
+  const elementById = (id) => document.getElementById(id);
+
+  function setText(id, value) {
+    const element = elementById(id);
+    if (element) element.textContent = String(value);
   }
 
-  function isIsoTimestamp(x) {
-    const v = s(x);
-    return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+\-]\d{2}:\d{2})$/.test(v);
+  function clean(value) {
+    return String(value || "").trim();
   }
 
-  // node_hash: A–Z 0–9 _ - ; len 10..80 ; not PENDING
-  function isValidNodeHash(x) {
-    const v = up(x);
-    if (!v) return false;
-    if (v === "PENDING") return false;
-    if (v.length < 10 || v.length > 80) return false;
-    if (!/^[A-Z0-9_-]+$/.test(v)) return false;
-    return true;
+  function upper(value) {
+    return clean(value).toUpperCase();
   }
 
-  function isValidActiveHashPrefix(x) {
-    const v = up(x);
-    return v.startsWith("HBCE-") || v.startsWith("ORIGIN-");
-  }
-
-  function uniq(arr) {
-    return Array.from(new Set(arr.filter(Boolean)));
+  function setBadgeTitle(value) {
+    const badge = elementById("hbce_net_badge");
+    if (badge) badge.setAttribute("title", value);
   }
 
   function failClosed(reason) {
-    setText("hbce_badge_state", "FAIL-CLOSED");
+    setText("hbce_badge_state", "NON-OPERATIONAL");
     setText("hbce_badge_nodes", "—");
     setText("hbce_badge_countries", "—");
+    setBadgeTitle("FAIL-CLOSED: " + (reason || "Public node registry unavailable or invalid."));
+  }
 
-    const badge = el("hbce_net_badge");
-    if (badge) badge.setAttribute("title", "FAIL-CLOSED: " + (reason || "Fonte non verificabile / incoerente."));
+  function okState(total, contexts) {
+    setText("hbce_badge_state", "OK");
+    setText("hbce_badge_nodes", total);
+    setText("hbce_badge_countries", contexts);
+    setBadgeTitle("OK: public node registry loaded. Public metadata only; no private endpoint or topology validation.");
+  }
+
+  function hasForbiddenField(object, path) {
+    if (!object || typeof object !== "object") return null;
+
+    if (Array.isArray(object)) {
+      for (let index = 0; index < object.length; index += 1) {
+        const found = hasForbiddenField(object[index], `${path}[${index}]`);
+        if (found) return found;
+      }
+
+      return null;
+    }
+
+    for (const [key, value] of Object.entries(object)) {
+      const currentPath = path ? `${path}.${key}` : key;
+
+      if (FORBIDDEN_FIELDS.includes(key)) {
+        return currentPath;
+      }
+
+      const found = hasForbiddenField(value, currentPath);
+      if (found) return found;
+    }
+
+    return null;
+  }
+
+  function isPublicLabel(value) {
+    return /^[A-Za-z0-9_\-:.]{3,128}$/.test(clean(value));
+  }
+
+  function isIsoLikeTimestamp(value) {
+    const raw = clean(value);
+    if (!raw) return false;
+    return Number.isFinite(Date.parse(raw));
+  }
+
+  function validateNode(node, index) {
+    if (!node || typeof node !== "object" || Array.isArray(node)) {
+      return `nodes[${index}] invalid object`;
+    }
+
+    const forbidden = hasForbiddenField(node, `nodes[${index}]`);
+    if (forbidden) return `forbidden field detected: ${forbidden}`;
+
+    if (!isPublicLabel(node.node_label)) return `nodes[${index}] invalid node_label`;
+    if (!clean(node.environment)) return `nodes[${index}] missing environment`;
+    if (!clean(node.identity_layer)) return `nodes[${index}] missing identity_layer`;
+    if (!clean(node.coordination_engine)) return `nodes[${index}] missing coordination_engine`;
+
+    const status = upper(node.status);
+    if (!ALLOWED_STATUS.has(status)) return `nodes[${index}] invalid status: ${clean(node.status)}`;
+
+    if (!clean(node.description)) return `nodes[${index}] missing description`;
+
+    if (node.timestamp && !isIsoLikeTimestamp(node.timestamp)) {
+      return `nodes[${index}] invalid timestamp`;
+    }
+
+    return "";
   }
 
   function validateNodesPayload(data) {
-    if (!data || typeof data !== "object") return "JSON non valido (non object).";
-    if (!Array.isArray(data.nodes)) return "Campo nodes[] mancante o non array.";
-
-    for (const n of data.nodes) {
-      if (!n || typeof n !== "object") return "Nodo non valido (non object).";
-
-      const required = ["country", "status", "node_hash", "timestamp"];
-      for (const k of required) {
-        if (!(k in n)) return "Campo obbligatorio mancante: " + k;
-        if (typeof n[k] !== "string") return "Campo non string: " + k;
-        if (!s(n[k])) return "Campo vuoto: " + k;
-      }
-
-      const st = up(n.status);
-      if (!ALLOWED_STATUS.has(st)) return "status fuori enum: " + s(n.status);
-
-      if (!isISO2Country(n.country)) return "country non ISO-2: " + s(n.country);
-      if (!isIsoTimestamp(n.timestamp)) return "timestamp non ISO-8601: " + s(n.timestamp);
-
-      // node_hash policy: applies to ALL nodes
-      if (!isValidNodeHash(n.node_hash)) return "node_hash invalido: " + s(n.node_hash);
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+      return "registry source is not a JSON object";
     }
 
-    return null;
+    if (data.proto !== EXPECTED_PROTO) {
+      return "proto mismatch";
+    }
+
+    if (data.kind !== EXPECTED_KIND) {
+      return "kind mismatch";
+    }
+
+    if (!data.rules || typeof data.rules !== "object" || Array.isArray(data.rules)) {
+      return "rules object missing";
+    }
+
+    if (data.rules.failure_mode !== "FAIL_CLOSED") {
+      return "failure_mode mismatch";
+    }
+
+    if (!Array.isArray(data.nodes)) {
+      return "nodes[] missing or invalid";
+    }
+
+    const forbidden = hasForbiddenField(data, "");
+    if (forbidden) return `forbidden field detected: ${forbidden}`;
+
+    for (let index = 0; index < data.nodes.length; index += 1) {
+      const err = validateNode(data.nodes[index], index);
+      if (err) return err;
+    }
+
+    return "";
   }
 
-  // CATTIVA++: basta 1 ACTIVE sporco → FAIL-CLOSED
-  function detectDirtyActive(nodes) {
-    for (const n of nodes) {
-      if (!n || up(n.status) !== "ACTIVE") continue;
+  function countDistinctPublicContexts(nodes) {
+    const values = new Set();
 
-      const op = up(n.operator);
-      const rg = s(n.region);
-      const nh = up(n.node_hash);
+    nodes.forEach((node) => {
+      const context = clean(node.environment) || clean(node.record_scope) || "PUBLIC_NODE_CONTEXT";
+      values.add(context.toUpperCase());
+    });
 
-      const badOp = (!op || op === "PENDING");
-      const badItRegion = (up(n.country) === "IT" && !rg);
-      const badPrefix = (!isValidActiveHashPrefix(nh)); // ACTIVE must have HBCE-/ORIGIN-
-
-      if (badOp || badItRegion || badPrefix) return n;
-    }
-    return null;
+    return values.size;
   }
 
   async function boot() {
     try {
-      const res = await fetch(SOURCE, { cache: "no-store" });
-      if (!res.ok) return failClosed("HTTP " + res.status);
+      const response = await fetch(SOURCE, { cache: "no-store" });
+      if (!response.ok) {
+        return failClosed("HTTP " + response.status);
+      }
 
-      const data = await res.json();
+      const data = await response.json();
+      const validationError = validateNodesPayload(data);
 
-      const err = validateNodesPayload(data);
-      if (err) return failClosed(err);
-
-      const dirty = detectDirtyActive(data.nodes);
-      if (dirty) {
-        const msg =
-          "ACTIVE incoerente: " +
-          up(dirty.country) + " / " + s(dirty.region || "—") + " / " + s(dirty.city || "—") +
-          " · operator=" + s(dirty.operator || "") + " · node_hash=" + s(dirty.node_hash || "");
-        return failClosed(msg);
+      if (validationError) {
+        return failClosed(validationError);
       }
 
       const total = data.nodes.length;
-      const countries = uniq(data.nodes.map(n => up(n.country))).length;
+      const contexts = countDistinctPublicContexts(data.nodes);
 
-      const badge = el("hbce_net_badge");
-      if (badge) badge.setAttribute("title", "OK (CATTIVA++): schema ok + node_hash policy ok + ACTIVE puliti.");
-
-      setText("hbce_badge_state", "OK");
-      setText("hbce_badge_nodes", total);
-      setText("hbce_badge_countries", countries);
-
-    } catch (e) {
-      failClosed("Errore parsing/lettura nodes.json");
+      return okState(total, contexts);
+    } catch (error) {
+      return failClosed(error && error.message ? error.message : "node registry read/parse error");
     }
   }
 
