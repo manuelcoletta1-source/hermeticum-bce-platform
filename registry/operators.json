@@ -1,23 +1,33 @@
 {
   "proto": "HBCE-REGISTRY-v3",
-  "kind": "HBCE_CERTIFIED_OPERATORS_PUBLIC_REGISTRY",
-  "network": "EU",
-  "mode": "APPEND_ONLY_PUBLIC_REGISTRY",
+  "kind": "HBCE_OPERATORS_PUBLIC_REGISTRY_RND_REFERENCE",
+  "network": "EU_REFERENCE_FRAMEWORK",
+  "mode": "APPEND_ONLY_PUBLIC_RND_REGISTRY",
   "issuer": {
     "hallmark": "HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA",
     "legal": "HERMETICUM B.C.E. S.r.l.",
     "symbol": "🜏"
   },
-  "jurisdiction": "EU",
-  "status": "ACTIVE",
+  "jurisdiction": "EU_REFERENCE_FRAMEWORK",
+  "status": "RND_ACTIVE",
+  "current_scope": {
+    "primary_use": "MATRIX_AI_AUDIT_TRAIL_MVP",
+    "purpose": "Public minimized operators registry reference for R&D documentation, hash-only operator proof commitments, audit-trail continuity, and deterministic verification review.",
+    "public_position": "This registry is an R&D reference surface. It is not a public authority operator registry, not a regulated certification register, not an eIDAS qualified trust service, not a professional licensing register, not a custodial identity service, and not a production compliance framework by itself.",
+    "operational_boundary": "Public operator entries are minimized proof references. They do not expose private identity evidence, raw personal identifiers, identity documents, credentials, secrets, private keys, production logs, raw AI prompts, raw AI outputs, client files, or sensitive operational payloads."
+  },
   "policy": [
+    "EU_FIRST",
+    "AUDIT_FIRST",
     "HASH_ONLY",
     "APPEND_ONLY",
     "FAIL_CLOSED",
-    "UE_FIRST",
-    "AUDIT_FIRST",
     "GDPR_MIN",
-    "NO_PUBLIC_DATA_CUSTODY"
+    "NO_PUBLIC_DATA_CUSTODY",
+    "NO_PRIVATE_KEY_CUSTODY",
+    "NO_FINANCIAL_CUSTODY",
+    "NO_REGULATED_CERTIFICATION_CLAIM",
+    "NO_PUBLIC_AUTHORITY_CLAIM"
   ],
   "rules": {
     "public_data": "HASH_ONLY",
@@ -26,12 +36,14 @@
     "failure_mode": "FAIL_CLOSED",
     "empty_entries": "NO_PUBLIC_PROOF",
     "private_evidence_policy": "PRIVATE_EVIDENCE_OUTSIDE_PUBLIC_REGISTRY",
-    "sensitive_preimage_policy": "NO_RAW_PERSONAL_IDENTIFIER_HASHES_IN_PUBLIC_REGISTRY"
+    "sensitive_preimage_policy": "NO_RAW_PERSONAL_IDENTIFIER_HASHES_IN_PUBLIC_REGISTRY",
+    "public_operator_interpretation": "A public operator entry proves only that a public hash reference exists. It does not certify legal authorization, professional qualification, public authority approval, regulated compliance, cybersecurity assurance, institutional mandate, operational activation, or production authorization.",
+    "production_interpretation": "R&D and public proof entries must not be interpreted as regulated certification, public authority approval, professional licensing, or production compliance validity unless independently supported by a lawful production framework."
   },
-  "privacy_note": "This public operators registry must not store private identity evidence, identity documents, raw personal identifiers, credentials, secrets, private keys, production logs, or sensitive operational payloads. Public operator records should use minimized public labels and hash-only proof commitments.",
+  "privacy_note": "This public operators registry must not store private identity evidence, identity documents, raw personal identifiers, credentials, secrets, private keys, production logs, raw AI prompts, raw AI outputs, client files, regulated identity documents, financial assets, confidential payloads, or sensitive operational material. Public operator records should use minimized public labels and hash-only proof commitments.",
   "created_at": "2026-02-14T00:00:00.000Z",
-  "last_update": "2026-05-06T00:00:00.000Z",
-  "empty_registry_interpretation": "An empty entries array means no public certified operator proof entries are currently available in this registry file. It does not certify validity, authorization, operator status, or operational activation by itself.",
+  "last_update": "2026-05-07T15:30:00+02:00",
+  "empty_registry_interpretation": "An empty entries array means no public operator proof entries are currently available in this registry file. It does not certify absence of activity, validity, authorization, operator status, compliance status, security status, professional qualification, or operational activation by itself.",
   "schema": {
     "entry_required": [
       "operator_label",
@@ -41,13 +53,15 @@
     ],
     "entry_optional": [
       "record_scope",
+      "public_payload_policy",
+      "source_hint",
       "note"
     ],
     "constraints": {
-      "operator_label": "Public minimal label only; must not contain raw personal identifiers or private evidence",
+      "operator_label": "Public minimal label only; must not contain raw personal identifiers, private evidence, identity documents, secrets, credentials, client data, internal endpoints, or operational authorization claims.",
       "payload_sha256": "64-character lowercase hexadecimal SHA-256 digest",
-      "timestamp": "ISO 8601 / RFC 3339 parseable timestamp",
-      "status": "ACTIVE | REVOKED | SUSPENDED"
+      "timestamp": "ISO 8601 / RFC 3339 parseable timestamp with timezone when available",
+      "status": "ACTIVE | REVOKED | SUSPENDED | RND_ONLY | RETAINED"
     },
     "forbidden_public_fields": [
       "private_key",
@@ -60,16 +74,32 @@
       "identity_document",
       "private_evidence",
       "personal_payload",
-      "production_log"
+      "personal_data",
+      "regulated_identity_document",
+      "raw_prompt",
+      "raw_output",
+      "client_file",
+      "production_log",
+      "private_communication",
+      "internal_endpoint",
+      "sensitive_operational_payload",
+      "confidential_payload",
+      "financial_asset",
+      "database_url",
+      "admin_url",
+      "private_ip",
+      "internal_hostname"
     ]
   },
   "verification": {
     "rule": "SHA256(canonical_operator_record_or_commitment) MUST_MATCH entries[].payload_sha256",
-    "valid_result": "VALID",
+    "valid_result": "VALID_PUBLIC_REFERENCE_PRESENT",
     "invalid_result": "INVALID",
     "missing_result": "NO_PUBLIC_RECORD",
     "non_operational_result": "NON_OPERATIONAL",
-    "fail_closed_rule": "Missing, malformed, ambiguous, or inconsistent registry state must not produce VALID."
+    "rnd_result": "RND_REFERENCE_ONLY",
+    "fail_closed_rule": "Missing, malformed, ambiguous, placeholder-based, or inconsistent registry state must not produce VALID.",
+    "production_rule": "RND_ONLY and RETAINED statuses must not be interpreted as regulated certification, public authority approval, professional licensing, production compliance validity, cybersecurity assurance, legal operator certification, or operational authorization."
   },
   "entries": []
 }
