@@ -1,58 +1,113 @@
-/* HBCE COUNTERS — CATTIVA++ MODE (schema + node_hash policy)
- * Source-of-truth: /deployment/nodes.json
- *
- * FAIL-CLOSED if:
- *  1) status not in {ACTIVE,PILOT,PLANNED}
- *  2) country not ISO-2
- *  3) timestamp not ISO-8601 (light sanity)
- *  4) node_hash invalid for ANY node (empty/PENDING/charset/length)
- *  5) ACTIVE dirty:
- *       - operator empty/PENDING
- *       - (IT) region empty
- *       - ACTIVE node_hash must start with HBCE- or ORIGIN-
- */
+/* =========================================================
+   HBCE COUNTERS — PUBLIC REGISTRY v3 STATUS COUNTERS
+   - Defensive public status display
+   - Source: /registry/nodes.json
+   - Registry v3 / privacy-minimal compatible
+   - No private endpoints
+   - No private topology
+   - No node_hash legacy dependency
+   - No operator / region / territory public dependency
+   - Fail-closed on malformed source
+   ========================================================= */
 
 (function () {
   "use strict";
 
-  const SOURCE = "/hermeticum-bce-platform/deployment/nodes.json";
-  const ALLOWED_STATUS = new Set(["ACTIVE", "PILOT", "PLANNED"]);
+  const SOURCE = "/hermeticum-bce-platform/registry/nodes.json";
+  const EXPECTED_PROTO = "HBCE-REGISTRY-v3";
+  const EXPECTED_KIND = "HBCE_PUBLIC_NODE_REGISTRY";
 
-  const el = (id) => document.getElementById(id);
-  const set = (id, v) => { const x = el(id); if (x) x.textContent = String(v); };
+  const ALLOWED_STATUS = new Set([
+    "ACTIVE",
+    "INACTIVE",
+    "SUSPENDED",
+    "EXPERIMENTAL",
+    "PLANNED"
+  ]);
 
-  function s(x) { return String(x || "").trim(); }
-  function up(x) { return s(x).toUpperCase(); }
+  const FORBIDDEN_FIELDS = [
+    "private_ip",
+    "internal_hostname",
+    "secret",
+    "api_key",
+    "token",
+    "password",
+    "private_key",
+    "credential",
+    "ssh_key",
+    "database_url",
+    "admin_url",
+    "internal_endpoint",
+    "production_log",
+    "sensitive_topology",
+    "operator_sha256",
+    "node_hash",
+    "name",
+    "nickname",
+    "territory",
+    "raw_identifier",
+    "identity_document",
+    "private_evidence",
+    "personal_payload"
+  ];
 
-  function isISO2(x) {
-    const v = up(x);
-    return v.length === 2 && /^[A-Z]{2}$/.test(v);
+  const elementById = (id) => document.getElementById(id);
+
+  function setText(id, value) {
+    const element = elementById(id);
+    if (element) element.textContent = String(value);
   }
 
-  function isIsoTimestamp(x) {
-    const v = s(x);
-    return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+\-]\d{2}:\d{2})$/.test(v);
+  function setHtml(id, value) {
+    const element = elementById(id);
+    if (element) element.innerHTML = String(value);
   }
 
-  function isValidNodeHash(x) {
-    const v = up(x);
-    if (!v) return false;
-    if (v === "PENDING") return false;
-    if (v.length < 10 || v.length > 80) return false;
-    if (!/^[A-Z0-9_-]+$/.test(v)) return false;
-    return true;
+  function clean(value) {
+    return String(value || "").trim();
   }
 
-  function isValidActiveHashPrefix(x) {
-    const v = up(x);
-    return v.startsWith("HBCE-") || v.startsWith("ORIGIN-");
+  function upper(value) {
+    return clean(value).toUpperCase();
   }
 
-  function uniq(arr) {
-    return Array.from(new Set(arr.filter(Boolean)));
+  function isPublicLabel(value) {
+    return /^[A-Za-z0-9_\-:.]{3,128}$/.test(clean(value));
   }
 
-  function failClosed(reason) {
+  function isIsoLikeTimestamp(value) {
+    const raw = clean(value);
+    if (!raw) return false;
+    return Number.isFinite(Date.parse(raw));
+  }
+
+  function hasForbiddenField(object, path) {
+    if (!object || typeof object !== "object") return null;
+
+    if (Array.isArray(object)) {
+      for (let index = 0; index < object.length; index += 1) {
+        const found = hasForbiddenField(object[index], `${path}[${index}]`);
+        if (found) return found;
+      }
+
+      return null;
+    }
+
+    for (const [key, value] of Object.entries(object)) {
+      const currentPath = path ? `${path}.${key}` : key;
+
+      if (FORBIDDEN_FIELDS.includes(key)) {
+        return currentPath;
+      }
+
+      const found = hasForbiddenField(value, currentPath);
+      if (found) return found;
+    }
+
+    return null;
+  }
+
+  function resetCounters() {
     const ids = [
       "hbce_nodes_active",
       "hbce_nodes_pilot",
@@ -61,104 +116,130 @@
       "hbce_regions_it",
       "hbce_nodes_status"
     ];
-    ids.forEach((id) => set(id, "—"));
 
-    const st = el("hbce_nodes_status");
-    if (st) {
-      st.innerHTML =
-        "<strong>FAIL-CLOSED</strong> — " +
-        (reason ? s(reason) : "nodes.json non verificabile / incoerente (CATTIVA++).");
-    }
+    ids.forEach((id) => setText(id, "—"));
   }
 
-  function okStatus(msg) {
-    const st = el("hbce_nodes_status");
-    if (st) st.innerHTML = msg;
+  function failClosed(reason) {
+    resetCounters();
+
+    setHtml(
+      "hbce_nodes_status",
+      "<strong>NON-OPERATIONAL</strong> — " +
+        clean(reason || "public node registry unavailable or invalid.")
+    );
   }
 
-  function validate(data) {
-    if (!data || typeof data !== "object") return "JSON non valido (non object).";
-    if (!Array.isArray(data.nodes)) return "Campo nodes[] mancante o non array.";
-
-    for (const n of data.nodes) {
-      if (!n || typeof n !== "object") return "Nodo non valido (non object).";
-
-      const req = ["country", "status", "node_hash", "timestamp"];
-      for (const k of req) {
-        if (!(k in n)) return "Campo obbligatorio mancante: " + k;
-        if (typeof n[k] !== "string") return "Campo non string: " + k;
-        if (!s(n[k])) return "Campo vuoto: " + k;
-      }
-
-      if (!ALLOWED_STATUS.has(up(n.status))) return "status fuori enum: " + s(n.status);
-      if (!isISO2(n.country)) return "country non ISO-2: " + s(n.country);
-      if (!isIsoTimestamp(n.timestamp)) return "timestamp non ISO-8601: " + s(n.timestamp);
-
-      // node_hash policy applies to ALL nodes
-      if (!isValidNodeHash(n.node_hash)) return "node_hash invalido: " + s(n.node_hash);
-    }
-
-    return null;
+  function okStatus(message) {
+    setHtml("hbce_nodes_status", message);
   }
 
-  function findDirtyActive(nodes) {
-    for (const n of nodes) {
-      if (!n || up(n.status) !== "ACTIVE") continue;
-
-      const op = up(n.operator);
-      const rg = s(n.region);
-      const nh = up(n.node_hash);
-
-      const badOp = (!op || op === "PENDING");
-      const badItRegion = (up(n.country) === "IT" && !rg);
-      const badPrefix = (!isValidActiveHashPrefix(nh));
-
-      if (badOp || badItRegion || badPrefix) return n;
+  function validateNode(node, index) {
+    if (!node || typeof node !== "object" || Array.isArray(node)) {
+      return `nodes[${index}] invalid object`;
     }
-    return null;
+
+    const forbidden = hasForbiddenField(node, `nodes[${index}]`);
+    if (forbidden) return `forbidden field detected: ${forbidden}`;
+
+    if (!isPublicLabel(node.node_label)) return `nodes[${index}] invalid node_label`;
+    if (!clean(node.environment)) return `nodes[${index}] missing environment`;
+    if (!clean(node.identity_layer)) return `nodes[${index}] missing identity_layer`;
+    if (!clean(node.coordination_engine)) return `nodes[${index}] missing coordination_engine`;
+    if (!clean(node.description)) return `nodes[${index}] missing description`;
+
+    const status = upper(node.status);
+    if (!ALLOWED_STATUS.has(status)) return `nodes[${index}] invalid status: ${clean(node.status)}`;
+
+    if (node.timestamp && !isIsoLikeTimestamp(node.timestamp)) {
+      return `nodes[${index}] invalid timestamp`;
+    }
+
+    return "";
+  }
+
+  function validatePayload(data) {
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+      return "registry source is not a JSON object";
+    }
+
+    if (data.proto !== EXPECTED_PROTO) {
+      return "proto mismatch";
+    }
+
+    if (data.kind !== EXPECTED_KIND) {
+      return "kind mismatch";
+    }
+
+    if (!data.rules || typeof data.rules !== "object" || Array.isArray(data.rules)) {
+      return "rules object missing";
+    }
+
+    if (data.rules.failure_mode !== "FAIL_CLOSED") {
+      return "failure_mode mismatch";
+    }
+
+    if (!Array.isArray(data.nodes)) {
+      return "nodes[] missing or invalid";
+    }
+
+    const forbidden = hasForbiddenField(data, "");
+    if (forbidden) return `forbidden field detected: ${forbidden}`;
+
+    for (let index = 0; index < data.nodes.length; index += 1) {
+      const error = validateNode(data.nodes[index], index);
+      if (error) return error;
+    }
+
+    return "";
+  }
+
+  function countByStatus(nodes, status) {
+    return nodes.filter((node) => upper(node.status) === status).length;
+  }
+
+  function countDistinct(values) {
+    return Array.from(new Set(values.map((value) => clean(value)).filter(Boolean))).length;
   }
 
   async function boot() {
     try {
-      const res = await fetch(SOURCE, { cache: "no-store" });
-      if (!res.ok) return failClosed("HTTP " + res.status + " su nodes.json");
+      const response = await fetch(SOURCE, { cache: "no-store" });
 
-      const data = await res.json();
-      const err = validate(data);
-      if (err) return failClosed(err);
+      if (!response.ok) {
+        return failClosed("HTTP " + response.status + " on public node registry.");
+      }
 
-      const dirty = findDirtyActive(data.nodes);
-      if (dirty) {
-        const msg =
-          "ACTIVE incoerente: " +
-          up(dirty.country) + " / " + s(dirty.region || "—") + " / " + s(dirty.city || "—") +
-          " · operator=" + s(dirty.operator || "") + " · node_hash=" + s(dirty.node_hash || "");
-        return failClosed(msg);
+      const data = await response.json();
+      const validationError = validatePayload(data);
+
+      if (validationError) {
+        return failClosed(validationError);
       }
 
       const nodes = data.nodes;
 
-      const active = nodes.filter(n => up(n.status) === "ACTIVE").length;
-      const pilot = nodes.filter(n => up(n.status) === "PILOT").length;
-      const planned = nodes.filter(n => up(n.status) === "PLANNED").length;
+      const active = countByStatus(nodes, "ACTIVE");
+      const experimental = countByStatus(nodes, "EXPERIMENTAL");
+      const planned = countByStatus(nodes, "PLANNED");
 
-      const countries = uniq(nodes.map(n => up(n.country))).length;
-
-      const itNodes = nodes.filter(n => up(n.country) === "IT");
-      const itRegions = uniq(itNodes.map(n => s(n.region))).filter(Boolean).length;
-
-      set("hbce_nodes_active", active);
-      set("hbce_nodes_pilot", pilot);
-      set("hbce_nodes_planned", planned);
-      set("hbce_countries", countries);
-      set("hbce_regions_it", itRegions);
-
-      okStatus(
-        "Stato: <strong>OK</strong> (CATTIVA++) — schema ok + node_hash policy ok + ACTIVE puliti. Fonte: <code>deployment/nodes.json</code>."
+      const environments = countDistinct(nodes.map((node) => node.environment));
+      const publicContexts = countDistinct(
+        nodes.map((node) => node.record_scope || node.environment || "PUBLIC_NODE_CONTEXT")
       );
 
-    } catch (e) {
-      failClosed("Errore parsing/lettura nodes.json");
+      setText("hbce_nodes_active", active);
+      setText("hbce_nodes_pilot", experimental);
+      setText("hbce_nodes_planned", planned);
+      setText("hbce_countries", environments);
+      setText("hbce_regions_it", publicContexts);
+
+      okStatus(
+        "Status: <strong>OK</strong> — public node registry v3 loaded. " +
+          "Counters are based on minimized public metadata only. Source: <code>registry/nodes.json</code>."
+      );
+    } catch (error) {
+      failClosed(error && error.message ? error.message : "node registry read/parse error");
     }
   }
 
