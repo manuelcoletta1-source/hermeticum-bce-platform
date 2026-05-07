@@ -1,60 +1,94 @@
 {
   "proto": "HBCE-PROTOCOL-v1",
-  "kind": "OFFICIAL_PROTOCOL_BUNDLE",
+  "kind": "RND_PROTOCOL_REFERENCE_BUNDLE",
   "issuer": "HERMETICUM B.C.E. S.r.l.",
-  "jurisdiction": "EU",
-  "mode": "PERMISSIONLESS",
+  "jurisdiction": "EU_REFERENCE_FRAMEWORK",
+  "mode": "NON_CUSTODIAL_RND_REFERENCE",
+  "status": "DECLASSED_RND_REFERENCE",
+  "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 1,
+    "tag": "declass-rnd-audit-reference"
+  },
+  "current_scope": {
+    "primary_use": "MATRIX_AI_AUDIT_TRAIL_MVP",
+    "purpose": "Reference bundle for research, pilot documentation, audit-trail modelling, hash-only evidence records, and fail-closed verification experiments.",
+    "public_position": "This file is an R&D reference artifact. It is not a legal standard, not a regulated certification scheme, not an eIDAS qualified trust service, not a public authority registry, and not a production compliance framework by itself.",
+    "operational_boundary": "The protocol reference describes minimized public records, deterministic hashing, signatures, append-only ledgers, and verification logic for audit-trail experiments. It does not require public custody of personal data, confidential payloads, private keys, financial assets, or regulated identity documents."
+  },
+  "supersession": {
+    "previous_public_label": "OFFICIAL_PROTOCOL_BUNDLE",
+    "previous_status": "OFFICIAL",
+    "declass_reason": "The v1 bundle is retained as a technical R&D reference and historical protocol draft, while public positioning is aligned with the MATRIX AI Audit Trail MVP, registry v3, payload_sha256, no-custody, and EU-first audit boundaries.",
+    "current_reference_label": "R&D protocol reference",
+    "current_reference_status": "non-production reference"
+  },
   "policy": [
-    "UE_FIRST",
+    "EU_FIRST",
     "AUDIT_FIRST",
     "FAIL_CLOSED",
     "HASH_ONLY",
     "APPEND_ONLY",
     "GDPR_MIN",
-    "NO_PUBLIC_DATA_CUSTODY"
+    "NO_PUBLIC_DATA_CUSTODY",
+    "NO_PRIVATE_KEY_CUSTODY",
+    "NO_FINANCIAL_CUSTODY",
+    "NO_REGULATED_CERTIFICATION_CLAIM",
+    "NO_PUBLIC_AUTHORITY_CLAIM"
   ],
-  "status": "OFFICIAL",
-  "version": {
-    "major": 1,
-    "minor": 0,
-    "patch": 0,
-    "tag": "official"
+  "boundaries": {
+    "not_a_legal_standard": true,
+    "not_a_public_authority_registry": true,
+    "not_a_regulated_certification": true,
+    "not_an_eidas_qualified_trust_service": true,
+    "not_a_financial_or_banking_service": true,
+    "not_a_custodial_identity_service": true,
+    "not_a_military_or_offensive_system": true,
+    "not_a_production_compliance_framework_by_itself": true,
+    "requires_independent_legal_security_and_compliance_review_before_production_use": true
   },
-
   "normative": {
     "timestamp_format": "RFC3339",
-    "hash_algorithms": ["SHA-256", "SHA-512"],
-    "signature_algorithms": ["ED25519"],
+    "hash_algorithms": [
+      "SHA-256",
+      "SHA-512"
+    ],
+    "signature_algorithms": [
+      "ED25519"
+    ],
     "public_registry_exposure": "HASH_ONLY",
+    "payload_rule": "Public registry records should reference payload_sha256 or event_payload_sha256 only. Confidential payloads must remain outside the public registry.",
     "ledger_rules": {
       "append_only": true,
       "fail_closed": true,
-      "inherit_invalidity": true
+      "inherit_invalidity": true,
+      "public_minimization_required": true
     }
   },
-
   "canonicalization": {
     "name": "HBCE_CANON_JSON_v1",
-    "purpose": "Deterministic serialization before hashing/signing",
+    "purpose": "Deterministic serialization before hashing and signing.",
     "rules": [
-      "Encode as UTF-8",
-      "Sort object keys lexicographically (byte-order)",
-      "No insignificant whitespace",
-      "Arrays keep original order",
-      "Numbers must be JSON number type (no strings)",
-      "Do not include transient fields not defined by schema",
-      "Signature is computed over the canonical JSON bytes of the record object WITHOUT the signature field itself"
+      "Encode as UTF-8.",
+      "Sort object keys lexicographically by byte order.",
+      "Use no insignificant whitespace.",
+      "Arrays keep original order.",
+      "Numbers must be JSON number type, not strings.",
+      "Do not include transient fields not defined by the schema.",
+      "Compute signatures over the canonical JSON bytes of the record object without the signature field itself.",
+      "Public records must not embed personal data or confidential payload content when a hash-only reference is sufficient."
     ],
     "signature_exclusion_paths": [
       "$.issuer.signature",
-      "$.operator.signature"
+      "$.operator.signature",
+      "$.record_signature.signature"
     ]
   },
-
   "ids": {
     "entity_id": {
       "format": "string",
-      "pattern_hint": "IPR-(ROOT|AI|INST|CORP|DEV)-[A-Z0-9\\-]{4,64}"
+      "pattern_hint": "IPR-(ROOT|AI|CORP|ORG|SW|AUDIT|DOC|CASE)-[A-Z0-9\\-]{4,64}"
     },
     "operator_id": {
       "format": "string",
@@ -63,22 +97,23 @@
     "event_id": {
       "format": "string",
       "pattern_hint": "EVT-[A-Z0-9\\-]{4,64}"
+    },
+    "audit_case_id": {
+      "format": "string",
+      "pattern_hint": "MATRIX-AUDIT-[A-Z0-9\\-]{4,64}"
     }
   },
-
   "enums": {
     "entity_type": [
-      "HUMAN_ROOT",
-      "AI_ROOT",
-      "INSTITUTION_ROOT",
-      "CORPORATE_ROOT",
-      "IPR_SOFTWARE",
-      "IPR_ROBOT",
-      "IPR_VEHICLE",
-      "IPR_DRONE",
-      "IPR_ENERGY",
-      "IPR_SPACE",
-      "IPR_INFRASTRUCTURE"
+      "HUMAN_OPERATOR_REFERENCE",
+      "AI_SYSTEM_REFERENCE",
+      "ORGANIZATION_REFERENCE",
+      "CORPORATE_RND_REFERENCE",
+      "SOFTWARE_SERVICE_REFERENCE",
+      "DOCUMENT_REFERENCE",
+      "AUDIT_CASE_REFERENCE",
+      "EVIDENCE_PACK_REFERENCE",
+      "REGISTRY_OPERATOR_REFERENCE"
     ],
     "record_kind": [
       "IPR_ROOT_RECORD",
@@ -86,27 +121,51 @@
       "IPR_OPERATOR_RECORD",
       "IPR_EVENT_RECORD"
     ],
-    "status": ["VALID", "INVALID", "REVOKED"],
+    "status": [
+      "VALID",
+      "INVALID",
+      "REVOKED",
+      "DRAFT",
+      "RND_ONLY"
+    ],
     "derivation_type": [
       "DERIVED_FROM_ROOT",
-      "DERIVED_FROM_CORPORATE",
-      "DERIVED_FROM_INSTITUTION",
-      "DERIVED_FROM_OPERATOR"
+      "DERIVED_FROM_CORPORATE_REFERENCE",
+      "DERIVED_FROM_ORGANIZATION_REFERENCE",
+      "DERIVED_FROM_OPERATOR_REFERENCE",
+      "DERIVED_FROM_AUDIT_CASE"
     ],
     "event_type": [
-      "ACTIVATION",
-      "STATUS_UPDATE",
-      "FIRMWARE_UPDATE",
-      "SOFTWARE_UPDATE",
-      "CRITICAL_OPERATION",
+      "AI_OUTPUT_RECORDED",
+      "AI_OUTPUT_REVIEWED",
+      "HUMAN_VALIDATION",
+      "GOVERNANCE_DECISION",
+      "POLICY_CHECK",
+      "RISK_ASSESSMENT",
+      "AUDIT_NOTE",
+      "EVIDENCE_PACK_CREATED",
+      "REGISTRY_STATUS_UPDATE",
+      "VERIFICATION_REQUEST",
+      "VERIFICATION_RESULT",
       "ACCESS_EVENT",
-      "SECURITY_ALERT",
-      "DECOMMISSION"
+      "SECURITY_NOTICE"
     ],
-    "operator_level": ["EDU", "LOCAL", "REGIONAL", "NATIONAL", "EU", "ENTERPRISE", "GOV"],
-    "operator_roles": ["ISSUER", "VALIDATOR", "AUDITOR", "ROOT_COORDINATOR"]
+    "operator_level": [
+      "RND",
+      "LOCAL_PILOT",
+      "ENTERPRISE_PILOT",
+      "ACADEMIC_REVIEW",
+      "AUDIT_REVIEW",
+      "INSTITUTIONAL_REVIEW"
+    ],
+    "operator_roles": [
+      "ISSUER_REFERENCE",
+      "VALIDATOR_REFERENCE",
+      "AUDITOR_REFERENCE",
+      "RND_OPERATOR",
+      "HUMAN_REVIEWER"
+    ]
   },
-
   "schemas": {
     "common": {
       "sha256": {
@@ -114,7 +173,7 @@
         "constraints": {
           "len": 64,
           "charset": "hex-lower-or-upper-allowed",
-          "note": "Implementation must treat hex case-insensitively"
+          "note": "Implementations must treat hexadecimal case-insensitively."
         }
       },
       "timestamp": {
@@ -126,41 +185,93 @@
       },
       "signature_block": {
         "type": "object",
-        "required": ["name", "sign_alg", "pubkey", "signature"],
+        "required": [
+          "name",
+          "sign_alg",
+          "pubkey",
+          "signature"
+        ],
         "properties": {
-          "name": { "type": "string" },
-          "sign_alg": { "type": "string", "enum_ref": "signature_algorithms" },
-          "pubkey": { "type": "string", "note": "hex or base64" },
-          "signature": { "type": "string", "note": "hex or base64 over canonical record bytes" }
+          "name": {
+            "type": "string"
+          },
+          "sign_alg": {
+            "type": "string",
+            "enum_ref": "signature_algorithms"
+          },
+          "pubkey": {
+            "type": "string",
+            "note": "hex or base64 public key"
+          },
+          "signature": {
+            "type": "string",
+            "note": "hex or base64 signature over canonical record bytes"
+          }
         }
       }
     },
-
     "records": {
       "IPR_ROOT_RECORD": {
         "type": "object",
-        "required": ["proto", "kind", "entity_id", "entity_type", "payload_sha256", "timestamp", "status", "issuer"],
+        "required": [
+          "proto",
+          "kind",
+          "entity_id",
+          "entity_type",
+          "payload_sha256",
+          "timestamp",
+          "status",
+          "issuer"
+        ],
         "properties": {
-          "proto": { "type": "string", "const": "HBCE-REGISTRY-v1" },
-          "kind": { "type": "string", "const": "IPR_ROOT_RECORD" },
-          "entity_id": { "type": "string" },
-          "entity_type": { "type": "string", "enum_ref": "entity_type" },
-          "payload_sha256": { "type": "string", "ref": "common.sha256" },
-          "timestamp": { "type": "string", "ref": "common.timestamp" },
-          "status": { "type": "string", "enum_ref": "status" },
-          "issuer": { "type": "object", "ref": "common.signature_block" },
+          "proto": {
+            "type": "string",
+            "const": "HBCE-REGISTRY-v1"
+          },
+          "kind": {
+            "type": "string",
+            "const": "IPR_ROOT_RECORD"
+          },
+          "entity_id": {
+            "type": "string"
+          },
+          "entity_type": {
+            "type": "string",
+            "enum_ref": "entity_type"
+          },
+          "payload_sha256": {
+            "type": "string",
+            "ref": "common.sha256"
+          },
+          "timestamp": {
+            "type": "string",
+            "ref": "common.timestamp"
+          },
+          "status": {
+            "type": "string",
+            "enum_ref": "status"
+          },
+          "issuer": {
+            "type": "object",
+            "ref": "common.signature_block"
+          },
           "anchors": {
             "type": "object",
             "required": [],
             "properties": {
-              "ipfs_cid": { "type": "string" },
-              "btc_txid": { "type": "string" },
-              "evm_tx": { "type": "string" }
+              "ipfs_cid": {
+                "type": "string"
+              },
+              "btc_txid": {
+                "type": "string"
+              },
+              "evm_tx": {
+                "type": "string"
+              }
             }
           }
         }
       },
-
       "IPR_DERIVED_RECORD": {
         "type": "object",
         "required": [
@@ -177,42 +288,114 @@
           "issuer"
         ],
         "properties": {
-          "proto": { "type": "string", "const": "HBCE-REGISTRY-v1" },
-          "kind": { "type": "string", "const": "IPR_DERIVED_RECORD" },
-          "entity_id": { "type": "string" },
-          "entity_type": { "type": "string", "enum_ref": "entity_type" },
-          "parent_entity_id": { "type": "string" },
-          "derivation_type": { "type": "string", "enum_ref": "derivation_type" },
-          "payload_sha256": { "type": "string", "ref": "common.sha256" },
-          "timestamp": { "type": "string", "ref": "common.timestamp" },
-          "status": { "type": "string", "enum_ref": "status" },
+          "proto": {
+            "type": "string",
+            "const": "HBCE-REGISTRY-v1"
+          },
+          "kind": {
+            "type": "string",
+            "const": "IPR_DERIVED_RECORD"
+          },
+          "entity_id": {
+            "type": "string"
+          },
+          "entity_type": {
+            "type": "string",
+            "enum_ref": "entity_type"
+          },
+          "parent_entity_id": {
+            "type": "string"
+          },
+          "derivation_type": {
+            "type": "string",
+            "enum_ref": "derivation_type"
+          },
+          "payload_sha256": {
+            "type": "string",
+            "ref": "common.sha256"
+          },
+          "timestamp": {
+            "type": "string",
+            "ref": "common.timestamp"
+          },
+          "status": {
+            "type": "string",
+            "enum_ref": "status"
+          },
           "rules": {
             "type": "object",
-            "required": ["fail_closed", "inherit_invalidity", "append_only"],
+            "required": [
+              "fail_closed",
+              "inherit_invalidity",
+              "append_only",
+              "public_minimization_required"
+            ],
             "properties": {
-              "fail_closed": { "type": "boolean", "const": true },
-              "inherit_invalidity": { "type": "boolean", "const": true },
-              "append_only": { "type": "boolean", "const": true }
+              "fail_closed": {
+                "type": "boolean",
+                "const": true
+              },
+              "inherit_invalidity": {
+                "type": "boolean",
+                "const": true
+              },
+              "append_only": {
+                "type": "boolean",
+                "const": true
+              },
+              "public_minimization_required": {
+                "type": "boolean",
+                "const": true
+              }
             }
           },
-          "issuer": { "type": "object", "ref": "common.signature_block" }
+          "issuer": {
+            "type": "object",
+            "ref": "common.signature_block"
+          }
         }
       },
-
       "IPR_OPERATOR_RECORD": {
         "type": "object",
-        "required": ["proto", "kind", "operator_id", "payload_sha256", "timestamp", "status", "issuer"],
+        "required": [
+          "proto",
+          "kind",
+          "operator_id",
+          "payload_sha256",
+          "timestamp",
+          "status",
+          "issuer"
+        ],
         "properties": {
-          "proto": { "type": "string", "const": "HBCE-REGISTRY-v1" },
-          "kind": { "type": "string", "const": "IPR_OPERATOR_RECORD" },
-          "operator_id": { "type": "string" },
-          "payload_sha256": { "type": "string", "ref": "common.sha256" },
-          "timestamp": { "type": "string", "ref": "common.timestamp" },
-          "status": { "type": "string", "enum_ref": "status" },
-          "issuer": { "type": "object", "ref": "common.signature_block" }
+          "proto": {
+            "type": "string",
+            "const": "HBCE-REGISTRY-v1"
+          },
+          "kind": {
+            "type": "string",
+            "const": "IPR_OPERATOR_RECORD"
+          },
+          "operator_id": {
+            "type": "string"
+          },
+          "payload_sha256": {
+            "type": "string",
+            "ref": "common.sha256"
+          },
+          "timestamp": {
+            "type": "string",
+            "ref": "common.timestamp"
+          },
+          "status": {
+            "type": "string",
+            "enum_ref": "status"
+          },
+          "issuer": {
+            "type": "object",
+            "ref": "common.signature_block"
+          }
         }
       },
-
       "IPR_EVENT_RECORD": {
         "type": "object",
         "required": [
@@ -228,82 +411,125 @@
           "append_only"
         ],
         "properties": {
-          "proto": { "type": "string", "const": "HBCE-REGISTRY-v1" },
-          "kind": { "type": "string", "const": "IPR_EVENT_RECORD" },
-          "event_id": { "type": "string" },
-          "entity_id": { "type": "string" },
-          "event_type": { "type": "string", "enum_ref": "event_type" },
-          "event_payload_sha256": { "type": "string", "ref": "common.sha256" },
-          "timestamp": { "type": "string", "ref": "common.timestamp" },
+          "proto": {
+            "type": "string",
+            "const": "HBCE-REGISTRY-v1"
+          },
+          "kind": {
+            "type": "string",
+            "const": "IPR_EVENT_RECORD"
+          },
+          "event_id": {
+            "type": "string"
+          },
+          "entity_id": {
+            "type": "string"
+          },
+          "event_type": {
+            "type": "string",
+            "enum_ref": "event_type"
+          },
+          "event_payload_sha256": {
+            "type": "string",
+            "ref": "common.sha256"
+          },
+          "timestamp": {
+            "type": "string",
+            "ref": "common.timestamp"
+          },
           "operator": {
             "type": "object",
-            "required": ["operator_id", "sign_alg", "pubkey", "signature"],
+            "required": [
+              "operator_id",
+              "sign_alg",
+              "pubkey",
+              "signature"
+            ],
             "properties": {
-              "operator_id": { "type": "string" },
-              "sign_alg": { "type": "string", "enum_ref": "signature_algorithms" },
-              "pubkey": { "type": "string" },
-              "signature": { "type": "string" }
+              "operator_id": {
+                "type": "string"
+              },
+              "sign_alg": {
+                "type": "string",
+                "enum_ref": "signature_algorithms"
+              },
+              "pubkey": {
+                "type": "string"
+              },
+              "signature": {
+                "type": "string"
+              }
             }
           },
-          "status": { "type": "string", "enum_ref": "status" },
-          "append_only": { "type": "boolean", "const": true }
+          "status": {
+            "type": "string",
+            "enum_ref": "status"
+          },
+          "append_only": {
+            "type": "boolean",
+            "const": true
+          }
         }
       }
     }
   },
-
   "verification": {
     "proto": "HBCE-VERIFY-v1",
-    "deterministic_result": ["VALID", "INVALID"],
+    "deterministic_result": [
+      "VALID",
+      "INVALID"
+    ],
+    "fail_closed_default": true,
     "rules": [
-      "If any required field missing -> INVALID (fail-closed)",
-      "If payload_sha256 is not 64-hex -> INVALID",
-      "If signature invalid over canonical record bytes -> INVALID",
-      "If record is DERIVED and parent status != VALID -> INVALID",
-      "If record status is REVOKED -> INVALID",
-      "Events are valid only if operator signature verifies and entity exists with status VALID at (or before) event timestamp"
+      "If any required field is missing, return INVALID.",
+      "If payload_sha256 or event_payload_sha256 is not 64-hex, return INVALID.",
+      "If the signature cannot be verified over canonical record bytes, return INVALID.",
+      "If a record is derived and parent status is not VALID at the relevant timestamp, return INVALID.",
+      "If record status is REVOKED, return INVALID.",
+      "If record status is DRAFT or RND_ONLY, do not treat it as a production-valid operational authorization.",
+      "Events are valid only if the operator signature verifies and the referenced entity exists with status VALID at or before the event timestamp.",
+      "Example records containing placeholder keys or placeholder signatures must be treated as INVALID by a real verifier."
     ],
     "recommended_checks": [
-      "Monotonic timeline per entity_id (non-decreasing timestamps)",
-      "Optional anchor verification if anchors present (ipfs/btc/evm)",
-      "Key rotation policy for operator keys (out of scope v1)"
+      "Monotonic timeline per entity_id using non-decreasing timestamps.",
+      "Optional anchor verification if ipfs, btc, or evm anchors are present.",
+      "Operator key rotation and revocation policy.",
+      "Explicit separation between public hash-only registry records and private or confidential payload storage.",
+      "Independent security, legal, and compliance review before production deployment."
     ]
   },
-
   "examples": {
-    "root_record_public": {
+    "audit_case_root_record_public": {
       "proto": "HBCE-REGISTRY-v1",
       "kind": "IPR_ROOT_RECORD",
-      "entity_id": "IPR-ROOT-EXAMPLE-0001",
-      "entity_type": "HUMAN_ROOT",
+      "entity_id": "IPR-AUDIT-CASE-MATRIX-0001",
+      "entity_type": "AUDIT_CASE_REFERENCE",
       "payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "timestamp": "2026-02-19T12:00:00+01:00",
-      "status": "VALID",
+      "timestamp": "2026-05-07T15:30:00+02:00",
+      "status": "RND_ONLY",
       "issuer": {
         "name": "HERMETICUM B.C.E. S.r.l.",
         "sign_alg": "ED25519",
         "pubkey": "PUBKEY_PLACEHOLDER",
         "signature": "SIGNATURE_PLACEHOLDER"
       },
-      "anchors": {
-        "ipfs_cid": "bafy...optional"
-      }
+      "anchors": {}
     },
-
-    "derived_robot_record_public": {
+    "ai_system_reference_record_public": {
       "proto": "HBCE-REGISTRY-v1",
       "kind": "IPR_DERIVED_RECORD",
-      "entity_id": "IPR-DEV-ROBOT-0001",
-      "entity_type": "IPR_ROBOT",
-      "parent_entity_id": "IPR-ROOT-EXAMPLE-0001",
-      "derivation_type": "DERIVED_FROM_ROOT",
+      "entity_id": "IPR-AI-MATRIX-AUDIT-0001",
+      "entity_type": "AI_SYSTEM_REFERENCE",
+      "parent_entity_id": "IPR-AUDIT-CASE-MATRIX-0001",
+      "derivation_type": "DERIVED_FROM_AUDIT_CASE",
       "payload_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-      "timestamp": "2026-02-19T12:10:00+01:00",
-      "status": "VALID",
+      "timestamp": "2026-05-07T15:35:00+02:00",
+      "status": "RND_ONLY",
       "rules": {
         "fail_closed": true,
         "inherit_invalidity": true,
-        "append_only": true
+        "append_only": true,
+        "public_minimization_required": true
       },
       "issuer": {
         "name": "HERMETICUM B.C.E. S.r.l.",
@@ -312,35 +538,54 @@
         "signature": "SIGNATURE_PLACEHOLDER"
       }
     },
-
-    "event_record_public": {
+    "ai_output_review_event_public": {
       "proto": "HBCE-REGISTRY-v1",
       "kind": "IPR_EVENT_RECORD",
-      "event_id": "EVT-EXAMPLE-0001",
-      "entity_id": "IPR-DEV-ROBOT-0001",
-      "event_type": "FIRMWARE_UPDATE",
+      "event_id": "EVT-MATRIX-AI-OUTPUT-0001",
+      "entity_id": "IPR-AI-MATRIX-AUDIT-0001",
+      "event_type": "AI_OUTPUT_REVIEWED",
       "event_payload_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-      "timestamp": "2026-02-19T12:25:00+01:00",
+      "timestamp": "2026-05-07T15:40:00+02:00",
       "operator": {
-        "operator_id": "IPR-OP-REGION-0001",
+        "operator_id": "IPR-OP-RND-0001",
         "sign_alg": "ED25519",
         "pubkey": "PUBKEY_PLACEHOLDER",
         "signature": "SIGNATURE_PLACEHOLDER"
       },
-      "status": "VALID",
+      "status": "RND_ONLY",
       "append_only": true
     },
-
-    "verify_response": {
+    "human_validation_event_public": {
+      "proto": "HBCE-REGISTRY-v1",
+      "kind": "IPR_EVENT_RECORD",
+      "event_id": "EVT-MATRIX-HUMAN-VALIDATION-0001",
+      "entity_id": "IPR-AI-MATRIX-AUDIT-0001",
+      "event_type": "HUMAN_VALIDATION",
+      "event_payload_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "timestamp": "2026-05-07T15:45:00+02:00",
+      "operator": {
+        "operator_id": "IPR-OP-RND-0001",
+        "sign_alg": "ED25519",
+        "pubkey": "PUBKEY_PLACEHOLDER",
+        "signature": "SIGNATURE_PLACEHOLDER"
+      },
+      "status": "RND_ONLY",
+      "append_only": true
+    },
+    "verify_response_placeholder_signature": {
       "proto": "HBCE-VERIFY-v1",
-      "query": { "entity_id": "IPR-DEV-ROBOT-0001" },
+      "query": {
+        "entity_id": "IPR-AI-MATRIX-AUDIT-0001"
+      },
       "result": {
-        "status": "VALID",
-        "reason": "SHA256_OK && SIGNATURE_OK && PARENT_VALID"
+        "status": "INVALID",
+        "reason": "PLACEHOLDER_SIGNATURE_NOT_VERIFIABLE",
+        "fail_closed": true
       },
       "evidence": {
-        "last_event_id": "EVT-EXAMPLE-0001",
-        "last_event_payload_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        "last_event_id": "EVT-MATRIX-HUMAN-VALIDATION-0001",
+        "last_event_payload_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "public_payload_policy": "HASH_ONLY"
       }
     }
   }
