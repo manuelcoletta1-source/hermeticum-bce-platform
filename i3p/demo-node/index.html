@@ -1,222 +1,375 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>HBCE Demo Node — Append-Only Identity Execution</title>
-<style>
-  :root{
-    --bg:#0b0f14;
-    --panel:#0f1620;
-    --panel2:#111b27;
-    --line:#1c2633;
-    --text:#e8eef6;
-    --muted:#b8c4d6;
-    --dim:#6f7b8a;
-    --accent:#00ffe1;
-    --bad:#ff4d6d;
-    --good:#6dff8f;
-    --warn:#ffcc66;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    background:var(--bg);
-    color:var(--text);
-    font-family:Arial, Helvetica, sans-serif;
-    line-height:1.5;
-  }
-  .wrap{
-    max-width:1100px;
-    margin:0 auto;
-    padding:48px 18px 70px;
-  }
-  h1{margin:0 0 6px; font-size:28px;}
-  .sub{color:var(--muted); margin:0 0 22px;}
-  .grid{
-    display:grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap:14px;
-  }
-  @media (max-width: 980px){
-    .grid{grid-template-columns:1fr}
-  }
-  .card{
-    background:var(--panel);
-    border:1px solid var(--line);
-    padding:18px;
-  }
-  .card h2{
-    margin:0 0 12px;
-    font-size:14px;
-    letter-spacing:1px;
-    color:var(--accent);
-  }
-  .row{display:flex; flex-wrap:wrap; gap:10px; margin:10px 0 0;}
-  button{
-    background:var(--accent);
-    border:none;
-    padding:12px 14px;
-    font-weight:700;
-    cursor:pointer;
-    border-radius:10px;
-  }
-  button.secondary{
-    background:transparent;
-    color:var(--accent);
-    border:1px solid var(--accent);
-  }
-  button.danger{
-    background:transparent;
-    color:var(--bad);
-    border:1px solid var(--bad);
-  }
-  button.warn{
-    background:transparent;
-    color:var(--warn);
-    border:1px solid var(--warn);
-  }
-  button.run{
-    background:transparent;
-    color:var(--good);
-    border:1px solid var(--good);
-  }
-  button:disabled{
-    opacity:0.4;
-    cursor:not-allowed;
-  }
-  .kv{
-    display:grid;
-    grid-template-columns: 170px 1fr;
-    gap:8px 12px;
-    margin-top:8px;
-    font-size:13px;
-  }
-  .k{color:var(--dim)}
-  code, pre{
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  }
-  pre{
-    margin:0;
-    padding:14px;
-    background:var(--panel2);
-    border:1px solid var(--line);
-    overflow:auto;
-    border-radius:12px;
-    color:var(--muted);
-    font-size:12px;
-  }
-  .status{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin-top:10px;
-    font-size:13px;
-    flex-wrap:wrap;
-  }
-  .pill{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    border:1px solid var(--line);
-    padding:7px 10px;
-    border-radius:999px;
-    background:rgba(255,255,255,0.02);
-  }
-  .dot{
-    width:10px;height:10px;border-radius:50%;
-    background:var(--dim);
-  }
-  .dot.good{background:var(--good)}
-  .dot.bad{background:var(--bad)}
-  .dot.warn{background:var(--warn)}
-  table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:10px;
-    font-size:12px;
-  }
-  th, td{
-    text-align:left;
-    padding:10px 8px;
-    border-bottom:1px solid var(--line);
-    vertical-align:top;
-    color:var(--muted);
-  }
-  th{color:var(--dim); font-weight:700}
-  .small{font-size:12px; color:var(--dim)}
-  .footer{
-    margin-top:14px;
-    color:var(--dim);
-    font-size:12px;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>HBCE Demo Node — Static Fail-Closed Execution Gate</title>
+  <meta name="description" content="HBCE static demo node for I3P review: identity initialization, append-only local ledger, deterministic verification and fail-closed gated execution. R&D demo only." />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/i3p/demo-node/" />
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+
+  <style>
+    .demo-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 980px) {
+      .demo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .demo-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 12px 0 0;
+    }
+
+    .demo-button {
+      appearance: none;
+      border: 1px solid rgba(0, 255, 225, 0.45);
+      background: rgba(0, 255, 225, 0.12);
+      color: #dffef9;
+      padding: 11px 14px;
+      font-weight: 800;
+      cursor: pointer;
+      border-radius: 999px;
+    }
+
+    .demo-button.secondary {
+      background: rgba(255,255,255,0.03);
+      color: #dbeafe;
+      border-color: rgba(148,163,184,0.45);
+    }
+
+    .demo-button.danger {
+      background: rgba(239,68,68,0.10);
+      color: #fecaca;
+      border-color: rgba(239,68,68,0.45);
+    }
+
+    .demo-button.warn {
+      background: rgba(245,158,11,0.10);
+      color: #fde68a;
+      border-color: rgba(245,158,11,0.45);
+    }
+
+    .demo-button.run {
+      background: rgba(16,185,129,0.12);
+      color: #a7f3d0;
+      border-color: rgba(16,185,129,0.45);
+    }
+
+    .demo-button:disabled {
+      opacity: 0.42;
+      cursor: not-allowed;
+    }
+
+    .demo-kv {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 8px 12px;
+      margin-top: 14px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 720px) {
+      .demo-kv {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .demo-k {
+      color: rgba(148,163,184,0.95);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 800;
+    }
+
+    .demo-v {
+      color: rgba(226,232,240,0.96);
+      overflow-wrap: anywhere;
+    }
+
+    .demo-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      font-size: 13px;
+      flex-wrap: wrap;
+    }
+
+    .demo-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(148,163,184,0.35);
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .demo-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #64748b;
+    }
+
+    .demo-dot.good {
+      background: #6dff8f;
+    }
+
+    .demo-dot.bad {
+      background: #ff4d6d;
+    }
+
+    .demo-dot.warn {
+      background: #ffcc66;
+    }
+
+    .demo-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+
+    .demo-table th,
+    .demo-table td {
+      text-align: left;
+      padding: 10px 8px;
+      border-bottom: 1px solid rgba(51,65,85,0.9);
+      vertical-align: top;
+      color: rgba(203,213,225,0.92);
+    }
+
+    .demo-table th {
+      color: rgba(148,163,184,0.95);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 11px;
+    }
+
+    .demo-small {
+      font-size: 12px;
+      color: rgba(148,163,184,0.95);
+      line-height: 1.55;
+    }
+
+    .demo-code,
+    .demo-pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .demo-pre {
+      margin: 0;
+      padding: 14px;
+      background: rgba(0,0,0,0.24);
+      border: 1px solid rgba(51,65,85,0.9);
+      overflow: auto;
+      border-radius: 12px;
+      color: rgba(203,213,225,0.95);
+      font-size: 12px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      min-height: 360px;
+    }
+  </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <h1>HBCE Demo Node — Append-Only Identity Execution</h1>
-    <p class="sub">Static micro-node: identity init → append-only ledger → deterministic verification → fail-closed gating.</p>
+  <div data-hbce="header"></div>
 
-    <div class="grid">
-      <div class="card">
-        <h2>OPERATIONS</h2>
-        <div class="row">
-          <button id="btnInit" onclick="HBCE.initIdentity()">Init Identity (IPR)</button>
-          <button id="btnEmit" onclick="HBCE.emitEvent()" disabled>Emit Event (Append)</button>
-          <button id="btnVerify" onclick="HBCE.verify()" disabled>Verify (Fail-Closed)</button>
-          <button id="btnRun" onclick="HBCE.run()" class="run" disabled>RUN (Gated Execution)</button>
-          <button id="btnExport" onclick="HBCE.exportReceipt()" class="secondary" disabled>Export Receipt</button>
-          <button id="btnTamper" onclick="HBCE.tamper()" class="warn" disabled>Tamper Test</button>
-          <button id="btnReset" onclick="HBCE.reset()" class="danger">Reset Node</button>
-        </div>
+  <main class="hbce-container hbce-main">
 
-        <div class="status">
-          <div class="pill">
-            <span id="stDot" class="dot"></span>
-            <span id="stText">Status: IDENTITY NOT INITIALIZED</span>
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">I3P · STATIC DEMO NODE · FAIL-CLOSED EXECUTION GATE</div>
+
+      <h1 class="hbce-hero__title">HBCE Demo Node</h1>
+
+      <p class="hbce-hero__lead">
+        This browser-only micro-node demonstrates the basic HBCE fail-closed execution gate:
+        identity initialization, append-only local ledger, deterministic verification and gated execution.
+        <br /><br />
+        It is a static R&D demonstration. It does not create legal certification, regulated identity,
+        institutional authorization, eIDAS qualification, production security validation or public-sector adoption.
+      </p>
+
+      <p class="hbce-note" style="margin-top:12px;">
+        Policy:
+        <strong>local-only</strong> ·
+        <strong>hash-only</strong> ·
+        <strong>append-only</strong> ·
+        <strong>fail-closed</strong> ·
+        <strong>no public data custody</strong> ·
+        <strong>R&D demo</strong>
+      </p>
+
+      <div class="hbce-actions" style="margin-top:16px;">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/i3p/">
+          Back to I3P MVP page
+        </a>
+
+        <a
+          class="hbce-btn"
+          href="https://hbce-ai-joker-c2.vercel.app/matrix-audit-trail"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          MATRIX AI Audit Trail Demo
+        </a>
+
+        <a class="hbce-btn" href="/hermeticum-bce-platform/claims/">
+          Claims & Non-Claims
+        </a>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="hbce-card">
+        <div class="hbce-card__kicker">DEMO BOUNDARY</div>
+        <h2>What this node demonstrates</h2>
+
+        <p class="hbce-card__text">
+          The demo node is intentionally narrow. It shows that a local execution can be denied by default,
+          initialized through an identity-like local record, appended to a local chain, verified deterministically,
+          and unlocked only when verification succeeds.
+        </p>
+
+        <p class="hbce-card__text">
+          This demo is not the commercial MVP. The commercial MVP is
+          <a href="https://hbce-ai-joker-c2.vercel.app/matrix-audit-trail" target="_blank" rel="noopener noreferrer">
+            MATRIX AI Audit Trail
+          </a>,
+          which demonstrates AI-assisted document analysis with human validation, EVT, OPC and audit-ready report.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <div class="demo-grid">
+
+        <section class="hbce-card">
+          <div class="hbce-card__kicker">OPERATIONS</div>
+          <h2>Append-only identity execution</h2>
+
+          <p class="hbce-card__text">
+            Run the local sequence below. The <strong>RUN</strong> button is unlocked only after a valid identity,
+            append-only event and deterministic verification.
+          </p>
+
+          <div class="demo-row">
+            <button id="btnInit" class="demo-button" type="button" onclick="HBCE.initIdentity()">Init Identity</button>
+            <button id="btnEmit" class="demo-button secondary" type="button" onclick="HBCE.emitEvent()" disabled>Emit Event</button>
+            <button id="btnVerify" class="demo-button secondary" type="button" onclick="HBCE.verify()" disabled>Verify</button>
+            <button id="btnRun" class="demo-button run" type="button" onclick="HBCE.run()" disabled>RUN</button>
+            <button id="btnExport" class="demo-button secondary" type="button" onclick="HBCE.exportReceipt()" disabled>Export Receipt</button>
+            <button id="btnTamper" class="demo-button warn" type="button" onclick="HBCE.tamper()" disabled>Tamper Test</button>
+            <button id="btnReset" class="demo-button danger" type="button" onclick="HBCE.reset()">Reset Node</button>
           </div>
-          <span class="small" id="stNote"></span>
-        </div>
 
-        <div class="kv" style="margin-top:14px;">
-          <div class="k">Node</div><div><code>HBCE-DEMO-NODE</code></div>
-          <div class="k">Policy</div><div><code>HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · UE_FIRST · AUDIT_FIRST</code></div>
-          <div class="k">IPR</div><div><code id="iprId">—</code></div>
-          <div class="k">Head Hash</div><div><code id="headHash">—</code></div>
-          <div class="k">Ledger Entries</div><div><code id="ledgerCount">0</code></div>
-          <div class="k">Gate</div><div><code id="gateState">DENIED</code></div>
-        </div>
+          <div class="demo-status">
+            <div class="demo-pill">
+              <span id="stDot" class="demo-dot"></span>
+              <span id="stText">Status: IDENTITY NOT INITIALIZED</span>
+            </div>
+            <span class="demo-small" id="stNote"></span>
+          </div>
 
-        <h2 style="margin-top:26px;">LEDGER</h2>
-        <div class="small">Each entry is chained: <code>hash = SHA256(canonical(entry_without_hash))</code> and includes <code>prev_hash</code>.</div>
+          <div class="demo-kv">
+            <div class="demo-k">Node</div>
+            <div class="demo-v"><code class="demo-code">HBCE-DEMO-NODE</code></div>
 
-        <table>
-          <thead>
-            <tr>
-              <th style="width:70px;">#</th>
-              <th style="width:190px;">ts</th>
-              <th>event</th>
-              <th style="width:220px;">hash (head)</th>
-            </tr>
-          </thead>
-          <tbody id="ledgerRows">
-            <tr><td colspan="4" class="small">No entries yet.</td></tr>
-          </tbody>
-        </table>
+            <div class="demo-k">Policy</div>
+            <div class="demo-v"><code class="demo-code">HASH_ONLY · APPEND_ONLY · FAIL_CLOSED · EU_FIRST · AUDIT_FIRST</code></div>
 
-        <div class="footer">
-          RUN is unlocked only when verification is <strong>VALID</strong>. Any integrity break → <strong>DENIED (FAIL_CLOSED)</strong>.
-        </div>
+            <div class="demo-k">IPR label</div>
+            <div class="demo-v"><code class="demo-code" id="iprId">—</code></div>
+
+            <div class="demo-k">Head hash</div>
+            <div class="demo-v"><code class="demo-code" id="headHash">—</code></div>
+
+            <div class="demo-k">Ledger entries</div>
+            <div class="demo-v"><code class="demo-code" id="ledgerCount">0</code></div>
+
+            <div class="demo-k">Gate</div>
+            <div class="demo-v"><code class="demo-code" id="gateState">DENIED</code></div>
+          </div>
+
+          <h2 style="margin-top:26px;">Ledger</h2>
+          <div class="demo-small">
+            Each local entry is chained:
+            <code class="demo-code">hash = SHA256(canonical(entry_without_hash))</code>
+            and includes <code class="demo-code">prev_hash</code>.
+          </div>
+
+          <table class="demo-table">
+            <thead>
+              <tr>
+                <th style="width:70px;">#</th>
+                <th style="width:190px;">Timestamp</th>
+                <th>Event</th>
+                <th style="width:220px;">Hash</th>
+              </tr>
+            </thead>
+            <tbody id="ledgerRows">
+              <tr><td colspan="4" class="demo-small">No entries yet.</td></tr>
+            </tbody>
+          </table>
+
+          <div class="demo-small" style="margin-top:14px;">
+            RUN is unlocked only when verification is <strong>VALID</strong>.
+            Any integrity break produces <strong>DENIED</strong>.
+          </div>
+        </section>
+
+        <section class="hbce-card">
+          <div class="hbce-card__kicker">DEBUG</div>
+          <h2>Local node state</h2>
+          <p class="hbce-card__text">
+            This panel shows local demo state only. It is not a public registry, legal record, identity document,
+            production ledger or regulated certification artifact.
+          </p>
+
+          <pre id="debug" class="demo-pre">{}</pre>
+        </section>
+
       </div>
+    </section>
 
-      <div class="card">
-        <h2>NODE STATE (DEBUG)</h2>
-        <pre id="debug">{}</pre>
+    <section class="hbce-section">
+      <div class="hbce-card">
+        <div class="hbce-card__kicker">NON-CLAIMS</div>
+        <h2>What this demo does not claim</h2>
+
+        <ul class="hbce-list">
+          <li>It does not create legal identity.</li>
+          <li>It does not replace eIDAS, EUDI Wallet, SPID, CIE or qualified trust services.</li>
+          <li>It does not create production-grade authorization.</li>
+          <li>It does not create legal certification or public-sector adoption.</li>
+          <li>It does not store private evidence or identity documents.</li>
+          <li>It does not authorize offensive cybersecurity or testing on third-party systems.</li>
+        </ul>
       </div>
-    </div>
-  </div>
+    </section>
 
-<script src="./node.js"></script>
+  </main>
+
+  <div data-hbce="footer"></div>
+
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+  <script src="./node.js"></script>
 </body>
 </html>
