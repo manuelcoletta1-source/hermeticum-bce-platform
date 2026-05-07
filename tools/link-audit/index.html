@@ -1,94 +1,178 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>Link Audit — HBCE Platform</title>
-  <meta name="description" content="Audit difensivo dei link interni HBCE: verifica pagine core, riferimenti legacy/declassati, link rotti, route registry/verify e postura fail-closed." />
+  <title>Link Audit — HBCE R&D Route Audit Tool</title>
+  <meta name="description" content="Defensive browser-side link audit for HBCE Platform public routes, registry v3 references, verify surfaces, deprecated routes, legacy terminology, and fail-closed remediation." />
   <meta name="robots" content="noindex,nofollow" />
   <meta name="theme-color" content="#0b0f14" />
 
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <style>
+    .hbce-audit-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    .hbce-audit-pre{
+      white-space:pre-wrap;
+      word-break:break-word;
+      margin:0;
+      min-height:220px;
+    }
+
+    .hbce-audit-note{
+      font-size:.9rem;
+      line-height:1.55;
+    }
+  </style>
 </head>
 
 <body>
-  <div data-hbce="header"></div>
+  <div class="hbce-container">
+    <main class="hbce-main">
 
-  <main class="hbce-container hbce-main">
+      <header class="hbce-header">
+        <div class="hbce-header__row">
+          <div class="hbce-brand">
+            <div class="hbce-mono">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+            <div class="hbce-muted">HERMETICUM B.C.E. S.r.l.</div>
+          </div>
 
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">TOOLS · LINK AUDIT · FAIL-CLOSED · DEFENSIVE CHECK</div>
-      <h1 class="hbce-hero__title">HBCE Link Audit</h1>
-      <p class="hbce-hero__lead">
-        This tool performs a defensive, browser-side audit of selected public HBCE Platform pages.
-        It checks internal links, deprecated routes, registry / verify alignment, and broken references on core public pages.
-        <br /><br />
-        The audit is curated and limited. It is not a full crawler, does not authenticate, does not bypass access controls,
-        and does not test external systems.
-      </p>
+          <nav class="hbce-nav" aria-label="Primary">
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/">Home</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/tools/">Tools</a>
+            <a class="hbce-nav__link is-active" href="./">Link Audit</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/registry/">Registry</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/verify/">Verify</a>
+          </nav>
+        </div>
+      </header>
 
-      <div class="hbce-actions" style="margin-top:12px;">
-        <button class="hbce-btn hbce-btn--primary" id="run" type="button">Run audit</button>
-        <button class="hbce-btn hbce-btn--ghost" id="clear" type="button">Clear</button>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/sitemap/">Sitemap</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/AUDIT_FINDINGS_MATRIX_HBCE_2026-05-06.md">Audit findings</a>
-      </div>
+      <section class="hbce-section hbce-hero">
+        <div class="hbce-hero__kicker">TOOLS · LINK AUDIT · MATRIX AI AUDIT TRAIL · DEFENSIVE CHECK · FAIL-CLOSED</div>
+        <h1 class="hbce-hero__title">HBCE Link Audit</h1>
+        <p class="hbce-hero__lead">
+          This tool performs a defensive browser-side audit of selected public HBCE Platform routes.
+          It checks internal links, deprecated routes, legacy terminology, registry v3 references, verify surfaces,
+          and broken public references across the current MATRIX AI Audit Trail R&D boundary.
+          <br><br>
+          The audit is curated and limited. It is not a full crawler, does not authenticate, does not bypass access controls,
+          does not test external systems, and does not prove production security, legal validity, regulated compliance,
+          public authority approval, or deployment integrity.
+        </p>
 
-      <p class="hbce-note" style="margin-top:12px;">
-        Policy:
-        <strong>defensive only</strong> ·
-        <strong>public pages only</strong> ·
-        <strong>no authentication</strong> ·
-        <strong>no secrets</strong> ·
-        <strong>fail-closed reporting</strong>
-      </p>
-    </section>
+        <div class="hbce-audit-actions">
+          <button class="hbce-btn hbce-btn--primary" id="run" type="button">Run audit</button>
+          <button class="hbce-btn" id="clear" type="button">Clear</button>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/tools/">Tools</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/sitemap/">Sitemap</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/AUDIT_FINDINGS_MATRIX_HBCE_2026-05-06.md">Audit findings</a>
+        </div>
 
-    <section class="hbce-section">
-      <div class="hbce-grid hbce-grid--3">
+        <p class="hbce-muted hbce-audit-note" style="margin-top:12px;">
+          Policy:
+          <strong>defensive only</strong> ·
+          <strong>public pages only</strong> ·
+          <strong>no authentication</strong> ·
+          <strong>no secrets</strong> ·
+          <strong>R&D reference boundary</strong> ·
+          <strong>fail-closed reporting</strong>
+        </p>
+      </section>
 
-        <article class="hbce-card">
-          <div class="hbce-card__title">Scope</div>
-          <p class="hbce-note">
-            Curated public route check for HBCE core pages, registry, verify, schemas, audit files, and public policy files.
+      <section class="hbce-section">
+        <div class="hbce-grid hbce-grid--3">
+
+          <article class="hbce-card">
+            <div class="hbce-mono">SCOPE</div>
+            <h2>Curated route review</h2>
+            <p class="hbce-muted">
+              Checks selected public routes, registry files, verification pages, schema files, audit reports,
+              governance pages, and MATRIX AI Audit Trail public surfaces.
+            </p>
+          </article>
+
+          <article class="hbce-card">
+            <div class="hbce-mono">DEPRECATED ROUTES</div>
+            <h2>Legacy detection</h2>
+            <p class="hbce-muted">
+              Flags references to declassed or legacy routes such as <code>/entry/</code>, <code>/register/</code>,
+              <code>/phase-1/</code>, <code>/gate/</code>, and strong operator-license terminology.
+            </p>
+          </article>
+
+          <article class="hbce-card">
+            <div class="hbce-mono">LIMIT</div>
+            <h2>No certification claim</h2>
+            <p class="hbce-muted">
+              A clean result means the curated public route sample did not detect configured issues.
+              It does not certify cybersecurity, compliance, production readiness, or legal authorization.
+            </p>
+          </article>
+
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>Results</h2>
+          <p class="hbce-muted">
+            The audit runs locally in the browser against public static routes only.
+            Missing, broken, deprecated, or legacy references should be reviewed before treating the public route layer as clean.
           </p>
-        </article>
 
-        <article class="hbce-card">
-          <div class="hbce-card__title">Deprecated routes</div>
-          <p class="hbce-note">
-            The audit flags references to declassed or legacy routes such as <code>/entry/</code>, <code>/register/</code>,
-            <code>/phase-1/</code>, and old operator-specific terminology.
-          </p>
-        </article>
+          <div class="hbce-card" style="margin-top:12px;background:rgba(0,0,0,.18)">
+            <pre id="out" class="hbce-mono hbce-audit-pre">Ready.</pre>
+          </div>
+        </div>
+      </section>
 
-        <article class="hbce-card">
-          <div class="hbce-card__title">Limit</div>
-          <p class="hbce-note">
-            This tool checks public static routes only. It does not prove legal validity, security certification,
-            or full deployment integrity.
-          </p>
-        </article>
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>Audit interpretation</h2>
+          <div class="hbce-card">
+            <pre class="hbce-mono">PASS
+→ no configured broken routes, deprecated routes, or legacy terminology detected in the curated sample
 
-      </div>
-    </section>
+FAIL-CLOSED
+→ at least one configured issue was detected
+→ review findings before considering the public route layer clean
 
-    <section class="hbce-section">
-      <h2>Results</h2>
+BOUNDARY
+→ defensive public-route audit only
+→ no authentication
+→ no external-system testing
+→ no legal, security, or compliance certification</pre>
+          </div>
+        </div>
+      </section>
 
-      <div class="hbce-card">
-        <pre id="out" class="hbce-pre" style="white-space:pre-wrap; margin:0;">Ready.</pre>
-      </div>
-    </section>
+      <footer class="hbce-footer">
+        <div class="hbce-footer__row">
+          <div class="hbce-muted">
+            <span class="hbce-mono">LINK AUDIT</span> — defensive public-route audit utility for MATRIX AI Audit Trail R&D surface
+          </div>
+          <div class="hbce-footer__links">
+            <a href="/hermeticum-bce-platform/">Home</a>
+            <a href="/hermeticum-bce-platform/tools/">Tools</a>
+            <a href="/hermeticum-bce-platform/registry/">Registry</a>
+            <a href="/hermeticum-bce-platform/verify/">Verify</a>
+          </div>
+        </div>
+      </footer>
 
-  </main>
-
-  <div data-hbce="footer"></div>
-  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+    </main>
+  </div>
 
   <script>
-    (function () {
+    (() => {
       "use strict";
 
       const BASE = "/hermeticum-bce-platform/";
@@ -101,7 +185,21 @@
         "/hermeticum-bce-platform/RESPONSIBLE_USE.md",
         "/hermeticum-bce-platform/AUDIT_MATRIX_HBCE_2026-05-06.md",
         "/hermeticum-bce-platform/AUDIT_FINDINGS_MATRIX_HBCE_2026-05-06.md",
+        "/hermeticum-bce-platform/REGISTRY_AUDIT_MATRIX_HBCE_2026-05-06.md",
+        "/hermeticum-bce-platform/REPOSITORY_BASELINE_REVIEW_2026-05-06.md",
+        "/hermeticum-bce-platform/DEPLOYMENT_STATIC_GATEWAY_REVIEW_2026-05-06.md",
+        "/hermeticum-bce-platform/ROUTE_DEDUPLICATION_REVIEW_2026-05-07.md",
         "/hermeticum-bce-platform/OPENAI_OUTREACH_STATUS_2026-05-06.md",
+
+        "/hermeticum-bce-platform/protocol/",
+        "/hermeticum-bce-platform/protocol/hbce-network-architecture-v1.md",
+        "/hermeticum-bce-platform/protocol/hbce-node-spec-v1.md",
+        "/hermeticum-bce-platform/protocol/hbce-registry-spec-v1.md",
+        "/hermeticum-bce-platform/protocol/ipr-event-v1.md",
+        "/hermeticum-bce-platform/protocol/hbce-protocol-v1.official.json",
+        "/hermeticum-bce-platform/protocol/hbce-registry-ledger.example.json",
+        "/hermeticum-bce-platform/protocol/hbce-sign.reference.js",
+        "/hermeticum-bce-platform/protocol/hbce-verify.reference.js",
 
         "/hermeticum-bce-platform/registry/",
         "/hermeticum-bce-platform/registry/registry.json",
@@ -110,6 +208,7 @@
         "/hermeticum-bce-platform/registry/operators.json",
         "/hermeticum-bce-platform/registry/nodes.json",
         "/hermeticum-bce-platform/registry/events.json",
+        "/hermeticum-bce-platform/registry/REGISTRY_ENTRY_OPERATOR__1de300e4d826719c9a8708c8dfb2a8e943f19c3d324816b220f149f008ba481b.json",
         "/hermeticum-bce-platform/registry/append/",
         "/hermeticum-bce-platform/registry/publish/",
         "/hermeticum-bce-platform/registry/operators/",
@@ -119,13 +218,13 @@
         "/hermeticum-bce-platform/registry/operators/status/",
 
         "/hermeticum-bce-platform/verify/",
+        "/hermeticum-bce-platform/verify-pack/",
         "/hermeticum-bce-platform/verify/verify.html",
         "/hermeticum-bce-platform/verify/receipt/",
         "/hermeticum-bce-platform/verify/schema/evidence-bundle.schema.json",
         "/hermeticum-bce-platform/verify/demo-evidence.json",
         "/hermeticum-bce-platform/verify/baseline.md",
         "/hermeticum-bce-platform/verify/ipr-manuel-coletta.html",
-        "/hermeticum-bce-platform/verify-pack/",
 
         "/hermeticum-bce-platform/schemas/ipr.schema.json",
         "/hermeticum-bce-platform/schemas/receipt.schema.json",
@@ -146,25 +245,48 @@
         "/hermeticum-bce-platform/operator/",
         "/hermeticum-bce-platform/joker-c2/",
         "/hermeticum-bce-platform/ai-joker-c2/",
+        "/hermeticum-bce-platform/matrix-audit-trail/",
         "/hermeticum-bce-platform/ipr/",
         "/hermeticum-bce-platform/spec/",
         "/hermeticum-bce-platform/status/",
         "/hermeticum-bce-platform/root/",
         "/hermeticum-bce-platform/sitemap/",
         "/hermeticum-bce-platform/enterprise/",
+        "/hermeticum-bce-platform/industry/",
         "/hermeticum-bce-platform/b2g/",
+        "/hermeticum-bce-platform/defense/",
         "/hermeticum-bce-platform/research/",
-        "/hermeticum-bce-platform/horizon/"
+        "/hermeticum-bce-platform/horizon/",
+        "/hermeticum-bce-platform/io-space/",
+        "/hermeticum-bce-platform/banca-cibernetica-europea/",
+        "/hermeticum-bce-platform/tools/",
+        "/hermeticum-bce-platform/tools/link-audit/",
+        "/hermeticum-bce-platform/tools/registry-guard.js"
       ];
 
       const BAD_ROUTE_PATTERNS = [
         "/hermeticum-bce-platform/entry/",
         "/hermeticum-bce-platform/register/",
         "/hermeticum-bce-platform/phase-1/",
-        "/hermeticum-bce-platform/gate/"
+        "/hermeticum-bce-platform/gate/",
+        "/hermeticum-bce-platform/operator-license/",
+        "/hermeticum-bce-platform/operator-console/",
+        "/hermeticum-bce-platform/join-operator/",
+        "/hermeticum-bce-platform/approve-operator/"
       ];
 
       const LEGACY_TEXT_PATTERNS = [
+        "HBCE_CERTIFIED_OPERATORS_PUBLIC_REGISTRY",
+        "PUBLIC_IPR_EU_REGISTRY",
+        "OPERATOR_LICENSE_PUBLIC_PROOF",
+        "IPR_OPERATOR_LICENSE",
+        "OFFICIAL_PROTOCOL_BUNDLE",
+        "\"status\": \"OFFICIAL\"",
+        "\"mode\": \"PERMISSIONLESS\"",
+        "IPR_ROBOT",
+        "IPR_VEHICLE",
+        "FIRMWARE_UPDATE",
+        "DECOMMISSION",
         "operator_sha256",
         "nickname",
         "territory",
@@ -175,21 +297,21 @@
         "CITIZEN_CF_SHA256"
       ];
 
-      const MAX_LINKS_PER_PAGE = 50;
+      const MAX_LINKS_PER_PAGE = 70;
 
-      function outEl() {
+      function outEl(){
         return document.getElementById("out");
       }
 
-      function log(line) {
+      function log(line){
         outEl().textContent += line + "\n";
       }
 
-      function resetOutput() {
+      function resetOutput(){
         outEl().textContent = "";
       }
 
-      function normalizeInternalHref(href, basePath) {
+      function normalizeInternalHref(href, basePath){
         if (!href) return "";
 
         const raw = String(href).trim();
@@ -203,7 +325,11 @@
         if (raw.startsWith("http://") || raw.startsWith("https://")) {
           try {
             const url = new URL(raw);
-            if (url.origin !== location.origin) return "";
+
+            if (url.origin !== location.origin) {
+              return "";
+            }
+
             return url.pathname + url.search + url.hash;
           } catch {
             return "";
@@ -227,32 +353,40 @@
         }
       }
 
-      function isInternalRoute(path) {
+      function isInternalRoute(path){
         return typeof path === "string" && path.startsWith(BASE);
       }
 
-      function stripHash(path) {
+      function stripHash(path){
         return String(path || "").split("#")[0];
       }
 
-      function stripQueryAndHash(path) {
+      function stripQueryAndHash(path){
         return String(path || "").split("#")[0].split("?")[0];
       }
 
-      function shouldFetchRoute(path) {
+      function shouldFetchRoute(path){
         const clean = stripQueryAndHash(path);
 
         if (!isInternalRoute(clean)) return false;
-        if (clean.endsWith(".pdf")) return false;
-        if (clean.endsWith(".png")) return false;
-        if (clean.endsWith(".jpg")) return false;
-        if (clean.endsWith(".jpeg")) return false;
-        if (clean.endsWith(".webp")) return false;
-        if (clean.endsWith(".svg")) return false);
+
+        const lower = clean.toLowerCase();
+
+        if (lower.endsWith(".pdf")) return false;
+        if (lower.endsWith(".png")) return false;
+        if (lower.endsWith(".jpg")) return false;
+        if (lower.endsWith(".jpeg")) return false;
+        if (lower.endsWith(".webp")) return false;
+        if (lower.endsWith(".svg")) return false;
+        if (lower.endsWith(".ico")) return false;
+        if (lower.endsWith(".woff")) return false;
+        if (lower.endsWith(".woff2")) return false;
+        if (lower.endsWith(".ttf")) return false;
+
         return true;
       }
 
-      async function fetchText(url) {
+      async function fetchText(url){
         const response = await fetch(url, { cache: "no-store" });
         const text = await response.text();
 
@@ -263,9 +397,10 @@
         };
       }
 
-      async function checkExists(url) {
+      async function checkExists(url){
         try {
           const response = await fetch(url, { method: "GET", cache: "no-store" });
+
           return {
             ok: response.ok,
             status: response.status
@@ -278,9 +413,9 @@
         }
       }
 
-      function extractLinks(html, basePath) {
-        const doc = new DOMParser().parseFromString(html, "text/html");
-        const anchors = Array.from(doc.querySelectorAll("a[href]"));
+      function extractLinks(html, basePath){
+        const documentObject = new DOMParser().parseFromString(html, "text/html");
+        const anchors = Array.from(documentObject.querySelectorAll("a[href]"));
 
         return anchors
           .map((anchor) => normalizeInternalHref(anchor.getAttribute("href"), basePath))
@@ -288,7 +423,7 @@
           .filter(isInternalRoute);
       }
 
-      function findBadRoutes(links) {
+      function findBadRoutes(links){
         const findings = [];
 
         for (const link of links) {
@@ -305,7 +440,7 @@
         return findings;
       }
 
-      function findLegacyText(text) {
+      function findLegacyText(text){
         const findings = [];
         const source = String(text || "");
 
@@ -318,12 +453,13 @@
         return findings;
       }
 
-      async function run() {
+      async function run(){
         resetOutput();
 
         log("HBCE Link Audit — START");
         log("");
         log("Scope: curated public route audit");
+        log("Boundary: MATRIX AI Audit Trail R&D reference surface");
         log("Pages: " + PAGES.length);
         log("Bad route patterns: " + BAD_ROUTE_PATTERNS.join(", "));
         log("Legacy text patterns: " + LEGACY_TEXT_PATTERNS.join(", "));
@@ -347,6 +483,7 @@
               url: page,
               status: "FETCH_ERROR"
             });
+
             log("  ! fetch error");
             log("");
             continue;
@@ -358,6 +495,7 @@
               url: page,
               status: response.status
             });
+
             log("  ! page not ok: " + response.status);
             log("");
             continue;
@@ -410,6 +548,7 @@
         }
 
         log("=== BAD ROUTE REFERENCES ===");
+
         if (!badRefs.length) {
           log("OK — none detected.");
         } else {
@@ -420,6 +559,7 @@
 
         log("");
         log("=== LEGACY TEXT REFERENCES ===");
+
         if (!legacyRefs.length) {
           log("OK — none detected.");
         } else {
@@ -430,6 +570,7 @@
 
         log("");
         log("=== BROKEN OR UNREACHABLE INTERNAL ROUTES ===");
+
         if (!broken.length) {
           log("OK — none detected.");
         } else {
@@ -442,16 +583,19 @@
         log("=== AUDIT INTERPRETATION ===");
 
         if (!badRefs.length && !broken.length && !legacyRefs.length) {
-          log("PASS — curated public route audit did not detect broken routes, deprecated routes, or legacy terminology.");
+          log("PASS — curated public route audit did not detect configured broken routes, deprecated routes, or legacy terminology.");
         } else {
           log("FAIL-CLOSED — review findings above before treating the public route layer as clean.");
         }
 
         log("");
+        log("Boundary note: this result is a defensive route-audit result only. It is not legal validation, cybersecurity certification, regulated compliance, public authority approval, or production authorization.");
+        log("");
         log("HBCE Link Audit — END");
       }
 
       document.getElementById("run").addEventListener("click", run);
+
       document.getElementById("clear").addEventListener("click", () => {
         outEl().textContent = "Ready.";
       });
