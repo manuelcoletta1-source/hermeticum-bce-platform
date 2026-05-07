@@ -1,44 +1,151 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AI JOKER C2 — Calcolo hash (SHA-256)</title>
+
+  <title>AI JOKER-C2 Anchor Hash — Legacy Tool</title>
+  <meta name="description" content="Legacy browser-side SHA-256 helper for AI JOKER-C2 anchor.json. Public technical reference only. Canonical verification route is /verify/." />
+  <meta name="robots" content="noindex,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/verify/" />
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
 </head>
+
 <body>
+  <div data-hbce="header"></div>
+
   <main class="hbce-container hbce-main">
+
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">Verifier Tool</div>
-      <h1 class="hbce-hero__title">Calcola SHA-256 di anchor.json</h1>
-      <p class="hbce-hero__lead">Questo tool calcola in-browser l’hash SHA-256 dell’anchor pubblico.</p>
-      <div class="hbce-card">
-        <p><strong>File:</strong> <a id="fileLink" href="/hermeticum-bce-platform/ai-joker-c2/anchor.json">anchor.json</a></p>
-        <p><strong>SHA-256:</strong></p>
-        <pre id="out" style="white-space:pre-wrap">Calcolo in corso…</pre>
-        <p class="hbce-muted">Copia l’hash e confrontalo con l’entry nel registry.</p>
+      <div class="hbce-hero__kicker">LEGACY TOOL · AI JOKER-C2 · ANCHOR HASH</div>
+
+      <h1 class="hbce-hero__title">AI JOKER-C2 anchor hash</h1>
+
+      <p class="hbce-hero__lead">
+        This legacy browser-side tool calculates the SHA-256 hash of the public
+        <code>ai-joker-c2/anchor.json</code> artifact.
+        <br /><br />
+        The canonical verification gateway is now <a href="/hermeticum-bce-platform/verify/"><strong>/verify/</strong></a>.
+        This page is retained only as a compatibility helper for the historical AI JOKER-C2 public anchor.
+      </p>
+
+      <div class="hbce-card" style="margin-top:14px;">
+        <div class="hbce-mono">PUBLIC ANCHOR</div>
+
+        <p class="hbce-muted">
+          File:
+          <a id="fileLink" href="/hermeticum-bce-platform/ai-joker-c2/anchor.json">
+            /ai-joker-c2/anchor.json
+          </a>
+        </p>
+
+        <p class="hbce-muted">
+          This calculation happens locally in the browser. No file is uploaded by this page.
+        </p>
+
+        <p class="hbce-muted">
+          SHA-256:
+        </p>
+
+        <pre id="out" class="hbce-pre" style="white-space:pre-wrap;word-break:break-word;">Calculating…</pre>
+
+        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="hbce-btn hbce-btn--primary" id="copyBtn" type="button" disabled>
+            Copy hash
+          </button>
+
+          <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">
+            Open canonical Verify
+          </a>
+
+          <a class="hbce-btn" href="/hermeticum-bce-platform/joker-c2/">
+            Open canonical Joker-C2
+          </a>
+
+          <a class="hbce-btn" href="/hermeticum-bce-platform/claims/">
+            Claims & Non-Claims
+          </a>
+        </div>
+      </div>
+
+      <div class="hbce-card" style="margin-top:14px;">
+        <div class="hbce-mono">BOUNDARY</div>
+        <p class="hbce-muted">
+          This page computes a hash for a public technical artifact. It does not create legal certification,
+          identity certification, institutional validation, regulated approval, eIDAS qualification,
+          or public-sector adoption.
+        </p>
       </div>
     </section>
+
   </main>
 
-<script>
-async function sha256HexFromUrl(url) {
-  const res = await fetch(url, { cache: "no-store" });
-  const buf = await res.arrayBuffer();
-  const hashBuf = await crypto.subtle.digest("SHA-256", buf);
-  const hashArr = Array.from(new Uint8Array(hashBuf));
-  return hashArr.map(b => b.toString(16).padStart(2, "0")).join("");
-}
+  <div data-hbce="footer"></div>
 
-(async () => {
-  const url = "/hermeticum-bce-platform/ai-joker-c2/anchor.json";
-  try {
-    const hex = await sha256HexFromUrl(url);
-    document.getElementById("out").textContent = hex;
-  } catch (e) {
-    document.getElementById("out").textContent = "Errore nel calcolo: " + String(e);
-  }
-})();
-</script>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const ANCHOR_URL = "/hermeticum-bce-platform/ai-joker-c2/anchor.json";
+      const out = document.getElementById("out");
+      const copyBtn = document.getElementById("copyBtn");
+
+      let currentHash = "";
+
+      async function sha256HexFromUrl(url) {
+        const response = await fetch(url, { cache: "no-store" });
+
+        if (!response.ok) {
+          throw new Error("HTTP_" + response.status);
+        }
+
+        const buffer = await response.arrayBuffer();
+        const digest = await crypto.subtle.digest("SHA-256", buffer);
+        const bytes = Array.from(new Uint8Array(digest));
+
+        return bytes.map((byte) => byte.toString(16).padStart(2, "0")).join("");
+      }
+
+      async function calculate() {
+        try {
+          const hex = await sha256HexFromUrl(ANCHOR_URL);
+          currentHash = "sha256:" + hex;
+          out.textContent = currentHash;
+          copyBtn.disabled = false;
+        } catch (error) {
+          currentHash = "";
+          out.textContent =
+            "NON_OPERATIONAL — failed to calculate anchor hash.\n" +
+            "reason: " +
+            String(error && error.message ? error.message : error);
+          copyBtn.disabled = true;
+        }
+      }
+
+      async function copyHash() {
+        if (!currentHash) return;
+
+        try {
+          await navigator.clipboard.writeText(currentHash);
+          copyBtn.textContent = "Copied";
+          window.setTimeout(() => {
+            copyBtn.textContent = "Copy hash";
+          }, 900);
+        } catch {
+          copyBtn.textContent = "Copy unavailable";
+          window.setTimeout(() => {
+            copyBtn.textContent = "Copy hash";
+          }, 900);
+        }
+      }
+
+      copyBtn.addEventListener("click", copyHash);
+      calculate();
+    })();
+  </script>
 </body>
 </html>
