@@ -1,144 +1,301 @@
 # HBCE Registry Specification v1
 
-This document defines the structure and purpose of the HBCE registry layer.
+This document defines the HBCE Registry Specification v1 as a historical and technical R&D reference for HERMETICUM B.C.E. S.r.l.
 
-The registry exposes the observable state of the infrastructure by publishing nodes and events in structured formats.
+The registry layer exposes minimized, structured, and verifiable metadata related to nodes, events, audit cases, evidence packs, verification results, and operational status references.
 
----
+In the current public boundary, the HBCE registry must be understood as an R&D and pilot-oriented audit registry. It is not a public authority registry, not a regulated certification register, not an eIDAS qualified trust service, not a custodial identity service, and not a production compliance framework by itself.
 
-# Registry Purpose
+## 1. Registry Purpose
 
-The registry enables public visibility of infrastructure activity.
+The registry enables controlled visibility of selected technical records.
 
-It allows the system to expose:
+Its purpose is to support:
 
-- registered infrastructure nodes
-- recorded operational events
-- infrastructure state over time
+- hash-only public references;
+- append-only audit history;
+- node visibility;
+- event visibility;
+- audit-case traceability;
+- evidence-pack continuity;
+- verification results;
+- fail-closed review;
+- MATRIX AI Audit Trail MVP demonstrations.
 
-The registry operates as a public data layer within the HBCE infrastructure.
+The registry does not need to expose confidential payloads. Its preferred public function is to publish minimized records that allow verification without disclosing the underlying private material.
 
----
+## 2. Current Scope
 
-# Registry Components
+The current scope of the HBCE registry is aligned with the MATRIX AI Audit Trail MVP.
 
-The registry is composed of two main structures:
+Within this scope, the registry may represent records connected to:
 
-- node registry
-- event registry
+- AI output recording;
+- AI output review;
+- human validation;
+- policy checks;
+- governance decisions;
+- risk assessments;
+- audit notes;
+- evidence-pack creation;
+- verification requests;
+- verification results;
+- registry status updates.
 
-These are represented by two files in the repository.
+The registry should use `payload_sha256` or `event_payload_sha256` as the public reference to private or confidential payloads.
 
----
+## 3. Registry Boundary
 
-# Node Registry
+The registry follows a no-custody and minimization model.
+
+Public registry records should not contain:
+
+- personal data unless strictly necessary and lawfully reviewed;
+- confidential client files;
+- raw AI prompts;
+- raw AI outputs;
+- internal audit payloads;
+- private keys;
+- financial assets;
+- regulated identity documents;
+- security-sensitive operational secrets.
+
+The registry may expose:
+
+- record identifiers;
+- node identifiers;
+- event identifiers;
+- entity references;
+- operator references;
+- timestamps;
+- record kinds;
+- event types;
+- status fields;
+- hash references;
+- append-only linkage;
+- verification metadata.
+
+## 4. Registry Components
+
+The registry is composed of two primary structures:
+
+- node registry;
+- event registry.
+
+Additional structures may be used for future R&D or pilot work, including:
+
+- audit-case registry;
+- evidence-pack registry;
+- operator-reference registry;
+- verification-result registry;
+- public proof registry.
+
+The current repository paths are:
+
+`registry/nodes.json`
+
+`registry/events.json`
+
+These files represent observable technical metadata and should not be interpreted as a public legal registry or regulated certification list.
+
+## 5. Node Registry
 
 Node registry file:
 
 `registry/nodes.json`
 
-The node registry lists the nodes currently defined in the infrastructure.
+The node registry lists node references currently defined or historically documented in the infrastructure.
 
 Minimal node structure:
 
-- node_id
-- environment
-- identity_layer
-- coordination_engine
-- status
-- description
+- `node_id`;
+- `environment`;
+- `node_type`;
+- `identity_layer`;
+- `coordination_engine`;
+- `registry_integration`;
+- `verification_mode`;
+- `custody_boundary`;
+- `status`;
+- `description`.
 
 Example:
 
 ```json
 {
-  "node_id": "hbce-node-001",
-  "environment": "hbce-platform",
-  "identity_layer": "ipr",
-  "coordination_engine": "joker-c2",
-  "status": "active",
-  "description": "HBCE primary infrastructure node"
+  "node_id": "hbce-node-rnd-0001",
+  "environment": "hbce-platform-rnd",
+  "node_type": "AUDIT_TRAIL_NODE",
+  "identity_layer": "ipr-reference-layer",
+  "coordination_engine": "ai-joker-c2-rnd",
+  "registry_integration": "hash-only",
+  "verification_mode": "fail-closed",
+  "custody_boundary": "no-public-data-custody",
+  "status": "rnd-active",
+  "description": "HBCE R&D node for MATRIX AI Audit Trail self-pilot and hash-only verification records."
 }
+```
 
+A node registry entry does not imply public authority status, regulated approval, institutional mandate, or production compliance certification.
 
----
-
-Event Registry
+## 6. Event Registry
 
 Event registry file:
 
-registry/events.json
+`registry/events.json`
 
-The event registry lists operational events recorded within the infrastructure.
+The event registry lists selected technical events recorded within the infrastructure.
 
 Minimal event structure:
 
-event_id
-
-entity
-
-action
-
-timestamp
-
-context
-
-status
-
-description
-
+- `event_id`;
+- `entity_id`;
+- `event_type`;
+- `event_payload_sha256`;
+- `timestamp`;
+- `operator_reference`;
+- `status`;
+- `append_only`;
+- `description`.
 
 Example:
 
+```json
 {
-  "event_id": "hbce-event-0001",
-  "entity": "hbce-node-001",
-  "action": "node_initialized",
-  "timestamp": "2026-03-11T12:00:00Z",
-  "context": "hbce-platform",
-  "status": "recorded",
-  "description": "Initial registration of the primary HBCE infrastructure node"
+  "event_id": "EVT-MATRIX-HUMAN-VALIDATION-0001",
+  "entity_id": "IPR-AI-MATRIX-AUDIT-0001",
+  "event_type": "HUMAN_VALIDATION",
+  "event_payload_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "timestamp": "2026-05-07T15:40:00+02:00",
+  "operator_reference": "IPR-OP-RND-0001",
+  "status": "RND_ONLY",
+  "append_only": true,
+  "description": "R&D example event representing human validation of an AI audit-trail record."
 }
+```
 
+An event registry entry should expose the existence and verification reference of an event, not the confidential event payload itself.
 
----
+## 7. Audit Case Registry Pattern
 
-Registry Position in the Framework
+For MATRIX AI Audit Trail, the registry may include an audit-case reference.
 
-Within the Reality Engineering framework, the registry layer operates inside the infrastructure.
+An audit case can represent a bounded review sequence involving an AI system, a human reviewer, a policy check, a validation action, and an evidence pack.
 
-REALITY ENGINEERING
-↓
-HBCE INFRASTRUCTURE
-↓
-REGISTRY LAYER
-↓
-NODES / EVENTS
+Example audit-case reference:
 
+```json
+{
+  "audit_case_id": "MATRIX-AUDIT-CASE-0001",
+  "entity_id": "IPR-AUDIT-CASE-MATRIX-0001",
+  "scope": "MATRIX_AI_AUDIT_TRAIL_MVP",
+  "payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "created_at": "2026-05-07T15:30:00+02:00",
+  "status": "RND_ONLY",
+  "public_payload_policy": "HASH_ONLY",
+  "description": "R&D audit case reference for MATRIX AI Audit Trail self-pilot."
+}
+```
 
----
+This pattern allows the registry to represent audit continuity without publishing the underlying private case material.
 
-Repository Location
+## 8. Evidence Pack Registry Pattern
+
+An evidence-pack record may reference a structured bundle of audit material.
+
+Example evidence-pack reference:
+
+```json
+{
+  "evidence_pack_id": "EVIDENCE-PACK-MATRIX-0001",
+  "audit_case_id": "MATRIX-AUDIT-CASE-0001",
+  "payload_sha256": "1212121212121212121212121212121212121212121212121212121212121212",
+  "created_at": "2026-05-07T15:45:00+02:00",
+  "status": "RND_ONLY",
+  "public_payload_policy": "HASH_ONLY",
+  "description": "Hash-only reference to an R&D evidence pack. The underlying payload is not published in the public registry."
+}
+```
+
+The evidence pack itself may remain private, local, client-controlled, or separately disclosed under appropriate legal and security conditions.
+
+## 9. Verification Result Registry Pattern
+
+A verification result may record whether a ledger, event, entity, node, or evidence pack passed structural verification.
+
+Example verification result:
+
+```json
+{
+  "verification_id": "VERIFY-MATRIX-0001",
+  "target_id": "EVT-MATRIX-HUMAN-VALIDATION-0001",
+  "verifier": "hbce-verify.reference.js",
+  "result": "VALID_RND_ONLY",
+  "fail_closed": true,
+  "timestamp": "2026-05-07T15:50:00+02:00",
+  "description": "R&D verification result. VALID_RND_ONLY is not a production compliance certification."
+}
+```
+
+A verification result does not replace legal, cybersecurity, privacy, or compliance review.
+
+## 10. Registry Position in the Framework
+
+Within the HERMETICUM B.C.E. technical framework, the registry layer operates as the minimized public visibility surface for selected audit records.
+
+The registry position can be represented as:
+
+`HERMETICUM B.C.E. R&D → MATRIX AI Audit Trail → Registry Layer → Nodes / Events / Evidence Packs / Verification Results`
+
+The registry does not create legal validity by itself. It supports technical traceability, continuity, audit inspection, and deterministic verification.
+
+## 11. Repository Location
 
 Registry files are located in:
 
-registry/
+`registry/`
 
-registry/nodes.json
+Primary files:
 
-registry/events.json
+`registry/nodes.json`
 
+`registry/events.json`
 
-These files represent the observable state of the HBCE infrastructure.
+Additional future files may include:
 
+`registry/audit-cases.json`
 
----
+`registry/evidence-packs.json`
 
-Version
+`registry/verification-results.json`
 
-Specification version: v1
+Any new registry file should follow the same boundary: minimized metadata, hash-only references, append-only continuity, fail-closed verification, and no public custody of confidential payloads.
 
----
+## 12. Operational Boundaries
 
+The HBCE registry specification follows these boundaries:
+
+- EU-first reference framework;
+- audit-first design;
+- fail-closed verification;
+- hash-only public exposure;
+- append-only record continuity;
+- GDPR-minimized publication model;
+- no public data custody;
+- no private key custody;
+- no financial custody;
+- no regulated certification claim;
+- no public authority claim;
+- no offensive or military command function.
+
+Any production use requires independent legal, cybersecurity, privacy, compliance, and operational review.
+
+## 13. Version
+
+Specification version: v1.1 R&D reference alignment.
+
+Original v1 concept retained as historical basis.
+
+Current alignment: MATRIX AI Audit Trail MVP, registry v3 boundary, no-custody model, hash-only public records, fail-closed verification.
 
 
