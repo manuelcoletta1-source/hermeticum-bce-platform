@@ -1,46 +1,62 @@
 {
   "proto": "HBCE-REGISTRY-v3",
-  "kind": "HBCE_PUBLIC_OPERATOR_COMMITMENT",
-  "network": "EU",
-  "mode": "PUBLIC_PROOF_ENTRY",
+  "kind": "HBCE_PUBLIC_OPERATOR_COMMITMENT_RND_REFERENCE",
+  "network": "EU_REFERENCE_FRAMEWORK",
+  "mode": "PUBLIC_PROOF_ENTRY_RND_REFERENCE",
   "issuer": {
     "hallmark": "HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA",
     "legal": "HERMETICUM B.C.E. S.r.l.",
     "symbol": "🜏"
   },
-  "jurisdiction": "EU",
+  "jurisdiction": "EU_REFERENCE_FRAMEWORK",
+  "status": "RETAINED",
+  "current_scope": {
+    "primary_use": "MATRIX_AI_AUDIT_TRAIL_MVP",
+    "purpose": "Historical public operator proof commitment retained as a minimized hash-only R&D reference.",
+    "public_position": "This public operator commitment is an R&D reference artifact. It is not a public authority operator record, not a professional license, not a regulated certification, not an eIDAS qualified trust-service record, not a custodial identity record, and not a production authorization by itself.",
+    "operational_boundary": "The entry exposes only a minimized public label, timestamp, status, and hash-only proof commitment. Private evidence remains outside the public registry."
+  },
   "policy": [
+    "EU_FIRST",
+    "AUDIT_FIRST",
     "HASH_ONLY",
     "APPEND_ONLY",
     "FAIL_CLOSED",
-    "UE_FIRST",
-    "AUDIT_FIRST",
     "GDPR_MIN",
-    "NO_PUBLIC_DATA_CUSTODY"
+    "NO_PUBLIC_DATA_CUSTODY",
+    "NO_PRIVATE_KEY_CUSTODY",
+    "NO_FINANCIAL_CUSTODY",
+    "NO_REGULATED_CERTIFICATION_CLAIM",
+    "NO_PUBLIC_AUTHORITY_CLAIM"
   ],
   "rules": {
     "public_data": "HASH_ONLY",
     "verification": "DETERMINISTIC_SHA256_MATCH",
     "failure_mode": "FAIL_CLOSED",
     "private_evidence_policy": "PRIVATE_EVIDENCE_OUTSIDE_PUBLIC_REGISTRY",
-    "sensitive_preimage_policy": "NO_RAW_PERSONAL_IDENTIFIER_HASHES_IN_PUBLIC_REGISTRY"
+    "sensitive_preimage_policy": "NO_RAW_PERSONAL_IDENTIFIER_HASHES_IN_PUBLIC_REGISTRY",
+    "public_operator_interpretation": "A public operator commitment proves only that a public hash reference exists. It does not certify legal authorization, professional qualification, public authority approval, regulated compliance, cybersecurity assurance, institutional mandate, operational activation, or production authorization.",
+    "production_interpretation": "This retained R&D proof entry must not be interpreted as regulated certification, public authority approval, professional licensing, or production compliance validity unless independently supported by a lawful production framework."
   },
   "entry": {
     "entity_type": "PUBLIC_OPERATOR_COMMITMENT",
     "subject_label": "HBCE_PUBLIC_OPERATOR_001",
-    "record_scope": "OPERATOR_LICENSE_PUBLIC_PROOF",
+    "record_scope": "OPERATOR_PUBLIC_PROOF_RETAINED_RND_REFERENCE",
     "payload_sha256": "1de300e4d826719c9a8708c8dfb2a8e943f19c3d324816b220f149f008ba481b",
     "timestamp": "2026-02-14T13:34:15.225Z",
-    "status": "ACTIVE",
-    "note": "proto=HBCE-OPERATOR-v1; kind=IPR_OPERATOR_LICENSE; minimized public proof commitment; private evidence outside public registry"
+    "status": "RETAINED",
+    "public_payload_policy": "HASH_ONLY",
+    "note": "Historical operator proof commitment retained as minimized public hash-only reference. Private evidence remains outside the public registry. This entry is not an operator license, regulated certification, public authority validation, professional qualification, or production authorization."
   },
-  "privacy_note": "This public operator commitment must not store private identity evidence, identity documents, raw personal identifiers, credentials, secrets, private keys, production logs, or sensitive operational payloads. The subject_label is a minimized public label for registry readability and does not replace private identity verification.",
+  "privacy_note": "This public operator commitment must not store private identity evidence, identity documents, raw personal identifiers, credentials, secrets, private keys, production logs, raw AI prompts, raw AI outputs, client files, regulated identity documents, financial assets, confidential payloads, or sensitive operational material. The subject_label is a minimized public label for registry readability and does not replace private identity verification, legal authorization, or independent compliance review.",
   "verification": {
     "rule": "SHA256(canonical_operator_record_or_commitment) MUST_MATCH entry.payload_sha256",
-    "valid_result": "VALID",
+    "valid_result": "VALID_PUBLIC_REFERENCE_PRESENT",
     "invalid_result": "INVALID",
     "missing_result": "NO_PUBLIC_RECORD",
     "non_operational_result": "NON_OPERATIONAL",
-    "fail_closed_rule": "Missing, malformed, ambiguous, or inconsistent operator proof state must not produce VALID."
+    "rnd_result": "RND_REFERENCE_ONLY",
+    "fail_closed_rule": "Missing, malformed, ambiguous, placeholder-based, or inconsistent operator proof state must not produce VALID.",
+    "production_rule": "RETAINED status must not be interpreted as regulated certification, public authority approval, professional licensing, production compliance validity, cybersecurity assurance, legal operator certification, or operational authorization."
   }
 }
