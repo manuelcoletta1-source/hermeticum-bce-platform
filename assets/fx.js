@@ -1,78 +1,134 @@
-/* HBCE FX — cinematic but deterministic
-   - reveal on scroll
-   - controlled glitch pulse
-   - micro-shake on interactions
-   - auto-degrade on low FPS
-*/
+/* =========================================================
+   HBCE FX — LOCAL VISUAL ENHANCER
+   - Visual effects only
+   - No fetch
+   - No tracking
+   - No upload
+   - No data custody
+   - Respects reduced motion
+   - Auto-degrades on low FPS
+   ========================================================= */
+
 (function () {
   "use strict";
 
+  if (document.documentElement.getAttribute("data-hbce-fx") === "1") return;
+  document.documentElement.setAttribute("data-hbce-fx", "1");
+
   const root = document.documentElement;
+
   const prefersReduced =
-    window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   if (prefersReduced) {
     root.classList.add("fx-off");
+    root.setAttribute("data-hbce-fx-mode", "reduced-motion");
     return;
   }
 
-  // REVEAL ON SCROLL
-  const revealEls = Array.from(document.querySelectorAll("[data-reveal]"));
-  const io = new IntersectionObserver(
-    (entries) => {
-      for (const e of entries) {
-        if (e.isIntersecting) {
-          e.target.classList.add("is-revealed");
-          io.unobserve(e.target);
-        }
-      }
-    },
-    { threshold: 0.12 }
-  );
-  revealEls.forEach((el) => io.observe(el));
+  root.setAttribute("data-hbce-fx-mode", "local-visual-only");
 
-  // GLITCH PULSE (sparse)
+  function setupReveal() {
+    const revealElements = Array.from(document.querySelectorAll("[data-reveal]"));
+
+    if (!revealElements.length || !("IntersectionObserver" in window)) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+
+          entry.target.classList.add("is-revealed");
+          observer.unobserve(entry.target);
+        }
+      },
+      {
+        threshold: 0.12
+      }
+    );
+
+    revealElements.forEach((element) => observer.observe(element));
+  }
+
   function pulseGlitch() {
     if (root.classList.contains("fx-degraded")) return;
+    if (root.classList.contains("fx-off")) return;
+
     root.classList.add("fx-glitch");
-    window.setTimeout(() => root.classList.remove("fx-glitch"), 180);
+
+    window.setTimeout(() => {
+      root.classList.remove("fx-glitch");
+    }, 180);
   }
 
   function scheduleGlitch() {
-    const t = 7000 + Math.random() * 9000;
+    if (root.classList.contains("fx-off")) return;
+
+    const delay = 7000 + Math.random() * 9000;
+
     window.setTimeout(() => {
       pulseGlitch();
       scheduleGlitch();
-    }, t);
+    }, delay);
   }
-  scheduleGlitch();
 
-  // MICRO SHAKE (only marked elements)
-  document.addEventListener("click", (ev) => {
-    const t = ev.target && ev.target.closest && ev.target.closest("[data-shake]");
-    if (!t) return;
-    t.classList.remove("fx-shake");
-    void t.offsetWidth; // restart animation
-    t.classList.add("fx-shake");
-  });
+  function setupMicroShake() {
+    document.addEventListener("click", (event) => {
+      const target =
+        event.target &&
+        event.target.closest &&
+        event.target.closest("[data-shake]");
 
-  // PERF GUARD
-  let frames = 0;
-  let last = performance.now();
+      if (!target) return;
 
-  function raf(now) {
-    frames++;
-    const dt = now - last;
+      target.classList.remove("fx-shake");
 
-    if (dt >= 1200) {
-      const fps = (frames * 1000) / dt;
-      frames = 0;
-      last = now;
+      void target.offsetWidth;
 
-      if (fps < 45) root.classList.add("fx-degraded");
+      target.classList.add("fx-shake");
+    });
+  }
+
+  function setupPerformanceGuard() {
+    if (!("requestAnimationFrame" in window)) return;
+
+    let frames = 0;
+    let last = performance.now();
+
+    function frame(now) {
+      frames += 1;
+
+      const delta = now - last;
+
+      if (delta >= 1200) {
+        const fps = (frames * 1000) / delta;
+
+        frames = 0;
+        last = now;
+
+        if (fps < 45) {
+          root.classList.add("fx-degraded");
+          root.setAttribute("data-hbce-fx-performance", "degraded");
+        }
+      }
+
+      requestAnimationFrame(frame);
     }
 
-    requestAnimationFrame(raf);
+    requestAnimationFrame(frame);
   }
-  requestAnimationFrame(raf);
+
+  function init() {
+    setupReveal();
+    setupMicroShake();
+    scheduleGlitch();
+    setupPerformanceGuard();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init, { once: true });
+  } else {
+    init();
+  }
 })();
