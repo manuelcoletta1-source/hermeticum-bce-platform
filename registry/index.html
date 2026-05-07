@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>Registry — Public Proof Registry of the HBCE Stack</title>
-  <meta name="description" content="Public proof registry of the HBCE stack. Append-only, hash-only public ledger for deterministic verification. Fail-closed operational posture." />
+  <title>Registry — MATRIX AI Audit Trail Public R&D Registry</title>
+  <meta name="description" content="Public R&D registry surface for MATRIX AI Audit Trail. Hash-only, append-only, minimized metadata, fail-closed verification posture, no public data custody." />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
   <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/registry/" />
@@ -23,11 +23,13 @@
       border-radius:12px;
       padding:10px 12px;
       outline:none;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
       font-size:.92rem;
     }
 
-    .hbce-field:focus{border-color:rgba(255,255,255,.30);}
+    .hbce-field:focus{
+      border-color:rgba(255,255,255,.30);
+    }
 
     pre{
       white-space:pre-wrap;
@@ -37,7 +39,7 @@
 
     .hbce-kv{
       display:grid;
-      grid-template-columns:160px 1fr;
+      grid-template-columns:170px 1fr;
       gap:8px;
     }
 
@@ -60,6 +62,13 @@
       font-size:.88rem;
       line-height:1.55;
     }
+
+    .hbce-warning{
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.035);
+      border-radius:16px;
+      padding:14px;
+    }
   </style>
 </head>
 
@@ -76,42 +85,43 @@
 
           <nav class="hbce-nav" aria-label="Primary">
             <a class="hbce-nav__link" href="../">Home</a>
-            <a class="hbce-nav__link" href="../spec/">Spec</a>
-            <a class="hbce-nav__link" href="../activate/">Activate</a>
+            <a class="hbce-nav__link" href="../protocol/">Protocol</a>
             <a class="hbce-nav__link" href="../joker-c2/">Joker-C2</a>
+            <a class="hbce-nav__link" href="../matrix-audit-trail/">MATRIX Audit</a>
             <a class="hbce-nav__link is-active" href="./">Registry</a>
             <a class="hbce-nav__link" href="../verify/">Verify</a>
-            <a class="hbce-nav__link" href="../pricing/">Pricing</a>
           </nav>
         </div>
       </header>
 
       <section class="hbce-section hbce-hero">
-        <div class="hbce-hero__kicker">REGISTRY · PUBLIC PROOF · APPEND-ONLY · HASH-ONLY · FAIL-CLOSED</div>
-        <h1 class="hbce-hero__title">Public proof registry</h1>
+        <div class="hbce-hero__kicker">REGISTRY · MATRIX AI AUDIT TRAIL · R&D REFERENCE · HASH-ONLY · FAIL-CLOSED</div>
+        <h1 class="hbce-hero__title">Public R&D registry</h1>
         <p class="hbce-hero__lead">
-          The <b>Registry</b> is the public proof layer of the HBCE stack.
-          It exposes minimized public evidence through an <b>append-only</b>, <b>hash-only</b> ledger
-          used by deterministic verification workflows.
-          <br/><br/>
-          If the registry source is unreachable, malformed, invalid, inconsistent, or non-deterministic,
-          the correct system posture is <strong>NON-OPERATIONAL</strong>.
+          The <b>Registry</b> is the minimized public visibility surface for the MATRIX AI Audit Trail MVP.
+          It exposes hash-only and metadata-only records for R&D documentation, audit-trail review,
+          evidence-pack continuity, and deterministic verification experiments.
+          <br><br>
+          This registry is not a public authority registry, not a regulated certification register,
+          not an eIDAS qualified trust service, not a custodial identity service, and not a production
+          compliance framework by itself.
         </p>
 
         <div class="hbce-card" style="margin-top:14px;">
-          <div class="hbce-mono">POSITION IN THE STACK</div>
-          <p class="hbce-muted" style="max-width:92ch;">
-            In the HBCE architecture:
-            <b>IPR</b> provides attribution,
-            <b>Joker-C2</b> governs execution,
-            <b>Registry</b> publishes public proof,
-            and <b>Verify</b> reproduces deterministic validation.
+          <div class="hbce-mono">CURRENT PUBLIC BOUNDARY</div>
+          <p class="hbce-muted" style="max-width:96ch;">
+            Public records must remain minimized. The registry may expose identifiers, timestamps,
+            event labels, node labels, status fields, hash references, and verification metadata.
+            It must not expose private keys, credentials, internal endpoints, raw AI prompts,
+            raw AI outputs, client files, personal data, regulated identity documents, production logs,
+            confidential payloads, or sensitive infrastructure topology.
           </p>
 
           <div style="margin-top:14px;display:flex;gap:12px;flex-wrap:wrap">
-            <a class="hbce-btn hbce-btn--primary" href="../activate/">Activate</a>
+            <a class="hbce-btn hbce-btn--primary" href="../matrix-audit-trail/">MATRIX Audit Trail</a>
+            <a class="hbce-btn" href="../protocol/">Protocol</a>
             <a class="hbce-btn" href="../verify/">Verify</a>
-            <a class="hbce-btn" href="../spec/">Specifications</a>
+            <a class="hbce-btn" href="../joker-c2/">Joker-C2</a>
             <a class="hbce-btn" href="../">Home</a>
           </div>
         </div>
@@ -120,12 +130,12 @@
       <section class="hbce-section">
         <div class="hbce-grid hbce-grid--2">
 
-          <div class="hbce-card" aria-label="Viewer">
+          <div class="hbce-card" aria-label="Registry viewer">
             <h2>Registry viewer</h2>
 
             <div class="hbce-pillrow">
               <span class="hbce-mono hbce-muted" id="txtState">STATE: LOADING</span>
-              <span class="hbce-mono hbce-muted">MODE: APPEND_ONLY</span>
+              <span class="hbce-mono hbce-muted">MODE: R&D_REFERENCE</span>
               <span class="hbce-mono hbce-muted">PUBLIC: HASH_ONLY</span>
               <span class="hbce-mono hbce-muted">VERIFY: DETERMINISTIC</span>
               <span class="hbce-mono hbce-muted">FAIL: FAIL_CLOSED</span>
@@ -134,15 +144,15 @@
             <div class="hbce-card hbce-mini" style="margin-top:12px">
               <div class="hbce-mono hbce-muted">Canonical source rule</div>
               <p class="hbce-muted" style="margin-bottom:0">
-                Canonical public viewer source: <b>ledger.json</b>.<br/>
-                Supporting public registry index: <b>registry.json</b>.<br/>
-                If the selected source is unreachable, malformed, or inconsistent, the registry state is
-                <b>NON-OPERATIONAL</b>.
+                Canonical public viewer source: <b>ledger.json</b>.<br>
+                Supporting public registries: <b>nodes.json</b> and <b>events.json</b>.<br>
+                If the selected source is unreachable, malformed, inconsistent, or non-deterministic,
+                the viewer must return <b>NON-OPERATIONAL</b>.
               </p>
             </div>
 
             <div class="hbce-card" style="margin-top:12px">
-              <pre class="hbce-mono" id="statusBox">LOADING LEDGER…</pre>
+              <pre class="hbce-mono" id="statusBox">LOADING REGISTRY…</pre>
             </div>
 
             <div class="hbce-card" style="margin-top:12px">
@@ -152,6 +162,7 @@
                 <span class="hbce-muted">issuer</span><span id="statIssuer">—</span>
                 <span class="hbce-muted">network</span><span id="statNetwork">—</span>
                 <span class="hbce-muted">proto</span><span id="statProto">—</span>
+                <span class="hbce-muted">mode</span><span id="statMode">—</span>
                 <span class="hbce-muted">rules</span><span id="statRules">—</span>
                 <span class="hbce-muted">source</span><span class="hbce-mono" id="statSource">—</span>
               </div>
@@ -159,17 +170,18 @@
 
             <div class="hbce-rowbtn">
               <button class="hbce-btn hbce-btn--primary" id="btnReload" type="button">Reload registry</button>
-              <button class="hbce-btn" id="btnFailClosed" type="button" title="Show fail-closed rule">Fail-Closed Rule</button>
-              <a class="hbce-btn" id="btnOpenLedger" href="./ledger.json" target="_blank" rel="noopener">Open ledger.json</a>
-              <a class="hbce-btn" href="./registry.json" target="_blank" rel="noopener">Open registry.json</a>
+              <button class="hbce-btn" id="btnFailClosed" type="button">Fail-closed rule</button>
+              <a class="hbce-btn" href="./ledger.json" target="_blank" rel="noopener">Open ledger.json</a>
+              <a class="hbce-btn" href="./nodes.json" target="_blank" rel="noopener">Open nodes.json</a>
+              <a class="hbce-btn" href="./events.json" target="_blank" rel="noopener">Open events.json</a>
             </div>
           </div>
 
           <div class="hbce-card" aria-label="Lookup by SHA-256">
             <h2>Lookup by SHA-256</h2>
             <p class="hbce-muted" style="margin-top:0">
-              Paste a SHA-256 value to check if public proof is present in the registry.
-              Lookup is allowed only when the registry is operational.
+              Paste a SHA-256 value to check whether a public proof entry is present in the loaded registry source.
+              Lookup is allowed only when the registry source is operational.
             </p>
 
             <input id="inpSha"
@@ -184,7 +196,15 @@
             </div>
 
             <div class="hbce-card" style="margin-top:12px">
-              <pre class="hbce-mono hbce-muted" id="lookupBox">Lookup requires an operational registry (fail-closed).</pre>
+              <pre class="hbce-mono hbce-muted" id="lookupBox">Lookup requires an operational registry source.</pre>
+            </div>
+
+            <div class="hbce-warning hbce-mini" style="margin-top:12px">
+              <div class="hbce-mono hbce-muted">Interpretation boundary</div>
+              <p class="hbce-muted" style="margin-bottom:0">
+                A present hash means that a public proof reference exists. It does not certify legal validity,
+                cybersecurity assurance, institutional approval, regulated compliance, or production authorization.
+              </p>
             </div>
           </div>
 
@@ -193,12 +213,11 @@
 
       <section class="hbce-section">
         <div class="hbce-card" aria-label="Latest entries">
-          <h2>Latest public proofs</h2>
+          <h2>Latest public proof entries</h2>
           <p class="hbce-muted" style="margin-top:0">
-            Read-only view of the latest registry entries.
-            The registry exposes minimized public evidence only.
+            Read-only view of the latest loaded registry entries.
             Empty entries mean no public proof entries are currently available in the selected source;
-            they do not certify validity by themselves.
+            they do not certify absence of activity, validity, authorization, compliance, or security status.
           </p>
 
           <div class="hbce-card" style="margin-top:12px">
@@ -211,25 +230,16 @@
               <div class="hbce-mono hbce-muted">—</div>
             </div>
           </div>
-
-          <div class="hbce-muted" style="margin-top:12px">
-            Canonical sequence:
-            <a href="../activate/">Activate</a> ·
-            <a href="../create/base/">Create</a> ·
-            <a href="../registry/">Registry</a> ·
-            <a href="../verify/">Verify</a>
-          </div>
         </div>
       </section>
 
       <section class="hbce-section">
         <div class="hbce-grid hbce-grid--2">
-          <div class="hbce-card" aria-label="Append-only rule">
+          <div class="hbce-card" aria-label="Registry rule">
             <h2>Registry rule</h2>
             <p class="hbce-muted" style="margin-top:0">
-              The registry is append-only and public-facing in hash-only form.
-              Historical evidence is extended, not rewritten.
-              Personal data must not be published into the public ledger.
+              The registry is append-only and public-facing only through minimized metadata or hash-only records.
+              Historical evidence should be extended, not rewritten. Private payloads must remain outside the public registry.
             </p>
 
             <div class="hbce-card" style="margin-top:12px;overflow:auto">
@@ -240,38 +250,68 @@
           <div class="hbce-card" aria-label="Public data minimization">
             <h2>Public data minimization</h2>
             <p class="hbce-muted" style="margin-top:0">
-              Public identity labels may appear only when intentionally published for attribution
-              and registry readability. Sensitive identity evidence, private documents, credentials,
-              private keys, and non-public payloads must not be stored in the public registry.
+              Public identity or node labels may appear only when intentionally published for attribution,
+              audit readability, and registry continuity. Confidential evidence, personal data, credentials,
+              private keys, raw AI prompts, raw AI outputs, and non-public payloads must not be stored in the public registry.
             </p>
 
             <div class="hbce-card" style="margin-top:12px">
               <pre class="hbce-mono">PUBLIC REGISTRY RULES
-- public proof only
+- R&D reference surface only
 - hash-only or minimized metadata
+- append-only public record discipline
 - no private evidence custody
-- no secrets
+- no personal data payloads
+- no credentials or secrets
 - no private keys
-- no identity documents
+- no regulated identity documents
+- no client files
+- no raw AI prompts or raw AI outputs
 - no production logs
-- no sensitive operational payloads
+- no sensitive infrastructure topology
 - missing or invalid source → NON-OPERATIONAL</pre>
             </div>
           </div>
         </div>
       </section>
 
+      <section class="hbce-section">
+        <div class="hbce-card" aria-label="MATRIX audit sequence">
+          <h2>MATRIX audit sequence</h2>
+          <p class="hbce-muted" style="margin-top:0">
+            The registry supports the MATRIX AI Audit Trail sequence by exposing public references to private audit material.
+            The preferred sequence is:
+          </p>
+
+          <div class="hbce-card">
+            <pre class="hbce-mono">AI_OUTPUT_RECORDED
+→ POLICY_CHECK
+→ AI_OUTPUT_REVIEWED
+→ HUMAN_VALIDATION
+→ EVIDENCE_PACK_CREATED
+→ VERIFICATION_RESULT
+→ HASH_ONLY_PUBLIC_REFERENCE
+→ FAIL_CLOSED_REVIEW</pre>
+          </div>
+
+          <p class="hbce-muted">
+            This sequence creates technical audit visibility without requiring public custody of confidential prompts,
+            outputs, review notes, evidence payloads, client files, or regulated identity data.
+          </p>
+        </div>
+      </section>
+
       <footer class="hbce-footer">
         <div class="hbce-footer__row">
           <div class="hbce-muted">
-            <span class="hbce-mono">REGISTRY</span> — public proof layer of the HBCE stack
+            <span class="hbce-mono">REGISTRY</span> — MATRIX AI Audit Trail public R&D registry surface
           </div>
           <div class="hbce-footer__links">
             <a href="../">Home</a>
-            <a href="../spec/">Spec</a>
-            <a href="../activate/">Activate</a>
+            <a href="../protocol/">Protocol</a>
+            <a href="../joker-c2/">Joker-C2</a>
+            <a href="../matrix-audit-trail/">MATRIX Audit</a>
             <a href="../verify/">Verify</a>
-            <a href="../pricing/">Pricing</a>
           </div>
         </div>
       </footer>
@@ -286,9 +326,46 @@
     const MAX_LATEST = 14;
     const CANONICAL_LEDGER_FILE = "ledger.json";
     const EXPECTED_PROTO = "HBCE-REGISTRY-v3";
-    const EXPECTED_MODE = "APPEND_ONLY_PUBLIC_LEDGER";
+
+    const ACCEPTED_MODES = new Set([
+      "APPEND_ONLY_PUBLIC_LEDGER",
+      "APPEND_ONLY_PUBLIC_REGISTRY",
+      "APPEND_ONLY_PUBLIC_RND_REGISTRY"
+    ]);
+
+    const ACCEPTED_PUBLIC_DATA = new Set([
+      "HASH_ONLY",
+      "MINIMIZED_PUBLIC_METADATA"
+    ]);
+
     const EXPECTED_FAILURE_MODE = "FAIL_CLOSED";
-    const EXPECTED_PUBLIC_DATA_MODE = "HASH_ONLY";
+
+    const FORBIDDEN_ENTRY_FIELDS = [
+      "payload",
+      "secret",
+      "private_key",
+      "api_key",
+      "token",
+      "password",
+      "credential",
+      "private_evidence",
+      "personal_payload",
+      "personal_data",
+      "identity_document",
+      "regulated_identity_document",
+      "raw_prompt",
+      "raw_output",
+      "client_file",
+      "production_log",
+      "private_communication",
+      "internal_endpoint",
+      "sensitive_operational_payload",
+      "confidential_payload",
+      "database_url",
+      "admin_url",
+      "private_ip",
+      "internal_hostname"
+    ];
 
     const $ = (id) => document.getElementById(id);
 
@@ -300,6 +377,7 @@
       statIssuer: $("statIssuer"),
       statNetwork: $("statNetwork"),
       statProto: $("statProto"),
+      statMode: $("statMode"),
       statRules: $("statRules"),
       statSource: $("statSource"),
 
@@ -314,7 +392,7 @@
       latestMeta: $("latestMeta"),
       latestRows: $("latestRows"),
 
-      rulesBox: $("rulesBox"),
+      rulesBox: $("rulesBox")
     };
 
     function computeLedgerUrl(){
@@ -329,35 +407,99 @@
       ledger: null,
       loaded: false,
       lastLoadedIso: null,
-      source: computeLedgerUrl(),
+      source: computeLedgerUrl()
     };
 
-    function setState(kind, msg){
+    function setState(kind, message){
       if (kind === "ok") {
-        el.txtState.textContent = "STATE: OPERATIONAL";
+        el.txtState.textContent = "STATE: OPERATIONAL_RND_REFERENCE";
       } else if (kind === "bad") {
         el.txtState.textContent = "STATE: NON-OPERATIONAL";
       } else {
         el.txtState.textContent = "STATE: LOADING";
       }
 
-      el.statusBox.textContent = msg;
+      el.statusBox.textContent = message;
     }
 
-    function isSha256Lower(s){
-      return /^[0-9a-f]{64}$/.test(s);
+    function isSha256Lower(value){
+      return /^[0-9a-f]{64}$/.test(value);
     }
 
-    function safeText(s){
-      return String(s ?? "");
+    function safeText(value){
+      return String(value ?? "");
     }
 
-    function prettyJSON(obj){
+    function prettyJSON(value){
       try{
-        return JSON.stringify(obj, null, 2);
+        return JSON.stringify(value, null, 2);
       }catch{
-        return String(obj);
+        return String(value);
       }
+    }
+
+    function issuerLabel(issuer){
+      if (!issuer) return "—";
+      if (typeof issuer === "string") return issuer;
+      if (issuer.legal) return issuer.legal;
+      if (issuer.name) return issuer.name;
+      return "—";
+    }
+
+    function getEntries(data){
+      if (Array.isArray(data.entries)) return data.entries;
+      if (Array.isArray(data.events)) return data.events;
+      if (Array.isArray(data.nodes)) return data.nodes;
+      return [];
+    }
+
+    function extractSha(entry){
+      const candidates = [
+        entry.sha256,
+        entry.payload_sha256,
+        entry.event_payload_sha256,
+        entry.record_sha256,
+        entry.head_record_sha256
+      ];
+
+      for (const candidate of candidates) {
+        const value = String(candidate || "").toLowerCase();
+        if (isSha256Lower(value)) return value;
+      }
+
+      return "";
+    }
+
+    function extractEntryId(entry){
+      return entry.event_id ||
+        entry.node_id ||
+        entry.entity_id ||
+        entry.audit_case_id ||
+        entry.evidence_pack_id ||
+        entry.proof_id ||
+        entry.id ||
+        "PUBLIC_REFERENCE";
+    }
+
+    function extractEntryKind(entry){
+      return entry.event_type ||
+        entry.node_type ||
+        entry.proof_kind ||
+        entry.kind ||
+        "PUBLIC_REFERENCE";
+    }
+
+    function extractEntryStatus(entry){
+      return entry.status || entry.result || "—";
+    }
+
+    function hasForbiddenField(entry){
+      return FORBIDDEN_ENTRY_FIELDS.find((field) => Object.prototype.hasOwnProperty.call(entry, field));
+    }
+
+    function publicDataMode(data){
+      if (!data || !data.rules) return "";
+      return String(data.rules.public_data || "");
     }
 
     function setNonOperational(reason){
@@ -367,7 +509,7 @@
       setState("bad",
         `NON-OPERATIONAL (FAIL-CLOSED)\n` +
         `reason=${reason}\n` +
-        `required=reachable_registry + deterministic_schema + hash_only_entries + fail_closed_rules\n` +
+        `required=reachable_source + registry_v3 + append_only_mode + minimized_or_hash_only_public_data + fail_closed_rules\n` +
         `source=${STATE.source}\n` +
         `action=fix registry source and reload`
       );
@@ -375,29 +517,21 @@
       renderStats();
       renderRulesBox();
       renderLatest();
-      el.lookupBox.textContent = "Lookup denied: registry is NON-OPERATIONAL (fail-closed).";
+
+      el.lookupBox.textContent = "Lookup denied: registry is NON-OPERATIONAL.";
     }
 
-    function validateLedger(data){
-      if (!data || typeof data !== "object") throw new Error("INVALID_JSON_OBJECT");
+    function validateRegistrySource(data){
+      if (!data || typeof data !== "object") {
+        throw new Error("INVALID_JSON_OBJECT");
+      }
 
-      if (data.proto !== EXPECTED_PROTO) throw new Error("PROTO_MISMATCH");
-      if (data.mode !== EXPECTED_MODE) throw new Error("MODE_MISMATCH");
+      if (data.proto !== EXPECTED_PROTO) {
+        throw new Error("PROTO_MISMATCH");
+      }
 
-      if (!Array.isArray(data.entries)) throw new Error("ENTRIES_MISSING");
-
-      for (const e of data.entries) {
-        if (!e || typeof e !== "object") throw new Error("ENTRY_INVALID_OBJECT");
-
-        const sha = String(e.sha256 || "");
-        if (!isSha256Lower(sha)) throw new Error("ENTRY_SHA256_INVALID");
-
-        if ("payload" in e) throw new Error("ENTRY_RAW_PAYLOAD_FORBIDDEN");
-        if ("secret" in e) throw new Error("ENTRY_SECRET_FIELD_FORBIDDEN");
-        if ("private_key" in e) throw new Error("ENTRY_PRIVATE_KEY_FIELD_FORBIDDEN");
-        if ("api_key" in e) throw new Error("ENTRY_API_KEY_FIELD_FORBIDDEN");
-        if ("token" in e) throw new Error("ENTRY_TOKEN_FIELD_FORBIDDEN");
-        if ("password" in e) throw new Error("ENTRY_PASSWORD_FIELD_FORBIDDEN");
+      if (!ACCEPTED_MODES.has(String(data.mode || ""))) {
+        throw new Error("MODE_MISMATCH");
       }
 
       if (!data.rules || typeof data.rules !== "object") {
@@ -408,89 +542,120 @@
         throw new Error("RULES_FAILURE_MODE_MISMATCH");
       }
 
-      if (data.rules.public_data !== EXPECTED_PUBLIC_DATA_MODE) {
+      if (!ACCEPTED_PUBLIC_DATA.has(publicDataMode(data))) {
         throw new Error("RULES_PUBLIC_DATA_MISMATCH");
+      }
+
+      const entries = getEntries(data);
+
+      if (!Array.isArray(entries)) {
+        throw new Error("ENTRIES_NOT_ARRAY");
+      }
+
+      for (const entry of entries) {
+        if (!entry || typeof entry !== "object") {
+          throw new Error("ENTRY_INVALID_OBJECT");
+        }
+
+        const forbidden = hasForbiddenField(entry);
+        if (forbidden) {
+          throw new Error("ENTRY_FORBIDDEN_FIELD_" + forbidden.toUpperCase());
+        }
+
+        const sha = extractSha(entry);
+        if (sha && !isSha256Lower(sha)) {
+          throw new Error("ENTRY_SHA256_INVALID");
+        }
       }
 
       return true;
     }
 
     function renderStats(){
-      const L = STATE.ledger;
+      const registry = STATE.ledger;
       el.statSource.textContent = STATE.source;
 
-      if (!L) {
+      if (!registry) {
         el.statEntries.textContent = "—";
         el.statIssuer.textContent = "—";
         el.statNetwork.textContent = "—";
         el.statProto.textContent = "—";
+        el.statMode.textContent = "—";
         el.statRules.textContent = "—";
         return;
       }
 
-      el.statEntries.textContent = Array.isArray(L.entries) ? String(L.entries.length) : "—";
-      el.statIssuer.textContent = safeText(L.issuer || "—");
-      el.statNetwork.textContent = safeText(L.network || "—");
-      el.statProto.textContent = safeText(L.proto || "—");
+      const entries = getEntries(registry);
 
-      const r = L.rules && typeof L.rules === "object" ? L.rules : null;
-      el.statRules.textContent = r ? `${safeText(r.verification || "—")} / ${safeText(r.failure_mode || "—")}` : "—";
+      el.statEntries.textContent = String(entries.length);
+      el.statIssuer.textContent = issuerLabel(registry.issuer);
+      el.statNetwork.textContent = safeText(registry.network || "—");
+      el.statProto.textContent = safeText(registry.proto || "—");
+      el.statMode.textContent = safeText(registry.mode || "—");
+
+      const rules = registry.rules && typeof registry.rules === "object" ? registry.rules : null;
+      el.statRules.textContent = rules
+        ? `${safeText(rules.verification || "—")} / ${safeText(rules.failure_mode || "—")}`
+        : "—";
     }
 
     function renderRulesBox(){
-      const L = STATE.ledger;
-      const r = (L && L.rules && typeof L.rules === "object") ? L.rules : null;
+      const registry = STATE.ledger;
+      const rules = registry && registry.rules && typeof registry.rules === "object" ? registry.rules : null;
 
-      if (!r) {
+      if (!rules) {
         el.rulesBox.textContent =
           "No valid rules object present in registry.\n" +
           "Fail-closed enforcement remains mandatory at verification layer.";
         return;
       }
 
-      el.rulesBox.textContent = prettyJSON(r);
+      el.rulesBox.textContent = prettyJSON(rules);
     }
 
     function renderLatest(){
-      const L = STATE.ledger;
+      const registry = STATE.ledger;
 
-      if (!L || !Array.isArray(L.entries)) {
+      if (!registry) {
         el.latestRows.innerHTML = '<div class="hbce-mono hbce-muted">—</div>';
         el.latestMeta.textContent = "—";
         return;
       }
 
-      const entries = L.entries.slice().reverse().slice(0, MAX_LATEST);
+      const allEntries = getEntries(registry);
+      const entries = allEntries.slice().reverse().slice(0, MAX_LATEST);
+
       el.latestMeta.textContent =
-        `showing ${entries.length}/${L.entries.length}` +
+        `showing ${entries.length}/${allEntries.length}` +
         (STATE.lastLoadedIso ? (` · loaded ${STATE.lastLoadedIso}`) : "");
 
       if (!entries.length) {
         el.latestRows.innerHTML =
           '<div class="hbce-mono hbce-muted">' +
-          'No entries available in this registry source. Empty entries do not certify validity; they only mean no public proof entry is present.' +
+          'No entries available in this registry source. Empty entries do not certify validity, inactivity, compliance, or authorization.' +
           '</div>';
         return;
       }
 
-      el.latestRows.innerHTML = entries.map((e, i) => {
-        const sha = safeText(e.sha256);
-        const proofKind = safeText(e.proof_kind || "HBCE_PUBLIC_PROOF");
-        const kind = safeText(e.kind || "HBCE_PUBLIC_PROOF");
-        const ts = safeText(e.timestamp || "—");
-        const issuer = safeText(e.issuer || "");
-        const net = safeText(e.network || "");
-        const meta = [kind, net, issuer].filter(Boolean).join(" · ");
-        const absoluteIndex = Array.isArray(L.entries) ? (L.entries.length - i) : 0;
+      el.latestRows.innerHTML = entries.map((entry, index) => {
+        const sha = extractSha(entry);
+        const id = safeText(extractEntryId(entry));
+        const kind = safeText(extractEntryKind(entry));
+        const status = safeText(extractEntryStatus(entry));
+        const timestamp = safeText(entry.timestamp || entry.created_at || entry.last_update || "—");
+        const description = safeText(entry.description || entry.note || "");
+        const absoluteIndex = allEntries.length - index;
 
         return `
           <div class="hbce-card" style="margin:0">
-            <div class="hbce-mono hbce-muted"><span class="hbce-muted">#</span>${String(absoluteIndex).padStart(6, "0")} · ${proofKind}</div>
-            <div class="hbce-mono" style="margin-top:8px;word-break:break-word">${sha || "—"}</div>
+            <div class="hbce-mono hbce-muted"><span class="hbce-muted">#</span>${String(absoluteIndex).padStart(6, "0")} · ${kind}</div>
+            <div class="hbce-mono" style="margin-top:8px;word-break:break-word">${id}</div>
+            <div class="hbce-mono hbce-muted" style="margin-top:8px;word-break:break-word">${sha || "no public sha256 field in this entry"}</div>
             <div class="hbce-mono hbce-muted" style="margin-top:8px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">
-              <span>${ts}${meta ? (" · " + meta) : ""}</span>
-              <button class="hbce-btn" type="button" data-copysha="${sha}">Copy SHA</button>
+              <span>${timestamp} · status=${status}</span>
+              ${sha ? `<button class="hbce-btn" type="button" data-copysha="${sha}">Copy SHA</button>` : ""}
             </div>
+            ${description ? `<p class="hbce-muted hbce-mini" style="margin:10px 0 0">${description}</p>` : ""}
           </div>
         `;
       }).join("");
@@ -500,42 +665,49 @@
       setState("warn", "LOADING REGISTRY…");
       STATE.loaded = false;
       STATE.ledger = null;
+
       renderStats();
       renderRulesBox();
       renderLatest();
 
       try {
-        const res = await fetch(STATE.source, { cache: "no-store" });
-        if (!res.ok) throw new Error("HTTP_" + res.status);
+        const response = await fetch(STATE.source, { cache: "no-store" });
 
-        const data = await res.json();
-        validateLedger(data);
+        if (!response.ok) {
+          throw new Error("HTTP_" + response.status);
+        }
+
+        const data = await response.json();
+
+        validateRegistrySource(data);
 
         STATE.ledger = data;
         STATE.loaded = true;
         STATE.lastLoadedIso = new Date().toISOString();
 
         setState("ok",
-          `REGISTRY OPERATIONAL\n` +
+          `REGISTRY OPERATIONAL AS R&D REFERENCE\n` +
           `source=${STATE.source}\n` +
           `loaded=${STATE.lastLoadedIso}\n` +
-          `policy=FAIL_CLOSED · HASH_ONLY · APPEND_ONLY\n` +
-          `canonical_viewer_source=${CANONICAL_LEDGER_FILE}`
+          `policy=FAIL_CLOSED · HASH_ONLY_OR_MINIMIZED_METADATA · APPEND_ONLY\n` +
+          `canonical_viewer_source=${CANONICAL_LEDGER_FILE}\n` +
+          `boundary=not_public_authority_registry · not_regulated_certification · not_eidas_qualified_trust_service`
         );
 
         renderStats();
         renderRulesBox();
         renderLatest();
+
         el.lookupBox.textContent = "Registry loaded. Paste a SHA-256 to check public proof presence.";
-      } catch (err) {
-        const code = String(err && err.message ? err.message : err);
+      } catch (error) {
+        const code = String(error && error.message ? error.message : error);
         setNonOperational(code);
       }
     }
 
     function lookup(){
       if (!STATE.loaded || !STATE.ledger) {
-        el.lookupBox.textContent = "Lookup denied: registry is NON-OPERATIONAL (fail-closed).";
+        el.lookupBox.textContent = "Lookup denied: registry is NON-OPERATIONAL.";
         return;
       }
 
@@ -547,20 +719,30 @@
         return;
       }
 
-      const hit = STATE.ledger.entries.some(e => e && e.sha256 === sha);
+      const entries = getEntries(STATE.ledger);
+      const hit = entries.find((entry) => extractSha(entry) === sha);
 
       if (hit) {
-        el.lookupBox.textContent = `PRESENT\nsha256=${sha}\nstatus=PUBLIC_PROOF_FOUND`;
+        el.lookupBox.textContent =
+          `PRESENT\n` +
+          `sha256=${sha}\n` +
+          `status=PUBLIC_REFERENCE_FOUND\n` +
+          `interpretation=hash_present_only_not_legal_certification\n` +
+          `entry=${prettyJSON(hit)}`;
       } else {
-        el.lookupBox.textContent = `ABSENT (FAIL-CLOSED)\nsha256=${sha}\nstatus=NO_PUBLIC_PROOF`;
+        el.lookupBox.textContent =
+          `ABSENT (FAIL-CLOSED)\n` +
+          `sha256=${sha}\n` +
+          `status=NO_PUBLIC_PROOF_REFERENCE`;
       }
     }
 
     function showFailClosedRule(){
       setState("bad",
         `FAIL-CLOSED RULE\n` +
-        `If the public proof registry is not reachable, malformed, invalid, inconsistent, or non-deterministic, the stack must be considered NON-OPERATIONAL.\n` +
-        `No registry → no public proof → no deterministic verification.`
+        `If the public registry source is unreachable, malformed, invalid, inconsistent, non-deterministic, or exposes forbidden public data, the viewer must return NON-OPERATIONAL.\n` +
+        `No valid source → no public proof → no deterministic verification claim.\n` +
+        `R&D visibility does not equal production authorization, legal certification, regulated compliance, or public authority approval.`
       );
     }
 
@@ -574,14 +756,21 @@
     }
 
     function bindCopyButtons(){
-      el.latestRows.addEventListener("click", async (ev) => {
-        const t = ev.target;
-        if (!t || !(t instanceof HTMLElement)) return;
+      el.latestRows.addEventListener("click", async (event) => {
+        const target = event.target;
 
-        const sha = t.getAttribute("data-copysha");
-        if (!sha) return;
+        if (!target || !(target instanceof HTMLElement)) {
+          return;
+        }
+
+        const sha = target.getAttribute("data-copysha");
+
+        if (!sha) {
+          return;
+        }
 
         const ok = await copyText(sha);
+
         if (ok) {
           el.lookupBox.textContent = `COPIED\nsha256=${sha}`;
         } else {
@@ -591,13 +780,16 @@
     }
 
     el.btnReload.addEventListener("click", loadLedger);
+
     el.btnLookup.addEventListener("click", lookup);
+
     el.btnClear.addEventListener("click", () => {
       el.inpSha.value = "";
       el.lookupBox.textContent = STATE.loaded
         ? "Registry loaded. Paste a SHA-256 to check public proof presence."
-        : "Lookup requires an operational registry (fail-closed).";
+        : "Lookup requires an operational registry source.";
     });
+
     el.btnFailClosed.addEventListener("click", showFailClosedRule);
 
     bindCopyButtons();
