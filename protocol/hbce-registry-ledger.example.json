@@ -1,70 +1,81 @@
 {
   "proto": "HBCE-LEDGER-v1",
-  "kind": "APPEND_ONLY_LEDGER_EXAMPLE",
-  "network": "EU",
+  "kind": "APPEND_ONLY_LEDGER_RND_EXAMPLE",
+  "network": "EU_REFERENCE_FRAMEWORK",
   "issuer": "HERMETICUM B.C.E. S.r.l.",
+  "scope": {
+    "primary_use": "MATRIX_AI_AUDIT_TRAIL_MVP",
+    "purpose": "Illustrative append-only ledger example for AI audit-trail records, human validation, policy checks, evidence-pack creation, and deterministic verification flow.",
+    "public_position": "R&D example only. This ledger is not a public authority registry, not a regulated certification system, not an eIDAS qualified trust service, not a custodial identity service, and not a production compliance framework by itself.",
+    "data_boundary": "Public records expose hashes, timestamps, record kinds, status fields, and verification metadata. Confidential prompts, outputs, personal data, client files, and internal audit payloads remain outside the public registry."
+  },
   "policy": [
+    "EU_FIRST",
+    "AUDIT_FIRST",
+    "FAIL_CLOSED",
     "HASH_ONLY",
     "APPEND_ONLY",
-    "FAIL_CLOSED",
-    "UE_FIRST",
-    "AUDIT_FIRST",
     "GDPR_MIN",
-    "NO_PUBLIC_DATA_CUSTODY"
+    "NO_PUBLIC_DATA_CUSTODY",
+    "NO_PRIVATE_KEY_CUSTODY",
+    "NO_FINANCIAL_CUSTODY",
+    "NO_REGULATED_CERTIFICATION_CLAIM",
+    "NO_PUBLIC_AUTHORITY_CLAIM"
   ],
-  "created_at": "2026-02-19T12:00:00+01:00",
-  "head_record_sha256": "7dd8e53e42b230840098679c6d498c03d7423321042c4068ddbb3b39f770b1ae",
+  "created_at": "2026-05-07T15:30:00+02:00",
+  "cryptographic_status": "ILLUSTRATIVE_PLACEHOLDERS_ONLY",
+  "integrity_note": "The record_sha256 and signature fields in this example are deterministic-looking placeholders for documentation. A production verifier must recompute every hash from canonical JSON and must reject placeholder signatures fail-closed.",
+  "head_record_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
   "records": [
     {
       "proto": "HBCE-REGISTRY-v1",
       "kind": "IPR_ROOT_RECORD",
-      "entity_id": "IPR-ROOT-EXAMPLE-0001",
-      "entity_type": "HUMAN_ROOT",
+      "entity_id": "IPR-AUDIT-CASE-MATRIX-0001",
+      "entity_type": "AUDIT_CASE_REFERENCE",
       "payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "timestamp": "2026-02-19T12:00:00+01:00",
-      "status": "VALID",
+      "timestamp": "2026-05-07T15:30:00+02:00",
+      "status": "RND_ONLY",
       "issuer": {
         "name": "HERMETICUM B.C.E. S.r.l.",
         "sign_alg": "ED25519",
         "pubkey": "PUBKEY_PLACEHOLDER",
         "signature": "SIGNATURE_PLACEHOLDER"
       },
-      "anchors": {
-        "ipfs_cid": "bafy...optional"
-      },
+      "anchors": {},
       "prev_record_sha256": null,
-      "record_sha256": "14d2c806e3dcd48871e8e17c2eb19b541e1757a6880079fd9754988ab167512f"
+      "record_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
     },
     {
       "proto": "HBCE-REGISTRY-v1",
       "kind": "IPR_OPERATOR_RECORD",
-      "operator_id": "IPR-OP-REGION-0001",
+      "operator_id": "IPR-OP-RND-0001",
       "payload_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-      "timestamp": "2026-02-19T12:05:00+01:00",
-      "status": "VALID",
+      "timestamp": "2026-05-07T15:31:00+02:00",
+      "status": "RND_ONLY",
       "issuer": {
         "name": "HERMETICUM B.C.E. S.r.l.",
         "sign_alg": "ED25519",
         "pubkey": "PUBKEY_PLACEHOLDER",
         "signature": "SIGNATURE_PLACEHOLDER"
       },
-      "prev_record_sha256": "14d2c806e3dcd48871e8e17c2eb19b541e1757a6880079fd9754988ab167512f",
-      "record_sha256": "2c1f98c612b34271dcfd5e0b53ee155169da59ed5f476cb8eea27dce64b4dfaa"
+      "prev_record_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "record_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
     },
     {
       "proto": "HBCE-REGISTRY-v1",
       "kind": "IPR_DERIVED_RECORD",
-      "entity_id": "IPR-DEV-ROBOT-0001",
-      "entity_type": "IPR_ROBOT",
-      "parent_entity_id": "IPR-ROOT-EXAMPLE-0001",
-      "derivation_type": "DERIVED_FROM_ROOT",
+      "entity_id": "IPR-AI-MATRIX-AUDIT-0001",
+      "entity_type": "AI_SYSTEM_REFERENCE",
+      "parent_entity_id": "IPR-AUDIT-CASE-MATRIX-0001",
+      "derivation_type": "DERIVED_FROM_AUDIT_CASE",
       "payload_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-      "timestamp": "2026-02-19T12:10:00+01:00",
-      "status": "VALID",
+      "timestamp": "2026-05-07T15:32:00+02:00",
+      "status": "RND_ONLY",
       "rules": {
         "fail_closed": true,
         "inherit_invalidity": true,
-        "append_only": true
+        "append_only": true,
+        "public_minimization_required": true
       },
       "issuer": {
         "name": "HERMETICUM B.C.E. S.r.l.",
@@ -72,146 +83,110 @@
         "pubkey": "PUBKEY_PLACEHOLDER",
         "signature": "SIGNATURE_PLACEHOLDER"
       },
-      "prev_record_sha256": "2c1f98c612b34271dcfd5e0b53ee155169da59ed5f476cb8eea27dce64b4dfaa",
-      "record_sha256": "c484a0c1940881f10551d76ea52afab2978a5631f2bba791050cf96746abffbe"
-    },
-    {
-      "proto": "HBCE-REGISTRY-v1",
-      "kind": "IPR_DERIVED_RECORD",
-      "entity_id": "IPR-DEV-VEHICLE-0001",
-      "entity_type": "IPR_VEHICLE",
-      "parent_entity_id": "IPR-ROOT-EXAMPLE-0001",
-      "derivation_type": "DERIVED_FROM_ROOT",
-      "payload_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-      "timestamp": "2026-02-19T12:12:00+01:00",
-      "status": "VALID",
-      "rules": {
-        "fail_closed": true,
-        "inherit_invalidity": true,
-        "append_only": true
-      },
-      "issuer": {
-        "name": "HERMETICUM B.C.E. S.r.l.",
-        "sign_alg": "ED25519",
-        "pubkey": "PUBKEY_PLACEHOLDER",
-        "signature": "SIGNATURE_PLACEHOLDER"
-      },
-      "prev_record_sha256": "c484a0c1940881f10551d76ea52afab2978a5631f2bba791050cf96746abffbe",
-      "record_sha256": "050ea2f0ea2d0b0d6ba96e7688db7df9502508b043744452e272e3e8e78380df"
+      "prev_record_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "record_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
     },
     {
       "proto": "HBCE-REGISTRY-v1",
       "kind": "IPR_EVENT_RECORD",
-      "event_id": "EVT-EXAMPLE-0001",
-      "entity_id": "IPR-DEV-ROBOT-0001",
-      "event_type": "ACTIVATION",
+      "event_id": "EVT-MATRIX-AI-OUTPUT-0001",
+      "entity_id": "IPR-AI-MATRIX-AUDIT-0001",
+      "event_type": "AI_OUTPUT_RECORDED",
+      "event_payload_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "timestamp": "2026-05-07T15:35:00+02:00",
+      "operator": {
+        "operator_id": "IPR-OP-RND-0001",
+        "sign_alg": "ED25519",
+        "pubkey": "PUBKEY_PLACEHOLDER",
+        "signature": "SIGNATURE_PLACEHOLDER"
+      },
+      "status": "RND_ONLY",
+      "append_only": true,
+      "prev_record_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+      "record_sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+    },
+    {
+      "proto": "HBCE-REGISTRY-v1",
+      "kind": "IPR_EVENT_RECORD",
+      "event_id": "EVT-MATRIX-POLICY-CHECK-0001",
+      "entity_id": "IPR-AI-MATRIX-AUDIT-0001",
+      "event_type": "POLICY_CHECK",
       "event_payload_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-      "timestamp": "2026-02-19T12:15:00+01:00",
+      "timestamp": "2026-05-07T15:37:00+02:00",
       "operator": {
-        "operator_id": "IPR-OP-REGION-0001",
+        "operator_id": "IPR-OP-RND-0001",
         "sign_alg": "ED25519",
         "pubkey": "PUBKEY_PLACEHOLDER",
         "signature": "SIGNATURE_PLACEHOLDER"
       },
-      "status": "VALID",
+      "status": "RND_ONLY",
       "append_only": true,
-      "prev_record_sha256": "050ea2f0ea2d0b0d6ba96e7688db7df9502508b043744452e272e3e8e78380df",
-      "record_sha256": "c9cebaf5e67ca3a05bf352b15f9c73a2430bd00621a8c97d61cf1c9ebcc187ce"
+      "prev_record_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+      "record_sha256": "5555555555555555555555555555555555555555555555555555555555555555"
     },
     {
       "proto": "HBCE-REGISTRY-v1",
       "kind": "IPR_EVENT_RECORD",
-      "event_id": "EVT-EXAMPLE-0002",
-      "entity_id": "IPR-DEV-ROBOT-0001",
-      "event_type": "FIRMWARE_UPDATE",
+      "event_id": "EVT-MATRIX-HUMAN-VALIDATION-0001",
+      "entity_id": "IPR-AI-MATRIX-AUDIT-0001",
+      "event_type": "HUMAN_VALIDATION",
       "event_payload_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-      "timestamp": "2026-02-19T12:25:00+01:00",
+      "timestamp": "2026-05-07T15:40:00+02:00",
       "operator": {
-        "operator_id": "IPR-OP-REGION-0001",
+        "operator_id": "IPR-OP-RND-0001",
         "sign_alg": "ED25519",
         "pubkey": "PUBKEY_PLACEHOLDER",
         "signature": "SIGNATURE_PLACEHOLDER"
       },
-      "status": "VALID",
+      "status": "RND_ONLY",
       "append_only": true,
-      "prev_record_sha256": "c9cebaf5e67ca3a05bf352b15f9c73a2430bd00621a8c97d61cf1c9ebcc187ce",
-      "record_sha256": "47ae0bd4c13f098c8c5c44f42a0a389a4e4a3db061d00bcf199e7727f8fe409b"
+      "prev_record_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+      "record_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
     },
     {
       "proto": "HBCE-REGISTRY-v1",
       "kind": "IPR_EVENT_RECORD",
-      "event_id": "EVT-EXAMPLE-0003",
-      "entity_id": "IPR-DEV-VEHICLE-0001",
-      "event_type": "SECURITY_ALERT",
-      "event_payload_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
-      "timestamp": "2026-02-19T12:30:00+01:00",
+      "event_id": "EVT-MATRIX-EVIDENCE-PACK-0001",
+      "entity_id": "IPR-AUDIT-CASE-MATRIX-0001",
+      "event_type": "EVIDENCE_PACK_CREATED",
+      "event_payload_sha256": "1212121212121212121212121212121212121212121212121212121212121212",
+      "timestamp": "2026-05-07T15:45:00+02:00",
       "operator": {
-        "operator_id": "IPR-OP-REGION-0001",
+        "operator_id": "IPR-OP-RND-0001",
         "sign_alg": "ED25519",
         "pubkey": "PUBKEY_PLACEHOLDER",
         "signature": "SIGNATURE_PLACEHOLDER"
       },
-      "status": "VALID",
+      "status": "RND_ONLY",
       "append_only": true,
-      "prev_record_sha256": "47ae0bd4c13f098c8c5c44f42a0a389a4e4a3db061d00bcf199e7727f8fe409b",
-      "record_sha256": "3c7011250790c5364a7e1e0a5c3b2d9d8ea880e09cd8c87fbd911126d3c71ab3"
+      "prev_record_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+      "record_sha256": "7777777777777777777777777777777777777777777777777777777777777777"
     },
     {
       "proto": "HBCE-REGISTRY-v1",
       "kind": "IPR_EVENT_RECORD",
-      "event_id": "EVT-EXAMPLE-0004",
-      "entity_id": "IPR-OP-REGION-0001",
-      "event_type": "STATUS_UPDATE",
-      "event_payload_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
-      "timestamp": "2026-02-19T12:35:00+01:00",
+      "event_id": "EVT-MATRIX-VERIFY-RESULT-0001",
+      "entity_id": "IPR-AUDIT-CASE-MATRIX-0001",
+      "event_type": "VERIFICATION_RESULT",
+      "event_payload_sha256": "3434343434343434343434343434343434343434343434343434343434343434",
+      "timestamp": "2026-05-07T15:50:00+02:00",
       "operator": {
-        "operator_id": "IPR-OP-REGION-0001",
+        "operator_id": "IPR-OP-RND-0001",
         "sign_alg": "ED25519",
         "pubkey": "PUBKEY_PLACEHOLDER",
         "signature": "SIGNATURE_PLACEHOLDER"
       },
-      "status": "VALID",
+      "status": "RND_ONLY",
       "append_only": true,
-      "prev_record_sha256": "3c7011250790c5364a7e1e0a5c3b2d9d8ea880e09cd8c87fbd911126d3c71ab3",
-      "record_sha256": "2e4c07e05fded62b6f3988a501e2ce7085d8a1cd4aa2ac9878b3c807c5c6c5b7"
-    },
-    {
-      "proto": "HBCE-REGISTRY-v1",
-      "kind": "IPR_EVENT_RECORD",
-      "event_id": "EVT-EXAMPLE-0005",
-      "entity_id": "IPR-DEV-ROBOT-0001",
-      "event_type": "DECOMMISSION",
-      "event_payload_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
-      "timestamp": "2026-02-19T12:45:00+01:00",
-      "operator": {
-        "operator_id": "IPR-OP-REGION-0001",
-        "sign_alg": "ED25519",
-        "pubkey": "PUBKEY_PLACEHOLDER",
-        "signature": "SIGNATURE_PLACEHOLDER"
-      },
-      "status": "VALID",
-      "append_only": true,
-      "prev_record_sha256": "2e4c07e05fded62b6f3988a501e2ce7085d8a1cd4aa2ac9878b3c807c5c6c5b7",
-      "record_sha256": "fa8e9c2c2e2f16a0f1cc229fcbe0f7ed9d0bbf1df7fb6f7ad2bb6c1d2d1e223b"
-    },
-    {
-      "proto": "HBCE-REGISTRY-v1",
-      "kind": "IPR_EVENT_RECORD",
-      "event_id": "EVT-EXAMPLE-0006",
-      "entity_id": "IPR-ROOT-EXAMPLE-0001",
-      "event_type": "STATUS_UPDATE",
-      "event_payload_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
-      "timestamp": "2026-02-19T13:00:00+01:00",
-      "operator": {
-        "operator_id": "IPR-OP-REGION-0001",
-        "sign_alg": "ED25519",
-        "pubkey": "PUBKEY_PLACEHOLDER",
-        "signature": "SIGNATURE_PLACEHOLDER"
-      },
-      "status": "VALID",
-      "append_only": true,
-      "prev_record_sha256": "fa8e9c2c2e2f16a0f1cc229fcbe0f7ed9d0bbf1df7fb6f7ad2bb6c1d2d1e223b",
-      "record_sha256": "7dd8e53e42b230840098679c6d498c03d7423321042c4068ddbb3b39f770b1ae"
+      "prev_record_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+      "record_sha256": "8888888888888888888888888888888888888888888888888888888888888888"
     }
-  ]
+  ],
+  "expected_reference_verification": {
+    "structural_chain": "PASS_IF_PREV_RECORD_CHAIN_MATCHES",
+    "hash_rebuild": "MUST_BE_RECOMPUTED_BY_IMPLEMENTATION",
+    "signature_verification": "FAIL_CLOSED_BECAUSE_PLACEHOLDER_SIGNATURES_ARE_NOT_VALID_PRODUCTION_SIGNATURES",
+    "public_payload_policy": "HASH_ONLY",
+    "production_result_with_placeholders": "INVALID"
+  }
 }
