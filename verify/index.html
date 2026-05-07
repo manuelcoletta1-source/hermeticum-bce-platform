@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>Verify — Public Proof Verification Gateway of the HBCE System</title>
-  <meta name="description" content="HBCE Verify gateway. Registry v3 public proof lookup, payload_sha256 verification, deterministic SHA-256 comparison, hash-only and fail-closed." />
+  <title>Verify — MATRIX AI Audit Trail R&D Verification Gateway</title>
+  <meta name="description" content="R&D verification gateway for MATRIX AI Audit Trail. Registry v3 lookup, payload_sha256 verification, deterministic SHA-256 comparison, hash-only public references, fail-closed posture, no public data custody." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
@@ -34,9 +34,16 @@
 
     .hbce-kv{
       display:grid;
-      grid-template-columns:160px 1fr;
+      grid-template-columns:170px 1fr;
       gap:8px;
       margin-top:10px;
+    }
+
+    .hbce-rowbtn{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
     }
 
     pre{
@@ -48,6 +55,13 @@
     .hbce-small{
       font-size:.88rem;
       line-height:1.55;
+    }
+
+    .hbce-warning{
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.035);
+      border-radius:16px;
+      padding:14px;
     }
   </style>
 </head>
@@ -65,35 +79,33 @@
 
           <nav class="hbce-nav" aria-label="Primary">
             <a class="hbce-nav__link" href="../">Home</a>
-            <a class="hbce-nav__link" href="../activate/">Activate</a>
-            <a class="hbce-nav__link is-active" href="./">Verify</a>
+            <a class="hbce-nav__link" href="../protocol/">Protocol</a>
             <a class="hbce-nav__link" href="../joker-c2/">Joker-C2</a>
+            <a class="hbce-nav__link" href="../matrix-audit-trail/">MATRIX Audit</a>
             <a class="hbce-nav__link" href="../registry/">Registry</a>
-            <a class="hbce-nav__link" href="../spec/">Spec</a>
+            <a class="hbce-nav__link is-active" href="./">Verify</a>
           </nav>
         </div>
       </header>
 
       <section class="hbce-section hbce-hero">
-        <div class="hbce-hero__kicker">VERIFY · REGISTRY-v3 · PAYLOAD_SHA256 · HASH-ONLY · FAIL-CLOSED</div>
-        <h1 class="hbce-hero__title">Public proof verification gateway</h1>
+        <div class="hbce-hero__kicker">VERIFY · MATRIX AI AUDIT TRAIL · R&D REFERENCE · PAYLOAD_SHA256 · FAIL-CLOSED</div>
+        <h1 class="hbce-hero__title">R&D verification gateway</h1>
         <p class="hbce-hero__lead">
-          <b>Verify</b> is the public proof verification gateway of the HBCE system.
-          It exposes two complementary surfaces:
-          <br/><br/>
-          <b>Registry verification</b> checks whether a <code>payload_sha256</code> commitment is present in the public registry.
-          <br/>
-          <b>Technical verification</b> computes SHA-256 over local text and compares it with an expected hash.
-          <br/><br/>
-          Missing, invalid, malformed, ambiguous, or non-reproducible states are treated as failure by design.
+          <b>Verify</b> is the public R&D verification surface for the MATRIX AI Audit Trail MVP.
+          It supports registry lookup for public hash references and local deterministic SHA-256 comparison.
+          <br><br>
+          This page is not a public authority verifier, not a regulated certification engine,
+          not an eIDAS qualified trust service, not a custodial identity service, and not a production
+          compliance framework by itself.
         </p>
 
         <div class="hbce-card hbce-small" style="margin-top:14px;">
           <div class="hbce-mono">PUBLIC VERIFICATION LIMIT</div>
           <p class="hbce-muted" style="margin-bottom:0;">
-            A public registry match means that a public proof commitment is present.
-            It does not replace private evidence review, identity verification, contractual qualification,
-            legal authorization, or institutional validation.
+            A public registry match means that a public hash reference exists.
+            It does not certify legal validity, cybersecurity assurance, public authority approval,
+            regulated compliance, institutional mandate, operator qualification, or production authorization.
           </p>
         </div>
 
@@ -101,16 +113,16 @@
           <a class="hbce-btn hbce-btn--primary" href="#registry-verify">Registry verify</a>
           <a class="hbce-btn" href="#technical-verify">Technical verify</a>
           <a class="hbce-btn" href="../registry/">Open registry</a>
-          <a class="hbce-btn" href="../joker-c2/">Enter runtime</a>
+          <a class="hbce-btn" href="../matrix-audit-trail/">MATRIX Audit Trail</a>
         </div>
       </section>
 
       <section id="registry-verify" class="hbce-section">
         <div class="hbce-card">
-          <h2>Registry public proof verification</h2>
+          <h2>Registry public reference verification</h2>
           <p class="hbce-muted">
-            This surface checks whether a <code>payload_sha256</code> commitment is present in the HBCE public registry.
-            The verification source is <code>registry/registry.json</code> and must satisfy the registry v3 fail-closed schema.
+            This surface checks whether a <code>payload_sha256</code> commitment is present in the HBCE public registry index.
+            The source is <code>registry/registry.json</code> and it must satisfy registry v3 fail-closed rules.
           </p>
 
           <div class="hbce-grid hbce-grid--2" style="margin-top:14px;">
@@ -119,8 +131,9 @@
               <div class="hbce-mono">INPUT</div>
               <h3>payload_sha256 or JSON object</h3>
               <p class="hbce-muted">
-                Insert a 64-character lowercase SHA-256 value, or paste a JSON object containing <code>payload_sha256</code>.
-                If the JSON does not contain <code>payload_sha256</code>, the verifier computes a local SHA-256 commitment from the JSON after removing common hash-output fields.
+                Insert a 64-character SHA-256 value, or paste a JSON object containing <code>payload_sha256</code>.
+                If the JSON does not contain <code>payload_sha256</code>, the verifier computes a local SHA-256 commitment
+                from the JSON after removing common hash-output fields.
               </p>
 
               <label class="hbce-muted" for="publicHash">payload_sha256</label>
@@ -136,7 +149,7 @@
                 rows="10"
                 placeholder='{"payload_sha256":"64-character lowercase sha256", ...}'></textarea>
 
-              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+              <div class="hbce-rowbtn">
                 <button class="hbce-btn hbce-btn--primary" type="button" id="runRegistryVerify">Run registry verify</button>
                 <button class="hbce-btn" type="button" id="resetRegistryVerify">Reset</button>
               </div>
@@ -144,17 +157,18 @@
 
             <div class="hbce-card">
               <div class="hbce-mono">RESULT</div>
-              <h3>Public proof state</h3>
+              <h3>Public reference state</h3>
               <p class="hbce-muted">
                 Missing match returns <code>NO_PUBLIC_RECORD</code>.
                 Invalid registry state returns <code>NON_OPERATIONAL</code>.
+                Ambiguous or malformed input returns <code>INVALID</code>.
               </p>
 
               <div class="hbce-card" style="margin-top:12px">
                 <div class="hbce-muted">Status</div>
                 <div style="font-size:1.15rem;font-weight:700;letter-spacing:.02em" id="registryStatus">MISSING INPUT</div>
 
-                <div class="hbce-kv" id="registryKV" style="margin-top:12px"></div>
+                <div class="hbce-kv hbce-mono" id="registryKV" style="margin-top:12px"></div>
 
                 <div class="hbce-card" style="margin-top:12px">
                   <pre class="hbce-mono hbce-muted" id="registryDetails">—</pre>
@@ -168,20 +182,19 @@
 
       <section class="hbce-section">
         <div class="hbce-card">
-          <h2>Position in the system</h2>
+          <h2>Position in the MATRIX audit flow</h2>
           <p class="hbce-muted">
-            Verification is not a standalone utility.
-            It is the reconstruction layer of the HBCE system:
-            registry exposes public proof commitments, while verification reproduces deterministic comparison or public proof lookup.
+            Verification is the reconstruction layer of the MATRIX AI Audit Trail MVP.
+            The registry exposes public hash references, while verification reproduces deterministic comparison or public-reference lookup.
           </p>
 
-          <pre><code>LOCAL RECORD OR PAYLOAD_SHA256
-↓
-SHA-256 COMMITMENT / REGISTRY LOOKUP
-↓
-PUBLIC PROOF SOURCE
-↓
-PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
+          <div class="hbce-card">
+            <pre class="hbce-mono">LOCAL RECORD OR PAYLOAD_SHA256
+→ SHA-256 COMMITMENT
+→ PUBLIC REGISTRY SOURCE
+→ PUBLIC_REFERENCE_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL
+→ FAIL-CLOSED REVIEW</pre>
+          </div>
         </div>
       </section>
 
@@ -199,13 +212,14 @@ PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
               <div class="hbce-mono">INPUT 01</div>
               <h3>Local text</h3>
               <p class="hbce-muted">
-                Paste the full local text to hash. This may be a local release object, manifest, receipt, or controlled proof artifact.
+                Paste the full local text to hash. This may be a local release object, manifest, receipt, registry record, or controlled proof artifact.
               </p>
+
               <textarea
                 id="release"
                 class="hbce-field"
                 rows="10"
-                placeholder='{"proto":"HBCE-REGISTRY-v3","kind":"PUBLIC_PROOF_COMMITMENT",...}'></textarea>
+                placeholder='{"proto":"HBCE-REGISTRY-v3","kind":"HBCE_PUBLIC_PROOF_RND_REFERENCE",...}'></textarea>
 
               <div class="hbce-mono hbce-kv">
                 <span class="hbce-muted">bytes</span><span id="statBytes">0</span>
@@ -217,8 +231,9 @@ PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
               <div class="hbce-mono">INPUT 02</div>
               <h3>Expected proof hash</h3>
               <p class="hbce-muted">
-                Paste the expected SHA-256 from the public registry or controlled proof record.
+                Paste the expected SHA-256 from a public registry entry, evidence-pack reference, or controlled proof record.
               </p>
+
               <input
                 id="expected"
                 class="hbce-field"
@@ -228,10 +243,10 @@ PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
                 Lowercase hex only. Invalid format returns FAIL.
               </div>
 
-              <div class="hbce-card" style="margin-top:12px">
+              <div class="hbce-card hbce-small" style="margin-top:12px">
                 <div class="hbce-mono hbce-muted">Reference</div>
                 <div class="hbce-muted">
-                  Public proof presence can be inspected through <a href="../registry/">Registry</a>.
+                  Public reference presence can be inspected through <a href="../registry/">Registry</a>.
                 </div>
               </div>
             </div>
@@ -240,10 +255,10 @@ PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
               <div class="hbce-mono">INPUT 03</div>
               <h3>Run technical verification</h3>
               <p class="hbce-muted">
-                Execute deterministic comparison between local text bytes and expected public proof.
+                Execute deterministic comparison between local UTF-8 bytes and the expected SHA-256 reference.
               </p>
 
-              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+              <div class="hbce-rowbtn">
                 <button class="hbce-btn hbce-btn--primary" type="button" id="run">Run technical verify</button>
                 <button class="hbce-btn" type="button" id="copy" title="Copy computed_sha256" disabled>Copy computed</button>
                 <button class="hbce-btn" type="button" id="reset">Reset</button>
@@ -289,40 +304,51 @@ PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
               Missing text, invalid hash format, invalid registry state, no public match, or mismatch never produces implicit validity.
             </p>
             <div class="hbce-mono hbce-muted">
-              missing → FAIL<br/>
-              invalid → FAIL<br/>
-              mismatch → FAIL<br/>
+              missing → FAIL<br>
+              invalid → FAIL<br>
+              mismatch → FAIL<br>
               no registry match → NO_PUBLIC_RECORD
             </div>
           </div>
 
           <div class="hbce-card">
-            <div class="hbce-mono">NEXT</div>
+            <div class="hbce-mono">BOUNDARY</div>
             <h3>Use the result carefully</h3>
             <p class="hbce-muted">
-              Public proof presence confirms only that a public proof commitment exists.
-              It does not replace private evidence, legal validation, operator qualification, or institutional review.
+              Public reference presence confirms only that a public hash reference exists.
+              It does not replace private evidence review, legal validation, operator qualification, institutional review, or production assurance.
             </p>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+            <div class="hbce-rowbtn">
               <a class="hbce-btn" href="../registry/">Open Registry</a>
-              <a class="hbce-btn" href="../joker-c2/">Open Joker-C2</a>
+              <a class="hbce-btn" href="../verify-pack/">Verify Pack</a>
             </div>
           </div>
 
         </div>
       </section>
 
+      <section class="hbce-section">
+        <div class="hbce-warning hbce-small">
+          <div class="hbce-mono">R&D AND NO-CUSTODY NOTICE</div>
+          <p class="hbce-muted" style="margin-bottom:0;">
+            This verifier performs local browser-side checks and public registry lookups. It does not upload private evidence,
+            does not custody private keys, does not store user payloads, and does not transform a public hash reference into
+            regulated certification, public authority validation, or legal authorization.
+          </p>
+        </div>
+      </section>
+
       <footer class="hbce-footer">
         <div class="hbce-footer__row">
           <div class="hbce-muted">
-            <span class="hbce-mono">VERIFY</span> — public proof and deterministic verification gateway of the HBCE system
+            <span class="hbce-mono">VERIFY</span> — MATRIX AI Audit Trail R&D verification gateway
           </div>
           <div class="hbce-footer__links">
-            <a href="../activate/">Activate</a>
+            <a href="../protocol/">Protocol</a>
             <a href="../joker-c2/">Joker-C2</a>
+            <a href="../matrix-audit-trail/">MATRIX Audit</a>
             <a href="../registry/">Registry</a>
-            <a href="../SPEC.md">Spec</a>
-            <a href="../WHITEPAPER.md">Whitepaper</a>
+            <a href="../verify-pack/">Verify Pack</a>
           </div>
         </div>
       </footer>
@@ -331,13 +357,30 @@ PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
   </div>
 
   <script>
-  (function(){
+  (() => {
     "use strict";
 
     const REGISTRY_URL = new URL("../registry/registry.json", window.location.href).href;
     const EXPECTED_PROTO = "HBCE-REGISTRY-v3";
     const EXPECTED_FAILURE_MODE = "FAIL_CLOSED";
-    const EXPECTED_PUBLIC_DATA = "HASH_ONLY";
+
+    const ACCEPTED_MODES = new Set([
+      "APPEND_ONLY_PUBLIC_REGISTRY",
+      "APPEND_ONLY_PUBLIC_RND_REGISTRY"
+    ]);
+
+    const ACCEPTED_PUBLIC_DATA = new Set([
+      "HASH_ONLY",
+      "MINIMIZED_PUBLIC_METADATA"
+    ]);
+
+    const ACCEPTED_ENTRY_STATUS = new Set([
+      "ACTIVE",
+      "REVOKED",
+      "SUSPENDED",
+      "RND_ONLY",
+      "RETAINED"
+    ]);
 
     const FORBIDDEN_PUBLIC_FIELDS = [
       "name",
@@ -345,8 +388,10 @@ PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
       "territory",
       "raw_identifier",
       "identity_document",
+      "regulated_identity_document",
       "private_evidence",
       "personal_payload",
+      "personal_data",
       "api_key",
       "token",
       "password",
@@ -356,12 +401,28 @@ PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
       "production_log",
       "private_communication",
       "sensitive_operational_payload",
+      "confidential_payload",
+      "financial_asset",
       "private_ip",
       "internal_hostname",
       "internal_endpoint",
       "admin_url",
       "database_url",
-      "ssh_key"
+      "ssh_key",
+      "raw_prompt",
+      "raw_output",
+      "client_file"
+    ];
+
+    const HASH_OUTPUT_FIELDS = [
+      "payload_sha256",
+      "event_payload_sha256",
+      "receipt_sha256",
+      "pack_sha256",
+      "record_sha256",
+      "head_record_sha256",
+      "sha256",
+      "signature"
     ];
 
     const $ = (id) => document.getElementById(id);
@@ -369,9 +430,11 @@ PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
     function toHex(buffer){
       const bytes = new Uint8Array(buffer);
       let output = "";
-      for (let i = 0; i < bytes.length; i++){
-        output += bytes[i].toString(16).padStart(2, "0");
+
+      for (let index = 0; index < bytes.length; index += 1){
+        output += bytes[index].toString(16).padStart(2, "0");
       }
+
       return output;
     }
 
@@ -404,14 +467,14 @@ PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
       kv.innerHTML = "";
 
       for (const [key, value] of Object.entries(map || {})){
-        const a = document.createElement("div");
-        a.className = "hbce-muted";
-        a.textContent = key;
+        const keyNode = document.createElement("div");
+        keyNode.className = "hbce-muted";
+        keyNode.textContent = key;
 
-        const b = document.createElement("div");
-        b.textContent = String(value);
+        const valueNode = document.createElement("div");
+        valueNode.textContent = String(value);
 
-        kv.append(a, b);
+        kv.append(keyNode, valueNode);
       }
 
       $("registryDetails").textContent = details || "—";
@@ -440,14 +503,41 @@ PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
       }
 
       const keys = Object.keys(value).sort();
-      return "{" + keys.map((key) => JSON.stringify(key) + ":" + stableStringify(value[key])).join(",") + "}";
+
+      return "{" + keys.map((key) => {
+        return JSON.stringify(key) + ":" + stableStringify(value[key]);
+      }).join(",") + "}";
+    }
+
+    function stripHashOutputFields(value){
+      if (!value || typeof value !== "object") return value;
+
+      const output = JSON.parse(JSON.stringify(value));
+
+      for (const field of HASH_OUTPUT_FIELDS) {
+        delete output[field];
+      }
+
+      if (output.issuer && typeof output.issuer === "object") {
+        delete output.issuer.signature;
+      }
+
+      if (output.operator && typeof output.operator === "object") {
+        delete output.operator.signature;
+      }
+
+      if (output.record_signature && typeof output.record_signature === "object") {
+        delete output.record_signature.signature;
+      }
+
+      return output;
     }
 
     function validateRegistryEntry(entry){
       if (!entry || typeof entry !== "object") return "ENTRY_INVALID_OBJECT";
 
       const forbidden = hasForbiddenField(entry);
-      if (forbidden) return "ENTRY_FORBIDDEN_FIELD_" + forbidden;
+      if (forbidden) return "ENTRY_FORBIDDEN_FIELD_" + forbidden.toUpperCase();
 
       if (!isSha256HexLower(entry.payload_sha256)) return "ENTRY_INVALID_PAYLOAD_SHA256";
       if (!clean(entry.timestamp)) return "ENTRY_MISSING_TIMESTAMP";
@@ -457,17 +547,32 @@ PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
 
       if (!clean(entry.status)) return "ENTRY_MISSING_STATUS";
 
+      if (!ACCEPTED_ENTRY_STATUS.has(clean(entry.status))) {
+        return "ENTRY_STATUS_NOT_ACCEPTED";
+      }
+
       return null;
     }
 
     function validateRegistry(registry){
       if (!registry || typeof registry !== "object") return "REGISTRY_INVALID_OBJECT";
       if (registry.proto !== EXPECTED_PROTO) return "REGISTRY_PROTO_MISMATCH";
+
+      if (!ACCEPTED_MODES.has(String(registry.mode || ""))) {
+        return "REGISTRY_MODE_MISMATCH";
+      }
+
       if (!Array.isArray(registry.entries)) return "REGISTRY_ENTRIES_MISSING";
 
       if (!registry.rules || typeof registry.rules !== "object") return "REGISTRY_RULES_MISSING";
-      if (registry.rules.failure_mode !== EXPECTED_FAILURE_MODE) return "REGISTRY_FAILURE_MODE_MISMATCH";
-      if (registry.rules.public_data !== EXPECTED_PUBLIC_DATA) return "REGISTRY_PUBLIC_DATA_MISMATCH";
+
+      if (registry.rules.failure_mode !== EXPECTED_FAILURE_MODE) {
+        return "REGISTRY_FAILURE_MODE_MISMATCH";
+      }
+
+      if (!ACCEPTED_PUBLIC_DATA.has(String(registry.rules.public_data || ""))) {
+        return "REGISTRY_PUBLIC_DATA_MISMATCH";
+      }
 
       for (const entry of registry.entries) {
         const entryError = validateRegistryEntry(entry);
@@ -479,12 +584,17 @@ PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
 
     async function loadRegistry(){
       const response = await fetch(REGISTRY_URL, { cache: "no-store" });
-      if (!response.ok) throw new Error("REGISTRY_FETCH_ERROR_HTTP_" + response.status);
+
+      if (!response.ok) {
+        throw new Error("REGISTRY_FETCH_ERROR_HTTP_" + response.status);
+      }
 
       const registry = await response.json();
       const validationError = validateRegistry(registry);
 
-      if (validationError) throw new Error(validationError);
+      if (validationError) {
+        throw new Error(validationError);
+      }
 
       return registry;
     }
@@ -527,7 +637,7 @@ PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
         };
       }
 
-      if (!parsed || typeof parsed !== "object") {
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
         return {
           ok: false,
           reason: "JSON_NOT_OBJECT"
@@ -542,18 +652,13 @@ PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
         };
       }
 
-      const copy = JSON.parse(JSON.stringify(parsed));
-      delete copy.payload_sha256;
-      delete copy.receipt_sha256;
-      delete copy.pack_sha256;
-
-      const canonical = stableStringify(copy);
+      const canonical = stableStringify(stripHashOutputFields(parsed));
       const computed = await sha256HexFromText(canonical);
 
       return {
         ok: true,
         hash: computed,
-        source: "computed_from_local_json_without_hash_fields"
+        source: "computed_from_local_json_without_hash_output_fields"
       };
     }
 
@@ -573,7 +678,7 @@ PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
             result: "INPUT_REJECTED",
             reason: target.reason
           },
-          "Fail-closed: missing or invalid input does not produce public proof validity."
+          "Fail-closed: missing or invalid input does not produce public reference validity."
         );
         return;
       }
@@ -590,7 +695,7 @@ PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
             reason: error && error.message ? error.message : "REGISTRY_EXCEPTION",
             source: REGISTRY_URL
           },
-          "Fail-closed: registry is unreachable, malformed, non-v3, or inconsistent."
+          "Fail-closed: registry is unreachable, malformed, non-v3, inconsistent, or violates public minimization rules."
         );
         return;
       }
@@ -611,12 +716,12 @@ PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
       }
 
       setRegistryStatus(
-        "PUBLIC_RECORD_PRESENT",
+        "PUBLIC_REFERENCE_PRESENT",
         {
           payload_sha256: target.hash,
           input_source: target.source,
           result: "MATCH_FOUND",
-          caution: "PUBLIC_PROOF_ONLY"
+          caution: "PUBLIC_HASH_REFERENCE_ONLY"
         },
         JSON.stringify(match, null, 2)
       );
@@ -669,12 +774,17 @@ PUBLIC_RECORD_PRESENT / NO_PUBLIC_RECORD / NON_OPERATIONAL</code></pre>
 
     async function copyComputed(){
       const value = $("computed").textContent || "";
-      if (!/^[0-9a-f]{64}$/.test(value)) return;
+
+      if (!/^[0-9a-f]{64}$/.test(value)) {
+        return;
+      }
 
       try {
         await navigator.clipboard.writeText(value);
         setStatus($("status").textContent + " · COPIED", value, $("compare").textContent);
-      } catch {}
+      } catch {
+        setStatus($("status").textContent + " · COPY_FAILED", value, $("compare").textContent);
+      }
     }
 
     function resetTechnicalVerify(){
