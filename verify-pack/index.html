@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>Verify Pack — Evidence Pack Validation | HBCE</title>
-  <meta name="description" content="Browser-based Evidence Pack verification. Client-side SHA-256 recomputation, hash-only, audit-first, fail-closed, no public data custody." />
+  <title>Verify Pack — MATRIX AI Audit Trail R&D Evidence Pack Verifier</title>
+  <meta name="description" content="Client-side R&D evidence-pack verification for MATRIX AI Audit Trail. SHA-256 recomputation, hash-only references, audit-first posture, fail-closed validation, no public data custody." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
@@ -29,13 +29,13 @@
     }
 
     .hbce-field:focus{
-      border-color:rgba(0,255,225,.45);
-      box-shadow:0 0 0 3px rgba(0,255,225,.08);
+      border-color:rgba(255,255,255,.30);
+      box-shadow:0 0 0 3px rgba(255,255,255,.06);
     }
 
     .hbce-kv{
       display:grid;
-      grid-template-columns:190px 1fr;
+      grid-template-columns:200px 1fr;
       gap:10px;
     }
 
@@ -61,7 +61,7 @@
     }
 
     .hbce-badge.is-pass{
-      border-color:rgba(0,255,225,.45);
+      border-color:rgba(120,255,180,.45);
     }
 
     .hbce-badge.is-fail{
@@ -79,6 +79,17 @@
       font-size:13.5px;
       line-height:1.55;
     }
+
+    .hbce-rowbtn{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .hbce-small{
+      font-size:.88rem;
+      line-height:1.55;
+    }
   </style>
 </head>
 
@@ -89,50 +100,63 @@
       <header class="hbce-header">
         <div class="hbce-header__row">
           <div class="hbce-brand">
-            <div class="hbce-brand__mark">HBCE</div>
-            <div>
-              <div class="hbce-brand__name">Evidence Pack Verifier</div>
-              <div class="hbce-muted">Client-side · Hash-only · Audit-first · Fail-closed</div>
-            </div>
+            <div class="hbce-mono">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+            <div class="hbce-muted">HERMETICUM B.C.E. S.r.l.</div>
           </div>
 
           <nav class="hbce-nav" aria-label="Primary">
-            <a href="../">Home</a>
-            <a href="../verify/">Verify</a>
-            <a href="./" class="is-active">Verify Pack</a>
-            <a href="../registry/">Registry</a>
+            <a class="hbce-nav__link" href="../">Home</a>
+            <a class="hbce-nav__link" href="../protocol/">Protocol</a>
+            <a class="hbce-nav__link" href="../matrix-audit-trail/">MATRIX Audit</a>
+            <a class="hbce-nav__link" href="../registry/">Registry</a>
+            <a class="hbce-nav__link" href="../verify/">Verify</a>
+            <a class="hbce-nav__link is-active" href="./">Verify Pack</a>
           </nav>
         </div>
       </header>
 
       <section class="hbce-section hbce-hero">
-        <div class="hbce-hero__kicker">VERIFY · EVIDENCE PACK · CLIENT-SIDE HASHING · FAIL-CLOSED</div>
-        <h1 class="hbce-hero__title">Verify Evidence Pack</h1>
+        <div class="hbce-hero__kicker">VERIFY PACK · MATRIX AI AUDIT TRAIL · CLIENT-SIDE · HASH-ONLY · FAIL-CLOSED</div>
+        <h1 class="hbce-hero__title">R&D evidence-pack verifier</h1>
         <p class="hbce-hero__lead">
+          <b>Verify Pack</b> is a browser-side R&D verifier for MATRIX AI Audit Trail evidence packs.
           Paste the three local JSON blobs:
           <span class="hbce-mono">PACK_MANIFEST</span>,
           <span class="hbce-mono">RESULT</span>,
           and <span class="hbce-mono">CHAIN_ENTRY</span>.
-          The verifier recomputes deterministic SHA-256 commitments in the browser and returns PASS / FAIL only.
-          <br /><br />
-          No pasted evidence pack is uploaded by this page.
+          The verifier recomputes deterministic SHA-256 commitments locally and returns PASS or FAIL.
+          <br><br>
+          This page does not upload pasted material, does not custody private evidence, does not custody private keys,
+          and does not transform hash consistency into regulated certification, legal authorization, public authority validation,
+          or production compliance.
         </p>
 
-        <div class="hbce-card" style="margin-top:14px;">
-          <div class="hbce-mono">PUBLIC PROOF LIMIT</div>
+        <div class="hbce-card hbce-small" style="margin-top:14px;">
+          <div class="hbce-mono">PUBLIC VERIFICATION LIMIT</div>
           <p class="hbce-muted" style="margin-bottom:0;">
-            A PASS result indicates hash consistency for the provided local evidence pack.
-            It does not replace private evidence review, legal authorization, operator qualification,
-            identity verification, or institutional validation.
+            A PASS result indicates local hash consistency for the provided evidence-pack material.
+            It does not replace private evidence review, legal validation, cybersecurity review, operator qualification,
+            institutional review, contractual qualification, or production assurance.
           </p>
+        </div>
+
+        <div class="hbce-rowbtn" style="margin-top:16px">
+          <a class="hbce-btn hbce-btn--primary" href="#verify-pack">Verify pack</a>
+          <a class="hbce-btn" href="../verify/">Verify SHA</a>
+          <a class="hbce-btn" href="../registry/">Registry</a>
+          <a class="hbce-btn" href="../matrix-audit-trail/">MATRIX Audit Trail</a>
         </div>
       </section>
 
-      <section class="hbce-section">
+      <section id="verify-pack" class="hbce-section">
         <div class="hbce-card">
           <h2 style="margin-top:0">Inputs</h2>
+          <p class="hbce-muted">
+            Verification is performed inside the browser. The page recomputes SHA-256 values from the pasted local material
+            and compares the resulting <span class="hbce-mono">entry_hash</span> with optional internal references and with an optional expected hash.
+          </p>
 
-          <div class="hbce-grid hbce-grid--2">
+          <div class="hbce-grid hbce-grid--2" style="margin-top:14px">
             <div>
               <div class="hbce-muted" style="margin-bottom:8px">Expected entry_hash — optional</div>
               <input id="expectedHash" class="hbce-field" placeholder="64-character lowercase sha256" />
@@ -160,10 +184,12 @@
               <div class="hbce-muted" style="margin-bottom:8px">PACK_MANIFEST.json</div>
               <textarea id="manifest" class="hbce-field" rows="14" spellcheck="false" placeholder="{ ... }"></textarea>
             </div>
+
             <div>
               <div class="hbce-muted" style="margin-bottom:8px">RESULT.json</div>
               <textarea id="result" class="hbce-field" rows="14" spellcheck="false" placeholder="{ ... }"></textarea>
             </div>
+
             <div>
               <div class="hbce-muted" style="margin-bottom:8px">CHAIN_ENTRY.json</div>
               <textarea id="chain" class="hbce-field" rows="14" spellcheck="false" placeholder="{ ... }"></textarea>
@@ -172,7 +198,7 @@
 
           <div style="height:14px"></div>
 
-          <div style="display:flex; gap:10px; flex-wrap:wrap">
+          <div class="hbce-rowbtn">
             <button id="btnVerify" class="hbce-btn hbce-btn--primary" type="button">Verify pack</button>
             <button id="btnClear" class="hbce-btn" type="button">Clear</button>
             <button id="btnCopyEntryHash" class="hbce-btn" type="button" disabled>Copy entry_hash</button>
@@ -186,6 +212,7 @@
 
           <div class="hbce-card" style="background:rgba(0,0,0,.18)">
             <h3 style="margin-top:0">Computed</h3>
+
             <div class="hbce-kv">
               <div class="hbce-k">entry_hash</div><div class="hbce-v" id="outEntryHash">—</div>
               <div class="hbce-k">PACK_MANIFEST sha256</div><div class="hbce-v" id="outManSha">—</div>
@@ -193,14 +220,36 @@
               <div class="hbce-k">CHAIN_ENTRY sha256</div><div class="hbce-v" id="outChainSha">—</div>
               <div class="hbce-k">mode</div><div class="hbce-v" id="outMode">—</div>
               <div class="hbce-k">data custody</div><div class="hbce-v">CLIENT_SIDE_ONLY</div>
+              <div class="hbce-k">public interpretation</div><div class="hbce-v">HASH_CONSISTENCY_ONLY</div>
             </div>
 
             <div style="height:10px"></div>
 
             <div class="hbce-muted">
-              In HBCE preimage mode, the verifier removes generated hash fields before recomputing the deterministic entry hash.
-              Invalid JSON, missing blobs, invalid hash format, or consistency mismatch produces FAIL.
+              Invalid JSON, missing blobs, invalid expected hash format, forbidden fields, internal reference mismatch,
+              or expected-hash mismatch produces FAIL.
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>MATRIX audit sequence</h2>
+          <p class="hbce-muted" style="margin-top:0">
+            Evidence-pack verification supports the MATRIX AI Audit Trail sequence by checking local hash consistency
+            before a public hash-only reference is interpreted.
+          </p>
+
+          <div class="hbce-card">
+            <pre class="hbce-mono">PACK_MANIFEST
+→ RESULT
+→ CHAIN_ENTRY
+→ SHA-256 RECOMPUTATION
+→ ENTRY_HASH
+→ OPTIONAL PUBLIC REGISTRY REFERENCE
+→ PASS / FAIL
+→ FAIL-CLOSED REVIEW</pre>
           </div>
         </div>
       </section>
@@ -211,7 +260,8 @@
             <div class="hbce-mono">FAIL-CLOSED</div>
             <h3>Failure is explicit</h3>
             <p class="hbce-muted">
-              Missing JSON, invalid JSON, invalid expected hash, generated hash mismatch, or internal consistency mismatch never produces validity.
+              Missing JSON, invalid JSON, invalid expected hash, generated hash mismatch, internal reference mismatch,
+              or forbidden field detection never produces validity.
             </p>
           </div>
 
@@ -224,44 +274,86 @@
           </div>
 
           <div class="hbce-card">
-            <div class="hbce-mono">FORBIDDEN PUBLIC DATA</div>
-            <h3>Do not paste sensitive material</h3>
-            <ul class="hbce-warning-list">
-              <li>No secrets, tokens, passwords, or private keys.</li>
-              <li>No identity documents or raw personal identifiers.</li>
-              <li>No private communications or production logs.</li>
-              <li>No sensitive operational payloads.</li>
-            </ul>
+            <div class="hbce-mono">R&D BOUNDARY</div>
+            <h3>No certification claim</h3>
+            <p class="hbce-muted">
+              A PASS result is a technical hash-consistency result. It is not regulated certification, public authority approval,
+              legal authorization, cybersecurity assurance, or production compliance.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>Forbidden public-data patterns</h2>
+          <p class="hbce-muted">
+            This verifier is client-side, but evidence packs intended for public proof should remain minimized.
+            Do not paste or publish sensitive operational material into public registry artifacts.
+          </p>
+
+          <div class="hbce-grid hbce-grid--3">
+            <div class="hbce-card">
+              <div class="hbce-mono">SECRETS</div>
+              <ul class="hbce-warning-list">
+                <li>No secrets, tokens, passwords, credentials, or API keys.</li>
+                <li>No private keys, SSH keys, database URLs, or admin URLs.</li>
+              </ul>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">IDENTITY</div>
+              <ul class="hbce-warning-list">
+                <li>No identity documents or raw personal identifiers.</li>
+                <li>No personal payloads or regulated identity material.</li>
+              </ul>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">OPERATIONS</div>
+              <ul class="hbce-warning-list">
+                <li>No private communications or production logs.</li>
+                <li>No sensitive infrastructure topology or internal endpoints.</li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
 
       <footer class="hbce-footer">
         <div class="hbce-footer__row">
-          <div class="hbce-muted">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+          <div class="hbce-muted">
+            <span class="hbce-mono">VERIFY PACK</span> — MATRIX AI Audit Trail R&D evidence-pack verifier
+          </div>
           <div class="hbce-footer__links">
-            <a href="../">Platform</a>
+            <a href="../">Home</a>
+            <a href="../protocol/">Protocol</a>
+            <a href="../matrix-audit-trail/">MATRIX Audit</a>
             <a href="../registry/">Registry</a>
             <a href="../verify/">Verify</a>
           </div>
         </div>
-        <div class="hbce-muted" style="margin-top:10px">HERMETICUM B.C.E. S.r.l.</div>
       </footer>
 
     </main>
   </div>
 
 <script>
-  (function(){
+  (() => {
     "use strict";
 
     const GENERATED_HASH_FIELDS = [
       "entry_hash",
       "blob_sha256",
       "payload_sha256",
+      "event_payload_sha256",
       "receipt_sha256",
       "pack_sha256",
-      "operator_sha256"
+      "operator_sha256",
+      "record_sha256",
+      "head_record_sha256",
+      "sha256",
+      "signature"
     ];
 
     const FORBIDDEN_FIELDS = [
@@ -270,8 +362,10 @@
       "territory",
       "raw_identifier",
       "identity_document",
+      "regulated_identity_document",
       "private_evidence",
       "personal_payload",
+      "personal_data",
       "api_key",
       "token",
       "password",
@@ -281,12 +375,17 @@
       "production_log",
       "private_communication",
       "sensitive_operational_payload",
+      "confidential_payload",
+      "financial_asset",
       "private_ip",
       "internal_hostname",
       "internal_endpoint",
       "admin_url",
       "database_url",
-      "ssh_key"
+      "ssh_key",
+      "raw_prompt",
+      "raw_output",
+      "client_file"
     ];
 
     let lastEntryHash = "";
@@ -302,60 +401,69 @@
     function toHex(buffer){
       const bytes = new Uint8Array(buffer);
       let output = "";
-      for (let i = 0; i < bytes.length; i++){
-        output += bytes[i].toString(16).padStart(2, "0");
+
+      for (let index = 0; index < bytes.length; index += 1){
+        output += bytes[index].toString(16).padStart(2, "0");
       }
+
       return output;
     }
 
     function setStatus(kind, text){
-      const el = $("status");
-      el.style.display = "inline-flex";
-      el.classList.remove("is-pass", "is-fail", "is-warn");
+      const element = $("status");
+      element.style.display = "inline-flex";
+      element.classList.remove("is-pass", "is-fail", "is-warn");
 
       if (kind === "PASS") {
-        el.classList.add("is-pass");
+        element.classList.add("is-pass");
       } else if (kind === "FAIL") {
-        el.classList.add("is-fail");
+        element.classList.add("is-fail");
       } else {
-        el.classList.add("is-warn");
+        element.classList.add("is-warn");
       }
 
-      el.textContent = kind + " · " + text;
+      element.textContent = kind + " · " + text;
     }
 
     function setOut(values){
-      $("outEntryHash").textContent = values.entryHash || "—";
-      $("outManSha").textContent = values.mSha || "—";
-      $("outResSha").textContent = values.rSha || "—";
-      $("outChainSha").textContent = values.cSha || "—";
-      $("outMode").textContent = values.mode || "—";
+      const entryHash = values.entryHash || "";
+      const manifestSha = values.mSha || "";
+      const resultSha = values.rSha || "";
+      const chainSha = values.cSha || "";
+      const mode = values.mode || "";
 
-      lastEntryHash = values.entryHash || "";
+      $("outEntryHash").textContent = entryHash || "—";
+      $("outManSha").textContent = manifestSha || "—";
+      $("outResSha").textContent = resultSha || "—";
+      $("outChainSha").textContent = chainSha || "—";
+      $("outMode").textContent = mode || "—";
+
+      lastEntryHash = entryHash;
       $("btnCopyEntryHash").disabled = !isSha256Lower(lastEntryHash);
     }
 
     function resetOut(){
       setOut({
-        entryHash: "—",
-        mSha: "—",
-        rSha: "—",
-        cSha: "—",
-        mode: "—"
+        entryHash: "",
+        mSha: "",
+        rSha: "",
+        cSha: "",
+        mode: ""
       });
-      lastEntryHash = "";
-      $("btnCopyEntryHash").disabled = true;
     }
 
     function canonicalJson(object){
       const stable = (value) => {
-        if (value === null || typeof value !== "object") return value;
+        if (value === null || typeof value !== "object") {
+          return value;
+        }
 
         if (Array.isArray(value)) {
           return value.map(stable);
         }
 
         const output = {};
+
         Object.keys(value).sort().forEach((key) => {
           output[key] = stable(value[key]);
         });
@@ -370,6 +478,7 @@
       const encoder = new TextEncoder();
       const data = encoder.encode(text);
       const digest = await crypto.subtle.digest("SHA-256", data);
+
       return toHex(digest);
     }
 
@@ -386,7 +495,9 @@
     }
 
     function removeGeneratedHashFields(object){
-      if (!object || typeof object !== "object") return object;
+      if (!object || typeof object !== "object") {
+        return object;
+      }
 
       if (Array.isArray(object)) {
         return object.map(removeGeneratedHashFields);
@@ -395,15 +506,43 @@
       const output = {};
 
       for (const [key, value] of Object.entries(object)) {
-        if (GENERATED_HASH_FIELDS.includes(key)) continue;
+        if (GENERATED_HASH_FIELDS.includes(key)) {
+          continue;
+        }
 
         if (key === "refs" && value && typeof value === "object" && !Array.isArray(value)) {
           const refs = {};
+
           for (const [refKey, refValue] of Object.entries(value)) {
-            if (GENERATED_HASH_FIELDS.includes(refKey)) continue;
+            if (GENERATED_HASH_FIELDS.includes(refKey)) {
+              continue;
+            }
+
             refs[refKey] = removeGeneratedHashFields(refValue);
           }
+
           output[key] = refs;
+          continue;
+        }
+
+        if (key === "issuer" && value && typeof value === "object" && !Array.isArray(value)) {
+          const issuer = removeGeneratedHashFields(value);
+          delete issuer.signature;
+          output[key] = issuer;
+          continue;
+        }
+
+        if (key === "operator" && value && typeof value === "object" && !Array.isArray(value)) {
+          const operator = removeGeneratedHashFields(value);
+          delete operator.signature;
+          output[key] = operator;
+          continue;
+        }
+
+        if (key === "record_signature" && value && typeof value === "object" && !Array.isArray(value)) {
+          const recordSignature = removeGeneratedHashFields(value);
+          delete recordSignature.signature;
+          output[key] = recordSignature;
           continue;
         }
 
@@ -414,13 +553,19 @@
     }
 
     function findForbiddenField(object, path){
-      if (!object || typeof object !== "object") return null;
+      if (!object || typeof object !== "object") {
+        return null;
+      }
 
       if (Array.isArray(object)) {
-        for (let i = 0; i < object.length; i++) {
-          const found = findForbiddenField(object[i], path + "[" + i + "]");
-          if (found) return found;
+        for (let index = 0; index < object.length; index += 1) {
+          const found = findForbiddenField(object[index], path + "[" + index + "]");
+
+          if (found) {
+            return found;
+          }
         }
+
         return null;
       }
 
@@ -432,7 +577,10 @@
         }
 
         const found = findForbiddenField(value, currentPath);
-        if (found) return found;
+
+        if (found) {
+          return found;
+        }
       }
 
       return null;
@@ -446,11 +594,12 @@
       ];
 
       for (const [label, object] of objects) {
-        if (!object || typeof object !== "object") {
+        if (!object || typeof object !== "object" || Array.isArray(object)) {
           return label + "_INVALID_OBJECT";
         }
 
         const forbidden = findForbiddenField(object, label);
+
         if (forbidden) {
           return "FORBIDDEN_FIELD_" + forbidden;
         }
@@ -475,7 +624,13 @@
       const signingBlob = [mSha, rSha, cSha].join("\n") + "\n";
       const entryHash = await sha256HexUtf8(signingBlob);
 
-      return { entryHash, mSha, rSha, cSha, mode: "HBCE_PREIMAGE" };
+      return {
+        entryHash,
+        mSha,
+        rSha,
+        cSha,
+        mode: "HBCE_PREIMAGE"
+      };
     }
 
     async function computeRawFiles(manifestText, resultText, chainText){
@@ -486,19 +641,43 @@
       const signingBlob = [mSha, rSha, cSha].join("\n") + "\n";
       const entryHash = await sha256HexUtf8(signingBlob);
 
-      return { entryHash, mSha, rSha, cSha, mode: "RAW_FILES_DEBUG" };
+      return {
+        entryHash,
+        mSha,
+        rSha,
+        cSha,
+        mode: "RAW_FILES_DEBUG"
+      };
     }
 
     function validateInternalReferences(manifestObj, chainObj, computedEntryHash){
-      const chainHash = chainObj && typeof chainObj.entry_hash === "string" ? chainObj.entry_hash.trim().toLowerCase() : "";
-      const manifestRefs = manifestObj && manifestObj.refs && typeof manifestObj.refs === "object" ? manifestObj.refs : {};
-      const manifestEntryHash = typeof manifestRefs.entry_hash === "string" ? manifestRefs.entry_hash.trim().toLowerCase() : "";
+      const chainHash = chainObj && typeof chainObj.entry_hash === "string"
+        ? chainObj.entry_hash.trim().toLowerCase()
+        : "";
 
-      if (chainHash && !isSha256Lower(chainHash)) return "CHAIN_ENTRY.entry_hash invalid";
-      if (manifestEntryHash && !isSha256Lower(manifestEntryHash)) return "PACK_MANIFEST.refs.entry_hash invalid";
+      const manifestRefs = manifestObj && manifestObj.refs && typeof manifestObj.refs === "object"
+        ? manifestObj.refs
+        : {};
 
-      if (chainHash && chainHash !== computedEntryHash) return "CHAIN_ENTRY.entry_hash mismatch";
-      if (manifestEntryHash && manifestEntryHash !== computedEntryHash) return "PACK_MANIFEST.refs.entry_hash mismatch";
+      const manifestEntryHash = typeof manifestRefs.entry_hash === "string"
+        ? manifestRefs.entry_hash.trim().toLowerCase()
+        : "";
+
+      if (chainHash && !isSha256Lower(chainHash)) {
+        return "CHAIN_ENTRY.entry_hash invalid";
+      }
+
+      if (manifestEntryHash && !isSha256Lower(manifestEntryHash)) {
+        return "PACK_MANIFEST.refs.entry_hash invalid";
+      }
+
+      if (chainHash && chainHash !== computedEntryHash) {
+        return "CHAIN_ENTRY.entry_hash mismatch";
+      }
+
+      if (manifestEntryHash && manifestEntryHash !== computedEntryHash) {
+        return "PACK_MANIFEST.refs.entry_hash mismatch";
+      }
 
       return null;
     }
@@ -533,6 +712,7 @@
       }
 
       const validationError = validatePackObjects(manifestObj, resultObj, chainObj);
+
       if (validationError) {
         setStatus("FAIL", validationError);
         return;
@@ -550,6 +730,7 @@
         setOut(output);
 
         const internalError = validateInternalReferences(manifestObj, chainObj, output.entryHash);
+
         if (internalError) {
           setStatus("FAIL", internalError);
           return;
@@ -560,14 +741,16 @@
           return;
         }
 
-        setStatus("PASS", "EVIDENCE_PACK_HASH_VERIFIED");
+        setStatus("PASS", "EVIDENCE_PACK_HASH_CONSISTENCY_OK");
       } catch (error) {
         setStatus("FAIL", error && error.message ? error.message : String(error));
       }
     }
 
     async function copyEntryHash(){
-      if (!isSha256Lower(lastEntryHash)) return;
+      if (!isSha256Lower(lastEntryHash)) {
+        return;
+      }
 
       try {
         await navigator.clipboard.writeText(lastEntryHash);
@@ -581,6 +764,7 @@
       ["expectedHash", "manifest", "result", "chain"].forEach((id) => {
         $(id).value = "";
       });
+
       resetOut();
       setStatus("IDLE", "waiting for input");
     }
