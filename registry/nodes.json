@@ -1,23 +1,33 @@
 {
   "proto": "HBCE-REGISTRY-v3",
-  "kind": "HBCE_PUBLIC_NODE_REGISTRY",
-  "network": "EU",
-  "mode": "APPEND_ONLY_PUBLIC_REGISTRY",
+  "kind": "HBCE_PUBLIC_NODE_REGISTRY_RND_REFERENCE",
+  "network": "EU_REFERENCE_FRAMEWORK",
+  "mode": "APPEND_ONLY_PUBLIC_RND_REGISTRY",
   "issuer": {
     "hallmark": "HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA",
     "legal": "HERMETICUM B.C.E. S.r.l.",
     "symbol": "🜏"
   },
-  "jurisdiction": "EU",
-  "status": "ACTIVE",
+  "jurisdiction": "EU_REFERENCE_FRAMEWORK",
+  "status": "RND_ACTIVE",
+  "current_scope": {
+    "primary_use": "MATRIX_AI_AUDIT_TRAIL_MVP",
+    "purpose": "Public minimized node registry for R&D documentation, audit-trail visibility, registry v3 testing, and technical review.",
+    "public_position": "This registry is a public R&D reference surface. It is not a public authority registry, not a regulated certification register, not an eIDAS qualified trust service, not a custodial identity service, and not a production compliance framework by itself.",
+    "operational_boundary": "Node entries are descriptive public metadata. They do not expose private endpoints, internal topology, production credentials, secrets, privileged infrastructure access, client payloads, or regulated identity data."
+  },
   "policy": [
+    "EU_FIRST",
+    "AUDIT_FIRST",
+    "FAIL_CLOSED",
     "HASH_ONLY",
     "APPEND_ONLY",
-    "FAIL_CLOSED",
-    "UE_FIRST",
-    "AUDIT_FIRST",
     "GDPR_MIN",
-    "NO_PUBLIC_DATA_CUSTODY"
+    "NO_PUBLIC_DATA_CUSTODY",
+    "NO_PRIVATE_KEY_CUSTODY",
+    "NO_FINANCIAL_CUSTODY",
+    "NO_REGULATED_CERTIFICATION_CLAIM",
+    "NO_PUBLIC_AUTHORITY_CLAIM"
   ],
   "rules": {
     "public_data": "MINIMIZED_PUBLIC_METADATA",
@@ -26,32 +36,49 @@
     "failure_mode": "FAIL_CLOSED",
     "empty_entries": "NO_PUBLIC_NODE_RECORD",
     "private_evidence_policy": "PRIVATE_EVIDENCE_OUTSIDE_PUBLIC_REGISTRY",
-    "sensitive_infrastructure_policy": "NO_PRIVATE_ENDPOINTS_OR_SECRETS_IN_PUBLIC_NODE_REGISTRY"
+    "sensitive_infrastructure_policy": "NO_PRIVATE_ENDPOINTS_OR_SECRETS_IN_PUBLIC_NODE_REGISTRY",
+    "public_node_interpretation": "A public node entry is descriptive R&D registry metadata unless independently supported by a canonical proof record.",
+    "production_interpretation": "A public node entry does not certify production readiness, public authority approval, regulated compliance, cybersecurity assurance, or institutional mandate."
   },
-  "privacy_note": "This public node registry must not store private endpoints, credentials, secrets, private keys, production logs, internal network details, sensitive infrastructure topology, or non-public operational payloads. Public node records should use minimized public labels and high-level operational metadata only.",
+  "privacy_note": "This public node registry must not store private endpoints, credentials, secrets, private keys, production logs, internal network details, sensitive infrastructure topology, raw AI prompts, raw AI outputs, personal data, client files, regulated identity documents, or non-public operational payloads. Public node records should use minimized labels and high-level technical metadata only.",
   "created_at": "2026-02-01T00:00:00.000Z",
-  "last_update": "2026-05-06T00:00:00.000Z",
-  "empty_registry_interpretation": "An empty nodes array means no public node records are currently available in this registry file. It does not certify infrastructure inactivity or security status by itself.",
+  "last_update": "2026-05-07T15:30:00+02:00",
+  "empty_registry_interpretation": "An empty nodes array means no public node records are currently available in this registry file. It does not certify infrastructure inactivity, security status, production status, or compliance status by itself.",
   "schema": {
     "node_required": [
+      "node_id",
       "node_label",
       "environment",
+      "node_type",
       "identity_layer",
       "coordination_engine",
+      "registry_integration",
+      "verification_mode",
+      "custody_boundary",
       "status",
       "description"
     ],
     "node_optional": [
       "record_scope",
+      "audit_scope",
+      "operator_reference",
+      "evidence_pack_support",
+      "signature_support",
+      "hash_algorithms",
       "note"
     ],
     "constraints": {
-      "node_label": "Public minimal node label only; must not expose internal hostnames, private IPs, secrets, or sensitive infrastructure topology",
-      "environment": "Public environment label only",
-      "identity_layer": "Public architecture label only",
-      "coordination_engine": "Public architecture label only",
-      "status": "ACTIVE | INACTIVE | SUSPENDED | EXPERIMENTAL | PLANNED",
-      "description": "High-level public description only"
+      "node_id": "Public minimal node identifier only; must not expose internal hostnames, private IPs, secrets, endpoints, or sensitive topology.",
+      "node_label": "Public minimal node label only.",
+      "environment": "Public environment label only.",
+      "node_type": "RND_NODE | LOCAL_PILOT_NODE | ENTERPRISE_PILOT_NODE | STATIC_VERIFICATION_NODE | REGISTRY_REFERENCE_NODE | AUDIT_TRAIL_NODE",
+      "identity_layer": "Public architecture label only.",
+      "coordination_engine": "Public architecture label only; must not imply unrestricted autonomous command authority.",
+      "registry_integration": "hash-only | metadata-only | local-only | public-minimized | disabled",
+      "verification_mode": "fail-closed | structural-check | hash-rebuild | signature-check | rnd-demo",
+      "custody_boundary": "no-public-data-custody",
+      "status": "RND_ACTIVE | PILOT_ACTIVE | INACTIVE | SUSPENDED | DEPRECATED | LEGACY_REFERENCE | PLANNED",
+      "description": "High-level public description only."
     },
     "forbidden_public_fields": [
       "private_ip",
@@ -67,27 +94,49 @@
       "admin_url",
       "internal_endpoint",
       "production_log",
-      "sensitive_topology"
+      "sensitive_topology",
+      "raw_prompt",
+      "raw_output",
+      "client_file",
+      "personal_data",
+      "regulated_identity_document",
+      "financial_asset",
+      "confidential_payload"
     ]
   },
   "verification": {
-    "rule": "Public node entries must be treated as descriptive registry metadata unless independently verified by a canonical proof record.",
+    "rule": "Public node entries must be treated as descriptive R&D registry metadata unless independently verified by a canonical proof record.",
     "valid_result": "PUBLIC_NODE_RECORD_PRESENT",
     "invalid_result": "INVALID",
     "missing_result": "NO_PUBLIC_NODE_RECORD",
     "non_operational_result": "NON_OPERATIONAL",
-    "fail_closed_rule": "Missing, malformed, ambiguous, or inconsistent node registry state must not produce operational certainty."
+    "rnd_result": "RND_REFERENCE_ONLY",
+    "fail_closed_rule": "Missing, malformed, ambiguous, placeholder-based, or inconsistent node registry state must not produce operational certainty.",
+    "production_rule": "RND_ACTIVE and PILOT_ACTIVE statuses must not be interpreted as regulated certification, public authority approval, or production compliance validity."
   },
   "nodes": [
     {
-      "node_label": "HBCE_PUBLIC_NODE_001",
-      "environment": "hbce-platform",
-      "identity_layer": "ipr",
-      "coordination_engine": "joker-c2",
-      "status": "EXPERIMENTAL",
-      "description": "HBCE primary public infrastructure node record for documentation and governance review.",
+      "node_id": "hbce-node-rnd-0001",
+      "node_label": "HBCE_PUBLIC_RND_NODE_001",
+      "environment": "hbce-platform-rnd",
+      "node_type": "AUDIT_TRAIL_NODE",
+      "identity_layer": "ipr-reference-layer",
+      "coordination_engine": "ai-joker-c2-rnd",
+      "registry_integration": "hash-only",
+      "verification_mode": "fail-closed",
+      "custody_boundary": "no-public-data-custody",
+      "status": "RND_ACTIVE",
+      "description": "HBCE public R&D node reference for MATRIX AI Audit Trail self-pilot, hash-only registry visibility, and fail-closed verification review.",
       "record_scope": "PUBLIC_NODE_METADATA",
-      "note": "This public node record is descriptive and does not expose private endpoints, internal topology, credentials, secrets, or privileged infrastructure access."
+      "audit_scope": "MATRIX_AI_AUDIT_TRAIL_MVP",
+      "operator_reference": "HERMETICUM B.C.E. S.r.l.",
+      "evidence_pack_support": true,
+      "signature_support": "ED25519_REFERENCE",
+      "hash_algorithms": [
+        "SHA-256",
+        "SHA-512"
+      ],
+      "note": "This public node record is descriptive R&D metadata. It does not expose private endpoints, internal topology, credentials, secrets, privileged infrastructure access, client payloads, regulated identity data, or production operational certainty."
     }
   ]
 }
