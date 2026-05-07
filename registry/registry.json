@@ -1,25 +1,38 @@
 {
   "proto": "HBCE-REGISTRY-v3",
-  "kind": "IPR_PUBLIC_REGISTRY_INDEX",
-  "network": "EU",
+  "kind": "IPR_PUBLIC_REGISTRY_INDEX_RND_REFERENCE",
+  "network": "EU_REFERENCE_FRAMEWORK",
   "mode": "APPEND_ONLY_PUBLIC_REGISTRY",
   "issuer": "HERMETICUM B.C.E. S.r.l.",
-  "jurisdiction": "EU",
-  "status": "ACTIVE",
+  "jurisdiction": "EU_REFERENCE_FRAMEWORK",
+  "status": "RND_ACTIVE",
+  "current_scope": {
+    "primary_use": "MATRIX_AI_AUDIT_TRAIL_MVP",
+    "purpose": "Supporting public registry index for minimized HBCE / IPR proof records, MATRIX AI Audit Trail public references, evidence-pack continuity, and deterministic verification review.",
+    "public_position": "This registry index is an R&D reference surface. It is not a public authority registry, not a regulated certification register, not an eIDAS qualified trust service, not a custodial identity service, and not a production compliance framework by itself.",
+    "operational_boundary": "The registry index publishes hash-only or minimized public proof commitments. It does not store private evidence, raw AI prompts, raw AI outputs, personal data, client files, regulated identity documents, credentials, secrets, private keys, financial assets, internal endpoints, or sensitive operational payloads."
+  },
   "policy": [
+    "EU_FIRST",
+    "AUDIT_FIRST",
+    "FAIL_CLOSED",
     "HASH_ONLY",
     "APPEND_ONLY",
-    "FAIL_CLOSED",
-    "UE_FIRST",
-    "AUDIT_FIRST",
     "GDPR_MIN",
-    "NO_PUBLIC_DATA_CUSTODY"
+    "NO_PUBLIC_DATA_CUSTODY",
+    "NO_PRIVATE_KEY_CUSTODY",
+    "NO_FINANCIAL_CUSTODY",
+    "NO_REGULATED_CERTIFICATION_CLAIM",
+    "NO_PUBLIC_AUTHORITY_CLAIM"
   ],
-  "description": "Public append-only registry index for minimized HBCE / IPR proof records. The registry publishes hash-only or minimized public proof commitments and does not store private evidence, identity documents, credentials, secrets, private keys, or sensitive operational payloads. If a required hash is absent, malformed, or inconsistent, verification must return INVALID or NON_OPERATIONAL according to fail-closed rules.",
+  "description": "Public R&D registry index for minimized HBCE / IPR proof records and MATRIX AI Audit Trail references. The registry publishes hash-only or minimized public proof commitments and does not store private evidence, identity documents, credentials, secrets, private keys, raw AI prompts, raw AI outputs, client files, or sensitive operational payloads. If a required hash is absent, malformed, ambiguous, or inconsistent, verification must return INVALID or NON_OPERATIONAL according to fail-closed rules.",
   "source_role": {
     "canonical_viewer_source": "ledger.json",
     "supporting_public_registry_index": "registry.json",
-    "verification_rule": "Verification tools must explicitly declare which public source they use. Ambiguous source selection must fail closed."
+    "supporting_node_registry": "nodes.json",
+    "supporting_event_registry": "events.json",
+    "verification_rule": "Verification tools must explicitly declare which public source they use. Ambiguous source selection must fail closed.",
+    "interpretation_rule": "A registry entry proves only that a public hash reference exists. It does not certify legal validity, cybersecurity assurance, public authority approval, regulated compliance, institutional mandate, or production authorization."
   },
   "rules": {
     "public_data": "HASH_ONLY",
@@ -28,24 +41,30 @@
     "failure_mode": "FAIL_CLOSED",
     "empty_entries": "NO_PUBLIC_PROOF",
     "sensitive_preimage_policy": "NO_RAW_PERSONAL_IDENTIFIER_HASHES_IN_PUBLIC_REGISTRY",
-    "private_evidence_policy": "PRIVATE_EVIDENCE_OUTSIDE_PUBLIC_REGISTRY"
+    "private_evidence_policy": "PRIVATE_EVIDENCE_OUTSIDE_PUBLIC_REGISTRY",
+    "public_hash_interpretation": "A present hash means that a public proof reference exists. It does not certify legal validity, cybersecurity assurance, public authority approval, regulated compliance, institutional mandate, or production authorization.",
+    "production_interpretation": "R&D and public proof entries must not be interpreted as regulated certification, public authority approval, or production compliance validity unless independently supported by a lawful production framework."
   },
-  "privacy_note": "Public identity labels may appear only when intentionally published for attribution and registry readability. Sensitive identity evidence, private documents, raw personal identifiers, credentials, secrets, private keys, and non-public payloads must not be stored in the public registry. Public hashes should represent minimized proof commitments rather than raw personal identifiers.",
+  "privacy_note": "Public identity labels, operator labels, audit labels, or node labels may appear only when intentionally published for attribution, registry readability, and audit continuity. Sensitive identity evidence, private documents, raw personal identifiers, credentials, secrets, private keys, raw AI prompts, raw AI outputs, client files, production logs, internal endpoints, and non-public payloads must not be stored in the public registry. Public hashes should represent minimized proof commitments rather than raw personal identifiers.",
   "schema": {
     "entry_required": [
       "entity_type",
       "subject_label",
+      "record_scope",
       "payload_sha256",
       "timestamp",
       "status"
     ],
     "entry_optional": [
-      "record_scope",
-      "note"
+      "note",
+      "public_payload_policy",
+      "source_hint"
     ],
     "event_record_types": [
       "ISSUED",
-      "STATUS_UPDATE"
+      "STATUS_UPDATE",
+      "RND_AUDIT_EVENT",
+      "RND_VERIFICATION_EVENT"
     ],
     "event_required": [
       "record_type",
@@ -54,14 +73,16 @@
       "timestamp"
     ],
     "event_optional": [
-      "note"
+      "note",
+      "source_hint"
     ],
     "constraints": {
       "payload_sha256": "64-character lowercase hexadecimal SHA-256 digest",
       "ref_payload_sha256": "64-character lowercase hexadecimal SHA-256 digest",
       "timestamp": "ISO 8601 / RFC 3339 parseable timestamp",
-      "status": "ACTIVE | REVOKED | SUSPENDED",
-      "subject_label": "Public minimal label; must not contain private evidence or raw sensitive identifiers"
+      "status": "ACTIVE | REVOKED | SUSPENDED | RND_ONLY | RETAINED",
+      "subject_label": "Public minimal label; must not contain private evidence, raw sensitive identifiers, raw AI prompts, raw AI outputs, client files, secrets, credentials, or internal endpoints",
+      "record_scope": "Public high-level scope only"
     },
     "forbidden_public_fields": [
       "private_key",
@@ -74,90 +95,208 @@
       "identity_document",
       "private_evidence",
       "personal_payload",
-      "production_log"
+      "personal_data",
+      "regulated_identity_document",
+      "raw_prompt",
+      "raw_output",
+      "client_file",
+      "production_log",
+      "private_communication",
+      "internal_endpoint",
+      "sensitive_operational_payload",
+      "confidential_payload",
+      "financial_asset",
+      "database_url",
+      "admin_url",
+      "private_ip",
+      "internal_hostname"
     ]
   },
   "lifecycle": {
     "states": [
       "ACTIVE",
       "REVOKED",
-      "SUSPENDED"
+      "SUSPENDED",
+      "RND_ONLY",
+      "RETAINED"
     ],
     "events": [
       "ISSUED",
-      "STATUS_UPDATE"
+      "STATUS_UPDATE",
+      "RND_AUDIT_EVENT",
+      "RND_VERIFICATION_EVENT"
     ],
-    "empty_registry_interpretation": "An empty entries array means no public proof entries are currently available in this registry file. It does not certify validity, status, or authorization by itself."
+    "empty_registry_interpretation": "An empty entries array means no public proof entries are currently available in this registry file. It does not certify validity, status, authorization, compliance, security, or inactivity by itself."
   },
   "verification": {
     "rule": "SHA256(canonical_record_or_commitment) MUST_MATCH registry.entries[].payload_sha256",
-    "valid_result": "VALID",
+    "valid_result": "VALID_PUBLIC_REFERENCE_PRESENT",
     "invalid_result": "INVALID",
     "missing_result": "NO_PUBLIC_RECORD",
     "non_operational_result": "NON_OPERATIONAL",
-    "certificate": "HBCE_CERTIFICATE",
-    "fail_closed_rule": "Missing, malformed, ambiguous, or inconsistent registry state must not produce VALID."
+    "reference_artifact": "HBCE_RND_REFERENCE_PROOF",
+    "fail_closed_rule": "Missing, malformed, ambiguous, placeholder-based, or inconsistent registry state must not produce VALID.",
+    "production_rule": "RND_ONLY and RETAINED statuses must not be interpreted as regulated certification, public authority approval, production compliance validity, cybersecurity assurance, or legal authorization."
   },
   "meta": {
     "schema_version": "HBCE-REGISTRY-v3",
-    "last_update": "2026-05-06T00:00:00.000Z",
+    "last_update": "2026-05-07T15:30:00+02:00",
     "counts": {
-      "total": 3,
+      "total": 8,
       "operator_commitment": 1,
       "identity_commitment": 1,
-      "continuity_certificate": 1
+      "continuity_reference": 1,
+      "matrix_audit_reference": 5
     }
   },
   "entries": [
     {
       "entity_type": "PUBLIC_OPERATOR_COMMITMENT",
       "subject_label": "HBCE_PUBLIC_OPERATOR_001",
-      "record_scope": "OPERATOR_LICENSE_PUBLIC_PROOF",
+      "record_scope": "OPERATOR_LICENSE_PUBLIC_PROOF_RETAINED",
       "payload_sha256": "1de300e4d826719c9a8708c8dfb2a8e943f19c3d324816b220f149f008ba481b",
       "timestamp": "2026-02-14T13:34:15.225Z",
-      "status": "ACTIVE",
-      "note": "proto=HBCE-OPERATOR-v1; kind=IPR_OPERATOR_LICENSE; minimized public proof commitment; private evidence outside public registry"
+      "status": "RETAINED",
+      "public_payload_policy": "HASH_ONLY",
+      "note": "Historical operator public proof commitment retained as hash-only reference. Private evidence remains outside the public registry. This entry does not create regulated certification, public authority approval, or production compliance validity by itself."
     },
     {
       "entity_type": "PUBLIC_IDENTITY_COMMITMENT",
       "subject_label": "HBCE_PUBLIC_IDENTITY_001",
-      "record_scope": "IPR_BASE_EU_RELEASE_PUBLIC_PROOF",
+      "record_scope": "IPR_BASE_EU_RELEASE_PUBLIC_PROOF_RETAINED",
       "payload_sha256": "1db2ab1f17e58b96412795cd0451e2a3ac558a99f12e76e82b2f963c94478d00",
       "timestamp": "2026-02-10T19:05:30.849Z",
-      "status": "ACTIVE",
-      "note": "proto=HBCE-IPR-RELEASE-v1; kind=IPR_BASE_EU_RELEASE; public_proof=HASH_ONLY; private evidence outside public registry"
+      "status": "RETAINED",
+      "public_payload_policy": "HASH_ONLY",
+      "note": "Historical IPR public proof commitment retained as hash-only reference. Private evidence remains outside the public registry. This entry does not create regulated certification, public authority approval, or production compliance validity by itself."
     },
     {
-      "entity_type": "PUBLIC_CONTINUITY_CERTIFICATE",
+      "entity_type": "PUBLIC_CONTINUITY_REFERENCE",
       "subject_label": "HBCE_PUBLIC_CONTINUITY_001",
-      "record_scope": "MONTHLY_OPERATIONAL_CONTINUITY_CERTIFICATE_PUBLIC_PROOF",
+      "record_scope": "MONTHLY_OPERATIONAL_CONTINUITY_REFERENCE_PUBLIC_PROOF_RETAINED",
       "payload_sha256": "cb5b8fea05912004d2bcfd982a2123443ba827e27509d3aae279e94bd97c3f9c",
       "timestamp": "2026-02-19T18:00:00.000Z",
-      "status": "ACTIVE",
-      "note": "proto=HBCE-UPMESE-v1; kind=MONTHLY_OPERATIONAL_CONTINUITY_CERTIFICATE; label=UP-MESE-01; minimized public proof commitment"
+      "status": "RETAINED",
+      "public_payload_policy": "HASH_ONLY",
+      "note": "Historical monthly operational continuity public proof commitment retained as minimized hash-only reference. This entry is not a regulated certificate or public authority validation."
+    },
+    {
+      "entity_type": "MATRIX_AI_AUDIT_REFERENCE",
+      "subject_label": "MATRIX_AI_OUTPUT_RECORDED_0001",
+      "record_scope": "MATRIX_AI_AUDIT_TRAIL_MVP",
+      "payload_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "timestamp": "2026-05-07T15:35:00+02:00",
+      "status": "RND_ONLY",
+      "public_payload_policy": "HASH_ONLY",
+      "source_hint": "registry/events.json",
+      "note": "Hash-only R&D public reference for an AI output recorded event. The underlying prompt, output, and payload are not stored in this public registry."
+    },
+    {
+      "entity_type": "MATRIX_POLICY_CHECK_REFERENCE",
+      "subject_label": "MATRIX_POLICY_CHECK_0001",
+      "record_scope": "MATRIX_AI_AUDIT_TRAIL_MVP",
+      "payload_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "timestamp": "2026-05-07T15:37:00+02:00",
+      "status": "RND_ONLY",
+      "public_payload_policy": "HASH_ONLY",
+      "source_hint": "registry/events.json",
+      "note": "Hash-only R&D public reference for a policy-check event. This is not a regulated compliance certification."
+    },
+    {
+      "entity_type": "MATRIX_HUMAN_VALIDATION_REFERENCE",
+      "subject_label": "MATRIX_HUMAN_VALIDATION_0001",
+      "record_scope": "MATRIX_AI_AUDIT_TRAIL_MVP",
+      "payload_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "timestamp": "2026-05-07T15:40:00+02:00",
+      "status": "RND_ONLY",
+      "public_payload_policy": "HASH_ONLY",
+      "source_hint": "registry/events.json",
+      "note": "Hash-only R&D public reference for a human-validation event. The private validation payload remains outside the public registry."
+    },
+    {
+      "entity_type": "MATRIX_EVIDENCE_PACK_REFERENCE",
+      "subject_label": "MATRIX_EVIDENCE_PACK_0001",
+      "record_scope": "MATRIX_AI_AUDIT_TRAIL_MVP",
+      "payload_sha256": "1212121212121212121212121212121212121212121212121212121212121212",
+      "timestamp": "2026-05-07T15:45:00+02:00",
+      "status": "RND_ONLY",
+      "public_payload_policy": "HASH_ONLY",
+      "source_hint": "registry/events.json",
+      "note": "Hash-only R&D public reference for an evidence-pack creation event. The underlying evidence pack is not stored in this public registry."
+    },
+    {
+      "entity_type": "MATRIX_VERIFICATION_RESULT_REFERENCE",
+      "subject_label": "MATRIX_VERIFICATION_RESULT_0001",
+      "record_scope": "MATRIX_AI_AUDIT_TRAIL_MVP",
+      "payload_sha256": "3434343434343434343434343434343434343434343434343434343434343434",
+      "timestamp": "2026-05-07T15:50:00+02:00",
+      "status": "RND_ONLY",
+      "public_payload_policy": "HASH_ONLY",
+      "source_hint": "registry/events.json",
+      "note": "Hash-only R&D public reference for a fail-closed verification result. RND_ONLY verification is not production compliance certification, public authority approval, or regulated assurance."
     }
   ],
   "events": [
     {
       "record_type": "ISSUED",
       "ref_payload_sha256": "1db2ab1f17e58b96412795cd0451e2a3ac558a99f12e76e82b2f963c94478d00",
-      "status": "ACTIVE",
+      "status": "RETAINED",
       "timestamp": "2026-02-10T19:05:30.849Z",
-      "note": "IPR base EU public proof commitment issued."
+      "note": "Historical IPR base EU public proof commitment retained."
     },
     {
       "record_type": "ISSUED",
       "ref_payload_sha256": "1de300e4d826719c9a8708c8dfb2a8e943f19c3d324816b220f149f008ba481b",
-      "status": "ACTIVE",
+      "status": "RETAINED",
       "timestamp": "2026-02-14T13:34:15.225Z",
-      "note": "Operator license public proof commitment issued."
+      "note": "Historical operator public proof commitment retained."
     },
     {
       "record_type": "ISSUED",
       "ref_payload_sha256": "cb5b8fea05912004d2bcfd982a2123443ba827e27509d3aae279e94bd97c3f9c",
-      "status": "ACTIVE",
+      "status": "RETAINED",
       "timestamp": "2026-02-19T18:00:00.000Z",
-      "note": "UP-MESE-01 public proof commitment issued."
+      "note": "Historical monthly continuity public proof commitment retained."
+    },
+    {
+      "record_type": "RND_AUDIT_EVENT",
+      "ref_payload_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "status": "RND_ONLY",
+      "timestamp": "2026-05-07T15:35:00+02:00",
+      "source_hint": "registry/events.json",
+      "note": "MATRIX AI Audit Trail R&D reference: AI output recorded."
+    },
+    {
+      "record_type": "RND_AUDIT_EVENT",
+      "ref_payload_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "status": "RND_ONLY",
+      "timestamp": "2026-05-07T15:37:00+02:00",
+      "source_hint": "registry/events.json",
+      "note": "MATRIX AI Audit Trail R&D reference: policy check."
+    },
+    {
+      "record_type": "RND_AUDIT_EVENT",
+      "ref_payload_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "status": "RND_ONLY",
+      "timestamp": "2026-05-07T15:40:00+02:00",
+      "source_hint": "registry/events.json",
+      "note": "MATRIX AI Audit Trail R&D reference: human validation."
+    },
+    {
+      "record_type": "RND_AUDIT_EVENT",
+      "ref_payload_sha256": "1212121212121212121212121212121212121212121212121212121212121212",
+      "status": "RND_ONLY",
+      "timestamp": "2026-05-07T15:45:00+02:00",
+      "source_hint": "registry/events.json",
+      "note": "MATRIX AI Audit Trail R&D reference: evidence pack created."
+    },
+    {
+      "record_type": "RND_VERIFICATION_EVENT",
+      "ref_payload_sha256": "3434343434343434343434343434343434343434343434343434343434343434",
+      "status": "RND_ONLY",
+      "timestamp": "2026-05-07T15:50:00+02:00",
+      "source_hint": "registry/events.json",
+      "note": "MATRIX AI Audit Trail R&D reference: fail-closed verification result."
     }
   ]
 }
