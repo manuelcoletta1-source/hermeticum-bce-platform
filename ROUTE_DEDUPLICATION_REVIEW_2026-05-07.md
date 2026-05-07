@@ -3,7 +3,7 @@
 Review date: 2026-05-07  
 Repository: hermeticum-bce-platform  
 Maintainer: Manuel Coletta  
-Status: OPEN  
+Status: IN_REVIEW  
 Purpose: classify duplicate, legacy, canonical, declassed and redirect-worthy public routes before deletion.
 
 ---
@@ -44,20 +44,38 @@ Route	Status	Reason
 /terms/	KEEP_CANONICAL	Terms overview.
 /schemas/	KEEP_CANONICAL	JSON schemas and registry v3 validation.
 /docs/	KEEP_CANONICAL	Documentation hub.
+/i3p/	KEEP_CANONICAL	I3P-oriented MVP review page for MATRIX AI Audit Trail.
+/i3p/demo-node/	KEEP_SUPPORTING_DEMO	Static technical support demo for fail-closed local execution logic.
 
 
 
 ---
 
-3. Routes requiring review
+3. AI / Joker route decisions
 
-These routes may be duplicates, historical pages, older entrypoints, or pages requiring overclaim review.
+The following AI / Joker routes have now been classified.
+
+Route	Status	Decision
+
+/joker-c2/	KEEP_CANONICAL	Canonical platform page for AI JOKER-C2.
+/matrix-audit-trail/	KEEP_CANONICAL	Canonical public bridge to MATRIX AI Audit Trail MVP.
+/ai-joker-c2/	DECLASS_LEGACY_COMPATIBILITY	Rebuilt as legacy compatibility route pointing to /joker-c2/ and runtime demo.
+/ai-joker-c2/anchor.json	KEEP_HISTORICAL_ARTIFACT	Public historical anchor artifact updated to HBCE-ANCHOR-v2 / no-public-data-custody model.
+/ai-joker-c2/hash.html	DECLASS_LEGACY_TOOL	Retained as noindex legacy SHA-256 helper for anchor artifact; canonical verification is /verify/.
+/ai/	DECLASS_LEGACY_COMPATIBILITY	Rebuilt as legacy compatibility route pointing to /joker-c2/ and runtime demo.
+/ai/ai-operational-unit.json	KEEP_HISTORICAL_ARTIFACT	Historical public AI operational unit reference updated to v2 no-custody model.
+/joker/	DECLASS_LEGACY_LOCAL_TOOL	Rebuilt as noindex legacy local timeline tool pointing to /joker-c2/ and MATRIX AI Audit Trail.
+
+
+
+---
+
+4. Routes still requiring review
+
+These routes may be historical pages, older entrypoints, commercial surfaces, operator pages, or pages requiring overclaim review.
 
 Route	Proposed status	Review reason
 
-/ai-joker-c2/	REVIEW	Possible duplicate of /joker-c2/.
-/ai/	REVIEW	May be an old AI unit page.
-/joker/	REVIEW	May be a legacy Joker console/page.
 /gate/	REVIEW_DECLASS	Legacy execution gate path.
 /entry/	REVIEW_DECLASS	Already described as non-canonical in prior commits.
 /phase-1/	REVIEW_ARCHIVE	Historical phase route.
@@ -80,7 +98,7 @@ Route	Proposed status	Review reason
 
 ---
 
-4. Deletion policy
+5. Deletion policy
 
 Do not delete a public route immediately if:
 
@@ -112,72 +130,179 @@ remove from homepage/sitemap only;
 document deprecation in audit file.
 
 
+Deletion is permitted only after:
+
+1. canonical replacement exists;
+
+
+2. links have been updated;
+
+
+3. audit record has been updated;
+
+
+4. historical artifact value has been evaluated;
+
+
+5. no active demo or outreach dependency remains.
+
+
+
 
 ---
 
-5. Canonical decision for AI JOKER-C2 routes
+6. Canonical decision for AI JOKER-C2 routes
 
-The canonical platform route should be:
+The canonical platform route is:
 
 /joker-c2/
 
-The operational runtime demo remains external:
+The current operational runtime remains external:
 
 https://hbce-ai-joker-c2.vercel.app/interface
+
+The current operational MVP demo remains external:
+
 https://hbce-ai-joker-c2.vercel.app/matrix-audit-trail
 
-Possible duplicate routes:
+The platform bridge for the MVP is:
+
+/matrix-audit-trail/
+
+Legacy routes:
 
 /ai-joker-c2/
 /ai/
 /joker/
 
-should be reviewed and either redirected or marked as historical/non-canonical.
+are now classified as non-canonical and retained only for compatibility or historical continuity.
 
 
 ---
 
-6. Next review order
+7. Files updated in this review cycle
 
-1. /joker-c2/
+Updated files:
 
+ai-joker-c2/index.html
 
-2. /ai-joker-c2/
+ai-joker-c2/anchor.json
 
+ai-joker-c2/hash.html
 
-3. /ai/
+ai/index.html
 
+ai/ai-operational-unit.json
 
-4. /joker/
+joker/index.html
 
+joker-c2/index.html
 
-5. /operator/
+joker-c2/deployment-roadmap.html
 
+joker-c2/integration-example.html
 
-6. /operator-console/
+i3p/index.html
 
+i3p/demo-node/index.html
 
-7. /operator-license/
-
-
-8. /b2g/
-
-
-9. /enterprise/
-
-
-10. /defense/
-
+i3p/demo-node/node.js
 
 
 
 ---
 
-7. Current decision
+8. Current route hierarchy
 
-No deletion approved yet.
+Current hierarchy:
+
+CANONICAL PLATFORM GATEWAY
+/
+
+CANONICAL AI JOKER-C2 PLATFORM ROUTE
+/joker-c2/
+
+CANONICAL MATRIX AI AUDIT TRAIL PLATFORM BRIDGE
+/matrix-audit-trail/
+
+OPERATIONAL AI JOKER-C2 RUNTIME
+https://hbce-ai-joker-c2.vercel.app/interface
+
+OPERATIONAL MATRIX AI AUDIT TRAIL MVP
+https://hbce-ai-joker-c2.vercel.app/matrix-audit-trail
+
+I3P REVIEW PAGE
+/i3p/
+
+STATIC SUPPORT DEMO
+/i3p/demo-node/
+
+LEGACY / COMPATIBILITY ROUTES
+/ai-joker-c2/
+/ai/
+/joker/
+
+
+---
+
+9. Next review order
+
+Next recommended review order:
+
+1. /gate/
+
+
+2. /entry/
+
+
+3. /phase-1/
+
+
+4. /operator/
+
+
+5. /operator-console/
+
+
+6. /operator-license/
+
+
+7. /operator-playbook/
+
+
+8. /join-operator/
+
+
+9. /approve-operator/
+
+
+10. /b2g/
+
+
+11. /enterprise/
+
+
+12. /defense/
+
+
+13. /io-space/
+
+
+14. /banca-cibernetica-europea/
+
+
+
+
+---
+
+10. Current decision
+
+Deletion is not approved yet.
 
 Current status:
 
-OPEN — ROUTE CLASSIFICATION STARTED; FILE-LEVEL REVIEW REQUIRED
+IN_REVIEW — AI / JOKER ROUTES CLASSIFIED; OPERATOR / B2B / B2G / DEFENSE ROUTES STILL REQUIRE REVIEW
+
+The AI / Joker duplication issue is partially remediated because the canonical route has been established and legacy routes have been declassed instead of deleted.
+
 
