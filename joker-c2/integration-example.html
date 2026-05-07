@@ -4,8 +4,8 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
 
-  <title>Joker-C2 Integration Example — 12-minute AI Governance Flow</title>
-  <meta name="description" content="Concrete integration example for Joker-C2: /gate → PASS → model call → /execute → receipt → verify. Includes minimal JSON payloads and a deterministic receipt rule (sha256 + Ed25519)."/>
+  <title>Joker-C2 Integration Example — MATRIX AI Audit Trail Flow</title>
+  <meta name="description" content="Concrete integration example for AI JOKER-C2 and MATRIX AI Audit Trail: document hash, AI action, governance decision, human validation, EVT, OPC and audit-ready report. R&D and pilot-ready boundary." />
 
   <meta name="robots" content="index,follow"/>
   <meta name="theme-color" content="#0b0f14"/>
@@ -19,229 +19,328 @@
   <div class="hbce-container">
     <main class="hbce-main">
 
-      <!-- HERO -->
       <section class="hbce-section hbce-hero">
-        <div class="hbce-hero__kicker">JOKER-C2 · INTEGRATION EXAMPLE · DETERMINISTIC GOVERNANCE</div>
+        <div class="hbce-hero__kicker">JOKER-C2 · INTEGRATION EXAMPLE · MATRIX AI AUDIT TRAIL</div>
 
-        <h1 class="hbce-hero__title">Integrate Joker-C2 in 12 minutes</h1>
+        <h1 class="hbce-hero__title">Integrating AI JOKER-C2 through MATRIX AI Audit Trail</h1>
 
         <p class="hbce-hero__lead">
-          This page shows a concrete, minimal integration flow:
-          <b>/gate → PASS → model call → /execute → receipt → verify</b>.
+          This page describes a concrete integration pattern for AI JOKER-C2 using the
+          <b>MATRIX AI Audit Trail</b> MVP.
           <br/><br/>
-          Joker-C2 is vendor-neutral: OpenAI, Anthropic, xAI, local LLMs.
-          It does not replace models — it gates execution and produces verifiable evidence receipts.
+          The integration flow converts AI-assisted document analysis into an audit-ready process:
+          document hash, AI action, governance decision, human validation, EVT event, OPC proof and report export.
         </p>
 
-        <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
-          <a class="hbce-btn hbce-btn--primary" href="#flow">Start flow</a>
-          <a class="hbce-btn" href="./">Joker-C2</a>
-          <a class="hbce-btn" href="../verify/">Verify</a>
-          <a class="hbce-btn" href="../pricing/">Pricing</a>
-          <a class="hbce-btn" href="../">Home</a>
+        <div class="hbce-card" style="margin-top:14px;">
+          <div class="hbce-mono">CURRENT MVP</div>
+          <p class="hbce-muted" style="max-width:92ch;">
+            The first working integration is not a full enterprise gateway deployment.
+            It is an internal R&D self-pilot for <b>HERMETICUM B.C.E. S.r.l.</b>.
+            The operational demo is hosted in the AI JOKER-C2 runtime deployment.
+          </p>
+
+          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+            <a
+              class="hbce-btn hbce-btn--primary"
+              href="https://hbce-ai-joker-c2.vercel.app/matrix-audit-trail"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Launch MATRIX AI Audit Trail Demo
+            </a>
+
+            <a
+              class="hbce-btn"
+              href="https://hbce-ai-joker-c2.vercel.app/interface"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open AI JOKER-C2 Runtime
+            </a>
+
+            <a class="hbce-btn" href="./">
+              Back to Joker-C2
+            </a>
+
+            <a class="hbce-btn" href="../claims/">
+              Claims & Non-Claims
+            </a>
+          </div>
         </div>
 
         <p class="hbce-muted" style="margin-top:12px;max-width:92ch;">
-          Prerequisites: IPR activation for the operator and runtime identity. Fail-closed posture: if any check breaks, execution is denied.
+          Boundary: this example is R&D and pilot-oriented. It does not claim legal certification,
+          regulatory approval, eIDAS qualification, public-sector adoption, external audit certification
+          or production-grade enterprise readiness.
         </p>
       </section>
 
-      <!-- FLOW -->
       <section id="flow" class="hbce-section">
         <h2>Integration flow</h2>
+
+        <div class="hbce-card">
+          <p class="hbce-muted">
+            The current MVP integration flow is:
+          </p>
+
+          <pre class="hbce-mono" style="white-space:pre-wrap;word-break:break-word;">Document upload
+→ document hash
+→ AI document analysis
+→ governance decision
+→ human validation
+→ EVT event
+→ OPC proof
+→ audit report</pre>
+
+          <p class="hbce-muted" style="margin-top:14px;">
+            The value is not the AI answer alone. The value is the ability to show what happened,
+            which document was analyzed, which decision was applied, who validated the output,
+            and which proof records were generated.
+          </p>
+        </div>
 
         <div class="hbce-grid hbce-grid--3" style="margin-top:14px;">
           <div class="hbce-card">
             <div class="hbce-mono">STEP 1</div>
-            <h3>Call /gate</h3>
+            <h3>Document hash</h3>
             <p class="hbce-muted">
-              Validate identity, scope, policy pack, and integrity prerequisites.
-              Output is PASS/FAIL only.
+              The document is read locally or inside the controlled runtime and assigned a hash commitment.
             </p>
           </div>
 
           <div class="hbce-card">
             <div class="hbce-mono">STEP 2</div>
-            <h3>Call your model</h3>
+            <h3>AI action</h3>
             <p class="hbce-muted">
-              Execute the vendor model only if /gate returns PASS. Treat the model output as volatile until receipted.
+              The AI runtime performs document analysis, compliance review, governance review or security review.
             </p>
           </div>
 
           <div class="hbce-card">
             <div class="hbce-mono">STEP 3</div>
-            <h3>Call /execute</h3>
+            <h3>Human validation</h3>
             <p class="hbce-muted">
-              Joker-C2 canonicalizes I/O, computes hashes, appends the chain entry, signs it (Ed25519),
-              and returns a receipt id for verification.
+              The AI output is not final until a human operator approves, corrects or rejects it.
             </p>
           </div>
         </div>
 
-        <div class="hbce-card" style="margin-top:14px;">
-          <div class="hbce-mono">FLOW LINE</div>
-          <p class="hbce-muted">
-            <span class="hbce-mono">Client → /gate → PASS → Model → /execute → Receipt → Verify</span>
-          </p>
-        </div>
-      </section>
+        <div class="hbce-grid hbce-grid--3" style="margin-top:14px;">
+          <div class="hbce-card">
+            <div class="hbce-mono">STEP 4</div>
+            <h3>EVT</h3>
+            <p class="hbce-muted">
+              The workflow generates an EVT event describing the operational trace.
+            </p>
+          </div>
 
-      <!-- PAYLOADS -->
-      <section class="hbce-section">
-        <h2>Minimal payloads (JSON)</h2>
-        <p class="hbce-muted">
-          These are minimal examples. Field names reflect the governance contract (identity, scope, policy pack, deterministic hashing).
-          Your implementation can add fields, but must preserve canonical hashing rules.
-        </p>
+          <div class="hbce-card">
+            <div class="hbce-mono">STEP 5</div>
+            <h3>OPC</h3>
+            <p class="hbce-muted">
+              The EVT is linked to an OPC proof record for audit-oriented review.
+            </p>
+          </div>
 
-        <div class="hbce-card" style="margin-top:14px;">
-          <div class="hbce-mono">POST /gate</div>
-          <p class="hbce-muted">Client asks: “May this operation execute?” Joker-C2 answers: PASS or FAIL.</p>
-          <pre><code>{
-  "ts": "2026-03-03T12:00:00Z",
-  "ipr_operator": "IPR-OPERATOR-XXXX",
-  "ipr_ai": "IPR-AI-XXXX",
-  "policy_pack_id": "HBCE-POLICY-PACK-0001",
-  "scope": {
-    "tenant": "ACME-TEAM-01",
-    "node": "NODE-0001",
-    "purpose": "customer-support",
-    "risk": "low"
-  },
-  "input": {
-    "content_type": "text/plain",
-    "prompt": "Summarize the following contract clauses..."
-  }
-}</code></pre>
-          <p class="hbce-muted">
-            Expected response (example):
-          </p>
-          <pre><code>{
-  "result": "PASS",
-  "reason": "TRACE_OK | POLICY_OK | SCOPE_OK",
-  "gate_id": "GATE-0000000001"
-}</code></pre>
-        </div>
-
-        <div class="hbce-card" style="margin-top:14px;">
-          <div class="hbce-mono">Model call (vendor-neutral)</div>
-          <p class="hbce-muted">
-            Execute the model only after PASS. This is a placeholder step; vendor specifics differ.
-          </p>
-          <pre><code>// pseudo-step
-model_output = call_model(prompt)</code></pre>
-        </div>
-
-        <div class="hbce-card" style="margin-top:14px;">
-          <div class="hbce-mono">POST /execute</div>
-          <p class="hbce-muted">
-            Joker-C2 generates the evidence receipt: canonicalization → sha256 → append-only chain → Ed25519 signature.
-          </p>
-          <pre><code>{
-  "ts": "2026-03-03T12:00:02Z",
-  "gate_id": "GATE-0000000001",
-  "ipr_operator": "IPR-OPERATOR-XXXX",
-  "ipr_ai": "IPR-AI-XXXX",
-  "policy_pack_id": "HBCE-POLICY-PACK-0001",
-  "scope": {
-    "tenant": "ACME-TEAM-01",
-    "node": "NODE-0001",
-    "purpose": "customer-support",
-    "risk": "low"
-  },
-  "input_canonical": {
-    "content_type": "text/plain",
-    "prompt": "Summarize the following contract clauses..."
-  },
-  "output_canonical": {
-    "content_type": "text/plain",
-    "text": "Summary: ..."
-  }
-}</code></pre>
-
-          <p class="hbce-muted">Expected response (example):</p>
-          <pre><code>{
-  "result": "PASS",
-  "receipt_id": "RCPT-0000000001",
-  "entry_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-  "signature": "ed25519:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-  "prev": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
-}</code></pre>
-        </div>
-      </section>
-
-      <!-- RECEIPT RULE -->
-      <section class="hbce-section">
-        <h2>Deterministic receipt rule</h2>
-        <p class="hbce-muted">
-          The receipt hash is computed deterministically. Any mismatch fails closed.
-        </p>
-
-        <div class="hbce-card" style="margin-top:14px;">
-          <div class="hbce-mono">RULE</div>
-          <p class="hbce-muted">
-            <span class="hbce-mono">sha256(prev|input_sha256|output_sha256|policy_pack_id|ts|ipr_ai|ipr_operator)</span>
-            <br/>
-            signature payload:
-            <span class="hbce-mono">ascii(chain.entry)</span>
-            signed with
-            <span class="hbce-mono">ED25519</span>.
-          </p>
-        </div>
-
-        <div class="hbce-card" style="margin-top:14px;">
-          <div class="hbce-mono">VERIFY</div>
-          <p class="hbce-muted">
-            Verification is PASS/FAIL. A verifier checks:
-          </p>
-          <ul class="hbce-muted">
-            <li>canonicalization consistency</li>
-            <li>sha256 recomputation match</li>
-            <li>append-only chain continuity (<span class="hbce-mono">prev</span>)</li>
-            <li>Ed25519 signature validity against the published public key</li>
-          </ul>
-
-          <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
-            <a class="hbce-btn hbce-btn--primary" href="../verify/">Open HBCE Verify</a>
-            <a class="hbce-btn" href="https://manuelcoletta1-source.github.io/hbce-llm-gateway/verify/" rel="noopener">Open live verifier</a>
-            <a class="hbce-btn" href="../registry/">Open registry</a>
+          <div class="hbce-card">
+            <div class="hbce-mono">STEP 6</div>
+            <h3>Audit report</h3>
+            <p class="hbce-muted">
+              The final output is a readable audit report exported as TXT or JSON.
+            </p>
           </div>
         </div>
       </section>
 
-      <!-- DEPLOYMENT NOTES -->
       <section class="hbce-section">
+        <h2>Minimal payload model</h2>
+
+        <p class="hbce-muted">
+          These examples are illustrative and aligned with the current MVP language.
+          They are not production API contracts.
+        </p>
+
+        <div class="hbce-card" style="margin-top:14px;">
+          <div class="hbce-mono">DOCUMENT RECORD</div>
+          <pre><code>{
+  "documentId": "DOC-20260507-0001",
+  "filename": "sample-governance-document.md",
+  "mimeType": "text/markdown",
+  "sizeBytes": 12345,
+  "documentHash": "sha256:...",
+  "uploadedAt": "2026-05-07T00:00:00.000Z",
+  "custody": "SESSION_CONTEXT"
+}</code></pre>
+        </div>
+
+        <div class="hbce-card" style="margin-top:14px;">
+          <div class="hbce-mono">AI ACTION</div>
+          <pre><code>{
+  "actionId": "AI-ACTION-20260507-0001",
+  "actionType": "AI_DOCUMENT_ANALYSIS",
+  "prompt": "Analyze this document for governance and auditability.",
+  "model": "gpt-4o-mini",
+  "runtime": "AI_JOKER_C2",
+  "inputHash": "sha256:..."
+}</code></pre>
+        </div>
+
+        <div class="hbce-card" style="margin-top:14px;">
+          <div class="hbce-mono">GOVERNANCE DECISION</div>
+          <pre><code>{
+  "riskClass": "MEDIUM",
+  "riskScore": 2,
+  "policyStatus": "ALLOWED",
+  "decision": "ALLOW",
+  "humanOversight": "REQUIRED",
+  "failClosed": false,
+  "reasons": [
+    "Governance or audit-relevant content detected.",
+    "Human validation required for compliance value."
+  ]
+}</code></pre>
+        </div>
+
+        <div class="hbce-card" style="margin-top:14px;">
+          <div class="hbce-mono">EVT / OPC</div>
+          <pre><code>{
+  "evt": "EVT-20260507121131-5ABF693B",
+  "evtHash": "sha256:021562d42bec62a665cb8e83c101117856fad75911f0cce46c51e88c3cf92ff2",
+  "opc": "OPC-20260507121131-9DF07633",
+  "opcHash": "sha256:2c7b75130b75b3269c6415832395868a47587eb8671545f4f04d533a10f80749",
+  "finalState": "AUDIT_READY"
+}</code></pre>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <h2>First successful self-pilot run</h2>
+
         <div class="hbce-card">
-          <h2>Deployment notes</h2>
           <p class="hbce-muted">
-            Joker-C2 can be delivered as SaaS, private cloud, or on-prem depending on data locality and audit constraints.
-            Regardless of posture, the contract stays the same: identity-bound scope, fail-closed enforcement, and receipts.
+            The first successful MATRIX AI Audit Trail run was completed by HERMETICUM B.C.E. S.r.l.
+            using an internal U.S.E. — United States of Europe document.
           </p>
 
-          <div class="hbce-card" style="margin-top:14px;">
-            <div class="hbce-mono">CONTACT</div>
-            <p class="hbce-muted">
-              For enterprise / institutional deployments:
-              <span class="hbce-mono">manuelcoletta@domiciliodigitale.com</span>
-            </p>
-          </div>
+          <div class="hbce-grid hbce-grid--2" style="margin-top:14px;">
+            <div class="hbce-card">
+              <div class="hbce-mono">PILOT CLIENT</div>
+              <p class="hbce-muted">HERMETICUM B.C.E. S.r.l.</p>
+            </div>
 
-          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
-            <a class="hbce-btn hbce-btn--primary" href="./#request">Request deployment</a>
-            <a class="hbce-btn" href="./">Back to Joker-C2</a>
-            <a class="hbce-btn" href="../pricing/">Pricing</a>
-            <a class="hbce-btn" href="../">Home</a>
+            <div class="hbce-card">
+              <div class="hbce-mono">PILOT TYPE</div>
+              <p class="hbce-muted">Internal R&D self-audit</p>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">DOCUMENT HASH</div>
+              <p class="hbce-mono" style="word-break:break-word;">
+                sha256:829084cb740c21c1cc5b59ffdb4c220169e05627a5f7abf469f4ede96e8aae32
+              </p>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">FINAL STATE</div>
+              <p class="hbce-muted">AUDIT_READY</p>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">EVT</div>
+              <p class="hbce-mono" style="word-break:break-word;">EVT-20260507121131-5ABF693B</p>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">OPC</div>
+              <p class="hbce-mono" style="word-break:break-word;">OPC-20260507121131-9DF07633</p>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- FINAL -->
+      <section class="hbce-section">
+        <h2>Integration notes</h2>
+
+        <div class="hbce-card">
+          <p class="hbce-muted">
+            The current MVP uses a local orchestration layer to demonstrate the audit trail flow.
+            A future version may connect the workflow directly to the live AI JOKER-C2 chat runtime API.
+          </p>
+
+          <p class="hbce-muted">
+            A production-grade integration would require persistent storage, authentication, access control,
+            retention policy, security review, privacy review and legal review.
+          </p>
+
+          <p class="hbce-muted">
+            The MVP should be evaluated first as an internal self-pilot and then as a narrow 30-day external pilot.
+          </p>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <h2>Verification boundary</h2>
+
+        <div class="hbce-card">
+          <p class="hbce-muted">
+            MATRIX AI Audit Trail produces technical audit artifacts. These artifacts do not create legal certification,
+            regulatory approval, eIDAS qualification, public-sector adoption, external audit certification,
+            automated compliance or production-grade enterprise readiness by themselves.
+          </p>
+
+          <p class="hbce-muted">
+            Correct interpretation: the MVP demonstrates traceability, attribution, governance decisioning,
+            human validation, EVT continuity, OPC proof generation and audit-ready reporting.
+          </p>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <h2>Direct links</h2>
+
+        <div class="hbce-card">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <a
+              class="hbce-btn hbce-btn--primary"
+              href="https://hbce-ai-joker-c2.vercel.app/matrix-audit-trail"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Launch MATRIX AI Audit Trail Demo
+            </a>
+
+            <a
+              class="hbce-btn"
+              href="https://hbce-ai-joker-c2.vercel.app/interface"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open AI JOKER-C2 Runtime
+            </a>
+
+            <a class="hbce-btn" href="./">
+              Back to Joker-C2
+            </a>
+
+            <a class="hbce-btn" href="../matrix-audit-trail/">
+              Public Demo Bridge
+            </a>
+
+            <a class="hbce-btn" href="../claims/">
+              Claims & Non-Claims
+            </a>
+          </div>
+        </div>
+      </section>
+
       <section class="hbce-section">
         <div class="hbce-card">
           <h2>Operational statement</h2>
           <p class="hbce-muted">
-            This page is intentionally concrete. Joker-C2 is governance above models:
-            deterministic gating, signed receipts, and independent verification.
+            Joker-C2 integration is staged through evidence, not assertion.
+            The first concrete integration path is MATRIX AI Audit Trail:
+            a document workflow converted into AI analysis, governance decision, human validation, EVT, OPC and audit-ready report.
           </p>
         </div>
       </section>
