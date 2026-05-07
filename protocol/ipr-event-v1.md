@@ -1,103 +1,347 @@
 # IPR Event Protocol v1
 
-This document defines the first protocol specification for Identity Primary Record (IPR) events.
+This document defines the IPR Event Protocol v1 as a historical and technical R&D reference for HERMETICUM B.C.E. S.r.l.
 
-The protocol describes how operational events are structured and recorded within infrastructures implementing the Reality Engineering framework.
+The protocol describes how identity-bound operational events may be structured, recorded, hashed, signed, and verified within the HBCE technical architecture.
 
----
+In the current public boundary, this protocol is aligned with the MATRIX AI Audit Trail MVP. It must be understood as an R&D and pilot-oriented audit reference, not as a legal standard, not as a public authority event registry, not as a regulated certification framework, not as an eIDAS qualified trust service, and not as a production compliance system by itself.
 
-# Protocol Purpose
+## 1. Protocol Purpose
 
-The IPR event protocol provides a standardized format for recording actions performed by identifiable entities.
+The purpose of the IPR Event Protocol is to provide a structured format for recording actions associated with identifiable operational references.
 
-The protocol enables:
+The protocol supports:
 
-- persistent identity attribution
-- structured event recording
-- reconstruction of operational history
+- identity-bound event attribution;
+- AI audit-trail recording;
+- human validation tracking;
+- policy-check recording;
+- evidence-pack continuity;
+- append-only event history;
+- hash-only public proof;
+- fail-closed verification;
+- registry integration.
 
----
+The event protocol does not require public disclosure of confidential payloads. Public records should expose minimized metadata and hash references rather than raw prompts, raw outputs, personal data, client documents, private keys, or internal audit material.
 
-# Event Model
+## 2. Current Scope
+
+The current scope of the protocol is the MATRIX AI Audit Trail MVP.
+
+Within this scope, events may represent:
+
+- AI output recorded;
+- AI output reviewed;
+- human validation;
+- policy check;
+- risk assessment;
+- governance decision;
+- audit note;
+- evidence-pack creation;
+- registry status update;
+- verification request;
+- verification result;
+- access event;
+- security notice.
+
+The goal is to transform operational activity into a verifiable sequence without turning the public registry into a custodial data store.
+
+## 3. Event Model
 
 Each event represents a single recorded action.
 
-Minimal event structure:
+The preferred event structure is:
 
-ENTITY  
-ACTION  
-TIMESTAMP  
-CONTEXT  
+`ENTITY_REFERENCE → ACTION → TIMESTAMP → PAYLOAD_HASH → OPERATOR_REFERENCE → STATUS`
 
----
+In registry-compatible form, this becomes:
 
-# Event Fields
+`event_id → entity_id → event_type → event_payload_sha256 → timestamp → operator → status → append_only`
 
-## entity
+The event identifies that an action occurred, when it occurred, which entity reference it concerns, which operator reference recorded or validated it, and which payload hash represents the underlying private material.
 
-Identifier representing the actor performing the action.
+## 4. Required Event Fields
 
-Possible entity types:
+### event_id
 
-- human operator
-- artificial intelligence system
-- autonomous machine
-- infrastructure node
+Unique identifier of the event.
 
----
+Example:
 
-## action
+`EVT-MATRIX-HUMAN-VALIDATION-0001`
 
-Description of the operation performed by the entity.
+### entity_id
 
-Examples:
+Identifier of the entity, audit case, AI system reference, software service reference, document reference, or evidence-pack reference affected by the event.
 
-- node_initialized
-- event_recorded
-- infrastructure_updated
+Example:
 
----
+`IPR-AI-MATRIX-AUDIT-0001`
 
-## timestamp
+### event_type
 
-Time at which the action occurred.
+Type of event recorded.
+
+Recommended values for the MATRIX AI Audit Trail MVP:
+
+- `AI_OUTPUT_RECORDED`;
+- `AI_OUTPUT_REVIEWED`;
+- `HUMAN_VALIDATION`;
+- `GOVERNANCE_DECISION`;
+- `POLICY_CHECK`;
+- `RISK_ASSESSMENT`;
+- `AUDIT_NOTE`;
+- `EVIDENCE_PACK_CREATED`;
+- `REGISTRY_STATUS_UPDATE`;
+- `VERIFICATION_REQUEST`;
+- `VERIFICATION_RESULT`;
+- `ACCESS_EVENT`;
+- `SECURITY_NOTICE`.
+
+### event_payload_sha256
+
+SHA-256 hash of the event payload.
+
+The payload itself may remain private, local, client-controlled, or separately disclosed under appropriate legal and security conditions.
+
+Example:
+
+`ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff`
+
+### timestamp
+
+Time at which the event occurred or was recorded.
 
 Recommended format:
 
-ISO-8601
+`RFC3339`
 
 Example:
 
-2026-03-11T12:00:00Z
+`2026-05-07T15:40:00+02:00`
 
----
+A timezone should always be included.
 
-## context
+### operator
 
-Infrastructure environment in which the event occurred.
+Reference to the operator or system responsible for recording, validating, or signing the event.
 
-Example:
-
-hbce-platform
-
----
-
-# Example Event
+Minimal operator structure:
 
 ```json
 {
-  "entity": "hbce-node-001",
-  "action": "node_initialized",
-  "timestamp": "2026-03-11T12:00:00Z",
-  "context": "hbce-platform"
+  "operator_id": "IPR-OP-RND-0001",
+  "sign_alg": "ED25519",
+  "pubkey": "PUBKEY_PLACEHOLDER",
+  "signature": "SIGNATURE_PLACEHOLDER"
 }
+```
 
-Protocol Position
-Within the Reality Engineering framework, the event protocol operates between identity and infrastructure layers.
-IDENTITY (IPR)
-↓
-EVENT PROTOCOL
-↓
-HBCE INFRASTRUCTURE
-Version
-Protocol version: v1
+Placeholder signatures are acceptable only inside R&D examples. A real fail-closed verifier must reject placeholder signatures unless an explicit demo flag is used.
+
+### status
+
+Current event status.
+
+Recommended values:
+
+- `VALID`;
+- `INVALID`;
+- `REVOKED`;
+- `DRAFT`;
+- `RND_ONLY`.
+
+`RND_ONLY` must not be interpreted as production legal validity, regulated certification, or public authority approval.
+
+### append_only
+
+Boolean field declaring that the event belongs to an append-only record sequence.
+
+Required value:
+
+`true`
+
+## 5. Optional Event Fields
+
+### description
+
+Human-readable description of the event.
+
+Example:
+
+`R&D example event representing human validation of an AI audit-trail record.`
+
+### context
+
+Technical context in which the event occurred.
+
+Example:
+
+`MATRIX_AI_AUDIT_TRAIL_MVP`
+
+### policy
+
+Policy flags associated with the event.
+
+Example:
+
+```json
+[
+  "EU_FIRST",
+  "AUDIT_FIRST",
+  "FAIL_CLOSED",
+  "HASH_ONLY",
+  "GDPR_MIN",
+  "NO_PUBLIC_DATA_CUSTODY"
+]
+```
+
+### verification_result
+
+Optional reference to a verification outcome.
+
+Example:
+
+```json
+{
+  "result": "VALID_RND_ONLY",
+  "verifier": "hbce-verify.reference.js",
+  "fail_closed": true
+}
+```
+
+### anchors
+
+Optional external anchoring references.
+
+Example:
+
+```json
+{
+  "ipfs_cid": "optional",
+  "btc_txid": "optional",
+  "evm_tx": "optional"
+}
+```
+
+Anchors are optional and do not replace internal verification of record structure, hash integrity, signature validity, and append-only continuity.
+
+## 6. Example Event Record
+
+```json
+{
+  "proto": "HBCE-REGISTRY-v1",
+  "kind": "IPR_EVENT_RECORD",
+  "event_id": "EVT-MATRIX-HUMAN-VALIDATION-0001",
+  "entity_id": "IPR-AI-MATRIX-AUDIT-0001",
+  "event_type": "HUMAN_VALIDATION",
+  "event_payload_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "timestamp": "2026-05-07T15:40:00+02:00",
+  "operator": {
+    "operator_id": "IPR-OP-RND-0001",
+    "sign_alg": "ED25519",
+    "pubkey": "PUBKEY_PLACEHOLDER",
+    "signature": "SIGNATURE_PLACEHOLDER"
+  },
+  "status": "RND_ONLY",
+  "append_only": true,
+  "description": "R&D example event representing human validation of an AI audit-trail record."
+}
+```
+
+## 7. MATRIX AI Audit Trail Flow
+
+For MATRIX AI Audit Trail, the event protocol supports the following sequence:
+
+`AI_OUTPUT_RECORDED → POLICY_CHECK → AI_OUTPUT_REVIEWED → HUMAN_VALIDATION → EVIDENCE_PACK_CREATED → VERIFICATION_RESULT`
+
+This sequence allows the system to show that an AI-assisted output was recorded, checked, reviewed, validated, packaged as evidence, and verified through a deterministic reference process.
+
+The public layer should expose only the event metadata and payload hashes. The actual prompt, output, review notes, client file, or internal decision material should remain outside the public registry unless a separate lawful disclosure process exists.
+
+## 8. Verification Rules
+
+A verifier should apply fail-closed behavior.
+
+An event should be treated as invalid when:
+
+- required fields are missing;
+- `event_payload_sha256` is not a 64-character hexadecimal SHA-256 value;
+- `timestamp` is missing or malformed;
+- `operator.operator_id` is missing;
+- signature verification fails;
+- placeholder signatures are used outside explicit R&D demo mode;
+- the referenced entity does not exist;
+- the referenced entity is not valid under the active verification boundary;
+- `append_only` is not set to `true`;
+- the event is disconnected from the ledger chain;
+- the event status is `REVOKED`, `INVALID`, `DRAFT`, or `RND_ONLY` without explicit R&D allowance.
+
+A production verifier must not treat `RND_ONLY` as production validity.
+
+## 9. Registry Integration
+
+Event records may be published in the event registry.
+
+Registry path:
+
+`registry/events.json`
+
+The public registry should expose minimized event metadata only.
+
+A public event registry entry should not expose:
+
+- personal data;
+- confidential payloads;
+- raw AI prompts;
+- raw AI outputs;
+- private keys;
+- client files;
+- regulated identity documents;
+- financial assets;
+- internal security-sensitive material.
+
+The preferred public proof pattern is:
+
+`event_id → entity_id → event_type → event_payload_sha256 → timestamp → operator_reference → status`
+
+## 10. Event Position in the Framework
+
+Within the HERMETICUM B.C.E. technical framework, the IPR event protocol operates between identity references and registry-visible audit history.
+
+The position can be represented as:
+
+`IPR Reference → IPR Event → HBCE Node → Registry Record → Verification Result → Audit History`
+
+For the MATRIX AI Audit Trail MVP, the position can be represented as:
+
+`AI Output → Event Record → Human Validation → Evidence Pack → Hash-Only Registry → Fail-Closed Verification`
+
+The event protocol therefore provides structured traceability. It does not create legal validity by itself and does not replace legal, cybersecurity, privacy, or compliance review.
+
+## 11. Operational Boundaries
+
+The IPR Event Protocol follows these boundaries:
+
+- EU-first reference framework;
+- audit-first design;
+- fail-closed verification;
+- hash-only public exposure;
+- append-only record continuity;
+- GDPR-minimized publication model;
+- no public data custody;
+- no private key custody;
+- no financial custody;
+- no regulated certification claim;
+- no public authority claim;
+- no offensive or military command function.
+
+Any production use requires independent legal, cybersecurity, privacy, compliance, and operational review.
+
+## 12. Version
+
+Protocol version: v1.1 R&D reference alignment.
+
+Original v1 concept retained as historical basis.
+
+Current alignment: MATRIX AI Audit Trail MVP, registry v3 boundary, no-custody model, hash-only public records, append-only event history, fail-closed verification.
