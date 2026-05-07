@@ -1,15 +1,71 @@
 {
-  "proto": "HBCE-QUEUE-v1",
-  "kind": "OPERATOR_APPEND_ONLY_QUEUE",
+  "proto": "HBCE-QUEUE-v2",
+  "kind": "LOCAL_R_AND_D_QUEUE_CONCEPT",
+  "status": "ARCHIVAL_EMPTY_QUEUE",
   "policy": [
     "APPEND_ONLY",
     "FAIL_CLOSED",
-    "UE_FIRST",
+    "EU_FIRST",
     "AUDIT_FIRST",
     "GDPR_MIN",
     "HASH_ONLY",
-    "NO_PUBLIC_DATA_CUSTODY"
+    "NO_PUBLIC_DATA_CUSTODY",
+    "LOCAL_ONLY",
+    "NO_ACTIVE_ONBOARDING",
+    "NO_LICENSE_ISSUANCE"
   ],
-  "description": "Coda operativa append-only. Traccia minima di lavorazioni (hash-only). Nessuna custodia pubblica di dati personali.",
+  "route": {
+    "path": "/operator/queue/",
+    "classification": "R_AND_D_LOCAL_QUEUE_CONCEPT",
+    "canonical_operator_boundary": "/operator/",
+    "current_product_mvp": "/matrix-audit-trail/",
+    "runtime_mvp": "https://hbce-ai-joker-c2.vercel.app/matrix-audit-trail"
+  },
+  "description": "Local R&D queue concept for future operator workflow research. This file does not represent an active onboarding queue, official ticketing system, operator license process, regulated certification process, public authority workflow, or customer support system.",
+  "public_data_model": {
+    "public_layer": "HASH_ONLY_OR_MINIMIZED_METADATA",
+    "private_evidence_policy": "PRIVATE_EVIDENCE_OUTSIDE_PUBLIC_REPOSITORY",
+    "data_custody": "NO_PUBLIC_DATA_CUSTODY",
+    "storage_model": "LOCAL_BROWSER_OR_STATIC_EMPTY_REFERENCE"
+  },
+  "allowed_item_shape": {
+    "item_id": "public local queue identifier",
+    "public_label": "minimized public label only",
+    "request_type": "R&D or pilot discussion category",
+    "status": "NEW | IN_REVIEW | DONE | BLOCKED",
+    "created_at": "ISO 8601 timestamp",
+    "updated_at": "ISO 8601 timestamp",
+    "payload_sha256": "optional hash-only commitment"
+  },
+  "forbidden_public_fields": [
+    "name",
+    "nickname",
+    "territory",
+    "raw_identifier",
+    "tax_code",
+    "fiscal_code",
+    "identity_document",
+    "private_evidence",
+    "personal_payload",
+    "api_key",
+    "token",
+    "password",
+    "secret",
+    "private_key",
+    "credential",
+    "production_log",
+    "private_communication",
+    "customer_data",
+    "sensitive_operational_payload"
+  ],
+  "non_claims": [
+    "This queue does not create an official ticket.",
+    "This queue does not submit data to HERMETICUM B.C.E. S.r.l.",
+    "This queue does not create an operator license.",
+    "This queue does not create regulated certification.",
+    "This queue does not create public authority approval.",
+    "This queue does not create a customer support obligation.",
+    "This queue does not authorize public-sector or critical-infrastructure operations."
+  ],
   "items": []
 }
