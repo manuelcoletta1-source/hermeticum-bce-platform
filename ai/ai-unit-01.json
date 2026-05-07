@@ -1,37 +1,67 @@
 {
-  "proto": "HBCE-IPR-AI-v1",
-  "kind": "AI_OPERATIONAL_UNIT",
-  "unit_name": "HBCE-AI-UNIT-01",
+  "proto": "HBCE-IPR-AI-v2",
+  "kind": "AI_OPERATIONAL_UNIT_PUBLIC_REFERENCE",
+  "unit_label": "HBCE_AI_UNIT_01",
   "status": "ACTIVE",
-
+  "policy": [
+    "EU_FIRST",
+    "AUDIT_FIRST",
+    "HASH_ONLY",
+    "FAIL_CLOSED",
+    "APPEND_ONLY",
+    "GDPR_MIN",
+    "NO_PUBLIC_DATA_CUSTODY",
+    "DEFENSIVE_USE_ONLY"
+  ],
+  "route_status": {
+    "route": "/ai/",
+    "classification": "LEGACY_COMPATIBILITY_ROUTE",
+    "canonical_platform_route": "/joker-c2/",
+    "operational_runtime": "https://hbce-ai-joker-c2.vercel.app/interface",
+    "matrix_audit_trail_mvp": "https://hbce-ai-joker-c2.vercel.app/matrix-audit-trail"
+  },
   "origin": {
     "biological_ipr": "IPR-3",
-    "role": "PRIMARY_OPERATOR"
+    "role": "PRIMARY_OPERATOR",
+    "public_reference_only": true
   },
-
   "joker_anchor": {
-    "entity": "AI_JOKER_C2",
-    "sha256": "13a955dd8b8df92603952c3aa25aaaf7571c7bc6c6a49679dc2ac7ff12b99324",
-    "link": "/hermeticum-bce-platform/ai-joker-c2/anchor.json"
+    "entity_label": "AI_JOKER_C2",
+    "anchor_sha256": "13a955dd8b8df92603952c3aa25aaaf7571c7bc6c6a49679dc2ac7ff12b99324",
+    "anchor_link": "/hermeticum-bce-platform/ai-joker-c2/anchor.json",
+    "anchor_status": "LEGACY_PUBLIC_ANCHOR"
   },
-
   "function": {
-    "type": "operational_ai",
+    "type": "operational_ai_research_unit",
     "scope": [
       "analysis",
       "audit",
       "system_design",
-      "robotic_integration",
-      "infrastructure_support"
+      "infrastructure_support",
+      "governed_ai_runtime_research",
+      "matrix_ai_audit_trail_self_pilot"
+    ],
+    "excluded_scope": [
+      "legal_certification",
+      "regulated_identity_issuance",
+      "public_authority_approval",
+      "autonomous_high_risk_execution",
+      "offensive_cybersecurity",
+      "public_data_custody"
     ]
   },
-
-  "policy": [
-    "AUDIT_FIRST",
-    "TRACEABLE",
-    "EVOLUTIONARY",
-    "UE_FIRST"
-  ],
-
-  "timestamp": "2026-02-12T00:00:00Z"
+  "public_proof": {
+    "proof_model": "HASH_ONLY_PUBLIC_REFERENCE",
+    "payload_sha256": null,
+    "note": "If this unit is registered in the public registry, publish only a minimized payload_sha256 commitment and not private evidence or raw identity material."
+  },
+  "timestamp": "2026-02-12T00:00:00.000Z",
+  "last_update": "2026-05-07T00:00:00.000Z",
+  "notes": [
+    "Historical public reference for the first HBCE AI operational unit.",
+    "The canonical platform route for AI JOKER-C2 is /joker-c2/.",
+    "The /ai/ route is retained only as a legacy compatibility route.",
+    "This record does not create legal certification, eIDAS qualification, public-sector adoption, institutional validation, or regulated identity status by itself.",
+    "Private evidence, identity documents, credentials, private keys, raw personal identifiers, production logs and sensitive operational payloads must remain outside the public repository."
+  ]
 }
