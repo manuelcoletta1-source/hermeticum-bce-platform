@@ -1,233 +1,453 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HBCE — Autonomous Identity Infrastructure | Torino R&D</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-:root{
-  --bg:#0b0f14;
-  --panel:#0f1620;
-  --line:#1c2633;
-  --text:#e8eef6;
-  --muted:#b8c4d6;
-  --dim:#6f7b8a;
-  --accent:#00ffe1;
-  --good:#6dff8f;
-}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
-  line-height:1.6;
-}
-.container{
-  max-width:920px;
-  margin:auto;
-  padding:60px 20px;
-}
-h1{
-  font-size:34px;
-  margin:0 0 10px;
-}
-h2{
-  margin:60px 0 14px;
-  color:var(--accent);
-  letter-spacing:0.5px;
-}
-p{ color:var(--muted); margin:10px 0; }
-.tag{
-  display:inline-block;
-  border:1px solid var(--accent);
-  padding:6px 12px;
-  margin-top:14px;
-  font-size:12px;
-  letter-spacing:1px;
-  color:var(--accent);
-}
-.block{
-  margin-top:16px;
-  padding:22px;
-  border:1px solid var(--line);
-  background:var(--panel);
-}
-.kv{
-  display:grid;
-  grid-template-columns: 170px 1fr;
-  gap:8px 12px;
-  margin-top:10px;
-  font-size:13px;
-}
-.k{ color:var(--dim); }
-code{
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-  color:var(--muted);
-}
-.row{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-top:14px;
-}
-a{ color:var(--accent); text-decoration:none; }
-.btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  padding:12px 14px;
-  border-radius:12px;
-  border:1px solid var(--accent);
-  color:var(--accent);
-  font-weight:700;
-}
-.btn.primary{
-  background:var(--accent);
-  color:#061013;
-}
-.btn.good{
-  border-color:var(--good);
-  color:var(--good);
-}
-.small{
-  font-size:12px;
-  color:var(--dim);
-  margin-top:10px;
-}
-.footer{
-  margin-top:80px;
-  font-size:12px;
-  color:var(--dim);
-}
-</style>
+  <title>MATRIX AI Audit Trail — MVP for I3P Review | HERMETICUM B.C.E.</title>
+  <meta name="description" content="MATRIX AI Audit Trail MVP for I3P review: internal R&D self-pilot by HERMETICUM B.C.E. S.r.l. using AI JOKER-C2 to produce document hash, AI analysis, governance decision, human validation, EVT, OPC and audit-ready report." />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/i3p/" />
+
+  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+
+  <style>
+    .i3p-matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .i3p-matrix-kv {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 8px 12px;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 720px) {
+      .i3p-matrix-kv {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .i3p-matrix-k {
+      color: rgba(148, 163, 184, 0.95);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 800;
+    }
+
+    .i3p-matrix-v {
+      color: rgba(226, 232, 240, 0.96);
+      overflow-wrap: anywhere;
+    }
+
+    .i3p-matrix-code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      overflow-wrap: anywhere;
+    }
+  </style>
 </head>
 
 <body>
-<div class="container">
+  <div data-hbce="header"></div>
 
-<h1>HERMETICUM B.C.E.</h1>
-<p><strong>Autonomous Identity Infrastructure</strong></p>
-<p>Research & Development Laboratory — EU Operational Framework</p>
+  <main class="hbce-container hbce-main">
 
-<div class="tag">TORINO R&D ENTRY POINT</div>
+    <section class="hbce-hero">
+      <div class="hbce-hero__kicker">I3P · MATRIX AI AUDIT TRAIL · MVP REVIEW</div>
 
-<h2>Overview</h2>
-<div class="block">
-  <p>
-    HBCE is an experimental research and development laboratory focused on persistent operational identity infrastructures for autonomous and hybrid systems.
-  </p>
-  <p>
-    The research explores identity binding, execution authorization and auditability for next-generation machine environments including artificial intelligence, robotics, drones and distributed software agents.
-  </p>
+      <h1 class="hbce-hero__title">MATRIX AI Audit Trail</h1>
 
-  <div class="kv">
-    <div class="k">Core Thesis</div><div><code>Execution requires identity.</code></div>
-    <div class="k">Failure Mode</div><div><code>FAIL_CLOSED</code> (deny by default)</div>
-    <div class="k">Write Model</div><div><code>APPEND_ONLY</code> (evolution, not overwrite)</div>
-    <div class="k">Integrity</div><div><code>DETERMINISTIC SHA-256 MATCH</code></div>
-  </div>
-</div>
+      <p class="hbce-hero__lead">
+        MATRIX AI Audit Trail is the first operational MVP extracted from the MATRIX / HBCE / AI JOKER-C2 architecture.
+        It demonstrates a controlled AI-assisted document workflow where document hashing, AI analysis, governance decision,
+        human validation, EVT continuity, OPC proof and audit-ready reporting are connected in one minimal product flow.
+        <br /><br />
+        The first pilot client is <strong>HERMETICUM B.C.E. S.r.l.</strong> itself, using the system as an internal R&D
+        self-audit pilot before external customer pilots.
+      </p>
 
-<h2>The Missing Layer</h2>
-<div class="block">
-  <p>
-    Autonomous systems can execute actions but cannot demonstrate persistent operational identity across time, environments and infrastructures.
-  </p>
-  <p>
-    Current architectures rely on device identifiers, accounts or certificates that do not provide continuous, verifiable identity for autonomous execution.
-  </p>
-  <p>
-    This structural gap limits secure deployment of:
-    <br>• robotics and industrial automation
-    <br>• AI agents and hybrid systems
-    <br>• distributed machine environments
-    <br>• human-machine operational continuity
-  </p>
-  <p>
-    A deterministic identity layer for execution environments is currently absent.
-  </p>
-</div>
+      <p class="hbce-note" style="margin-top:12px;">
+        Status:
+        <strong>working MVP</strong> ·
+        <strong>internal R&D self-pilot</strong> ·
+        <strong>AI JOKER-C2 runtime</strong> ·
+        <strong>EVT / OPC proof</strong> ·
+        <strong>audit-ready report</strong>
+      </p>
 
-<h2>IPR — Identity Primary Record</h2>
-<div class="block">
-  <p>
-    HBCE develops the Identity Primary Record (IPR): a persistent, append-only operational identity structure designed for autonomous and hybrid entities.
-  </p>
-  <p>
-    Core properties:
-    <br>• persistent identity anchoring
-    <br>• append-only evolution
-    <br>• fail-closed verification logic
-    <br>• environment-agnostic structure
-    <br>• hash-based integrity
-    <br>• compatible with EU regulatory logic
-  </p>
-  <p>
-    Execution requires identity.
-    <br>Identity must persist beyond devices and sessions.
-  </p>
-</div>
+      <div class="hbce-actions" style="margin-top:16px;">
+        <a
+          class="hbce-btn hbce-btn--primary"
+          href="https://hbce-ai-joker-c2.vercel.app/matrix-audit-trail"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Launch MVP Demo
+        </a>
 
-<h2>Proof of Concept</h2>
-<div class="block">
-  <p>
-    The following browser-only micro-node demonstrates the execution gate concept:
-    <br><code>without identity or with invalid ledger → DENIED (FAIL_CLOSED)</code>
-    <br><code>with valid identity + deterministic integrity → RUN AUTHORIZED</code>
-  </p>
+        <a
+          class="hbce-btn"
+          href="https://hbce-ai-joker-c2.vercel.app/interface"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open AI JOKER-C2 Runtime
+        </a>
 
-  <div class="row">
-    <a class="btn primary" href="./demo-node/">Open Demo Node →</a>
-    <a class="btn good" href="./demo-node/" target="_blank" rel="noopener">Open in New Tab</a>
-  </div>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/matrix-audit-trail/">
+          Public Demo Bridge
+        </a>
 
-  <div class="small">
-    Demo node is static and deterministic. It demonstrates append-only audit chaining and gated execution logic.
-  </div>
-</div>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/claims/">
+          Claims & Non-Claims
+        </a>
+      </div>
+    </section>
 
-<h2>Torino Context</h2>
-<div class="block">
-  <p>
-    Torino hosts one of Europe’s most advanced industrial and engineering ecosystems.
-  </p>
-  <p>
-    Relevant domains:
-    <br>• robotics and automation
-    <br>• aerospace engineering
-    <br>• artificial intelligence
-    <br>• automotive and embedded systems
-    <br>• advanced manufacturing
-  </p>
-  <p>
-    This environment represents an ideal context for early experimental deployment of persistent identity infrastructures for autonomous systems.
-  </p>
-</div>
+    <section class="hbce-section">
+      <h2>1. Executive summary</h2>
 
-<h2>Collaboration Objective</h2>
-<div class="block">
-  <p>
-    HBCE seeks technical and ecosystem alignment within the Torino innovation environment, including research dialogue, experimental integration contexts and deep-tech incubation frameworks.
-  </p>
-  <p>
-    Focus areas:
-    <br>• identity infrastructure research
-    <br>• robotics and AI integration
-    <br>• autonomous systems governance
-    <br>• industrial experimentation scenarios
-  </p>
-  <p>
-    HBCE operates as an independent R&D nucleus exploring identity infrastructures for machine environments.
-  </p>
-</div>
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          MATRIX AI Audit Trail converts AI-assisted document work from an ordinary chat interaction into a traceable,
+          attributable, human-validated and audit-reportable workflow.
+        </p>
 
-<div class="footer">
-HERMETICUM B.C.E. S.r.l. — EU Operational Research Framework<br>
-Autonomous Identity Infrastructure Laboratory
-</div>
+        <p class="hbce-card__text">
+          The MVP focuses on one concrete use case:
+          <strong>AI-assisted analysis of governance, compliance, cybersecurity and audit documents.</strong>
+        </p>
 
-</div>
+        <p class="hbce-card__text">
+          It is intentionally narrow. It does not attempt to implement the full MATRIX architecture. It demonstrates one
+          commercially understandable process that can be tested by a real organization.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>2. First pilot client</h2>
+
+      <div class="i3p-matrix-grid">
+        <article class="hbce-card">
+          <div class="hbce-card__kicker">PILOT CLIENT</div>
+          <h3>HERMETICUM B.C.E. S.r.l.</h3>
+          <p class="hbce-card__text">
+            The first pilot client is HERMETICUM B.C.E. S.r.l. itself.
+            This creates a credible internal R&D self-pilot before external pilots.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__kicker">PILOT TYPE</div>
+          <h3>Internal R&D self-audit</h3>
+          <p class="hbce-card__text">
+            The company uses its own runtime to analyze its own documents and generate audit-ready technical reports.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__kicker">REPOSITORY ROLE</div>
+          <h3>AI JOKER-C2 runtime</h3>
+          <p class="hbce-card__text">
+            The operational MVP runs in the AI JOKER-C2 repository. The HBCE platform acts as the public gateway and policy layer.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>3. Problem</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Companies are starting to use AI for document analysis, compliance support, cybersecurity documentation,
+          governance review, internal audit, policy drafting and operational decision support.
+        </p>
+
+        <p class="hbce-card__text">
+          The problem is that ordinary AI use often leaves weak auditability. A team may not be able to prove which
+          document was analyzed, what action was requested, what model or runtime processed it, what risk was assigned,
+          whether a human reviewed the output, and whether a final audit record exists.
+        </p>
+
+        <p class="hbce-card__text">
+          This creates a gap between AI usefulness and compliance-grade accountability.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>4. Solution</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          MATRIX AI Audit Trail introduces a simple controlled workflow:
+        </p>
+
+        <pre class="hbce-pre" style="white-space:pre-wrap;word-break:break-word;">Document upload
+→ AI analysis
+→ governance decision
+→ human validation
+→ EVT event
+→ OPC proof
+→ audit report</pre>
+
+        <p class="hbce-card__text">
+          The output is not only an AI response. The output is a structured audit trail that records the document hash,
+          AI action, risk class, runtime decision, human validation, EVT event, OPC proof and final report state.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>5. What the MVP already demonstrates</h2>
+
+      <div class="i3p-matrix-grid">
+        <article class="hbce-card">
+          <div class="hbce-card__kicker">DOCUMENT HASH</div>
+          <h3>Input traceability</h3>
+          <p class="hbce-card__text">
+            The uploaded document is assigned a deterministic hash commitment.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__kicker">AI ACTION</div>
+          <h3>Controlled analysis</h3>
+          <p class="hbce-card__text">
+            The AI action is recorded as a structured task, with prompt, action type and output hash.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__kicker">GOVERNANCE</div>
+          <h3>Risk and decision</h3>
+          <p class="hbce-card__text">
+            The workflow assigns risk class, policy status, runtime decision and human oversight requirement.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__kicker">HUMAN VALIDATION</div>
+          <h3>Responsibility boundary</h3>
+          <p class="hbce-card__text">
+            The AI output does not become final until a human operator approves, corrects or rejects it.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__kicker">EVT</div>
+          <h3>Event trace</h3>
+          <p class="hbce-card__text">
+            The validated workflow generates an EVT event with a trace hash and verifiable status.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <div class="hbce-card__kicker">OPC</div>
+          <h3>Operational proof</h3>
+          <p class="hbce-card__text">
+            The EVT is linked to an OPC proof record and exported inside the final audit report.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>6. First successful MVP run</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          The first successful MVP run was completed on 2026-05-07 using an internal U.S.E. — United States of Europe document.
+        </p>
+
+        <div class="i3p-matrix-kv">
+          <div class="i3p-matrix-k">Pilot client</div>
+          <div class="i3p-matrix-v">HERMETICUM B.C.E. S.r.l.</div>
+
+          <div class="i3p-matrix-k">Pilot type</div>
+          <div class="i3p-matrix-v">Internal R&D self-audit</div>
+
+          <div class="i3p-matrix-k">Risk</div>
+          <div class="i3p-matrix-v">MEDIUM</div>
+
+          <div class="i3p-matrix-k">Decision</div>
+          <div class="i3p-matrix-v">ALLOW</div>
+
+          <div class="i3p-matrix-k">Validation</div>
+          <div class="i3p-matrix-v">APPROVED</div>
+
+          <div class="i3p-matrix-k">Final state</div>
+          <div class="i3p-matrix-v">AUDIT_READY</div>
+
+          <div class="i3p-matrix-k">Document hash</div>
+          <div class="i3p-matrix-v i3p-matrix-code">sha256:829084cb740c21c1cc5b59ffdb4c220169e05627a5f7abf469f4ede96e8aae32</div>
+
+          <div class="i3p-matrix-k">EVT</div>
+          <div class="i3p-matrix-v i3p-matrix-code">EVT-20260507121131-5ABF693B</div>
+
+          <div class="i3p-matrix-k">OPC</div>
+          <div class="i3p-matrix-v i3p-matrix-code">OPC-20260507121131-9DF07633</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>7. Target users after internal pilot</h2>
+
+      <div class="i3p-matrix-grid">
+        <article class="hbce-card">
+          <h3>Compliance consultants</h3>
+          <p class="hbce-card__text">
+            To produce audit-ready reports for AI-assisted document review.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <h3>Cybersecurity consultants</h3>
+          <p class="hbce-card__text">
+            To trace AI-assisted security documentation and risk review workflows.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <h3>AI governance advisors</h3>
+          <p class="hbce-card__text">
+            To demonstrate human validation, governance decisions and proof records around AI use.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <h3>Internal audit teams</h3>
+          <p class="hbce-card__text">
+            To document how AI-assisted analysis was performed, validated and reported.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>8. Pilot proposal</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          After the internal self-pilot, the external pilot format is simple:
+        </p>
+
+        <ul class="hbce-list">
+          <li>Duration: 30 days;</li>
+          <li>Users: 1–3 operators;</li>
+          <li>Documents: 10–20 test documents;</li>
+          <li>Workflow: one AI-assisted document analysis process;</li>
+          <li>Output: audit-ready report package;</li>
+          <li>Final deliverable: pilot evaluation and productization roadmap.</li>
+        </ul>
+
+        <p class="hbce-card__text">
+          This makes the MVP small enough to test while still being concrete enough for commercial validation.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>9. Boundaries and non-claims</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          MATRIX AI Audit Trail is currently an MVP and internal R&D self-pilot.
+        </p>
+
+        <p class="hbce-card__text">
+          It does not claim:
+        </p>
+
+        <ul class="hbce-list">
+          <li>legal certification;</li>
+          <li>regulatory approval;</li>
+          <li>eIDAS qualification;</li>
+          <li>public-sector adoption;</li>
+          <li>external audit certification;</li>
+          <li>automated compliance;</li>
+          <li>legally binding evidence status by itself;</li>
+          <li>production-grade enterprise SaaS readiness.</li>
+        </ul>
+
+        <p class="hbce-card__text">
+          It demonstrates traceability, attribution, governance decisioning, human validation,
+          EVT continuity, OPC proof generation and audit-ready reporting.
+        </p>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>10. Why this matters for I3P</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          The project is no longer only a broad infrastructure vision.
+          A concrete MVP has been extracted and tested.
+        </p>
+
+        <p class="hbce-card__text">
+          The MVP shows that one part of the MATRIX / HBCE / AI JOKER-C2 architecture can become a testable product:
+          an AI audit trail for document analysis.
+        </p>
+
+        <p class="hbce-card__text">
+          The internal self-pilot gives the project a credible first user and a repeatable path toward external pilots.
+        </p>
+
+        <div class="hbce-actions" style="margin-top:14px;">
+          <a
+            class="hbce-btn hbce-btn--primary"
+            href="https://hbce-ai-joker-c2.vercel.app/matrix-audit-trail"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Launch MATRIX AI Audit Trail Demo
+          </a>
+
+          <a
+            class="hbce-btn"
+            href="https://hbce-ai-joker-c2.vercel.app/interface"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open AI JOKER-C2 Runtime
+          </a>
+
+          <a class="hbce-btn" href="/hermeticum-bce-platform/matrix-audit-trail/">
+            Public Demo Bridge
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="hbce-footer">
+      <div class="hbce-footer__row">
+        <div class="hbce-muted">
+          HERMETICUM B.C.E. S.r.l. — MATRIX AI Audit Trail MVP for I3P review
+        </div>
+        <div class="hbce-footer__links">
+          <a href="/hermeticum-bce-platform/">Home</a>
+          <a href="/hermeticum-bce-platform/matrix-audit-trail/">MATRIX Audit</a>
+          <a href="/hermeticum-bce-platform/joker-c2/">Joker-C2</a>
+          <a href="/hermeticum-bce-platform/claims/">Claims</a>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <div data-hbce="footer"></div>
+  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </body>
 </html>
