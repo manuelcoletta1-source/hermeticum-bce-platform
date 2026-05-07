@@ -1,149 +1,213 @@
 # HBCE Network Architecture v1
 
-This document describes the conceptual architecture of the HBCE network.
+This document describes the HBCE Network Architecture v1 as a historical and technical R&D reference for HERMETICUM B.C.E. S.r.l.
 
-The HBCE network is an experimental technological infrastructure designed to support verifiable operational environments.
+The architecture is retained as a conceptual model for verifiable operational environments, audit-trail experiments, identity-bound records, append-only event history, and fail-closed verification flows. It is currently aligned with the MATRIX AI Audit Trail MVP and must be read within a non-custodial, hash-only, EU-first research boundary.
 
-The architecture connects identity, events, nodes, and coordination layers.
+This document is not a legal standard, not a public authority registry, not a regulated certification framework, not an eIDAS qualified trust service, and not a production compliance system by itself.
 
----
+## 1. Scope
 
-# Architecture Overview
+The HBCE network is an experimental technological architecture designed to connect identity references, audit events, evidence records, registry entries, and verification logic.
 
-The network is composed of four primary layers:
+Its primary current use is the MATRIX AI Audit Trail MVP, where the system records verifiable metadata around AI-assisted activity, human validation, policy checks, governance decisions, evidence-pack creation, and verification results.
 
-- Identity layer
-- Event layer
-- Infrastructure nodes
-- Coordination engine
+The network does not require public custody of personal data, confidential payloads, private keys, financial assets, regulated identity documents, or client-controlled content.
 
-Together these layers form the operational structure of the system.
+The public layer should expose only minimized records, hashes, timestamps, record kinds, status fields, and verification metadata when appropriate.
 
----
+## 2. Architecture Overview
 
-# Identity Layer
+The HBCE network is composed of five primary layers:
 
-The identity layer is provided by the Identity Primary Record (IPR).
+1. Identity Reference Layer.
+2. Event Layer.
+3. Node Layer.
+4. Registry Layer.
+5. Verification and Coordination Layer.
 
-IPR associates actions with identifiable entities.
+Together, these layers define a research architecture for transforming operational activity into structured, attributable, hash-linked, and auditable records.
+
+In the current MVP boundary, the architecture should be understood as an audit-trail infrastructure, not as a claim of public authority, regulated certification, autonomous authorization, or institutional mandate.
+
+## 3. Identity Reference Layer
+
+The identity reference layer is based on the Identity Primary Record model, abbreviated as IPR.
+
+In this R&D architecture, IPR provides a structured reference for associating records, events, operators, AI systems, audit cases, software services, documents, and evidence packs with identifiable operational references.
 
 Entities may include:
 
-- human operators
-- artificial intelligence systems
-- machines
-- infrastructure nodes
+- human reviewer references;
+- AI system references;
+- organization references;
+- software service references;
+- document references;
+- audit case references;
+- evidence-pack references;
+- registry operator references.
 
-The identity layer enables attribution of actions within the system.
+The identity reference layer enables attribution and continuity within the audit model, while preserving the no-custody boundary. Public records should use payload hashes and minimized metadata rather than exposing confidential identity data or operational payloads.
 
----
-
-# Event Layer
+## 4. Event Layer
 
 Operational activity is represented through events.
 
-Events follow the IPR event protocol defined in:
+Events are described by the IPR event protocol reference defined in:
 
 `protocol/ipr-event-v1.md`
 
-Each event links:
+In the MATRIX AI Audit Trail MVP, events may represent:
 
-ENTITY  
-↓  
-ACTION  
-↓  
-TIMESTAMP  
-↓  
-CONTEXT
+- AI output recorded;
+- AI output reviewed;
+- human validation;
+- policy check;
+- risk assessment;
+- governance decision;
+- audit note;
+- evidence-pack creation;
+- registry status update;
+- verification request;
+- verification result.
 
-Events form the historical record of the infrastructure.
+Each event should link the following elements:
 
----
+`ENTITY_REFERENCE → ACTION → TIMESTAMP → PAYLOAD_HASH → OPERATOR_REFERENCE → STATUS`
 
-# Infrastructure Nodes
+The event layer does not need to publish the full payload. The preferred public pattern is hash-only exposure through `payload_sha256` or `event_payload_sha256`.
 
-The infrastructure layer is composed of HBCE nodes.
+## 5. Node Layer
 
-Node specification is defined in:
+The node layer is composed of HBCE node references.
+
+The node specification is defined in:
 
 `protocol/hbce-node-spec-v1.md`
 
-Nodes host:
+Within the current R&D boundary, a node is a technical reference point for hosting, producing, testing, or verifying audit-trail records. A node may represent a local development environment, an internal R&D instance, a pilot environment, or a public static verification surface.
 
-- event structures
-- infrastructure services
-- registry integration
+Nodes may support:
 
-Each node represents an operational point within the network.
+- local event generation;
+- append-only ledger examples;
+- hash computation;
+- canonical JSON serialization;
+- ED25519 signing experiments;
+- verification scripts;
+- evidence-pack assembly;
+- registry integration.
 
----
+A node does not imply public authority status, regulated certification status, custody of user data, or autonomous institutional authorization.
 
-# Registry Layer
+## 6. Registry Layer
 
-The registry exposes the observable state of the infrastructure.
+The registry layer exposes the observable state of selected records.
 
-Registry specification is defined in:
+The registry specification is defined in:
 
 `protocol/hbce-registry-spec-v1.md`
 
-The registry publishes:
+The registry may publish:
 
-- infrastructure nodes
-- recorded events
+- minimized identity reference records;
+- operator reference records;
+- audit case records;
+- event records;
+- evidence-pack records;
+- verification metadata;
+- hash-only references.
 
-Registry files:
+Registry files may include:
 
-`registry/nodes.json`  
+`registry/nodes.json`
+
 `registry/events.json`
 
----
+In the current public boundary, registry records should remain minimized and should avoid publishing confidential payloads, personal data, client documents, private keys, raw AI prompts, raw AI outputs, or internal audit material.
 
-# Coordination Layer
+The registry is a technical R&D registry surface. It is not a public authority registry, not a regulated trust service, and not a substitute for independent legal, security, or compliance review.
 
-The coordination layer is represented by the Joker-C2 engine.
+## 7. Verification and Coordination Layer
 
-Joker-C2 orchestrates operational activity across the network.
+The verification layer checks whether records and ledgers satisfy deterministic structural rules.
 
-The coordination layer interacts with:
+Reference tools include:
 
-- nodes
-- identities
-- events
+`protocol/hbce-verify.reference.js`
 
----
+`protocol/hbce-sign.reference.js`
 
-# Network Flow
+The verification layer may check:
 
-The operational flow of the network can be represented as:
+- required fields;
+- canonical JSON hash rebuilding;
+- append-only chain continuity;
+- parent-child derivation rules;
+- event-to-entity consistency;
+- operator presence;
+- ED25519 signatures when real keys are provided;
+- fail-closed invalidation when data is missing, malformed, placeholder-based, or unverifiable.
 
-ENTITY  
-↓  
-ACTION  
-↓  
-IPR EVENT  
-↓  
-HBCE NODE  
-↓  
-REGISTRY RECORD  
-↓  
-NETWORK HISTORY
+The coordination layer is conceptually associated with AI JOKER-C2 as a research coordination engine for identity-bound execution, audit continuity, runtime state, and event generation.
 
----
+In the current public positioning, AI JOKER-C2 must be understood as an R&D coordination component and MATRIX audit-trail demonstrator, not as an autonomous public authority system or unrestricted operational command system.
 
-# Architecture Position
+## 8. Network Flow
 
-Within the Reality Engineering framework, the HBCE network operates as the infrastructure layer.
+The operational flow of the HBCE network can be represented as:
 
-REALITY ENGINEERING  
-↓  
-HBCE NETWORK  
-↓  
-NODES / EVENTS / REGISTRY  
-↓  
-TECHNOLOGICAL CIVILIZATION MODEL
+`ENTITY_REFERENCE → ACTION → EVENT_RECORD → NODE_CONTEXT → REGISTRY_RECORD → VERIFICATION_RESULT → AUDIT_HISTORY`
 
----
+For MATRIX AI Audit Trail, the preferred flow is:
 
-# Version
+`AI_OUTPUT → POLICY_CHECK → HUMAN_VALIDATION → EVIDENCE_PACK → HASH_ONLY_RECORD → FAIL_CLOSED_VERIFICATION`
 
-Architecture specification version: v1
+This sequence makes the audit history inspectable without requiring public exposure of confidential content.
+
+## 9. MATRIX AI Audit Trail Position
+
+Within the current development roadmap, the HBCE network architecture supports the MATRIX AI Audit Trail MVP.
+
+The MVP goal is to provide a verifiable audit layer for AI-assisted activity by recording structured metadata, responsibility references, policy checks, human validation, evidence-pack hashes, and verification outcomes.
+
+This makes the architecture useful for internal R&D, pilot discussions, B2B/B2G technical evaluation, institutional review, and demonstrable audit-readiness.
+
+The current first pilot boundary is HERMETICUM B.C.E. S.r.l. itself, using the system as an internal R&D and self-audit environment before any external client deployment.
+
+## 10. Operational Boundaries
+
+The HBCE network architecture follows these boundaries:
+
+- EU-first reference framework;
+- audit-first design;
+- fail-closed verification;
+- hash-only public exposure;
+- append-only record structure;
+- GDPR-minimized publication model;
+- no public data custody;
+- no private key custody;
+- no financial custody;
+- no regulated certification claim;
+- no public authority claim;
+- no offensive or military command function.
+
+Any production use requires independent legal, cybersecurity, privacy, compliance, and operational review.
+
+## 11. Architecture Position
+
+Within the broader HERMETICUM B.C.E. research framework, the HBCE network operates as a technical infrastructure layer for verifiable operational continuity.
+
+The conceptual position is:
+
+`HERMETICUM B.C.E. R&D → MATRIX AI Audit Trail → HBCE Network → Nodes / Events / Registry / Verification → Audit-Ready Operational Evidence`
+
+The architecture is therefore not presented as a completed public infrastructure, but as a disciplined technical model for building evidence, responsibility, verification, and continuity around AI-assisted and institutionally relevant operations.
+
+## 12. Version
+
+Architecture specification version: v1.1 R&D reference alignment.
+
+Original v1 concept retained as historical basis.
+
+Current alignment: MATRIX AI Audit Trail MVP, registry v3 boundary, no-custody model, hash-only public records, fail-closed verification.
