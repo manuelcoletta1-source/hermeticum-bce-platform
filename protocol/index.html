@@ -4,8 +4,8 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
 
-  <title>Protocol — HBCE Technical Specifications</title>
-  <meta name="description" content="HBCE protocol hub for technical specifications covering IPR events, node structure, registry rules, and network architecture within the Reality Engineering framework." />
+  <title>Protocol — HBCE R&D Technical References</title>
+  <meta name="description" content="HBCE protocol hub reframed as R&D technical references for registry v3, payload_sha256, public proof, event records, schemas and audit-ready governance. Not a formal standard or legal certification." />
 
   <meta name="robots" content="index,follow"/>
   <meta name="theme-color" content="#0b0f14"/>
@@ -28,154 +28,280 @@
 
           <nav class="hbce-nav" aria-label="Primary">
             <a class="hbce-nav__link" href="../">Home</a>
-            <a class="hbce-nav__link" href="../ARCHITECTURE.md">Architecture</a>
-            <a class="hbce-nav__link" href="../NETWORK.md">Network</a>
-            <a class="hbce-nav__link" href="../spec/">Spec</a>
-            <a class="hbce-nav__link is-active" href="./">Protocol</a>
+            <a class="hbce-nav__link" href="../matrix-audit-trail/">MATRIX Audit</a>
+            <a class="hbce-nav__link" href="../verify/">Verify</a>
             <a class="hbce-nav__link" href="../registry/">Registry</a>
+            <a class="hbce-nav__link" href="../schemas/hbce-registry-entry.schema.json">Registry Schema</a>
+            <a class="hbce-nav__link is-active" href="./">Protocol</a>
           </nav>
         </div>
       </header>
 
       <section class="hbce-section hbce-hero">
-        <div class="hbce-hero__kicker">PROTOCOL · EVENTS · NODES · REGISTRY · NETWORK ARCHITECTURE</div>
-        <h1 class="hbce-hero__title">HBCE protocol specifications</h1>
+        <div class="hbce-hero__kicker">PROTOCOL · R&D REFERENCES · REGISTRY v3 · PAYLOAD_SHA256</div>
+
+        <h1 class="hbce-hero__title">HBCE protocol references</h1>
+
         <p class="hbce-hero__lead">
-          The <b>Protocol</b> section exposes the technical specifications of the HBCE system.
-          These files define the structured rules used to describe events, nodes, registry state,
-          and network architecture inside the Reality Engineering framework.
+          The <b>Protocol</b> section contains R&D technical references for HBCE public proof,
+          operational identity, event records, node concepts, registry semantics and verification logic.
           <br/><br/>
-          This section is not a marketing layer.
-          It is the technical surface through which the infrastructure becomes formally readable.
+          These files are not a formal legal standard, not regulated technical certification,
+          not public authority approval, not eIDAS qualification and not a production compliance framework by themselves.
         </p>
 
+        <div class="hbce-card" style="margin-top:14px;">
+          <div class="hbce-mono">CURRENT CANONICAL TECHNICAL POSTURE</div>
+          <p class="hbce-muted">
+            The current public proof model is based on registry v3, <code>payload_sha256</code>,
+            minimized public records, hash-only proof commitments, append-only history,
+            no-public-data-custody boundaries and fail-closed verification.
+          </p>
+
+          <p class="hbce-muted">
+            Older v1 protocol files are retained as historical or R&D references unless explicitly updated.
+            New implementation work should align with the current registry v3 / schema v2 direction.
+          </p>
+        </div>
+
         <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-          <a class="hbce-btn hbce-btn--primary" href="../SPEC.md">Open system spec</a>
-          <a class="hbce-btn" href="../ARCHITECTURE.md">Open architecture</a>
-          <a class="hbce-btn" href="../NETWORK.md">Open network</a>
-          <a class="hbce-btn" href="../registry/">Open registry</a>
+          <a class="hbce-btn hbce-btn--primary" href="../schemas/hbce-registry-entry.schema.json">Open registry v3 schema</a>
+          <a class="hbce-btn" href="../schemas/hbce-evt.schema.json">Open EVT schema</a>
+          <a class="hbce-btn" href="../verify/">Verify</a>
+          <a class="hbce-btn" href="../registry/">Registry</a>
+          <a class="hbce-btn" href="../claims/">Claims</a>
         </div>
       </section>
 
       <section class="hbce-section">
         <div class="hbce-card">
-          <h2>Position in the system</h2>
+          <h2>1. Route classification</h2>
           <p class="hbce-muted">
-            Protocol files sit between conceptual documentation and observable infrastructure state.
-            They define the formal structures by which identities, events, nodes, and registry records
-            can be described consistently across the system.
+            <strong>/protocol/</strong> is classified as an R&D technical reference hub.
+            It collects protocol documents, examples and reference scripts used to describe HBCE concepts.
           </p>
 
-          <pre><code>DOCUMENTATION
-↓
-PROTOCOL SPECIFICATIONS
-↓
-REGISTRY STRUCTURES
-↓
-OBSERVABLE INFRASTRUCTURE STATE</code></pre>
+          <p class="hbce-muted">
+            It should not be interpreted as a formal public standard, legal certification,
+            regulated compliance standard, public authority approval, institutional endorsement or production-grade certification framework.
+          </p>
+
+          <pre class="hbce-pre" style="white-space:pre-wrap;word-break:break-word;">route: /protocol/
+classification: R&D_TECHNICAL_REFERENCE_HUB
+formal standard: not claimed
+legal certification: not claimed
+regulated certification: not claimed
+public authority approval: not claimed
+current implementation direction: registry v3 + payload_sha256 + schemas v2
+current concrete MVP: /matrix-audit-trail/</pre>
         </div>
       </section>
 
       <section class="hbce-section">
-        <h2>Core specifications</h2>
+        <div class="hbce-card">
+          <h2>2. Position in the system</h2>
+
+          <p class="hbce-muted">
+            Protocol files sit between conceptual documentation and observable public proof state.
+            They define research structures by which identities, events, nodes, registry records
+            and verification behaviors can be described consistently across the platform.
+          </p>
+
+          <pre><code>DOCUMENTATION
+↓
+R&D PROTOCOL REFERENCES
+↓
+SCHEMAS
+↓
+REGISTRY v3 STRUCTURES
+↓
+VERIFY
+↓
+AUDIT-READY PUBLIC PROOF</code></pre>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <h2>3. Current canonical references</h2>
 
         <div class="hbce-grid hbce-grid--2">
 
           <div class="hbce-card">
-            <div class="hbce-mono">IPR EVENT PROTOCOL</div>
-            <h3>Event structure</h3>
+            <div class="hbce-mono">REGISTRY v3 SCHEMA</div>
+            <h3>Public proof records</h3>
             <p class="hbce-muted">
-              Defines the minimal event format used to record attributable actions inside the infrastructure.
+              Defines current minimized public registry entry shape using <code>entity_type</code>,
+              <code>subject_label</code>, <code>payload_sha256</code>, <code>timestamp</code> and <code>status</code>.
+            </p>
+            <a class="hbce-btn hbce-btn--primary" href="../schemas/hbce-registry-entry.schema.json">Open registry schema</a>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">EVT SCHEMA</div>
+            <h3>Operational update records</h3>
+            <p class="hbce-muted">
+              Defines an HBCE EVT operational update schema for continuity, anchors, upstream references and public proof commitments.
+            </p>
+            <a class="hbce-btn hbce-btn--primary" href="../schemas/hbce-evt.schema.json">Open EVT schema</a>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">IPR SCHEMA</div>
+            <h3>Privacy-minimal IPR package</h3>
+            <p class="hbce-muted">
+              Defines a v2 privacy-minimal IPR package structure and forbidden public fields.
+            </p>
+            <a class="hbce-btn hbce-btn--primary" href="../schemas/ipr.schema.json">Open IPR schema</a>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">RECEIPT SCHEMA</div>
+            <h3>Privacy-minimal receipt</h3>
+            <p class="hbce-muted">
+              Defines v2 receipt semantics around <code>payload_sha256</code>, proof hashes, signatures and anchors.
+            </p>
+            <a class="hbce-btn hbce-btn--primary" href="../schemas/receipt.schema.json">Open receipt schema</a>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <h2>4. Legacy and R&D protocol references</h2>
+
+        <div class="hbce-card">
+          <p class="hbce-muted">
+            The following v1 files are retained as R&D and historical protocol references.
+            They may contain older naming or earlier assumptions. They should be interpreted through the current
+            registry v3 / no-public-data-custody model.
+          </p>
+        </div>
+
+        <div class="hbce-grid hbce-grid--2" style="margin-top:14px;">
+
+          <div class="hbce-card">
+            <div class="hbce-mono">IPR EVENT PROTOCOL</div>
+            <h3>Event structure reference</h3>
+            <p class="hbce-muted">
+              Earlier minimal event format used to record attributable actions inside the infrastructure.
             </p>
             <a class="hbce-btn hbce-btn--primary" href="../protocol/ipr-event-v1.md">Open ipr-event-v1.md</a>
           </div>
 
           <div class="hbce-card">
             <div class="hbce-mono">HBCE NODE SPECIFICATION</div>
-            <h3>Node structure</h3>
+            <h3>Node structure reference</h3>
             <p class="hbce-muted">
-              Defines the minimal structure required for an HBCE node to exist inside the network.
+              Earlier node specification reference. Current public node registry is privacy-minimal and should avoid private topology.
             </p>
             <a class="hbce-btn hbce-btn--primary" href="../protocol/hbce-node-spec-v1.md">Open hbce-node-spec-v1.md</a>
           </div>
 
           <div class="hbce-card">
             <div class="hbce-mono">HBCE REGISTRY SPECIFICATION</div>
-            <h3>Registry structure</h3>
+            <h3>Registry structure reference</h3>
             <p class="hbce-muted">
-              Defines how nodes and events are exposed through the public registry layer.
+              Earlier registry specification reference. Current public registry direction is registry v3 with <code>payload_sha256</code>.
             </p>
             <a class="hbce-btn hbce-btn--primary" href="../protocol/hbce-registry-spec-v1.md">Open hbce-registry-spec-v1.md</a>
           </div>
 
           <div class="hbce-card">
             <div class="hbce-mono">HBCE NETWORK ARCHITECTURE</div>
-            <h3>System topology</h3>
+            <h3>System topology reference</h3>
             <p class="hbce-muted">
-              Describes how identity, events, nodes, registry, and coordination interact across the network.
+              Earlier network architecture reference. It must not be interpreted as active deployment or public authority adoption.
             </p>
             <a class="hbce-btn hbce-btn--primary" href="../protocol/hbce-network-architecture-v1.md">Open hbce-network-architecture-v1.md</a>
           </div>
 
-        </div>
-      </section>
-
-      <section class="hbce-section">
-        <h2>Protocol logic</h2>
-
-        <div class="hbce-grid hbce-grid--3">
-
           <div class="hbce-card">
-            <div class="hbce-mono">EVENTS</div>
-            <h3>Structured operational actions</h3>
+            <div class="hbce-mono">OFFICIAL BUNDLE</div>
+            <h3>Historical protocol bundle</h3>
             <p class="hbce-muted">
-              Protocol logic begins with events: recorded actions associated with identifiable entities.
+              Historical bundle filename retained for compatibility. Current interpretation is R&D protocol reference, not legal or regulated certification.
             </p>
+            <a class="hbce-btn" href="../protocol/hbce-protocol-v1.official.json">Open protocol bundle</a>
           </div>
 
           <div class="hbce-card">
-            <div class="hbce-mono">NODES</div>
-            <h3>Infrastructure units</h3>
+            <div class="hbce-mono">REFERENCE SCRIPTS</div>
+            <h3>Sign / verify reference implementations</h3>
             <p class="hbce-muted">
-              Nodes provide operational location and infrastructure presence for events and services.
+              Reference scripts are technical examples. They do not create legal certification or regulated signatures by themselves.
             </p>
-          </div>
-
-          <div class="hbce-card">
-            <div class="hbce-mono">REGISTRY</div>
-            <h3>Public state exposure</h3>
-            <p class="hbce-muted">
-              Registry structures expose the observable state of the infrastructure through nodes and events.
-            </p>
+            <a class="hbce-btn" href="../protocol/hbce-sign.reference.js">Signer reference</a>
+            <a class="hbce-btn" href="../protocol/hbce-verify.reference.js">Verifier reference</a>
           </div>
 
         </div>
       </section>
 
       <section class="hbce-section">
+        <h2>5. Current concrete MVP</h2>
+
         <div class="hbce-card">
-          <h2>Protocol posture</h2>
+          <p class="hbce-muted">
+            The current product-facing and implementation-facing MVP is <strong>MATRIX AI Audit Trail</strong>.
+            It demonstrates the practical value of these protocol concepts in a narrow and testable workflow:
+          </p>
 
+          <pre class="hbce-pre" style="white-space:pre-wrap;word-break:break-word;">Document upload
+→ AI analysis
+→ governance decision
+→ human validation
+→ EVT event
+→ OPC proof
+→ audit report</pre>
+
+          <p class="hbce-muted" style="margin-top:14px;">
+            First pilot client: <strong>HERMETICUM B.C.E. S.r.l.</strong><br/>
+            First result: <strong>AUDIT_READY</strong>
+          </p>
+
+          <div class="hbce-actions" style="margin-top:14px;">
+            <a
+              class="hbce-btn hbce-btn--primary"
+              href="https://hbce-ai-joker-c2.vercel.app/matrix-audit-trail"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Launch MATRIX AI Audit Trail
+            </a>
+            <a class="hbce-btn" href="../matrix-audit-trail/">Public demo bridge</a>
+            <a class="hbce-btn" href="../i3p/">I3P MVP page</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <h2>6. Protocol posture</h2>
+
+        <div class="hbce-card">
           <div class="hbce-grid hbce-grid--4" style="margin-top:12px;">
 
             <div class="hbce-card">
               <div class="hbce-mono">STRUCTURED</div>
               <h3>Minimal technical definitions</h3>
+              <p class="hbce-muted">Research structures should be explicit and reviewable.</p>
             </div>
 
             <div class="hbce-card">
               <div class="hbce-mono">APPEND-ONLY</div>
               <h3>Chronological consistency</h3>
+              <p class="hbce-muted">Public record history should be extended, not silently rewritten.</p>
             </div>
 
             <div class="hbce-card">
               <div class="hbce-mono">FAIL-CLOSED</div>
-              <h3>No trusted state without valid structure</h3>
+              <h3>No implicit validity</h3>
+              <p class="hbce-muted">Missing, malformed or unverifiable state must not produce validity.</p>
             </div>
 
             <div class="hbce-card">
               <div class="hbce-mono">EU-FIRST</div>
-              <h3>European governance posture</h3>
+              <h3>Governance reference</h3>
+              <p class="hbce-muted">EU-first is a governance posture, not formal regulatory certification.</p>
             </div>
 
           </div>
@@ -183,7 +309,22 @@ OBSERVABLE INFRASTRUCTURE STATE</code></pre>
       </section>
 
       <section class="hbce-section">
-        <h2>Related documents</h2>
+        <h2>7. Non-claims</h2>
+
+        <div class="hbce-card">
+          <ul class="hbce-list">
+            <li>This protocol hub is not a formal legal standard.</li>
+            <li>This protocol hub is not regulated technical certification.</li>
+            <li>This protocol hub does not create public authority approval.</li>
+            <li>This protocol hub does not create eIDAS or qualified trust service status.</li>
+            <li>This protocol hub does not create production compliance certification.</li>
+            <li>This protocol hub does not replace legal, security, privacy, procurement or institutional review.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <h2>8. Related documents</h2>
 
         <div class="hbce-grid hbce-grid--3">
 
@@ -207,9 +348,9 @@ OBSERVABLE INFRASTRUCTURE STATE</code></pre>
 
           <div class="hbce-card">
             <div class="hbce-mono">REGISTRY</div>
-            <h3>Observable public state</h3>
+            <h3>Observable public proof state</h3>
             <p class="hbce-muted">
-              Public node and event structures exposed by the infrastructure.
+              Public proof registry based on minimized public proof records.
             </p>
             <a class="hbce-btn" href="../registry/">Open Registry</a>
           </div>
@@ -220,15 +361,15 @@ OBSERVABLE INFRASTRUCTURE STATE</code></pre>
       <footer class="hbce-footer">
         <div class="hbce-footer__row">
           <div class="hbce-muted">
-            <span class="hbce-mono">PROTOCOL</span> — technical specification layer of the HBCE system
+            <span class="hbce-mono">PROTOCOL</span> — R&D technical reference hub of the HBCE platform
           </div>
           <div class="hbce-footer__links">
             <a href="../ARCHITECTURE.md">Architecture</a>
-            <a href="../NETWORK.md">Network</a>
             <a href="../SPEC.md">Spec</a>
             <a href="../docs/">Docs</a>
             <a href="../registry/">Registry</a>
-            <a href="../WHITEPAPER.md">Whitepaper</a>
+            <a href="../verify/">Verify</a>
+            <a href="../claims/">Claims</a>
           </div>
         </div>
       </footer>
