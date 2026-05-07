@@ -401,6 +401,8 @@ The first schema remediation cycle has been completed for global IPR, receipt, r
 
 The first UI / assets / partials remediation cycle has been completed for navigation, shell behavior, include loading, browser-side verification helpers, local status helpers, crypto helpers, IPR generation, and visual-only scripts.
 
+The MATRIX AI Audit Trail bridge has been added to the platform and linked to the operational AI JOKER-C2 MVP demo.
+
 Safe remediation / action completed so far:
 
 - upgraded public registry files toward `HBCE-REGISTRY-v3`;
@@ -430,14 +432,15 @@ Safe remediation / action completed so far:
 - aligned crypto helpers with client-side, same-origin, hash-only, no-custody behavior;
 - removed or disabled legacy shell injection behavior;
 - aligned navigation and link registries with the new policy surfaces;
-- marked visual scripts as local visual-only enhancers.
+- marked visual scripts as local visual-only enhancers;
+- added `/matrix-audit-trail/` as a public bridge page to the operational AI JOKER-C2 MVP demo.
 
 Remaining review:
 
 - protocol consistency;
 - final source-of-truth decision between `ledger.json` and `registry.json`;
 - public page references still using legacy labels;
-- link and UI checks across modified registry, verify, policy, and asset-driven pages;
+- link and UI checks across modified registry, verify, policy, asset-driven, and demo bridge pages;
 - validation consistency between schema files and browser tools.
 
 Fail-closed relevance:
@@ -461,6 +464,7 @@ Affected files:
 - `tools/registry-guard.js`;
 - `DEPLOYMENT_STATIC_GATEWAY_REVIEW_2026-05-06.md`;
 - `assets/`;
+- `matrix-audit-trail/index.html`;
 - GitHub Pages configuration;
 - static public assets and generated files.
 
@@ -479,6 +483,8 @@ The registry guard workflow and registry guard script have been hardened for reg
 The static gateway deployment review has been added.
 
 The first UI / assets / partials remediation cycle has been completed to remove legacy shell injection, align navigation, align shared verification helpers, and mark visual scripts as local-only or client-side helpers.
+
+The MATRIX AI Audit Trail demo bridge was added as a static public gateway page. The operational demo remains hosted outside the platform runtime in AI JOKER-C2.
 
 Safe remediation / action completed so far:
 
@@ -499,7 +505,9 @@ Safe remediation / action completed so far:
 - documented that GitHub Pages and the public gateway are static, public, no-custody, and not a secure backend;
 - disabled legacy header/footer shell injection in asset scripts;
 - hardened same-origin include loading;
-- aligned assets with no external calls, no tracking, no upload, and no data custody where applicable.
+- aligned assets with no external calls, no tracking, no upload, and no data custody where applicable;
+- added static bridge page `/matrix-audit-trail/` with explicit R&D, self-pilot, and no-public-data-custody boundaries;
+- linked the platform homepage and Joker-C2 page to the operational MATRIX AI Audit Trail MVP.
 
 Remaining review:
 
@@ -606,6 +614,8 @@ Affected files:
 - `README.md`;
 - `docs/`;
 - public gateway pages;
+- `matrix-audit-trail/index.html`;
+- `joker-c2/index.html`;
 - MATRIX / HBCE / IPR / AI JOKER-C2 documentation.
 
 Description:
@@ -622,6 +632,8 @@ A first public-policy and governance remediation cycle has been completed across
 
 The homepage and navigation / partials have also been aligned with R&D, registry v3, public proof, and no-custody language.
 
+The MATRIX AI Audit Trail bridge and Joker-C2 page have been updated to present the MVP as an internal R&D self-pilot demo, not as legal certification, regulatory approval, eIDAS qualification, public-sector adoption, or external audit certification.
+
 Safe remediation / action completed so far:
 
 - clarified R&D / experimental status across legal and governance pages;
@@ -633,14 +645,16 @@ Safe remediation / action completed so far:
 - aligned claims page with explicit claims and non-claims boundaries;
 - translated and aligned legal notice and cookie/contact pages to the R&D no-custody model;
 - aligned root homepage with R&D public gateway, registry v3, `payload_sha256`, and public proof limitations;
-- aligned navigation and shell partials with policy-first surfaces.
+- aligned navigation and shell partials with policy-first surfaces;
+- added MATRIX AI Audit Trail bridge page with explicit demo boundaries;
+- updated Joker-C2 page with MATRIX AI Audit Trail MVP section and non-claims.
 
 Remaining review:
 
 - full public page legacy terminology scan;
 - protocol pages;
 - B2B/B2G positioning pages;
-- AI JOKER-C2 and MATRIX-specific pages;
+- remaining AI JOKER-C2 and MATRIX-specific pages;
 - final link and UI review.
 
 Fail-closed relevance:
@@ -980,7 +994,69 @@ UI / assets audit status:
 
 ---
 
-## 12. Current audit summary
+## 12. MATRIX AI Audit Trail demo bridge integration — 2026-05-07
+
+The first MATRIX AI Audit Trail demo bridge integration has been completed on the public platform.
+
+Updated files:
+
+- `matrix-audit-trail/index.html`
+- `index.html`
+- `joker-c2/index.html`
+
+External operational runtime:
+
+```text
+https://hbce-ai-joker-c2.vercel.app/matrix-audit-trail
+```
+
+Related runtime repository:
+
+```text
+hbce-ai-joker-c2
+```
+
+Integration outcomes:
+
+- added `/matrix-audit-trail/` as the public platform bridge page;
+- linked the bridge page to the operational AI JOKER-C2 demo;
+- updated the root homepage with a visible MATRIX AI Audit Trail CTA;
+- updated the Joker-C2 page with a MATRIX AI Audit Trail MVP section;
+- documented the first successful internal R&D self-pilot result;
+- clarified that the first pilot client is HERMETICUM B.C.E. S.r.l.;
+- clarified that the demo is an internal R&D self-pilot, not legal certification or regulatory approval;
+- preserved no-public-data-custody language;
+- preserved requirement to use only synthetic, public, or authorized documents;
+- separated the platform role from the runtime role.
+
+Repository role separation:
+
+```text
+hermeticum-bce-platform = public gateway / policy / audit / registry / claims / demo bridge
+hbce-ai-joker-c2 = operational runtime / MATRIX AI Audit Trail MVP / AI workflow / EVT / OPC / report
+```
+
+First successful MVP run:
+
+```text
+Pilot client: HERMETICUM B.C.E. S.r.l.
+Pilot type: Internal R&D self-audit
+Document hash: sha256:829084cb740c21c1cc5b59ffdb4c220169e05627a5f7abf469f4ede96e8aae32
+Risk: MEDIUM
+Decision: ALLOW
+Validation: APPROVED
+EVT: EVT-20260507121131-5ABF693B
+OPC: OPC-20260507121131-9DF07633
+Final state: AUDIT_READY
+```
+
+Demo bridge audit status:
+
+`REMEDIATED — MATRIX AI AUDIT TRAIL DEMO BRIDGE ADDED AND LINKED TO OPERATIONAL RUNTIME`
+
+---
+
+## 13. Current audit summary
 
 Remediated / completed items:
 
@@ -1023,7 +1099,10 @@ Remediated / completed items:
 - static deployment review added;
 - navigation and partials aligned;
 - shared assets and browser-side helpers hardened;
-- visual scripts marked local-only.
+- visual scripts marked local-only;
+- MATRIX AI Audit Trail bridge page added;
+- homepage CTA added;
+- Joker-C2 page linked to the MVP demo.
 
 Pending or in-review items:
 
@@ -1036,7 +1115,7 @@ Pending or in-review items:
 
 ---
 
-## 13. Immediate next actions
+## 14. Immediate next actions
 
 Recommended next actions:
 
@@ -1046,18 +1125,18 @@ Recommended next actions:
 4. Review protocol documents for schema v1/v2/v3 consistency.
 5. Review public B2B/B2G, enterprise, AI JOKER-C2, MATRIX, and protocol pages for overclaiming.
 6. Review remaining public pages for legacy references to `nickname`, `operator_sha256`, `territory`, `name`, or raw personal labels.
-7. Run browser render checks on modified registry, verify, legal, compliance, security, governance, claims, and asset-driven pages.
+7. Run browser render checks on modified registry, verify, legal, compliance, security, governance, claims, matrix-audit-trail, and asset-driven pages.
 8. Decide whether `ledger.json` or `registry.json` is the long-term canonical source of truth.
 9. Update this findings register as each review step is completed.
 
 ---
 
-## 14. Audit-ready event record draft
+## 15. Audit-ready event record draft
 
 ```json
 {
   "event_type": "MATRIX_HBCE_AUDIT_FINDINGS_REGISTER",
-  "event_date": "2026-05-06",
+  "event_date": "2026-05-07",
   "repository": "hermeticum-bce-platform",
   "audit_cycle": "AUDIT_CYCLE_001",
   "canonical_issue": "#1",
@@ -1094,6 +1173,18 @@ Recommended next actions:
   "environment_remediation_status": "REMEDIATED",
   "dependency_review_status": "NOT_APPLICABLE_STATIC_GATEWAY",
   "ui_assets_remediation_status": "PARTIALLY_REMEDIATED",
+  "matrix_audit_trail_bridge_status": "REMEDIATED",
+  "matrix_audit_trail_runtime": "https://hbce-ai-joker-c2.vercel.app/matrix-audit-trail",
+  "matrix_audit_trail_first_pilot_client": "HERMETICUM B.C.E. S.r.l.",
+  "matrix_audit_trail_first_result": {
+    "document_hash": "sha256:829084cb740c21c1cc5b59ffdb4c220169e05627a5f7abf469f4ede96e8aae32",
+    "risk": "MEDIUM",
+    "decision": "ALLOW",
+    "validation": "APPROVED",
+    "evt": "EVT-20260507121131-5ABF693B",
+    "opc": "OPC-20260507121131-9DF07633",
+    "final_state": "AUDIT_READY"
+  },
   "registry_files_hardened": [
     "registry/index.html",
     "registry/ledger.json",
@@ -1170,6 +1261,11 @@ Recommended next actions:
     "assets/fx.js",
     "assets/spacefield.js"
   ],
+  "platform_files_updated_for_matrix_audit_trail": [
+    "matrix-audit-trail/index.html",
+    "index.html",
+    "joker-c2/index.html"
+  ],
   "governance_posture": [
     "EU_FIRST",
     "AUDIT_FIRST",
@@ -1180,14 +1276,14 @@ Recommended next actions:
     "HUMAN_VALIDATION",
     "RESPONSIBILITY_OWNERSHIP"
   ],
-  "next_action": "Run link audit, confirm GitHub Pages deployment settings, review remaining asset subfolders and protocol pages, and decide final registry source of truth",
+  "next_action": "Run link audit, review remaining duplicate/legacy routes, confirm source-of-truth decision, and prepare external pilot material",
   "output_target": "AUDIT_READY_MATRIX_EVENT_RECORD"
 }
 ```
 
 ---
 
-## 15. Maintainer statement
+## 16. Maintainer statement
 
 This findings register is part of a defensive and authorized repository baseline review.
 
