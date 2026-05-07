@@ -108,17 +108,28 @@ Route	Status	Decision
 
 ---
 
-6. Routes still requiring review
+6. Legacy operator-adjacent route decisions
+
+The following separate legacy operator-adjacent routes have now been classified.
+
+Route	Status	Decision
+
+/operator-console/	DECLASS_LEGACY_LOCAL_R_AND_D_TOOL	Rebuilt as legacy local R&D operator tool. No backend, no approval, no license issuance, no registry publication.
+/operator-license/	DECLASS_LEGACY_COMPATIBILITY	Rebuilt as legacy compatibility route pointing to /operator/license/. Active application form removed.
+/operator-playbook/	R_AND_D_TRAINING_CONCEPT	Rebuilt as R&D training concept. Not official operator manual, not license issuance, not operator authorization.
+/join-operator/	DECLASS_LEGACY_INTEREST_ROUTE	Rebuilt as legacy interest route pointing to /operator/apply/. No payment, no onboarding, no pending license generation.
+/approve-operator/	DECLASS_LEGACY_APPROVAL_CONCEPT	Rebuilt as legacy approval concept. No active approval, no payment confirmation, no license issuance, no registry publication.
+
+
+
+---
+
+7. Routes still requiring review
 
 These routes may be historical pages, older entrypoints, commercial surfaces, operator pages, or pages requiring overclaim review.
 
 Route	Proposed status	Review reason
 
-/operator-console/	REVIEW	Console route may imply active authority.
-/operator-license/	REVIEW	Separate legacy route may imply commercial/operator certification.
-/operator-playbook/	REVIEW	Training/playbook content needs boundary review.
-/join-operator/	REVIEW	Commercial/operator onboarding overclaim risk.
-/approve-operator/	REVIEW	Approval console overclaim risk.
 /b2g/	REVIEW	B2G claims need R&D/pilot boundary.
 /enterprise/	REVIEW	Enterprise claims need R&D/pilot boundary.
 /industry/	REVIEW	Industrial claims need R&D/pilot boundary.
@@ -132,7 +143,7 @@ Route	Proposed status	Review reason
 
 ---
 
-7. Deletion policy
+8. Deletion policy
 
 Do not delete a public route immediately if:
 
@@ -185,7 +196,7 @@ Deletion is permitted only after:
 
 ---
 
-8. Canonical decision for AI JOKER-C2 routes
+9. Canonical decision for AI JOKER-C2 routes
 
 The canonical platform route is:
 
@@ -214,7 +225,7 @@ are now classified as non-canonical and retained only for compatibility or histo
 
 ---
 
-9. Canonical public proof workflow
+10. Canonical public proof workflow
 
 The current public proof workflow is:
 
@@ -230,7 +241,7 @@ Legacy routes such as /entry/, /gate/, /phase-1/, and legacy operator routes mus
 
 ---
 
-10. Files updated in this review cycle
+11. Files updated in this review cycle
 
 Updated files:
 
@@ -290,11 +301,21 @@ operator/pack-verify-nuclear/index.html
 
 operator/operator.js
 
+operator-console/index.html
+
+operator-license/index.html
+
+operator-playbook/index.html
+
+join-operator/index.html
+
+approve-operator/index.html
+
 
 
 ---
 
-11. Current route hierarchy
+12. Current route hierarchy
 
 Current hierarchy:
 
@@ -328,6 +349,10 @@ LEGACY / COMPATIBILITY ROUTES
 /joker/
 /gate/
 /entry/
+/operator-console/
+/operator-license/
+/join-operator/
+/approve-operator/
 
 HISTORICAL ARCHIVE ROUTES
 /phase-1/
@@ -343,69 +368,56 @@ OPERATOR R&D CONCEPT ROUTES
 /operator/pack/
 /operator/pack-verify/
 /operator/pack-verify-nuclear/
+/operator-playbook/
 
 
 ---
 
-12. Next review order
+13. Next review order
 
 Next recommended review order:
 
-1. /operator-console/
+1. /b2g/
 
 
-2. /operator-license/
+2. /enterprise/
 
 
-3. /operator-playbook/
+3. /defense/
 
 
-4. /join-operator/
+4. /io-space/
 
 
-5. /approve-operator/
+5. /banca-cibernetica-europea/
 
 
-6. /b2g/
+6. /eu-pilot/
 
 
-7. /enterprise/
+7. /industry/
 
 
-8. /defense/
-
-
-9. /io-space/
-
-
-10. /banca-cibernetica-europea/
-
-
-11. /eu-pilot/
-
-
-12. /industry/
-
-
-13. /horizon/
+8. /horizon/
 
 
 
 
 ---
 
-13. Current decision
+14. Current decision
 
 Deletion is not approved yet.
 
 Current status:
 
-IN_REVIEW — AI / JOKER / GATE / ENTRY / PHASE-1 / OPERATOR ROUTES CLASSIFIED; SEPARATE OPERATOR-LEGACY / B2B / B2G / DEFENSE ROUTES STILL REQUIRE REVIEW
+IN_REVIEW — AI / JOKER / GATE / ENTRY / PHASE-1 / OPERATOR ROUTES CLASSIFIED; B2B / B2G / DEFENSE / INSTITUTIONAL ROUTES STILL REQUIRE REVIEW
 
 The AI / Joker duplication issue is partially remediated because the canonical route has been established and legacy routes have been declassed instead of deleted.
 
 The Gate / Entry / Phase-1 issue is partially remediated because old operational-looking routes have been declassed or archived instead of deleted.
 
-The operator route issue is partially remediated because the /operator/ subtree has been reframed as R&D, local tooling, concept material, or future pilot interest, without deleting historical artifacts.
+The operator route issue is partially remediated because the /operator/ subtree and related legacy operator routes have been reframed as R&D, local tooling, concept material, historical compatibility or future pilot interest, without deleting historical artifacts.
+
 
 
