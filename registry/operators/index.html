@@ -2,148 +2,251 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>Operator Registry — Public Proof Commitments</title>
-  <meta name="description" content="Public operator proof registry for the HBCE stack. Privacy-minimal, hash-only, append-only, fail-closed, and no public data custody." />
+  <title>Operator References — Public Proof Registry</title>
+  <meta name="description" content="Public operator reference registry for the HBCE R&D platform. Privacy-minimal, hash-only, append-only, fail-closed, no public data custody, MATRIX AI Audit Trail boundary." />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
   <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/registry/operators/" />
 
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <style>
+    .hbce-field{
+      width:100%;
+      box-sizing:border-box;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.20);
+      color:inherit;
+      border-radius:12px;
+      padding:10px 12px;
+      outline:none;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size:.92rem;
+    }
+
+    .hbce-field:focus{
+      border-color:rgba(255,255,255,.30);
+    }
+
+    .hbce-rowbtn{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+    }
+
+    th,td{
+      text-align:left;
+      vertical-align:top;
+      padding:10px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+
+    code{
+      word-break:break-word;
+    }
+  </style>
 </head>
 
 <body>
-  <div data-hbce="header"></div>
+  <div class="hbce-container">
+    <main class="hbce-main">
 
-  <main class="hbce-container hbce-main">
-
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">OPERATOR REGISTRY · PUBLIC PROOF · HASH-ONLY · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">Operator public proof registry</h1>
-      <p class="hbce-hero__lead">
-        This registry displays privacy-minimal public operator proof commitments.
-        It does not store private identity evidence, personal documents, credentials, secrets, private keys,
-        production logs, or sensitive operational payloads.
-        <br /><br />
-        Public entries are descriptive proof records only. They do not replace private identity verification,
-        contractual qualification, or formal legal authorization.
-      </p>
-
-      <p class="hbce-note">
-        Policy:
-        <strong>EU-first</strong> ·
-        <strong>audit-first</strong> ·
-        <strong>fail-closed</strong> ·
-        <strong>hash-only</strong> ·
-        <strong>append-only</strong> ·
-        <strong>GDPR-min</strong> ·
-        <strong>no public data custody</strong>
-      </p>
-    </section>
-
-    <section class="hbce-section">
-      <div class="hbce-grid hbce-grid--3">
-        <article class="hbce-card">
-          <div class="hbce-card__title">Registry state</div>
-          <div id="hbceStatus" class="hbce-note">Loading…</div>
-        </article>
-
-        <article class="hbce-card">
-          <div class="hbce-card__title">Public entries</div>
-          <div class="hbce-price" id="hbceCount">—</div>
-          <div class="hbce-card__meta">operator proof commitments</div>
-        </article>
-
-        <article class="hbce-card">
-          <div class="hbce-card__title">Actions</div>
-          <div class="hbce-actions">
-            <a class="hbce-btn" id="hbceExport" href="/hermeticum-bce-platform/registry/operators.json" target="_blank" rel="noopener">Export JSON</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/operators/append/">Append</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/operators/status/">Status</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
+      <header class="hbce-header">
+        <div class="hbce-header__row">
+          <div class="hbce-brand">
+            <div class="hbce-mono">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+            <div class="hbce-muted">HERMETICUM B.C.E. S.r.l.</div>
           </div>
-          <div class="hbce-note">
-            Use the public proof hash for verification. Missing match means no public proof record.
+
+          <nav class="hbce-nav" aria-label="Primary">
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/">Home</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/matrix-audit-trail/">MATRIX Audit</a>
+            <a class="hbce-nav__link is-active" href="/hermeticum-bce-platform/registry/">Registry</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/verify/">Verify</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/claims/">Claims</a>
+          </nav>
+        </div>
+      </header>
+
+      <section class="hbce-section hbce-hero">
+        <div class="hbce-hero__kicker">OPERATOR REFERENCES · PUBLIC PROOF · HASH-ONLY · FAIL-CLOSED</div>
+        <h1 class="hbce-hero__title">Operator reference registry</h1>
+
+        <p class="hbce-hero__lead">
+          This registry displays privacy-minimal public operator reference proof commitments.
+          It does not store private identity evidence, personal documents, credentials, secrets, private keys,
+          production logs, private communications, client files, or sensitive operational payloads.
+          <br><br>
+          Public entries are descriptive proof references only. They do not replace private identity review,
+          contractual qualification, formal legal authorization, public authority approval, regulated compliance,
+          cybersecurity assurance, or production authorization.
+        </p>
+
+        <div class="hbce-card" style="margin-top:14px;">
+          <div class="hbce-mono">R&D BOUNDARY</div>
+          <p class="hbce-muted" style="margin-bottom:0;">
+            This page is part of the MATRIX AI Audit Trail R&D boundary.
+            It is not a public authority register, not a regulated certification system,
+            not a professional licensing system, not an eIDAS qualified trust service,
+            and not a production compliance framework by itself.
+          </p>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-grid hbce-grid--3">
+
+          <article class="hbce-card">
+            <div class="hbce-mono">REGISTRY STATE</div>
+            <h2>Status</h2>
+            <p class="hbce-muted" id="hbceStatus">Loading…</p>
+          </article>
+
+          <article class="hbce-card">
+            <div class="hbce-mono">PUBLIC ENTRIES</div>
+            <h2 id="hbceCount">—</h2>
+            <p class="hbce-muted">operator reference proof commitments</p>
+          </article>
+
+          <article class="hbce-card">
+            <div class="hbce-mono">ACTIONS</div>
+            <h2>Registry tools</h2>
+            <div class="hbce-rowbtn">
+              <a class="hbce-btn hbce-btn--primary" id="hbceExport" href="/hermeticum-bce-platform/registry/operators.json" target="_blank" rel="noopener">Export JSON</a>
+              <a class="hbce-btn" href="/hermeticum-bce-platform/registry/operators/append/">Append</a>
+              <a class="hbce-btn" href="/hermeticum-bce-platform/registry/operators/status/">Status</a>
+              <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verify</a>
+            </div>
+            <p class="hbce-muted">
+              Use the public proof hash for verification. Missing match means no public proof record.
+            </p>
+          </article>
+
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <div class="hbce-mono">SEARCH</div>
+          <h2>Search public operator references</h2>
+          <p class="hbce-muted">
+            Search is limited to privacy-minimal public fields.
+            Do not use raw personal identifiers, private evidence, credentials, secrets or regulated identity material as public search keys.
+          </p>
+
+          <label class="hbce-muted" for="q">Public label / hash / status / timestamp</label>
+          <input class="hbce-field" id="q" type="search" placeholder="HBCE_PUBLIC_OPERATOR_001, payload hash, RND_ONLY" />
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <div class="hbce-mono">ENTRIES</div>
+          <h2>Public proof entries</h2>
+
+          <div style="overflow:auto;margin-top:12px;">
+            <table id="tbl">
+              <thead>
+                <tr>
+                  <th>timestamp</th>
+                  <th>operator_label</th>
+                  <th>record_scope</th>
+                  <th>payload_sha256</th>
+                  <th>status</th>
+                  <th>verify</th>
+                </tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
           </div>
-        </article>
-      </div>
-    </section>
 
-    <section class="hbce-section">
-      <div class="hbce-kicker">Search</div>
-      <h2 class="hbce-h2">Search public operator commitments</h2>
-      <div class="hbce-card">
-        <label class="hbce-label" for="q">Public label / hash / status / timestamp</label>
-        <input class="hbce-input" id="q" type="search" placeholder="e.g. HBCE_PUBLIC_OPERATOR_001, payload hash, ACTIVE" />
-        <div class="hbce-note">
-          Search is limited to privacy-minimal public fields. Do not use raw personal identifiers as public search keys.
+          <p class="hbce-muted" style="margin-top:12px;">
+            Empty registry interpretation: no public operator reference proof entries are currently available in this file.
+            An empty registry does not certify validity, authorization, operator status, compliance status,
+            security status or operational activation by itself.
+          </p>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="hbce-section">
-      <div class="hbce-kicker">Entries</div>
-      <h2 class="hbce-h2">Public proof entries</h2>
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>Fail-closed rule</h2>
+          <p class="hbce-muted">
+            Deterministic public proof requires a match against a valid registry entry.
+            Missing, malformed, ambiguous or inconsistent registry state must not produce validity.
+          </p>
 
-      <div class="hbce-card">
-        <div style="overflow:auto;">
-          <table class="hbce-table" id="tbl">
-            <thead>
-              <tr>
-                <th>timestamp</th>
-                <th>operator_label</th>
-                <th>record_scope</th>
-                <th>payload_sha256</th>
-                <th>status</th>
-                <th>verify</th>
-              </tr>
-            </thead>
-            <tbody id="rows"></tbody>
-          </table>
+          <div class="hbce-card" style="margin-top:12px;">
+            <pre class="hbce-mono">Missing registry → NON_OPERATIONAL
+Invalid registry → NON_OPERATIONAL
+Malformed entry → NON_OPERATIONAL
+Forbidden public field → NON_OPERATIONAL
+No match → NO_PUBLIC_RECORD
+Valid match → PUBLIC_REFERENCE_PRESENT</pre>
+          </div>
         </div>
+      </section>
 
-        <div class="hbce-note">
-          Empty registry interpretation: no public operator proof entries are currently available in this file.
-          An empty registry does not certify validity, authorization, operator status, or operational activation by itself.
+      <footer class="hbce-footer">
+        <div class="hbce-footer__row">
+          <div class="hbce-muted">
+            <span class="hbce-mono">OPERATOR REFERENCES</span> — public R&D operator proof registry
+          </div>
+          <div class="hbce-footer__links">
+            <a href="/hermeticum-bce-platform/">Home</a>
+            <a href="/hermeticum-bce-platform/registry/">Registry</a>
+            <a href="/hermeticum-bce-platform/verify/">Verify</a>
+            <a href="/hermeticum-bce-platform/claims/">Claims</a>
+          </div>
         </div>
-      </div>
-    </section>
+      </footer>
 
-    <section class="hbce-section">
-      <div class="hbce-footnote">
-        <p>
-          <strong>Validity:</strong> deterministic public proof requires a match against a valid registry entry.
-          Missing, malformed, ambiguous, or inconsistent registry state must not produce <strong>VALID</strong>.
-        </p>
-        <p>
-          <strong>Fail-closed:</strong> if the registry is unreachable, invalid, non-v3, or contains forbidden public fields,
-          this page does not show operational results.
-        </p>
-      </div>
-    </section>
-
-  </main>
-
-  <div data-hbce="footer"></div>
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+    </main>
+  </div>
 
   <script>
-    (function(){
+    (() => {
       "use strict";
 
       const REGISTRY_URL = "/hermeticum-bce-platform/registry/operators.json";
       const EXPECTED_PROTO = "HBCE-REGISTRY-v3";
+      const EXPECTED_KIND = "HBCE_OPERATORS_PUBLIC_REGISTRY_RND_REFERENCE";
       const EXPECTED_FAILURE_MODE = "FAIL_CLOSED";
-      const EXPECTED_PUBLIC_DATA = "HASH_ONLY";
+
+      const ACCEPTED_MODES = new Set([
+        "APPEND_ONLY_PUBLIC_REGISTRY",
+        "APPEND_ONLY_PUBLIC_RND_REGISTRY"
+      ]);
+
+      const ACCEPTED_PUBLIC_DATA = new Set([
+        "HASH_ONLY",
+        "MINIMIZED_PUBLIC_METADATA"
+      ]);
+
+      const ACCEPTED_STATUSES = new Set([
+        "ACTIVE",
+        "REVOKED",
+        "SUSPENDED",
+        "RND_ONLY",
+        "RETAINED"
+      ]);
 
       const FORBIDDEN_FIELDS = [
-        "name",
-        "nickname",
         "raw_identifier",
         "identity_document",
+        "regulated_identity_document",
         "private_evidence",
         "personal_payload",
+        "personal_data",
         "api_key",
         "token",
         "password",
@@ -153,12 +256,17 @@
         "production_log",
         "private_communication",
         "sensitive_operational_payload",
+        "confidential_payload",
+        "financial_asset",
         "private_ip",
         "internal_hostname",
         "internal_endpoint",
         "admin_url",
         "database_url",
-        "ssh_key"
+        "ssh_key",
+        "raw_prompt",
+        "raw_output",
+        "client_file"
       ];
 
       const elStatus = document.getElementById("hbceStatus");
@@ -169,7 +277,6 @@
 
       function setStatus(text){
         elStatus.textContent = text;
-        elStatus.className = "hbce-note";
       }
 
       function failClosed(reason){
@@ -182,25 +289,40 @@
         setStatus(message);
       }
 
-      function safeStr(value){
-        return value === null || value === undefined ? "" : String(value);
+      function clean(value){
+        return String(value || "").trim();
       }
 
       function isSha256Lower(value){
-        return /^[0-9a-f]{64}$/.test(safeStr(value).trim());
+        return /^[0-9a-f]{64}$/.test(clean(value));
       }
 
       function isIsoLikeTimestamp(value){
-        const raw = safeStr(value).trim();
+        const raw = clean(value);
         if (!raw) return false;
         return Number.isFinite(Date.parse(raw));
       }
 
-      function hasForbiddenField(obj){
-        if (!obj || typeof obj !== "object") return null;
+      function hasForbiddenField(object){
+        if (!object || typeof object !== "object") {
+          return null;
+        }
 
-        for (const key of Object.keys(obj)) {
-          if (FORBIDDEN_FIELDS.includes(key)) return key;
+        if (Array.isArray(object)) {
+          for (const item of object) {
+            const found = hasForbiddenField(item);
+            if (found) return found;
+          }
+          return null;
+        }
+
+        for (const key of Object.keys(object)) {
+          if (FORBIDDEN_FIELDS.includes(key)) {
+            return key;
+          }
+
+          const found = hasForbiddenField(object[key]);
+          if (found) return found;
         }
 
         return null;
@@ -209,12 +331,20 @@
       function validateRegistry(registry){
         if (!registry || typeof registry !== "object") return "REGISTRY_INVALID_OBJECT";
         if (registry.proto !== EXPECTED_PROTO) return "REGISTRY_PROTO_MISMATCH";
-        if (registry.kind !== "HBCE_CERTIFIED_OPERATORS_PUBLIC_REGISTRY") return "REGISTRY_KIND_MISMATCH";
+        if (registry.kind !== EXPECTED_KIND) return "REGISTRY_KIND_MISMATCH";
+
+        if (!ACCEPTED_MODES.has(clean(registry.mode))) {
+          return "REGISTRY_MODE_MISMATCH";
+        }
+
         if (!Array.isArray(registry.entries)) return "REGISTRY_ENTRIES_INVALID";
 
         if (!registry.rules || typeof registry.rules !== "object") return "REGISTRY_RULES_MISSING";
         if (registry.rules.failure_mode !== EXPECTED_FAILURE_MODE) return "REGISTRY_FAILURE_MODE_MISMATCH";
-        if (registry.rules.public_data !== EXPECTED_PUBLIC_DATA) return "REGISTRY_PUBLIC_DATA_MISMATCH";
+
+        if (!ACCEPTED_PUBLIC_DATA.has(clean(registry.rules.public_data))) {
+          return "REGISTRY_PUBLIC_DATA_MISMATCH";
+        }
 
         for (const entry of registry.entries) {
           const err = validateEntry(entry);
@@ -228,20 +358,20 @@
         if (!entry || typeof entry !== "object") return "ENTRY_INVALID_OBJECT";
 
         const forbidden = hasForbiddenField(entry);
-        if (forbidden) return "ENTRY_FORBIDDEN_FIELD_" + forbidden;
+        if (forbidden) return "ENTRY_FORBIDDEN_FIELD_" + forbidden.toUpperCase();
 
-        if (!safeStr(entry.operator_label).trim()) return "ENTRY_MISSING_OPERATOR_LABEL";
+        if (!clean(entry.operator_label)) return "ENTRY_MISSING_OPERATOR_LABEL";
         if (!isSha256Lower(entry.payload_sha256)) return "ENTRY_INVALID_PAYLOAD_SHA256";
         if (!isIsoLikeTimestamp(entry.timestamp)) return "ENTRY_INVALID_TIMESTAMP";
 
-        const status = safeStr(entry.status).trim();
-        if (!["ACTIVE", "REVOKED", "SUSPENDED"].includes(status)) return "ENTRY_INVALID_STATUS";
+        const status = clean(entry.status);
+        if (!ACCEPTED_STATUSES.has(status)) return "ENTRY_INVALID_STATUS";
 
         return null;
       }
 
       function matchesQuery(entry, query){
-        const q = safeStr(query).trim().toLowerCase();
+        const q = clean(query).toLowerCase();
         if (!q) return true;
 
         const haystack = [
@@ -251,20 +381,22 @@
           entry.status,
           entry.timestamp,
           entry.note
-        ].map(safeStr).join(" ").toLowerCase();
+        ].map(clean).join(" ").toLowerCase();
 
         return haystack.includes(q);
       }
 
       function createCell(text, isCode){
         const td = document.createElement("td");
+
         if (isCode) {
           const code = document.createElement("code");
-          code.textContent = safeStr(text) || "—";
+          code.textContent = clean(text) || "—";
           td.appendChild(code);
         } else {
-          td.textContent = safeStr(text) || "—";
+          td.textContent = clean(text) || "—";
         }
+
         return td;
       }
 
@@ -277,10 +409,12 @@
         if (!filtered.length) {
           const tr = document.createElement("tr");
           const td = document.createElement("td");
+
           td.colSpan = 6;
           td.textContent = entries.length
             ? "No entries match the current search."
-            : "No public operator proof entries are currently available.";
+            : "No public operator reference proof entries are currently available.";
+
           tr.appendChild(td);
           elRows.appendChild(tr);
           return;
@@ -297,8 +431,10 @@
 
           const tdVerify = document.createElement("td");
           const link = document.createElement("a");
+
           link.href = "/hermeticum-bce-platform/verify/?sha256=" + encodeURIComponent(entry.payload_sha256);
           link.textContent = "verify";
+
           tdVerify.appendChild(link);
           tr.appendChild(tdVerify);
 
@@ -308,8 +444,13 @@
 
       async function main(){
         try {
-          const response = await fetch(REGISTRY_URL, { cache: "no-store" });
-          if (!response.ok) return failClosed("registry fetch error");
+          const response = await fetch(REGISTRY_URL, {
+            cache: "no-store"
+          });
+
+          if (!response.ok) {
+            return failClosed("registry fetch error");
+          }
 
           const registry = await response.json();
           const validationError = validateRegistry(registry);
@@ -318,7 +459,7 @@
             return failClosed(validationError);
           }
 
-          okStatus("OK — registry valid v3");
+          okStatus("OK — registry valid v3 R&D reference");
           elExport.href = REGISTRY_URL;
 
           render(registry.entries, "");
@@ -326,7 +467,7 @@
           elQ.addEventListener("input", () => {
             render(registry.entries, elQ.value);
           });
-        } catch (error) {
+        } catch {
           failClosed("exception");
         }
       }
