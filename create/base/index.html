@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>Create IPR Base EU (Citizen) — CIE + Codice Fiscale (Dedup)</title>
-  <meta name="description" content="EU Citizen IPR Base wizard with CIE + Codice Fiscale. Local-only citizen data, deterministic release, SHA-256 proofs, and dedup via CF hash against the public ledger. Fail-closed." />
+  <title>Create Base Reference — HBCE R&D Local Proof Builder</title>
+  <meta name="description" content="HBCE Create Base R&D local proof builder. Client-side SHA-256 commitments, hash-only public references, no public data custody, registry v3 dedup check, fail-closed." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
@@ -15,7 +15,6 @@
   <script defer src="../../assets/hbce-ui.js"></script>
 
   <style>
-    /* Minimal, page-scoped form coherence (no layout overrides). */
     .hbce-field{
       width:100%;
       box-sizing:border-box;
@@ -25,474 +24,762 @@
       border-radius:12px;
       padding:10px 12px;
       outline:none;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size:.92rem;
     }
-    .hbce-field:focus{ border-color: rgba(255,255,255,.30); }
-    pre{white-space:pre-wrap;word-break:break-word;margin:0;}
+
+    .hbce-field:focus{
+      border-color:rgba(255,255,255,.30);
+    }
+
+    .hbce-rowbtn{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    .hbce-kv{
+      display:grid;
+      grid-template-columns:210px 1fr;
+      gap:8px;
+      margin-top:10px;
+    }
+
+    pre{
+      white-space:pre-wrap;
+      word-break:break-word;
+      margin:0;
+    }
+
+    .hbce-small{
+      font-size:.88rem;
+      line-height:1.55;
+    }
+
+    .hbce-warning{
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.035);
+      border-radius:16px;
+      padding:14px;
+    }
   </style>
 </head>
 
 <body>
+  <div class="hbce-container">
+    <main class="hbce-main">
 
-  <section class="hbce-section hbce-hero">
-    <div class="hbce-hero__kicker">CREATE · IPR BASE EU · CITIZEN (CIE + CF)</div>
-    <h1 class="hbce-hero__title">EU Citizen Entry — CIE + Codice Fiscale (Dedup)</h1>
-    <p class="hbce-hero__lead">
-      Citizen data is collected <strong>locally</strong>. Public registry stores only <strong>hash-only proofs</strong>.
-      Duplicate prevention is enforced via <span class="hbce-mono">SHA-256(CodiceFiscale)</span> checked against the public ledger.
-    </p>
-
-    <div style="margin-top:14px;display:flex;gap:12px;flex-wrap:wrap">
-      <a class="hbce-btn hbce-btn--primary" href="../../activate/">Activate</a>
-      <a class="hbce-btn" href="../../registry/">Registry</a>
-      <a class="hbce-btn" href="../../verify/">Verify</a>
-      <a class="hbce-btn" href="../../pricing/">Pricing</a>
-    </div>
-  </section>
-
-  <section class="hbce-section">
-    <div class="hbce-card">
-      <h2>Public ledger (read-only)</h2>
-      <p class="hbce-muted">
-        Ledger is loaded from <span class="hbce-mono">/registry/ledger.json</span>. Dedup uses
-        <span class="hbce-mono">citizen_cf_sha256 = SHA-256(UPPERCASE(TRIM(CF)))</span>.
-      </p>
-
-      <div class="hbce-grid hbce-grid--3" style="margin-top:14px">
-
-        <div class="hbce-card">
-          <h3>Ledger status</h3>
-          <p class="hbce-muted">Loads: <span class="hbce-mono">/registry/ledger.json</span></p>
-
-          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-            <a class="hbce-btn hbce-btn--primary" href="#" id="loadLedger">Reload Ledger</a>
+      <header class="hbce-header">
+        <div class="hbce-header__row">
+          <div class="hbce-brand">
+            <div class="hbce-mono">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+            <div class="hbce-muted">HERMETICUM B.C.E. S.r.l.</div>
           </div>
 
-          <div class="hbce-card" style="margin-top:12px">
-            <div class="hbce-mono hbce-muted">Status</div>
-            <div style="font-weight:700;letter-spacing:.02em" id="ledgerStatus">NOT LOADED</div>
-            <div class="hbce-mono hbce-muted" style="margin-top:8px">entries: <span id="ledgerCount">—</span></div>
-          </div>
+          <nav class="hbce-nav" aria-label="Primary">
+            <a class="hbce-nav__link" href="../../">Home</a>
+            <a class="hbce-nav__link" href="../../matrix-audit-trail/">MATRIX Audit</a>
+            <a class="hbce-nav__link" href="../../protocol/">Protocol</a>
+            <a class="hbce-nav__link" href="../../registry/">Registry</a>
+            <a class="hbce-nav__link" href="../../verify/">Verify</a>
+            <a class="hbce-nav__link is-active" href="./">Create Base</a>
+          </nav>
         </div>
+      </header>
 
-        <div class="hbce-card">
-          <h3>Dedup key</h3>
-          <p class="hbce-muted">Dedup is computed as:</p>
-          <div class="hbce-mono hbce-muted">citizen_cf_sha256 = SHA-256(UPPERCASE(TRIM(CF)))</div>
+      <section class="hbce-section hbce-hero">
+        <div class="hbce-hero__kicker">CREATE · BASE REFERENCE · R&D LOCAL BUILDER · HASH-ONLY · FAIL-CLOSED</div>
+        <h1 class="hbce-hero__title">Create Base Reference</h1>
 
-          <div class="hbce-card" style="margin-top:12px">
-            <div class="hbce-mono hbce-muted">Dedup check</div>
-            <div style="font-weight:700;letter-spacing:.02em" id="dedupStatus">—</div>
-          </div>
-        </div>
+        <p class="hbce-hero__lead">
+          This page creates a local R&D base-reference object and hash-only public proof commitments.
+          It is designed for the MATRIX AI Audit Trail / HBCE registry v3 boundary.
+          <br><br>
+          The builder runs in the browser. It does not upload private material, does not custody identity evidence,
+          does not store private keys, and does not create legal identity certification, public authority approval,
+          regulated compliance, eIDAS qualification, or production authorization.
+        </p>
 
-        <div class="hbce-card">
-          <h3>Boundary</h3>
-          <p class="hbce-muted">
-            Public registry: hash-only proofs.<br/>
-            Local release: citizen payload (owner-controlled).
+        <div class="hbce-card hbce-small" style="margin-top:14px;">
+          <div class="hbce-mono">PUBLIC DATA RULE</div>
+          <p class="hbce-muted" style="margin-bottom:0;">
+            Public registry entries should contain only minimized labels and SHA-256 commitments.
+            Do not place raw personal identifiers, identity documents, credentials, secrets, private evidence,
+            client files, regulated identity data, production logs, private keys, or confidential payloads into public proof records.
           </p>
+        </div>
+
+        <div class="hbce-rowbtn" style="margin-top:16px">
+          <a class="hbce-btn hbce-btn--primary" href="../../registry/">Registry</a>
+          <a class="hbce-btn" href="../../verify/">Verify</a>
+          <a class="hbce-btn" href="../../verify-pack/">Verify Pack</a>
+          <a class="hbce-btn" href="../../claims/">Claims & Non-Claims</a>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>Public ledger check</h2>
+          <p class="hbce-muted">
+            The public ledger is loaded from <span class="hbce-mono">/registry/ledger.json</span>.
+            The local dedup check compares the generated <span class="hbce-mono">local_dedup_commitment_sha256</span>
+            against public ledger SHA-256 entries. Missing or unreachable ledger state blocks the build.
+          </p>
+
+          <div class="hbce-grid hbce-grid--3" style="margin-top:14px">
+
+            <div class="hbce-card">
+              <div class="hbce-mono">LEDGER</div>
+              <h3>Read-only source</h3>
+              <p class="hbce-muted">
+                Loads the public hash-only ledger. The ledger is used only for public SHA-256 lookup.
+              </p>
+
+              <div class="hbce-rowbtn">
+                <button class="hbce-btn hbce-btn--primary" id="loadLedger" type="button">Reload ledger</button>
+                <a class="hbce-btn" href="../../registry/ledger.json" target="_blank" rel="noopener">Open ledger.json</a>
+              </div>
+
+              <div class="hbce-card" style="margin-top:12px">
+                <div class="hbce-mono hbce-muted">Status</div>
+                <div style="font-weight:700;letter-spacing:.02em" id="ledgerStatus">NOT LOADED</div>
+                <div class="hbce-mono hbce-muted" style="margin-top:8px">entries: <span id="ledgerCount">—</span></div>
+              </div>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">DEDUP</div>
+              <h3>Local commitment check</h3>
+              <p class="hbce-muted">
+                The dedup commitment is computed locally from a private local seed.
+                The seed itself is not published.
+              </p>
+
+              <div class="hbce-card" style="margin-top:12px">
+                <div class="hbce-mono hbce-muted">Dedup check</div>
+                <div style="font-weight:700;letter-spacing:.02em" id="dedupStatus">—</div>
+              </div>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">BOUNDARY</div>
+              <h3>No public data custody</h3>
+              <p class="hbce-muted">
+                Public output is limited to hash-only proof references.
+                The local release is owner-controlled and should not be published when it contains private material.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>Local base-reference fields</h2>
+
+          <div class="hbce-grid hbce-grid--3" style="margin-top:14px">
+
+            <div class="hbce-card">
+              <div class="hbce-mono">LOCAL INPUT</div>
+              <h3>Reference metadata</h3>
+
+              <div class="hbce-grid hbce-grid--2" style="margin-top:12px">
+                <div>
+                  <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Base reference ID</div>
+                  <input id="base_id" class="hbce-field" placeholder="e.g., IPR-BASE-RND-0001" />
+                </div>
+
+                <div>
+                  <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Public subject label</div>
+                  <input id="subject_label" class="hbce-field" placeholder="e.g., HBCE_PUBLIC_REFERENCE_001" />
+                </div>
+
+                <div>
+                  <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Reference scope</div>
+                  <select id="reference_scope" class="hbce-field">
+                    <option value="MATRIX_AI_AUDIT_TRAIL_MVP">MATRIX_AI_AUDIT_TRAIL_MVP</option>
+                    <option value="HBCE_RND_REFERENCE">HBCE_RND_REFERENCE</option>
+                    <option value="REGISTRY_V3_REFERENCE">REGISTRY_V3_REFERENCE</option>
+                    <option value="INTERNAL_SELF_PILOT">INTERNAL_SELF_PILOT</option>
+                  </select>
+                </div>
+
+                <div>
+                  <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Jurisdiction reference</div>
+                  <select id="jurisdiction_reference" class="hbce-field">
+                    <option value="EU_REFERENCE_FRAMEWORK">EU_REFERENCE_FRAMEWORK</option>
+                    <option value="INTERNAL_RND">INTERNAL_RND</option>
+                    <option value="PILOT_REVIEW">PILOT_REVIEW</option>
+                  </select>
+                </div>
+
+                <div style="grid-column:1 / -1">
+                  <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Private local dedup seed</div>
+                  <input id="dedup_seed" class="hbce-field" placeholder="Private local seed. Do not paste identity documents, credentials, secrets or raw regulated identifiers." />
+                </div>
+
+                <div style="grid-column:1 / -1">
+                  <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Local note — optional</div>
+                  <input id="local_note" class="hbce-field" placeholder="Optional local note. Avoid sensitive material." />
+                </div>
+              </div>
+
+              <div class="hbce-warning hbce-small" style="margin-top:12px;">
+                Forbidden public-data patterns are blocked fail-closed:
+                secrets, tokens, passwords, private keys, credentials, raw identity documents,
+                personal payloads, client files, production logs and internal endpoints.
+              </div>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">BUILD</div>
+              <h3>Generate local release and proofs</h3>
+              <p class="hbce-muted">
+                The generated release is local and owner-controlled.
+                The public proofs are hash-only references suitable for registry review.
+              </p>
+
+              <div class="hbce-rowbtn">
+                <button class="hbce-btn hbce-btn--primary" id="build" type="button">Build reference</button>
+                <button class="hbce-btn" id="download" type="button">Download release</button>
+                <button class="hbce-btn" id="reset" type="button">Reset</button>
+              </div>
+
+              <div class="hbce-card" style="margin-top:12px">
+                <div class="hbce-mono hbce-muted">Build status</div>
+                <div style="font-weight:700;letter-spacing:.02em" id="buildStatus">READY</div>
+              </div>
+
+              <div class="hbce-kv hbce-mono">
+                <span class="hbce-muted">release_payload_sha256</span><span id="sha_release">—</span>
+                <span class="hbce-muted">local_dedup_commitment_sha256</span><span id="sha_dedup">—</span>
+              </div>
+
+              <div class="hbce-rowbtn">
+                <button class="hbce-btn" id="copyReleaseProof" type="button">Copy release proof</button>
+                <button class="hbce-btn" id="copyDedupProof" type="button">Copy dedup proof</button>
+              </div>
+
+              <div class="hbce-card" style="margin-top:12px">
+                <div class="hbce-mono hbce-muted">Proofs — hash-only</div>
+                <pre id="proofs" class="hbce-mono" style="margin-top:10px;">{}</pre>
+              </div>
+
+              <div class="hbce-rowbtn">
+                <a class="hbce-btn" href="../../registry/">Open Registry</a>
+                <a class="hbce-btn" href="../../joker-c2/">Open AI JOKER-C2</a>
+              </div>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">LOCAL RELEASE</div>
+              <h3>Owner-controlled JSON</h3>
+              <p class="hbce-muted">
+                This object is generated locally. Do not publish it if it contains private or sensitive material.
+              </p>
+
+              <div class="hbce-card" style="margin-top:12px;background:rgba(0,0,0,.18)">
+                <pre id="releaseOut" class="hbce-mono">{}</pre>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>Output interpretation</h2>
+          <p class="hbce-muted">
+            A generated proof means only that a local object produced a deterministic SHA-256 commitment.
+            A public ledger match means only that a public hash reference exists. Neither result creates legal validity,
+            public authority approval, regulated certification, operator qualification, cybersecurity assurance or production authorization.
+          </p>
+
+          <div class="hbce-card" style="margin-top:12px">
+            <pre class="hbce-mono">LOCAL_RELEASE
+→ SHA-256 COMMITMENT
+→ HASH_ONLY_PUBLIC_PROOF
+→ OPTIONAL REGISTRY LOOKUP
+→ PUBLIC_REFERENCE_PRESENT / NO_PUBLIC_RECORD
+→ FAIL-CLOSED REVIEW</pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <div class="hbce-mono">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+          <div class="hbce-muted">HERMETICUM B.C.E. S.r.l.</div>
+          <div class="hbce-muted" style="margin-top:8px">
+            R&D reference · fail-closed · hash-only · append-only · EU-first · audit-first · no public data custody
+          </div>
+        </div>
+      </section>
+
+      <footer class="hbce-footer">
+        <div class="hbce-footer__row">
           <div class="hbce-muted">
-            Do not publish CIE number, CF, or personal data in the ledger.
+            <span class="hbce-mono">CREATE BASE</span> — R&D local proof builder
+          </div>
+          <div class="hbce-footer__links">
+            <a href="../../">Home</a>
+            <a href="../../matrix-audit-trail/">MATRIX Audit</a>
+            <a href="../../registry/">Registry</a>
+            <a href="../../verify/">Verify</a>
+            <a href="../../claims/">Claims</a>
           </div>
         </div>
+      </footer>
 
-      </div>
-    </div>
-  </section>
-
-  <section class="hbce-section">
-    <div class="hbce-card">
-      <h2>EU Citizen fields (local)</h2>
-
-      <div class="hbce-grid hbce-grid--3" style="margin-top:14px">
-
-        <div class="hbce-card">
-          <h3>Core identity</h3>
-
-          <div class="hbce-grid hbce-grid--2" style="margin-top:12px">
-            <div>
-              <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Full legal name</div>
-              <input id="full_name" class="hbce-field" placeholder="e.g., Manuel Coletta" />
-            </div>
-            <div>
-              <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Nationality</div>
-              <input id="nationality" class="hbce-field" placeholder="e.g., Italian" />
-            </div>
-
-            <div>
-              <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Date of birth (YYYY-MM-DD)</div>
-              <input id="dob" class="hbce-field hbce-mono" placeholder="1988-02-05" />
-            </div>
-            <div>
-              <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Place of birth (City, Country)</div>
-              <input id="pob" class="hbce-field" placeholder="Bologna, IT" />
-            </div>
-
-            <div>
-              <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Residence (City, Region, Country)</div>
-              <input id="residence" class="hbce-field" placeholder="Torino, Piemonte, IT" />
-            </div>
-            <div>
-              <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Contact email (optional)</div>
-              <input id="email" class="hbce-field hbce-mono" placeholder="name@example.com" />
-            </div>
-          </div>
-
-          <hr style="margin:18px 0;border:0;border-top:1px solid var(--hbce-line)"/>
-
-          <h3>EU identifiers (local-only)</h3>
-          <p class="hbce-muted">
-            These fields are used to generate a local release and an anti-duplicate hash key.
-            Only hashes are intended for the public ledger.
-          </p>
-
-          <div class="hbce-grid hbce-grid--2" style="margin-top:12px">
-            <div>
-              <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Codice Fiscale (IT)</div>
-              <input id="cf" class="hbce-field hbce-mono" placeholder="16 characters (e.g., CLTMNL88B05A944R)" />
-            </div>
-            <div>
-              <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">CIE number (optional, local)</div>
-              <input id="cie" class="hbce-field hbce-mono" placeholder="e.g., CA19311XQ" />
-            </div>
-
-            <div>
-              <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">CIE expiry (optional, YYYY-MM-DD)</div>
-              <input id="cie_exp" class="hbce-field hbce-mono" placeholder="2035-02-05" />
-            </div>
-            <div>
-              <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Citizen IPR ID (your label)</div>
-              <input id="ipr_id" class="hbce-field hbce-mono" placeholder="e.g., IPR-CITIZEN-0001" />
-            </div>
-
-            <div style="grid-column:1 / -1">
-              <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Notes (optional, local)</div>
-              <input id="notes" class="hbce-field" placeholder="optional local note" />
-            </div>
-          </div>
-
-          <div class="hbce-mono hbce-muted" style="margin-top:12px;">
-            Validation: CF must be 16 alphanumeric characters. If ledger already contains CF hash → BLOCK.
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Build outputs</h3>
-          <p class="hbce-muted">
-            Generate deterministic JSON → compute SHA-256 → produce registry proofs (release + CF dedup).
-          </p>
-
-          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-            <a class="hbce-btn hbce-btn--primary" href="#" id="build">Build Release</a>
-            <a class="hbce-btn" href="#" id="download">Download Release</a>
-            <a class="hbce-btn" href="#" id="reset">Reset</a>
-          </div>
-
-          <div class="hbce-card" style="margin-top:12px">
-            <div class="hbce-mono hbce-muted">Build status</div>
-            <div style="font-weight:700;letter-spacing:.02em" id="buildStatus">READY</div>
-          </div>
-
-          <div class="hbce-mono hbce-muted" style="margin-top:12px">
-            release_payload_sha256: <span id="sha_release">—</span><br/>
-            citizen_cf_sha256: <span id="sha_cf">—</span>
-          </div>
-
-          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-            <a class="hbce-btn" href="#" id="copyReleaseProof">Copy Release Proof</a>
-            <a class="hbce-btn" href="#" id="copyCFProof">Copy CF Dedup Proof</a>
-          </div>
-
-          <div class="hbce-card" style="margin-top:12px">
-            <div class="hbce-mono hbce-muted">Proofs (hash-only)</div>
-            <pre id="proofs" class="hbce-mono" style="margin:10px 0 0 0;white-space:pre-wrap;word-break:break-word;">{}</pre>
-          </div>
-
-          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
-            <a class="hbce-btn" href="../../registry/">Open Registry</a>
-            <a class="hbce-btn" href="../../sim/joker-c2/">Open Simulator</a>
-          </div>
-        </div>
-
-        <div class="hbce-card">
-          <h3>Release JSON (local)</h3>
-          <p class="hbce-muted">Owner-controlled release content. Do not publish it.</p>
-          <div class="hbce-card" style="margin-top:12px">
-            <pre id="releaseOut" class="hbce-mono">{}</pre>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <section class="hbce-section">
-    <div class="hbce-card">
-      <div>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-      <div>HERMETICUM B.C.E. S.r.l.</div>
-      <div class="hbce-muted">Fail-closed · Hash-only · Append-only · EU-first · Audit-first</div>
-    </div>
-  </section>
+    </main>
+  </div>
 
   <script>
-let LEDGER = null;
+    (() => {
+      "use strict";
 
-function toHex(buf){
-  const bytes = new Uint8Array(buf);
-  let out = "";
-  for (let i = 0; i < bytes.length; i++) out += bytes[i].toString(16).padStart(2, "0");
-  return out;
-}
-async function sha256HexFromText(text){
-  const enc = new TextEncoder();
-  const data = enc.encode(text);
-  const digest = await crypto.subtle.digest("SHA-256", data);
-  return toHex(digest);
-}
-function nowISO(){ return new Date().toISOString(); }
+      let LEDGER = null;
+      let LAST_RELEASE_TEXT = "";
+      let LAST_PROOFS_TEXT = "";
 
-function stableStringify(obj){
-  const seen = new WeakSet();
-  function norm(x){
-    if (x && typeof x === "object"){
-      if (seen.has(x)) throw new Error("CYCLE");
-      seen.add(x);
-      if (Array.isArray(x)) return x.map(norm);
-      const keys = Object.keys(x).sort();
-      const out = {};
-      for (const k of keys) out[k] = norm(x[k]);
-      return out;
-    }
-    return x;
-  }
-  return JSON.stringify(norm(obj), null, 2);
-}
+      const FORBIDDEN_PATTERNS = [
+        "api_key",
+        "token",
+        "password",
+        "secret",
+        "private_key",
+        "credential",
+        "identity_document",
+        "regulated_identity_document",
+        "private_evidence",
+        "personal_payload",
+        "personal_data",
+        "raw_identifier",
+        "client_file",
+        "production_log",
+        "private_communication",
+        "internal_endpoint",
+        "private_ip",
+        "internal_hostname",
+        "database_url",
+        "admin_url",
+        "ssh_key"
+      ];
 
-function getVal(id){ return (document.getElementById(id).value || "").trim(); }
-function setText(id, t){ document.getElementById(id).textContent = t; }
+      function $(id){
+        return document.getElementById(id);
+      }
 
-function setLedgerStatus(s){ setText("ledgerStatus", s); }
-function setLedgerCount(n){ setText("ledgerCount", String(n)); }
+      function clean(value){
+        return String(value || "").trim();
+      }
 
-async function loadLedger(){
-  setLedgerStatus("LOADING…");
-  try{
-    const res = await fetch("/hermeticum-bce-platform/registry/ledger.json", { cache: "no-store" });
-    if (!res.ok) throw new Error("http " + res.status);
-    const data = await res.json();
-    LEDGER = data;
-    const entries = Array.isArray(data.entries) ? data.entries : [];
-    setLedgerCount(entries.length);
-    setLedgerStatus("LOADED");
-  } catch(e){
-    LEDGER = null;
-    setLedgerCount("—");
-    setLedgerStatus("LOAD FAILED");
-  }
-}
+      function toHex(buffer){
+        const bytes = new Uint8Array(buffer);
+        let output = "";
 
-function ledgerHasSha(sha){
-  if (!LEDGER) return null;
-  const entries = Array.isArray(LEDGER.entries) ? LEDGER.entries : [];
-  return !!entries.find(x => x && typeof x.sha256 === "string" && x.sha256.toLowerCase() === sha.toLowerCase());
-}
+        for (let index = 0; index < bytes.length; index += 1) {
+          output += bytes[index].toString(16).padStart(2, "0");
+        }
 
-function normalizeCF(cf){
-  return (cf || "").trim().toUpperCase().replace(/\s+/g,"");
-}
-function isValidCF(cf){
-  return /^[A-Z0-9]{16}$/.test(normalizeCF(cf));
-}
+        return output;
+      }
 
-function setBuildStatus(s){ setText("buildStatus", s); }
+      async function sha256HexFromText(text){
+        const encoder = new TextEncoder();
+        const data = encoder.encode(text);
+        const digest = await crypto.subtle.digest("SHA-256", data);
 
-let LAST_RELEASE_TEXT = "";
-let LAST_SHA_RELEASE = "";
-let LAST_SHA_CF = "";
-let LAST_PROOFS_TEXT = "";
+        return toHex(digest);
+      }
 
-function buildReleaseObject(cf_sha256){
-  const iprId = getVal("ipr_id") || "IPR-CITIZEN-UNSPECIFIED";
+      function nowISO(){
+        return new Date().toISOString();
+      }
 
-  const payload = {
-    ipr_id: iprId,
-    citizen: {
-      full_name: getVal("full_name"),
-      nationality: getVal("nationality"),
-      date_of_birth: getVal("dob"),
-      place_of_birth: getVal("pob"),
-      residence: getVal("residence"),
-      email: getVal("email")
-    },
-    eu_identifiers: {
-      codice_fiscale: normalizeCF(getVal("cf")),
-      cie_number: getVal("cie"),
-      cie_expiry: getVal("cie_exp"),
-      citizen_cf_sha256: cf_sha256
-    },
-    notes: getVal("notes")
-  };
+      function stableStringify(value){
+        if (value === null || typeof value !== "object") {
+          return JSON.stringify(value);
+        }
 
-  return {
-    proto: "HBCE-CORE-v3",
-    kind: "IPR_BASE_RELEASE_EU_CITIZEN",
-    issuer: "HERMETICUM B.C.E. S.r.l.",
-    jurisdiction: "EU",
-    mode: "PERMISSIONLESS",
-    policy: ["UE_FIRST","AUDIT_FIRST","FAIL_CLOSED","HASH_ONLY","APPEND_ONLY","GDPR_MIN","NO_IDENTITY_CUSTODY"],
-    timestamp: nowISO(),
-    payload
-  };
-}
+        if (Array.isArray(value)) {
+          return "[" + value.map((item) => stableStringify(item)).join(",") + "]";
+        }
 
-function mkProof(proof_kind, sha256){
-  return {
-    proto: "HBCE-REGISTRY-v3",
-    kind: "HBCE_PUBLIC_PROOF",
-    network: "EU",
-    issuer: "HERMETICUM B.C.E. S.r.l.",
-    policy: ["HASH_ONLY","APPEND_ONLY","FAIL_CLOSED","UE_FIRST","AUDIT_FIRST","GDPR_MIN"],
-    proof_kind,
-    sha256,
-    timestamp: nowISO()
-  };
-}
+        const keys = Object.keys(value).sort();
 
-async function computeAndCheckDedup(){
-  const cf = getVal("cf");
-  if (!isValidCF(cf)){
-    setText("dedupStatus", "CF INVALID (FORMAT)");
-    setText("sha_cf", "—");
-    return { ok: false, cf_sha: "" };
-  }
-  const cf_sha = await sha256HexFromText(normalizeCF(cf));
-  setText("sha_cf", cf_sha);
+        return "{" + keys.map((key) => {
+          return JSON.stringify(key) + ":" + stableStringify(value[key]);
+        }).join(",") + "}";
+      }
 
-  const present = ledgerHasSha(cf_sha);
-  if (present === null){
-    setText("dedupStatus", "LEDGER NOT LOADED");
-    return { ok: false, cf_sha };
-  }
-  if (present){
-    setText("dedupStatus", "DUPLICATE (CF HASH PRESENT) — BLOCK");
-    return { ok: false, cf_sha };
-  }
-  setText("dedupStatus", "UNIQUE (NOT FOUND)");
-  return { ok: true, cf_sha };
-}
+      function setText(id, value){
+        $(id).textContent = value;
+      }
 
-async function build(){
-  setBuildStatus("RUNNING…");
+      function setLedgerStatus(value){
+        setText("ledgerStatus", value);
+      }
 
-  if (!LEDGER){
-    setBuildStatus("BLOCKED (LEDGER NOT LOADED)");
-    return;
-  }
+      function setLedgerCount(value){
+        setText("ledgerCount", String(value));
+      }
 
-  const dedup = await computeAndCheckDedup();
-  if (!dedup.ok){
-    LAST_RELEASE_TEXT = "";
-    LAST_SHA_RELEASE = "";
-    LAST_SHA_CF = dedup.cf_sha || "";
-    LAST_PROOFS_TEXT = "";
-    setText("sha_release", "—");
-    setText("releaseOut", "{}");
-    setText("proofs", "{}");
-    setBuildStatus("BLOCKED (DUPLICATE OR INVALID CF)");
-    return;
-  }
+      function setBuildStatus(value){
+        setText("buildStatus", value);
+      }
 
-  try{
-    const releaseObj = buildReleaseObject(dedup.cf_sha);
-    const releaseText = stableStringify(releaseObj);
-    const shaRelease = await sha256HexFromText(releaseText);
+      function hasForbiddenPattern(value){
+        const source = String(value || "").toLowerCase();
 
-    const proofRelease = mkProof("IPR_RELEASE_SHA256", shaRelease);
-    const proofCF = mkProof("CITIZEN_CF_SHA256", dedup.cf_sha);
+        return FORBIDDEN_PATTERNS.find((pattern) => source.includes(pattern.toLowerCase())) || "";
+      }
 
-    LAST_RELEASE_TEXT = releaseText;
-    LAST_SHA_RELEASE = shaRelease;
-    LAST_SHA_CF = dedup.cf_sha;
-    LAST_PROOFS_TEXT = JSON.stringify({ release_proof: proofRelease, cf_dedup_proof: proofCF }, null, 2);
+      function isPublicLabel(value){
+        return /^[A-Z0-9_\-:.]{4,128}$/.test(clean(value));
+      }
 
-    setText("releaseOut", releaseText);
-    setText("sha_release", shaRelease);
-    setText("proofs", LAST_PROOFS_TEXT);
+      function isSha256Lower(value){
+        return /^[0-9a-f]{64}$/.test(clean(value));
+      }
 
-    setBuildStatus("READY (UNIQUE CF)");
-  } catch(e){
-    LAST_RELEASE_TEXT = "";
-    LAST_SHA_RELEASE = "";
-    LAST_PROOFS_TEXT = "";
-    setText("sha_release", "—");
-    setText("releaseOut", "{}");
-    setText("proofs", "{}");
-    setBuildStatus("ERROR");
-  }
-}
+      async function loadLedger(){
+        setLedgerStatus("LOADING");
 
-async function copyText(text){
-  try{ await navigator.clipboard.writeText(text); } catch(e){}
-}
+        try {
+          const response = await fetch("/hermeticum-bce-platform/registry/ledger.json", {
+            cache: "no-store"
+          });
 
-function downloadRelease(){
-  if (!LAST_RELEASE_TEXT) return;
-  const blob = new Blob([LAST_RELEASE_TEXT], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "IPR_BASE_RELEASE_EU_CITIZEN.json";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-}
+          if (!response.ok) {
+            throw new Error("HTTP_" + response.status);
+          }
 
-function resetAll(){
-  ["full_name","nationality","dob","pob","residence","email","cf","cie","cie_exp","ipr_id","notes"].forEach(id=>{ document.getElementById(id).value=""; });
-  LAST_RELEASE_TEXT = "";
-  LAST_SHA_RELEASE = "";
-  LAST_SHA_CF = "";
-  LAST_PROOFS_TEXT = "";
-  setText("releaseOut", "{}");
-  setText("proofs", "{}");
-  setText("sha_release", "—");
-  setText("sha_cf", "—");
-  setText("dedupStatus", "—");
-  setBuildStatus("READY");
-}
+          const data = await response.json();
+          const entries = Array.isArray(data.entries) ? data.entries : [];
 
-document.getElementById("loadLedger").addEventListener("click",(e)=>{ e.preventDefault(); loadLedger(); });
+          LEDGER = data;
+          setLedgerCount(entries.length);
+          setLedgerStatus("LOADED");
+        } catch {
+          LEDGER = null;
+          setLedgerCount("—");
+          setLedgerStatus("LOAD_FAILED");
+        }
+      }
 
-document.getElementById("build").addEventListener("click",(e)=>{ e.preventDefault(); build(); });
-document.getElementById("download").addEventListener("click",(e)=>{ e.preventDefault(); downloadRelease(); });
-document.getElementById("reset").addEventListener("click",(e)=>{ e.preventDefault(); resetAll(); });
+      function ledgerHasSha(sha){
+        if (!LEDGER) {
+          return null;
+        }
 
-document.getElementById("copyReleaseProof").addEventListener("click",(e)=>{
-  e.preventDefault();
-  try{
-    const obj = JSON.parse(LAST_PROOFS_TEXT || "{}");
-    if (obj.release_proof) copyText(JSON.stringify(obj.release_proof, null, 2));
-  } catch(_){}
-});
-document.getElementById("copyCFProof").addEventListener("click",(e)=>{
-  e.preventDefault();
-  try{
-    const obj = JSON.parse(LAST_PROOFS_TEXT || "{}");
-    if (obj.cf_dedup_proof) copyText(JSON.stringify(obj.cf_dedup_proof, null, 2));
-  } catch(_){}
-});
+        const entries = Array.isArray(LEDGER.entries) ? LEDGER.entries : [];
 
-document.getElementById("cf").addEventListener("input", async ()=>{
-  if (!LEDGER){
-    setText("dedupStatus","LEDGER NOT LOADED");
-    setText("sha_cf","—");
-    return;
-  }
-  await computeAndCheckDedup();
-});
+        return !!entries.find((entry) => {
+          return entry && typeof entry.sha256 === "string" && entry.sha256.toLowerCase() === sha.toLowerCase();
+        });
+      }
 
-loadLedger();
+      async function computeDedupCommitment(){
+        const seed = clean($("dedup_seed").value);
+
+        if (!seed) {
+          setText("dedupStatus", "MISSING_LOCAL_DEDUP_SEED");
+          setText("sha_dedup", "—");
+
+          return {
+            ok: false,
+            sha: ""
+          };
+        }
+
+        const forbidden = hasForbiddenPattern(seed);
+
+        if (forbidden) {
+          setText("dedupStatus", "FORBIDDEN_PATTERN_" + forbidden.toUpperCase());
+          setText("sha_dedup", "—");
+
+          return {
+            ok: false,
+            sha: ""
+          };
+        }
+
+        const seedMaterial = {
+          scope: "HBCE_LOCAL_DEDUP_COMMITMENT",
+          value: seed.toUpperCase(),
+          rule: "LOCAL_ONLY_NOT_PUBLIC_PAYLOAD"
+        };
+
+        const sha = await sha256HexFromText(stableStringify(seedMaterial));
+        setText("sha_dedup", sha);
+
+        const present = ledgerHasSha(sha);
+
+        if (present === null) {
+          setText("dedupStatus", "LEDGER_NOT_LOADED");
+
+          return {
+            ok: false,
+            sha
+          };
+        }
+
+        if (present) {
+          setText("dedupStatus", "DUPLICATE_PUBLIC_HASH_PRESENT_BLOCK");
+
+          return {
+            ok: false,
+            sha
+          };
+        }
+
+        setText("dedupStatus", "UNIQUE_PUBLIC_HASH_NOT_FOUND");
+
+        return {
+          ok: true,
+          sha
+        };
+      }
+
+      function buildReleaseObject(dedupSha){
+        const baseId = clean($("base_id").value) || "IPR-BASE-RND-UNSPECIFIED";
+        const subjectLabel = clean($("subject_label").value) || "HBCE_PUBLIC_REFERENCE_UNSPECIFIED";
+        const referenceScope = clean($("reference_scope").value);
+        const jurisdictionReference = clean($("jurisdiction_reference").value);
+        const localNote = clean($("local_note").value);
+
+        return {
+          proto: "HBCE-CORE-v3",
+          kind: "HBCE_BASE_REFERENCE_RND_RELEASE",
+          issuer: "HERMETICUM B.C.E. S.r.l.",
+          jurisdiction: "EU_REFERENCE_FRAMEWORK",
+          mode: "RND_REFERENCE",
+          status: "RND_ONLY",
+          timestamp: nowISO(),
+          policy: [
+            "EU_FIRST",
+            "AUDIT_FIRST",
+            "FAIL_CLOSED",
+            "HASH_ONLY",
+            "APPEND_ONLY",
+            "GDPR_MIN",
+            "NO_PUBLIC_DATA_CUSTODY",
+            "NO_PRIVATE_KEY_CUSTODY",
+            "NO_REGULATED_CERTIFICATION_CLAIM",
+            "NO_PUBLIC_AUTHORITY_CLAIM"
+          ],
+          payload: {
+            base_id: baseId,
+            subject_label: subjectLabel,
+            reference_scope: referenceScope,
+            jurisdiction_reference: jurisdictionReference,
+            local_dedup_commitment_sha256: dedupSha,
+            local_note: localNote || "NO_LOCAL_NOTE_PROVIDED",
+            public_payload_policy: "HASH_ONLY"
+          },
+          boundary: {
+            scope: "RND_REFERENCE",
+            no_public_data_custody: true,
+            no_private_key_custody: true,
+            no_regulated_certification_claim: true,
+            no_public_authority_claim: true,
+            fail_closed: true
+          }
+        };
+      }
+
+      function makeProof(proofKind, sha256){
+        return {
+          proto: "HBCE-REGISTRY-v3",
+          kind: "HBCE_PUBLIC_PROOF_RND_REFERENCE",
+          network: "EU_REFERENCE_FRAMEWORK",
+          issuer: "HERMETICUM B.C.E. S.r.l.",
+          policy: [
+            "EU_FIRST",
+            "AUDIT_FIRST",
+            "FAIL_CLOSED",
+            "HASH_ONLY",
+            "APPEND_ONLY",
+            "GDPR_MIN",
+            "NO_PUBLIC_DATA_CUSTODY"
+          ],
+          proof_kind: proofKind,
+          sha256,
+          timestamp: nowISO(),
+          status: "RND_ONLY",
+          public_payload_policy: "HASH_ONLY",
+          note: "Hash-only R&D public proof reference. This proof does not create legal certification, public authority approval, regulated compliance, cybersecurity assurance, or production authorization."
+        };
+      }
+
+      async function build(){
+        setBuildStatus("RUNNING");
+
+        if (!LEDGER) {
+          setBuildStatus("BLOCKED_LEDGER_NOT_LOADED");
+          return;
+        }
+
+        const subjectLabel = clean($("subject_label").value);
+
+        if (subjectLabel && !isPublicLabel(subjectLabel)) {
+          setBuildStatus("BLOCKED_INVALID_PUBLIC_SUBJECT_LABEL");
+          return;
+        }
+
+        const combinedInput = [
+          clean($("base_id").value),
+          clean($("subject_label").value),
+          clean($("dedup_seed").value),
+          clean($("local_note").value)
+        ].join("\n");
+
+        const forbidden = hasForbiddenPattern(combinedInput);
+
+        if (forbidden) {
+          setBuildStatus("BLOCKED_FORBIDDEN_PATTERN_" + forbidden.toUpperCase());
+          return;
+        }
+
+        const dedup = await computeDedupCommitment();
+
+        if (!dedup.ok) {
+          LAST_RELEASE_TEXT = "";
+          LAST_PROOFS_TEXT = "";
+          setText("sha_release", "—");
+          setText("releaseOut", "{}");
+          setText("proofs", "{}");
+          setBuildStatus("BLOCKED_DEDUP_OR_INPUT_INVALID");
+          return;
+        }
+
+        try {
+          const releaseObject = buildReleaseObject(dedup.sha);
+          const releaseText = JSON.stringify(releaseObject, null, 2);
+          const releaseSha = await sha256HexFromText(stableStringify(releaseObject));
+
+          const releaseProof = makeProof("BASE_REFERENCE_RELEASE_SHA256", releaseSha);
+          const dedupProof = makeProof("LOCAL_DEDUP_COMMITMENT_SHA256", dedup.sha);
+
+          LAST_RELEASE_TEXT = releaseText;
+          LAST_PROOFS_TEXT = JSON.stringify({
+            release_proof: releaseProof,
+            dedup_proof: dedupProof
+          }, null, 2);
+
+          setText("releaseOut", releaseText);
+          setText("sha_release", releaseSha);
+          setText("proofs", LAST_PROOFS_TEXT);
+          setBuildStatus("READY_RND_REFERENCE");
+        } catch {
+          LAST_RELEASE_TEXT = "";
+          LAST_PROOFS_TEXT = "";
+          setText("sha_release", "—");
+          setText("releaseOut", "{}");
+          setText("proofs", "{}");
+          setBuildStatus("ERROR");
+        }
+      }
+
+      async function copyText(text){
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch {
+          // Browser clipboard may be unavailable.
+        }
+      }
+
+      function downloadRelease(){
+        if (!LAST_RELEASE_TEXT) {
+          return;
+        }
+
+        const blob = new Blob([LAST_RELEASE_TEXT], {
+          type: "application/json"
+        });
+
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+
+        anchor.href = url;
+        anchor.download = "HBCE_BASE_REFERENCE_RND_RELEASE.json";
+
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+
+        URL.revokeObjectURL(url);
+      }
+
+      function resetAll(){
+        [
+          "base_id",
+          "subject_label",
+          "dedup_seed",
+          "local_note"
+        ].forEach((id) => {
+          $(id).value = "";
+        });
+
+        $("reference_scope").value = "MATRIX_AI_AUDIT_TRAIL_MVP";
+        $("jurisdiction_reference").value = "EU_REFERENCE_FRAMEWORK";
+
+        LAST_RELEASE_TEXT = "";
+        LAST_PROOFS_TEXT = "";
+
+        setText("releaseOut", "{}");
+        setText("proofs", "{}");
+        setText("sha_release", "—");
+        setText("sha_dedup", "—");
+        setText("dedupStatus", "—");
+        setBuildStatus("READY");
+      }
+
+      $("loadLedger").addEventListener("click", loadLedger);
+      $("build").addEventListener("click", build);
+      $("download").addEventListener("click", downloadRelease);
+      $("reset").addEventListener("click", resetAll);
+
+      $("copyReleaseProof").addEventListener("click", () => {
+        try {
+          const object = JSON.parse(LAST_PROOFS_TEXT || "{}");
+
+          if (object.release_proof) {
+            copyText(JSON.stringify(object.release_proof, null, 2));
+          }
+        } catch {
+          // Ignore invalid state.
+        }
+      });
+
+      $("copyDedupProof").addEventListener("click", () => {
+        try {
+          const object = JSON.parse(LAST_PROOFS_TEXT || "{}");
+
+          if (object.dedup_proof) {
+            copyText(JSON.stringify(object.dedup_proof, null, 2));
+          }
+        } catch {
+          // Ignore invalid state.
+        }
+      });
+
+      $("dedup_seed").addEventListener("input", async () => {
+        if (!LEDGER) {
+          setText("dedupStatus", "LEDGER_NOT_LOADED");
+          setText("sha_dedup", "—");
+          return;
+        }
+
+        await computeDedupCommitment();
+      });
+
+      loadLedger();
+    })();
   </script>
 
 </body>
