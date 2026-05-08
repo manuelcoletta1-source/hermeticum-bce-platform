@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/schemas/hbce-evt.schema.json",
+  "title": "HBCE EVT R&D Event Schema",
+  "description": "Privacy-minimal R&D schema for HBCE / MATRIX AI Audit Trail event records. Hash-only, append-only, fail-closed, no public data custody.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "proto",
+    "kind",
+    "event_id",
+    "entity_id",
+    "event_type",
+    "event_payload_sha256",
+    "timestamp",
+    "operator_reference",
+    "status",
+    "append_only",
+    "public_payload_policy"
+  ],
+  "properties": {
+    "proto": {
+      "type": "string",
+      "const": "HBCE-REGISTRY-v3"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "IPR_EVENT_RECORD_RND_REFERENCE",
+        "HBCE_EVT_RND_REFERENCE",
+        "MATRIX_AUDIT_EVENT_RND_REFERENCE"
+      ]
+    },
+    "event_id": {
+      "type": "string",
+      "pattern": "^EVT-[A-Z0-9\\-]{4,96}$"
+    },
+    "entity_id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9_:\\-.]{4,128}$"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "AI_OUTPUT_RECORDED",
+        "AI_OUTPUT_REVIEWED",
+        "HUMAN_VALIDATION",
+        "GOVERNANCE_DECISION",
+        "POLICY_CHECK",
+        "RISK_ASSESSMENT",
+        "AUDIT_NOTE",
+        "EVIDENCE_PACK_CREATED",
+        "REGISTRY_STATUS_UPDATE",
+        "VERIFICATION_REQUEST",
+        "VERIFICATION_RESULT",
+        "ACCESS_EVENT",
+        "SECURITY_NOTICE"
+      ]
+    },
+    "event_payload_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "operator_reference": {
+      "type": "string",
+      "pattern": "^[A-Z0-9_:\\-.]{4,128}$"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "VALID",
+        "INVALID",
+        "REVOKED",
+        "DRAFT",
+        "RND_ONLY",
+        "RECORDED",
+        "SUPERSEDED",
+        "EXPERIMENTAL"
+      ]
+    },
+    "append_only": {
+      "type": "boolean",
+      "const": true
+    },
+    "public_payload_policy": {
+      "type": "string",
+      "const": "HASH_ONLY"
+    },
+    "context": {
+      "type": "string",
+      "enum": [
+        "MATRIX_AI_AUDIT_TRAIL_MVP",
+        "HBCE_RND_REFERENCE",
+        "REGISTRY_V3_REFERENCE"
+      ]
+    },
+    "risk_class": {
+      "type": "string",
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "REVIEW_REQUIRED"
+      ]
+    },
+    "verification_reference": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_./:\\-]{3,160}$"
+    },
+    "evidence_reference": {
+      "type": "string",
+      "pattern": "^[A-Z0-9_:\\-.]{3,160}$"
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 600
+    },
+    "boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scope": {
+          "type": "string",
+          "const": "RND_REFERENCE"
+        },
+        "no_public_data_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_private_key_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_regulated_certification_claim": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_public_authority_claim": {
+          "type": "boolean",
+          "const": true
+        },
+        "fail_closed": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    }
+  },
+  "not": {
+    "anyOf": [
+      { "required": ["private_key"] },
+      { "required": ["api_key"] },
+      { "required": ["token"] },
+      { "required": ["password"] },
+      { "required": ["secret"] },
+      { "required": ["credential"] },
+      { "required": ["identity_document"] },
+      { "required": ["regulated_identity_document"] },
+      { "required": ["private_evidence"] },
+      { "required": ["personal_payload"] },
+      { "required": ["personal_data"] },
+      { "required": ["raw_prompt"] },
+      { "required": ["raw_output"] },
+      { "required": ["client_file"] },
+      { "required": ["production_log"] },
+      { "required": ["private_communication"] },
+      { "required": ["internal_endpoint"] },
+      { "required": ["private_ip"] },
+      { "required": ["internal_hostname"] },
+      { "required": ["database_url"] },
+      { "required": ["admin_url"] },
+      { "required": ["ssh_key"] },
+      { "required": ["financial_asset"] },
+      { "required": ["confidential_payload"] }
+    ]
+  }
+}
