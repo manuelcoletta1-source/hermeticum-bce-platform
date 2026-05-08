@@ -1,160 +1,249 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>APPEND — Operator Public Proof Registry</title>
-  <meta name="description" content="Tool per generare entry operatore privacy-minimal, hash-only e fail-closed da appendere manualmente al registry pubblico operatori HBCE." />
+  <title>Append — Operator Reference Public Proof</title>
+  <meta name="description" content="R&D tool to generate privacy-minimal operator reference proof entries for manual append to the HBCE public operators registry. Hash-only, append-only, fail-closed, no public data custody." />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
 
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <style>
+    .hbce-field{
+      width:100%;
+      box-sizing:border-box;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.20);
+      color:inherit;
+      border-radius:12px;
+      padding:10px 12px;
+      outline:none;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size:.92rem;
+    }
+
+    .hbce-field:focus{
+      border-color:rgba(255,255,255,.30);
+    }
+
+    .hbce-rowbtn{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    pre{
+      white-space:pre-wrap;
+      word-break:break-word;
+      margin:0;
+    }
+  </style>
 </head>
 
 <body>
-  <div data-hbce="header"></div>
+  <div class="hbce-container">
+    <main class="hbce-main">
 
-  <main class="hbce-container hbce-main">
-
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">APPEND TOOL · OPERATOR PUBLIC PROOF · HASH-ONLY · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">Append operator proof entry</h1>
-      <p class="hbce-hero__lead">
-        Generate a privacy-minimal operator proof entry ready for manual append to
-        <code>registry/operators.json</code>.
-        The tool does not write to the registry automatically.
-        <br /><br />
-        Public operator records must use minimized labels and hash-only commitments.
-        Do not enter real names, emails, phone numbers, tax codes, identity documents, credentials,
-        private evidence, secrets, private keys, production logs, or sensitive operational payloads.
-      </p>
-    </section>
-
-    <section class="hbce-section">
-      <div class="hbce-grid hbce-grid--3">
-        <article class="hbce-card">
-          <div class="hbce-card__title">Target</div>
-          <div class="hbce-note">
-            File: <code>registry/operators.json</code><br/>
-            Viewer: <a href="/hermeticum-bce-platform/registry/operators/">/registry/operators/</a>
-          </div>
-        </article>
-
-        <article class="hbce-card">
-          <div class="hbce-card__title">Policy</div>
-          <ul class="hbce-list">
-            <li>HASH_ONLY</li>
-            <li>APPEND_ONLY</li>
-            <li>FAIL_CLOSED</li>
-            <li>GDPR_MIN</li>
-            <li>NO_PUBLIC_DATA_CUSTODY</li>
-          </ul>
-        </article>
-
-        <article class="hbce-card">
-          <div class="hbce-card__title">Verify</div>
-          <div class="hbce-actions">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/operators/">REGISTRY</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/operators/status/">STATUS</a>
-          </div>
-          <div class="hbce-note">
-            Public proof requires deterministic match. Missing or malformed entry must fail closed.
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="hbce-section">
-      <div class="hbce-kicker">Privacy-minimal input</div>
-      <h2 class="hbce-h2">Operator proof fields</h2>
-
-      <div class="hbce-card">
-        <div class="hbce-grid hbce-grid--2">
-          <div>
-            <label class="hbce-label" for="operatorLabel">operator_label</label>
-            <input class="hbce-input" id="operatorLabel" placeholder="HBCE_PUBLIC_OPERATOR_001" />
-            <div class="hbce-note">
-              Public minimized label only. No real name, email, phone, tax code, document number, or raw identifier.
-            </div>
+      <header class="hbce-header">
+        <div class="hbce-header__row">
+          <div class="hbce-brand">
+            <div class="hbce-mono">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+            <div class="hbce-muted">HERMETICUM B.C.E. S.r.l.</div>
           </div>
 
-          <div>
-            <label class="hbce-label" for="recordScope">record_scope</label>
-            <input class="hbce-input" id="recordScope" placeholder="OPERATOR_LICENSE_PUBLIC_PROOF" />
-            <div class="hbce-note">
-              Optional public scope label. Avoid sensitive geography or identifying detail.
-            </div>
-          </div>
-
-          <div style="grid-column: 1 / -1;">
-            <label class="hbce-label" for="payloadSha256">payload_sha256</label>
-            <input class="hbce-input" id="payloadSha256" placeholder="64-character lowercase sha256 commitment" />
-            <div class="hbce-note">
-              Hash-only public proof commitment. Do not enter a raw identifier or preimage.
-            </div>
-          </div>
-
-          <div>
-            <label class="hbce-label" for="statusSelect">status</label>
-            <select class="hbce-input" id="statusSelect">
-              <option value="ACTIVE">ACTIVE</option>
-              <option value="SUSPENDED">SUSPENDED</option>
-              <option value="REVOKED">REVOKED</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="hbce-label" for="note">note</label>
-            <input class="hbce-input" id="note" placeholder="Minimized public proof commitment; private evidence outside public registry" />
-            <div class="hbce-note">
-              Optional public note. Do not include personal data, credentials, secrets, or private evidence.
-            </div>
-          </div>
+          <nav class="hbce-nav" aria-label="Primary">
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/">Home</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/matrix-audit-trail/">MATRIX Audit</a>
+            <a class="hbce-nav__link is-active" href="/hermeticum-bce-platform/registry/">Registry</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/verify/">Verify</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/claims/">Claims</a>
+          </nav>
         </div>
+      </header>
 
-        <div class="hbce-actions" style="margin-top:12px;">
-          <button class="hbce-btn" id="gen" type="button">Generate entry</button>
-          <button class="hbce-btn hbce-btn--ghost" id="clear" type="button">Clear</button>
-          <button class="hbce-btn hbce-btn--ghost" id="copy" type="button" disabled>Copy block</button>
-        </div>
+      <section class="hbce-section hbce-hero">
+        <div class="hbce-hero__kicker">APPEND TOOL · OPERATOR REFERENCE · HASH-ONLY · FAIL-CLOSED</div>
+        <h1 class="hbce-hero__title">Append operator reference entry</h1>
 
-        <div class="hbce-note" id="status" style="margin-top:10px;">Ready.</div>
-      </div>
-    </section>
-
-    <section class="hbce-section">
-      <div class="hbce-kicker">Output</div>
-      <h2 class="hbce-h2">Object to append into entries[]</h2>
-
-      <div class="hbce-card">
-        <pre class="hbce-pre" id="out" style="white-space:pre-wrap; word-break:break-word;">—</pre>
-        <div class="hbce-note">
-          Append this object manually to <code>registry/operators.json → entries[]</code> after review.
-          This tool never modifies the registry directly.
-        </div>
-      </div>
-    </section>
-
-    <section class="hbce-section">
-      <div class="hbce-footnote">
-        <p>
-          <strong>Fail-closed:</strong> if the entry does not satisfy the minimum privacy-safe schema, no valid output is generated.
+        <p class="hbce-hero__lead">
+          Generate a privacy-minimal operator reference proof entry ready for manual append to
+          <code>registry/operators.json</code>.
+          The tool does not write to the registry automatically.
+          <br><br>
+          Public operator reference records must use minimized labels and hash-only commitments.
+          Do not enter real personal identifiers, email addresses, phone numbers, tax codes, identity documents,
+          credentials, private evidence, secrets, private keys, production logs, raw AI prompts, raw AI outputs,
+          client files, or sensitive operational payloads.
         </p>
-        <p>
-          <strong>Public layer:</strong> hash-only commitment and minimized metadata only. No public custody of personal or sensitive data.
-        </p>
-      </div>
-    </section>
 
-  </main>
+        <div class="hbce-card" style="margin-top:14px;">
+          <div class="hbce-mono">R&D BOUNDARY</div>
+          <p class="hbce-muted" style="margin-bottom:0;">
+            This tool supports MATRIX AI Audit Trail R&D registry workflows.
+            It does not create legal authorization, professional qualification, public authority approval,
+            regulated compliance, cybersecurity assurance, or production authorization.
+          </p>
+        </div>
+      </section>
 
-  <div data-hbce="footer"></div>
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+      <section class="hbce-section">
+        <div class="hbce-grid hbce-grid--3">
+
+          <article class="hbce-card">
+            <div class="hbce-mono">TARGET</div>
+            <h2>Registry file</h2>
+            <p class="hbce-muted">
+              File: <code>registry/operators.json</code><br>
+              Viewer: <a href="/hermeticum-bce-platform/registry/operators/">/registry/operators/</a>
+            </p>
+          </article>
+
+          <article class="hbce-card">
+            <div class="hbce-mono">POLICY</div>
+            <h2>Public proof rules</h2>
+            <ul class="hbce-list">
+              <li>HASH_ONLY</li>
+              <li>APPEND_ONLY</li>
+              <li>FAIL_CLOSED</li>
+              <li>GDPR_MIN</li>
+              <li>NO_PUBLIC_DATA_CUSTODY</li>
+            </ul>
+          </article>
+
+          <article class="hbce-card">
+            <div class="hbce-mono">VERIFY</div>
+            <h2>Related tools</h2>
+            <div class="hbce-rowbtn">
+              <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verify</a>
+              <a class="hbce-btn" href="/hermeticum-bce-platform/registry/operators/">Registry</a>
+              <a class="hbce-btn" href="/hermeticum-bce-platform/registry/operators/status/">Status</a>
+            </div>
+            <p class="hbce-muted">
+              Public proof requires deterministic match. Missing or malformed entry must fail closed.
+            </p>
+          </article>
+
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <div class="hbce-mono">PRIVACY-MINIMAL INPUT</div>
+          <h2>Operator reference proof fields</h2>
+
+          <div class="hbce-grid hbce-grid--2" style="margin-top:14px;">
+            <div>
+              <label class="hbce-muted" for="operatorLabel">operator_label</label>
+              <input class="hbce-field" id="operatorLabel" placeholder="HBCE_PUBLIC_OPERATOR_001" />
+              <p class="hbce-muted">
+                Public minimized label only. No personal identifier, email, phone, tax code, document number, or raw identifier.
+              </p>
+            </div>
+
+            <div>
+              <label class="hbce-muted" for="recordScope">record_scope</label>
+              <input class="hbce-field" id="recordScope" placeholder="OPERATOR_REFERENCE_PUBLIC_PROOF" />
+              <p class="hbce-muted">
+                Optional public scope label. Avoid sensitive geography or identifying detail.
+              </p>
+            </div>
+
+            <div style="grid-column:1 / -1;">
+              <label class="hbce-muted" for="payloadSha256">payload_sha256</label>
+              <input class="hbce-field" id="payloadSha256" placeholder="64-character lowercase sha256 commitment" />
+              <p class="hbce-muted">
+                Hash-only public proof commitment. Do not enter a raw identifier or preimage.
+              </p>
+            </div>
+
+            <div>
+              <label class="hbce-muted" for="statusSelect">status</label>
+              <select class="hbce-field" id="statusSelect">
+                <option value="RND_ONLY">RND_ONLY</option>
+                <option value="RETAINED">RETAINED</option>
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="SUSPENDED">SUSPENDED</option>
+                <option value="REVOKED">REVOKED</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="hbce-muted" for="note">note</label>
+              <input class="hbce-field" id="note" placeholder="Minimized public proof reference; private evidence outside public registry" />
+              <p class="hbce-muted">
+                Optional public note. Do not include personal data, credentials, secrets, or private evidence.
+              </p>
+            </div>
+          </div>
+
+          <div class="hbce-rowbtn">
+            <button class="hbce-btn hbce-btn--primary" id="gen" type="button">Generate entry</button>
+            <button class="hbce-btn" id="clear" type="button">Clear</button>
+            <button class="hbce-btn" id="copy" type="button" disabled>Copy block</button>
+          </div>
+
+          <div class="hbce-muted" id="status" style="margin-top:10px;">Ready.</div>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <div class="hbce-mono">OUTPUT</div>
+          <h2>Object to append into entries[]</h2>
+
+          <div class="hbce-card" style="background:rgba(0,0,0,.18);margin-top:12px;">
+            <pre class="hbce-mono" id="out">—</pre>
+          </div>
+
+          <p class="hbce-muted" style="margin-top:12px;">
+            Append this object manually to <code>registry/operators.json → entries[]</code> after review.
+            This tool never modifies the registry directly.
+          </p>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>Fail-closed rule</h2>
+          <p class="hbce-muted">
+            If the entry does not satisfy the minimum privacy-safe schema, no valid output is generated.
+            The public layer is limited to hash-only commitment and minimized metadata.
+          </p>
+
+          <div class="hbce-card" style="margin-top:12px;">
+            <pre class="hbce-mono">Missing label → FAIL
+Invalid hash → FAIL
+Sensitive text → FAIL
+Forbidden field → FAIL
+Valid minimized entry → READY_FOR_MANUAL_REVIEW</pre>
+          </div>
+        </div>
+      </section>
+
+      <footer class="hbce-footer">
+        <div class="hbce-footer__row">
+          <div class="hbce-muted">
+            <span class="hbce-mono">OPERATOR APPEND</span> — public R&D operator reference proof builder
+          </div>
+          <div class="hbce-footer__links">
+            <a href="/hermeticum-bce-platform/">Home</a>
+            <a href="/hermeticum-bce-platform/registry/">Registry</a>
+            <a href="/hermeticum-bce-platform/verify/">Verify</a>
+            <a href="/hermeticum-bce-platform/claims/">Claims</a>
+          </div>
+        </div>
+      </footer>
+
+    </main>
+  </div>
 
   <script>
-    (function(){
+    (() => {
       "use strict";
 
       const $ = (id) => document.getElementById(id);
@@ -184,7 +273,12 @@
         "token",
         "secret",
         "-----begin",
-        "-----end"
+        "-----end",
+        "raw_prompt",
+        "raw_output",
+        "client_file",
+        "personal_data",
+        "private_evidence"
       ];
 
       function setStatus(message){
@@ -204,9 +298,9 @@
       }
 
       function containsForbiddenText(value){
-        const v = clean(value).toLowerCase();
-        if (!v) return false;
-        return FORBIDDEN_TEXT.some((item) => v.includes(item));
+        const normalized = clean(value).toLowerCase();
+        if (!normalized) return false;
+        return FORBIDDEN_TEXT.some((item) => normalized.includes(item));
       }
 
       function fail(reason){
@@ -224,7 +318,10 @@
         if (!hasText(entry.operator_label)) return "MISSING_OPERATOR_LABEL";
         if (!isHex64Lower(entry.payload_sha256)) return "INVALID_PAYLOAD_SHA256";
         if (!hasText(entry.timestamp)) return "MISSING_TIMESTAMP";
-        if (!["ACTIVE", "SUSPENDED", "REVOKED"].includes(entry.status)) return "INVALID_STATUS";
+
+        if (!["ACTIVE", "SUSPENDED", "REVOKED", "RND_ONLY", "RETAINED"].includes(entry.status)) {
+          return "INVALID_STATUS";
+        }
 
         if (containsForbiddenText(entry.operator_label)) return "OPERATOR_LABEL_CONTAINS_FORBIDDEN_OR_SENSITIVE_TEXT";
         if (containsForbiddenText(entry.record_scope)) return "RECORD_SCOPE_CONTAINS_FORBIDDEN_OR_SENSITIVE_TEXT";
@@ -238,7 +335,8 @@
           operator_label: clean(operatorLabel.value),
           payload_sha256: clean(payloadSha256.value).toLowerCase(),
           timestamp: nowISO(),
-          status: clean(statusSelect.value)
+          status: clean(statusSelect.value),
+          public_payload_policy: "HASH_ONLY"
         };
 
         const scope = clean(recordScope.value);
@@ -253,14 +351,14 @@
         const pretty = JSON.stringify(entry, null, 2);
         out.textContent = pretty;
         btnCopy.disabled = false;
-        setStatus("OK — privacy-minimal entry ready for manual append.");
+        setStatus("OK — privacy-minimal entry ready for manual review and append.");
       }
 
       function clearAll(){
         operatorLabel.value = "";
         recordScope.value = "";
         payloadSha256.value = "";
-        statusSelect.value = "ACTIVE";
+        statusSelect.value = "RND_ONLY";
         note.value = "";
 
         out.textContent = "—";
@@ -275,7 +373,7 @@
         try {
           await navigator.clipboard.writeText(text);
           setStatus("Copied. Append manually to registry/operators.json → entries[] after review.");
-        } catch (error) {
+        } catch {
           setStatus("Copy unavailable. Copy the block manually.");
         }
       }
