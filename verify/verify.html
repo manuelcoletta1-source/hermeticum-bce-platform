@@ -1,158 +1,271 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>VERIFY — Public Proof Verification | HBCE</title>
-  <meta name="description" content="VERIFY HBCE: verifica pubblica fail-closed per proof commitment hash-only. Registry v3, payload_sha256, no public data custody." />
+  <title>Verify Direct — MATRIX AI Audit Trail Public Reference Check</title>
+  <meta name="description" content="Direct R&D public reference verification page for MATRIX AI Audit Trail. Registry v3, payload_sha256 lookup, hash-only public references, fail-closed validation, no public data custody." />
 
   <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/verify/verify.html" />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
 
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <style>
+    .hbce-field{
+      width:100%;
+      box-sizing:border-box;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.20);
+      color:inherit;
+      border-radius:12px;
+      padding:10px 12px;
+      outline:none;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size:.92rem;
+    }
+
+    .hbce-field:focus{
+      border-color:rgba(255,255,255,.30);
+    }
+
+    .hbce-rowbtn{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    .hbce-kv{
+      display:grid;
+      grid-template-columns:170px 1fr;
+      gap:8px;
+      margin-top:10px;
+    }
+
+    pre{
+      white-space:pre-wrap;
+      word-break:break-word;
+      margin:0;
+    }
+
+    .hbce-small{
+      font-size:.88rem;
+      line-height:1.55;
+    }
+
+    .hbce-warning{
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.035);
+      border-radius:16px;
+      padding:14px;
+    }
+  </style>
 </head>
 
 <body>
-  <div data-hbce="header"></div>
+  <div class="hbce-container">
+    <main class="hbce-main">
 
-  <main class="hbce-container hbce-main">
+      <header class="hbce-header">
+        <div class="hbce-header__row">
+          <div class="hbce-brand">
+            <div class="hbce-mono">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+            <div class="hbce-muted">HERMETICUM B.C.E. S.r.l.</div>
+          </div>
 
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">VERIFY · REGISTRY-v3 · PAYLOAD_SHA256 · HASH-ONLY · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">VERIFY — public proof check</h1>
-      <p class="hbce-hero__lead">
-        This page verifies whether a <code>payload_sha256</code> public proof commitment is present in the HBCE public registry.
-        <br /><br />
-        A registry match means <strong>PUBLIC_RECORD_PRESENT</strong>.
-        Absence of match means <strong>NO_PUBLIC_RECORD</strong>.
-        Invalid registry state means <strong>NON_OPERATIONAL</strong>.
-      </p>
+          <nav class="hbce-nav" aria-label="Primary">
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/">Home</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/protocol/">Protocol</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/matrix-audit-trail/">MATRIX Audit</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/registry/">Registry</a>
+            <a class="hbce-nav__link is-active" href="/hermeticum-bce-platform/verify/">Verify</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/verify-pack/">Verify Pack</a>
+          </nav>
+        </div>
+      </header>
 
-      <p class="hbce-note" style="margin-top:12px;">
-        Policy:
-        <strong>EU-first</strong> ·
-        <strong>audit-first</strong> ·
-        <strong>append-only</strong> ·
-        <strong>hash-only</strong> ·
-        <strong>fail-closed</strong> ·
-        <strong>GDPR-min</strong> ·
-        <strong>no public data custody</strong>
-      </p>
+      <section class="hbce-section hbce-hero">
+        <div class="hbce-hero__kicker">VERIFY DIRECT · REGISTRY-v3 · PAYLOAD_SHA256 · HASH-ONLY · FAIL-CLOSED</div>
+        <h1 class="hbce-hero__title">Direct public reference check</h1>
+        <p class="hbce-hero__lead">
+          This page checks whether a <code>payload_sha256</code> public reference is present in the HBCE public registry index.
+          It is a direct verification surface for the MATRIX AI Audit Trail R&D boundary.
+          <br><br>
+          A registry match returns <strong>PUBLIC_REFERENCE_PRESENT</strong>.
+          No match returns <strong>NO_PUBLIC_RECORD</strong>.
+          Invalid input returns <strong>INVALID</strong>.
+          Invalid registry state returns <strong>NON_OPERATIONAL</strong>.
+        </p>
 
-      <div class="hbce-actions" style="margin-top:12px;">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">VERIFY Gateway</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Registry</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/operators/">Operators</a>
-        <a class="hbce-btn" href="/hermeticum-bce-platform/root/">Root</a>
-      </div>
-    </section>
+        <div class="hbce-card hbce-small" style="margin-top:14px;">
+          <div class="hbce-mono">PUBLIC VERIFICATION LIMIT</div>
+          <p class="hbce-muted" style="margin-bottom:0;">
+            A public registry match means only that a public hash reference exists.
+            It does not certify legal validity, cybersecurity assurance, public authority approval,
+            regulated compliance, institutional mandate, operator qualification, contractual qualification,
+            or production authorization.
+          </p>
+        </div>
 
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Input</h2>
-      <p class="hbce-p">
-        You can verify a public proof in two ways:
-        <strong>(A)</strong> paste a JSON object containing <code>payload_sha256</code>, or
-        <strong>(B)</strong> enter <code>payload_sha256</code> directly.
-      </p>
+        <div class="hbce-rowbtn" style="margin-top:16px">
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">Verify gateway</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Registry</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/verify-pack/">Verify Pack</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/matrix-audit-trail/">MATRIX Audit Trail</a>
+        </div>
+      </section>
 
-      <div class="hbce-card">
-        <div class="hbce-card__body">
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>Input</h2>
+          <p class="hbce-muted">
+            You can verify a public reference in two ways:
+            paste a JSON object containing <code>payload_sha256</code>, or enter <code>payload_sha256</code> directly.
+            Direct hash input takes precedence over JSON input.
+          </p>
 
-          <div class="hbce-grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px;">
-            <label class="hbce-field" style="display:block;">
-              <span class="hbce-label">JSON object — optional</span>
-              <textarea class="hbce-input" id="releaseJson" rows="10" placeholder='Paste a JSON object containing payload_sha256'></textarea>
-              <span class="hbce-note">
+          <div class="hbce-grid hbce-grid--2" style="margin-top:14px;">
+            <div class="hbce-card">
+              <div class="hbce-mono">INPUT 01</div>
+              <h3>JSON object — optional</h3>
+              <p class="hbce-muted">
                 If the JSON contains <code>payload_sha256</code>, that value is used.
                 If it does not, a local browser-side SHA-256 commitment is calculated after removing common generated hash fields.
                 No pasted JSON is uploaded by this page.
-              </span>
-            </label>
+              </p>
 
-            <label class="hbce-field" style="display:block;">
-              <span class="hbce-label">payload_sha256 — optional</span>
-              <input class="hbce-input" id="hashInput" placeholder="64-character lowercase sha256" />
-              <span class="hbce-note">If this field is valid, it takes precedence over the JSON input.</span>
-            </label>
+              <textarea
+                id="releaseJson"
+                class="hbce-field"
+                rows="12"
+                spellcheck="false"
+                placeholder='{"payload_sha256":"64-character lowercase sha256", ...}'></textarea>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">INPUT 02</div>
+              <h3>payload_sha256 — optional</h3>
+              <p class="hbce-muted">
+                Insert a 64-character lowercase SHA-256 value.
+                If valid, this field takes precedence over the JSON input and over URL parameters.
+              </p>
+
+              <input
+                id="hashInput"
+                class="hbce-field"
+                placeholder="64-character lowercase sha256" />
+
+              <div class="hbce-rowbtn">
+                <button class="hbce-btn hbce-btn--primary" type="button" id="verifyBtn">Verify</button>
+                <button class="hbce-btn" type="button" id="clearBtn">Clear</button>
+              </div>
+
+              <div id="errBox" class="hbce-warning hbce-small" style="margin-top:12px;display:none;"></div>
+            </div>
           </div>
-
-          <div class="hbce-actions" style="margin-top:12px;">
-            <button class="hbce-btn hbce-btn--primary" type="button" id="verifyBtn">VERIFY</button>
-            <button class="hbce-btn" type="button" id="clearBtn">Clear</button>
-          </div>
-
-          <div id="errBox" class="hbce-note" style="margin-top:12px; display:none;"></div>
-
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Registry source</h2>
-
-      <div class="hbce-grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px;">
-        <div class="hbce-card">
-          <div class="hbce-card__body">
-            <h3 class="hbce-h3" style="margin-top:0;">Public source</h3>
-            <pre class="hbce-pre" id="sourcePre" style="margin:0; white-space:pre-wrap;">/hermeticum-bce-platform/registry/registry.json</pre>
-            <p class="hbce-note">
+      <section class="hbce-section">
+        <div class="hbce-grid hbce-grid--2">
+          <div class="hbce-card">
+            <h2>Registry source</h2>
+            <p class="hbce-muted">
               This verifier uses <code>registry/registry.json</code> as the public registry index for
               <code>payload_sha256</code> matching.
             </p>
-          </div>
-        </div>
 
-        <div class="hbce-card">
-          <div class="hbce-card__body">
-            <h3 class="hbce-h3" style="margin-top:0;">Fail-closed rule</h3>
-            <pre class="hbce-pre" style="margin:0; white-space:pre-wrap;">Missing input → INVALID
+            <div class="hbce-card" style="margin-top:12px">
+              <pre class="hbce-mono" id="sourcePre">/hermeticum-bce-platform/registry/registry.json</pre>
+            </div>
+          </div>
+
+          <div class="hbce-card">
+            <h2>Fail-closed rule</h2>
+            <div class="hbce-card" style="margin-top:12px">
+              <pre class="hbce-mono">Missing input → INVALID
 Invalid input → INVALID
 Missing source → NON_OPERATIONAL
 Invalid registry → NON_OPERATIONAL
 Malformed entry → NON_OPERATIONAL
 No match → NO_PUBLIC_RECORD
-Valid match → PUBLIC_RECORD_PRESENT</pre>
+Valid match → PUBLIC_REFERENCE_PRESENT</pre>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="hbce-section" id="outSection" style="display:none;">
-      <h2 class="hbce-h2">Result</h2>
-
-      <div class="hbce-grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px;">
-
+      <section class="hbce-section" id="outSection" style="display:none;">
         <div class="hbce-card">
-          <div class="hbce-card__body">
-            <h3 class="hbce-h3" style="margin-top:0;">Status</h3>
-            <pre class="hbce-pre" id="statusPre" style="margin:0; white-space:pre-wrap;"></pre>
+          <h2>Result</h2>
+
+          <div class="hbce-grid hbce-grid--2" style="margin-top:14px;">
+            <div class="hbce-card">
+              <div class="hbce-mono">STATUS</div>
+              <pre class="hbce-mono" id="statusPre"></pre>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">REGISTRY MATCH</div>
+              <pre class="hbce-mono hbce-muted" id="matchPre"></pre>
+            </div>
+          </div>
+
+          <div class="hbce-warning hbce-small" style="margin-top:12px;">
+            Public reference verification is not a substitute for private evidence review, legal validation,
+            cybersecurity review, institutional due diligence, operator qualification, contractual qualification,
+            or production assurance.
           </div>
         </div>
+      </section>
 
+      <section class="hbce-section">
         <div class="hbce-card">
-          <div class="hbce-card__body">
-            <h3 class="hbce-h3" style="margin-top:0;">Registry match</h3>
-            <pre class="hbce-pre" id="matchPre" style="margin:0; white-space:pre-wrap;"></pre>
+          <h2>R&D and no-custody notice</h2>
+          <p class="hbce-muted">
+            This verifier performs local browser-side checks and public registry lookups.
+            It does not upload private evidence, does not custody private keys, does not store user payloads,
+            and does not transform a public hash reference into regulated certification, public authority validation,
+            legal authorization, cybersecurity assurance, or production compliance.
+          </p>
+
+          <div class="hbce-card" style="margin-top:12px">
+            <pre class="hbce-mono">MATRIX AI AUDIT TRAIL VERIFICATION BOUNDARY
+- public hash reference lookup
+- local SHA-256 calculation
+- registry v3 source check
+- fail-closed validation
+- no public data custody
+- no regulated certification claim
+- no public authority claim</pre>
           </div>
         </div>
+      </section>
 
-      </div>
+      <footer class="hbce-footer">
+        <div class="hbce-footer__row">
+          <div class="hbce-muted">
+            <span class="hbce-mono">VERIFY DIRECT</span> — MATRIX AI Audit Trail public reference check
+          </div>
+          <div class="hbce-footer__links">
+            <a href="/hermeticum-bce-platform/">Home</a>
+            <a href="/hermeticum-bce-platform/protocol/">Protocol</a>
+            <a href="/hermeticum-bce-platform/matrix-audit-trail/">MATRIX Audit</a>
+            <a href="/hermeticum-bce-platform/registry/">Registry</a>
+            <a href="/hermeticum-bce-platform/verify/">Verify</a>
+          </div>
+        </div>
+      </footer>
 
-      <p class="hbce-note" style="margin-top:12px;">
-        Public proof verification is not a substitute for private evidence review, legal authorization,
-        institutional due diligence, or operator qualification.
-      </p>
-    </section>
-
-  </main>
-
-  <div data-hbce="footer"></div>
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+    </main>
+  </div>
 
   <script>
-    (function(){
+    (() => {
       "use strict";
 
       const releaseTa = document.getElementById("releaseJson");
@@ -169,7 +282,24 @@ Valid match → PUBLIC_RECORD_PRESENT</pre>
       const REGISTRY_PATH = "/hermeticum-bce-platform/registry/registry.json";
       const EXPECTED_PROTO = "HBCE-REGISTRY-v3";
       const EXPECTED_FAILURE_MODE = "FAIL_CLOSED";
-      const EXPECTED_PUBLIC_DATA = "HASH_ONLY";
+
+      const ACCEPTED_MODES = new Set([
+        "APPEND_ONLY_PUBLIC_REGISTRY",
+        "APPEND_ONLY_PUBLIC_RND_REGISTRY"
+      ]);
+
+      const ACCEPTED_PUBLIC_DATA = new Set([
+        "HASH_ONLY",
+        "MINIMIZED_PUBLIC_METADATA"
+      ]);
+
+      const ACCEPTED_ENTRY_STATUS = new Set([
+        "ACTIVE",
+        "REVOKED",
+        "SUSPENDED",
+        "RND_ONLY",
+        "RETAINED"
+      ]);
 
       const FORBIDDEN_PUBLIC_FIELDS = [
         "name",
@@ -177,8 +307,10 @@ Valid match → PUBLIC_RECORD_PRESENT</pre>
         "territory",
         "raw_identifier",
         "identity_document",
+        "regulated_identity_document",
         "private_evidence",
         "personal_payload",
+        "personal_data",
         "api_key",
         "token",
         "password",
@@ -188,12 +320,28 @@ Valid match → PUBLIC_RECORD_PRESENT</pre>
         "production_log",
         "private_communication",
         "sensitive_operational_payload",
+        "confidential_payload",
+        "financial_asset",
         "private_ip",
         "internal_hostname",
         "internal_endpoint",
         "admin_url",
         "database_url",
-        "ssh_key"
+        "ssh_key",
+        "raw_prompt",
+        "raw_output",
+        "client_file"
+      ];
+
+      const HASH_OUTPUT_FIELDS = [
+        "payload_sha256",
+        "event_payload_sha256",
+        "receipt_sha256",
+        "pack_sha256",
+        "record_sha256",
+        "head_record_sha256",
+        "sha256",
+        "signature"
       ];
 
       sourcePre.textContent = REGISTRY_PATH;
@@ -216,7 +364,11 @@ Valid match → PUBLIC_RECORD_PRESENT</pre>
         outSection.style.display = "block";
         statusPre.textContent = statusText;
         matchPre.textContent = matchText;
-        outSection.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        outSection.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
       }
 
       function hideOut(){
@@ -234,10 +386,32 @@ Valid match → PUBLIC_RECORD_PRESENT</pre>
       }
 
       function hasForbiddenField(object){
-        if (!object || typeof object !== "object") return null;
+        if (!object || typeof object !== "object") {
+          return null;
+        }
+
+        if (Array.isArray(object)) {
+          for (const item of object) {
+            const found = hasForbiddenField(item);
+
+            if (found) {
+              return found;
+            }
+          }
+
+          return null;
+        }
 
         for (const key of Object.keys(object)) {
-          if (FORBIDDEN_PUBLIC_FIELDS.includes(key)) return key;
+          if (FORBIDDEN_PUBLIC_FIELDS.includes(key)) {
+            return key;
+          }
+
+          const found = hasForbiddenField(object[key]);
+
+          if (found) {
+            return found;
+          }
         }
 
         return null;
@@ -248,6 +422,7 @@ Valid match → PUBLIC_RECORD_PRESENT</pre>
         const data = encoder.encode(text);
         const digest = await crypto.subtle.digest("SHA-256", data);
         const bytes = new Uint8Array(digest);
+
         return Array.from(bytes).map((byte) => byte.toString(16).padStart(2, "0")).join("");
       }
 
@@ -261,7 +436,53 @@ Valid match → PUBLIC_RECORD_PRESENT</pre>
         }
 
         const keys = Object.keys(value).sort();
-        return "{" + keys.map((key) => JSON.stringify(key) + ":" + stableStringify(value[key])).join(",") + "}";
+
+        return "{" + keys.map((key) => {
+          return JSON.stringify(key) + ":" + stableStringify(value[key]);
+        }).join(",") + "}";
+      }
+
+      function stripGeneratedHashFields(value){
+        if (!value || typeof value !== "object") {
+          return value;
+        }
+
+        if (Array.isArray(value)) {
+          return value.map(stripGeneratedHashFields);
+        }
+
+        const output = {};
+
+        for (const [key, childValue] of Object.entries(value)) {
+          if (HASH_OUTPUT_FIELDS.includes(key)) {
+            continue;
+          }
+
+          if (key === "issuer" && childValue && typeof childValue === "object" && !Array.isArray(childValue)) {
+            const issuer = stripGeneratedHashFields(childValue);
+            delete issuer.signature;
+            output[key] = issuer;
+            continue;
+          }
+
+          if (key === "operator" && childValue && typeof childValue === "object" && !Array.isArray(childValue)) {
+            const operator = stripGeneratedHashFields(childValue);
+            delete operator.signature;
+            output[key] = operator;
+            continue;
+          }
+
+          if (key === "record_signature" && childValue && typeof childValue === "object" && !Array.isArray(childValue)) {
+            const recordSignature = stripGeneratedHashFields(childValue);
+            delete recordSignature.signature;
+            output[key] = recordSignature;
+            continue;
+          }
+
+          output[key] = stripGeneratedHashFields(childValue);
+        }
+
+        return output;
       }
 
       function getParam(name){
@@ -283,33 +504,74 @@ Valid match → PUBLIC_RECORD_PRESENT</pre>
       }
 
       function validateRegistryEntry(entry){
-        if (!entry || typeof entry !== "object") return "ENTRY_INVALID_OBJECT";
+        if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+          return "ENTRY_INVALID_OBJECT";
+        }
 
         const forbidden = hasForbiddenField(entry);
-        if (forbidden) return "ENTRY_FORBIDDEN_FIELD_" + forbidden;
 
-        if (!isHex64Lower(entry.payload_sha256)) return "ENTRY_INVALID_PAYLOAD_SHA256";
+        if (forbidden) {
+          return "ENTRY_FORBIDDEN_FIELD_" + forbidden.toUpperCase();
+        }
 
-        if (!clean(entry.timestamp)) return "ENTRY_MISSING_TIMESTAMP";
-        if (!Number.isFinite(Date.parse(clean(entry.timestamp)))) return "ENTRY_INVALID_TIMESTAMP";
+        if (!isHex64Lower(entry.payload_sha256)) {
+          return "ENTRY_INVALID_PAYLOAD_SHA256";
+        }
 
-        if (!clean(entry.status)) return "ENTRY_MISSING_STATUS";
+        if (!clean(entry.timestamp)) {
+          return "ENTRY_MISSING_TIMESTAMP";
+        }
+
+        if (!Number.isFinite(Date.parse(clean(entry.timestamp)))) {
+          return "ENTRY_INVALID_TIMESTAMP";
+        }
+
+        if (!clean(entry.status)) {
+          return "ENTRY_MISSING_STATUS";
+        }
+
+        if (!ACCEPTED_ENTRY_STATUS.has(clean(entry.status))) {
+          return "ENTRY_STATUS_NOT_ACCEPTED";
+        }
 
         return null;
       }
 
       function validateRegistry(registry){
-        if (!registry || typeof registry !== "object") return "REGISTRY_INVALID_OBJECT";
-        if (registry.proto !== EXPECTED_PROTO) return "REGISTRY_PROTO_MISMATCH";
-        if (!Array.isArray(registry.entries)) return "REGISTRY_ENTRIES_MISSING";
+        if (!registry || typeof registry !== "object" || Array.isArray(registry)) {
+          return "REGISTRY_INVALID_OBJECT";
+        }
 
-        if (!registry.rules || typeof registry.rules !== "object") return "REGISTRY_RULES_MISSING";
-        if (registry.rules.failure_mode !== EXPECTED_FAILURE_MODE) return "REGISTRY_FAILURE_MODE_MISMATCH";
-        if (registry.rules.public_data !== EXPECTED_PUBLIC_DATA) return "REGISTRY_PUBLIC_DATA_MISMATCH";
+        if (registry.proto !== EXPECTED_PROTO) {
+          return "REGISTRY_PROTO_MISMATCH";
+        }
+
+        if (!ACCEPTED_MODES.has(String(registry.mode || ""))) {
+          return "REGISTRY_MODE_MISMATCH";
+        }
+
+        if (!Array.isArray(registry.entries)) {
+          return "REGISTRY_ENTRIES_MISSING";
+        }
+
+        if (!registry.rules || typeof registry.rules !== "object" || Array.isArray(registry.rules)) {
+          return "REGISTRY_RULES_MISSING";
+        }
+
+        if (registry.rules.failure_mode !== EXPECTED_FAILURE_MODE) {
+          return "REGISTRY_FAILURE_MODE_MISMATCH";
+        }
+
+        if (!ACCEPTED_PUBLIC_DATA.has(String(registry.rules.public_data || ""))) {
+          return "REGISTRY_PUBLIC_DATA_MISMATCH";
+        }
 
         for (const entry of registry.entries) {
           const err = validateRegistryEntry(entry);
-          if (err) return err;
+
+          if (err) {
+            return err;
+          }
         }
 
         return null;
@@ -333,10 +595,16 @@ Valid match → PUBLIC_RECORD_PRESENT</pre>
       }
 
       async function determineTargetHash(){
-        const urlHash = normalizeSha256(getParam("sha256"));
         const directHash = normalizeSha256(hashIn.value);
 
-        if (isHex64Lower(directHash)) {
+        if (directHash) {
+          if (!isHex64Lower(directHash)) {
+            return {
+              ok: false,
+              reason: "INVALID_DIRECT_PAYLOAD_SHA256"
+            };
+          }
+
           return {
             ok: true,
             hash: directHash,
@@ -344,14 +612,16 @@ Valid match → PUBLIC_RECORD_PRESENT</pre>
           };
         }
 
-        if (directHash && !isHex64Lower(directHash)) {
-          return {
-            ok: false,
-            reason: "INVALID_DIRECT_PAYLOAD_SHA256"
-          };
-        }
+        const urlHash = normalizeSha256(getParam("sha256") || getParam("q"));
 
-        if (isHex64Lower(urlHash)) {
+        if (urlHash) {
+          if (!isHex64Lower(urlHash)) {
+            return {
+              ok: false,
+              reason: "INVALID_URL_SHA256"
+            };
+          }
+
           return {
             ok: true,
             hash: urlHash,
@@ -372,14 +642,14 @@ Valid match → PUBLIC_RECORD_PRESENT</pre>
 
         try {
           parsed = JSON.parse(raw);
-        } catch (error) {
+        } catch {
           return {
             ok: false,
             reason: "INVALID_JSON"
           };
         }
 
-        if (!parsed || typeof parsed !== "object") {
+        if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
           return {
             ok: false,
             reason: "JSON_NOT_OBJECT"
@@ -394,19 +664,13 @@ Valid match → PUBLIC_RECORD_PRESENT</pre>
           };
         }
 
-        const copy = JSON.parse(JSON.stringify(parsed));
-        delete copy.payload_sha256;
-        delete copy.receipt_sha256;
-        delete copy.pack_sha256;
-        delete copy.operator_sha256;
-
-        const canonical = stableStringify(copy);
+        const canonical = stableStringify(stripGeneratedHashFields(parsed));
         const calculated = await sha256Hex(canonical);
 
         return {
           ok: true,
           hash: calculated,
-          source: "calculated_from_local_json_without_hash_fields"
+          source: "calculated_from_local_json_without_hash_output_fields"
         };
       }
 
@@ -437,18 +701,18 @@ Valid match → PUBLIC_RECORD_PRESENT</pre>
           "NO_PUBLIC_RECORD — no match in public registry\n" +
           "payload_sha256: " + targetHash + "\n" +
           "input_source: " + source + "\n" +
-          "result: no public proof commitment found",
+          "result: no public hash reference found",
           "No matching entry found in registry.entries[].payload_sha256"
         );
       }
 
       function renderPresent(targetHash, source, entry){
         showOut(
-          "PUBLIC_RECORD_PRESENT — deterministic registry match found\n" +
+          "PUBLIC_REFERENCE_PRESENT — deterministic registry match found\n" +
           "payload_sha256: " + targetHash + "\n" +
           "input_source: " + source + "\n" +
-          "result: public proof commitment present\n" +
-          "caution: this does not replace private evidence review, identity verification, contractual qualification, legal authorization, or institutional validation",
+          "result: public hash reference present\n" +
+          "caution: public reference only; no legal, compliance, security, institutional, or production certification",
           JSON.stringify(entry, null, 2)
         );
       }
@@ -457,7 +721,14 @@ Valid match → PUBLIC_RECORD_PRESENT</pre>
         clearErr();
         hideOut();
 
-        const target = await determineTargetHash();
+        let target;
+
+        try {
+          target = await determineTargetHash();
+        } catch (error) {
+          renderInvalid(error && error.message ? error.message : "INPUT_EXCEPTION");
+          return;
+        }
 
         if (!target.ok) {
           renderInvalid(target.reason);
@@ -496,13 +767,18 @@ Valid match → PUBLIC_RECORD_PRESENT</pre>
         clearErr();
         hideOut();
         clearUrlParams();
-        window.scrollTo({ top: 0, behavior: "smooth" });
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
       });
 
       verifyBtn.addEventListener("click", verifyNow);
 
       const autoHash = normalizeSha256(getParam("sha256") || getParam("q"));
-      if (isHex64Lower(autoHash)) {
+
+      if (autoHash) {
         hashIn.value = autoHash;
         verifyNow();
       }
