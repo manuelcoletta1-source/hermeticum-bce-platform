@@ -1,8 +1,13 @@
-# I3P — MATRIX AI Audit Trail Pilot Note
+# I3P — IPR AI Audit Trail Pilot Note
 
 ## HERMETICUM B.C.E. S.r.l.
 
-**Project:** MATRIX AI Audit Trail  
+**Project:** IPR AI Audit Trail  
+**Base product:** IPR — Identity Primary Record  
+**MVP use case:** IPR AI Audit Trail  
+**Runtime demonstrator:** JOKER-C2  
+**Operational ecosystem:** HBCE  
+**Architectural framework:** MATRiX  
 **Issuer:** HERMETICUM B.C.E. S.r.l.  
 **Current status:** R&D MVP / internal self-pilot  
 **Primary repository:** `hermeticum-bce-platform`  
@@ -16,9 +21,18 @@
 
 This note summarizes the current MVP proposed for incubation, technical review or pilot discussion.
 
-The objective is to present MATRIX AI Audit Trail as the first concrete and testable product extracted from the broader MATRIX / HBCE / AI JOKER-C2 architecture.
+The objective is to present **IPR AI Audit Trail** as the first concrete and testable MVP use case built around **IPR — Identity Primary Record**, the base operational product of the HERMETICUM B.C.E. platform.
 
-The current phase is an internal R&D self-pilot, with HERMETICUM B.C.E. S.r.l. as the first pilot client before external customer pilots.
+The updated positioning is:
+
+- **IPR** is the first operational product.
+- **IPR AI Audit Trail** is the first MVP / pilot use case.
+- **JOKER-C2** is the runtime demonstrator.
+- **HBCE** is the operational ecosystem.
+- **MATRiX** is the broader architectural framework.
+- **HERMETICUM B.C.E. S.r.l.** is the R&D / operating vehicle for developing and presenting the project.
+
+The current phase is an internal R&D self-pilot, with HERMETICUM B.C.E. S.r.l. as the first pilot client before any external customer pilot.
 
 ---
 
@@ -28,30 +42,31 @@ Organizations increasingly use AI for document analysis, compliance support, gov
 
 However, many AI-assisted workflows remain weak from an audit perspective because the organization cannot always reconstruct:
 
-```text
-which document was analyzed
-which hash identifies the input
-what the AI did
-which governance decision was applied
-whether a human validated the result
-which event was generated
-which proof was produced
-whether an audit-ready report exists
+- which document was analyzed;
+- which hash identifies the input;
+- which operational identity or runtime was attached;
+- what the AI did;
+- which governance decision was applied;
+- whether a human validated the result;
+- which event was generated;
+- which proof was produced;
+- whether an audit-ready report exists.
 
 The result is a gap between AI productivity and operational accountability.
 
-
 ---
 
-3. MVP solution
+## 3. MVP solution
 
-MATRIX AI Audit Trail converts an AI-assisted document workflow into a structured technical trace.
+**IPR AI Audit Trail** converts an AI-assisted document workflow into a structured technical trace.
 
 The minimal workflow is:
 
-Document upload
+```text
+IPR operational reference
+→ document upload
 → document SHA-256
-→ AI analysis
+→ AI-assisted analysis
 → governance decision
 → human validation
 → EVT event
@@ -60,6 +75,8 @@ Document upload
 
 The MVP is designed to show that AI-assisted work can move from an untraceable chat-like interaction to a reviewable, exportable and audit-ready sequence.
 
+The key correction is that the MVP is not presented as “MATRiX as product”. MATRiX remains the architectural framework. The operational product is IPR, and the first demonstrable use case is IPR AI Audit Trail.
+
 
 ---
 
@@ -67,15 +84,26 @@ The MVP is designed to show that AI-assisted work can move from an untraceable c
 
 The current MVP demonstrates:
 
-document hash generation
-AI-assisted document analysis
-risk classification
-governance decision recording
-human validation
-EVT continuity
-OPC proof reference
-audit-ready report generation
-fail-closed interpretation
+IPR-linked operational reference;
+
+document hash generation;
+
+AI-assisted document analysis;
+
+risk classification;
+
+governance decision recording;
+
+human validation;
+
+EVT continuity;
+
+OPC proof reference;
+
+audit-ready report generation;
+
+fail-closed interpretation.
+
 
 The first successful internal run was completed on 2026-05-07 using an internal document from the U.S.E. — United States of Europe project.
 
@@ -91,23 +119,19 @@ OPC: OPC-20260507121131-9DF07633
 
 5. Current platform status
 
-The public HBCE platform has been aligned around the MATRIX AI Audit Trail MVP.
+The public HBCE platform is being aligned around an IPR-first product hierarchy.
 
-Current status:
+Current target positioning:
 
-PUBLIC_ROUTE_LAYER_CLEAN
+IPR_PRODUCT_FIRST
+IPR_AI_AUDIT_TRAIL_MVP_ACTIVE
+HBCE_ECOSYSTEM_ALIGNED
+JOKER_C2_RUNTIME_DEMONSTRATOR_ALIGNED
+MATRIX_ARCHITECTURAL_FRAMEWORK_ALIGNED
 REGISTRY_V3_ALIGNED
-MATRIX_AUDIT_MVP_ACTIVE
-PROTOCOL_RND_ALIGNED
 VERIFY_SURFACE_ALIGNED
 VERIFY_PACK_SURFACE_ALIGNED
-TOOLS_GUARDRAIL_ALIGNED
-OPERATOR_REGISTRY_SURFACE_CLEAN
-ROOT_REFERENCE_ALIGNED
-CREATE_BASE_RND_ALIGNED
-NO_BROKEN_INTERNAL_ROUTES
-NO_DECLASSED_ROUTE_REFERENCES
-NO_ACTIONABLE_LEGACY_TERMS
+CLAIMS_NON_CLAIMS_ALIGNED
 PUBLIC_ROUTE_AUDIT_PASS_2026-05-08
 
 Latest public route audit result:
@@ -117,6 +141,8 @@ ACTIONABLE LEGACY TEXT REFERENCES: OK
 BROKEN OR UNREACHABLE INTERNAL ROUTES: OK
 AUDIT INTERPRETATION: PASS
 
+Some repository filenames may still contain the previous MATRIX_AI_AUDIT_TRAIL naming while the content is being refactored. The conceptual perimeter is now IPR-first.
+
 
 ---
 
@@ -124,24 +150,25 @@ AUDIT INTERPRETATION: PASS
 
 The current public spine is:
 
-MATRIX AI Audit Trail
-→ Protocol
-→ Registry v3
+IPR
+→ IPR AI Audit Trail
+→ JOKER-C2 runtime demonstrator
+→ Registry
 → Verify
 → Verify Pack
-→ Tools
-→ Link Audit
 → Claims / Legal / Security / Compliance / Governance
+→ MATRiX as architectural framework
 
 Main public routes:
 
+/ipr/
+/what-is-ipr/
+/create/
 /matrix-audit-trail/
-/protocol/
+/joker-c2/
 /registry/
 /verify/
 /verify-pack/
-/tools/
-/tools/link-audit/
 /claims/
 /legal/
 /security/
@@ -153,19 +180,28 @@ Main public routes:
 
 7. Registry and verification model
 
-The public registry uses a privacy-minimal, hash-only model.
+The public registry uses a privacy-minimal, hash-oriented model.
 
 The registry layer is based on:
 
-hash-only public proof references
-manual append-only discipline
-privacy-minimal metadata
-fail-closed verification
-no public data custody
-no private key custody
-no financial custody
-no regulated certification claim
-no public authority claim
+hash-only or minimized public proof references;
+
+manual append-only discipline;
+
+privacy-minimal metadata;
+
+fail-closed verification;
+
+no public data custody;
+
+no private key custody;
+
+no financial custody;
+
+no regulated certification claim;
+
+no public authority claim.
+
 
 Verification interpretation:
 
@@ -190,14 +226,22 @@ A public registry match does not certify legal validity, cybersecurity assurance
 
 The first external pilot can be relevant for:
 
-compliance consultants
-AI governance advisors
-cybersecurity reviewers
-legal operations teams
-internal audit teams
-public-sector innovation units
-regulated-sector R&D teams
-technical due-diligence teams
+compliance consultants;
+
+AI governance advisors;
+
+cybersecurity reviewers;
+
+legal operations teams;
+
+internal audit teams;
+
+public-sector innovation units;
+
+regulated-sector R&D teams;
+
+technical due-diligence teams.
+
 
 The MVP is especially relevant where AI is used to analyze documents, policies, risk material, governance files, compliance evidence or technical reports.
 
@@ -213,7 +257,8 @@ Suggested structure:
 Week 1
 → define pilot scope
 → select document categories
-→ define authorized/non-sensitive data boundary
+→ define authorized / non-sensitive data boundary
+→ define IPR reference model
 → configure audit report format
 
 Week 2
@@ -235,33 +280,54 @@ Week 4
 
 Expected output:
 
-sample audit reports
-document hash records
-validation records
-EVT / OPC references
-risk and governance decision logs
-pilot summary
-production-readiness requirements
+sample audit reports;
+
+IPR-linked document hash records;
+
+validation records;
+
+EVT / OPC references;
+
+risk and governance decision logs;
+
+pilot summary;
+
+production-readiness requirements.
+
 
 
 ---
 
 10. Boundaries and non-claims
 
-MATRIX AI Audit Trail is currently an R&D MVP and internal self-pilot.
+IPR AI Audit Trail is currently an R&D MVP and internal self-pilot.
 
 It does not claim:
 
-legal certification
-regulatory approval
-eIDAS qualification
-public-sector adoption
-external audit certification
-automated compliance
-legally binding evidence status by itself
-production-grade enterprise SaaS readiness
-public authority approval
-financial or banking authorization
+legal certification;
+
+regulatory approval;
+
+eIDAS qualification;
+
+qualified trust-service status;
+
+public-sector adoption;
+
+external audit certification;
+
+automated compliance;
+
+legally binding evidence status by itself;
+
+production-grade enterprise SaaS readiness;
+
+public authority approval;
+
+financial or banking authorization;
+
+replacement of SPID, CIE, EUDI Wallet, eIDAS schemes, public registries or qualified trust services.
+
 
 Any production deployment, external customer pilot, public-sector use, regulated compliance positioning or institutional integration requires independent legal, cybersecurity, privacy, compliance and operational review.
 
@@ -274,14 +340,26 @@ The project is suitable for incubation or technical advisory review because it h
 
 Current strengths:
 
-defined first MVP
-internal self-pilot already identified
-public documentation spine aligned
-registry v3 proof model available
-verification surfaces available
-route audit passed
-clear non-claims and R&D boundary
-pilot structure definable in 30 days
+IPR-first product hierarchy;
+
+defined first MVP use case;
+
+internal self-pilot already identified;
+
+first successful internal R&D run completed;
+
+public documentation spine aligned;
+
+registry v3 proof model available;
+
+verification surfaces available;
+
+route audit passed;
+
+clear non-claims and R&D boundary;
+
+pilot structure definable in 30 days.
+
 
 The incubation need is to help transform the R&D MVP into a clearer pilot-ready offer, including product scope, customer discovery, legal/compliance review, pricing, packaging and technical roadmap.
 
@@ -290,18 +368,26 @@ The incubation need is to help transform the R&D MVP into a clearer pilot-ready 
 
 12. Request for discussion
 
-HERMETICUM B.C.E. S.r.l. is seeking a technical and business-oriented review of the MATRIX AI Audit Trail MVP.
+HERMETICUM B.C.E. S.r.l. is seeking a technical and business-oriented review of the IPR AI Audit Trail MVP.
 
 The requested discussion concerns:
 
-MVP clarity
-pilot feasibility
-incubation fit
-B2B/B2G positioning
-first customer discovery
-technical roadmap
-legal and compliance boundary
-30-day pilot package
+MVP clarity;
+
+pilot feasibility;
+
+incubation fit;
+
+B2B/B2G positioning;
+
+first customer discovery;
+
+technical roadmap;
+
+legal and compliance boundary;
+
+30-day pilot package.
+
 
 The immediate objective is not to claim production readiness, but to evaluate whether the current R&D MVP can become a controlled external pilot for organizations that need auditable AI-assisted document workflows.
 
@@ -314,9 +400,17 @@ Public gateway:
 
 https://manuelcoletta1-source.github.io/hermeticum-bce-platform/
 
-MATRIX AI Audit Trail:
+IPR:
+
+https://manuelcoletta1-source.github.io/hermeticum-bce-platform/ipr/
+
+IPR AI Audit Trail:
 
 https://manuelcoletta1-source.github.io/hermeticum-bce-platform/matrix-audit-trail/
+
+JOKER-C2:
+
+https://manuelcoletta1-source.github.io/hermeticum-bce-platform/joker-c2/
 
 Registry:
 
@@ -346,6 +440,9 @@ Manuel Coletta
 HBCE Research
 HERMETICUM B.C.E. S.r.l.
 Torino, Italy, European Union
+
 Email: manuelcoletta1@gmail.com
 PEC: hermeticum@pec.it
 Phone: +39 351 572 4982
+
+
