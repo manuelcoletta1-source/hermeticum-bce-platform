@@ -1,160 +1,254 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>RECEIPT — Operator Public Proof Commitment</title>
-  <meta name="description" content="Generatore receipt privacy-minimal e hash-only per operator proof commitment. Fail-closed, no public data custody, manual append-only registry workflow." />
+  <title>Receipt — Operator Reference Public Proof</title>
+  <meta name="description" content="R&D receipt generator for operator reference public proof commitments. Hash-only, privacy-minimal, fail-closed, no public data custody, manual append-only registry workflow." />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
 
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+
+  <style>
+    .hbce-field{
+      width:100%;
+      box-sizing:border-box;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.20);
+      color:inherit;
+      border-radius:12px;
+      padding:10px 12px;
+      outline:none;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size:.92rem;
+    }
+
+    .hbce-field:focus{
+      border-color:rgba(255,255,255,.30);
+    }
+
+    .hbce-rowbtn{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    pre{
+      white-space:pre-wrap;
+      word-break:break-word;
+      margin:0;
+    }
+  </style>
 </head>
 
 <body>
-  <div data-hbce="header"></div>
+  <div class="hbce-container">
+    <main class="hbce-main">
 
-  <main class="hbce-container hbce-main">
-
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">RECEIPT · OPERATOR PUBLIC PROOF · HASH-ONLY · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">Operator proof receipt</h1>
-      <p class="hbce-hero__lead">
-        Generate a privacy-minimal receipt for an operator public proof commitment.
-        The receipt is designed to support deterministic verification while keeping private evidence outside the public registry.
-        <br /><br />
-        Do not enter real names, emails, phone numbers, tax codes, identity documents, credentials, secrets,
-        private keys, production logs, private evidence, or sensitive operational payloads.
-      </p>
-    </section>
-
-    <section class="hbce-section">
-      <div class="hbce-grid hbce-grid--3">
-        <article class="hbce-card">
-          <div class="hbce-card__title">Flow</div>
-          <ul class="hbce-list">
-            <li>1) Generate receipt.</li>
-            <li>2) Use <code>receipt_sha256</code> as public proof commitment.</li>
-            <li>3) Append the minimized entry manually to <code>registry/operators.json</code>.</li>
-            <li>4) Verify deterministically.</li>
-          </ul>
-        </article>
-
-        <article class="hbce-card">
-          <div class="hbce-card__title">Links</div>
-          <div class="hbce-actions">
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/operators/">REGISTRY</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/operators/append/">APPEND TOOL</a>
-            <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">VERIFY</a>
-          </div>
-          <div class="hbce-note">Validity requires deterministic match. Missing match means fail-closed.</div>
-        </article>
-
-        <article class="hbce-card">
-          <div class="hbce-card__title">Policy</div>
-          <ul class="hbce-list">
-            <li>HASH_ONLY</li>
-            <li>FAIL_CLOSED</li>
-            <li>APPEND_ONLY registry discipline</li>
-            <li>GDPR_MIN</li>
-            <li>NO_PUBLIC_DATA_CUSTODY</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <section class="hbce-section">
-      <div class="hbce-kicker">Privacy-minimal input</div>
-      <h2 class="hbce-h2">Operator proof receipt fields</h2>
-
-      <div class="hbce-card">
-        <div class="hbce-grid hbce-grid--2">
-          <div>
-            <label class="hbce-label" for="issuerLabel">issuer_label</label>
-            <input class="hbce-input" id="issuerLabel" placeholder="HBCE_PUBLIC_ISSUER_001" />
-            <div class="hbce-note">Public minimized issuer label only.</div>
+      <header class="hbce-header">
+        <div class="hbce-header__row">
+          <div class="hbce-brand">
+            <div class="hbce-mono">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+            <div class="hbce-muted">HERMETICUM B.C.E. S.r.l.</div>
           </div>
 
-          <div>
-            <label class="hbce-label" for="operatorLabel">operator_label</label>
-            <input class="hbce-input" id="operatorLabel" placeholder="HBCE_PUBLIC_OPERATOR_001" />
-            <div class="hbce-note">Public minimized operator label only. No real name or raw identifier.</div>
-          </div>
-
-          <div>
-            <label class="hbce-label" for="recordScope">record_scope</label>
-            <input class="hbce-input" id="recordScope" placeholder="OPERATOR_LICENSE_PUBLIC_PROOF" />
-            <div class="hbce-note">Optional public scope label. Avoid sensitive geography or identifying detail.</div>
-          </div>
-
-          <div>
-            <label class="hbce-label" for="operatorPayloadSha256">operator_payload_sha256</label>
-            <input class="hbce-input" id="operatorPayloadSha256" placeholder="64-character lowercase sha256" />
-            <div class="hbce-note">Hash-only commitment. Do not enter raw preimage or private evidence.</div>
-          </div>
-
-          <div style="grid-column: 1 / -1;">
-            <label class="hbce-label" for="note">note</label>
-            <input class="hbce-input" id="note" placeholder="Minimized public proof commitment; private evidence outside public registry" />
-            <div class="hbce-note">Optional public note. No personal data, secrets, credentials, or private evidence.</div>
-          </div>
+          <nav class="hbce-nav" aria-label="Primary">
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/">Home</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/matrix-audit-trail/">MATRIX Audit</a>
+            <a class="hbce-nav__link is-active" href="/hermeticum-bce-platform/registry/">Registry</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/verify/">Verify</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/claims/">Claims</a>
+          </nav>
         </div>
+      </header>
 
-        <div class="hbce-actions" style="margin-top:12px;">
-          <button class="hbce-btn" id="gen" type="button">Generate receipt</button>
-          <button class="hbce-btn hbce-btn--ghost" id="clear" type="button">Clear</button>
-          <button class="hbce-btn hbce-btn--ghost" id="copy" type="button" disabled>Copy receipt</button>
+      <section class="hbce-section hbce-hero">
+        <div class="hbce-hero__kicker">RECEIPT · OPERATOR REFERENCE · HASH-ONLY · FAIL-CLOSED</div>
+        <h1 class="hbce-hero__title">Operator reference receipt</h1>
+
+        <p class="hbce-hero__lead">
+          Generate a privacy-minimal receipt for an operator reference public proof commitment.
+          The receipt supports deterministic verification while keeping private evidence outside the public registry.
+          <br><br>
+          Do not enter real personal identifiers, emails, phone numbers, tax codes, identity documents, credentials,
+          secrets, private keys, production logs, private evidence, raw AI prompts, raw AI outputs,
+          client files, or sensitive operational payloads.
+        </p>
+
+        <div class="hbce-card" style="margin-top:14px;">
+          <div class="hbce-mono">R&D BOUNDARY</div>
+          <p class="hbce-muted" style="margin-bottom:0;">
+            This receipt generator supports MATRIX AI Audit Trail R&D registry workflows.
+            It does not create legal authorization, professional qualification, public authority approval,
+            regulated compliance, cybersecurity assurance, or production authorization.
+          </p>
         </div>
+      </section>
 
-        <div class="hbce-note" id="status" style="margin-top:10px;">Ready.</div>
-      </div>
-    </section>
+      <section class="hbce-section">
+        <div class="hbce-grid hbce-grid--3">
 
-    <section class="hbce-section">
-      <div class="hbce-kicker">Output</div>
-      <h2 class="hbce-h2">Receipt JSON</h2>
+          <article class="hbce-card">
+            <div class="hbce-mono">FLOW</div>
+            <h2>Manual registry workflow</h2>
+            <ul class="hbce-list">
+              <li>Generate receipt.</li>
+              <li>Use <code>receipt_sha256</code> as public proof commitment.</li>
+              <li>Append the minimized entry manually to <code>registry/operators.json</code>.</li>
+              <li>Verify deterministically.</li>
+            </ul>
+          </article>
 
-      <div class="hbce-card">
-        <div class="hbce-grid hbce-grid--2">
-          <div>
-            <div class="hbce-card__title">receipt_sha256</div>
-            <div class="hbce-note"><code id="receiptHash">—</code></div>
-            <div class="hbce-actions" style="margin-top:10px;">
-              <a class="hbce-btn hbce-btn--ghost" id="verifyLink" href="/hermeticum-bce-platform/verify/">Open VERIFY</a>
+          <article class="hbce-card">
+            <div class="hbce-mono">LINKS</div>
+            <h2>Related surfaces</h2>
+            <div class="hbce-rowbtn">
+              <a class="hbce-btn" href="/hermeticum-bce-platform/registry/operators/">Registry</a>
+              <a class="hbce-btn" href="/hermeticum-bce-platform/registry/operators/append/">Append tool</a>
+              <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verify</a>
             </div>
-            <div class="hbce-note">
-              Use this hash as <code>payload_sha256</code> in the operator registry entry.
+            <p class="hbce-muted">
+              Validity requires deterministic public-reference match. Missing match means fail-closed.
+            </p>
+          </article>
+
+          <article class="hbce-card">
+            <div class="hbce-mono">POLICY</div>
+            <h2>Public proof rules</h2>
+            <ul class="hbce-list">
+              <li>HASH_ONLY</li>
+              <li>FAIL_CLOSED</li>
+              <li>APPEND_ONLY registry discipline</li>
+              <li>GDPR_MIN</li>
+              <li>NO_PUBLIC_DATA_CUSTODY</li>
+            </ul>
+          </article>
+
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <div class="hbce-mono">PRIVACY-MINIMAL INPUT</div>
+          <h2>Operator reference receipt fields</h2>
+
+          <div class="hbce-grid hbce-grid--2" style="margin-top:14px;">
+            <div>
+              <label class="hbce-muted" for="issuerLabel">issuer_label</label>
+              <input class="hbce-field" id="issuerLabel" placeholder="HBCE_PUBLIC_ISSUER_001" />
+              <p class="hbce-muted">Public minimized issuer label only.</p>
+            </div>
+
+            <div>
+              <label class="hbce-muted" for="operatorLabel">operator_label</label>
+              <input class="hbce-field" id="operatorLabel" placeholder="HBCE_PUBLIC_OPERATOR_001" />
+              <p class="hbce-muted">Public minimized operator label only. No real personal identifier.</p>
+            </div>
+
+            <div>
+              <label class="hbce-muted" for="recordScope">record_scope</label>
+              <input class="hbce-field" id="recordScope" placeholder="OPERATOR_REFERENCE_PUBLIC_PROOF" />
+              <p class="hbce-muted">Optional public scope label. Avoid sensitive geography or identifying detail.</p>
+            </div>
+
+            <div>
+              <label class="hbce-muted" for="operatorPayloadSha256">operator_payload_sha256</label>
+              <input class="hbce-field" id="operatorPayloadSha256" placeholder="64-character lowercase sha256" />
+              <p class="hbce-muted">Hash-only commitment. Do not enter raw preimage or private evidence.</p>
+            </div>
+
+            <div style="grid-column:1 / -1;">
+              <label class="hbce-muted" for="note">note</label>
+              <input class="hbce-field" id="note" placeholder="Minimized public proof reference; private evidence outside public registry" />
+              <p class="hbce-muted">Optional public note. No personal data, secrets, credentials, or private evidence.</p>
             </div>
           </div>
 
-          <div>
-            <div class="hbce-card__title">Block</div>
-            <pre class="hbce-pre" id="out" style="white-space:pre-wrap; word-break:break-word;">—</pre>
+          <div class="hbce-rowbtn">
+            <button class="hbce-btn hbce-btn--primary" id="gen" type="button">Generate receipt</button>
+            <button class="hbce-btn" id="clear" type="button">Clear</button>
+            <button class="hbce-btn" id="copy" type="button" disabled>Copy receipt</button>
+          </div>
+
+          <div class="hbce-muted" id="status" style="margin-top:10px;">Ready.</div>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <div class="hbce-mono">OUTPUT</div>
+          <h2>Receipt JSON</h2>
+
+          <div class="hbce-grid hbce-grid--2" style="margin-top:14px;">
+            <div class="hbce-card">
+              <div class="hbce-mono">receipt_sha256</div>
+              <p class="hbce-muted">
+                <code id="receiptHash">—</code>
+              </p>
+
+              <div class="hbce-rowbtn">
+                <a class="hbce-btn" id="verifyLink" href="/hermeticum-bce-platform/verify/">Open Verify</a>
+              </div>
+
+              <p class="hbce-muted">
+                Use this hash as <code>payload_sha256</code> in the operator reference registry entry.
+              </p>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">BLOCK</div>
+              <pre class="hbce-mono" id="out">—</pre>
+            </div>
+          </div>
+
+          <p class="hbce-muted" style="margin-top:12px;">
+            The receipt is a minimized public proof artifact. It does not replace private identity review,
+            contractual qualification, legal authorization, professional qualification, or private evidence custody.
+          </p>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>Fail-closed rule</h2>
+          <p class="hbce-muted">
+            If the minimum privacy-safe schema is not satisfied, no receipt is generated.
+            Public proof remains hash-only, minimized and non-custodial.
+          </p>
+
+          <div class="hbce-card" style="margin-top:12px;">
+            <pre class="hbce-mono">Missing issuer label → FAIL
+Missing operator label → FAIL
+Invalid operator payload hash → FAIL
+Sensitive text → FAIL
+Valid minimized receipt → READY_FOR_MANUAL_REVIEW</pre>
           </div>
         </div>
+      </section>
 
-        <div class="hbce-note">
-          The receipt is a minimized public proof artifact. It does not replace private identity verification,
-          contractual qualification, legal authorization, or private evidence custody.
+      <footer class="hbce-footer">
+        <div class="hbce-footer__row">
+          <div class="hbce-muted">
+            <span class="hbce-mono">OPERATOR RECEIPT</span> — public R&D operator reference proof receipt
+          </div>
+          <div class="hbce-footer__links">
+            <a href="/hermeticum-bce-platform/">Home</a>
+            <a href="/hermeticum-bce-platform/registry/">Registry</a>
+            <a href="/hermeticum-bce-platform/verify/">Verify</a>
+            <a href="/hermeticum-bce-platform/claims/">Claims</a>
+          </div>
         </div>
-      </div>
-    </section>
+      </footer>
 
-    <section class="hbce-section">
-      <div class="hbce-footnote">
-        <p><strong>Fail-closed:</strong> if the minimum privacy-safe schema is not satisfied, no receipt is generated.</p>
-        <p><strong>Privacy:</strong> hash-only, minimized public labels, no public custody of personal or sensitive data.</p>
-      </div>
-    </section>
-
-  </main>
-
-  <div data-hbce="footer"></div>
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
+    </main>
+  </div>
 
   <script>
-    (function(){
+    (() => {
       "use strict";
 
       const $ = (id) => document.getElementById(id);
@@ -186,7 +280,12 @@
         "token",
         "secret",
         "-----begin",
-        "-----end"
+        "-----end",
+        "raw_prompt",
+        "raw_output",
+        "client_file",
+        "personal_data",
+        "private_evidence"
       ];
 
       function setStatus(message){
@@ -206,9 +305,9 @@
       }
 
       function containsForbiddenText(value){
-        const v = clean(value).toLowerCase();
-        if (!v) return false;
-        return FORBIDDEN_TEXT.some((item) => v.includes(item));
+        const normalized = clean(value).toLowerCase();
+        if (!normalized) return false;
+        return FORBIDDEN_TEXT.some((item) => normalized.includes(item));
       }
 
       function fail(reason){
@@ -231,7 +330,19 @@
       }
 
       function canonicalJSONString(value){
-        return JSON.stringify(value, Object.keys(value).sort(), 2);
+        if (value === null || typeof value !== "object") {
+          return JSON.stringify(value);
+        }
+
+        if (Array.isArray(value)) {
+          return "[" + value.map((item) => canonicalJSONString(item)).join(",") + "]";
+        }
+
+        const keys = Object.keys(value).sort();
+
+        return "{" + keys.map((key) => {
+          return JSON.stringify(key) + ":" + canonicalJSONString(value[key]);
+        }).join(",") + "}";
       }
 
       function validateInput(data){
@@ -249,19 +360,23 @@
 
       async function buildReceipt(){
         const receipt = {
-          proto: "HBCE-RECEIPT-OPERATOR-v2",
-          kind: "HBCE_OPERATOR_PUBLIC_PROOF_RECEIPT",
+          proto: "HBCE-RECEIPT-OPERATOR-RND-v1",
+          kind: "HBCE_OPERATOR_REFERENCE_PUBLIC_PROOF_RECEIPT",
           policy: [
             "HASH_ONLY",
             "FAIL_CLOSED",
             "APPEND_ONLY",
             "GDPR_MIN",
-            "NO_PUBLIC_DATA_CUSTODY"
+            "NO_PUBLIC_DATA_CUSTODY",
+            "NO_REGULATED_CERTIFICATION_CLAIM",
+            "NO_PUBLIC_AUTHORITY_CLAIM"
           ],
           issuer_label: clean(issuerLabel.value),
           operator_label: clean(operatorLabel.value),
           operator_payload_sha256: clean(operatorPayloadSha256.value).toLowerCase(),
-          timestamp: nowISO()
+          timestamp: nowISO(),
+          status: "RND_ONLY",
+          public_payload_policy: "HASH_ONLY"
         };
 
         const scope = clean(recordScope.value);
@@ -309,7 +424,7 @@
         try {
           await navigator.clipboard.writeText(text);
           setStatus("Copied. Use receipt_sha256 as payload_sha256 in registry/operators.json after review.");
-        } catch (error) {
+        } catch {
           setStatus("Copy unavailable. Copy the JSON manually.");
         }
       }
