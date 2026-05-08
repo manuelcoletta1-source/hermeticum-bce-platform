@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
   <title>Link Audit — HBCE R&D Route Audit Tool</title>
-  <meta name="description" content="Defensive browser-side link audit for HBCE Platform public routes, registry v3 references, verify surfaces, deprecated routes, legacy terminology, and fail-closed remediation." />
+  <meta name="description" content="Defensive browser-side link audit for HBCE Platform public routes, registry v3 references, verify surfaces, deprecated routes, legacy terminology, expected guardrail patterns, and fail-closed remediation." />
   <meta name="robots" content="noindex,nofollow" />
   <meta name="theme-color" content="#0b0f14" />
 
@@ -61,7 +61,7 @@
         <p class="hbce-hero__lead">
           This tool performs a defensive browser-side audit of selected public HBCE Platform routes.
           It checks internal links, deprecated routes, legacy terminology, registry v3 references, verify surfaces,
-          and broken public references across the current MATRIX AI Audit Trail R&D boundary.
+          expected guardrail patterns, and broken public references across the current MATRIX AI Audit Trail R&D boundary.
           <br><br>
           The audit is curated and limited. It is not a full crawler, does not authenticate, does not bypass access controls,
           does not test external systems, and does not prove production security, legal validity, regulated compliance,
@@ -100,11 +100,11 @@
           </article>
 
           <article class="hbce-card">
-            <div class="hbce-mono">DEPRECATED ROUTES</div>
-            <h2>Legacy detection</h2>
+            <div class="hbce-mono">CLASSIFICATION</div>
+            <h2>Actionable vs expected</h2>
             <p class="hbce-muted">
-              Flags references to declassed or legacy routes such as <code>/entry/</code>, <code>/register/</code>,
-              <code>/phase-1/</code>, <code>/gate/</code>, and strong operator-license terminology.
+              Legacy text is classified as actionable only when it appears in active public product surfaces.
+              Tool guardrails, schema forbidden-field lists, and archival audit reports are reported separately as expected references.
             </p>
           </article>
 
@@ -112,7 +112,7 @@
             <div class="hbce-mono">LIMIT</div>
             <h2>No certification claim</h2>
             <p class="hbce-muted">
-              A clean result means the curated public route sample did not detect configured issues.
+              A clean result means the curated public route sample did not detect configured actionable issues.
               It does not certify cybersecurity, compliance, production readiness, or legal authorization.
             </p>
           </article>
@@ -125,7 +125,7 @@
           <h2>Results</h2>
           <p class="hbce-muted">
             The audit runs locally in the browser against public static routes only.
-            Missing, broken, deprecated, or legacy references should be reviewed before treating the public route layer as clean.
+            Missing, broken, deprecated, or actionable legacy references should be reviewed before treating the public route layer as clean.
           </p>
 
           <div class="hbce-card" style="margin-top:12px;background:rgba(0,0,0,.18)">
@@ -139,11 +139,16 @@
           <h2>Audit interpretation</h2>
           <div class="hbce-card">
             <pre class="hbce-mono">PASS
-→ no configured broken routes, deprecated routes, or legacy terminology detected in the curated sample
+→ no broken internal routes
+→ no deprecated route references
+→ no actionable legacy terminology detected in active public product surfaces
+
+EXPECTED REFERENCES
+→ legacy terms found only inside audit reports, forbidden-field lists, schemas, or guardrail tools
+→ these do not fail the public route audit
 
 FAIL-CLOSED
-→ at least one configured issue was detected
-→ review findings before considering the public route layer clean
+→ at least one broken route, deprecated route reference, or actionable legacy reference was detected
 
 BOUNDARY
 → defensive public-route audit only
@@ -297,6 +302,37 @@ BOUNDARY
         "CITIZEN_CF_SHA256"
       ];
 
+      const EXPECTED_LEGACY_CONTEXTS = [
+        {
+          label: "ARCHIVAL_AUDIT_REFERENCE",
+          paths: [
+            "/hermeticum-bce-platform/AUDIT_FINDINGS_MATRIX_HBCE_2026-05-06.md",
+            "/hermeticum-bce-platform/DEPLOYMENT_STATIC_GATEWAY_REVIEW_2026-05-06.md",
+            "/hermeticum-bce-platform/ROUTE_DEDUPLICATION_REVIEW_2026-05-07.md",
+            "/hermeticum-bce-platform/REPOSITORY_BASELINE_REVIEW_2026-05-06.md",
+            "/hermeticum-bce-platform/REGISTRY_AUDIT_MATRIX_HBCE_2026-05-06.md"
+          ]
+        },
+        {
+          label: "FORBIDDEN_FIELD_LIST_REFERENCE",
+          paths: [
+            "/hermeticum-bce-platform/verify/",
+            "/hermeticum-bce-platform/verify-pack/",
+            "/hermeticum-bce-platform/verify/verify.html",
+            "/hermeticum-bce-platform/verify/schema/evidence-bundle.schema.json",
+            "/hermeticum-bce-platform/schemas/ipr.schema.json",
+            "/hermeticum-bce-platform/schemas/receipt.schema.json"
+          ]
+        },
+        {
+          label: "GUARDRAIL_TOOL_REFERENCE",
+          paths: [
+            "/hermeticum-bce-platform/tools/link-audit/",
+            "/hermeticum-bce-platform/tools/registry-guard.js"
+          ]
+        }
+      ];
+
       const MAX_LINKS_PER_PAGE = 70;
 
       function outEl(){
@@ -309,6 +345,22 @@ BOUNDARY
 
       function resetOutput(){
         outEl().textContent = "";
+      }
+
+      function normalizePath(path){
+        return String(path || "").split("#")[0].split("?")[0];
+      }
+
+      function expectedLegacyContextForPage(page){
+        const normalizedPage = normalizePath(page);
+
+        for (const context of EXPECTED_LEGACY_CONTEXTS) {
+          if (context.paths.includes(normalizedPage)) {
+            return context.label;
+          }
+        }
+
+        return "";
       }
 
       function normalizeInternalHref(href, basePath){
@@ -467,7 +519,8 @@ BOUNDARY
 
         const broken = [];
         const badRefs = [];
-        const legacyRefs = [];
+        const actionableLegacyRefs = [];
+        const expectedLegacyRefs = [];
         const checkedLinks = new Set();
 
         for (const page of PAGES) {
@@ -502,12 +555,21 @@ BOUNDARY
           }
 
           const legacy = findLegacyText(response.text);
+          const expectedContext = expectedLegacyContextForPage(page);
 
           if (legacy.length) {
-            legacyRefs.push({
-              page,
-              patterns: legacy
-            });
+            if (expectedContext) {
+              expectedLegacyRefs.push({
+                page,
+                patterns: legacy,
+                context: expectedContext
+              });
+            } else {
+              actionableLegacyRefs.push({
+                page,
+                patterns: legacy
+              });
+            }
           }
 
           const links = Array.from(new Set(extractLinks(response.text, page)));
@@ -544,6 +606,8 @@ BOUNDARY
           log("  links found: " + links.length);
           log("  sampled internal links checked: " + sample.length);
           log("  legacy patterns: " + legacy.length);
+          log("  actionable legacy patterns: " + (expectedContext ? 0 : legacy.length));
+          log("  expected legacy context: " + (expectedContext || "—"));
           log("");
         }
 
@@ -558,13 +622,24 @@ BOUNDARY
         }
 
         log("");
-        log("=== LEGACY TEXT REFERENCES ===");
+        log("=== ACTIONABLE LEGACY TEXT REFERENCES ===");
 
-        if (!legacyRefs.length) {
+        if (!actionableLegacyRefs.length) {
           log("OK — none detected.");
         } else {
-          legacyRefs.forEach((item) => {
+          actionableLegacyRefs.forEach((item) => {
             log("- " + item.page + " :: " + item.patterns.join(", "));
+          });
+        }
+
+        log("");
+        log("=== EXPECTED LEGACY / GUARDRAIL REFERENCES ===");
+
+        if (!expectedLegacyRefs.length) {
+          log("OK — none detected.");
+        } else {
+          expectedLegacyRefs.forEach((item) => {
+            log("- " + item.page + " :: " + item.patterns.join(", ") + " [" + item.context + "]");
           });
         }
 
@@ -582,10 +657,15 @@ BOUNDARY
         log("");
         log("=== AUDIT INTERPRETATION ===");
 
-        if (!badRefs.length && !broken.length && !legacyRefs.length) {
-          log("PASS — curated public route audit did not detect configured broken routes, deprecated routes, or legacy terminology.");
+        if (!badRefs.length && !broken.length && !actionableLegacyRefs.length) {
+          log("PASS — public route layer clean for configured actionable findings.");
+          log("PASS_SCOPE — broken routes, deprecated routes, and actionable legacy terms were not detected.");
         } else {
-          log("FAIL-CLOSED — review findings above before treating the public route layer as clean.");
+          log("FAIL-CLOSED — review actionable findings above before treating the public route layer as clean.");
+        }
+
+        if (expectedLegacyRefs.length) {
+          log("EXPECTED_REFERENCES — legacy strings remain only in archival audits, schema/forbidden-field lists, or guardrail tools.");
         }
 
         log("");
