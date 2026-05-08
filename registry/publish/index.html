@@ -4,20 +4,34 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>REGISTRY PUBLISH — Privacy-Minimal Proof Entry</title>
-  <meta name="description" content="Generate a privacy-minimal, hash-only HBCE registry entry. Manual append-only workflow. Missing or invalid required fields produce INVALID fail-closed state." />
+  <title>Registry Publish — Privacy-Minimal R&D Public Proof Entry</title>
+  <meta name="description" content="Generate a privacy-minimal, hash-only HBCE registry v3 public proof entry. Manual append-only workflow, fail-closed validation, no public data custody, MATRIX AI Audit Trail R&D boundary." />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
   <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/registry/publish/" />
 
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
-  <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce-protocol.css" />
-
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js" defer></script>
-  <script src="/hermeticum-bce-platform/assets/hbce-protocol.js" defer></script>
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 
   <style>
+    .hbce-field{
+      width:100%;
+      box-sizing:border-box;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.20);
+      color:inherit;
+      border-radius:12px;
+      padding:10px 12px;
+      outline:none;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size:.92rem;
+    }
+
+    .hbce-field:focus{
+      border-color:rgba(255,255,255,.30);
+    }
+
     .hbce-two{
       display:grid;
       grid-template-columns:1.02fr .98fr;
@@ -26,10 +40,12 @@
     }
 
     @media (max-width:980px){
-      .hbce-two{grid-template-columns:1fr;}
+      .hbce-two{
+        grid-template-columns:1fr;
+      }
     }
 
-    .hbce-formrow{
+    .hbce-rowbtn{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
@@ -37,26 +53,24 @@
       margin-top:12px;
     }
 
-    .hbce-formrow .hbce-btn{height:40px;}
-
-    .hbce-miniNote{
+    .hbce-mini-note{
       margin-top:10px;
       color:rgba(230,237,246,.62);
       font-size:12.5px;
+      line-height:1.55;
     }
 
     .hbce-pathbox{
       border:1px solid rgba(255,255,255,.10);
       background:rgba(0,0,0,.22);
       border-radius:16px;
-      padding:12px 12px;
+      padding:12px;
       margin-top:12px;
     }
 
     .hbce-pathbox code{
       font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
       font-size:12.2px;
-      color:rgba(0,183,255,.92);
       word-break:break-word;
     }
 
@@ -67,219 +81,246 @@
       font-size:13.5px;
       line-height:1.55;
     }
+
+    pre{
+      white-space:pre-wrap;
+      word-break:break-word;
+      margin:0;
+    }
   </style>
 </head>
 
 <body>
-  <div data-hbce="header"></div>
+  <div class="hbce-container">
+    <main class="hbce-main">
 
-  <main class="hbce-container hbce-main">
+      <header class="hbce-header">
+        <div class="hbce-header__row">
+          <div class="hbce-brand">
+            <div class="hbce-mono">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+            <div class="hbce-muted">HERMETICUM B.C.E. S.r.l.</div>
+          </div>
 
-    <section class="hbce-hero">
-      <div class="hbce-hero__kicker">PUBLISH · REGISTRY · HASH-ONLY · PRIVACY-MINIMAL · FAIL-CLOSED</div>
-      <h1 class="hbce-hero__title">Publish minimized proof</h1>
-      <p class="hbce-hero__lead">
-        Generate a privacy-minimal, hash-only public registry entry.
-        This tool does <strong>not</strong> publish private evidence and does <strong>not</strong> write to the registry automatically.
-        It creates a deterministic JSON object that can be manually appended to the public registry after review.
-      </p>
+          <nav class="hbce-nav" aria-label="Primary">
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/">Home</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/matrix-audit-trail/">MATRIX Audit</a>
+            <a class="hbce-nav__link is-active" href="/hermeticum-bce-platform/registry/">Registry</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/verify/">Verify</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/claims/">Claims</a>
+          </nav>
+        </div>
+      </header>
 
-      <div class="hbce-actions">
-        <a class="hbce-btn" href="/hermeticum-bce-platform/create/base/">Create IPR Base</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/verify/">Verify</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/">Registry Viewer</a>
-        <a class="hbce-btn hbce-btn--ghost" href="/hermeticum-bce-platform/registry/append/">Append Check</a>
-      </div>
+      <section class="hbce-section hbce-hero">
+        <div class="hbce-hero__kicker">PUBLISH · REGISTRY v3 · HASH-ONLY · PRIVACY-MINIMAL · FAIL-CLOSED</div>
+        <h1 class="hbce-hero__title">Publish minimized proof</h1>
 
-      <div class="hbce-note">
-        EU-first · audit-first · fail-closed · hash-only · append-only · GDPR-min · no public data custody
-      </div>
-    </section>
+        <p class="hbce-hero__lead">
+          Generate a privacy-minimal, hash-only public registry entry.
+          This tool does <strong>not</strong> publish private evidence and does <strong>not</strong> write to the registry automatically.
+          It creates a deterministic JSON object that can be manually appended to the public registry after review.
+          <br><br>
+          The current boundary is MATRIX AI Audit Trail R&D. A generated entry is not a legal certificate,
+          not public authority approval, not regulated compliance, not cybersecurity assurance,
+          and not production authorization.
+        </p>
 
-    <section class="hbce-critical">
-      <div class="hbce-critical__kicker">FAIL-CLOSED NOTICE · PUBLIC LEDGER RULES</div>
-      <div class="hbce-critical__title">Append-only means: no silent rewriting</div>
-      <p class="hbce-critical__text">
-        If a public record must change, do not edit old evidence silently.
-        Publish a new entry or event referencing the prior commitment.
-        Missing, malformed, ambiguous, or sensitive fields produce <strong>INVALID</strong>.
-      </p>
-    </section>
+        <div class="hbce-rowbtn">
+          <a class="hbce-btn" href="/hermeticum-bce-platform/create/base/">Create Base</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verify</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Registry Viewer</a>
+          <a class="hbce-btn" href="/hermeticum-bce-platform/registry/append/">Append Check</a>
+        </div>
 
-    <section class="hbce-section">
-      <h2>Publish input</h2>
-      <p>
-        Enter only minimized public metadata and a hash-only proof commitment.
-        Do not enter real names, raw identifiers, identity documents, private evidence, credentials, secrets, private keys, production logs, or sensitive operational payloads.
-      </p>
+        <div class="hbce-card" style="margin-top:14px;">
+          <div class="hbce-mono">PUBLIC PROOF POLICY</div>
+          <p class="hbce-muted" style="margin-bottom:0;">
+            EU-first · audit-first · fail-closed · hash-only · append-only · GDPR-min · no public data custody.
+            Missing, malformed, ambiguous, or sensitive fields produce <strong>INVALID</strong>.
+          </p>
+        </div>
+      </section>
 
-      <div class="hbce-two">
-
+      <section class="hbce-section">
         <div class="hbce-card">
-          <h3>Minimized registry entry fields</h3>
+          <div class="hbce-mono">FAIL-CLOSED NOTICE</div>
+          <h2>Append-only means no silent rewriting</h2>
+          <p class="hbce-muted">
+            If a public record must change, do not edit old evidence silently.
+            Publish a new entry or event referencing the prior commitment.
+            Missing, malformed, ambiguous, or sensitive fields produce <strong>INVALID</strong>.
+          </p>
+        </div>
+      </section>
 
-          <div class="hbce-field">
-            <label class="hbce-label" for="entityType">entity_type — required</label>
-            <select class="hbce-select" id="entityType">
+      <section class="hbce-section">
+        <h2>Publish input</h2>
+        <p class="hbce-muted">
+          Enter only minimized public metadata and a hash-only proof commitment.
+          Do not enter real personal identifiers, raw identifiers, identity documents, private evidence,
+          credentials, secrets, private keys, production logs, raw AI prompts, raw AI outputs, client files,
+          or sensitive operational payloads.
+        </p>
+
+        <div class="hbce-two">
+
+          <div class="hbce-card">
+            <div class="hbce-mono">INPUT</div>
+            <h3>Minimized registry entry fields</h3>
+
+            <label class="hbce-muted" for="entityType">entity_type — required</label>
+            <select class="hbce-field" id="entityType">
               <option value="PUBLIC_IDENTITY_COMMITMENT">PUBLIC_IDENTITY_COMMITMENT</option>
               <option value="PUBLIC_OPERATOR_COMMITMENT">PUBLIC_OPERATOR_COMMITMENT</option>
-              <option value="PUBLIC_CONTINUITY_CERTIFICATE">PUBLIC_CONTINUITY_CERTIFICATE</option>
+              <option value="PUBLIC_CONTINUITY_REFERENCE">PUBLIC_CONTINUITY_REFERENCE</option>
               <option value="PUBLIC_NODE_COMMITMENT">PUBLIC_NODE_COMMITMENT</option>
               <option value="PUBLIC_EVENT_COMMITMENT">PUBLIC_EVENT_COMMITMENT</option>
               <option value="HBCE_PUBLIC_PROOF">HBCE_PUBLIC_PROOF</option>
+              <option value="MATRIX_AI_AUDIT_REFERENCE">MATRIX_AI_AUDIT_REFERENCE</option>
+              <option value="MATRIX_POLICY_CHECK_REFERENCE">MATRIX_POLICY_CHECK_REFERENCE</option>
+              <option value="MATRIX_HUMAN_VALIDATION_REFERENCE">MATRIX_HUMAN_VALIDATION_REFERENCE</option>
+              <option value="MATRIX_EVIDENCE_PACK_REFERENCE">MATRIX_EVIDENCE_PACK_REFERENCE</option>
+              <option value="MATRIX_VERIFICATION_RESULT_REFERENCE">MATRIX_VERIFICATION_RESULT_REFERENCE</option>
             </select>
-            <div class="hbce-help">Public category only. Do not use raw personal identifiers.</div>
-          </div>
+            <div class="hbce-mini-note">Public category only. Do not use raw personal identifiers.</div>
 
-          <div class="hbce-field">
-            <label class="hbce-label" for="subjectLabel">subject_label — required</label>
-            <input class="hbce-input" id="subjectLabel" placeholder="HBCE_PUBLIC_IDENTITY_001" autocomplete="off" />
-            <div class="hbce-help">Use a minimized public label. Do not use a real name, tax code, email, phone, document number, or private identifier.</div>
-          </div>
+            <label class="hbce-muted" for="subjectLabel" style="display:block;margin-top:12px;">subject_label — required</label>
+            <input class="hbce-field" id="subjectLabel" placeholder="HBCE_PUBLIC_REFERENCE_001" autocomplete="off" />
+            <div class="hbce-mini-note">Use a minimized public label. Do not use a real personal identifier, tax code, email, phone, document number, or private identifier.</div>
 
-          <div class="hbce-field">
-            <label class="hbce-label" for="recordScope">record_scope — optional</label>
-            <input class="hbce-input" id="recordScope" placeholder="IPR_BASE_EU_RELEASE_PUBLIC_PROOF" autocomplete="off" />
-            <div class="hbce-help">Optional public scope label.</div>
-          </div>
+            <label class="hbce-muted" for="recordScope" style="display:block;margin-top:12px;">record_scope — optional</label>
+            <input class="hbce-field" id="recordScope" placeholder="MATRIX_AI_AUDIT_TRAIL_MVP" autocomplete="off" />
+            <div class="hbce-mini-note">Optional public scope label.</div>
 
-          <div class="hbce-field">
-            <label class="hbce-label" for="payload">payload_sha256 — required</label>
-            <input class="hbce-input" id="payload" placeholder="64-character lowercase sha256" autocomplete="off" />
-            <div class="hbce-help">Required. Must be exactly 64 lowercase hexadecimal characters.</div>
-          </div>
+            <label class="hbce-muted" for="payload" style="display:block;margin-top:12px;">payload_sha256 — required</label>
+            <input class="hbce-field" id="payload" placeholder="64-character lowercase sha256" autocomplete="off" />
+            <div class="hbce-mini-note">Required. Must be exactly 64 lowercase hexadecimal characters.</div>
 
-          <div class="hbce-field">
-            <label class="hbce-label" for="timestamp">timestamp — required</label>
-            <input class="hbce-input" id="timestamp" placeholder="2026-05-06T00:00:00.000Z" autocomplete="off" />
-            <div class="hbce-help">Required. Must be ISO 8601 / RFC 3339 parseable.</div>
-          </div>
+            <label class="hbce-muted" for="timestamp" style="display:block;margin-top:12px;">timestamp — required</label>
+            <input class="hbce-field" id="timestamp" placeholder="2026-05-07T15:30:00+02:00" autocomplete="off" />
+            <div class="hbce-mini-note">Required. Must be ISO 8601 / RFC 3339 parseable.</div>
 
-          <div class="hbce-field">
-            <label class="hbce-label" for="status">status — required</label>
-            <select class="hbce-select" id="status">
+            <label class="hbce-muted" for="status" style="display:block;margin-top:12px;">status — required</label>
+            <select class="hbce-field" id="status">
+              <option value="RND_ONLY">RND_ONLY</option>
+              <option value="RETAINED">RETAINED</option>
               <option value="ACTIVE">ACTIVE</option>
               <option value="SUSPENDED">SUSPENDED</option>
               <option value="REVOKED">REVOKED</option>
             </select>
-            <div class="hbce-help">Lifecycle status for registry interpretation.</div>
-          </div>
+            <div class="hbce-mini-note">Lifecycle status for registry interpretation.</div>
 
-          <div class="hbce-field">
-            <label class="hbce-label" for="note">note — optional, public/minimized</label>
-            <input class="hbce-input" id="note" placeholder="Minimized public proof commitment; private evidence outside public registry" autocomplete="off" />
-            <div class="hbce-help">Do not include personal data, secrets, credentials, raw identifiers, or private evidence.</div>
-          </div>
+            <label class="hbce-muted" for="note" style="display:block;margin-top:12px;">note — optional, public/minimized</label>
+            <input class="hbce-field" id="note" placeholder="Minimized public proof reference; private evidence outside public registry" autocomplete="off" />
+            <div class="hbce-mini-note">Do not include personal data, secrets, credentials, raw identifiers, or private evidence.</div>
 
-          <div class="hbce-formrow">
-            <button class="hbce-btn" type="button" id="btnBuild">Build entry</button>
-            <button class="hbce-btn hbce-btn--ghost" type="button" id="btnClear">Clear</button>
-          </div>
-
-          <div class="hbce-pathbox">
-            <div class="hbce-miniNote">Default registry target:</div>
-            <code>/registry/registry.json</code>
-            <div class="hbce-miniNote">
-              This page produces a single entry object. Append it manually after review.
+            <div class="hbce-rowbtn">
+              <button class="hbce-btn hbce-btn--primary" type="button" id="btnBuild">Build entry</button>
+              <button class="hbce-btn" type="button" id="btnClear">Clear</button>
             </div>
+
+            <div class="hbce-pathbox">
+              <div class="hbce-mini-note">Default registry target:</div>
+              <code>/registry/registry.json</code>
+              <div class="hbce-mini-note">
+                This page produces a single entry object. Append it manually after review.
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="hbce-card" id="pubTerminal">
+              <div class="hbce-mono">PUBLISH TERMINAL</div>
+
+              <div class="hbce-grid hbce-grid--2" style="margin-top:12px;">
+                <div class="hbce-muted">required</div>
+                <div class="hbce-mono">entity_type, subject_label, payload_sha256, timestamp, status</div>
+
+                <div class="hbce-muted">public</div>
+                <div class="hbce-mono">minimized metadata + hash commitment</div>
+
+                <div class="hbce-muted">mode</div>
+                <div class="hbce-mono">manual append-only</div>
+
+                <div class="hbce-muted">result</div>
+                <div class="hbce-mono" id="pubResult">WARN</div>
+              </div>
+            </div>
+
+            <div class="hbce-card" style="margin-top:14px;">
+              <div class="hbce-mono">ENTRY OUTPUT SUMMARY</div>
+
+              <div class="hbce-grid hbce-grid--2" style="margin-top:12px;">
+                <div class="hbce-muted">payload_sha256</div>
+                <div class="hbce-mono" id="outSha">—</div>
+
+                <div class="hbce-muted">timestamp</div>
+                <div class="hbce-mono" id="outTs">—</div>
+
+                <div class="hbce-muted">subject_label</div>
+                <div class="hbce-mono" id="outSubject">—</div>
+              </div>
+            </div>
+
+            <div class="hbce-card" style="margin-top:14px;">
+              <div class="hbce-mono">REGISTRY ENTRY JSON</div>
+              <p class="hbce-muted">
+                Append this object manually to <code>registry/registry.json</code> after review.
+                For duplicate checks, use the append tool before committing.
+              </p>
+
+              <div class="hbce-card" style="background:rgba(0,0,0,.18);margin-top:12px;">
+                <pre class="hbce-mono" id="entryJson">—</pre>
+              </div>
+
+              <div class="hbce-rowbtn">
+                <button class="hbce-btn" type="button" id="btnCopy">Copy entry JSON</button>
+                <button class="hbce-btn" type="button" id="btnDownload">Download entry JSON</button>
+              </div>
+            </div>
+
+            <div class="hbce-card" style="margin-top:14px;">
+              <div class="hbce-mono">PUBLIC DATA MINIMIZATION</div>
+              <p class="hbce-muted">
+                This tool rejects public fields that may expose personal data or secrets.
+                Private evidence must remain outside the public registry.
+              </p>
+
+              <ul class="hbce-warning-list">
+                <li>No real personal identifiers.</li>
+                <li>No raw personal identifiers.</li>
+                <li>No identity documents.</li>
+                <li>No credentials, secrets, tokens, passwords, or private keys.</li>
+                <li>No raw AI prompts or raw AI outputs.</li>
+                <li>No production logs, client files, or sensitive operational payloads.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <footer class="hbce-footer">
+        <div class="hbce-footer__row">
+          <div class="hbce-muted">
+            <span class="hbce-mono">REGISTRY PUBLISH</span> — public R&D registry proof entry generator
+          </div>
+          <div class="hbce-footer__links">
+            <a href="/hermeticum-bce-platform/">Home</a>
+            <a href="/hermeticum-bce-platform/registry/">Registry</a>
+            <a href="/hermeticum-bce-platform/verify/">Verify</a>
+            <a href="/hermeticum-bce-platform/claims/">Claims</a>
           </div>
         </div>
+      </footer>
 
-        <div>
-          <div class="hbce-terminal" data-status="warn" id="pubTerminal">
-            <div class="hbce-terminal__bar">
-              <div class="hbce-terminal__title">Publish terminal</div>
-              <div class="hbce-terminal__status" id="terminalStatus">WARN</div>
-            </div>
-            <div class="hbce-terminal__body">
-              <div class="hbce-terminal__line">
-                <div class="hbce-terminal__k">required</div>
-                <div class="hbce-terminal__v">entity_type, subject_label, payload_sha256, timestamp, status</div>
-              </div>
-              <div class="hbce-terminal__line">
-                <div class="hbce-terminal__k">public</div>
-                <div class="hbce-terminal__v">minimized metadata + hash commitment</div>
-              </div>
-              <div class="hbce-terminal__line">
-                <div class="hbce-terminal__k">mode</div>
-                <div class="hbce-terminal__v">manual append-only</div>
-              </div>
-              <div class="hbce-terminal__line">
-                <div class="hbce-terminal__k">result</div>
-                <div class="hbce-terminal__v" id="pubResult">WARN</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="hbce-evidence" style="margin-top:14px;">
-            <div class="hbce-evidence__top">
-              <h3 class="hbce-evidence__h">Entry output summary</h3>
-              <span class="hbce-mini">append-only</span>
-            </div>
-
-            <div class="hbce-evidence__row" style="margin-bottom:10px;">
-              <div class="hbce-evidence__label">payload_sha256</div>
-              <div class="hbce-evidence__value is-hash" id="outSha">—</div>
-              <button class="hbce-copy" type="button" data-hbce-copy="#outSha">COPY</button>
-            </div>
-
-            <div class="hbce-evidence__row" style="margin-bottom:10px;">
-              <div class="hbce-evidence__label">timestamp</div>
-              <div class="hbce-evidence__value" id="outTs">—</div>
-              <button class="hbce-copy" type="button" data-hbce-copy="#outTs">COPY</button>
-            </div>
-
-            <div class="hbce-evidence__row">
-              <div class="hbce-evidence__label">subject_label</div>
-              <div class="hbce-evidence__value" id="outSubject">—</div>
-              <button class="hbce-copy" type="button" data-hbce-copy="#outSubject">COPY</button>
-            </div>
-          </div>
-
-          <div class="hbce-section" style="margin-top:14px;">
-            <h2>Registry entry JSON</h2>
-            <p>
-              Append this object manually to <code>registry/registry.json</code> after review.
-              For duplicate checks, use the append tool before committing.
-            </p>
-
-            <div class="hbce-code" id="entryJson">—</div>
-
-            <div class="hbce-formrow">
-              <button class="hbce-btn hbce-btn--ghost" type="button" data-hbce-copy="#entryJson">COPY ENTRY JSON</button>
-              <button class="hbce-btn hbce-btn--ghost" type="button" id="btnDownload">DOWNLOAD ENTRY JSON</button>
-            </div>
-          </div>
-
-          <div class="hbce-callout hbce-callout--warn">
-            <div class="hbce-callout__h">Public data minimization</div>
-            <p style="margin:0;color:rgba(230,237,246,.72);font-size:13.5px;">
-              This tool rejects public fields that may expose personal data or secrets.
-              Private evidence must remain outside the public registry.
-            </p>
-            <ul class="hbce-warning-list">
-              <li>No real names.</li>
-              <li>No raw personal identifiers.</li>
-              <li>No identity documents.</li>
-              <li>No credentials, secrets, tokens, passwords, or private keys.</li>
-              <li>No production logs or sensitive operational payloads.</li>
-            </ul>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-  </main>
-
-  <div data-hbce="footer"></div>
+    </main>
+  </div>
 
   <script>
-    (function(){
+    (() => {
       "use strict";
 
-      const term = document.getElementById("pubTerminal");
-      const terminalStatus = document.getElementById("terminalStatus");
       const pubResult = document.getElementById("pubResult");
 
       const entityType = document.getElementById("entityType");
@@ -297,15 +338,16 @@
 
       const btnBuild = document.getElementById("btnBuild");
       const btnClear = document.getElementById("btnClear");
+      const btnCopy = document.getElementById("btnCopy");
       const btnDownload = document.getElementById("btnDownload");
 
       const forbiddenPublicKeys = [
-        "name",
-        "nickname",
         "raw_identifier",
         "identity_document",
+        "regulated_identity_document",
         "private_evidence",
         "personal_payload",
+        "personal_data",
         "api_key",
         "token",
         "password",
@@ -314,12 +356,21 @@
         "credential",
         "production_log",
         "private_communication",
-        "sensitive_operational_payload"
+        "sensitive_operational_payload",
+        "confidential_payload",
+        "financial_asset",
+        "internal_endpoint",
+        "private_ip",
+        "internal_hostname",
+        "admin_url",
+        "database_url",
+        "ssh_key",
+        "raw_prompt",
+        "raw_output",
+        "client_file"
       ];
 
       function setTerm(kind, message){
-        term.setAttribute("data-status", kind);
-        terminalStatus.textContent = kind.toUpperCase();
         pubResult.textContent = message || kind.toUpperCase();
       }
 
@@ -336,16 +387,20 @@
       }
 
       function isTime(value){
-        const v = clean(value);
-        if (!v) return false;
-        const parsed = Date.parse(v);
+        const valueClean = clean(value);
+        if (!valueClean) return false;
+        const parsed = Date.parse(valueClean);
         return Number.isFinite(parsed);
       }
 
-      function containsForbiddenText(value){
-        const v = clean(value).toLowerCase();
+      function isPublicLabel(value){
+        return /^[A-Z0-9_\-:.]{3,160}$/.test(clean(value));
+      }
 
-        if (!v) return false;
+      function containsForbiddenText(value){
+        const normalized = clean(value).toLowerCase();
+
+        if (!normalized) return false;
 
         const suspiciousPatterns = [
           "@",
@@ -353,23 +408,40 @@
           "tax code",
           "passport",
           "identity card",
+          "document number",
           "password",
           "private key",
           "api key",
           "token",
           "secret",
           "-----begin",
-          "-----end"
+          "-----end",
+          "raw_prompt",
+          "raw_output",
+          "client_file",
+          "personal_data",
+          "private_evidence"
         ];
 
-        return suspiciousPatterns.some(pattern => v.includes(pattern));
+        return suspiciousPatterns.some((pattern) => normalized.includes(pattern));
       }
 
-      function hasForbiddenField(obj){
-        if (!obj || typeof obj !== "object") return null;
+      function hasForbiddenField(object){
+        if (!object || typeof object !== "object") return null;
 
-        for (const key of Object.keys(obj)) {
+        if (Array.isArray(object)) {
+          for (const item of object) {
+            const found = hasForbiddenField(item);
+            if (found) return found;
+          }
+          return null;
+        }
+
+        for (const key of Object.keys(object)) {
           if (forbiddenPublicKeys.includes(key)) return key;
+
+          const found = hasForbiddenField(object[key]);
+          if (found) return found;
         }
 
         return null;
@@ -381,7 +453,8 @@
           subject_label: clean(subjectLabel.value),
           payload_sha256: clean(payload.value).toLowerCase(),
           timestamp: clean(timestamp.value),
-          status: clean(status.value)
+          status: clean(status.value),
+          public_payload_policy: "HASH_ONLY"
         };
 
         const scope = clean(recordScope.value);
@@ -401,10 +474,15 @@
 
         if (!hasText(entry.entity_type)) return "MISSING_ENTITY_TYPE";
         if (!hasText(entry.subject_label)) return "MISSING_SUBJECT_LABEL";
+        if (!isPublicLabel(entry.subject_label)) return "INVALID_SUBJECT_LABEL";
         if (!isSha256Lower(entry.payload_sha256)) return "INVALID_PAYLOAD_SHA256";
         if (!isTime(entry.timestamp)) return "INVALID_TIMESTAMP";
-        if (!["ACTIVE", "SUSPENDED", "REVOKED"].includes(entry.status)) return "INVALID_STATUS";
 
+        if (!["ACTIVE", "SUSPENDED", "REVOKED", "RND_ONLY", "RETAINED"].includes(entry.status)) {
+          return "INVALID_STATUS";
+        }
+
+        if (entry.record_scope && !isPublicLabel(entry.record_scope)) return "INVALID_RECORD_SCOPE";
         if (containsForbiddenText(entry.subject_label)) return "SUBJECT_LABEL_CONTAINS_FORBIDDEN_OR_SENSITIVE_TEXT";
         if (containsForbiddenText(entry.record_scope)) return "RECORD_SCOPE_CONTAINS_FORBIDDEN_OR_SENSITIVE_TEXT";
         if (containsForbiddenText(entry.note)) return "NOTE_CONTAINS_FORBIDDEN_OR_SENSITIVE_TEXT";
@@ -454,7 +532,7 @@
         recordScope.value = "";
         payload.value = "";
         timestamp.value = "";
-        status.value = "ACTIVE";
+        status.value = "RND_ONLY";
         note.value = "";
 
         outSha.textContent = "—";
@@ -463,6 +541,19 @@
         entryJson.textContent = "—";
 
         setTerm("warn", "WARN");
+      }
+
+      async function copyEntry(){
+        const text = entryJson.textContent || "";
+        if (!hasText(text) || text.trim() === "—") return;
+
+        try {
+          JSON.parse(text);
+          await navigator.clipboard.writeText(text);
+          setTerm("pass", "COPIED");
+        } catch {
+          setTerm("fail", "COPY_UNAVAILABLE");
+        }
       }
 
       function download(){
@@ -480,7 +571,9 @@
 
         const blob = new Blob([text], { type: "application/json" });
         const anchor = document.createElement("a");
-        anchor.href = URL.createObjectURL(blob);
+        const url = URL.createObjectURL(blob);
+
+        anchor.href = url;
 
         const safeLabel = clean(subjectLabel.value || "entry")
           .replaceAll(/[^a-z0-9_-]+/gi, "_")
@@ -491,11 +584,12 @@
         document.body.appendChild(anchor);
         anchor.click();
         anchor.remove();
-        URL.revokeObjectURL(anchor.href);
+        URL.revokeObjectURL(url);
       }
 
       btnBuild.addEventListener("click", build);
       btnClear.addEventListener("click", clearAll);
+      btnCopy.addEventListener("click", copyEntry);
       btnDownload.addEventListener("click", download);
 
       setTerm("warn", "WARN");
