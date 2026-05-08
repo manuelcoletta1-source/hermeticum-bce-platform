@@ -1,37 +1,45 @@
 {
   "proto": "HBCE-CORE-v3",
-  "kind": "EU_OPERATIONAL_ROOT",
+  "kind": "HBCE_ROOT_RND_REFERENCE",
   "issuer": "HERMETICUM B.C.E. S.r.l.",
-  "jurisdiction": "EU",
-  "mode": "PERMISSIONLESS",
+  "jurisdiction": "EU_REFERENCE_FRAMEWORK",
+  "mode": "RND_REFERENCE",
+  "status": "RND_ACTIVE",
+  "primary_scope": "MATRIX_AI_AUDIT_TRAIL_MVP",
+  "public_position": "This root file is an R&D infrastructure reference. It is not a public authority registry, not a regulated certification system, not an eIDAS qualified trust service, not a custodial identity service, not a financial service, and not a production compliance framework by itself.",
   "policy": [
-    "UE_FIRST",
+    "EU_FIRST",
     "AUDIT_FIRST",
     "FAIL_CLOSED",
     "HASH_ONLY",
     "APPEND_ONLY",
-    "NO_IDENTITY_CUSTODY"
+    "GDPR_MIN",
+    "NO_PUBLIC_DATA_CUSTODY",
+    "NO_PRIVATE_KEY_CUSTODY",
+    "NO_FINANCIAL_CUSTODY",
+    "NO_REGULATED_CERTIFICATION_CLAIM",
+    "NO_PUBLIC_AUTHORITY_CLAIM"
   ],
   "roots": {
-    "human": {
+    "human_reference": {
       "id": "IPR-3",
-      "nickname": "Manuel Coletta",
-      "role": "ORIGIN_OPERATOR",
-      "status": "ACTIVE"
+      "public_label": "HBCE_HUMAN_ORIGIN_REFERENCE",
+      "role": "ORIGIN_REFERENCE",
+      "status": "RND_REFERENCE"
     },
-    "ai": {
+    "ai_reference": {
       "id": "IPR-AI-0001",
-      "nickname": "JOKER-C2",
-      "role": "C2_CORE",
-      "status": "ACTIVE"
+      "public_label": "AI_JOKER_C2_REFERENCE",
+      "role": "RND_COORDINATION_REFERENCE",
+      "status": "RND_REFERENCE"
     }
   },
   "network": {
-    "type": "EU_OPERATOR_NETWORK",
-    "entry": "IPR_BASE_VALID",
-    "operator": "VALID_OPERATOR_LICENSE",
-    "topology": "FEDERATED",
-    "rule": "APPEND_ONLY_CHAIN"
+    "type": "HBCE_RND_REFERENCE_NETWORK",
+    "entry_rule": "PUBLIC_HASH_REFERENCE",
+    "operator_rule": "OPERATOR_REFERENCE_ONLY",
+    "topology": "REFERENCE_FEDERATED_MODEL",
+    "record_rule": "APPEND_ONLY_REFERENCE_CHAIN"
   },
   "anchors": {
     "ipfs": "bafkreidhv73vqrxoweog33ls3rnwrgyicio234pcuks6mnep76yh56pj5q",
@@ -39,16 +47,26 @@
     "evm": "0xf65eb314a1edd392fc15fcd9c65d22060ca39cbac04fcfcb48b978062500a7eff"
   },
   "verify": {
-    "rule": "REGISTRY_MATCH && ROOT_VALID ? EXECUTE : BLOCK",
+    "rule": "REGISTRY_REFERENCE_PRESENT && ROOT_REFERENCE_CONSISTENT ? ALLOW_RND_REFERENCE : BLOCK_OR_NON_OPERATIONAL",
     "registry": "/hermeticum-bce-platform/registry/registry.json",
     "ecosystem": "/hermeticum-bce-platform/ECOSYSTEM_ROOT.json"
   },
   "capabilities": [
-    "ISSUE_BASE_IPR",
-    "ISSUE_OPERATOR",
-    "VALIDATE_NETWORK"
+    "REFERENCE_IPR_RECORDS",
+    "REFERENCE_OPERATOR_RECORDS",
+    "REFERENCE_AUDIT_TRAIL",
+    "REFERENCE_REGISTRY_V3",
+    "REFERENCE_FAIL_CLOSED_VERIFICATION"
   ],
+  "boundaries": {
+    "not_a_public_authority_registry": true,
+    "not_a_regulated_certification": true,
+    "not_an_eidas_qualified_trust_service": true,
+    "not_a_custodial_identity_service": true,
+    "not_a_financial_or_banking_service": true,
+    "not_a_production_compliance_framework_by_itself": true,
+    "requires_independent_legal_security_privacy_and_compliance_review_before_production_use": true
+  },
   "mutability": "APPEND_ONLY",
-  "status": "ACTIVE",
-  "epoch": "EU_NETWORK_GENESIS"
+  "epoch": "HBCE_RND_ROOT_REFERENCE"
 }
