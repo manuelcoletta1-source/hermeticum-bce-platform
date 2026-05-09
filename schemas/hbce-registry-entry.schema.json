@@ -1,16 +1,22 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/schemas/hbce-evt.schema.json",
-  "title": "HBCE EVT — Operational Update v1",
-  "description": "Canonical schema for HBCE EVT operational update records. EVT records are controlled operational preimages used for continuity, audit, anchoring, and public proof commitment generation. Public registries should publish only minimized hash commitments, not raw sensitive or private EVT payloads.",
+  "title": "HBCE EVT — Operational Update v2",
+  "description": "Canonical schema for HBCE EVT operational update records. EVT records are controlled operational preimages used for continuity, audit, anchoring and public proof commitment generation. Public registries must publish only minimized hash-oriented commitments and must not expose tax codes, document numbers, identity documents, private evidence, biometric material or sensitive operational payloads.",
   "type": "object",
   "additionalProperties": false,
+  "allOf": [
+    {
+      "$ref": "#/$defs/noForbiddenKeys"
+    }
+  ],
   "required": [
     "evt",
     "prev",
     "t",
     "entity",
     "ipr",
+    "verification_level",
     "state",
     "baseline",
     "kind",
@@ -20,7 +26,9 @@
     "core",
     "anchors",
     "upstream",
-    "continuity"
+    "continuity",
+    "public_payload_policy",
+    "boundary"
   ],
   "properties": {
     "evt": {
@@ -30,8 +38,8 @@
     },
     "prev": {
       "type": "string",
-      "pattern": "^EVT-[0-9]{4,}$",
-      "description": "Previous event identifier in the continuity chain."
+      "pattern": "^(GENESIS|EVT-[0-9]{4,})$",
+      "description": "Previous event identifier in the continuity chain. GENESIS is allowed only for the first event."
     },
     "t": {
       "type": "string",
@@ -50,7 +58,18 @@
       "minLength": 3,
       "maxLength": 96,
       "pattern": "^[A-Z0-9_\\-:.]+$",
-      "description": "Operational IPR label."
+      "description": "Operational IPR label. Must not contain raw identity data."
+    },
+    "verification_level": {
+      "type": "string",
+      "enum": [
+        "IPR_BASE_NOT_VERIFIED",
+        "IPR_VERIFIED_PRIVATE_CHECK",
+        "IPR_PROFESSIONAL_PILOT",
+        "RND_ONLY",
+        "NOT_APPLICABLE"
+      ],
+      "description": "Public minimized verification-level label. This does not create legal identity, regulated KYC/AML compliance, eIDAS qualification, public authority approval or certification by itself."
     },
     "state": {
       "type": "string",
@@ -60,7 +79,9 @@
         "INACTIVE",
         "SUSPENDED",
         "REVOKED",
-        "EXPERIMENTAL"
+        "EXPERIMENTAL",
+        "PRIVATE_REVIEW_REQUIRED",
+        "FAIL_CLOSED"
       ]
     },
     "baseline": {
@@ -75,7 +96,11 @@
         "AUDIT_EVENT",
         "CONTINUITY_CHECKPOINT",
         "ANCHOR_EVENT",
-        "STATUS_UPDATE"
+        "STATUS_UPDATE",
+        "IPR_BASE_EVENT",
+        "IPR_VERIFIED_PRIVATE_CHECK_EVENT",
+        "IPR_PROFESSIONAL_PILOT_EVENT",
+        "IPR_AI_AUDIT_TRAIL_EVENT"
       ]
     },
     "cycle": {
@@ -86,7 +111,7 @@
     },
     "loc": {
       "type": "array",
-      "description": "Coarse public location labels only. Do not include street address, exact coordinates, or sensitive location data.",
+      "description": "Coarse public location labels only. Do not include street address, exact coordinates or sensitive location data.",
       "minItems": 1,
       "maxItems": 4,
       "items": {
@@ -105,6 +130,11 @@
       "minLength": 3,
       "maxLength": 96,
       "pattern": "^[A-Z0-9_\\-:.]+$"
+    },
+    "public_payload_policy": {
+      "type": "string",
+      "const": "HASH_ORIENTED_REFERENCE_ONLY",
+      "description": "Public payload policy. EVT public references must be hash-oriented and minimized."
     },
     "anchors": {
       "type": "object",
@@ -149,7 +179,7 @@
       "properties": {
         "root_evt": {
           "type": "string",
-          "pattern": "^EVT-[0-9]{4,}$"
+          "pattern": "^(GENESIS|EVT-[0-9]{4,})$"
         },
         "root_t": {
           "type": "string",
@@ -190,7 +220,9 @@
             "EXPERIMENTAL",
             "DERIVED",
             "AUDIT",
-            "PUBLIC_REFERENCE"
+            "PUBLIC_REFERENCE",
+            "PRIVATE_VERIFICATION_REFERENCE",
+            "IPR_VERIFIED_REFERENCE"
           ]
         },
         "elapsed_months": {
@@ -215,80 +247,261 @@
           "maxLength": 1024
         }
       }
+    },
+    "proof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "proof_kind",
+        "payload_sha256",
+        "proof_scope"
+      ],
+      "properties": {
+        "proof_kind": {
+          "type": "string",
+          "enum": [
+            "IPR_BASE_PUBLIC_REFERENCE",
+            "IPR_VERIFIED_PUBLIC_REFERENCE",
+            "IPR_PROFESSIONAL_PUBLIC_REFERENCE",
+            "IPR_AI_AUDIT_TRAIL_REFERENCE",
+            "EVT_REFERENCE",
+            "OPC_REFERENCE"
+          ]
+        },
+        "payload_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "proof_scope": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 160
+        },
+        "registry_visibility": {
+          "type": "string",
+          "enum": [
+            "PUBLIC_MINIMIZED",
+            "PRIVATE_ONLY",
+            "NOT_PUBLISHED"
+          ]
+        },
+        "evt_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^(EVT-[0-9]{4,}|EVT-[A-Z0-9\\-]{4,96})$"
+        },
+        "opc_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 3,
+          "maxLength": 96,
+          "pattern": "^[A-Z0-9_\\-:.]+$"
+        }
+      }
+    },
+    "private_verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "private_layer_only",
+        "public_evidence_allowed",
+        "allowed_private_evidence_categories",
+        "public_statement"
+      ],
+      "properties": {
+        "private_layer_only": {
+          "type": "boolean",
+          "const": true
+        },
+        "public_evidence_allowed": {
+          "type": "string",
+          "const": "MINIMIZED_PROOF_REFERENCE_ONLY"
+        },
+        "allowed_private_evidence_categories": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "TAX_CODE",
+              "IDENTITY_CARD_OR_CIE",
+              "PASSPORT",
+              "DRIVING_LICENSE"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "public_statement": {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 360,
+          "description": "Human-readable statement explaining that private identity evidence remains outside the public layer."
+        }
+      }
+    },
+    "boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope",
+        "private_verification_separation",
+        "public_proof_minimization",
+        "no_public_data_custody",
+        "no_public_tax_code_custody",
+        "no_public_document_number_custody",
+        "no_public_identity_document_custody",
+        "no_private_key_custody",
+        "no_regulated_certification_claim",
+        "no_public_authority_claim",
+        "no_eidas_qualification_claim",
+        "no_kyc_aml_provider_claim",
+        "fail_closed"
+      ],
+      "properties": {
+        "scope": {
+          "type": "string",
+          "enum": [
+            "RND_REFERENCE",
+            "IPR_BASE_RND_REFERENCE",
+            "IPR_VERIFIED_PRIVATE_CHECK_REFERENCE",
+            "IPR_AI_AUDIT_TRAIL_REFERENCE",
+            "CONTINUITY_CHECKPOINT_REFERENCE"
+          ]
+        },
+        "private_verification_separation": {
+          "type": "boolean",
+          "const": true
+        },
+        "public_proof_minimization": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_public_data_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_public_tax_code_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_public_document_number_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_public_identity_document_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_private_key_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_regulated_certification_claim": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_public_authority_claim": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_eidas_qualification_claim": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_kyc_aml_provider_claim": {
+          "type": "boolean",
+          "const": true
+        },
+        "fail_closed": {
+          "type": "boolean",
+          "const": true
+        }
+      }
     }
   },
-  "not": {
-    "anyOf": [
-      {
-        "required": [
-          "api_key"
-        ]
+  "$defs": {
+    "forbiddenPublicFieldNames": {
+      "enum": [
+        "name",
+        "nickname",
+        "email",
+        "phone",
+        "address",
+        "birth_date",
+        "date_of_birth",
+        "street_address",
+        "precise_location",
+        "territory",
+        "raw_identifier",
+        "tax_code",
+        "fiscal_code",
+        "codice_fiscale",
+        "document_number",
+        "identity_document_number",
+        "identity_card_number",
+        "cie_number",
+        "passport_number",
+        "driving_license_number",
+        "identity_document",
+        "regulated_identity_document",
+        "identity_document_scan",
+        "passport_scan",
+        "driving_license_scan",
+        "portrait_image",
+        "selfie",
+        "biometric_payload",
+        "private_evidence",
+        "personal_payload",
+        "personal_data",
+        "api_key",
+        "token",
+        "password",
+        "secret",
+        "private_key",
+        "credential",
+        "production_log",
+        "private_communication",
+        "sensitive_operational_payload",
+        "financial_asset",
+        "confidential_payload",
+        "client_file",
+        "raw_prompt",
+        "raw_output",
+        "internal_endpoint",
+        "private_ip",
+        "internal_hostname",
+        "database_url",
+        "admin_url",
+        "ssh_key"
+      ]
+    },
+    "noForbiddenKeys": {
+      "if": {
+        "type": "object"
       },
-      {
-        "required": [
-          "token"
-        ]
+      "then": {
+        "propertyNames": {
+          "not": {
+            "$ref": "#/$defs/forbiddenPublicFieldNames"
+          }
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/noForbiddenKeys"
+        }
       },
-      {
-        "required": [
-          "password"
-        ]
-      },
-      {
-        "required": [
-          "secret"
-        ]
-      },
-      {
-        "required": [
-          "private_key"
-        ]
-      },
-      {
-        "required": [
-          "credential"
-        ]
-      },
-      {
-        "required": [
-          "identity_document"
-        ]
-      },
-      {
-        "required": [
-          "tax_code"
-        ]
-      },
-      {
-        "required": [
-          "fiscal_code"
-        ]
-      },
-      {
-        "required": [
-          "street_address"
-        ]
-      },
-      {
-        "required": [
-          "precise_location"
-        ]
-      },
-      {
-        "required": [
-          "production_log"
-        ]
-      },
-      {
-        "required": [
-          "private_communication"
-        ]
-      },
-      {
-        "required": [
-          "sensitive_operational_payload"
-        ]
+      "else": {
+        "if": {
+          "type": "array"
+        },
+        "then": {
+          "items": {
+            "$ref": "#/$defs/noForbiddenKeys"
+          }
+        }
       }
-    ]
+    }
   }
 }
