@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>Registry — IPR / HBCE Public R&D Proof References</title>
+  <title>Registry — IPR Verified / HBCE Public Proof References</title>
   <meta
     name="description"
-    content="Public R&D proof-reference surface for IPR, EVT and OPC evidence inside the HBCE ecosystem. Hash-oriented, minimized metadata, append-only discipline, fail-closed verification posture and no public data custody."
+    content="Public R&D proof-reference surface for IPR Base, IPR Verified, EVT and OPC evidence inside the HBCE ecosystem. Supports verification_level, minimized metadata, hash-oriented references, fail-closed verification and no public identity custody."
   />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
@@ -89,6 +89,7 @@
           <nav class="hbce-nav" aria-label="Primary">
             <a class="hbce-nav__link" href="../">Home</a>
             <a class="hbce-nav__link" href="../ipr/">IPR</a>
+            <a class="hbce-nav__link" href="../activate/">IPR Verified</a>
             <a class="hbce-nav__link" href="../create/">Create</a>
             <a class="hbce-nav__link" href="../verify/">Verify</a>
             <a class="hbce-nav__link" href="../matrix-audit-trail/">IPR Audit Trail</a>
@@ -99,18 +100,18 @@
       </header>
 
       <section class="hbce-section hbce-hero">
-        <div class="hbce-hero__kicker">REGISTRY · IPR · EVT · OPC · R&amp;D PROOF REFERENCES · FAIL-CLOSED</div>
+        <div class="hbce-hero__kicker">REGISTRY · IPR BASE · IPR VERIFIED · EVT · OPC · PUBLIC PROOF REFERENCES</div>
 
-        <h1 class="hbce-hero__title">Public R&amp;D proof-reference registry</h1>
+        <h1 class="hbce-hero__title">Public proof-reference registry</h1>
 
         <p class="hbce-hero__lead">
-          The <b>Registry</b> is the minimized public proof-reference surface for IPR-linked records,
-          EVT continuity references, OPC proof objects and audit-oriented evidence inside the HBCE ecosystem.
-          It exposes hash-oriented and metadata-minimized records for R&amp;D documentation, audit-trail review,
-          evidence-pack continuity and deterministic verification experiments.
+          The <b>Registry</b> is the minimized public proof-reference surface for IPR Base records,
+          IPR Verified proof references, EVT continuity references, OPC proof objects and audit-oriented evidence
+          inside the HBCE ecosystem.
           <br><br>
-          This registry is not a public authority registry, not a civil identity registry, not a regulated certification register,
-          not an eIDAS qualified trust service, not a custodial identity service and not a production compliance framework by itself.
+          The registry may expose <code>verification_level</code> values such as
+          <code>IPR_BASE_NOT_VERIFIED</code> or <code>IPR_VERIFIED_PRIVATE_CHECK</code>, but it must not expose
+          tax codes, document numbers, identity documents, scans, portraits, addresses, dates of birth or personal payloads.
         </p>
 
         <div class="hbce-card" style="margin-top:14px;">
@@ -118,24 +119,24 @@
 
           <p class="hbce-muted" style="max-width:96ch;">
             Public records must remain minimized. The registry may expose identifiers, timestamps,
-            event labels, node labels, status fields, hash references, EVT references, OPC references and verification metadata.
-            It must not expose private keys, credentials, internal endpoints, raw AI prompts, raw AI outputs,
-            client files, personal data, regulated identity documents, customer data, production logs,
-            confidential payloads or sensitive infrastructure topology.
+            event labels, node labels, status fields, verification level, hash references, EVT references,
+            OPC references and verification metadata. It must not expose tax codes, fiscal codes, document numbers,
+            identity documents, private keys, credentials, internal endpoints, raw AI prompts, raw AI outputs,
+            client files, personal data, customer data, production logs, confidential payloads or sensitive infrastructure topology.
           </p>
 
           <p class="hbce-muted" style="max-width:96ch;">
-            The registry supports the IPR-first product hierarchy: IPR is the base operational product,
-            IPR AI Audit Trail is the first MVP use case, HBCE is the operational ecosystem,
-            JOKER-C2 is the runtime demonstrator and MATRiX is the architectural framework.
+            IPR Verified relies on private verification. The public registry can record that a minimized proof reference exists,
+            but it cannot certify legal identity, regulated KYC / AML compliance, public authority approval,
+            eIDAS qualification or production authorization.
           </p>
 
           <div style="margin-top:14px;display:flex;gap:12px;flex-wrap:wrap">
             <a class="hbce-btn hbce-btn--primary" href="../ipr/">IPR</a>
+            <a class="hbce-btn" href="../activate/">IPR Verified</a>
             <a class="hbce-btn" href="../matrix-audit-trail/">IPR AI Audit Trail</a>
             <a class="hbce-btn" href="../protocol/">Protocol</a>
             <a class="hbce-btn" href="../verify/">Verify</a>
-            <a class="hbce-btn" href="../joker-c2/">JOKER-C2</a>
             <a class="hbce-btn" href="../claims/">Claims</a>
           </div>
         </div>
@@ -160,8 +161,8 @@
               <p class="hbce-muted" style="margin-bottom:0">
                 Canonical public viewer source: <b>ledger.json</b>.<br>
                 Supporting public registries: <b>nodes.json</b> and <b>events.json</b>.<br>
-                If the selected source is unreachable, malformed, inconsistent or non-deterministic,
-                the viewer must return <b>NON-OPERATIONAL</b>.
+                If the selected source is unreachable, malformed, inconsistent, contains forbidden fields,
+                or is non-deterministic, the viewer must return <b>NON-OPERATIONAL</b>.
               </p>
             </div>
 
@@ -219,7 +220,7 @@
               <div class="hbce-mono hbce-muted">Interpretation boundary</div>
               <p class="hbce-muted" style="margin-bottom:0">
                 A present hash means that a public proof reference exists. It does not certify legal validity,
-                civil identity, cybersecurity assurance, institutional approval, regulated compliance,
+                civil identity, regulated KYC / AML compliance, cybersecurity assurance, institutional approval,
                 public authority status or production authorization.
               </p>
             </div>
@@ -271,23 +272,27 @@
 
             <p class="hbce-muted" style="margin-top:0">
               Public identity, event or node labels may appear only when intentionally published for attribution,
-              audit readability and registry continuity. Confidential evidence, personal data, credentials,
-              private keys, raw AI prompts, raw AI outputs and non-public payloads must not be stored in the public registry.
+              audit readability and registry continuity. Tax codes, document numbers, identity documents,
+              confidential evidence, personal data, credentials, private keys, raw AI prompts, raw AI outputs
+              and non-public payloads must not be stored in the public registry.
             </p>
 
             <div class="hbce-card" style="margin-top:12px">
               <pre class="hbce-mono">PUBLIC REGISTRY RULES
 - R&D proof-reference surface only
-- hash-oriented or minimized metadata
+- supports verification_level metadata
+- allowed: IPR_BASE_NOT_VERIFIED
+- allowed: IPR_VERIFIED_PRIVATE_CHECK
+- hash-oriented or minimized metadata only
 - append-only public record discipline
+- no tax-code custody
+- no document-number custody
+- no identity-document custody
 - no private evidence custody
-- no identity documents
 - no customer data
 - no personal data payloads
 - no credentials or secrets
 - no private keys
-- no regulated identity documents
-- no client files
 - no raw AI prompts or raw AI outputs
 - no production logs
 - no sensitive infrastructure topology
@@ -302,26 +307,26 @@
           <h2>IPR evidence sequence</h2>
 
           <p class="hbce-muted" style="margin-top:0">
-            The registry supports IPR AI Audit Trail by exposing minimized public references to private or controlled audit material.
-            The preferred sequence is:
+            The registry supports IPR Base, IPR Verified and IPR AI Audit Trail by exposing minimized public references
+            to private or controlled audit material. The preferred sequence is:
           </p>
 
           <div class="hbce-card">
-            <pre class="hbce-mono">IPR_OPERATIONAL_REFERENCE
-→ DOCUMENT_HASH_RECORDED
-→ AI_ACTION_RECORDED
-→ POLICY_CHECK
-→ HUMAN_VALIDATION
+            <pre class="hbce-mono">PRIVATE_VERIFICATION_OR_IPR_BASE
+→ VERIFICATION_LEVEL
+→ IPR_OPERATIONAL_REFERENCE
+→ HASH_ORIENTED_PROOF_REFERENCE
 → EVT_EVENT
 → OPC_PROOF
-→ HASH_ORIENTED_PUBLIC_REFERENCE
+→ OPTIONAL_PUBLIC_REGISTRY_REFERENCE
 → VERIFY
 → FAIL_CLOSED_REVIEW</pre>
           </div>
 
           <p class="hbce-muted">
-            This sequence creates technical audit visibility without requiring public custody of confidential prompts,
-            outputs, review notes, evidence payloads, client files, identity documents or regulated personal data.
+            This sequence creates technical audit visibility without requiring public custody of tax codes,
+            document numbers, identity documents, confidential prompts, outputs, review notes, evidence payloads,
+            client files or regulated personal data.
           </p>
         </div>
       </section>
@@ -335,9 +340,10 @@
             <li>The registry is not a civil identity registry.</li>
             <li>The registry is not a legal certification register.</li>
             <li>The registry is not an eIDAS qualified trust service.</li>
+            <li>The registry is not a regulated KYC / AML registry.</li>
             <li>The registry does not replace SPID, CIE, EUDI Wallet, eIDAS schemes, public registries or qualified trust services.</li>
             <li>The registry does not produce automatic compliance, institutional validation or public-sector adoption.</li>
-            <li>The registry does not custody private evidence, identity documents, customer data, credentials or sensitive payloads.</li>
+            <li>The registry does not custody private evidence, tax codes, document numbers, identity documents, customer data, credentials or sensitive payloads.</li>
           </ul>
         </div>
       </section>
@@ -345,11 +351,12 @@
       <footer class="hbce-footer">
         <div class="hbce-footer__row">
           <div class="hbce-muted">
-            <span class="hbce-mono">REGISTRY</span> — IPR / EVT / OPC public R&amp;D proof-reference surface
+            <span class="hbce-mono">REGISTRY</span> — IPR Base / IPR Verified / EVT / OPC public proof-reference surface
           </div>
           <div class="hbce-footer__links">
             <a href="../">Home</a>
             <a href="../ipr/">IPR</a>
+            <a href="../activate/">IPR Verified</a>
             <a href="../protocol/">Protocol</a>
             <a href="../joker-c2/">JOKER-C2</a>
             <a href="../matrix-audit-trail/">IPR Audit Trail</a>
@@ -381,6 +388,15 @@
       "MINIMIZED_PUBLIC_METADATA"
     ]);
 
+    const ACCEPTED_VERIFICATION_LEVELS = new Set([
+      "",
+      "IPR_BASE_NOT_VERIFIED",
+      "IPR_VERIFIED_PRIVATE_CHECK",
+      "IPR_PROFESSIONAL_PILOT",
+      "RND_ONLY",
+      "NOT_APPLICABLE"
+    ]);
+
     const EXPECTED_FAILURE_MODE = "FAIL_CLOSED";
 
     const FORBIDDEN_ENTRY_FIELDS = [
@@ -396,6 +412,17 @@
       "personal_data",
       "identity_document",
       "regulated_identity_document",
+      "identity_document_number",
+      "document_number",
+      "tax_code",
+      "fiscal_code",
+      "codice_fiscale",
+      "cie_number",
+      "identity_card_number",
+      "passport_number",
+      "driving_license_number",
+      "portrait_image",
+      "biometric_payload",
       "raw_prompt",
       "raw_output",
       "client_file",
@@ -513,6 +540,17 @@
       return "";
     }
 
+    function extractVerificationLevel(entry){
+      const value =
+        entry.verification_level ||
+        entry.verificationLevel ||
+        entry.identity_verification_level ||
+        entry.level ||
+        "";
+
+      return safeText(value);
+    }
+
     function extractEntryId(entry){
       return entry.event_id ||
         entry.node_id ||
@@ -556,7 +594,7 @@
       setState("bad",
         `NON-OPERATIONAL (FAIL-CLOSED)\n` +
         `reason=${reason}\n` +
-        `required=reachable_source + registry_v3 + append_only_mode + minimized_or_hash_only_public_data + fail_closed_rules\n` +
+        `required=reachable_source + registry_v3 + append_only_mode + minimized_or_hash_only_public_data + fail_closed_rules + no_forbidden_identity_fields\n` +
         `source=${STATE.source}\n` +
         `action=fix registry source and reload`
       );
@@ -612,6 +650,11 @@
         const sha = extractSha(entry);
         if (sha && !isSha256Lower(sha)) {
           throw new Error("ENTRY_SHA256_INVALID");
+        }
+
+        const verificationLevel = extractVerificationLevel(entry);
+        if (!ACCEPTED_VERIFICATION_LEVELS.has(verificationLevel)) {
+          throw new Error("ENTRY_VERIFICATION_LEVEL_NOT_ACCEPTED");
         }
       }
 
@@ -689,6 +732,7 @@
         const id = safeText(extractEntryId(entry));
         const kind = safeText(extractEntryKind(entry));
         const status = safeText(extractEntryStatus(entry));
+        const verificationLevel = safeText(extractVerificationLevel(entry) || "NOT_APPLICABLE");
         const timestamp = safeText(entry.timestamp || entry.created_at || entry.last_update || "—");
         const description = safeText(entry.description || entry.note || "");
         const absoluteIndex = allEntries.length - index;
@@ -699,7 +743,7 @@
             <div class="hbce-mono" style="margin-top:8px;word-break:break-word">${id}</div>
             <div class="hbce-mono hbce-muted" style="margin-top:8px;word-break:break-word">${sha || "no public sha256 field in this entry"}</div>
             <div class="hbce-mono hbce-muted" style="margin-top:8px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">
-              <span>${timestamp} · status=${status}</span>
+              <span>${timestamp} · status=${status} · verification_level=${verificationLevel}</span>
               ${sha ? `<button class="hbce-btn" type="button" data-copysha="${sha}">Copy SHA</button>` : ""}
             </div>
             ${description ? `<p class="hbce-muted hbce-mini" style="margin:10px 0 0">${description}</p>` : ""}
@@ -736,9 +780,10 @@
           `REGISTRY OPERATIONAL AS R&D PROOF-REFERENCE SURFACE\n` +
           `source=${STATE.source}\n` +
           `loaded=${STATE.lastLoadedIso}\n` +
-          `policy=FAIL_CLOSED · HASH_ORIENTED_OR_MINIMIZED_METADATA · APPEND_ONLY · NO_PUBLIC_DATA_CUSTODY\n` +
+          `policy=FAIL_CLOSED · HASH_ORIENTED_OR_MINIMIZED_METADATA · APPEND_ONLY · NO_PUBLIC_IDENTITY_CUSTODY\n` +
           `canonical_viewer_source=${CANONICAL_LEDGER_FILE}\n` +
-          `boundary=not_public_authority_registry · not_civil_identity_registry · not_regulated_certification · not_eidas_qualified_trust_service`
+          `supports=verification_level · IPR_BASE_NOT_VERIFIED · IPR_VERIFIED_PRIVATE_CHECK\n` +
+          `boundary=not_public_authority_registry · not_civil_identity_registry · not_regulated_certification · not_eidas_qualified_trust_service · not_kyc_aml_provider`
         );
 
         renderStats();
@@ -774,7 +819,8 @@
           `PRESENT\n` +
           `sha256=${sha}\n` +
           `status=PUBLIC_REFERENCE_FOUND\n` +
-          `interpretation=hash_present_only_not_legal_certification\n` +
+          `verification_level=${extractVerificationLevel(hit) || "NOT_APPLICABLE"}\n` +
+          `interpretation=hash_present_only_not_identity_certification\n` +
           `entry=${prettyJSON(hit)}`;
       } else {
         el.lookupBox.textContent =
@@ -787,9 +833,9 @@
     function showFailClosedRule(){
       setState("bad",
         `FAIL-CLOSED RULE\n` +
-        `If the public registry source is unreachable, malformed, invalid, inconsistent, non-deterministic or exposes forbidden public data, the viewer must return NON-OPERATIONAL.\n` +
+        `If the public registry source is unreachable, malformed, invalid, inconsistent, non-deterministic or exposes forbidden public identity data, the viewer must return NON-OPERATIONAL.\n` +
         `No valid source → no public proof-reference → no deterministic verification claim.\n` +
-        `R&D visibility does not equal production authorization, legal certification, regulated compliance, civil identity status or public authority approval.`
+        `R&D visibility does not equal production authorization, legal certification, regulated compliance, civil identity status, KYC/AML status or public authority approval.`
       );
     }
 
