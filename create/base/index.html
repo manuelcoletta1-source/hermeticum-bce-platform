@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>Create IPR Base — HBCE R&D Local Proof Builder</title>
+  <title>Create IPR Base — R&D Technical Record Builder</title>
   <meta
     name="description"
-    content="Create IPR Base R&D local proof builder. Client-side SHA-256 commitments, hash-oriented public references, no public data custody, registry dedup check and fail-closed verification boundary."
+    content="Create IPR Base as an R&D technical record. IPR Base is not verified identity. IPR Verified requires private tax-code and valid-document verification. Public output remains hash-oriented and minimized."
   />
 
   <meta name="robots" content="index,follow" />
@@ -84,8 +84,8 @@
             <a class="hbce-nav__link" href="../../">Home</a>
             <a class="hbce-nav__link" href="../../ipr/">IPR</a>
             <a class="hbce-nav__link is-active" href="./">Create IPR Base</a>
+            <a class="hbce-nav__link" href="../../activate/">IPR Verified</a>
             <a class="hbce-nav__link" href="../../matrix-audit-trail/">IPR Audit Trail</a>
-            <a class="hbce-nav__link" href="../../protocol/">Protocol</a>
             <a class="hbce-nav__link" href="../../registry/">Registry</a>
             <a class="hbce-nav__link" href="../../verify/">Verify</a>
           </nav>
@@ -93,35 +93,50 @@
       </header>
 
       <section class="hbce-section hbce-hero">
-        <div class="hbce-hero__kicker">CREATE · IPR BASE · R&amp;D LOCAL BUILDER · HASH-ORIENTED · FAIL-CLOSED</div>
+        <div class="hbce-hero__kicker">CREATE · IPR BASE · R&amp;D TECHNICAL RECORD · NOT VERIFIED IDENTITY</div>
 
         <h1 class="hbce-hero__title">Create IPR Base</h1>
 
         <p class="hbce-hero__lead">
           This page creates a local R&amp;D IPR Base object and hash-oriented public proof references.
-          IPR Base is the starting operational record for identity-linked events, proof material,
-          evidence continuity and later verification inside the HBCE ecosystem.
+          IPR Base is a technical record for testing, proof flows, internal audit trails and controlled demonstrations.
+          It is not the verified identity profile.
           <br><br>
-          The builder runs in the browser. It does not upload private material, does not custody identity evidence,
-          does not store private keys and does not create legal identity, official issuance, public authority approval,
-          regulated certification, eIDAS qualification, qualified trust-service status or production authorization.
+          <b>IPR Verified</b> is the profile that requires a private identity-verification workflow based on tax-code
+          and valid identity-document evidence. This page does not collect tax codes, identity documents, document numbers,
+          scans, portraits or personal payloads.
         </p>
 
         <div class="hbce-card hbce-small" style="margin-top:14px;">
           <div class="hbce-mono">PUBLIC DATA RULE</div>
           <p class="hbce-muted" style="margin-bottom:0;">
             Public registry entries should contain only minimized labels and SHA-256 commitments.
-            Do not place raw personal identifiers, identity documents, credentials, secrets, private evidence,
+            Do not place tax codes, document numbers, identity documents, credentials, secrets, private evidence,
             client files, regulated identity data, production logs, private keys, private prompts, private outputs
             or confidential payloads into public proof records.
           </p>
         </div>
 
+        <div class="hbce-card hbce-small" style="margin-top:14px;">
+          <div class="hbce-mono">PROFILE DISTINCTION</div>
+          <pre class="hbce-mono">IPR Base
+→ R&amp;D technical record
+→ no verified identity claim
+
+IPR Verified
+→ private tax-code + valid-document verification
+→ public proof remains minimized
+
+IPR Professional
+→ future professional / business / audit workflow profile
+→ based on IPR Verified</pre>
+        </div>
+
         <div class="hbce-rowbtn" style="margin-top:16px">
           <a class="hbce-btn hbce-btn--primary" href="../../ipr/">Read IPR</a>
+          <a class="hbce-btn" href="../../activate/">Prepare IPR Verified</a>
           <a class="hbce-btn" href="../../registry/">Registry</a>
           <a class="hbce-btn" href="../../verify/">Verify</a>
-          <a class="hbce-btn" href="../../verify-pack/">Verify Pack</a>
           <a class="hbce-btn" href="../../claims/">Claims &amp; Non-Claims</a>
         </div>
       </section>
@@ -162,7 +177,8 @@
               <h3>Local commitment check</h3>
               <p class="hbce-muted">
                 The dedup commitment is computed locally from a private local seed.
-                The seed itself is not published and should not contain identity documents, secrets or regulated identifiers.
+                The seed itself is not published and must not contain tax codes, identity documents, document numbers,
+                secrets or regulated identifiers.
               </p>
 
               <div class="hbce-card" style="margin-top:12px">
@@ -208,8 +224,8 @@
                 <div>
                   <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Reference scope</div>
                   <select id="reference_scope" class="hbce-field">
-                    <option value="IPR_AI_AUDIT_TRAIL_MVP">IPR_AI_AUDIT_TRAIL_MVP</option>
                     <option value="IPR_BASE_RND_REFERENCE">IPR_BASE_RND_REFERENCE</option>
+                    <option value="IPR_AI_AUDIT_TRAIL_MVP">IPR_AI_AUDIT_TRAIL_MVP</option>
                     <option value="HBCE_RND_REFERENCE">HBCE_RND_REFERENCE</option>
                     <option value="REGISTRY_V3_REFERENCE">REGISTRY_V3_REFERENCE</option>
                     <option value="INTERNAL_SELF_PILOT">INTERNAL_SELF_PILOT</option>
@@ -227,7 +243,7 @@
 
                 <div style="grid-column:1 / -1">
                   <div class="hbce-mono hbce-muted" style="margin-bottom:6px;">Private local dedup seed</div>
-                  <input id="dedup_seed" class="hbce-field" placeholder="Private local seed. Do not paste identity documents, credentials, secrets or raw regulated identifiers." />
+                  <input id="dedup_seed" class="hbce-field" placeholder="Private local seed. Do not paste tax codes, identity documents, credentials, secrets or raw regulated identifiers." />
                 </div>
 
                 <div style="grid-column:1 / -1">
@@ -238,7 +254,7 @@
 
               <div class="hbce-warning hbce-small" style="margin-top:12px;">
                 Forbidden public-data patterns are blocked fail-closed:
-                secrets, tokens, passwords, private keys, credentials, raw identity documents,
+                tax codes, document numbers, secrets, tokens, passwords, private keys, credentials, identity documents,
                 personal payloads, client files, production logs, private prompts, private outputs and internal endpoints.
               </div>
             </div>
@@ -249,6 +265,7 @@
               <p class="hbce-muted">
                 The generated IPR Base release is local and owner-controlled.
                 The public proofs are hash-oriented references suitable for registry review.
+                This build does not create IPR Verified status.
               </p>
 
               <div class="hbce-rowbtn">
@@ -280,7 +297,7 @@
               <div class="hbce-rowbtn">
                 <a class="hbce-btn" href="../../registry/">Open Registry</a>
                 <a class="hbce-btn" href="../../verify/">Open Verify</a>
-                <a class="hbce-btn" href="../../joker-c2/">Open JOKER-C2</a>
+                <a class="hbce-btn" href="../../activate/">Prepare Verified IPR</a>
               </div>
             </div>
 
@@ -289,6 +306,7 @@
               <h3>Owner-controlled JSON</h3>
               <p class="hbce-muted">
                 This object is generated locally. Do not publish it if it contains private or sensitive material.
+                It is an IPR Base R&amp;D release, not a verified identity record.
               </p>
 
               <div class="hbce-card" style="margin-top:12px;background:rgba(0,0,0,.18)">
@@ -305,9 +323,9 @@
           <h2>3. Output interpretation</h2>
           <p class="hbce-muted">
             A generated proof means only that a local object produced a deterministic SHA-256 commitment.
-            A public ledger match means only that a public hash reference exists. Neither result creates legal identity,
-            official issuance, legal validity, public authority approval, regulated certification, operator qualification,
-            cybersecurity assurance, eIDAS qualification or production authorization.
+            A public ledger match means only that a public hash reference exists. Neither result creates verified identity,
+            legal identity, official issuance, legal validity, public authority approval, regulated certification,
+            operator qualification, cybersecurity assurance, eIDAS qualification or production authorization.
           </p>
 
           <div class="hbce-card" style="margin-top:12px">
@@ -317,6 +335,7 @@
 → OPTIONAL REGISTRY LOOKUP
 → PUBLIC_REFERENCE_PRESENT / NO_PUBLIC_RECORD
 → VERIFY
+→ OPTIONAL PRIVATE VERIFICATION PATH
 → FAIL-CLOSED REVIEW</pre>
           </div>
         </div>
@@ -324,14 +343,51 @@
 
       <section class="hbce-section">
         <div class="hbce-card">
-          <h2>4. Non-claims</h2>
+          <h2>4. From IPR Base to IPR Verified</h2>
+          <p class="hbce-muted">
+            IPR Base is the technical starting point. IPR Verified requires a separate private identity-verification
+            workflow based on tax-code and valid identity-document evidence.
+          </p>
+
+          <div class="hbce-card" style="margin-top:12px">
+            <pre class="hbce-mono">IPR BASE
+→ technical R&amp;D record
+
+IPR VERIFIED
+→ tax code
+→ valid identity document
+  - identity card / CIE
+  - passport
+  - driving license
+→ private evidence package
+→ minimized public proof reference</pre>
+          </div>
+
+          <p class="hbce-note">
+            Tax code, document number, document scan, portrait image, address, date of birth and personal payload
+            must never be stored in the public registry.
+          </p>
+
+          <div class="hbce-rowbtn">
+            <a class="hbce-btn hbce-btn--primary" href="../../activate/">Prepare IPR Verified</a>
+            <a class="hbce-btn" href="../../legal/">Legal boundary</a>
+            <a class="hbce-btn" href="../../privacy/">Privacy boundary</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>5. Non-claims</h2>
           <ul class="hbce-list">
+            <li>Create IPR Base does not create verified identity.</li>
             <li>Create IPR Base does not create legal identity.</li>
             <li>Create IPR Base does not create regulated certification.</li>
             <li>Create IPR Base does not create official issuance by a public authority.</li>
             <li>Create IPR Base does not create eIDAS qualification or qualified trust-service status.</li>
             <li>Create IPR Base does not replace SPID, CIE, EUDI Wallet, eIDAS schemes, public registries or qualified trust services.</li>
             <li>Create IPR Base does not authorize production use with sensitive data.</li>
+            <li>Create IPR Base does not allow tax codes, document numbers or identity documents to be stored in public proof records.</li>
             <li>Create IPR Base does not replace legal review, private evidence review, cybersecurity review or external audit.</li>
           </ul>
         </div>
@@ -342,7 +398,7 @@
           <div class="hbce-mono">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
           <div class="hbce-muted">HERMETICUM B.C.E. S.r.l.</div>
           <div class="hbce-muted" style="margin-top:8px">
-            R&amp;D reference · fail-closed · hash-oriented · append-only · EU-first · audit-first · no public data custody
+            IPR Base · R&amp;D reference · fail-closed · hash-oriented · append-only · EU-first · audit-first · no public data custody
           </div>
         </div>
       </section>
@@ -350,11 +406,12 @@
       <footer class="hbce-footer">
         <div class="hbce-footer__row">
           <div class="hbce-muted">
-            <span class="hbce-mono">CREATE IPR BASE</span> — R&amp;D local proof builder
+            <span class="hbce-mono">CREATE IPR BASE</span> — R&amp;D local proof builder, not verified identity
           </div>
           <div class="hbce-footer__links">
             <a href="../../">Home</a>
             <a href="../../ipr/">IPR</a>
+            <a href="../../activate/">IPR Verified</a>
             <a href="../../matrix-audit-trail/">IPR Audit Trail</a>
             <a href="../../registry/">Registry</a>
             <a href="../../verify/">Verify</a>
@@ -397,7 +454,15 @@
         "admin_url",
         "ssh_key",
         "raw_prompt",
-        "raw_output"
+        "raw_output",
+        "tax_code",
+        "fiscal_code",
+        "codice_fiscale",
+        "document_number",
+        "identity_card_number",
+        "cie_number",
+        "passport_number",
+        "driving_license_number"
       ];
 
       function $(id){
@@ -560,9 +625,9 @@
         }
 
         const seedMaterial = {
-          scope: "IPR_LOCAL_DEDUP_COMMITMENT",
+          scope: "IPR_BASE_LOCAL_DEDUP_COMMITMENT",
           value: seed.toUpperCase(),
-          rule: "LOCAL_ONLY_NOT_PUBLIC_PAYLOAD"
+          rule: "LOCAL_ONLY_NOT_PUBLIC_PAYLOAD_NOT_VERIFIED_IDENTITY"
         };
 
         const sha = await sha256HexFromText(stableStringify(seedMaterial));
@@ -610,6 +675,7 @@
           jurisdiction: "EU_REFERENCE_FRAMEWORK",
           mode: "RND_MVP_REFERENCE",
           status: "RND_ONLY",
+          verification_level: "IPR_BASE_NOT_VERIFIED",
           timestamp: nowISO(),
           policy: [
             "EU_FIRST",
@@ -620,6 +686,7 @@
             "GDPR_MIN",
             "NO_PUBLIC_DATA_CUSTODY",
             "NO_PRIVATE_KEY_CUSTODY",
+            "NO_VERIFIED_IDENTITY_CLAIM",
             "NO_REGULATED_CERTIFICATION_CLAIM",
             "NO_PUBLIC_AUTHORITY_CLAIM",
             "NO_EIDAS_QUALIFICATION_CLAIM"
@@ -631,10 +698,13 @@
             jurisdiction_reference: jurisdictionReference,
             local_dedup_commitment_sha256: dedupSha,
             local_note: localNote || "NO_LOCAL_NOTE_PROVIDED",
-            public_payload_policy: "HASH_ORIENTED_REFERENCE_ONLY"
+            public_payload_policy: "HASH_ORIENTED_REFERENCE_ONLY",
+            verified_identity: false,
+            private_verification_required_for_ipr_verified: true
           },
           boundary: {
             scope: "RND_MVP_REFERENCE",
+            no_verified_identity_claim: true,
             no_legal_identity_claim: true,
             no_public_data_custody: true,
             no_private_key_custody: true,
@@ -665,8 +735,9 @@
           sha256,
           timestamp: nowISO(),
           status: "RND_ONLY",
+          verification_level: "IPR_BASE_NOT_VERIFIED",
           public_payload_policy: "HASH_ORIENTED_REFERENCE_ONLY",
-          note: "Hash-oriented R&D public proof reference. This proof does not create legal identity, official issuance, legal certification, public authority approval, regulated compliance, cybersecurity assurance, eIDAS qualification, or production authorization."
+          note: "Hash-oriented R&D public proof reference for IPR Base. This proof does not create verified identity, legal identity, official issuance, legal certification, public authority approval, regulated compliance, cybersecurity assurance, eIDAS qualification, or production authorization."
         };
       }
 
@@ -717,7 +788,7 @@
           const releaseSha = await sha256HexFromText(stableStringify(releaseObject));
 
           const releaseProof = makeProof("IPR_BASE_RELEASE_SHA256", releaseSha);
-          const dedupProof = makeProof("IPR_LOCAL_DEDUP_COMMITMENT_SHA256", dedup.sha);
+          const dedupProof = makeProof("IPR_BASE_LOCAL_DEDUP_COMMITMENT_SHA256", dedup.sha);
 
           LAST_RELEASE_TEXT = releaseText;
           LAST_PROOFS_TEXT = JSON.stringify({
@@ -728,7 +799,7 @@
           setText("releaseOut", releaseText);
           setText("sha_release", releaseSha);
           setText("proofs", LAST_PROOFS_TEXT);
-          setBuildStatus("READY_IPR_BASE_RND_REFERENCE");
+          setBuildStatus("READY_IPR_BASE_RND_REFERENCE_NOT_VERIFIED");
         } catch {
           LAST_RELEASE_TEXT = "";
           LAST_PROOFS_TEXT = "";
@@ -760,7 +831,7 @@
         const anchor = document.createElement("a");
 
         anchor.href = url;
-        anchor.download = "IPR_BASE_RND_RELEASE.json";
+        anchor.download = "IPR_BASE_RND_RELEASE_NOT_VERIFIED.json";
 
         document.body.appendChild(anchor);
         anchor.click();
@@ -779,7 +850,7 @@
           $(id).value = "";
         });
 
-        $("reference_scope").value = "IPR_AI_AUDIT_TRAIL_MVP";
+        $("reference_scope").value = "IPR_BASE_RND_REFERENCE";
         $("jurisdiction_reference").value = "EU_REFERENCE_FRAMEWORK";
 
         LAST_RELEASE_TEXT = "";
