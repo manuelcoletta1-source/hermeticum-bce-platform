@@ -5,13 +5,22 @@
  * Defensive CI guard for the public HBCE registry index.
  *
  * Current boundary:
- * - MATRIX AI Audit Trail MVP.
+ * - IPR-first public proof model.
+ * - IPR AI Audit Trail MVP.
  * - R&D reference surface.
  * - Hash-only or minimized public proof records.
  * - No public data custody.
+ * - No private identity-document custody.
  * - No regulated certification claim.
  * - No public authority claim.
  * - Fail-closed validation posture.
+ *
+ * Product hierarchy:
+ * - IPR is the first operational product.
+ * - IPR AI Audit Trail is the first MVP.
+ * - HBCE is the operational governance ecosystem.
+ * - JOKER-C2 is the runtime demonstrator.
+ * - MATRIX is the wider architectural framework.
  *
  * Enforces:
  * - registry/registry.json must be valid HBCE-REGISTRY-v3.
@@ -23,11 +32,13 @@
  * - entries must not contain forbidden public fields.
  * - duplicate payload_sha256 values are blocked.
  * - future drift is blocked.
+ * - new pull-request entries must use IPR-first entity types.
  *
  * Note:
  * - This guard validates the public registry index only.
- * - It does not validate private evidence.
- * - It does not create legal validity, public authority approval, regulated compliance, or production authorization.
+ * - It does not validate private identity evidence.
+ * - It does not validate private evidence packages.
+ * - It does not create legal validity, public authority approval, regulated compliance, operator qualification, or production authorization.
  * - Public registry entries are public hash references only.
  */
 
@@ -54,7 +65,7 @@ const ACCEPTED_MODES = new Set([
 
 const FUTURE_DRIFT_MS = 10 * 60 * 1000;
 
-const ALLOWED_ENTITY_TYPES = new Set([
+const IPR_FIRST_ENTITY_TYPES = new Set([
   "PUBLIC_IDENTITY_COMMITMENT",
   "PUBLIC_OPERATOR_COMMITMENT",
   "PUBLIC_CONTINUITY_REFERENCE",
@@ -62,11 +73,43 @@ const ALLOWED_ENTITY_TYPES = new Set([
   "PUBLIC_NODE_COMMITMENT",
   "PUBLIC_EVENT_COMMITMENT",
   "HBCE_PUBLIC_PROOF",
+
+  "IPR_PUBLIC_PROOF",
+  "IPR_BASE_REFERENCE",
+  "IPR_VERIFIED_REFERENCE",
+  "IPR_PROFESSIONAL_REFERENCE",
+  "IPR_VERIFICATION_REFERENCE",
+  "IPR_PRIVATE_VERIFICATION_REFERENCE",
+  "IPR_PUBLIC_PROOF_REFERENCE",
+  "IPR_EVIDENCE_PACK_REFERENCE",
+  "IPR_VERIFICATION_RESULT_REFERENCE",
+
+  "IPR_AI_AUDIT_REFERENCE",
+  "IPR_AI_AUDIT_TRAIL_REFERENCE",
+  "IPR_POLICY_CHECK_REFERENCE",
+  "IPR_HUMAN_VALIDATION_REFERENCE",
+  "IPR_DOCUMENT_HASH_REFERENCE",
+  "IPR_GOVERNANCE_DECISION_REFERENCE",
+  "IPR_EVT_REFERENCE",
+  "IPR_OPC_REFERENCE",
+
+  "JOKER_C2_RUNTIME_REFERENCE",
+  "HBCE_GOVERNANCE_REFERENCE",
+  "HBCE_REGISTRY_REFERENCE",
+  "HBCE_VERIFY_REFERENCE"
+]);
+
+const TRANSITIONAL_LEGACY_ENTITY_TYPES = new Set([
   "MATRIX_AI_AUDIT_REFERENCE",
   "MATRIX_POLICY_CHECK_REFERENCE",
   "MATRIX_HUMAN_VALIDATION_REFERENCE",
   "MATRIX_EVIDENCE_PACK_REFERENCE",
   "MATRIX_VERIFICATION_RESULT_REFERENCE"
+]);
+
+const ALLOWED_ENTITY_TYPES = new Set([
+  ...IPR_FIRST_ENTITY_TYPES,
+  ...TRANSITIONAL_LEGACY_ENTITY_TYPES
 ]);
 
 const ALLOWED_STATUSES = new Set([
@@ -85,8 +128,17 @@ const FORBIDDEN_FIELDS = new Set([
   "raw_identifier",
   "tax_code",
   "fiscal_code",
+  "codice_fiscale",
   "identity_document",
+  "identity_document_number",
+  "document_number",
+  "passport_number",
+  "driving_license_number",
   "regulated_identity_document",
+  "identity_document_scan",
+  "portrait_image",
+  "address",
+  "date_of_birth",
   "private_evidence",
   "personal_payload",
   "personal_data",
@@ -121,6 +173,11 @@ function die(message) {
 function ok(message) {
   console.log("\n[REGISTRY-GUARD] PASS");
   console.log(message);
+}
+
+function warn(message) {
+  console.warn("\n[REGISTRY-GUARD] WARNING");
+  console.warn(message);
 }
 
 function escapeShellArg(value) {
@@ -283,6 +340,28 @@ function validateOptionalPublicLabel(value, label, index, fieldName) {
   return normalized;
 }
 
+function validateSafePublicText(value, label, index, fieldName) {
+  const normalized = clean(value);
+
+  if (!normalized) {
+    return "";
+  }
+
+  if (normalized.length > 280) {
+    die(`[${label}] entries[${index}] ${fieldName} is too long for a minimized public registry field.`);
+  }
+
+  const lower = normalized.toLowerCase();
+
+  for (const forbidden of FORBIDDEN_FIELDS) {
+    if (lower.includes(forbidden.toLowerCase())) {
+      die(`[${label}] entries[${index}] ${fieldName} appears to contain forbidden public-data terminology: ${forbidden}`);
+    }
+  }
+
+  return normalized;
+}
+
 function normalizeEntry(entry, index, label) {
   if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
     die(`[${label}] entries[${index}] must be an object.`);
@@ -303,7 +382,7 @@ function normalizeEntry(entry, index, label) {
     status: clean(entry.status),
     public_payload_policy: clean(entry.public_payload_policy),
     source_hint: clean(entry.source_hint),
-    note: clean(entry.note)
+    note: validateSafePublicText(entry.note, label, index, "note")
   };
 
   if (!ALLOWED_ENTITY_TYPES.has(normalized.entity_type)) {
@@ -356,6 +435,10 @@ function validateEvent(event, index, label) {
 
   if (!ALLOWED_STATUSES.has(clean(event.status))) {
     die(`[${label}] events[${index}] invalid status: ${clean(event.status) || "(missing)"}`);
+  }
+
+  if (event.source_hint && !/^[A-Za-z0-9_./:-]+$/.test(clean(event.source_hint))) {
+    die(`[${label}] events[${index}] source_hint contains unsafe characters.`);
   }
 
   return {
@@ -481,13 +564,41 @@ function enforceAppendedTimeNotBeforeBaseLast(baseRegistry, appendedEntries) {
   });
 }
 
+function enforceNoNewLegacyEntityTypes(appendedEntries) {
+  appendedEntries.forEach((entry, index) => {
+    if (TRANSITIONAL_LEGACY_ENTITY_TYPES.has(entry.entity_type)) {
+      die(
+        `Legacy entity_type blocked for new appended entry at appended[${index}]: ${entry.entity_type}.\n` +
+        "Use an IPR-first entity_type such as IPR_AI_AUDIT_REFERENCE, IPR_POLICY_CHECK_REFERENCE, IPR_HUMAN_VALIDATION_REFERENCE, IPR_EVIDENCE_PACK_REFERENCE, or IPR_VERIFICATION_RESULT_REFERENCE."
+      );
+    }
+  });
+}
+
+function warnExistingLegacyEntityTypes(entries) {
+  const legacy = entries
+    .filter((entry) => TRANSITIONAL_LEGACY_ENTITY_TYPES.has(entry.entity_type))
+    .map((entry) => entry.entity_type);
+
+  if (!legacy.length) {
+    return;
+  }
+
+  warn(
+    "Transitional legacy entity_type values are present in existing registry entries: " +
+    Array.from(new Set(legacy)).join(", ") +
+    ". Existing records are tolerated for append-only continuity, but new pull-request entries must use IPR-first entity types."
+  );
+}
+
 function main() {
   const eventName = process.env.GITHUB_EVENT_NAME || "";
   const isPullRequest = eventName === "pull_request";
 
   const headWorking = readWorkingJson(REG_PATH);
+  const headEntries = validateRegistry(headWorking, "HEAD");
 
-  validateRegistry(headWorking, "HEAD");
+  warnExistingLegacyEntityTypes(headEntries);
 
   if (isPullRequest) {
     const baseSha = process.env.PR_BASE_SHA;
@@ -500,13 +611,13 @@ function main() {
     const appended = enforceAppendOnly(baseRegistry, headWorking);
 
     enforceAppendedTimeNotBeforeBaseLast(baseRegistry, appended);
+    enforceNoNewLegacyEntityTypes(appended);
 
-    ok(`Append-only OK; registry v3 schema OK; R&D privacy-minimal fields OK; appended=${appended.length}.`);
+    ok(`Append-only OK; registry v3 schema OK; IPR-first R&D privacy-minimal fields OK; appended=${appended.length}.`);
     return;
   }
 
-  ok(`Registry v3 schema OK; R&D privacy-minimal fields OK; entries=${headWorking.entries.length}.`);
+  ok(`Registry v3 schema OK; IPR-first R&D privacy-minimal fields OK; entries=${headWorking.entries.length}.`);
 }
 
 main();
-
