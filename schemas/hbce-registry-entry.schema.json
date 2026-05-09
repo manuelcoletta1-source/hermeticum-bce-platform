@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/schemas/hbce-evt.schema.json",
-  "title": "HBCE EVT — Operational Update v2",
-  "description": "Canonical schema for HBCE EVT operational update records. EVT records are controlled operational preimages used for continuity, audit, anchoring and public proof commitment generation. Public registries must publish only minimized hash-oriented commitments and must not expose tax codes, document numbers, identity documents, private evidence, biometric material or sensitive operational payloads.",
+  "$id": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/schemas/hbce-registry-entry.schema.json",
+  "title": "HBCE Registry Entry — Public Proof Reference v3",
+  "description": "Privacy-minimal public registry entry schema for HBCE / IPR / IPR Verified / EVT / OPC proof references. The public registry may expose minimized proof metadata and verification_level values, but must never expose tax codes, document numbers, identity documents, scans, biometric material, private evidence, secrets or sensitive operational payloads.",
   "type": "object",
   "additionalProperties": false,
   "allOf": [
@@ -11,54 +11,88 @@
     }
   ],
   "required": [
-    "evt",
-    "prev",
-    "t",
-    "entity",
-    "ipr",
-    "verification_level",
-    "state",
-    "baseline",
+    "proto",
     "kind",
-    "cycle",
-    "loc",
-    "org",
-    "core",
-    "anchors",
-    "upstream",
-    "continuity",
+    "version",
+    "entity_type",
+    "subject_label",
+    "record_scope",
+    "verification_level",
+    "payload_sha256",
+    "timestamp",
+    "status",
     "public_payload_policy",
     "boundary"
   ],
   "properties": {
-    "evt": {
+    "proto": {
       "type": "string",
-      "pattern": "^EVT-[0-9]{4,}$",
-      "description": "Canonical event identifier."
+      "const": "HBCE-REGISTRY-v3"
     },
-    "prev": {
+    "kind": {
       "type": "string",
-      "pattern": "^(GENESIS|EVT-[0-9]{4,})$",
-      "description": "Previous event identifier in the continuity chain. GENESIS is allowed only for the first event."
+      "enum": [
+        "HBCE_PUBLIC_PROOF_RND_REFERENCE",
+        "IPR_PUBLIC_PROOF_RND_REFERENCE",
+        "IPR_BASE_PUBLIC_REFERENCE",
+        "IPR_VERIFIED_PUBLIC_REFERENCE",
+        "IPR_PROFESSIONAL_PUBLIC_REFERENCE",
+        "EVT_PUBLIC_REFERENCE",
+        "OPC_PUBLIC_REFERENCE",
+        "IPR_AI_AUDIT_TRAIL_PUBLIC_REFERENCE"
+      ]
     },
-    "t": {
+    "version": {
       "type": "string",
-      "format": "date-time",
-      "description": "Event timestamp in ISO 8601 / RFC 3339 format."
+      "const": "v3"
     },
-    "entity": {
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "IPR",
+        "IPR_BASE",
+        "IPR_VERIFIED",
+        "IPR_PROFESSIONAL",
+        "EVT",
+        "OPC",
+        "EVIDENCE_PACK",
+        "AI_AUDIT_TRAIL",
+        "NODE",
+        "OPERATOR",
+        "SYSTEM"
+      ]
+    },
+    "subject_label": {
       "type": "string",
       "minLength": 3,
       "maxLength": 128,
       "pattern": "^[A-Z0-9_\\-:.]+$",
-      "description": "Operational entity label. Public registries should use minimized labels or hash commitments where appropriate."
+      "description": "Public minimized subject label. Must not contain names, emails, phone numbers, tax codes, document numbers, identity documents or private identifiers."
     },
-    "ipr": {
-      "type": "string",
+    "operator_label": {
+      "type": [
+        "string",
+        "null"
+      ],
       "minLength": 3,
-      "maxLength": 96,
+      "maxLength": 128,
       "pattern": "^[A-Z0-9_\\-:.]+$",
-      "description": "Operational IPR label. Must not contain raw identity data."
+      "description": "Optional minimized operator label. Must not contain raw personal identifiers."
+    },
+    "record_scope": {
+      "type": "string",
+      "enum": [
+        "IPR_BASE_RND_REFERENCE",
+        "IPR_VERIFIED_PRIVATE_CHECK_REFERENCE",
+        "IPR_PROFESSIONAL_PILOT_REFERENCE",
+        "IPR_AI_AUDIT_TRAIL_MVP",
+        "EVT_CONTINUITY_REFERENCE",
+        "OPC_PROOF_REFERENCE",
+        "EVIDENCE_PACK_REFERENCE",
+        "REGISTRY_V3_REFERENCE",
+        "HBCE_RND_REFERENCE",
+        "INTERNAL_SELF_PILOT"
+      ]
     },
     "verification_level": {
       "type": "string",
@@ -69,278 +103,85 @@
         "RND_ONLY",
         "NOT_APPLICABLE"
       ],
-      "description": "Public minimized verification-level label. This does not create legal identity, regulated KYC/AML compliance, eIDAS qualification, public authority approval or certification by itself."
+      "description": "Public minimized verification-level label. It does not create legal identity, regulated KYC/AML compliance, eIDAS qualification, public authority approval or certification by itself."
     },
-    "state": {
+    "payload_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Hash-oriented proof reference. The underlying payload must remain outside the public layer if it contains private or sensitive material."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
       "type": "string",
       "enum": [
-        "LOCKED",
         "ACTIVE",
-        "INACTIVE",
+        "RND_ONLY",
+        "RETAINED",
         "SUSPENDED",
         "REVOKED",
-        "EXPERIMENTAL",
+        "SUPERSEDED",
+        "INVALID",
         "PRIVATE_REVIEW_REQUIRED",
         "FAIL_CLOSED"
       ]
     },
-    "baseline": {
-      "type": "boolean"
-    },
-    "kind": {
+    "public_payload_policy": {
       "type": "string",
-      "enum": [
-        "OPERATIONAL_UPDATE",
-        "BASELINE",
-        "REGISTRY_UPDATE",
-        "AUDIT_EVENT",
-        "CONTINUITY_CHECKPOINT",
-        "ANCHOR_EVENT",
-        "STATUS_UPDATE",
-        "IPR_BASE_EVENT",
-        "IPR_VERIFIED_PRIVATE_CHECK_EVENT",
-        "IPR_PROFESSIONAL_PILOT_EVENT",
-        "IPR_AI_AUDIT_TRAIL_EVENT"
-      ]
+      "const": "HASH_ORIENTED_REFERENCE_ONLY"
     },
-    "cycle": {
-      "type": "string",
-      "minLength": 3,
-      "maxLength": 64,
-      "pattern": "^[A-Z0-9_\\-:.]+$"
+    "evt_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^(EVT-[0-9]{4,}|EVT-[A-Z0-9\\-]{4,96})$"
     },
-    "loc": {
-      "type": "array",
-      "description": "Coarse public location labels only. Do not include street address, exact coordinates or sensitive location data.",
-      "minItems": 1,
-      "maxItems": 4,
-      "items": {
-        "type": "string",
-        "minLength": 2,
-        "maxLength": 64
-      }
-    },
-    "org": {
-      "type": "string",
-      "minLength": 2,
-      "maxLength": 160
-    },
-    "core": {
-      "type": "string",
+    "opc_id": {
+      "type": [
+        "string",
+        "null"
+      ],
       "minLength": 3,
       "maxLength": 96,
       "pattern": "^[A-Z0-9_\\-:.]+$"
     },
-    "public_payload_policy": {
-      "type": "string",
-      "const": "HASH_ORIENTED_REFERENCE_ONLY",
-      "description": "Public payload policy. EVT public references must be hash-oriented and minimized."
-    },
-    "anchors": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "monthly_hash",
-        "ipfs_cid",
-        "btc_txid",
-        "evm_tx_hash"
+    "proof_id": {
+      "type": [
+        "string",
+        "null"
       ],
-      "properties": {
-        "monthly_hash": {
-          "type": "string",
-          "minLength": 8,
-          "maxLength": 256,
-          "description": "Monthly checkpoint hash or placeholder for the canonical hash commitment."
-        },
-        "ipfs_cid": {
-          "type": "string",
-          "minLength": 8,
-          "maxLength": 256
-        },
-        "btc_txid": {
-          "type": "string",
-          "pattern": "^[a-fA-F0-9]{64}$"
-        },
-        "evm_tx_hash": {
-          "type": "string",
-          "pattern": "^0x[a-fA-F0-9]{64}$"
-        }
-      }
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[A-Z0-9_\\-:.]+$"
     },
-    "upstream": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "root_evt",
-        "root_t",
-        "proto",
-        "t0"
+    "evidence_pack_id": {
+      "type": [
+        "string",
+        "null"
       ],
-      "properties": {
-        "root_evt": {
-          "type": "string",
-          "pattern": "^(GENESIS|EVT-[0-9]{4,})$"
-        },
-        "root_t": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "proto": {
-          "type": "string",
-          "minLength": 3,
-          "maxLength": 96
-        },
-        "inrim": {
-          "type": "string",
-          "minLength": 3,
-          "maxLength": 128,
-          "description": "Optional public institutional reference label. Do not include confidential correspondence or private documents."
-        },
-        "t0": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[A-Z0-9_\\-:.]+$"
     },
-    "continuity": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "checkpoint_type",
-        "elapsed_months",
-        "origin_ipr",
-        "rule",
-        "note"
+    "source_route": {
+      "type": [
+        "string",
+        "null"
       ],
-      "properties": {
-        "checkpoint_type": {
-          "type": "string",
-          "enum": [
-            "CANONICAL",
-            "EXPERIMENTAL",
-            "DERIVED",
-            "AUDIT",
-            "PUBLIC_REFERENCE",
-            "PRIVATE_VERIFICATION_REFERENCE",
-            "IPR_VERIFIED_REFERENCE"
-          ]
-        },
-        "elapsed_months": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 1200
-        },
-        "origin_ipr": {
-          "type": "string",
-          "minLength": 3,
-          "maxLength": 96,
-          "pattern": "^[A-Z0-9_\\-:.]+$"
-        },
-        "rule": {
-          "type": "string",
-          "minLength": 3,
-          "maxLength": 512
-        },
-        "note": {
-          "type": "string",
-          "minLength": 3,
-          "maxLength": 1024
-        }
-      }
+      "minLength": 1,
+      "maxLength": 180,
+      "pattern": "^[A-Za-z0-9_./:\\-]+$"
     },
-    "proof": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "proof_kind",
-        "payload_sha256",
-        "proof_scope"
+    "note": {
+      "type": [
+        "string",
+        "null"
       ],
-      "properties": {
-        "proof_kind": {
-          "type": "string",
-          "enum": [
-            "IPR_BASE_PUBLIC_REFERENCE",
-            "IPR_VERIFIED_PUBLIC_REFERENCE",
-            "IPR_PROFESSIONAL_PUBLIC_REFERENCE",
-            "IPR_AI_AUDIT_TRAIL_REFERENCE",
-            "EVT_REFERENCE",
-            "OPC_REFERENCE"
-          ]
-        },
-        "payload_sha256": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
-        },
-        "proof_scope": {
-          "type": "string",
-          "minLength": 3,
-          "maxLength": 160
-        },
-        "registry_visibility": {
-          "type": "string",
-          "enum": [
-            "PUBLIC_MINIMIZED",
-            "PRIVATE_ONLY",
-            "NOT_PUBLISHED"
-          ]
-        },
-        "evt_id": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "pattern": "^(EVT-[0-9]{4,}|EVT-[A-Z0-9\\-]{4,96})$"
-        },
-        "opc_id": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "minLength": 3,
-          "maxLength": 96,
-          "pattern": "^[A-Z0-9_\\-:.]+$"
-        }
-      }
-    },
-    "private_verification": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "private_layer_only",
-        "public_evidence_allowed",
-        "allowed_private_evidence_categories",
-        "public_statement"
-      ],
-      "properties": {
-        "private_layer_only": {
-          "type": "boolean",
-          "const": true
-        },
-        "public_evidence_allowed": {
-          "type": "string",
-          "const": "MINIMIZED_PROOF_REFERENCE_ONLY"
-        },
-        "allowed_private_evidence_categories": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "enum": [
-              "TAX_CODE",
-              "IDENTITY_CARD_OR_CIE",
-              "PASSPORT",
-              "DRIVING_LICENSE"
-            ]
-          },
-          "uniqueItems": true
-        },
-        "public_statement": {
-          "type": "string",
-          "minLength": 20,
-          "maxLength": 360,
-          "description": "Human-readable statement explaining that private identity evidence remains outside the public layer."
-        }
-      }
+      "maxLength": 600,
+      "description": "Short public-safe note only. Must not contain personal data, tax codes, document numbers, secrets or private evidence."
     },
     "boundary": {
       "type": "object",
@@ -367,8 +208,11 @@
             "RND_REFERENCE",
             "IPR_BASE_RND_REFERENCE",
             "IPR_VERIFIED_PRIVATE_CHECK_REFERENCE",
+            "IPR_PROFESSIONAL_PILOT_REFERENCE",
             "IPR_AI_AUDIT_TRAIL_REFERENCE",
-            "CONTINUITY_CHECKPOINT_REFERENCE"
+            "EVT_REFERENCE",
+            "OPC_REFERENCE",
+            "EVIDENCE_PACK_REFERENCE"
           ]
         },
         "private_verification_separation": {
