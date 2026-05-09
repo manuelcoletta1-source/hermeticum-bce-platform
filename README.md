@@ -1,138 +1,86 @@
 # HBCE Platform
 
 **HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA**  
-**HERMETICUM B.C.E. / planned HERMETICUM B.C.E. S.r.l. operating vehicle**
+**HERMETICUM B.C.E. S.r.l.**
 
 HBCE Platform is the public R&D gateway and documentation repository for the HERMETICUM B.C.E. research infrastructure.
 
-The current product focus is **IPR — Identity Primary Record**.
-
-IPR is the operational identity, attribution and proof record designed to connect a subject, a role, an operation, an event, a hash/proof reference, responsibility and continuity into a verifiable operational trace.
-
-The first commercial MVP derived from this product focus is:
-
-**IPR AI Audit Trail**
-
-IPR AI Audit Trail demonstrates how an AI-assisted document workflow can be converted into an audit-ready technical trace through IPR attribution, document hashing, governance decisioning, human validation, EVT continuity, OPC proof generation and reportable audit output.
-
-In this repository:
-
-- **IPR** is the first operational product.
-- **HBCE** is the governance ecosystem where IPR operates.
-- **JOKER-C2** is the runtime demonstrator showing IPR, EVT, OPC and HBCE logic in action.
-- **MATRiX** is the wider architectural framework that connects human IPRs, organizational IPRs, AI IPRs, derived IPRs, robotic IPRs and system IPRs.
-- **HERMETICUM B.C.E.** is the R&D line and planned operating vehicle for developing, protecting, industrializing and commercializing the technology.
-
-The platform is designed around a strict public boundary:
+The current product focus is:
 
 ```text
-R&D reference surface
-IPR as first operational product
-IPR AI Audit Trail MVP
-MATRIX as architectural framework
-HBCE as governance ecosystem
-JOKER-C2 as runtime demonstrator
-hash-only public proof model
-append-only registry discipline
-fail-closed verification posture
-privacy-minimal public metadata
-no public data custody
-no private key custody
-no regulated certification claim
-no public authority claim
-no production compliance claim by itself
+IPR — Identity Primary Record
+
+IPR is the first operational product of the platform.
+
+IPR is a verified operational identity record designed to connect a subject, a role, an operation, an event, a proof reference, responsibility and continuity into a verifiable operational trace.
+
+In the current startup-grade model, IPR follows a private identity-verification workflow similar in structure to standard banking and fintech onboarding flows:
+
+tax code
+→ valid identity document
+→ private verification package
+→ IPR record
+→ minimized public proof reference
+→ verification / audit / EVT / OPC
+
+Accepted valid identity-document categories for a human IPR are:
+
+identity card / CIE
+passport
+driving license
+
+The public registry does not store identity documents, tax codes, document numbers, scans, personal payloads or private evidence. It stores only minimized proof references.
 
 
 ---
 
-1. Current status
-
-Current platform state:
-
-PUBLIC_ROUTE_LAYER_CLEAN
-REGISTRY_V3_ALIGNED
-IPR_PRODUCT_FOCUS_ACTIVE
-IPR_AI_AUDIT_TRAIL_MVP_ACTIVE
-MATRIX_FRAMEWORK_CONTEXT_ACTIVE
-PROTOCOL_RND_ALIGNED
-VERIFY_SURFACE_ALIGNED
-VERIFY_PACK_SURFACE_ALIGNED
-TOOLS_GUARDRAIL_ALIGNED
-OPERATOR_REGISTRY_SURFACE_CLEAN
-ROOT_REFERENCE_ALIGNED
-CREATE_BASE_RND_ALIGNED
-NO_BROKEN_INTERNAL_ROUTES
-NO_DECLASSED_ROUTE_REFERENCES
-NO_ACTIONABLE_LEGACY_TERMS
-PUBLIC_ROUTE_AUDIT_PASS_2026-05-08
-
-Reference status files:
-
-STATUS.md
-PUBLIC_ROUTE_AUDIT_PASS_2026-05-08.md
-AUDIT_MATRIX_HBCE_2026-05-06.md
-AUDIT_FINDINGS_MATRIX_HBCE_2026-05-06.md
-REGISTRY_AUDIT_MATRIX_HBCE_2026-05-06.md
-REPOSITORY_BASELINE_REVIEW_2026-05-06.md
-
-Latest public route audit result:
-
-BAD ROUTE REFERENCES: OK
-ACTIONABLE LEGACY TEXT REFERENCES: OK
-BROKEN OR UNREACHABLE INTERNAL ROUTES: OK
-AUDIT INTERPRETATION: PASS
-
-
----
-
-2. Product and architecture distinction
+1. Product hierarchy
 
 The repository uses a strict distinction between product, ecosystem, runtime and framework.
 
 IPR
 → first operational product
 
+IPR AI Audit Trail
+→ first MVP / pilot use case
+
 HBCE
-→ governance ecosystem where IPR operates
-
-EVT
-→ verifiable event layer
-
-OPC
-→ operational proof layer connected to events
+→ operational ecosystem where IPR works
 
 JOKER-C2
 → runtime demonstrator
 
-MATRIX
-→ final architectural framework connecting all IPR types
+MATRiX
+→ wider architectural framework
 
-This distinction is important because the first product to validate is not the entire MATRIX framework.
+This distinction is central.
+
+The first product to validate is not the whole MATRiX framework.
 
 The first product to validate is IPR.
 
-The first MVP is IPR AI Audit Trail.
+The first MVP derived from IPR is:
 
-MATRIX remains the architectural framework that reads and connects IPR-based operational identities across human, organizational, AI, derived, robotic and system contexts.
+IPR AI Audit Trail
 
 
 ---
 
-3. What IPR is
+2. What IPR is
 
-IPR — Identity Primary Record is an operational identity, attribution and proof record.
+IPR — Identity Primary Record — is an operational identity, attribution and proof record.
 
-It is not a simple login, account, credential, signature or static identifier.
+It is not only a login, not only an account, not only a hash, not only a document signature and not only a registry entry.
 
 An IPR connects:
 
-subject identity
+verified subject reference
 operational role
 organization or context
 operation
 document or process
 verifiable event
-hash/proof reference
+hash / proof reference
 continuity of trace
 responsibility ownership
 
@@ -147,7 +95,7 @@ with which event
 with which proof
 with which verifiable continuity
 
-A simple login says who entered a system.
+A login says who entered a system.
 
 A log says that something happened.
 
@@ -160,7 +108,82 @@ IPR connects identity, operation, event, proof, responsibility and continuity in
 
 ---
 
-4. IPR functional analogy
+3. Private verification and public proof minimization
+
+The platform separates private identity verification from public proof.
+
+The private verification layer may use:
+
+tax code
+valid identity document
+identity card / CIE
+passport
+driving license
+controlled evidence package
+
+The public proof layer must not contain:
+
+tax code
+identity document number
+passport number
+driving license number
+identity document scan
+portrait image
+address
+date of birth
+raw personal identifier
+private evidence
+customer file
+private prompt
+private AI output
+production log
+sensitive operational payload
+
+The public layer may contain minimized proof references such as:
+
+IPR reference
+verification level
+proof scope
+payload_sha256
+EVT reference
+OPC reference
+timestamp
+status
+public non-sensitive label
+
+The correct public model is:
+
+private verification
+→ private evidence package
+→ hash-oriented proof reference
+→ minimized registry entry
+→ deterministic verification
+
+
+---
+
+4. IPR profiles
+
+The current product model is organized into three profiles.
+
+IPR Base
+
+A technical R&D profile for local testing, internal proof flows, hash-oriented attribution and controlled demonstrations.
+
+IPR Verified
+
+A verified operational identity record created through private identity verification using tax-code and valid identity-document evidence.
+
+IPR Professional
+
+A future professional / business / audit workflow profile based on IPR Verified, intended for controlled B2B pilots, AI governance workflows and audit-ready evidence chains.
+
+None of these profiles creates legal identity, regulated certification, eIDAS qualification, qualified trust-service status or public authority validation by itself.
+
+
+---
+
+5. Functional analogy
 
 IPR can be understood through a functional analogy.
 
@@ -174,9 +197,9 @@ A digital credential allows access to a service.
 
 IPR is different from all of these, but it plays a similar ordering role inside a governed digital ecosystem.
 
-It identifies an operational subject inside HBCE and connects that subject not only to access, but to operations, events, proofs and responsibility.
+It identifies an operational subject inside HBCE and connects that subject not only to access, but to operations, events, proofs, responsibility and continuity.
 
-IPR does not claim to have the current legal status of a tax code, the banking function of an IBAN or the regulated effect of a qualified digital signature.
+IPR does not claim the current legal status of a tax code, the banking function of an IBAN, the official status of a public identity document or the regulated effect of a qualified digital signature.
 
 The analogy is functional: complex systems require stable reference instruments to organize identity, operations and responsibility.
 
@@ -185,76 +208,59 @@ Inside HBCE, that operational reference instrument is IPR.
 
 ---
 
-5. IPR issuance model
+6. IPR creation model
 
-The target operating model is that an IPR is issued through the HERMETICUM B.C.E. Platform.
+The target operating model is that an IPR is created through the HERMETICUM B.C.E. Platform using private verification and hash-oriented public proof.
 
 The intended flow is:
 
-subject registration
-→ minimal metadata collection
+private subject verification
+→ tax code + valid identity document
+→ private evidence package
 → IPR generation
-→ IPR registration
 → initial EVT event
-→ hash/proof reference
+→ OPC / hash / proof reference
+→ minimized public registry reference
 → HBCE operating context
 → verifiable use in controlled workflows
 
-The platform does not aim to be a simple login surface.
+The platform is not meant to be only a login surface.
 
-Its target function is to issue an operational reference that can be used inside HBCE to connect identity, role, operation, event, proof and responsibility.
-
-In the first MVP, this function is restricted to one use case:
-
-AI-assisted document workflows requiring audit-ready traceability.
+Its target function is to create an operational reference that can be used inside HBCE to connect identity, role, operation, event, proof and responsibility.
 
 
 ---
 
-6. IPR AI Audit Trail MVP
+7. IPR AI Audit Trail MVP
 
-IPR AI Audit Trail is the first MVP extracted from the IPR / HBCE / JOKER-C2 / MATRIX architecture.
+IPR AI Audit Trail is the first MVP extracted from the IPR / HBCE / JOKER-C2 / MATRiX architecture.
 
 The route currently used for this MVP is:
 
 matrix-audit-trail/
 
-The route name remains for continuity with the existing public deployment, but the product interpretation is now:
+The route name remains for deployment continuity, but the product interpretation is now:
 
 IPR AI Audit Trail
 
 The MVP demonstrates a controlled AI-assisted document workflow where the following elements are connected:
 
-operator registration
-→ IPR reference
+IPR reference
 → document upload
 → document SHA-256
-→ AI analysis
+→ AI-assisted analysis
 → governance decision
 → human validation
 → EVT event
 → OPC proof
 → audit-ready report
 
-The first pilot client is the HERMETICUM B.C.E. R&D line itself, using the system as an internal self-audit pilot before any external customer pilot.
-
-IPR AI Audit Trail does not claim:
-
-legal certification
-regulatory approval
-eIDAS qualification
-public-sector adoption
-external audit certification
-automated compliance
-legally binding evidence status by itself
-production-grade enterprise SaaS readiness
-public authority approval
-financial or banking authorization
+The first pilot client is HERMETICUM B.C.E. S.r.l. itself, using the system as an internal R&D self-audit pilot before any external customer pilot.
 
 
 ---
 
-7. JOKER-C2 runtime demonstrator
+8. JOKER-C2 runtime demonstrator
 
 JOKER-C2 is not the commercial product.
 
@@ -274,14 +280,14 @@ continuity of state
 
 JOKER-C2 is used to show the operational behavior of the architecture in a controlled R&D environment.
 
-The public runtime interface is available at:
+Public runtime:
 
 https://hbce-ai-joker-c2.vercel.app/interface
 
 
 ---
 
-8. Repository purpose
+9. Repository purpose
 
 The purpose of this repository is to document and test a public-facing infrastructure model for systems whose actions, records, identities and governance states remain reconstructible, attributable and verifiable over time.
 
@@ -300,11 +306,12 @@ fail-closed verification
 
 ---
 
-9. Primary public spine
+10. Public platform spine
 
 The current public spine is:
 
 IPR
+→ Create / Activate
 → IPR AI Audit Trail
 → Protocol
 → Registry v3
@@ -319,6 +326,8 @@ Primary public routes:
 /
 ipr/
 what-is-ipr/
+create/
+activate/
 matrix-audit-trail/
 joker-c2/
 ai-joker-c2/
@@ -330,29 +339,33 @@ tools/
 tools/link-audit/
 claims/
 legal/
+privacy/
+terms/
 security/
 compliance/
 governance/
 
-Some route names still contain MATRIX terminology for deployment continuity. Their current interpretation is governed by this README:
+Some route names still contain MATRiX terminology for deployment continuity. Their current interpretation is governed by this README:
 
-MATRIX = architectural framework
+MATRiX = architectural framework
 IPR = first operational product
 IPR AI Audit Trail = first MVP
 
 
 ---
 
-10. Governance posture
+11. Governance posture
 
 The platform follows these principles:
 
 EU_FIRST
 AUDIT_FIRST
 FAIL_CLOSED
-HASH_ONLY
+HASH_ORIENTED
 APPEND_ONLY
 GDPR_MIN
+PRIVATE_VERIFICATION
+PUBLIC_PROOF_MINIMIZATION
 NO_PUBLIC_DATA_CUSTODY
 NO_PRIVATE_KEY_CUSTODY
 NO_FINANCIAL_CUSTODY
@@ -368,24 +381,25 @@ invalid hash → INVALID
 no public match → NO_PUBLIC_RECORD
 public hash match → PUBLIC_REFERENCE_PRESENT
 
-A public match means only that a public hash reference exists.
+A public match means only that a public proof reference exists.
 
 It does not certify legal validity, cybersecurity assurance, institutional approval, regulated compliance, operator qualification or production authorization.
 
 
 ---
 
-11. Registry v3
+12. Registry v3
 
 The registry layer is aligned to the current R&D public proof boundary.
 
 Current registry model:
 
-hash-only public proof references
+hash-oriented public proof references
 manual append-only discipline
 privacy-minimal metadata
 fail-closed verification
-no public data custody
+no public identity document custody
+no public tax-code custody
 no private key custody
 no financial custody
 no regulated certification claim
@@ -412,12 +426,12 @@ registry/operators/status/
 
 The registry is not a public authority registry, not a regulated identity registry and not a qualified trust service.
 
-It is an R&D reference surface for public hash references, append-only discipline and fail-closed verification behavior.
+It is an R&D reference surface for public proof references, append-only discipline and fail-closed verification behavior.
 
 
 ---
 
-12. Protocol references
+13. Protocol references
 
 The protocol surface is maintained as an R&D reference layer.
 
@@ -425,6 +439,7 @@ Current interpretation:
 
 RND_PROTOCOL_REFERENCE_BUNDLE
 non-custodial R&D reference
+IPR-first product hierarchy
 IPR AI Audit Trail MVP boundary
 not a legal standard
 not a regulated certification scheme
@@ -447,14 +462,15 @@ protocol/ipr-event-v1.md
 
 ---
 
-13. Verification surfaces
+14. Verification surfaces
 
 The verification layer is aligned to:
 
-public hash reference lookup
+public proof reference lookup
 local SHA-256 calculation
 registry v3 source check
 fail-closed validation
+private evidence / public proof separation
 no public data custody
 no regulated certification claim
 no public authority claim
@@ -471,15 +487,15 @@ verify/baseline.md
 
 Verification result interpretation:
 
-PUBLIC_REFERENCE_PRESENT means a public hash reference exists.
-NO_PUBLIC_RECORD means no matching public hash reference was found.
+PUBLIC_REFERENCE_PRESENT means a public proof reference exists.
+NO_PUBLIC_RECORD means no matching public proof reference was found.
 NON_OPERATIONAL means the registry or verifier state is invalid.
 INVALID means the input is missing, malformed, ambiguous or rejected.
 
 
 ---
 
-14. EVT and OPC
+15. EVT and OPC
 
 EVT is the verifiable event layer.
 
@@ -516,7 +532,7 @@ The role of OPC is to move from simple event logging to operational proof.
 
 ---
 
-15. Tools and guardrails
+16. Tools and guardrails
 
 The tools layer contains R&D verification utilities.
 
@@ -544,7 +560,7 @@ link-audit pattern lists
 
 ---
 
-16. Public data policy
+17. Public data policy
 
 The public repository must not contain:
 
@@ -553,7 +569,10 @@ private keys
 passwords
 authentication tokens
 production secrets
+tax codes
+identity document numbers
 private identity documents
+identity document scans
 confidential customer data
 private communications
 production logs containing personal data
@@ -562,14 +581,14 @@ raw AI outputs containing sensitive information
 client files
 sensitive operational payloads
 
-Public verification materials should use minimal metadata and hash-only references wherever possible.
+Public verification materials should use minimal metadata and hash-oriented references wherever possible.
 
 If a verification workflow requires sensitive data, the public layer must fail closed and require private or manual review.
 
 
 ---
 
-17. Security and audit baseline
+18. Security and audit baseline
 
 This repository is subject to a defensive security and governance audit process.
 
@@ -577,7 +596,7 @@ The audit scope includes:
 
 repository-owned code and documentation
 GitHub Pages static deployment assumptions
-registry integrity and hash-only verification logic
+registry integrity and hash-oriented verification logic
 fail-closed behavior for missing or invalid registry matches
 documentation consistency
 environment, secret, dependency and deployment risk review
@@ -590,7 +609,7 @@ It does not include exploitation, malware development, credential theft, evasion
 
 ---
 
-18. Boundary and non-claims
+19. Boundary and non-claims
 
 HBCE Platform is an R&D reference platform.
 
@@ -608,13 +627,14 @@ financial or banking authorization
 production-grade enterprise SaaS readiness
 qualified trust service status
 regulated identity provider status
+regulated KYC / AML provider status
 
 Any production deployment, external customer pilot, public-sector use, regulated compliance positioning or institutional integration requires independent legal, cybersecurity, privacy, compliance and operational review.
 
 
 ---
 
-19. Public project gateway
+20. Public project gateway
 
 Public gateway:
 
@@ -651,7 +671,7 @@ https://github.com/manuelcoletta1-source
 
 ---
 
-20. License and use
+21. License and use
 
 This repository is published for research, documentation and governance experimentation.
 
@@ -662,13 +682,11 @@ No part of this repository should be used to support unauthorized access, offens
 
 ---
 
-21. Maintainer
+22. Maintainer
 
 Manuel Coletta
 HBCE Research
-HERMETICUM B.C.E. R&D
-Planned operating vehicle: HERMETICUM B.C.E. S.r.l.
+HERMETICUM B.C.E. S.r.l.
 Torino, Italy, European Union
-
 
 
