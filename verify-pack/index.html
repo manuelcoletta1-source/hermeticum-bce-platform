@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>Verify Pack — IPR Evidence Pack Verifier</title>
+  <title>Verify Pack — IPR Verified Evidence Pack Verifier</title>
   <meta
     name="description"
-    content="Client-side R&D evidence-pack verification for IPR-linked records, EVT continuity and OPC proof material inside the HBCE ecosystem. SHA-256 recomputation, hash-oriented references, audit-first posture, fail-closed validation and no public data custody."
+    content="Client-side R&D evidence-pack verification for IPR Base, IPR Verified public proof references, EVT continuity and OPC proof material. SHA-256 recomputation, verification_level support, fail-closed validation and no public identity custody."
   />
 
   <meta name="robots" content="index,follow" />
@@ -110,6 +110,7 @@
           <nav class="hbce-nav" aria-label="Primary">
             <a class="hbce-nav__link" href="../">Home</a>
             <a class="hbce-nav__link" href="../ipr/">IPR</a>
+            <a class="hbce-nav__link" href="../activate/">IPR Verified</a>
             <a class="hbce-nav__link" href="../create/">Create</a>
             <a class="hbce-nav__link" href="../matrix-audit-trail/">IPR Audit Trail</a>
             <a class="hbce-nav__link" href="../registry/">Registry</a>
@@ -120,7 +121,7 @@
       </header>
 
       <section class="hbce-section hbce-hero">
-        <div class="hbce-hero__kicker">VERIFY PACK · IPR EVIDENCE PACK · EVT · OPC · CLIENT-SIDE · FAIL-CLOSED</div>
+        <div class="hbce-hero__kicker">VERIFY PACK · IPR BASE · IPR VERIFIED · EVT · OPC · CLIENT-SIDE · FAIL-CLOSED</div>
 
         <h1 class="hbce-hero__title">IPR evidence-pack verifier</h1>
 
@@ -132,17 +133,16 @@
           and <span class="hbce-mono">CHAIN_ENTRY</span> material.
           The verifier recomputes deterministic SHA-256 commitments locally and returns PASS or FAIL.
           <br><br>
-          Verify Pack supports the IPR-first platform hierarchy: <b>IPR</b> is the base operational record,
-          <b>EVT</b> preserves event continuity, <b>OPC</b> carries operational proof,
-          <b>Registry</b> exposes minimized public references and <b>Verify</b> performs later technical checks.
+          Verify Pack supports <b>IPR Base</b>, <b>IPR Verified public proof references</b>, EVT continuity and OPC proof material.
+          It does not verify tax codes, identity documents or document numbers in the public layer.
         </p>
 
         <div class="hbce-card hbce-small" style="margin-top:14px;">
           <div class="hbce-mono">PUBLIC VERIFICATION LIMIT</div>
           <p class="hbce-muted" style="margin-bottom:0;">
-            A PASS result indicates local hash consistency for the provided evidence-pack material.
-            It does not create legal certification, eIDAS qualification, qualified trust-service status,
-            public authority validation, external audit certification, cybersecurity assurance,
+            A PASS result indicates local hash consistency for the provided technical evidence-pack material.
+            It does not create legal identity, legal certification, regulated KYC / AML compliance, eIDAS qualification,
+            qualified trust-service status, public authority validation, external audit certification, cybersecurity assurance,
             operator qualification, contractual acceptance or production compliance.
           </p>
         </div>
@@ -150,6 +150,7 @@
         <div class="hbce-rowbtn" style="margin-top:16px">
           <a class="hbce-btn hbce-btn--primary" href="#verify-pack">Verify pack</a>
           <a class="hbce-btn" href="../ipr/">IPR</a>
+          <a class="hbce-btn" href="../activate/">IPR Verified</a>
           <a class="hbce-btn" href="../verify/">Verify SHA</a>
           <a class="hbce-btn" href="../registry/">Registry</a>
           <a class="hbce-btn" href="../matrix-audit-trail/">IPR AI Audit Trail</a>
@@ -236,10 +237,52 @@
             <div style="height:10px"></div>
 
             <div class="hbce-muted">
-              Invalid JSON, missing blobs, invalid expected hash format, forbidden fields, internal reference mismatch,
-              or expected-hash mismatch produces FAIL.
+              Invalid JSON, missing blobs, invalid expected hash format, forbidden identity fields,
+              internal reference mismatch or expected-hash mismatch produces FAIL.
             </div>
           </div>
+        </div>
+      </section>
+
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>Technical evidence pack vs private identity evidence</h2>
+
+          <p class="hbce-muted" style="margin-top:0">
+            Verify Pack is for technical evidence-pack hash consistency.
+            It is not a public container for tax codes, identity documents, document numbers or civil identity payloads.
+          </p>
+
+          <div class="hbce-grid hbce-grid--2" style="margin-top:14px">
+            <div class="hbce-card">
+              <div class="hbce-mono">TECHNICAL EVIDENCE PACK</div>
+              <ul class="hbce-warning-list">
+                <li>PACK_MANIFEST</li>
+                <li>RESULT</li>
+                <li>CHAIN_ENTRY</li>
+                <li>EVT / OPC references</li>
+                <li>hash-oriented proof references</li>
+                <li>verification_level metadata</li>
+              </ul>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">PRIVATE IDENTITY EVIDENCE</div>
+              <ul class="hbce-warning-list">
+                <li>tax code</li>
+                <li>identity card / CIE</li>
+                <li>passport</li>
+                <li>driving license</li>
+                <li>document numbers</li>
+                <li>identity scans or portrait images</li>
+              </ul>
+            </div>
+          </div>
+
+          <p class="hbce-note" style="margin-top:14px">
+            Private identity evidence belongs only in a controlled private verification layer.
+            It must not be pasted into this public browser-side verifier unless a dedicated private, secure and legally reviewed environment exists.
+          </p>
         </div>
       </section>
 
@@ -248,12 +291,13 @@
           <h2>IPR evidence-pack sequence</h2>
 
           <p class="hbce-muted" style="margin-top:0">
-            Evidence-pack verification supports IPR AI Audit Trail by checking local hash consistency before a public
-            hash-oriented reference is interpreted.
+            Evidence-pack verification supports IPR Base, IPR Verified proof references and IPR AI Audit Trail by checking
+            local hash consistency before a public hash-oriented reference is interpreted.
           </p>
 
           <div class="hbce-card">
             <pre class="hbce-mono">IPR_OPERATIONAL_REFERENCE
+→ VERIFICATION_LEVEL
 → PACK_MANIFEST
 → RESULT
 → CHAIN_ENTRY
@@ -267,8 +311,9 @@
           </div>
 
           <p class="hbce-muted">
-            This sequence creates technical audit visibility without requiring public custody of confidential prompts,
-            outputs, review notes, evidence payloads, client files, identity documents or regulated personal data.
+            This sequence creates technical audit visibility without requiring public custody of tax codes,
+            document numbers, identity documents, confidential prompts, outputs, review notes, evidence payloads,
+            client files or regulated personal data.
           </p>
         </div>
       </section>
@@ -279,8 +324,8 @@
             <div class="hbce-mono">FAIL-CLOSED</div>
             <h3>Failure is explicit</h3>
             <p class="hbce-muted">
-              Missing JSON, invalid JSON, invalid expected hash, generated hash mismatch, internal reference mismatch
-              or forbidden field detection never produces validity.
+              Missing JSON, invalid JSON, invalid expected hash, generated hash mismatch, internal reference mismatch,
+              forbidden identity fields or forbidden sensitive fields never produce validity.
             </p>
           </div>
 
@@ -288,7 +333,8 @@
             <div class="hbce-mono">CLIENT-SIDE</div>
             <h3>No public payload custody</h3>
             <p class="hbce-muted">
-              This page computes local hashes only. It does not submit evidence packs to a server and does not store private evidence.
+              This page computes local hashes only. It does not submit evidence packs to a server,
+              does not store private evidence and does not publish registry entries.
             </p>
           </div>
 
@@ -296,9 +342,9 @@
             <div class="hbce-mono">R&amp;D BOUNDARY</div>
             <h3>No certification claim</h3>
             <p class="hbce-muted">
-              A PASS result is a technical hash-consistency result. It is not regulated certification,
-              public authority approval, legal authorization, cybersecurity assurance, external audit certification
-              or production compliance.
+              A PASS result is a technical hash-consistency result. It is not legal identity verification,
+              regulated KYC / AML compliance, eIDAS qualification, regulated certification, public authority approval,
+              legal authorization, cybersecurity assurance, external audit certification or production compliance.
             </p>
           </div>
         </div>
@@ -325,7 +371,10 @@
             <div class="hbce-card">
               <div class="hbce-mono">IDENTITY</div>
               <ul class="hbce-warning-list">
-                <li>No identity documents or raw personal identifiers.</li>
+                <li>No tax codes or fiscal codes.</li>
+                <li>No document numbers.</li>
+                <li>No identity documents or scans.</li>
+                <li>No passport or driving-license numbers.</li>
                 <li>No personal payloads, customer data or regulated identity material.</li>
               </ul>
             </div>
@@ -347,6 +396,8 @@
 
           <ul class="hbce-list">
             <li>Verify Pack does not create legal certification.</li>
+            <li>Verify Pack does not create legal identity verification.</li>
+            <li>Verify Pack does not create regulated KYC / AML compliance.</li>
             <li>Verify Pack does not create eIDAS qualification or qualified trust-service status.</li>
             <li>Verify Pack does not replace external audit, legal review, cybersecurity review or institutional validation.</li>
             <li>Verify Pack does not prove the truthfulness of private claims without supporting evidence.</li>
@@ -359,11 +410,12 @@
       <footer class="hbce-footer">
         <div class="hbce-footer__row">
           <div class="hbce-muted">
-            <span class="hbce-mono">VERIFY PACK</span> — IPR evidence-pack verifier for EVT / OPC continuity
+            <span class="hbce-mono">VERIFY PACK</span> — IPR Base / IPR Verified technical evidence-pack verifier
           </div>
           <div class="hbce-footer__links">
             <a href="../">Home</a>
             <a href="../ipr/">IPR</a>
+            <a href="../activate/">IPR Verified</a>
             <a href="../protocol/">Protocol</a>
             <a href="../matrix-audit-trail/">IPR Audit Trail</a>
             <a href="../registry/">Registry</a>
@@ -393,13 +445,34 @@
       "signature"
     ];
 
+    const ACCEPTED_VERIFICATION_LEVELS = new Set([
+      "",
+      "IPR_BASE_NOT_VERIFIED",
+      "IPR_VERIFIED_PRIVATE_CHECK",
+      "IPR_PROFESSIONAL_PILOT",
+      "RND_ONLY",
+      "NOT_APPLICABLE"
+    ]);
+
     const FORBIDDEN_FIELDS = [
       "name",
       "nickname",
       "territory",
       "raw_identifier",
+      "tax_code",
+      "fiscal_code",
+      "codice_fiscale",
       "identity_document",
       "regulated_identity_document",
+      "identity_document_number",
+      "document_number",
+      "identity_card_number",
+      "cie_number",
+      "passport_number",
+      "driving_license_number",
+      "identity_document_scan",
+      "portrait_image",
+      "biometric_payload",
       "private_evidence",
       "personal_payload",
       "personal_data",
@@ -623,6 +696,31 @@
       return null;
     }
 
+    function verificationLevelOf(object){
+      if (!object || typeof object !== "object") {
+        return "";
+      }
+
+      const value =
+        object.verification_level ||
+        object.verificationLevel ||
+        object.identity_verification_level ||
+        object.level ||
+        "";
+
+      return String(value || "").trim();
+    }
+
+    function validateVerificationLevel(object){
+      const level = verificationLevelOf(object);
+
+      if (!ACCEPTED_VERIFICATION_LEVELS.has(level)) {
+        return "VERIFICATION_LEVEL_NOT_ACCEPTED";
+      }
+
+      return null;
+    }
+
     function validatePackObjects(manifestObj, resultObj, chainObj){
       const objects = [
         ["PACK_MANIFEST", manifestObj],
@@ -639,6 +737,12 @@
 
         if (forbidden) {
           return "FORBIDDEN_FIELD_" + forbidden;
+        }
+
+        const verificationError = validateVerificationLevel(object);
+
+        if (verificationError) {
+          return label + "_" + verificationError;
         }
       }
 
@@ -778,7 +882,7 @@
           return;
         }
 
-        setStatus("PASS", "EVIDENCE_PACK_HASH_CONSISTENCY_OK");
+        setStatus("PASS", "TECHNICAL_EVIDENCE_PACK_HASH_CONSISTENCY_OK");
       } catch (error) {
         setStatus("FAIL", error && error.message ? error.message : String(error));
       }
