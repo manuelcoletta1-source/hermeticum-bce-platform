@@ -1,16 +1,16 @@
 # IPR AI Audit Trail — MVP Alignment Record
 
-Date: 2026-05-08  
+Date: 2026-05-09  
 Repository: hermeticum-bce-platform  
-Project: IPR / HBCE / EVT / OPC / JOKER-C2 / MATRiX  
+Project: IPR / IPR Verified / HBCE / EVT / OPC / JOKER-C2 / MATRiX  
 Maintainer: Manuel Coletta  
-Organization / R&D initiative: HBCE Research / HERMETICUM B.C.E. S.r.l.  
+Organization / R&D initiative: HBCE Research / HERMETICUM B.C.E. S.r.l.
 
 ---
 
 ## 1. Purpose
 
-This document records the commercial MVP alignment of the platform after the clarification of the relationship between HERMETICUM B.C.E. S.r.l., IPR, HBCE, EVT, OPC, JOKER-C2 and MATRiX.
+This document records the commercial MVP alignment of the platform after the clarification of the relationship between HERMETICUM B.C.E. S.r.l., IPR, IPR Verified, HBCE, EVT, OPC, JOKER-C2 and MATRiX.
 
 The purpose of this record is to connect the entrepreneurial positioning of the project with the public technical and audit-oriented repository baseline.
 
@@ -20,6 +20,9 @@ The central correction is that the first commercial MVP is no longer positioned 
 
 ```text
 IPR = base operational product
+IPR Base = technical R&D record, not verified identity
+IPR Verified = private verification with tax code + valid identity document
+IPR Professional = business / audit profile based on IPR Verified
 IPR AI Audit Trail = first MVP / pilot use case
 HBCE = operational ecosystem
 JOKER-C2 = runtime demonstrator
@@ -34,13 +37,16 @@ HERMETICUM B.C.E. S.r.l. = R&D / operating vehicle
 The project is structured around the following distinction:
 
 - IPR is the base operational product for identity-linked events, attribution, responsibility, proof and continuity.
+- IPR Base is the technical R&D record used for internal tests, proof flows and controlled demonstrations.
+- IPR Verified is the private-verification profile based on tax-code and valid identity-document evidence.
+- IPR Professional is the future business / audit workflow profile based on IPR Verified.
 - IPR AI Audit Trail is the first narrow, demonstrable and commercially testable MVP use case.
 - HBCE is the governance, policy, validation, registry, verification and control ecosystem around IPR.
 - EVT is the verifiable event traceability layer.
 - OPC is the operational proof layer connected to events, auditability and continuity.
 - JOKER-C2 is the first demonstrative runtime and prototype showing IPR in operation inside HBCE.
 - MATRiX is the broader technical, architectural and proprietary framework.
-- HERMETICUM B.C.E. S.r.l. is the intended corporate and R&D vehicle for development, protection, industrialization and commercialization.
+- HERMETICUM B.C.E. S.r.l. is the corporate and R&D vehicle for development, protection, industrialization and commercialization.
 
 The broader MATRiX cycle remains the architectural foundation.
 
@@ -48,7 +54,70 @@ The first incubatable product must be narrower, simpler, demonstrable and commer
 
 ---
 
-## 3. First commercial MVP
+## 3. IPR Verified model
+
+The professional startup-facing model is IPR Verified.
+
+IPR Verified may use private identity verification based on:
+
+```text
+tax code
+identity card / CIE
+passport
+driving license
+private evidence package
+```
+
+This material belongs only in the private verification layer.
+
+The public layer must not contain:
+
+```text
+tax code
+fiscal code
+codice fiscale
+document number
+identity document number
+identity card / CIE number
+passport number
+driving license number
+identity document
+identity scan
+portrait image
+biometric material
+private evidence
+personal data
+personal payload
+```
+
+The public layer may contain only minimized proof references such as:
+
+```text
+subject_label
+verification_level
+payload_sha256
+timestamp
+status
+evt_id
+opc_id
+audit_state
+```
+
+Supported public verification levels are:
+
+```text
+IPR_BASE_NOT_VERIFIED
+IPR_VERIFIED_PRIVATE_CHECK
+IPR_PROFESSIONAL_PILOT
+RND_ONLY
+NOT_APPLICABLE
+```
+
+A public proof reference does not certify legal identity, regulated KYC / AML compliance, eIDAS qualification, public authority validation or production authorization.
+
+---
+
+## 4. First commercial MVP
 
 The first commercial MVP is defined as:
 
@@ -65,6 +134,8 @@ IPR AI Audit Trail is an IPR-linked audit workflow for the controlled use of AI 
 The MVP records relevant AI-assisted operations and produces an audit-ready trace showing:
 
 - which IPR operational reference was attached;
+- which IPR profile is in scope, where applicable;
+- whether the record is IPR Base, IPR Verified or IPR Professional;
 - which document or workflow was processed;
 - which input hash identifies the material;
 - which AI-assisted action occurred;
@@ -81,7 +152,7 @@ It acts as a verifiable governance and evidence layer around AI-assisted work.
 
 ---
 
-## 4. First target customer
+## 5. First target customer
 
 The first target customer is not direct public administration.
 
@@ -97,7 +168,7 @@ They can integrate IPR AI Audit Trail into their consulting offer without replac
 
 ---
 
-## 5. Commercial problem
+## 6. Commercial problem
 
 The commercial problem is that organizations increasingly use AI to analyze, generate, revise, classify, summarize or support documents, but the operational trace of that use is often weak.
 
@@ -108,6 +179,7 @@ Common gaps include:
 - weak event reconstruction;
 - incomplete audit trail;
 - missing operational identity reference;
+- missing distinction between technical record and verified identity profile;
 - no verifiable sequence of AI-assisted operations;
 - difficulty proving responsible AI usage to clients, auditors, regulators or internal governance teams.
 
@@ -115,7 +187,7 @@ IPR AI Audit Trail addresses this gap by transforming AI usage from an ex-post d
 
 ---
 
-## 6. Product differentiation
+## 7. Product differentiation
 
 IPR AI Audit Trail is not positioned as:
 
@@ -126,13 +198,17 @@ IPR AI Audit Trail is not positioned as:
 - a simple logging system;
 - a model monitoring platform only;
 - a public authority registry;
-- a regulated certification service.
+- a regulated certification service;
+- a regulated KYC / AML service;
+- an eIDAS qualified trust service.
 
 Its differentiation is the construction of a verifiable operational sequence for AI-assisted work.
 
 Each relevant event can be associated with:
 
 - operational identity through IPR;
+- optional IPR profile distinction;
+- private/public evidence separation;
 - governance rules through HBCE;
 - workflow and risk classification;
 - human validation when required;
@@ -151,13 +227,15 @@ MATRiX remains the architectural framework that supports the broader roadmap.
 
 ---
 
-## 7. Current technology status
+## 8. Current technology status
 
 Current available assets include:
 
 - MATRiX architecture;
 - technical and architectural documentation;
 - IPR model for operational identity and attribution;
+- IPR Verified private-verification model;
+- verification-level registry semantics;
 - EVT model for verifiable event records;
 - OPC model for operational proof;
 - HBCE governance logic;
@@ -174,15 +252,17 @@ Current available assets include:
 The current state should be described as:
 
 ```text
-Proprietary R&D framework with a demonstrable technical prototype and an IPR-first MVP path, not yet a mass-market SaaS product.
+Proprietary R&D framework with a demonstrable technical prototype, an IPR-first MVP path and an IPR Verified private-verification model, not yet a mass-market SaaS product.
 ```
 
 ---
 
-## 8. Elements still to industrialize
+## 9. Elements still to industrialize
 
 The following elements still require development or industrialization:
 
+- private verification workflow;
+- private evidence custody model;
 - commercial audit dashboard;
 - simplified non-technical user interface;
 - report export for consultants and clients;
@@ -200,21 +280,22 @@ These elements define the transition from R&D framework to incubatable MVP.
 
 ---
 
-## 9. MVP demonstration flow
+## 10. MVP demonstration flow
 
 The first demo should remain simple and commercially understandable.
 
 Recommended MVP flow:
 
 1. Attach or create an IPR operational reference.
-2. Upload or register a document workflow.
-3. Use AI for analysis, generation, revision, classification or review.
-4. Classify the operation by context and risk.
-5. Register the AI-assisted action as an EVT event.
-6. Attach an OPC operational proof.
-7. Require human validation where needed.
-8. Generate a final audit report.
-9. Produce a verifiable trace for later review.
+2. Select whether the pilot uses IPR Base, IPR Verified or IPR Professional.
+3. Upload or register a document workflow.
+4. Use AI for analysis, generation, revision, classification or review.
+5. Classify the operation by context and risk.
+6. Register the AI-assisted action as an EVT event.
+7. Attach an OPC operational proof.
+8. Require human validation where needed.
+9. Generate a final audit report.
+10. Produce a verifiable trace for later review.
 
 The demo should be understandable to:
 
@@ -229,7 +310,7 @@ The demo should be understandable to:
 
 ---
 
-## 10. Go-to-market hypothesis
+## 11. Go-to-market hypothesis
 
 The initial go-to-market hypothesis is:
 
@@ -240,16 +321,19 @@ Start with compliance, AI governance and cybersecurity consulting providers that
 Recommended sequence:
 
 1. Isolate the product as IPR AI Audit Trail.
-2. Build a simple commercial demo.
-3. Present the demo to a small group of compliance, AI governance and cybersecurity consultants.
-4. Obtain one controlled pilot.
-5. Use the pilot to validate value, interface, requirements, pricing and positioning.
-6. Convert the pilot into a repeatable MVP package.
+2. Define the IPR profile model: Base, Verified, Professional.
+3. Build a simple commercial demo.
+4. Present the demo to a small group of compliance, AI governance and cybersecurity consultants.
+5. Obtain one controlled pilot.
+6. Use the pilot to validate value, interface, requirements, pricing and positioning.
+7. Convert the pilot into a repeatable MVP package.
 
 The external message must remain clear:
 
 ```text
 IPR is the product.
+IPR Base is the technical R&D record.
+IPR Verified is the private-verification profile.
 IPR AI Audit Trail is the first MVP.
 JOKER-C2 demonstrates the runtime.
 HBCE governs the ecosystem.
@@ -258,7 +342,7 @@ MATRiX defines the architecture.
 
 ---
 
-## 11. Relationship with OpenAI outreach
+## 12. Relationship with OpenAI outreach
 
 This MVP alignment connects with the OpenAI outreach sequence already recorded in:
 
@@ -280,7 +364,7 @@ IPR AI Audit Trail is the commercial MVP that can translate this research and ou
 
 ---
 
-## 12. Relationship with GitHub audit trace
+## 13. Relationship with GitHub audit trace
 
 This MVP alignment also connects with the repository audit files:
 
@@ -303,12 +387,12 @@ The GitHub audit trace supports the credibility of the MVP because it demonstrat
 
 ---
 
-## 13. Incubation framing
+## 14. Incubation framing
 
 For incubation purposes, the project should be presented as follows:
 
 ```text
-IPR AI Audit Trail is the first commercial MVP use case built around IPR, the base operational product of the HBCE ecosystem. It provides a verifiable audit trail for the use of AI in regulated or high-accountability document workflows, aimed initially at compliance, AI governance and cybersecurity consulting providers.
+IPR AI Audit Trail is the first commercial MVP use case built around IPR, the base operational product of the HBCE ecosystem. It provides a verifiable audit trail for the use of AI in regulated or high-accountability document workflows, aimed initially at compliance, AI governance and cybersecurity consulting providers. The IPR Verified model adds a professional private-verification path while keeping public proof minimized and non-custodial.
 ```
 
 The incubation need is not to validate the entire MATRiX framework at once.
@@ -324,7 +408,7 @@ The incubation need is to transform the existing R&D asset into:
 
 ---
 
-## 14. Public positioning boundary
+## 15. Public positioning boundary
 
 The public positioning must remain precise.
 
@@ -334,16 +418,24 @@ Correct positioning:
 IPR AI Audit Trail is an R&D-stage MVP for verifiable AI governance and auditability in regulated or high-accountability document workflows.
 ```
 
+Correct IPR Verified positioning:
+
+```text
+IPR Verified is a private-verification profile based on tax-code and valid identity-document evidence. Public proof remains minimized and does not expose identity evidence.
+```
+
 Avoid overclaiming:
 
-- do not describe it as a fully deployed SaaS if not yet industrialized;
+- do not describe the MVP as a fully deployed SaaS if not yet industrialized;
 - do not describe it as legally certified compliance infrastructure;
 - do not claim public-sector adoption without a real pilot;
 - do not imply that AI decisions replace human responsibility;
 - do not imply custody of sensitive data in the public repository;
 - do not present MATRiX as the first product;
 - do not present JOKER-C2 as the final commercial product;
-- do not present IPR as a replacement for SPID, CIE, EUDI Wallet, eIDAS schemes, public registries or qualified trust services.
+- do not present IPR as a replacement for SPID, CIE, EUDI Wallet, eIDAS schemes, public registries or qualified trust services;
+- do not present IPR Verified as regulated KYC / AML compliance;
+- do not present public proof as legal identity certification.
 
 Preferred wording:
 
@@ -353,15 +445,25 @@ R&D-stage IPR-linked AI governance MVP with a demonstrable prototype and a focus
 
 ---
 
-## 15. Audit-ready event record
+## 16. Audit-ready event record
 
 ```json
 {
   "event_type": "IPR_AI_AUDIT_TRAIL_MVP_ALIGNMENT",
-  "event_date": "2026-05-08",
+  "event_date": "2026-05-09",
   "repository": "hermeticum-bce-platform",
   "project": "IPR_AI_AUDIT_TRAIL",
   "base_product": "IPR",
+  "ipr_profiles": [
+    "IPR_BASE",
+    "IPR_VERIFIED",
+    "IPR_PROFESSIONAL"
+  ],
+  "verification_levels": [
+    "IPR_BASE_NOT_VERIFIED",
+    "IPR_VERIFIED_PRIVATE_CHECK",
+    "IPR_PROFESSIONAL_PILOT"
+  ],
   "runtime_demonstrator": "JOKER-C2",
   "operational_ecosystem": "HBCE",
   "architectural_framework": "MATRiX",
@@ -374,13 +476,19 @@ R&D-stage IPR-linked AI governance MVP with a demonstrable prototype and a focus
   "commercial_stage": "PRE_COMMERCIAL_ACTIVATION",
   "governance_posture": [
     "IPR_LINKED",
+    "IPR_VERIFIED_MODEL_ACTIVE",
+    "PRIVATE_VERIFICATION_SEPARATION",
+    "PUBLIC_PROOF_MINIMIZATION",
     "AUDIT_FIRST",
     "FAIL_CLOSED",
     "HUMAN_VALIDATION",
     "RESPONSIBILITY_OWNERSHIP",
     "EVENT_TRACEABILITY",
     "OPERATIONAL_PROOF",
-    "NO_PUBLIC_DATA_CUSTODY"
+    "NO_PUBLIC_DATA_CUSTODY",
+    "NO_PUBLIC_TAX_CODE_CUSTODY",
+    "NO_PUBLIC_DOCUMENT_NUMBER_CUSTODY",
+    "NO_PUBLIC_IDENTITY_DOCUMENT_CUSTODY"
   ],
   "linked_records": [
     "OPENAI_OUTREACH_STATUS_2026-05-06.md",
@@ -394,8 +502,10 @@ R&D-stage IPR-linked AI governance MVP with a demonstrable prototype and a focus
 
 ---
 
-## 16. Maintainer statement
+## 17. Maintainer statement
 
 This document records the MVP alignment of IPR AI Audit Trail for incubation, pilot design and commercial clarification.
 
 The project remains in R&D / pre-commercial activation status until a pilot, letter of intent, procurement process, partnership or commercial agreement defines the operational and fiscal activation path.
+
+The IPR Verified model strengthens the professional positioning of the gateway through private identity verification, but the public layer remains minimized, hash-oriented, non-custodial and non-certifying.
