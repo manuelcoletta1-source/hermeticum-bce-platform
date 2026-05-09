@@ -1,11 +1,20 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>STANDARD — IPR (EU)</title>
-  <meta name="description" content="Standard tecnico IPR (EU): definizione, requisiti minimi, emissione, registry append-only, verify fail-closed, hash-only, no custody. Documento operativo citabile." />
+
+  <title>IPR Technical Reference — R&D Standard Boundary</title>
+  <meta
+    name="description"
+    content="IPR technical reference for the HBCE Platform: IPR Base, IPR Verified, IPR Professional, private verification, public proof minimization, registry v3, fail-closed verification and non-certifying R&D standard boundary."
+  />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/standard/ipr/" />
+
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
+  <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </head>
 
 <body>
@@ -13,169 +22,368 @@
 
   <main class="hbce-container hbce-main">
 
-    <!-- HERO -->
     <section class="hbce-hero">
-      <div class="hbce-hero__kicker">STANDARD · IPR · EU-FIRST</div>
-      <h1 class="hbce-hero__title">IPR — European Minimal Technical Standard</h1>
-      <p class="hbce-hero__lead">
-        Standard tecnico minimo per Identity Primary Record: identità operativa verificabile,
-        pubblicazione minimizzata (<strong>hash-only</strong>), registro <strong>append-only</strong>,
-        verifica <strong>fail-closed</strong>.
-      </p>
-      <p class="hbce-note">
-        Scopo: definire un set di regole verificabili e riproducibili.
-        Se una regola non è verificabile → l’implementazione è NON CONFORME.
-      </p>
-    </section>
+      <div class="hbce-hero__kicker">IPR · TECHNICAL REFERENCE · R&amp;D STANDARD BOUNDARY · EU-FIRST</div>
 
-    <!-- DEFINIZIONE -->
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Definizione</h2>
-      <div class="hbce-card">
-        <p class="hbce-card__text">
-          <strong>IPR</strong> (Identity Primary Record) è una radice di identità operativa verificabile.
-          L’IPR produce una prova pubblica minimizzata (hash-only) opponibile nel tempo tramite registry append-only
-          e verifica fail-closed.
-        </p>
-        <ul class="hbce-list">
-          <li><strong>Public layer</strong>: nickname + hash + timestamp</li>
-          <li><strong>Local layer</strong>: file di release e metadati (local-first)</li>
-          <li><strong>Verification</strong>: integrità + match registry</li>
-        </ul>
+      <h1 class="hbce-hero__title">IPR — Minimal Technical Reference</h1>
+
+      <p class="hbce-hero__lead">
+        This page defines the current R&amp;D technical reference for IPR — Identity Primary Record.
+        It describes how the HBCE Platform treats operational identity, private verification,
+        public proof minimization, registry references and fail-closed verification.
+        <br><br>
+        This page is not a formal legal standard, not a public authority standard, not an eIDAS qualified trust-service
+        specification, not a regulated certification scheme and not a KYC / AML provider framework.
+      </p>
+
+      <p class="hbce-note" style="margin-top:12px;">
+        Current posture:
+        <strong>R&amp;D technical reference</strong> ·
+        <strong>IPR-first</strong> ·
+        <strong>IPR Verified</strong> ·
+        <strong>public proof minimization</strong> ·
+        <strong>fail-closed</strong>
+      </p>
+
+      <div class="hbce-actions" style="margin-top:16px;">
+        <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/ipr/">IPR</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/activate/">IPR Verified</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/registry/">Registry</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/verify/">Verify</a>
+        <a class="hbce-btn" href="/hermeticum-bce-platform/claims/">Claims</a>
       </div>
     </section>
 
-    <!-- REQUISITI MINIMI -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Requisiti minimi (MUST)</h2>
+      <h2>1. Scope</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          The purpose of this technical reference is to define a minimal and verifiable structure for IPR records
+          inside the HBCE Platform.
+        </p>
+
+        <p class="hbce-card__text">
+          The reference applies to R&amp;D, MVP, pilot and documentation contexts. It does not create legal identity,
+          regulated certification, public authority approval, eIDAS qualification, qualified trust-service status,
+          KYC / AML provider status or production authorization.
+        </p>
+
+        <pre class="hbce-pre" style="white-space:pre-wrap;word-break:break-word;">IPR = base operational product
+IPR Base = technical R&amp;D record, not verified identity
+IPR Verified = private verification with tax code + valid identity document
+IPR Professional = business / audit pilot profile based on IPR Verified
+IPR AI Audit Trail = first MVP use case
+HBCE = operational ecosystem
+JOKER-C2 = runtime demonstrator
+MATRiX = architectural framework</pre>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>2. Definition</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          <strong>IPR</strong> means Identity Primary Record.
+          It is an operational identity, attribution and proof record designed to connect a subject, role,
+          operation, event, proof reference, responsibility and continuity into a verifiable technical trace.
+        </p>
+
+        <p class="hbce-card__text">
+          IPR is not only a login, account, credential, signature, hash or registry entry.
+          IPR is the operational reference that allows an event or workflow to be reconstructed later.
+        </p>
+
+        <pre class="hbce-pre" style="white-space:pre-wrap;word-break:break-word;">SUBJECT
+→ ROLE
+→ OPERATION
+→ EVT EVENT
+→ OPC PROOF
+→ REGISTRY REFERENCE
+→ VERIFY
+→ AUDIT-READY CONTINUITY</pre>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>3. IPR profiles</h2>
+
       <div class="hbce-grid hbce-grid--3">
 
-        <div class="hbce-card">
-          <h3 class="hbce-h3">MUST: Hash-only public</h3>
+        <article class="hbce-card">
+          <div class="hbce-card__kicker">PROFILE</div>
+          <h3>IPR Base</h3>
           <p class="hbce-card__text">
-            La pubblicazione pubblica non deve contenere dati personali completi.
-            Solo nickname + hash + timestamp.
+            IPR Base is a technical R&amp;D record for proof flows, internal testing and controlled demonstrations.
+            It does not create verified identity status.
           </p>
-        </div>
+          <p class="hbce-note">
+            Public level: <strong>IPR_BASE_NOT_VERIFIED</strong>
+          </p>
+        </article>
 
-        <div class="hbce-card">
-          <h3 class="hbce-h3">MUST: Append-only registry</h3>
+        <article class="hbce-card">
+          <div class="hbce-card__kicker">PROFILE</div>
+          <h3>IPR Verified</h3>
           <p class="hbce-card__text">
-            Il registro pubblico deve essere append-only e non riscrivibile retroattivamente.
+            IPR Verified is the private-verification profile. It may use tax-code and valid identity-document evidence
+            only in a controlled private layer.
           </p>
-        </div>
+          <p class="hbce-note">
+            Public level: <strong>IPR_VERIFIED_PRIVATE_CHECK</strong>
+          </p>
+        </article>
 
-        <div class="hbce-card">
-          <h3 class="hbce-h3">MUST: Fail-closed verify</h3>
+        <article class="hbce-card">
+          <div class="hbce-card__kicker">PROFILE</div>
+          <h3>IPR Professional</h3>
           <p class="hbce-card__text">
-            Se non esiste match perfetto nel registry o l’integrità è fallita → INVALID.
+            IPR Professional is a future business / audit workflow profile based on IPR Verified.
+            It is intended for controlled B2B pilots and audit-ready evidence chains.
           </p>
+          <p class="hbce-note">
+            Public level: <strong>IPR_PROFESSIONAL_PILOT</strong>
+          </p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>4. Private verification model</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          IPR Verified may use private identity verification based on tax-code and valid identity-document evidence.
+          Accepted private evidence categories are:
+        </p>
+
+        <ul class="hbce-list">
+          <li>tax code / fiscal code;</li>
+          <li>identity card / CIE;</li>
+          <li>passport;</li>
+          <li>driving license;</li>
+          <li>private evidence package.</li>
+        </ul>
+
+        <p class="hbce-card__text">
+          This material belongs only in the private verification layer.
+          It must not be published in the public repository, public registry, public proof records, public issues,
+          public pages or public demos.
+        </p>
+
+        <pre class="hbce-pre" style="white-space:pre-wrap;word-break:break-word;">PRIVATE VERIFICATION
+→ TAX CODE + VALID IDENTITY DOCUMENT
+→ PRIVATE EVIDENCE PACKAGE
+→ IPR VERIFIED RECORD
+→ HASH-ORIENTED PUBLIC PROOF REFERENCE
+→ REGISTRY / VERIFY / EVT / OPC</pre>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>5. Public proof model</h2>
+
+      <div class="hbce-card">
+        <p class="hbce-card__text">
+          Public proof must be minimized. The public layer may expose only technical references needed for verification,
+          audit and reconstruction.
+        </p>
+
+        <div class="hbce-grid hbce-grid--2" style="margin-top:14px;">
+          <article class="hbce-card">
+            <h3>Allowed public fields</h3>
+            <ul class="hbce-list">
+              <li><code>subject_label</code></li>
+              <li><code>operator_label</code>, where applicable</li>
+              <li><code>entity_type</code></li>
+              <li><code>record_scope</code></li>
+              <li><code>verification_level</code></li>
+              <li><code>payload_sha256</code></li>
+              <li><code>evt_id</code>, where applicable</li>
+              <li><code>opc_id</code>, where applicable</li>
+              <li><code>timestamp</code></li>
+              <li><code>status</code></li>
+            </ul>
+          </article>
+
+          <article class="hbce-card">
+            <h3>Forbidden public fields</h3>
+            <ul class="hbce-list">
+              <li>tax code / fiscal code;</li>
+              <li>document number;</li>
+              <li>identity document number;</li>
+              <li>identity card / CIE number;</li>
+              <li>passport number;</li>
+              <li>driving license number;</li>
+              <li>identity documents or scans;</li>
+              <li>portrait image or biometric material;</li>
+              <li>private evidence;</li>
+              <li>personal data or personal payload.</li>
+            </ul>
+          </article>
         </div>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>6. Minimum technical requirements</h2>
+
+      <div class="hbce-grid hbce-grid--3">
+
+        <article class="hbce-card">
+          <h3>Public proof minimization</h3>
+          <p class="hbce-card__text">
+            Public records must use minimized labels and hash-oriented proof references.
+            Private verification evidence must remain outside the public layer.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <h3>Append-only registry</h3>
+          <p class="hbce-card__text">
+            Public registry history should be extended through new entries, status updates or proof references,
+            not silently rewritten.
+          </p>
+        </article>
+
+        <article class="hbce-card">
+          <h3>Fail-closed verification</h3>
+          <p class="hbce-card__text">
+            Missing, malformed, ambiguous, inconsistent or forbidden data must not produce validity.
+          </p>
+        </article>
 
       </div>
 
       <div class="hbce-card" style="margin-top:1rem;">
         <ul class="hbce-list">
-          <li><strong>MUST</strong>: no identity custody (nessuna custodia dell’identità completa)</li>
-          <li><strong>MUST</strong>: exact hash match (nessuna “tolleranza”)</li>
-          <li><strong>MUST</strong>: audit-first (verifica prima dell’azione)</li>
+          <li><strong>MUST</strong>: no public tax-code custody.</li>
+          <li><strong>MUST</strong>: no public document-number custody.</li>
+          <li><strong>MUST</strong>: no public identity-document custody.</li>
+          <li><strong>MUST</strong>: exact hash match for deterministic verification.</li>
+          <li><strong>MUST</strong>: audit-first and fail-closed behavior.</li>
+          <li><strong>MUST</strong>: clear distinction between IPR Base, IPR Verified and IPR Professional.</li>
         </ul>
       </div>
     </section>
 
-    <!-- EMISSIONE -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Emissione (Issuance)</h2>
+      <h2>7. Creation / issuance boundary</h2>
+
       <div class="hbce-card">
         <p class="hbce-card__text">
-          Emissione local-first: l’utente genera e scarica i file.
-          L’infrastruttura produce una entry hash-only pronta per l’append nel registry.
+          IPR creation may produce technical records, controlled release objects and minimized proof references.
+          IPR Base can be created as an R&amp;D technical record.
         </p>
+
+        <p class="hbce-card__text">
+          IPR Verified requires a separate private verification process. The private evidence package must remain outside
+          the public layer. Only minimized proof references may be published.
+        </p>
+
         <div class="hbce-grid hbce-grid--3" style="margin-top:.75rem;">
-          <div class="hbce-card">
-            <h3 class="hbce-h3">IPR_RELEASE</h3>
-            <p class="hbce-card__text">File di release (oggetto deterministico da cui deriva l’hash).</p>
-          </div>
-          <div class="hbce-card">
-            <h3 class="hbce-h3">ISSUER_CERTIFICATE</h3>
-            <p class="hbce-card__text">Certificazione dell’emittente (policy e provenienza).</p>
-          </div>
-          <div class="hbce-card">
-            <h3 class="hbce-h3">REGISTRY_ENTRY</h3>
-            <p class="hbce-card__text">Nickname + hash + timestamp (append-only).</p>
-          </div>
+          <article class="hbce-card">
+            <h3>IPR Base</h3>
+            <p class="hbce-card__text">Technical R&amp;D record. No verified identity claim.</p>
+          </article>
+
+          <article class="hbce-card">
+            <h3>IPR Verified</h3>
+            <p class="hbce-card__text">Private verification profile. Public proof remains minimized.</p>
+          </article>
+
+          <article class="hbce-card">
+            <h3>Registry Entry</h3>
+            <p class="hbce-card__text">Public label + verification level + hash + timestamp + status.</p>
+          </article>
         </div>
       </div>
     </section>
 
-    <!-- METROLOGIA -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Metrologia (HARD rule)</h2>
-      <div class="hbce-card">
-        <p class="hbce-card__text">
-          Regola metrologica HARD: l’append nel registry deve avvenire entro
-          <strong>±2 minuti</strong> dal timestamp di emissione.
-        </p>
-        <ul class="hbce-list">
-          <li>Dentro finestra → conforme</li>
-          <li>Fuori finestra → NON CONFORME (fail-closed)</li>
-        </ul>
-      </div>
-    </section>
+      <h2>8. Verification</h2>
 
-    <!-- VERIFICA -->
-    <section class="hbce-section">
-      <h2 class="hbce-h2">Verifica (Verification)</h2>
       <div class="hbce-card">
         <p class="hbce-card__text">
-          La verifica è deterministica. Un IPR è <strong>VALID</strong> solo se:
+          Verification is deterministic. A public proof reference is present only if:
         </p>
+
         <ul class="hbce-list">
-          <li>Integrità file OK (hash calcolato = hash dichiarato)</li>
-          <li>Entry presente nel registry append-only</li>
-          <li>Exact hash match</li>
+          <li>the hash format is valid;</li>
+          <li>the public registry source is operational;</li>
+          <li>the proof reference is present;</li>
+          <li>forbidden public fields are absent;</li>
+          <li>the verification level is accepted.</li>
         </ul>
 
         <p class="hbce-card__text" style="margin-top:.75rem;">
-          Altrimenti: <strong>INVALID</strong> (fail-closed).
+          Otherwise the result must be <strong>INVALID</strong>, <strong>NO_PUBLIC_RECORD</strong> or <strong>NON_OPERATIONAL</strong>.
         </p>
+
+        <pre class="hbce-pre" style="white-space:pre-wrap;word-break:break-word;">PUBLIC_REFERENCE_PRESENT
+→ public proof reference exists only
+
+NO_PUBLIC_RECORD
+→ no matching public proof reference
+
+INVALID
+→ malformed, forbidden or rejected input
+
+NON_OPERATIONAL
+→ registry or verifier state invalid</pre>
       </div>
     </section>
 
-    <!-- LINK OPERATIVI -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Link operativi</h2>
+      <h2>9. Link operativi</h2>
       <div class="hbce-grid hbce-grid--4">
         <div class="hbce-card">
-          <h3 class="hbce-h3">Emit</h3>
-          <p class="hbce-card__text">Wizard canonico di emissione.</p>
-          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/wizard/">OPEN</a>
+          <h3 class="hbce-h3">Create</h3>
+          <p class="hbce-card__text">Create IPR Base or prepare IPR workflow.</p>
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/create/">OPEN</a>
+        </div>
+        <div class="hbce-card">
+          <h3 class="hbce-h3">IPR Verified</h3>
+          <p class="hbce-card__text">Private verification gateway and model.</p>
+          <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/activate/">OPEN</a>
         </div>
         <div class="hbce-card">
           <h3 class="hbce-h3">Registry</h3>
-          <p class="hbce-card__text">Append hash-only.</p>
+          <p class="hbce-card__text">Minimized public proof references.</p>
           <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/registry/">OPEN</a>
         </div>
         <div class="hbce-card">
           <h3 class="hbce-h3">Verify</h3>
-          <p class="hbce-card__text">PASS/INVALID fail-closed.</p>
+          <p class="hbce-card__text">Fail-closed proof verification.</p>
           <a class="hbce-btn hbce-btn--primary" href="/hermeticum-bce-platform/verify/">OPEN</a>
-        </div>
-        <div class="hbce-card">
-          <h3 class="hbce-h3">Normative</h3>
-          <p class="hbce-card__text">Mappatura normativa UE-first.</p>
-          <a class="hbce-btn" href="/hermeticum-bce-platform/normative/">OPEN</a>
         </div>
       </div>
     </section>
 
-    <!-- ISSUER -->
     <section class="hbce-section">
-      <h2 class="hbce-h2">Issuer</h2>
+      <h2>10. Non-claims</h2>
+
+      <div class="hbce-card">
+        <ul class="hbce-list">
+          <li>This page is not a formal legal standard.</li>
+          <li>This page is not a public authority standard.</li>
+          <li>This page does not create legal certification.</li>
+          <li>This page does not create eIDAS qualification or qualified trust-service status.</li>
+          <li>This page does not create regulated KYC / AML provider status.</li>
+          <li>This page does not replace SPID, CIE, EUDI Wallet, eIDAS schemes, public registries or qualified trust services.</li>
+          <li>This page does not authorize production use, public-sector adoption or regulated compliance by itself.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="hbce-section">
+      <h2>Issuer</h2>
       <div class="hbce-card">
         <p class="hbce-card__text">
           Hallmark: <strong>HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</strong><br/>
-          Società: <strong>🜏 HERMETICUM B.C.E. S.r.l.</strong>
+          Organization: <strong>HERMETICUM B.C.E. S.r.l.</strong>
         </p>
       </div>
     </section>
@@ -183,6 +391,5 @@
   </main>
 
   <div data-hbce="footer"></div>
-  <script src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
 </body>
 </html>
