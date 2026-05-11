@@ -1,22 +1,24 @@
 # IPR AI Audit Trail — MVP Alignment Record
 
-Date: 2026-05-09  
-Repository: hermeticum-bce-platform  
-Project: IPR / IPR Verified / HBCE / EVT / OPC / JOKER-C2 / MATRiX  
-Maintainer: Manuel Coletta  
-Organization / R&D initiative: HBCE Research / HERMETICUM B.C.E. S.r.l.
+**Date:** 2026-05-11  
+**Repository:** `hermeticum-bce-platform`  
+**Project:** IPR / IPR Verified / HBCE / EVT / OPC / JOKER-C2 / MATRIX  
+**Maintainer:** Manuel Coletta  
+**Organization / R&D initiative:** HBCE Research / HERMETICUM B.C.E. S.r.l.  
+**Reference audit:** `PUBLIC_ROUTE_AUDIT_PASS_2026-05-11.md`  
+**Status:** R&D-stage MVP alignment / partner-facing clarification
 
 ---
 
 ## 1. Purpose
 
-This document records the commercial MVP alignment of the platform after the clarification of the relationship between HERMETICUM B.C.E. S.r.l., IPR, IPR Verified, HBCE, EVT, OPC, JOKER-C2 and MATRiX.
+This document records the commercial MVP alignment of the platform after the clarification of the relationship between HERMETICUM B.C.E. S.r.l., IPR, IPR Verified, HBCE, EVT, OPC, JOKER-C2 and MATRIX.
 
 The purpose of this record is to connect the entrepreneurial positioning of the project with the public technical and audit-oriented repository baseline.
 
 This document does not reproduce private correspondence. It records only the non-confidential strategic alignment derived from that communication.
 
-The central correction is that the first commercial MVP is no longer positioned as “MATRiX as product”. The correct positioning is:
+The central correction is that the first commercial MVP is not positioned as “MATRIX as product”. The correct positioning is:
 
 ```text
 IPR = base operational product
@@ -26,7 +28,7 @@ IPR Professional = business / audit profile based on IPR Verified
 IPR AI Audit Trail = first MVP / pilot use case
 HBCE = operational ecosystem
 JOKER-C2 = runtime demonstrator
-MATRiX = architectural framework
+MATRIX = architectural framework
 HERMETICUM B.C.E. S.r.l. = R&D / operating vehicle
 ```
 
@@ -45,10 +47,10 @@ The project is structured around the following distinction:
 - EVT is the verifiable event traceability layer.
 - OPC is the operational proof layer connected to events, auditability and continuity.
 - JOKER-C2 is the first demonstrative runtime and prototype showing IPR in operation inside HBCE.
-- MATRiX is the broader technical, architectural and proprietary framework.
+- MATRIX is the broader technical, architectural and proprietary framework.
 - HERMETICUM B.C.E. S.r.l. is the corporate and R&D vehicle for development, protection, industrialization and commercialization.
 
-The broader MATRiX cycle remains the architectural foundation.
+The broader MATRIX cycle remains the architectural foundation.
 
 The first incubatable product must be narrower, simpler, demonstrable and commercially testable.
 
@@ -94,6 +96,7 @@ The public layer may contain only minimized proof references such as:
 
 ```text
 subject_label
+operator_label
 verification_level
 payload_sha256
 timestamp
@@ -223,7 +226,7 @@ The key value proposition is:
 IPR makes AI-assisted work attributable, governable, auditable and reconstructible.
 ```
 
-MATRiX remains the architectural framework that supports the broader roadmap.
+MATRIX remains the architectural framework that supports the broader roadmap.
 
 ---
 
@@ -231,7 +234,7 @@ MATRiX remains the architectural framework that supports the broader roadmap.
 
 Current available assets include:
 
-- MATRiX architecture;
+- MATRIX architecture;
 - technical and architectural documentation;
 - IPR model for operational identity and attribution;
 - IPR Verified private-verification model;
@@ -243,6 +246,10 @@ Current available assets include:
 - JOKER-C2 demonstrative runtime;
 - public technical repositories;
 - public gateway;
+- public route audit;
+- registry v3 alignment;
+- verification surfaces;
+- public legal / privacy / security / compliance / governance boundaries;
 - first audit and governance documentation;
 - first defensive GitHub audit trace;
 - OpenAI outreach status record;
@@ -269,7 +276,7 @@ The following elements still require development or industrialization:
 - user onboarding;
 - integration with external document tools;
 - SaaS packaging;
-- pricing;
+- pricing validation;
 - enterprise security review;
 - pilot with a real customer;
 - validation through a controlled commercial use case;
@@ -337,7 +344,7 @@ IPR Verified is the private-verification profile.
 IPR AI Audit Trail is the first MVP.
 JOKER-C2 demonstrates the runtime.
 HBCE governs the ecosystem.
-MATRiX defines the architecture.
+MATRIX defines the architecture.
 ```
 
 ---
@@ -373,6 +380,7 @@ AUDIT_MATRIX_HBCE_2026-05-06.md
 AUDIT_FINDINGS_MATRIX_HBCE_2026-05-06.md
 REGISTRY_AUDIT_MATRIX_HBCE_2026-05-06.md
 REPOSITORY_BASELINE_REVIEW_2026-05-06.md
+PUBLIC_ROUTE_AUDIT_PASS_2026-05-11.md
 ```
 
 The GitHub audit trace supports the credibility of the MVP because it demonstrates:
@@ -383,6 +391,7 @@ The GitHub audit trace supports the credibility of the MVP because it demonstrat
 - fail-closed thinking;
 - public data minimization;
 - repository-level hardening;
+- public route hygiene;
 - audit-ready documentation discipline.
 
 ---
@@ -395,7 +404,7 @@ For incubation purposes, the project should be presented as follows:
 IPR AI Audit Trail is the first commercial MVP use case built around IPR, the base operational product of the HBCE ecosystem. It provides a verifiable audit trail for the use of AI in regulated or high-accountability document workflows, aimed initially at compliance, AI governance and cybersecurity consulting providers. The IPR Verified model adds a professional private-verification path while keeping public proof minimized and non-custodial.
 ```
 
-The incubation need is not to validate the entire MATRiX framework at once.
+The incubation need is not to validate the entire MATRIX framework at once.
 
 The incubation need is to transform the existing R&D asset into:
 
@@ -431,7 +440,7 @@ Avoid overclaiming:
 - do not claim public-sector adoption without a real pilot;
 - do not imply that AI decisions replace human responsibility;
 - do not imply custody of sensitive data in the public repository;
-- do not present MATRiX as the first product;
+- do not present MATRIX as the first product;
 - do not present JOKER-C2 as the final commercial product;
 - do not present IPR as a replacement for SPID, CIE, EUDI Wallet, eIDAS schemes, public registries or qualified trust services;
 - do not present IPR Verified as regulated KYC / AML compliance;
@@ -450,7 +459,7 @@ R&D-stage IPR-linked AI governance MVP with a demonstrable prototype and a focus
 ```json
 {
   "event_type": "IPR_AI_AUDIT_TRAIL_MVP_ALIGNMENT",
-  "event_date": "2026-05-09",
+  "event_date": "2026-05-11",
   "repository": "hermeticum-bce-platform",
   "project": "IPR_AI_AUDIT_TRAIL",
   "base_product": "IPR",
@@ -466,14 +475,16 @@ R&D-stage IPR-linked AI governance MVP with a demonstrable prototype and a focus
   ],
   "runtime_demonstrator": "JOKER-C2",
   "operational_ecosystem": "HBCE",
-  "architectural_framework": "MATRiX",
-  "parent_framework": "MATRiX / HBCE / IPR / EVT / OPC / JOKER-C2",
+  "architectural_framework": "MATRIX",
+  "parent_framework": "MATRIX / HBCE / IPR / EVT / OPC / JOKER-C2",
   "maintainer": "Manuel Coletta",
   "organization": "HBCE Research / HERMETICUM B.C.E. S.r.l.",
   "mvp_definition": "IPR-linked audit workflow for AI usage in regulated or high-accountability document processes",
   "first_target_customer": "Compliance, AI governance and cybersecurity consulting providers",
   "status": "R_AND_D_STAGE_MVP_DIRECTION",
   "commercial_stage": "PRE_COMMERCIAL_ACTIVATION",
+  "public_route_audit": "PASS",
+  "reference_audit": "PUBLIC_ROUTE_AUDIT_PASS_2026-05-11.md",
   "governance_posture": [
     "IPR_LINKED",
     "IPR_VERIFIED_MODEL_ACTIVE",
@@ -495,7 +506,8 @@ R&D-stage IPR-linked AI governance MVP with a demonstrable prototype and a focus
     "AUDIT_MATRIX_HBCE_2026-05-06.md",
     "AUDIT_FINDINGS_MATRIX_HBCE_2026-05-06.md",
     "REGISTRY_AUDIT_MATRIX_HBCE_2026-05-06.md",
-    "REPOSITORY_BASELINE_REVIEW_2026-05-06.md"
+    "REPOSITORY_BASELINE_REVIEW_2026-05-06.md",
+    "PUBLIC_ROUTE_AUDIT_PASS_2026-05-11.md"
   ]
 }
 ```
