@@ -8,19 +8,27 @@
   "version": {
     "major": 1,
     "minor": 0,
-    "patch": 2,
-    "tag": "declass-rnd-audit-reference"
+    "patch": 3,
+    "tag": "declass-rnd-ipr-audit-reference"
   },
   "current_scope": {
-    "primary_use": "MATRIX_AI_AUDIT_TRAIL_MVP",
-    "purpose": "Reference bundle for research, pilot documentation, audit-trail modelling, hash-only evidence records, and fail-closed verification experiments.",
+    "primary_use": "IPR_AI_AUDIT_TRAIL_MVP",
+    "framework": "MATRIX",
+    "product_hierarchy": {
+      "product": "IPR",
+      "mvp": "IPR_AI_AUDIT_TRAIL",
+      "ecosystem": "HBCE",
+      "runtime": "JOKER-C2",
+      "framework": "MATRIX"
+    },
+    "purpose": "Reference bundle for research, pilot documentation, IPR-based audit-trail modelling, hash-only evidence records, and fail-closed verification experiments.",
     "public_position": "This file is an R&D reference artifact. It is not a legal standard, not a regulated certification scheme, not an eIDAS qualified trust service, not a public authority registry, and not a production compliance framework by itself.",
-    "operational_boundary": "The protocol reference describes minimized public records, deterministic hashing, signatures, append-only ledgers, and verification logic for audit-trail experiments. It does not require public custody of personal data, confidential payloads, private keys, financial assets, or regulated identity documents."
+    "operational_boundary": "The protocol reference describes minimized public records, deterministic hashing, signatures, append-only ledgers, and verification logic for IPR AI Audit Trail experiments. It does not require public custody of personal data, confidential payloads, private keys, financial assets, or regulated identity documents."
   },
   "supersession": {
     "legacy_public_label": "LEGACY_PROTOCOL_BUNDLE_LABEL",
     "legacy_public_status": "LEGACY_DECLARED_STATUS",
-    "declass_reason": "The v1 bundle is retained as a technical R&D reference and historical protocol draft, while public positioning is aligned with the MATRIX AI Audit Trail MVP, registry v3, payload_sha256, no-custody, and EU-first audit boundaries.",
+    "declass_reason": "The v1 bundle is retained as a technical R&D reference and historical protocol draft, while public positioning is aligned with the IPR-first public proof model, IPR AI Audit Trail MVP, registry v3, payload_sha256, no-custody, and EU-first audit boundaries. MATRIX remains the wider architectural framework.",
     "current_reference_label": "R&D protocol reference",
     "current_reference_status": "non-production reference"
   },
@@ -100,7 +108,7 @@
     },
     "audit_case_id": {
       "format": "string",
-      "pattern_hint": "MATRIX-AUDIT-[A-Z0-9\\-]{4,64}"
+      "pattern_hint": "IPR-AUDIT-[A-Z0-9\\-]{4,64}"
     }
   },
   "enums": {
@@ -136,6 +144,7 @@
       "DERIVED_FROM_AUDIT_CASE"
     ],
     "event_type": [
+      "IPR_ATTRIBUTION",
       "AI_OUTPUT_RECORDED",
       "AI_OUTPUT_REVIEWED",
       "HUMAN_VALIDATION",
@@ -502,7 +511,7 @@
     "audit_case_root_record_public": {
       "proto": "HBCE-REGISTRY-v1",
       "kind": "IPR_ROOT_RECORD",
-      "entity_id": "IPR-AUDIT-CASE-MATRIX-0001",
+      "entity_id": "IPR-AUDIT-CASE-0001",
       "entity_type": "AUDIT_CASE_REFERENCE",
       "payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "timestamp": "2026-05-07T15:30:00+02:00",
@@ -518,9 +527,9 @@
     "ai_system_reference_record_public": {
       "proto": "HBCE-REGISTRY-v1",
       "kind": "IPR_DERIVED_RECORD",
-      "entity_id": "IPR-AI-MATRIX-AUDIT-0001",
+      "entity_id": "IPR-AI-AUDIT-0001",
       "entity_type": "AI_SYSTEM_REFERENCE",
-      "parent_entity_id": "IPR-AUDIT-CASE-MATRIX-0001",
+      "parent_entity_id": "IPR-AUDIT-CASE-0001",
       "derivation_type": "DERIVED_FROM_AUDIT_CASE",
       "payload_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
       "timestamp": "2026-05-07T15:35:00+02:00",
@@ -538,11 +547,28 @@
         "signature": "SIGNATURE_PLACEHOLDER"
       }
     },
+    "ipr_attribution_event_public": {
+      "proto": "HBCE-REGISTRY-v1",
+      "kind": "IPR_EVENT_RECORD",
+      "event_id": "EVT-IPR-ATTRIBUTION-0001",
+      "entity_id": "IPR-AI-AUDIT-0001",
+      "event_type": "IPR_ATTRIBUTION",
+      "event_payload_sha256": "abababababababababababababababababababababababababababababababab",
+      "timestamp": "2026-05-07T15:38:00+02:00",
+      "operator": {
+        "operator_id": "IPR-OP-RND-0001",
+        "sign_alg": "ED25519",
+        "pubkey": "PUBKEY_PLACEHOLDER",
+        "signature": "SIGNATURE_PLACEHOLDER"
+      },
+      "status": "RND_ONLY",
+      "append_only": true
+    },
     "ai_output_review_event_public": {
       "proto": "HBCE-REGISTRY-v1",
       "kind": "IPR_EVENT_RECORD",
-      "event_id": "EVT-MATRIX-AI-OUTPUT-0001",
-      "entity_id": "IPR-AI-MATRIX-AUDIT-0001",
+      "event_id": "EVT-IPR-AI-OUTPUT-0001",
+      "entity_id": "IPR-AI-AUDIT-0001",
       "event_type": "AI_OUTPUT_REVIEWED",
       "event_payload_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
       "timestamp": "2026-05-07T15:40:00+02:00",
@@ -558,8 +584,8 @@
     "human_validation_event_public": {
       "proto": "HBCE-REGISTRY-v1",
       "kind": "IPR_EVENT_RECORD",
-      "event_id": "EVT-MATRIX-HUMAN-VALIDATION-0001",
-      "entity_id": "IPR-AI-MATRIX-AUDIT-0001",
+      "event_id": "EVT-IPR-HUMAN-VALIDATION-0001",
+      "entity_id": "IPR-AI-AUDIT-0001",
       "event_type": "HUMAN_VALIDATION",
       "event_payload_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
       "timestamp": "2026-05-07T15:45:00+02:00",
@@ -575,7 +601,7 @@
     "verify_response_placeholder_signature": {
       "proto": "HBCE-VERIFY-v1",
       "query": {
-        "entity_id": "IPR-AI-MATRIX-AUDIT-0001"
+        "entity_id": "IPR-AI-AUDIT-0001"
       },
       "result": {
         "status": "INVALID",
@@ -583,7 +609,7 @@
         "fail_closed": true
       },
       "evidence": {
-        "last_event_id": "EVT-MATRIX-HUMAN-VALIDATION-0001",
+        "last_event_id": "EVT-IPR-HUMAN-VALIDATION-0001",
         "last_event_payload_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
         "public_payload_policy": "HASH_ONLY"
       }
