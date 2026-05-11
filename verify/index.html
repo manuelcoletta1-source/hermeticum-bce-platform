@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>Verify — IPR Verified / EVT / OPC Evidence Gateway</title>
+  <title>Verify — IPR Public Proof Gateway</title>
   <meta
     name="description"
-    content="R&D verification gateway for IPR Base, IPR Verified, EVT records, OPC proofs and hash-oriented public references inside the HBCE ecosystem. Supports verification_level, browser-side SHA-256 comparison, registry lookup and fail-closed verification posture."
+    content="R&D verification gateway for IPR public proof references, EVT records, OPC proofs and hash-oriented registry evidence inside the HBCE ecosystem. Supports browser-side SHA-256 comparison, registry lookup and fail-closed verification states."
   />
 
   <meta name="robots" content="index,follow" />
@@ -77,44 +77,44 @@
         <div class="hbce-header__row">
           <div class="hbce-brand">
             <div class="hbce-mono">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-            <div class="hbce-muted">HERMETICUM B.C.E. S.r.l.</div>
+            <div class="hbce-muted">HERMETICUM B.C.E. S.r.l. · IPR public proof verification</div>
           </div>
 
           <nav class="hbce-nav" aria-label="Primary">
             <a class="hbce-nav__link" href="../">Home</a>
             <a class="hbce-nav__link" href="../ipr/">IPR</a>
-            <a class="hbce-nav__link" href="../activate/">IPR Verified</a>
+            <a class="hbce-nav__link" href="../what-is-ipr/">What is IPR?</a>
             <a class="hbce-nav__link" href="../create/">Create</a>
-            <a class="hbce-nav__link" href="../joker-c2/">JOKER-C2</a>
-            <a class="hbce-nav__link" href="../matrix-audit-trail/">IPR Audit Trail</a>
+            <a class="hbce-nav__link" href="../matrix-audit-trail/">IPR AI Audit Trail</a>
             <a class="hbce-nav__link" href="../registry/">Registry</a>
-            <a class="hbce-nav__link is-active" href="./">Verify</a>
+            <a class="hbce-nav__link is-active" aria-current="page" href="./">Verify</a>
+            <a class="hbce-nav__link" href="../claims/">Claims</a>
           </nav>
         </div>
       </header>
 
       <section class="hbce-section hbce-hero">
-        <div class="hbce-hero__kicker">VERIFY · IPR BASE · IPR VERIFIED · EVT · OPC · FAIL-CLOSED</div>
+        <div class="hbce-hero__kicker">VERIFY · IPR · PUBLIC PROOF · SHA-256 · REGISTRY v3 · FAIL-CLOSED</div>
 
-        <h1 class="hbce-hero__title">Verify IPR-linked evidence.</h1>
+        <h1 class="hbce-hero__title">Verify public proof references.</h1>
 
         <p class="hbce-hero__lead">
-          <b>Verify</b> is the R&amp;D verification gateway for IPR Base records, IPR Verified proof references,
-          EVT continuity references, OPC proof material and hash-oriented public evidence inside the HBCE ecosystem.
-          It supports registry lookup for public hash references, <code>verification_level</code> interpretation
-          and local deterministic SHA-256 comparison.
-          <br><br>
-          A public proof match means that a public proof reference exists. It does not prove legal identity,
+          <strong>Verify</strong> is the R&amp;D verification gateway for IPR public proof references,
+          EVT continuity references, OPC proof material and hash-oriented registry evidence inside the HBCE ecosystem.
+          It supports public registry lookup, browser-side SHA-256 comparison and fail-closed verification states.
+          <br /><br />
+          A public proof match means that a minimized public proof reference exists. It does not prove legal identity,
           regulated KYC / AML compliance, eIDAS qualification, public authority validation, cybersecurity assurance
           or production authorization by itself.
         </p>
 
         <div class="hbce-card hbce-small" style="margin-top:14px;">
-          <div class="hbce-mono">PUBLIC VERIFICATION LIMIT</div>
+          <div class="hbce-mono">PUBLIC VERIFICATION STATES</div>
           <p class="hbce-muted" style="margin-bottom:0;">
-            Verification can return a public-reference state and, where present, a verification level such as
-            <code>IPR_BASE_NOT_VERIFIED</code>, <code>IPR_VERIFIED_PRIVATE_CHECK</code> or
-            <code>IPR_PROFESSIONAL_PILOT</code>. These labels are technical scope indicators, not legal certification.
+            <code>PUBLIC_REFERENCE_PRESENT</code> means that a matching public hash reference exists.
+            <code>NO_PUBLIC_RECORD</code> means that no matching public proof record was found.
+            <code>INVALID</code> means that the input is missing, malformed, forbidden or rejected.
+            <code>NON_OPERATIONAL</code> means that the registry or verifier source is unavailable, malformed or inconsistent.
           </p>
         </div>
 
@@ -122,9 +122,9 @@
           <a class="hbce-btn hbce-btn--primary" href="#registry-verify">Registry verify</a>
           <a class="hbce-btn" href="#technical-verify">Technical verify</a>
           <a class="hbce-btn" href="../ipr/">IPR</a>
-          <a class="hbce-btn" href="../activate/">IPR Verified</a>
           <a class="hbce-btn" href="../registry/">Open registry</a>
-          <a class="hbce-btn" href="../matrix-audit-trail/">IPR Audit Trail</a>
+          <a class="hbce-btn" href="../matrix-audit-trail/">IPR AI Audit Trail</a>
+          <a class="hbce-btn" href="../claims/">Claims</a>
         </div>
       </section>
 
@@ -144,7 +144,7 @@
 → payload_sha256 / local SHA-256 computation
 → registry reference lookup or expected-hash comparison
 → verification_level inspection
-→ PASS / FAIL / NO_PUBLIC_RECORD / NON_OPERATIONAL
+→ PUBLIC_REFERENCE_PRESENT / NO_PUBLIC_RECORD / INVALID / NON_OPERATIONAL
 → fail-closed review before validity is claimed</pre>
           </div>
         </div>
@@ -267,7 +267,7 @@
 → EXPOSE OR STORE HASH-ORIENTED PUBLIC REFERENCE
 → VERIFY LOCAL RECORD OR PAYLOAD_SHA256
 → INSPECT VERIFICATION_LEVEL
-→ PASS / FAIL / NO_PUBLIC_RECORD / NON_OPERATIONAL
+→ PUBLIC_REFERENCE_PRESENT / NO_PUBLIC_RECORD / INVALID / NON_OPERATIONAL
 → FAIL-CLOSED REVIEW</pre>
           </div>
         </div>
@@ -391,11 +391,12 @@
             </p>
 
             <div class="hbce-mono hbce-muted">
-              missing → FAIL<br>
-              invalid → FAIL<br>
-              mismatch → FAIL<br>
-              forbidden public identity data → FAIL<br>
-              no registry match → NO_PUBLIC_RECORD
+              missing → INVALID<br />
+              malformed → INVALID<br />
+              mismatch → INVALID<br />
+              forbidden public identity data → INVALID<br />
+              no registry match → NO_PUBLIC_RECORD<br />
+              registry unavailable → NON_OPERATIONAL
             </div>
           </div>
 
@@ -457,16 +458,16 @@
       <footer class="hbce-footer">
         <div class="hbce-footer__row">
           <div class="hbce-muted">
-            <span class="hbce-mono">VERIFY</span> — IPR Base / IPR Verified / EVT / OPC evidence gateway
+            <span class="hbce-mono">VERIFY</span> — IPR public proof / EVT / OPC evidence gateway
           </div>
           <div class="hbce-footer__links">
             <a href="../ipr/">IPR</a>
-            <a href="../activate/">IPR Verified</a>
             <a href="../create/">Create</a>
+            <a href="../matrix-audit-trail/">IPR AI Audit Trail</a>
             <a href="../joker-c2/">JOKER-C2</a>
-            <a href="../matrix-audit-trail/">IPR Audit Trail</a>
             <a href="../registry/">Registry</a>
             <a href="../verify-pack/">Verify Pack</a>
+            <a href="../claims/">Claims</a>
           </div>
         </div>
       </footer>
@@ -942,12 +943,12 @@
       $("copy").disabled = true;
 
       if (!release || !expectedRaw) {
-        setStatus("FAIL (MISSING INPUT)", "", "");
+        setStatus("INVALID (MISSING INPUT)", "", "");
         return;
       }
 
       if (!isSha256HexLower(expectedRaw)) {
-        setStatus("FAIL (INVALID EXPECTED HASH)", "", "");
+        setStatus("INVALID (EXPECTED HASH MALFORMED)", "", "");
         return;
       }
 
@@ -961,7 +962,7 @@
         }
 
         if (parsed && hasForbiddenField(parsed)) {
-          setStatus("FAIL (FORBIDDEN PUBLIC FIELD)", "", "");
+          setStatus("INVALID (FORBIDDEN PUBLIC FIELD)", "", "");
           return;
         }
 
@@ -969,12 +970,12 @@
         $("copy").disabled = !computed;
 
         if (computed === expectedRaw) {
-          setStatus("PASS (HASH MATCH)", computed, "computed == expected");
+          setStatus("HASH_MATCH", computed, "computed == expected");
         } else {
-          setStatus("FAIL (HASH MISMATCH)", computed, "computed != expected");
+          setStatus("HASH_MISMATCH", computed, "computed != expected");
         }
       } catch {
-        setStatus("FAIL (VERIFY ERROR)", "", "");
+        setStatus("NON_OPERATIONAL (VERIFY ERROR)", "", "");
       }
     }
 
