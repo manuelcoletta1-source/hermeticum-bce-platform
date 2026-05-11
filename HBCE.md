@@ -13,11 +13,13 @@ HBCE is not the primary product. The primary product is:
 
 ```text
 IPR — Identity Primary Record
+```
 
 HBCE provides the governance, registry, verification, event, proof and audit environment around IPR.
 
 The current product hierarchy is:
 
+```text
 IPR = base operational product
 IPR Base = technical R&D record, not verified identity
 IPR Verified = private verification with tax code + valid identity document
@@ -25,29 +27,33 @@ IPR Professional = business / audit profile based on IPR Verified
 IPR AI Audit Trail = first MVP use case
 HBCE = operational ecosystem
 JOKER-C2 = runtime demonstrator
-MATRiX = architectural framework
+MATRIX = architectural framework
+```
 
+HBCE is therefore the environment in which IPR can connect identity, role, operation, event, proof, responsibility and continuity.
 
 ---
 
-1. Purpose
+## 1. Purpose
 
 HBCE is an experimental R&D infrastructure designed to explore technological environments in which operational actions remain attributable, reconstructible and verifiable over time.
 
 It is developed within the Reality Engineering framework.
 
-The current operational focus is not the whole MATRiX framework. The current operational focus is:
+The current operational focus is not the whole MATRIX framework. The current operational focus is:
 
-IPR Verified gateway
-IPR AI Audit Trail MVP
-public proof minimization
-fail-closed verification
-audit-ready reconstruction
+- IPR as the base operational product;
+- IPR Verified as the private-verification profile;
+- IPR AI Audit Trail as the first MVP;
+- public proof minimization;
+- fail-closed verification;
+- audit-ready reconstruction.
 
+HBCE exists to make those functions operate together as one ecosystem.
 
 ---
 
-2. Context
+## 2. Context
 
 Several well-known technological networks address specific foundational problems of digital infrastructure.
 
@@ -59,14 +65,15 @@ IPFS introduced a distributed system for addressing and storing data by content.
 
 HBCE explores a different dimension of technological infrastructure:
 
+```text
 operational traceability
+```
 
 HBCE focuses on the ability to reconstruct who or what acted, under which operational identity, through which event, with which proof and with which continuity.
 
-
 ---
 
-3. Conceptual comparison
+## 3. Conceptual comparison
 
 Bitcoin focuses on transactions.
 
@@ -76,27 +83,29 @@ IPFS focuses on distributed data storage.
 
 HBCE focuses on actions performed by entities within technological infrastructures.
 
-IPR is the operational identity instrument inside HBCE.
+The current HBCE model can be summarized as follows:
 
-EVT is the event-continuity layer.
+```text
+IPR = operational identity instrument
+EVT = event-continuity layer
+OPC = operational proof layer
+Registry v3 = public proof-reference layer
+Verify = deterministic proof-checking layer
+JOKER-C2 = runtime demonstrator
+MATRIX = wider architectural framework
+```
 
-OPC is the operational proof layer.
-
-Registry v3 is the public proof-reference layer.
-
-JOKER-C2 is the runtime demonstrator.
-
-MATRiX is the wider architectural framework.
-
+HBCE does not compete with monetary ledgers, smart-contract chains or content-addressing networks. It studies how operational identity, event traceability, proof references and governance states can remain reconstructible over time.
 
 ---
 
-4. IPR inside HBCE
+## 4. IPR inside HBCE
 
 IPR — Identity Primary Record — is the base operational product of the platform.
 
 IPR is designed to connect:
 
+```text
 subject
 → role
 → operation
@@ -105,141 +114,105 @@ subject
 → responsibility
 → continuity
 → verification
+```
 
 HBCE gives IPR the operational environment required to work.
 
 That environment includes:
 
-private verification boundaries;
+- private verification boundaries;
+- EVT event continuity;
+- OPC proof references;
+- registry entries;
+- verification surfaces;
+- evidence-pack tools;
+- fail-closed rules;
+- human validation;
+- audit-ready reporting.
 
-EVT event continuity;
+IPR is the operational record.
 
-OPC proof references;
-
-registry entries;
-
-verification surfaces;
-
-evidence-pack tools;
-
-fail-closed rules;
-
-human validation;
-
-audit-ready reporting.
-
-
+HBCE is the ecosystem where that record becomes usable.
 
 ---
 
-5. IPR profile model
+## 5. IPR profile model
 
 HBCE recognizes three current IPR profiles.
 
-IPR Base
+### IPR Base
 
 IPR Base is a technical R&D record.
 
 It can support:
 
-internal testing;
-
-proof-flow demonstrations;
-
-controlled audit examples;
-
-IPR AI Audit Trail MVP testing;
-
-public proof-reference experiments.
-
+- internal testing;
+- proof-flow demonstrations;
+- controlled audit examples;
+- IPR AI Audit Trail MVP testing;
+- public proof-reference experiments.
 
 IPR Base is not verified identity.
 
-IPR Verified
+### IPR Verified
 
 IPR Verified is the private-verification profile.
 
 It may use:
 
-tax code / fiscal code;
-
-identity card / CIE;
-
-passport;
-
-driving license;
-
-private evidence package.
-
+- tax code / fiscal code;
+- identity card / CIE;
+- passport;
+- driving license;
+- private evidence package.
 
 This evidence belongs only in the private verification layer.
 
 The public layer must not contain:
 
-tax codes;
-
-document numbers;
-
-identity documents;
-
-scans;
-
-portrait images;
-
-biometric material;
-
-private evidence;
-
-personal data;
-
-personal payloads.
-
+- tax codes;
+- document numbers;
+- identity documents;
+- scans;
+- portrait images;
+- biometric material;
+- private evidence;
+- personal data;
+- personal payloads.
 
 The public layer may contain only minimized proof references such as:
 
-subject_label;
+- `subject_label`;
+- `operator_label`, where applicable;
+- `verification_level`;
+- `payload_sha256`;
+- `timestamp`;
+- `status`;
+- `evt_id`;
+- `opc_id`.
 
-verification_level;
-
-payload_sha256;
-
-timestamp;
-
-status;
-
-evt_id;
-
-opc_id.
-
-
-IPR Professional
+### IPR Professional
 
 IPR Professional is the future business / audit workflow profile based on IPR Verified.
 
 It is intended for:
 
-B2B pilots;
-
-audit-ready workflows;
-
-AI governance workflows;
-
-legal-operations documentation;
-
-cybersecurity documentation;
-
-regulated-sector R&D review.
-
+- B2B pilots;
+- audit-ready workflows;
+- AI governance workflows;
+- legal-operations documentation;
+- cybersecurity documentation;
+- regulated-sector R&D review.
 
 It does not create regulated certification, public authority validation, eIDAS qualification, KYC / AML provider status or production SaaS readiness by itself.
 
-
 ---
 
-6. Conceptual model
+## 6. Conceptual model
 
 In the HBCE framework, infrastructure activity can be represented as:
 
+```text
 SUBJECT
 ↓
 IPR / IPR VERIFIED
@@ -255,79 +228,67 @@ REGISTRY REFERENCE
 VERIFY
 ↓
 AUDIT-READY HISTORY
+```
 
 This structure allows the reconstruction of technological activity over time.
 
+The system does not merely store an identifier. It attempts to preserve a verifiable sequence.
 
 ---
 
-7. Framework components
+## 7. Framework components
 
 The HBCE infrastructure combines several components.
 
-Identity layer
+### Identity layer
 
-The Identity Primary Record (IPR) associates actions with operational identity references.
+The Identity Primary Record, or IPR, associates actions with operational identity references.
 
-Private verification layer
+### Private verification layer
 
 IPR Verified may use tax-code and valid identity-document evidence only in the private verification layer.
 
-Event layer
+### Event layer
 
 Operational activity is represented through structured EVT records.
 
-Proof layer
+### Proof layer
 
 OPC connects events, hashes, receipts and verification references into operational proof.
 
-Registry layer
+### Registry layer
 
 Registry files expose minimized public proof references.
 
 The public registry must not store:
 
-tax codes;
+- tax codes;
+- document numbers;
+- identity documents;
+- private evidence;
+- personal data;
+- secrets;
+- credentials;
+- private keys;
+- raw AI prompts;
+- raw AI outputs;
+- client files;
+- production logs;
+- sensitive operational payloads.
 
-document numbers;
-
-identity documents;
-
-private evidence;
-
-personal data;
-
-secrets;
-
-credentials;
-
-private keys;
-
-raw AI prompts;
-
-raw AI outputs;
-
-client files;
-
-production logs;
-
-sensitive operational payloads.
-
-
-Verification layer
+### Verification layer
 
 Verification tools check hash consistency, registry presence, evidence-pack integrity and fail-closed conditions.
 
-Coordination layer
+### Coordination layer
 
 JOKER-C2 demonstrates governed AI-assisted runtime behavior.
 
 JOKER-C2 is a runtime demonstrator, not the primary product and not an autonomous authority.
 
-
 ---
 
-8. Registry and public proof
+## 8. Registry and public proof
 
 HBCE uses a public proof-reference model.
 
@@ -335,61 +296,50 @@ A registry entry may show that a public proof reference exists.
 
 It does not prove by itself:
 
-legal identity;
-
-regulated KYC / AML compliance;
-
-eIDAS qualification;
-
-qualified trust-service status;
-
-public authority approval;
-
-institutional adoption;
-
-cybersecurity assurance;
-
-production authorization.
-
+- legal identity;
+- regulated KYC / AML compliance;
+- eIDAS qualification;
+- qualified trust-service status;
+- public authority approval;
+- institutional adoption;
+- cybersecurity assurance;
+- production authorization.
 
 Supported public verification levels include:
 
+```text
 IPR_BASE_NOT_VERIFIED
 IPR_VERIFIED_PRIVATE_CHECK
 IPR_PROFESSIONAL_PILOT
 RND_ONLY
 NOT_APPLICABLE
+```
 
 These are technical scope labels, not legal or regulatory certifications.
 
-
 ---
 
-9. IPR AI Audit Trail
+## 9. IPR AI Audit Trail
 
 The first MVP use case of HBCE is:
 
+```text
 IPR AI Audit Trail
+```
 
 It demonstrates how AI-assisted document workflows can become:
 
-attributable;
-
-traceable;
-
-human-validated;
-
-event-linked;
-
-proof-linked;
-
-audit-ready;
-
-fail-closed.
-
+- attributable;
+- traceable;
+- human-validated;
+- event-linked;
+- proof-linked;
+- audit-ready;
+- fail-closed.
 
 Minimal flow:
 
+```text
 IPR operational reference
 ↓
 document upload
@@ -407,13 +357,13 @@ EVT event
 OPC proof
 ↓
 audit-ready report
+```
 
-The deployed route may still be named matrix-audit-trail/ for continuity, but the product interpretation is IPR AI Audit Trail.
-
+The deployed route may still be named `matrix-audit-trail/` for continuity, but the product interpretation is IPR AI Audit Trail.
 
 ---
 
-10. Experimental infrastructure
+## 10. Experimental infrastructure
 
 HBCE is not presented as a finished technological network.
 
@@ -421,29 +371,20 @@ The repository documents an experimental architecture exploring how infrastructu
 
 HBCE is not:
 
-a public authority;
-
-a public registry;
-
-a civil identity system;
-
-a legal certification system;
-
-an eIDAS qualified trust service;
-
-a regulated KYC / AML provider;
-
-a banking or financial authorization system;
-
-a production compliance framework by itself.
-
+- a public authority;
+- a public registry;
+- a civil identity system;
+- a legal certification system;
+- an eIDAS qualified trust service;
+- a regulated KYC / AML provider;
+- a banking or financial authorization system;
+- a production compliance framework by itself.
 
 Any production deployment, institutional use, regulated identity-verification workflow or customer pilot requires separate legal, privacy, cybersecurity, compliance, contractual and operational review.
 
-
 ---
 
-11. Vision
+## 11. Vision
 
 The long-term vision of HBCE is to explore technological environments in which digital infrastructures remain historically observable and reconstructible.
 
@@ -451,14 +392,36 @@ In such environments, technological activity leaves structured traces that can b
 
 The current practical path is:
 
+```text
 IPR
 → IPR Verified
 → IPR AI Audit Trail
 → controlled pilot
 → audit-ready proof model
 → production-readiness review
+```
 
 The goal is not to replace human responsibility, legal review or institutional validation.
 
 The goal is to make operational identity, evidence continuity and AI-assisted workflows more verifiable.
+
+---
+
+## 12. Non-claims
+
+HBCE does not claim:
+
+- legal certification;
+- regulatory approval;
+- eIDAS qualification;
+- qualified trust-service status;
+- regulated KYC / AML provider status;
+- public authority approval;
+- public-sector adoption;
+- external audit certification;
+- automated compliance;
+- cybersecurity certification;
+- production-grade enterprise SaaS readiness.
+
+HBCE supports technical reconstruction and public proof minimization, but it does not create legal, institutional, regulatory or production authorization by itself.
 
