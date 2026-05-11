@@ -9,17 +9,19 @@
 
 This document defines the HBCE Network as an R&D network architecture for operational traceability.
 
-The HBCE Network is not presented as an active public infrastructure deployment, territorial coverage network, public authority network, regulated operator network, eIDAS trust network, KYC / AML network or production compliance infrastructure.
+The HBCE Network is not presented as an active public infrastructure deployment, territorial coverage network, public authority network, regulated operator network, eIDAS trust network, KYC / AML network, critical-infrastructure authorization layer or production compliance infrastructure.
 
 The current operational focus is:
 
 ```text
-IPR Verified gateway
+IPR
+→ IPR Verified private verification
 → public proof minimization
 → Registry v3
 → Verify / Verify Pack
 → IPR AI Audit Trail MVP
 → JOKER-C2 runtime demonstration
+→ MATRIX architectural framework
 ```
 
 ---
@@ -39,7 +41,7 @@ It connects:
 - audit-ready outputs;
 - runtime demonstration through JOKER-C2.
 
-The network concept is technical and experimental. It does not imply active territorial deployment or production network coverage.
+The network concept is technical and experimental. It does not imply active territorial deployment, guaranteed network coverage, public-sector adoption, production infrastructure or regulated service availability.
 
 ---
 
@@ -56,9 +58,10 @@ NO_TERRITORIAL_COVERAGE_CLAIM
 NO_REGULATED_CERTIFICATION_NETWORK
 NO_EIDAS_QUALIFIED_TRUST_NETWORK
 NO_KYC_AML_PROVIDER_NETWORK
+NO_CRITICAL_INFRASTRUCTURE_AUTHORIZATION
 ```
 
-The network supports documentation, proof-reference visibility and controlled pilot design.
+The network supports documentation, proof-reference visibility, verification experiments and controlled pilot design.
 
 It does not create:
 
@@ -70,7 +73,8 @@ It does not create:
 - regulated certification;
 - cybersecurity assurance;
 - KYC / AML compliance;
-- eIDAS qualification.
+- eIDAS qualification;
+- critical-infrastructure authorization.
 
 ---
 
@@ -119,7 +123,7 @@ The public network must not expose those materials.
 
 IPR Professional is a future business / audit profile based on IPR Verified.
 
-It remains pilot-oriented and does not create production authorization or regulated certification by itself.
+It remains pilot-oriented and does not create production authorization, regulated certification, KYC / AML provider status or eIDAS qualification by itself.
 
 ### EVT
 
@@ -140,6 +144,10 @@ Verify checks public proof references and local controlled artifacts through det
 ### JOKER-C2
 
 JOKER-C2 is the runtime demonstrator used to show IPR / HBCE / EVT / OPC behavior in a controlled R&D environment.
+
+### MATRIX
+
+MATRIX is the broader architectural framework. It is not the first commercial product and must not be presented as a regulated public infrastructure.
 
 ---
 
@@ -173,7 +181,7 @@ They must not expose:
 - private evidence;
 - sensitive infrastructure payloads.
 
-A public node entry does not certify active deployment, territorial coverage, production status, security assurance, public authority approval or institutional mandate.
+A public node entry does not certify active deployment, territorial coverage, production status, security assurance, public authority approval, institutional mandate or critical-infrastructure authorization.
 
 ---
 
@@ -218,7 +226,7 @@ schemas/hbce-evt.schema.json
 
 Public event entries may show that a public event reference exists.
 
-They do not prove legal identity, KYC / AML compliance, production status, public authority approval or regulatory compliance by themselves.
+They do not prove legal identity, KYC / AML compliance, production status, public authority approval, cybersecurity assurance or regulatory compliance by themselves.
 
 ---
 
@@ -327,7 +335,7 @@ JOKER-C2 demonstrates:
 
 JOKER-C2 is not the commercial product.
 
-JOKER-C2 is not a production authority, autonomous decision authority, security certification system or public-sector control system.
+JOKER-C2 is not a production authority, autonomous decision authority, security certification system, public-sector control system, command-and-control system or production industrial control layer.
 
 ---
 
@@ -404,7 +412,7 @@ Within the Reality Engineering framework, the HBCE Network provides the experime
 ```text
 REALITY ENGINEERING
 ↓
-MATRiX ARCHITECTURAL FRAMEWORK
+MATRIX ARCHITECTURAL FRAMEWORK
 ↓
 HBCE NETWORK / OPERATIONAL ECOSYSTEM
 ↓
@@ -439,7 +447,8 @@ The HBCE Network does not claim:
 - qualified trust-service status;
 - KYC / AML provider status;
 - legal identity certification;
-- financial or banking authorization.
+- financial or banking authorization;
+- critical-infrastructure authorization.
 
 Any production deployment, external customer pilot, public-sector use, regulated compliance positioning, real identity-verification operation or institutional integration requires independent legal, cybersecurity, privacy, compliance and operational review.
 
@@ -468,3 +477,21 @@ The public layer may contain only:
 - public-safe notes.
 
 This separation is mandatory for the IPR Verified gateway model.
+
+---
+
+## 14. Development posture
+
+The network should evolve through controlled and reviewable steps:
+
+```text
+IPR Base
+→ IPR Verified
+→ IPR AI Audit Trail self-pilot
+→ 30-day external pilot
+→ hardening and production-readiness review
+→ IPR Professional packaging
+→ possible institutional exploration
+```
+
+No step in this path creates production deployment, public-sector adoption, critical-infrastructure authorization or regulated certification by itself.
