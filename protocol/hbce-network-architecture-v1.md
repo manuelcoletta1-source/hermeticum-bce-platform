@@ -2,7 +2,7 @@
 
 This document describes the HBCE Network Architecture v1 as a historical and technical R&D reference for HERMETICUM B.C.E. S.r.l.
 
-The architecture is retained as a conceptual model for verifiable operational environments, audit-trail experiments, identity-bound records, append-only event history, and fail-closed verification flows. It is currently aligned with the MATRIX AI Audit Trail MVP and must be read within a non-custodial, hash-only, EU-first research boundary.
+The architecture is retained as a conceptual model for verifiable operational environments, audit-trail experiments, identity-bound records, append-only event history, and fail-closed verification flows. It is currently aligned with the IPR-first public proof model and the IPR AI Audit Trail MVP. MATRIX remains the wider architectural framework. This document must be read within a non-custodial, hash-only, EU-first research boundary.
 
 This document is not a legal standard, not a public authority registry, not a regulated certification framework, not an eIDAS qualified trust service, and not a production compliance system by itself.
 
@@ -10,7 +10,7 @@ This document is not a legal standard, not a public authority registry, not a re
 
 The HBCE network is an experimental technological architecture designed to connect identity references, audit events, evidence records, registry entries, and verification logic.
 
-Its primary current use is the MATRIX AI Audit Trail MVP, where the system records verifiable metadata around AI-assisted activity, human validation, policy checks, governance decisions, evidence-pack creation, and verification results.
+Its primary current use is the IPR AI Audit Trail MVP, where the system records verifiable metadata around IPR attribution, AI-assisted activity, human validation, policy checks, governance decisions, evidence-pack creation, and verification results.
 
 The network does not require public custody of personal data, confidential payloads, private keys, financial assets, regulated identity documents, or client-controlled content.
 
@@ -28,7 +28,7 @@ The HBCE network is composed of five primary layers:
 
 Together, these layers define a research architecture for transforming operational activity into structured, attributable, hash-linked, and auditable records.
 
-In the current MVP boundary, the architecture should be understood as an audit-trail infrastructure, not as a claim of public authority, regulated certification, autonomous authorization, or institutional mandate.
+In the current MVP boundary, the architecture should be understood as an audit-trail infrastructure for IPR-based workflows, not as a claim of public authority, regulated certification, autonomous authorization, or institutional mandate.
 
 ## 3. Identity Reference Layer
 
@@ -57,8 +57,9 @@ Events are described by the IPR event protocol reference defined in:
 
 `protocol/ipr-event-v1.md`
 
-In the MATRIX AI Audit Trail MVP, events may represent:
+In the IPR AI Audit Trail MVP, events may represent:
 
+- IPR attribution;
 - AI output recorded;
 - AI output reviewed;
 - human validation;
@@ -149,9 +150,9 @@ The verification layer may check:
 - ED25519 signatures when real keys are provided;
 - fail-closed invalidation when data is missing, malformed, placeholder-based, or unverifiable.
 
-The coordination layer is conceptually associated with AI JOKER-C2 as a research coordination engine for identity-bound execution, audit continuity, runtime state, and event generation.
+The coordination layer is conceptually associated with JOKER-C2 as a research coordination engine for identity-bound execution, audit continuity, runtime state, and event generation.
 
-In the current public positioning, AI JOKER-C2 must be understood as an R&D coordination component and MATRIX audit-trail demonstrator, not as an autonomous public authority system or unrestricted operational command system.
+In the current public positioning, JOKER-C2 must be understood as an R&D runtime demonstrator for IPR-based audit workflows, not as an autonomous public authority system or unrestricted operational command system.
 
 ## 8. Network Flow
 
@@ -159,15 +160,15 @@ The operational flow of the HBCE network can be represented as:
 
 `ENTITY_REFERENCE → ACTION → EVENT_RECORD → NODE_CONTEXT → REGISTRY_RECORD → VERIFICATION_RESULT → AUDIT_HISTORY`
 
-For MATRIX AI Audit Trail, the preferred flow is:
+For IPR AI Audit Trail, the preferred flow is:
 
-`AI_OUTPUT → POLICY_CHECK → HUMAN_VALIDATION → EVIDENCE_PACK → HASH_ONLY_RECORD → FAIL_CLOSED_VERIFICATION`
+`IPR_ATTRIBUTION → AI_OUTPUT → POLICY_CHECK → HUMAN_VALIDATION → EVIDENCE_PACK → HASH_ONLY_RECORD → FAIL_CLOSED_VERIFICATION`
 
 This sequence makes the audit history inspectable without requiring public exposure of confidential content.
 
-## 9. MATRIX AI Audit Trail Position
+## 9. IPR AI Audit Trail Position
 
-Within the current development roadmap, the HBCE network architecture supports the MATRIX AI Audit Trail MVP.
+Within the current development roadmap, the HBCE network architecture supports the IPR AI Audit Trail MVP.
 
 The MVP goal is to provide a verifiable audit layer for AI-assisted activity by recording structured metadata, responsibility references, policy checks, human validation, evidence-pack hashes, and verification outcomes.
 
@@ -200,14 +201,16 @@ Within the broader HERMETICUM B.C.E. research framework, the HBCE network operat
 
 The conceptual position is:
 
-`HERMETICUM B.C.E. R&D → MATRIX AI Audit Trail → HBCE Network → Nodes / Events / Registry / Verification → Audit-Ready Operational Evidence`
+`HERMETICUM B.C.E. R&D → IPR → IPR AI Audit Trail → HBCE Network → Nodes / Events / Registry / Verification → Audit-Ready Operational Evidence`
+
+MATRIX remains the wider architectural framework around this technical sequence.
 
 The architecture is therefore not presented as a completed public infrastructure, but as a disciplined technical model for building evidence, responsibility, verification, and continuity around AI-assisted and institutionally relevant operations.
 
 ## 12. Version
 
-Architecture specification version: v1.1 R&D reference alignment.
+Architecture specification version: v1.2 R&D reference alignment.
 
 Original v1 concept retained as historical basis.
 
-Current alignment: MATRIX AI Audit Trail MVP, registry v3 boundary, no-custody model, hash-only public records, fail-closed verification.
+Current alignment: IPR-first public proof model, IPR AI Audit Trail MVP, registry v3 boundary, no-custody model, hash-only public records, fail-closed verification.
