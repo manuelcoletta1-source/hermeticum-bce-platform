@@ -16,7 +16,7 @@ The specification supports:
 - technical environment description;
 - identity-reference integration;
 - audit-trail event support;
-- MATRIX AI Audit Trail MVP integration;
+- IPR AI Audit Trail MVP integration;
 - registry visibility;
 - evidence-pack continuity;
 - fail-closed verification;
@@ -26,10 +26,11 @@ The node model is designed for R&D, internal testing, self-pilot activity, B2B/B
 
 ## 2. Current Scope
 
-The current scope of the HBCE node model is the MATRIX AI Audit Trail MVP.
+The current scope of the HBCE node model is the IPR AI Audit Trail MVP.
 
 Within this scope, a node may support the generation or verification of records related to:
 
+- IPR attribution;
 - AI output recording;
 - AI output review;
 - human validation;
@@ -40,6 +41,8 @@ Within this scope, a node may support the generation or verification of records 
 - evidence-pack creation;
 - registry updates;
 - verification results.
+
+MATRIX remains the wider architectural framework. The node specification defines the technical node behavior inside the HBCE operating layer.
 
 The node should publish only minimized technical metadata when public exposure is required. Confidential prompts, AI outputs, personal data, private keys, client files, internal audit payloads, and regulated identity documents must remain outside the public registry.
 
@@ -105,9 +108,9 @@ Coordination reference associated with the node.
 
 Example:
 
-`ai-joker-c2-rnd`
+`joker-c2-rnd`
 
-This field must not be interpreted as an unrestricted autonomous command system. In the current boundary, it refers to an R&D coordination component for runtime state, audit continuity, and event generation.
+This field must not be interpreted as an unrestricted autonomous command system. In the current boundary, it refers to an R&D runtime coordination component for state, audit continuity, governance classification, and event generation.
 
 ### registry_integration
 
@@ -164,7 +167,7 @@ Short human-readable description of the node.
 
 Example:
 
-`HBCE R&D node for MATRIX AI Audit Trail self-pilot and hash-only verification records.`
+`HBCE R&D node for IPR AI Audit Trail self-pilot and hash-only verification records.`
 
 ## 5. Optional Fields
 
@@ -182,7 +185,7 @@ Functional scope of the node.
 
 Example:
 
-`MATRIX_AI_AUDIT_TRAIL_MVP`
+`IPR_AI_AUDIT_TRAIL_MVP`
 
 ### public_registry_path
 
@@ -224,13 +227,13 @@ Example:
   "environment": "hbce-platform-rnd",
   "node_type": "AUDIT_TRAIL_NODE",
   "identity_layer": "ipr-reference-layer",
-  "coordination_engine": "ai-joker-c2-rnd",
+  "coordination_engine": "joker-c2-rnd",
   "registry_integration": "hash-only",
   "verification_mode": "fail-closed",
   "custody_boundary": "no-public-data-custody",
   "status": "rnd-active",
   "operator_reference": "HERMETICUM B.C.E. S.r.l.",
-  "audit_scope": "MATRIX_AI_AUDIT_TRAIL_MVP",
+  "audit_scope": "IPR_AI_AUDIT_TRAIL_MVP",
   "public_registry_path": "registry/nodes.json",
   "evidence_pack_support": true,
   "signature_support": "ED25519",
@@ -238,7 +241,7 @@ Example:
     "SHA-256",
     "SHA-512"
   ],
-  "description": "HBCE R&D node for MATRIX AI Audit Trail self-pilot and hash-only verification records."
+  "description": "HBCE R&D node for IPR AI Audit Trail self-pilot and hash-only verification records."
 }
 
 7. Node Position in the Framework
@@ -247,7 +250,9 @@ Within the HERMETICUM B.C.E. technical framework, an HBCE node operates at the i
 
 The node position can be represented as:
 
-HERMETICUM B.C.E. R&D → MATRIX AI Audit Trail → HBCE Node → Events / Registry / Evidence Pack / Verification
+HERMETICUM B.C.E. R&D → IPR → IPR AI Audit Trail → HBCE Node → Events / Registry / Evidence Pack / Verification
+
+MATRIX remains the wider architectural framework around this technical sequence.
 
 The node exists to support verifiable operational evidence, not to assert public authority or regulated certification.
 
@@ -284,11 +289,11 @@ internal security-sensitive material.
 
 The registry should follow the hash-only and GDPR-minimized publication model.
 
-9. MATRIX AI Audit Trail Integration
+9. IPR AI Audit Trail Integration
 
-For the MATRIX AI Audit Trail MVP, a node may support the following flow:
+For the IPR AI Audit Trail MVP, a node may support the following flow:
 
-AI_OUTPUT → POLICY_CHECK → HUMAN_VALIDATION → EVIDENCE_PACK → HASH_ONLY_RECORD → FAIL_CLOSED_VERIFICATION
+IPR_ATTRIBUTION → AI_OUTPUT → POLICY_CHECK → HUMAN_VALIDATION → EVIDENCE_PACK → HASH_ONLY_RECORD → FAIL_CLOSED_VERIFICATION
 
 In this flow, the node may generate, store locally, or verify records without publishing the underlying confidential payload.
 
@@ -331,9 +336,12 @@ Any production use requires independent legal, cybersecurity, privacy, complianc
 
 11. Version
 
-Specification version: v1.1 R&D reference alignment.
+Specification version: v1.2 R&D reference alignment.
 
 Original v1 concept retained as historical basis.
 
-Current alignment: MATRIX AI Audit Trail MVP, registry v3 boundary, no-custody model, hash-only public records, fail-closed verification.
+Current alignment: IPR AI Audit Trail MVP, registry v3 boundary, no-custody model, hash-only public records, fail-closed verification.
+
+MATRIX remains the wider architectural framework.
+
 
