@@ -1,5 +1,8 @@
 # Contributing to HBCE Platform
 
+**HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA**  
+**HERMETICUM B.C.E. S.r.l.**
+
 Thank you for your interest in contributing to the HBCE Platform.
 
 HBCE Platform is an experimental R&D repository for verifiable technological systems, operational identity, IPR Verified private verification, audit-ready event records, fail-closed governance, and responsibility-preserving AI workflows.
@@ -16,7 +19,7 @@ Some materials may describe conceptual architecture, planned components, or prot
 
 Contributors should avoid language that overstates the operational maturity of the repository.
 
-The repository now uses the following product hierarchy:
+The repository uses the following product hierarchy:
 
 ```text
 IPR = base operational product
@@ -26,8 +29,16 @@ IPR Professional = business / audit profile based on IPR Verified
 IPR AI Audit Trail = first MVP use case
 HBCE = operational ecosystem
 JOKER-C2 = runtime demonstrator
-MATRiX = architectural framework
+MATRIX = architectural framework
 ```
+
+IPR is the first operational product.
+
+IPR AI Audit Trail is the first MVP.
+
+JOKER-C2 is the runtime demonstrator.
+
+MATRIX is the broader architectural framework.
 
 ---
 
@@ -46,9 +57,11 @@ Contributions may include:
 - audit documentation;
 - bug reports;
 - typo and formatting corrections;
-- architectural discussions.
+- architectural discussions;
+- safe R&D pilot documentation;
+- responsible AI governance examples.
 
-All contributions must remain defensive, lawful, authorized, and compatible with the repository’s governance posture.
+All contributions must remain defensive, lawful, authorized, privacy-preserving and compatible with the repository’s governance posture.
 
 ---
 
@@ -60,7 +73,7 @@ The repository may include the following areas:
 - `docs/ipr/` — Identity Primary Record documentation;
 - `docs/joker-c2/` — JOKER-C2 documentation;
 - `docs/hbce/` — HBCE infrastructure documentation;
-- `docs/matrix/` — MATRiX governance and architecture documentation;
+- `docs/matrix/` — MATRIX governance and architecture documentation;
 - `docs/glossary/` — terminology and conceptual references;
 - `registry/` — public registry or verification structures, if present;
 - `protocol/` — protocol specifications, if present;
@@ -84,6 +97,7 @@ Contributions should preserve the following principles:
 - **no public custody of tax codes, document numbers or identity documents**;
 - **clear separation between public verification and private evidence**;
 - **clear separation between IPR Base and IPR Verified**;
+- **clear separation between IPR as product and MATRIX as framework**;
 - **responsibility-preserving AI governance**;
 - **human validation for regulated or sensitive workflows**.
 
@@ -165,7 +179,9 @@ The following contributions are not accepted:
 - attempts to bypass authorization or privacy controls;
 - changes that expose personal or sensitive data in the public layer;
 - changes that introduce tax codes, document numbers, identity documents or private evidence into public files;
-- changes that present IPR Verified as regulated KYC / AML compliance, eIDAS qualification or legal identity certification.
+- changes that present IPR Verified as regulated KYC / AML compliance, eIDAS qualification or legal identity certification;
+- changes that present JOKER-C2 as an autonomous authority or unauthorized command system;
+- changes that present MATRIX as the immediate commercial product instead of the architectural framework.
 
 Security-related contributions must remain defensive, authorized, and limited to systems owned or explicitly authorized by the maintainer.
 
@@ -182,7 +198,8 @@ Documentation contributions should be:
 - careful not to overstate implemented functionality;
 - aligned with the repository’s audit-first and fail-closed posture;
 - aligned with private/public evidence separation;
-- aligned with the IPR Base / IPR Verified / IPR Professional profile model.
+- aligned with the IPR Base / IPR Verified / IPR Professional profile model;
+- aligned with the distinction between IPR, HBCE, JOKER-C2 and MATRIX.
 
 When describing a component, distinguish between:
 
@@ -270,7 +287,8 @@ Future infrastructure contributions may include:
 - audit record templates;
 - AI governance workflow examples;
 - JOKER-C2 fail-closed mapping;
-- defensive cybersecurity governance scenarios.
+- defensive cybersecurity governance scenarios;
+- IPR AI Audit Trail pilot documentation.
 
 Infrastructure contributions must not introduce unsafe automation, unauthorized access paths, public custody of sensitive data or public custody of identity-verification evidence.
 
