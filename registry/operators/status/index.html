@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
   <title>Status — Operator Reference Public Proof</title>
-  <meta name="description" content="Deterministic fail-closed status page for HBCE operator reference public proof commitments. Hash-only, privacy-minimal, append-only registry model, MATRIX AI Audit Trail R&D boundary." />
+  <meta name="description" content="Deterministic fail-closed status page for HBCE operator reference public proof commitments. IPR-first, hash-only, privacy-minimal, append-only registry model, no public data custody." />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
 
@@ -53,39 +53,41 @@
         <div class="hbce-header__row">
           <div class="hbce-brand">
             <div class="hbce-mono">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-            <div class="hbce-muted">HERMETICUM B.C.E. S.r.l.</div>
+            <div class="hbce-muted">HERMETICUM B.C.E. S.r.l. · IPR operator reference status</div>
           </div>
 
           <nav class="hbce-nav" aria-label="Primary">
             <a class="hbce-nav__link" href="/hermeticum-bce-platform/">Home</a>
-            <a class="hbce-nav__link" href="/hermeticum-bce-platform/matrix-audit-trail/">MATRIX Audit</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/ipr/">IPR</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/matrix-audit-trail/">IPR AI Audit Trail</a>
             <a class="hbce-nav__link" href="/hermeticum-bce-platform/registry/">Registry</a>
             <a class="hbce-nav__link" href="/hermeticum-bce-platform/verify/">Verify</a>
-            <a class="hbce-nav__link is-active" href="./">Operator Status</a>
+            <a class="hbce-nav__link is-active" aria-current="page" href="./">Operator Status</a>
           </nav>
         </div>
       </header>
 
       <section class="hbce-section hbce-hero">
-        <div class="hbce-hero__kicker">OPERATOR REFERENCE STATUS · HASH-ONLY · PRIVACY-MINIMAL · FAIL-CLOSED</div>
+        <div class="hbce-hero__kicker">OPERATOR REFERENCE STATUS · IPR PUBLIC PROOF · HASH-ONLY · FAIL-CLOSED</div>
         <h1 class="hbce-hero__title">Operator reference public proof status</h1>
 
         <p class="hbce-hero__lead">
           This page performs deterministic lookup against the public operator reference registry.
           It verifies only privacy-minimal public proof commitments.
-          <br><br>
+          <br /><br />
           Missing match returns <strong>NO_PUBLIC_RECORD</strong>.
           Invalid registry state returns <strong>NON_OPERATIONAL</strong>.
           A public match means only that a hash-only operator reference exists; it does not create legal authorization,
-          professional qualification, public authority approval, regulated compliance, cybersecurity assurance or production authorization.
+          professional qualification, operator certification, public authority approval, regulated compliance,
+          cybersecurity assurance or production authorization.
         </p>
 
         <div class="hbce-card" style="margin-top:14px;">
-          <div class="hbce-mono">R&D BOUNDARY</div>
+          <div class="hbce-mono">R&amp;D BOUNDARY</div>
           <p class="hbce-muted" style="margin-bottom:0;">
-            This status page is a public R&D verification surface for MATRIX AI Audit Trail support workflows.
+            This status page is a public R&amp;D verification surface for IPR-first public proof workflows.
             It is not a public authority register, not a regulated certification system, not a professional licensing system,
-            not an eIDAS qualified trust service and not a production compliance framework by itself.
+            not an operator qualification system, not an eIDAS qualified trust service and not a production compliance framework by itself.
           </p>
         </div>
       </section>
@@ -178,7 +180,7 @@ Missing source → NON_OPERATIONAL
 Invalid registry → NON_OPERATIONAL
 Malformed entry → NON_OPERATIONAL
 No match → NO_PUBLIC_RECORD
-Valid match → PUBLIC_RECORD_PRESENT</pre>
+Valid match → PUBLIC_REFERENCE_PRESENT</pre>
           </div>
 
           <p class="hbce-muted" style="margin-top:12px;">
@@ -188,13 +190,39 @@ Valid match → PUBLIC_RECORD_PRESENT</pre>
         </div>
       </section>
 
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>Operator status non-claims</h2>
+          <p class="hbce-muted">
+            Operator status on this page means only the lookup status of a public proof reference.
+            It does not mean legal operator status, certified-operator status, regulated qualification,
+            professional license, public authority approval or production authorization.
+          </p>
+
+          <div class="hbce-card" style="margin-top:12px;">
+            <pre class="hbce-mono">OPERATOR_STATUS_BOUNDARY
+- lookup status only
+- public proof reference only
+- no certified-operator claim
+- no operator license
+- no public authority approval
+- no regulated qualification
+- no professional status
+- no production authorization
+- no public data custody</pre>
+          </div>
+        </div>
+      </section>
+
       <footer class="hbce-footer">
         <div class="hbce-footer__row">
           <div class="hbce-muted">
-            <span class="hbce-mono">OPERATOR STATUS</span> — public R&D operator reference proof lookup
+            <span class="hbce-mono">OPERATOR STATUS</span> — public R&amp;D operator reference proof lookup
           </div>
           <div class="hbce-footer__links">
             <a href="/hermeticum-bce-platform/">Home</a>
+            <a href="/hermeticum-bce-platform/ipr/">IPR</a>
+            <a href="/hermeticum-bce-platform/matrix-audit-trail/">IPR AI Audit Trail</a>
             <a href="/hermeticum-bce-platform/registry/">Registry</a>
             <a href="/hermeticum-bce-platform/verify/">Verify</a>
             <a href="/hermeticum-bce-platform/claims/">Claims</a>
@@ -366,11 +394,11 @@ Valid match → PUBLIC_RECORD_PRESENT</pre>
       }
 
       function present(entry){
-        resultStatus.textContent = "PUBLIC_RECORD_PRESENT";
+        resultStatus.textContent = "PUBLIC_REFERENCE_PRESENT";
         resultReason.textContent = "deterministic match found in public operator reference registry";
         resultEntry.textContent = JSON.stringify(entry, null, 2);
         verifyLink.href = "/hermeticum-bce-platform/verify/?sha256=" + encodeURIComponent(entry.payload_sha256);
-        setMsg("PUBLIC_RECORD_PRESENT — operator reference proof commitment found.");
+        setMsg("PUBLIC_REFERENCE_PRESENT — operator reference proof commitment found.");
       }
 
       function getParam(name){
