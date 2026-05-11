@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * HBCE Reference Verifier — R&D fail-closed verifier for MATRIX AI Audit Trail
+ * HBCE Reference Verifier — R&D fail-closed verifier for IPR AI Audit Trail
  *
  * Scope:
  * - Verifies append-only ledger structure.
@@ -17,12 +17,19 @@
  * - Not a public authority verifier.
  * - Not a production compliance framework by itself.
  *
- * Recommended MATRIX audit workflow:
+ * Product hierarchy:
+ * - IPR is the first operational product.
+ * - IPR AI Audit Trail is the first MVP.
+ * - HBCE is the governance ecosystem.
+ * - JOKER-C2 is the runtime demonstrator.
+ * - MATRIX is the wider architectural framework.
+ *
+ * Recommended IPR audit workflow:
  *   node protocol/hbce-verify.reference.js protocol/hbce-registry-ledger.example.json --check-chain
  *   node protocol/hbce-verify.reference.js protocol/hbce-registry-ledger.example.json --rebuild > protocol/hbce-registry-ledger.rebuilt.json
  *   node protocol/hbce-verify.reference.js protocol/hbce-registry-ledger.rebuilt.json --check-chain
- *   node protocol/hbce-verify.reference.js protocol/hbce-registry-ledger.rebuilt.json --verify-entity IPR-AI-MATRIX-AUDIT-0001 --allow-rnd-status --allow-placeholder-signatures
- *   node protocol/hbce-verify.reference.js protocol/hbce-registry-ledger.rebuilt.json --verify-event EVT-MATRIX-HUMAN-VALIDATION-0001 --allow-rnd-status --allow-placeholder-signatures
+ *   node protocol/hbce-verify.reference.js protocol/hbce-registry-ledger.rebuilt.json --verify-entity IPR-AI-AUDIT-0001 --allow-rnd-status --allow-placeholder-signatures
+ *   node protocol/hbce-verify.reference.js protocol/hbce-registry-ledger.rebuilt.json --verify-event EVT-IPR-HUMAN-VALIDATION-0001 --allow-rnd-status --allow-placeholder-signatures
  *
  * Production rule:
  * - Do not use --allow-placeholder-signatures in production.
@@ -835,7 +842,14 @@ function buildVerificationEnvelope(query, result) {
     verifier: {
       name: "hbce-verify.reference.js",
       scope: "RND_REFERENCE_FAIL_CLOSED",
-      matrix_use: "MATRIX_AI_AUDIT_TRAIL_MVP",
+      primary_use: "IPR_AI_AUDIT_TRAIL_MVP",
+      product_hierarchy: {
+        product: "IPR",
+        mvp: "IPR_AI_AUDIT_TRAIL",
+        ecosystem: "HBCE",
+        runtime: "JOKER-C2",
+        framework: "MATRIX"
+      },
       allow_rnd_status: ALLOW_RND_STATUS,
       allow_placeholder_signatures: ALLOW_PLACEHOLDER_SIGNATURES
     },
