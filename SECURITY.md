@@ -1,5 +1,8 @@
 # Security Policy
 
+**HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA**  
+**HERMETICUM B.C.E. S.r.l.**
+
 This document defines the security policy for the HBCE Platform repository.
 
 HBCE Platform is an experimental R&D repository for verifiable technological systems, operational identity, IPR Verified private verification, audit-ready event records, fail-closed governance, and responsibility-preserving AI workflows.
@@ -13,6 +16,7 @@ The project is defensive, audit-oriented, and research-focused. Responsible disc
 The HBCE Platform follows these security principles:
 
 - defensive security only;
+- authorized testing only;
 - audit-first documentation;
 - fail-closed governance;
 - hash-oriented public verification where possible;
@@ -27,7 +31,28 @@ If a workflow cannot be verified safely, it should block, escalate or require ma
 
 ---
 
-## 2. IPR Verified security boundary
+## 2. System hierarchy
+
+The current platform hierarchy is:
+
+```text
+IPR = base operational product
+IPR Base = technical R&D record, not verified identity
+IPR Verified = private verification with tax code + valid identity document
+IPR Professional = business / audit profile based on IPR Verified
+IPR AI Audit Trail = first MVP use case
+HBCE = operational ecosystem
+JOKER-C2 = runtime demonstrator
+MATRIX = architectural framework
+```
+
+JOKER-C2 is a runtime demonstrator for governed AI-assisted workflows. It is not a production security platform, SOC replacement, incident-response system, command system or autonomous compliance authority.
+
+IPR AI Audit Trail is an R&D/MVP workflow for AI-assisted document analysis with IPR attribution, document hashing, human validation, EVT continuity, OPC proof and audit-ready reporting. It should be used only with synthetic, public, owned or expressly authorized documents unless a separate legal, privacy and security boundary is established.
+
+---
+
+## 3. IPR Verified security boundary
 
 IPR Verified is the private-verification profile of the platform.
 
@@ -59,6 +84,7 @@ The public repository, public registry, public pages, public demos, public issue
 The public layer may contain only minimized proof references such as:
 
 - subject label;
+- operator label, where applicable;
 - verification level;
 - payload SHA-256;
 - timestamp;
@@ -75,123 +101,93 @@ IPR_VERIFIED_PRIVATE_CHECK
 IPR_PROFESSIONAL_PILOT
 RND_ONLY
 NOT_APPLICABLE
+```
 
 These labels do not create legal identity, regulated KYC / AML compliance, eIDAS qualification, public authority approval, cybersecurity assurance or production authorization by themselves.
 
-
 ---
 
-3. Scope
+## 4. Scope
 
 Security reports may concern:
 
-protocol design issues;
-
-registry integrity issues;
-
-verification logic weaknesses;
-
-event structure weaknesses;
-
-fail-closed logic gaps;
-
-documentation inconsistencies that could create unsafe assumptions;
-
-public GitHub Pages deployment risks;
-
-exposed secrets or unsafe environment variable handling;
-
-dependency or configuration risks;
-
-authentication or authorization assumptions, if applicable;
-
-public data minimization failures;
-
-accidental public exposure of tax codes, document numbers, identity documents or private evidence;
-
-risks affecting IPR / IPR Verified / HBCE / EVT / OPC / JOKER-C2 governance behavior.
-
+- protocol design issues;
+- registry integrity issues;
+- verification logic weaknesses;
+- event structure weaknesses;
+- fail-closed logic gaps;
+- documentation inconsistencies that could create unsafe assumptions;
+- public GitHub Pages deployment risks;
+- exposed secrets or unsafe environment variable handling;
+- dependency or configuration risks;
+- authentication or authorization assumptions, if applicable;
+- public data minimization failures;
+- accidental public exposure of tax codes, document numbers, identity documents or private evidence;
+- risks affecting IPR / IPR Verified / HBCE / EVT / OPC / JOKER-C2 governance behavior.
 
 This repository is primarily a public documentation and gateway layer. Any finding should be limited to repository-owned code, documentation, configuration and public deployment assumptions.
 
-
 ---
 
-4. Out of scope
+## 5. Out of scope
 
 The following activities are not authorized:
 
-unauthorized access;
-
-exploitation against third-party systems;
-
-destructive testing;
-
-denial-of-service testing;
-
-malware development;
-
-credential theft;
-
-phishing;
-
-evasion techniques;
-
-data exfiltration;
-
-attempts to access private accounts, private infrastructure or private data;
-
-testing outside systems owned or explicitly authorized by the repository maintainer.
-
+- unauthorized access;
+- exploitation against third-party systems;
+- destructive testing;
+- denial-of-service testing;
+- malware development;
+- credential theft;
+- phishing;
+- evasion techniques;
+- persistence, covert access or privilege escalation;
+- data exfiltration;
+- command-and-control activity;
+- attempts to access private accounts, private infrastructure or private data;
+- testing outside systems owned or explicitly authorized by the repository maintainer;
+- any activity that exceeds authorization.
 
 Do not submit real secrets, personal data, tax codes, fiscal codes, document numbers, private identity documents, identity scans, customer data, production logs or confidential information in a public issue.
 
-
 ---
 
-5. Reporting a vulnerability
+## 6. Reporting a vulnerability
 
 If you discover a potential vulnerability, governance weakness, documentation inconsistency, public identity-data exposure, or structural security issue, report it responsibly.
 
 Preferred reporting method:
 
-Open a GitHub issue if the report contains no sensitive information.
-
-Use GitHub private vulnerability reporting or direct contact if the issue involves sensitive information.
-
+- Open a GitHub issue only if the report contains no sensitive information.
+- Use GitHub private vulnerability reporting or direct contact if the issue involves sensitive information.
 
 Contact:
 
+```text
 manuelcoletta1@gmail.com
+```
 
 Please include:
 
-a clear description of the issue;
+- a clear description of the issue;
+- affected file, component or documentation area;
+- potential impact;
+- whether the issue affects fail-closed behavior;
+- whether the issue affects public data exposure;
+- whether the issue affects registry integrity or verification logic;
+- whether the issue affects IPR Verified private verification boundaries;
+- whether the issue exposes tax codes, document numbers, identity documents or private evidence;
+- safe remediation suggestions, if available.
 
-affected file, component or documentation area;
-
-potential impact;
-
-whether the issue affects fail-closed behavior;
-
-whether the issue affects public data exposure;
-
-whether the issue affects registry integrity or verification logic;
-
-whether the issue affects IPR Verified private verification boundaries;
-
-whether the issue exposes tax codes, document numbers, identity documents or private evidence;
-
-safe remediation suggestions, if available.
-
-
+Do not include secrets, private keys, identity documents, tax codes, document numbers, customer files, private evidence or other sensitive material in a public report.
 
 ---
 
-6. Report format
+## 7. Report format
 
 Use the following structure when possible:
 
+```text
 Title:
 Affected component:
 Affected file or area:
@@ -205,19 +201,19 @@ IPR Verified boundary relevance:
 Registry / verification relevance:
 Suggested mitigation:
 Additional notes:
+```
 
 Severity levels:
 
-Critical
-High
-Medium
-Low
-Informational
-
+- Critical;
+- High;
+- Medium;
+- Low;
+- Informational.
 
 ---
 
-7. Responsible disclosure
+## 8. Responsible disclosure
 
 Please avoid publicly disclosing sensitive vulnerabilities before they have been reviewed.
 
@@ -227,208 +223,160 @@ Good-faith defensive reports are welcome when they remain within the authorized 
 
 Do not copy, redistribute, index, store, exploit or amplify exposed sensitive material.
 
-
 ---
 
-8. Handling and response
+## 9. Handling and response
 
 Security reports will be reviewed according to their severity and relevance to the repository.
 
 Possible outcomes include:
 
-documentation correction;
-
-configuration hardening;
-
-removal of unsafe material;
-
-registry or verification logic revision;
-
-schema hardening;
-
-dependency review;
-
-fail-closed behavior clarification;
-
-private verification boundary clarification;
-
-accepted risk documentation;
-
-issue closure if the report is out of scope or not reproducible.
-
-
+- documentation correction;
+- configuration hardening;
+- removal of unsafe material;
+- registry or verification logic revision;
+- schema hardening;
+- dependency review;
+- fail-closed behavior clarification;
+- private verification boundary clarification;
+- accepted risk documentation;
+- issue closure if the report is out of scope or not reproducible.
 
 ---
 
-9. Public data and secrets policy
+## 10. Public data and secrets policy
 
 This repository must not contain:
 
-API keys;
-
-private keys;
-
-passwords;
-
-authentication tokens;
-
-wallet private keys;
-
-signing keys;
-
-production secrets;
-
-tax codes;
-
-fiscal codes;
-
-codice fiscale values;
-
-document numbers;
-
-identity document numbers;
-
-identity card / CIE numbers;
-
-passport numbers;
-
-driving license numbers;
-
-identity documents;
-
-identity document scans or photos;
-
-biometric material;
-
-confidential customer data;
-
-private communications;
-
-private identity evidence;
-
-production logs containing personal data;
-
-sensitive operational payloads.
-
+- API keys;
+- private keys;
+- passwords;
+- authentication tokens;
+- wallet private keys;
+- signing keys;
+- production secrets;
+- tax codes;
+- fiscal codes;
+- codice fiscale values;
+- document numbers;
+- identity document numbers;
+- identity card / CIE numbers;
+- passport numbers;
+- driving license numbers;
+- identity documents;
+- identity document scans or photos;
+- biometric material;
+- confidential customer data;
+- private communications;
+- private identity evidence;
+- production logs containing personal data;
+- sensitive operational payloads.
 
 If any such material is discovered, report it immediately and avoid copying, redistributing or exposing it further.
 
-
 ---
 
-10. Public proof and registry policy
+## 11. Public proof and registry policy
 
 The public registry must remain a minimized proof-reference surface.
 
 Allowed public registry material includes:
 
-public minimized labels;
-
-payload SHA-256 values;
-
-verification-level labels;
-
-timestamps;
-
-status fields;
-
-EVT references;
-
-OPC references;
-
-public-safe notes.
-
+- public minimized labels;
+- payload SHA-256 values;
+- verification-level labels;
+- timestamps;
+- status fields;
+- EVT references;
+- OPC references;
+- public-safe notes.
 
 The public registry must not contain:
 
-tax codes;
-
-fiscal codes;
-
-document numbers;
-
-identity documents;
-
-document scans;
-
-biometric data;
-
-private evidence;
-
-private prompts;
-
-private AI outputs;
-
-customer files;
-
-internal endpoints;
-
-secrets or credentials.
-
+- tax codes;
+- fiscal codes;
+- document numbers;
+- identity documents;
+- document scans;
+- biometric data;
+- private evidence;
+- private prompts;
+- private AI outputs;
+- customer files;
+- internal endpoints;
+- secrets or credentials.
 
 A public registry match means only that a public proof reference exists.
 
 It does not certify:
 
-legal identity;
-
-regulated KYC / AML compliance;
-
-eIDAS qualification;
-
-qualified trust-service status;
-
-cybersecurity assurance;
-
-institutional approval;
-
-public authority validation;
-
-production authorization.
-
-
+- legal identity;
+- regulated KYC / AML compliance;
+- eIDAS qualification;
+- qualified trust-service status;
+- cybersecurity assurance;
+- institutional approval;
+- public authority validation;
+- production authorization.
 
 ---
 
-11. MATRIX / HBCE governance relevance
+## 12. IPR / HBCE / JOKER-C2 / MATRIX governance relevance
 
-Security reports should be mapped, when relevant, to the IPR / HBCE / JOKER-C2 / MATRiX governance model.
+Security reports should be mapped, when relevant, to the IPR / HBCE / JOKER-C2 / MATRIX governance model.
 
 A finding may require fail-closed behavior when it affects:
 
-IPR verification;
-
-IPR Verified private verification;
-
-public proof minimization;
-
-registry verification;
-
-event-chain integrity;
-
-evidence continuity;
-
-human validation;
-
-responsibility ownership;
-
-policy validation;
-
-auditability;
-
-public/private data separation;
-
-secret handling;
-
-deployment safety.
-
+- IPR verification;
+- IPR Verified private verification;
+- public proof minimization;
+- registry verification;
+- event-chain integrity;
+- evidence continuity;
+- human validation;
+- responsibility ownership;
+- policy validation;
+- auditability;
+- public/private data separation;
+- secret handling;
+- deployment safety.
 
 Fail-closed means that the affected workflow should block, escalate or require human review rather than continue with an ambiguous or unsafe state.
 
+---
+
+## 13. IPR AI Audit Trail boundary
+
+IPR AI Audit Trail is the first MVP use case of the platform.
+
+It may be used for controlled AI-assisted document workflows only when the documents are:
+
+- synthetic;
+- public;
+- owned;
+- expressly authorized;
+- non-sensitive unless a separate legal, privacy and security boundary exists.
+
+The public demo must not be used for:
+
+- secrets;
+- private keys;
+- credentials;
+- tax codes;
+- identity documents;
+- customer files;
+- confidential third-party data;
+- production logs;
+- private prompts;
+- private AI outputs;
+- regulated evidence requiring protected handling;
+- sensitive operational payloads.
+
+The IPR AI Audit Trail demo supports audit reconstruction and technical proof workflows. It does not create legal certification, external audit certification, cybersecurity certification, regulated compliance or production authorization by itself.
 
 ---
 
-12. Experimental nature
+## 14. Experimental nature
 
 HBCE Platform is an experimental R&D repository.
 
@@ -436,27 +384,32 @@ Some materials may describe conceptual architecture, prototype behavior or plann
 
 The platform does not claim:
 
-legal certification;
-
-regulatory approval;
-
-eIDAS qualification;
-
-qualified trust-service status;
-
-regulated KYC / AML provider status;
-
-public authority approval;
-
-public-sector adoption;
-
-external audit certification;
-
-automated compliance;
-
-production-grade enterprise SaaS readiness.
-
+- legal certification;
+- regulatory approval;
+- eIDAS qualification;
+- qualified trust-service status;
+- regulated KYC / AML provider status;
+- public authority approval;
+- public-sector adoption;
+- external audit certification;
+- automated compliance;
+- cybersecurity certification;
+- production-grade enterprise SaaS readiness.
 
 Security practices will evolve as the architecture, documentation, registry logic, private verification boundary and governance model mature.
+
+---
+
+## 15. Safe operating rule
+
+Use only owned, public, synthetic or explicitly authorized non-sensitive materials in public demos and public tools.
+
+Keep private verification material private.
+
+Keep private evidence private.
+
+Keep secrets out of the repository.
+
+If in doubt, fail closed.
 
 
