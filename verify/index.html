@@ -4,14 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>Verify — IPR Public Proof Gateway</title>
+  <title>Verify — Public Proof Reference Gateway</title>
+
   <meta
     name="description"
-    content="R&D verification gateway for IPR public proof references, EVT records, OPC proofs and hash-oriented registry evidence inside the HBCE ecosystem. Supports browser-side SHA-256 comparison, registry lookup and fail-closed verification states."
+    content="Verify is the HBCE public proof reference gateway for IPR, IPR Card, activation EVT, OPC receipt and minimized registry references. It checks hash-oriented public proof references and fail-closed states without verifying private identity evidence or issuing official identity."
   />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
+
   <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/verify/" />
 
   <link rel="stylesheet" href="../assets/hbce.css" />
@@ -37,7 +39,7 @@
 
     .hbce-kv{
       display:grid;
-      grid-template-columns:170px 1fr;
+      grid-template-columns:180px 1fr;
       gap:8px;
       margin-top:10px;
     }
@@ -75,43 +77,52 @@
 
       <header class="hbce-header">
         <div class="hbce-header__row">
+
           <div class="hbce-brand">
             <div class="hbce-mono">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-            <div class="hbce-muted">HERMETICUM B.C.E. S.r.l. · IPR public proof verification</div>
+            <div class="hbce-muted">HERMETICUM B.C.E. S.r.l. · public proof reference verification</div>
           </div>
 
           <nav class="hbce-nav" aria-label="Primary">
             <a class="hbce-nav__link" href="../">Home</a>
+            <a class="hbce-nav__link" href="../onboarding/">Onboarding</a>
             <a class="hbce-nav__link" href="../ipr/">IPR</a>
-            <a class="hbce-nav__link" href="../what-is-ipr/">What is IPR?</a>
-            <a class="hbce-nav__link" href="../create/">Create</a>
-            <a class="hbce-nav__link" href="../matrix-audit-trail/">IPR AI Audit Trail</a>
-            <a class="hbce-nav__link" href="../registry/">Registry</a>
+            <a class="hbce-nav__link" href="../ipr-card/">IPR Card</a>
+            <a class="hbce-nav__link" href="../joker-c2/">JOKER-C2</a>
             <a class="hbce-nav__link is-active" aria-current="page" href="./">Verify</a>
-            <a class="hbce-nav__link" href="../claims/">Claims</a>
+            <a class="hbce-nav__link" href="../legal/">Legal</a>
           </nav>
+
         </div>
       </header>
 
       <section class="hbce-section hbce-hero">
-        <div class="hbce-hero__kicker">VERIFY · IPR · PUBLIC PROOF · SHA-256 · REGISTRY v3 · FAIL-CLOSED</div>
 
-        <h1 class="hbce-hero__title">Verify public proof references.</h1>
+        <div class="hbce-hero__kicker">
+          VERIFY · IPR · IPR CARD · EVT · OPC · PUBLIC HASH REFERENCE · FAIL-CLOSED
+        </div>
+
+        <h1 class="hbce-hero__title">
+          Verify public proof references, not private identity evidence.
+        </h1>
 
         <p class="hbce-hero__lead">
-          <strong>Verify</strong> is the R&amp;D verification gateway for IPR public proof references,
-          EVT continuity references, OPC proof material and hash-oriented registry evidence inside the HBCE ecosystem.
-          It supports public registry lookup, browser-side SHA-256 comparison and fail-closed verification states.
+          <strong>Verify</strong> is the HBCE public proof reference gateway for IPR records, IPR Card references,
+          activation EVT records, OPC receipts and hash-oriented registry evidence.
           <br /><br />
-          A public proof match means that a minimized public proof reference exists. It does not prove legal identity,
-          regulated KYC / AML compliance, eIDAS qualification, public authority validation, cybersecurity assurance
-          or production authorization by itself.
+          This page checks technical proof references. It does not verify identity documents, tax codes, national
+          identifiers, selfies, liveness videos or private evidence packages. Those belong to the private verification
+          layer and must not be inserted into public verification fields.
+          <br /><br />
+          A public match means that a minimized public proof reference exists. It does not prove official identity,
+          legal validity, regulated KYC / AML compliance, eIDAS qualification, public authority validation, cybersecurity
+          assurance, production authorization or JOKER-C2 access by itself.
         </p>
 
         <div class="hbce-card hbce-small" style="margin-top:14px;">
           <div class="hbce-mono">PUBLIC VERIFICATION STATES</div>
           <p class="hbce-muted" style="margin-bottom:0;">
-            <code>PUBLIC_REFERENCE_PRESENT</code> means that a matching public hash reference exists.
+            <code>PUBLIC_REFERENCE_PRESENT</code> means that a matching public proof reference exists.
             <code>NO_PUBLIC_RECORD</code> means that no matching public proof record was found.
             <code>INVALID</code> means that the input is missing, malformed, forbidden or rejected.
             <code>NON_OPERATIONAL</code> means that the registry or verifier source is unavailable, malformed or inconsistent.
@@ -121,53 +132,61 @@
         <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
           <a class="hbce-btn hbce-btn--primary" href="#registry-verify">Registry verify</a>
           <a class="hbce-btn" href="#technical-verify">Technical verify</a>
-          <a class="hbce-btn" href="../ipr/">IPR</a>
-          <a class="hbce-btn" href="../registry/">Open registry</a>
-          <a class="hbce-btn" href="../matrix-audit-trail/">IPR AI Audit Trail</a>
+          <a class="hbce-btn" href="../registry/">Open Registry</a>
+          <a class="hbce-btn" href="../verify-pack/">Verify Pack</a>
           <a class="hbce-btn" href="../claims/">Claims</a>
         </div>
+
       </section>
 
       <section class="hbce-section">
+
         <div class="hbce-card">
-          <h2>1. What this verifier checks</h2>
+          <div class="hbce-mono">WHAT VERIFY CHECKS</div>
+          <h2>Verify checks minimized proof references.</h2>
 
           <p class="hbce-muted">
-            The verifier checks technical evidence. It can compare local text against an expected SHA-256 value,
-            or it can check whether a <code>payload_sha256</code> reference exists in the public HBCE registry index.
-            This makes it useful for IPR Base records, IPR Verified public proof references, EVT-linked event payloads,
-            OPC receipts, evidence packs and IPR AI Audit Trail reports.
+            The verifier can compare local text against an expected SHA-256 value or check whether a
+            <code>payload_sha256</code> reference exists in the public HBCE registry index. This makes it useful for
+            IPR records, IPR Card public references, activation EVT payloads, OPC receipts, evidence packs and
+            IPR AI Audit Trail reports.
           </p>
 
-          <div class="hbce-card" style="margin-top:12px;">
-            <pre class="hbce-mono">IPR record or proof artifact
-→ payload_sha256 / local SHA-256 computation
-→ registry reference lookup or expected-hash comparison
-→ verification_level inspection
-→ PUBLIC_REFERENCE_PRESENT / NO_PUBLIC_RECORD / INVALID / NON_OPERATIONAL
-→ fail-closed review before validity is claimed</pre>
-          </div>
+          <pre><code>private evidence
+→ private verification package
+→ activation EVT
+→ OPC receipt
+→ public hash reference
+→ registry reference
+→ deterministic verify
+→ PUBLIC_REFERENCE_PRESENT / NO_PUBLIC_RECORD / INVALID / NON_OPERATIONAL</code></pre>
+
+          <p class="hbce-muted">
+            If the proof is missing, malformed, ambiguous, forbidden or inconsistent, the correct behavior is fail-closed.
+          </p>
         </div>
+
       </section>
 
       <section class="hbce-section">
+
         <div class="hbce-grid hbce-grid--3">
 
           <div class="hbce-card">
-            <div class="hbce-mono">IPR BASE</div>
-            <h3>Technical R&amp;D record</h3>
+            <div class="hbce-mono">IPR</div>
+            <h3>Operational identity reference</h3>
             <p class="hbce-muted">
-              IPR Base is a technical R&amp;D record. Verification can check its proof references,
-              but it does not create verified identity status by itself.
+              Verify can check whether a public proof reference exists for an IPR-related record. It does not verify
+              private identity evidence by itself.
             </p>
           </div>
 
           <div class="hbce-card">
-            <div class="hbce-mono">IPR VERIFIED</div>
-            <h3>Private verification profile</h3>
+            <div class="hbce-mono">IPR CARD</div>
+            <h3>Access reference proof</h3>
             <p class="hbce-muted">
-              IPR Verified may be indicated through a minimized public proof reference, but the underlying
-              tax-code and identity-document evidence must remain in the private verification layer.
+              Verify can support IPR Card public reference checks such as status, verification level, activation EVT
+              and OPC receipt references.
             </p>
           </div>
 
@@ -175,34 +194,42 @@
             <div class="hbce-mono">EVT / OPC</div>
             <h3>Event and proof continuity</h3>
             <p class="hbce-muted">
-              EVT and OPC references can support operational event continuity, receipts, verification outputs
-              and audit-oriented reconstruction.
+              EVT and OPC references support operational event continuity, receipts, verification outputs and
+              audit-oriented reconstruction.
             </p>
           </div>
 
         </div>
+
       </section>
 
       <section id="registry-verify" class="hbce-section">
+
         <div class="hbce-card">
-          <h2>2. Registry public reference verification</h2>
+          <div class="hbce-mono">REGISTRY VERIFY</div>
+          <h2>Public registry reference verification</h2>
 
           <p class="hbce-muted">
-            This surface checks whether a <code>payload_sha256</code> commitment is present in the HBCE public registry index.
-            The source is <code>registry/registry.json</code> and it must satisfy registry v3 fail-closed rules,
-            public-data minimization rules and accepted <code>verification_level</code> values.
+            This surface checks whether a <code>payload_sha256</code> commitment is present in the HBCE public registry
+            index. The source is <code>registry/registry.json</code> and it must satisfy registry v3 fail-closed rules,
+            public-data minimization rules and accepted verification-level values.
           </p>
 
           <div class="hbce-grid hbce-grid--2" style="margin-top:14px;">
 
             <div class="hbce-card">
               <div class="hbce-mono">INPUT</div>
-              <h3>payload_sha256 or JSON object</h3>
+              <h3>payload_sha256 or public JSON object</h3>
 
               <p class="hbce-muted">
-                Insert a 64-character SHA-256 value, or paste a JSON object containing <code>payload_sha256</code>.
+                Insert a 64-character SHA-256 value, or paste a public JSON object containing <code>payload_sha256</code>.
                 If the JSON does not contain <code>payload_sha256</code>, the verifier computes a local SHA-256 commitment
                 from the JSON after removing common hash-output fields.
+              </p>
+
+              <p class="hbce-muted">
+                Do not paste private identity evidence, tax codes, national identifiers, document numbers, credentials,
+                private keys, selfies, videos or client payloads.
               </p>
 
               <label class="hbce-muted" for="publicHash">payload_sha256</label>
@@ -211,12 +238,12 @@
                 class="hbce-field"
                 placeholder="64-character lowercase sha256" />
 
-              <label class="hbce-muted" for="publicJson" style="display:block;margin-top:12px;">JSON object — optional</label>
+              <label class="hbce-muted" for="publicJson" style="display:block;margin-top:12px;">Public JSON object — optional</label>
               <textarea
                 id="publicJson"
                 class="hbce-field"
                 rows="10"
-                placeholder='{"payload_sha256":"64-character lowercase sha256", "verification_level":"IPR_BASE_NOT_VERIFIED"}'></textarea>
+                placeholder='{"payload_sha256":"64-character lowercase sha256","verification_level":"L2","status":"ACTIVE","kind":"IPR_CARD_PUBLIC_REFERENCE"}'></textarea>
 
               <div class="hbce-rowbtn">
                 <button class="hbce-btn hbce-btn--primary" type="button" id="runRegistryVerify">Run registry verify</button>
@@ -248,37 +275,49 @@
 
           </div>
         </div>
+
       </section>
 
       <section class="hbce-section">
+
         <div class="hbce-card">
-          <h2>3. Position in the IPR evidence flow</h2>
+          <div class="hbce-mono">POSITION IN THE IPR FLOW</div>
+          <h2>Verify is the reconstruction layer.</h2>
 
           <p class="hbce-muted">
-            Verification is the reconstruction layer of the IPR evidence model. Creation prepares the record,
-            private verification may support IPR Verified, EVT can describe the event, OPC can generate proof material,
-            the registry can expose minimized public references, and Verify checks whether the available evidence matches.
+            Verification is not activation. Verification checks whether a public or local proof reference matches.
+            Activation and access require private verification, review, policy and access-state logic.
           </p>
 
-          <div class="hbce-card">
-            <pre class="hbce-mono">CREATE IPR BASE
-→ OPTIONAL PRIVATE VERIFICATION FOR IPR VERIFIED
-→ GENERATE EVT / OPC / EVIDENCE PACK
-→ EXPOSE OR STORE HASH-ORIENTED PUBLIC REFERENCE
-→ VERIFY LOCAL RECORD OR PAYLOAD_SHA256
-→ INSPECT VERIFICATION_LEVEL
-→ PUBLIC_REFERENCE_PRESENT / NO_PUBLIC_RECORD / INVALID / NON_OPERATIONAL
-→ FAIL-CLOSED REVIEW</pre>
-          </div>
+          <pre><code>CREATE
+→ IPR_DRAFT / IPR_PENDING
+
+ACTIVATE
+→ private review
+→ activation EVT
+→ OPC receipt
+→ IPR_ACTIVE where allowed
+
+VERIFY
+→ public proof reference check
+→ registry lookup
+→ deterministic hash comparison
+→ fail-closed result
+
+JOKER-C2
+→ access only where IPR state and policy allow it</code></pre>
         </div>
+
       </section>
 
       <section id="technical-verify" class="hbce-section">
+
         <div class="hbce-card">
-          <h2>4. Technical deterministic verification</h2>
+          <div class="hbce-mono">TECHNICAL VERIFY</div>
+          <h2>Technical deterministic verification</h2>
 
           <p class="hbce-muted">
-            Paste local content exactly as stored and compare it against the expected SHA-256 value.
+            Paste public or controlled local content exactly as stored and compare it against the expected SHA-256 value.
             This tool hashes the exact UTF-8 text inserted by the user. No normalization is applied.
           </p>
 
@@ -289,16 +328,17 @@
               <h3>Local text</h3>
 
               <p class="hbce-muted">
-                Paste the full local text to hash. This may be an IPR release object, EVT payload,
-                OPC receipt, evidence-pack manifest, registry record or controlled proof artifact.
-                Do not paste tax codes, identity documents, document numbers, secrets, credentials or private evidence.
+                Paste the full local text to hash. This may be an IPR public reference, IPR Card public object,
+                EVT payload, OPC receipt, evidence-pack manifest, registry record or controlled proof artifact.
+                Do not paste private identity documents, tax codes, national identifiers, secrets, credentials or
+                private evidence.
               </p>
 
               <textarea
                 id="release"
                 class="hbce-field"
                 rows="10"
-                placeholder='{"proto":"HBCE-REGISTRY-v3","kind":"IPR_PUBLIC_PROOF_RND_REFERENCE",...}'></textarea>
+                placeholder='{"kind":"IPR_CARD_PUBLIC_REFERENCE","payload_sha256":"...","status":"ACTIVE"}'></textarea>
 
               <div class="hbce-mono hbce-kv">
                 <span class="hbce-muted">bytes</span><span id="statBytes">0</span>
@@ -311,8 +351,8 @@
               <h3>Expected proof hash</h3>
 
               <p class="hbce-muted">
-                Paste the expected SHA-256 from a public registry entry, evidence-pack reference,
-                OPC receipt or controlled proof record.
+                Paste the expected SHA-256 from a public registry entry, evidence-pack reference, OPC receipt or
+                controlled proof record.
               </p>
 
               <input
@@ -321,14 +361,7 @@
                 placeholder="expected sha256 — 64 lowercase hex chars" />
 
               <div class="hbce-muted hbce-mono" style="margin-top:10px;">
-                Lowercase hex only. Invalid format returns FAIL.
-              </div>
-
-              <div class="hbce-card hbce-small" style="margin-top:12px">
-                <div class="hbce-mono hbce-muted">Reference</div>
-                <div class="hbce-muted">
-                  Public reference presence and verification level can be inspected through <a href="../registry/">Registry</a>.
-                </div>
+                Lowercase hex only. Invalid format returns fail-closed.
               </div>
             </div>
 
@@ -362,9 +395,11 @@
 
           </div>
         </div>
+
       </section>
 
       <section class="hbce-section">
+
         <div class="hbce-grid hbce-grid--3">
 
           <div class="hbce-card">
@@ -386,15 +421,15 @@
             <h3>Missing means failure</h3>
 
             <p class="hbce-muted">
-              Missing text, invalid hash format, invalid registry state, no public match, forbidden identity fields
-              or mismatch never produces implicit validity.
+              Missing text, invalid hash format, invalid registry state, no public match, forbidden identity fields or
+              mismatch never produce implicit validity.
             </p>
 
             <div class="hbce-mono hbce-muted">
               missing → INVALID<br />
               malformed → INVALID<br />
               mismatch → INVALID<br />
-              forbidden public identity data → INVALID<br />
+              forbidden identity data → INVALID<br />
               no registry match → NO_PUBLIC_RECORD<br />
               registry unavailable → NON_OPERATIONAL
             </div>
@@ -408,7 +443,7 @@
               Public reference presence confirms only that a public hash reference exists.
               It does not replace private evidence review, identity verification, legal validation,
               regulated KYC / AML due diligence, operator qualification, institutional review,
-              contractual acceptance or production assurance.
+              contractual acceptance, cybersecurity assurance or production approval.
             </p>
 
             <div class="hbce-rowbtn">
@@ -419,57 +454,68 @@
           </div>
 
         </div>
+
       </section>
 
       <section class="hbce-section">
+
         <div class="hbce-warning hbce-small">
           <div class="hbce-mono">R&amp;D AND NO-CUSTODY NOTICE</div>
 
           <p class="hbce-muted" style="margin-bottom:0;">
-            This verifier performs local browser-side checks and public registry lookups. It does not upload private evidence,
-            does not custody private keys, does not store user payloads, and does not transform a public hash reference into
-            regulated certification, public authority validation, legal authorization, regulated KYC / AML compliance,
-            civil identity status or eIDAS qualified trust-service status.
+            This verifier performs local browser-side checks and public registry lookups. It does not upload private
+            evidence, does not custody private keys, does not store user payloads, and does not transform a public hash
+            reference into regulated certification, public authority validation, legal authorization, regulated KYC / AML
+            compliance, civil identity status, official European identity, JOKER-C2 access or eIDAS qualified trust-service status.
           </p>
         </div>
+
       </section>
 
       <section class="hbce-section">
+
         <div class="hbce-card">
-          <h2>5. Next operational path</h2>
+          <div class="hbce-mono">NEXT OPERATIONAL PATH</div>
+          <h2>From proof check to operational review</h2>
 
           <p class="hbce-muted">
-            Use Create to prepare the IPR Base record, use private verification only in controlled environments
-            for IPR Verified, use Registry or Evidence Pack to manage minimized proof references, then use Verify
-            to check the evidence before presenting the record as operationally valid.
+            Use Create to prepare an IPR record, Activate to review and move toward IPR_ACTIVE, Registry to expose
+            minimized proof references, Verify Pack to review package evidence and Verify to check public proof references.
+            JOKER-C2 access remains separate and depends on active IPR state and policy.
           </p>
 
           <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
             <a class="hbce-btn hbce-btn--primary" href="../create/">Create IPR</a>
-            <a class="hbce-btn" href="../activate/">IPR Verified</a>
-            <a class="hbce-btn" href="../ipr/">Read IPR</a>
+            <a class="hbce-btn" href="../activate/">Activate IPR</a>
+            <a class="hbce-btn" href="../ipr-card/">IPR Card</a>
             <a class="hbce-btn" href="../registry/">Registry</a>
             <a class="hbce-btn" href="../verify-pack/">Verify Pack</a>
-            <a class="hbce-btn" href="../matrix-audit-trail/">IPR AI Audit Trail</a>
+            <a class="hbce-btn" href="../joker-c2/">JOKER-C2</a>
           </div>
         </div>
+
       </section>
 
       <footer class="hbce-footer">
+
         <div class="hbce-footer__row">
+
           <div class="hbce-muted">
-            <span class="hbce-mono">VERIFY</span> — IPR public proof / EVT / OPC evidence gateway
+            <span class="hbce-mono">VERIFY</span> — public proof reference gateway · no private identity evidence
           </div>
+
           <div class="hbce-footer__links">
+            <a href="../onboarding/">Onboarding</a>
             <a href="../ipr/">IPR</a>
-            <a href="../create/">Create</a>
-            <a href="../matrix-audit-trail/">IPR AI Audit Trail</a>
-            <a href="../joker-c2/">JOKER-C2</a>
+            <a href="../ipr-card/">IPR Card</a>
+            <a href="../activate/">Activate</a>
             <a href="../registry/">Registry</a>
             <a href="../verify-pack/">Verify Pack</a>
             <a href="../claims/">Claims</a>
           </div>
+
         </div>
+
       </footer>
 
     </main>
@@ -495,14 +541,21 @@
 
     const ACCEPTED_ENTRY_STATUS = new Set([
       "ACTIVE",
+      "PENDING",
+      "REVIEW_REQUIRED",
       "REVOKED",
       "SUSPENDED",
+      "EXPIRED",
       "RND_ONLY",
       "RETAINED"
     ]);
 
     const ACCEPTED_VERIFICATION_LEVELS = new Set([
       "",
+      "L0",
+      "L1",
+      "L2",
+      "L3",
       "IPR_BASE_NOT_VERIFIED",
       "IPR_VERIFIED_PRIVATE_CHECK",
       "IPR_PROFESSIONAL_PILOT",
@@ -514,7 +567,18 @@
       "name",
       "nickname",
       "territory",
+      "address",
+      "date_of_birth",
+      "birth_date",
+      "place_of_birth",
+      "email",
+      "phone",
+      "telephone",
       "raw_identifier",
+      "national_identifier",
+      "national_identification_number",
+      "national_tax_identifier",
+      "tax_identifier",
       "tax_code",
       "fiscal_code",
       "codice_fiscale",
@@ -524,12 +588,19 @@
       "cie_number",
       "passport_number",
       "driving_license_number",
+      "residence_permit_number",
       "identity_document",
       "regulated_identity_document",
       "identity_document_scan",
+      "document_scan",
       "portrait_image",
+      "selfie",
+      "liveness_video",
+      "video_verification",
       "biometric_payload",
       "private_evidence",
+      "private_evidence_package",
+      "manual_review_notes",
       "personal_payload",
       "personal_data",
       "api_key",
@@ -624,6 +695,10 @@
       );
     }
 
+    function statusOf(entry){
+      return clean(entry.status || entry.ipr_status || entry.card_status || "");
+    }
+
     function setRegistryStatus(label, map, details){
       $("registryStatus").textContent = label;
 
@@ -654,6 +729,7 @@
       const encoder = new TextEncoder();
       const data = encoder.encode(text);
       const digest = await crypto.subtle.digest("SHA-256", data);
+
       return toHex(digest);
     }
 
@@ -709,9 +785,10 @@
       const parsedTime = Date.parse(clean(entry.timestamp));
       if (!Number.isFinite(parsedTime)) return "ENTRY_INVALID_TIMESTAMP";
 
-      if (!clean(entry.status)) return "ENTRY_MISSING_STATUS";
+      const entryStatus = statusOf(entry);
+      if (!entryStatus) return "ENTRY_MISSING_STATUS";
 
-      if (!ACCEPTED_ENTRY_STATUS.has(clean(entry.status))) {
+      if (!ACCEPTED_ENTRY_STATUS.has(entryStatus)) {
         return "ENTRY_STATUS_NOT_ACCEPTED";
       }
 
@@ -733,7 +810,6 @@
       }
 
       if (!Array.isArray(registry.entries)) return "REGISTRY_ENTRIES_MISSING";
-
       if (!registry.rules || typeof registry.rules !== "object") return "REGISTRY_RULES_MISSING";
 
       if (registry.rules.failure_mode !== EXPECTED_FAILURE_MODE) {
@@ -824,6 +900,7 @@
       }
 
       const verificationLevel = verificationLevelOf(parsed);
+      const publicStatus = statusOf(parsed);
 
       if (verificationLevel && !ACCEPTED_VERIFICATION_LEVELS.has(verificationLevel)) {
         return {
@@ -832,12 +909,20 @@
         };
       }
 
+      if (publicStatus && !ACCEPTED_ENTRY_STATUS.has(publicStatus)) {
+        return {
+          ok: false,
+          reason: "STATUS_NOT_ACCEPTED"
+        };
+      }
+
       if (isSha256HexLower(parsed.payload_sha256)) {
         return {
           ok: true,
           hash: normalizeSha(parsed.payload_sha256),
           source: "json_payload_sha256",
-          verification_level: verificationLevel || "NOT_APPLICABLE"
+          verification_level: verificationLevel || "NOT_APPLICABLE",
+          status: publicStatus || "NOT_APPLICABLE"
         };
       }
 
@@ -848,7 +933,8 @@
         ok: true,
         hash: computed,
         source: "computed_from_local_json_without_hash_output_fields",
-        verification_level: verificationLevel || "NOT_APPLICABLE"
+        verification_level: verificationLevel || "NOT_APPLICABLE",
+        status: publicStatus || "NOT_APPLICABLE"
       };
     }
 
@@ -868,7 +954,7 @@
             result: "INPUT_REJECTED",
             reason: target.reason
           },
-          "Fail-closed: missing, invalid or forbidden input does not produce public reference validity."
+          "Fail-closed: missing, invalid, forbidden or ambiguous input does not produce public reference validity."
         );
         return;
       }
@@ -899,6 +985,7 @@
             payload_sha256: target.hash,
             input_source: target.source,
             verification_level: target.verification_level || "NOT_APPLICABLE",
+            status: target.status || "NOT_APPLICABLE",
             result: "NO_MATCH"
           },
           "No matching registry.entries[].payload_sha256 record was found."
@@ -907,15 +994,17 @@
       }
 
       const matchVerificationLevel = verificationLevelOf(match) || "NOT_APPLICABLE";
+      const matchStatus = statusOf(match) || "NOT_APPLICABLE";
 
       setRegistryStatus(
         "PUBLIC_REFERENCE_PRESENT",
         {
           payload_sha256: target.hash,
           input_source: target.source,
+          registry_status: matchStatus,
           registry_verification_level: matchVerificationLevel,
           result: "MATCH_FOUND",
-          caution: "PUBLIC_HASH_REFERENCE_ONLY"
+          caution: "PUBLIC_PROOF_REFERENCE_ONLY"
         },
         JSON.stringify(match, null, 2)
       );
@@ -961,7 +1050,9 @@
           parsed = null;
         }
 
-        if (parsed && hasForbiddenField(parsed)) {
+        const forbidden = parsed ? hasForbiddenField(parsed) : null;
+
+        if (forbidden) {
           setStatus("INVALID (FORBIDDEN PUBLIC FIELD)", "", "");
           return;
         }
