@@ -1,79 +1,534 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Onboarding operativo — HERMETICUM B.C.E.</title>
-  <style>
-    :root { color-scheme: dark; }
-    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:#0b0f14; color:#e6edf3; }
-    a { color:#9cd1ff; text-decoration:none; }
-    a:hover { text-decoration:underline; }
-    .wrap { max-width: 980px; margin: 0 auto; padding: 28px 18px; }
-    header { display:flex; gap:16px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; }
-    .brand h1 { margin:0; font-size: 18px; letter-spacing: .4px; }
-    .brand .tag { opacity:.85; margin-top:6px; font-size: 13px; }
-    nav { display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
-    .pill { border:1px solid rgba(255,255,255,.14); padding:8px 10px; border-radius: 999px; font-size: 13px; background: rgba(255,255,255,.03); }
-    .card { margin-top: 14px; padding: 16px; border-radius: 14px; border:1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.02); }
-    h2 { margin: 12px 0 8px; font-size: 22px; }
-    p, li { opacity:.9; line-height:1.55; }
-    ul, ol { margin: 8px 0 0 18px; }
-    code { background: rgba(255,255,255,.06); padding: 2px 6px; border-radius: 8px; }
-    footer { margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.12); display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
-    .legal { opacity:.75; font-size: 12px; }
-  </style>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>IPR Onboarding Gateway — HERMETICUM B.C.E.</title>
+
+  <meta
+    name="description"
+    content="IPR Onboarding Gateway is the HBCE Platform flow for operational identity onboarding: registration, identity evidence, national identifier reference, private verification, IPR_PENDING, IPR_ACTIVE, IPR Card issuance and governed access to JOKER-C2."
+  />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b0f14" />
+
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/onboarding/" />
+
+  <link rel="stylesheet" href="../assets/hbce.css" />
+  <script defer src="../assets/hbce-ui.js"></script>
 </head>
+
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <h1><a href="../">HERMETICUM B.C.E.</a></h1>
-        <div class="tag">Blindata · Computabile · Evolutiva</div>
-      </div>
-      <nav>
-        <a class="pill" href="../onboarding/">Onboarding</a>
-        <a class="pill" href="../verify/">Verify</a>
-        <a class="pill" href="../governance/">Governance</a>
-        <a class="pill" href="../manuale/">Manuale</a>
-        <a class="pill" href="../istituzioni-ue/">Istituzioni UE</a>
-      </nav>
-    </header>
+  <div class="hbce-container">
+    <main class="hbce-main">
 
-    <div class="card">
-      <h2>Onboarding operativo</h2>
-      <p>Questa sezione descrive il flusso minimo “fail-closed” per entrare nel perimetro ΦΩ · Fase 1 senza introdurre custodia dati.</p>
+      <header class="hbce-header">
+        <div class="hbce-header__row">
 
-      <h3>Obiettivo</h3>
-      <ul>
-        <li>Definire un soggetto responsabile (ruolo umano).</li>
-        <li>Stabilire un <code>Decision Gate</code> che non esegue senza prova.</li>
-        <li>Produrre un “evidence pack” verificabile nel tempo (hash-only).</li>
-      </ul>
+          <div class="hbce-brand">
+            <div class="hbce-mono">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
+            <div class="hbce-muted">HERMETICUM B.C.E. S.r.l. · IPR Onboarding Gateway</div>
+          </div>
 
-      <h3>Flusso minimo (Fase 1)</h3>
-      <ol>
-        <li>Identifica il contesto: processo, sistema, rischio, confini.</li>
-        <li>Nomina la responsabilità: chi può “pagare il costo” dell’atto.</li>
-        <li>Configura il gate: regole, input richiesti, condizione di blocco.</li>
-        <li>Definisci l’evidenza: cosa viene hashato, dove si conserva, come si verifica.</li>
-        <li>Test fail-closed: prova l’assenza di prova → nessuna esecuzione.</li>
-      </ol>
+          <nav class="hbce-nav" aria-label="Primary">
+            <a class="hbce-nav__link" href="../">Home</a>
+            <a class="hbce-nav__link is-active" aria-current="page" href="../onboarding/">Onboarding</a>
+            <a class="hbce-nav__link" href="../ipr/">IPR</a>
+            <a class="hbce-nav__link" href="../ipr-card/">IPR Card</a>
+            <a class="hbce-nav__link" href="../joker-c2/">JOKER-C2</a>
+            <a class="hbce-nav__link" href="../verify/">Verify</a>
+            <a class="hbce-nav__link" href="../legal/">Legal</a>
+          </nav>
 
-      <h3>Output</h3>
-      <ul>
-        <li>Policy dichiarata (UE-first · audit-first · fail-closed · hash-only)</li>
-        <li>Traccia tecnica riproducibile (verifica deterministica)</li>
-        <li>Nessuna custodia di dati personali (solo impronte / hash)</li>
-      </ul>
-    </div>
+        </div>
+      </header>
 
-    <footer>
-      <div class="legal">HERMETICUM B.C.E. S.r.l. — UE-first · GDPR-min · HASH-only · AUDIT · FAIL-CLOSED</div>
-      <div class="legal">
-        <a href="../privacy/">Privacy</a> · <a href="../terms/">Terms</a> · <a href="../status/">Status</a> · <a href="../manifest/">Manifest</a>
-      </div>
-    </footer>
+      <section class="hbce-section hbce-hero">
+
+        <div class="hbce-hero__kicker">
+          PLATFORM · REGISTRATION · IDENTITY EVIDENCE · IPR_PENDING · IPR_ACTIVE · JOKER-C2
+        </div>
+
+        <h1 class="hbce-hero__title">
+          Verify who you are. Receive your IPR Card. Access governed AI.
+        </h1>
+
+        <p class="hbce-hero__lead">
+          IPR Onboarding Gateway is the operational access path of the HERMETICUM B.C.E. Platform.
+          It is not a simple email-and-password registration page. It is the R&amp;D model for registering,
+          verifying and enabling a subject before access to governed AI workflows.
+          <br /><br />
+          The target sequence is: registration, identity evidence, national tax identifier or national identification
+          number, private verification package, provisional IPR state, review, IPR Card issuance, operational certificate
+          and governed access to JOKER-C2.
+          <br /><br />
+          This page describes the intended onboarding logic. It does not create regulated identity issuance,
+          banking service, public authority validation, qualified eIDAS certification or production KYC/AML service.
+        </p>
+
+        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+          <a class="hbce-btn hbce-btn--primary" href="../create/">Prepare IPR</a>
+          <a class="hbce-btn" href="../activate/">Activate IPR</a>
+          <a class="hbce-btn" href="../ipr-card/">View IPR Card</a>
+          <a class="hbce-btn" href="../joker-c2/">Open JOKER-C2</a>
+        </div>
+
+      </section>
+
+      <section class="hbce-section">
+
+        <div class="hbce-card">
+          <div class="hbce-mono">WHY ONBOARDING EXISTS</div>
+          <h2>JOKER-C2 must not start from a generic account</h2>
+
+          <p class="hbce-muted">
+            Classic AI access can start with an email, password and subscription. JOKER-C2 is designed differently.
+            It starts from a verified operational identity reference. The user is not treated only as a generic account,
+            but as an operational subject connected to role, responsibility, event continuity and proof references.
+          </p>
+
+          <div class="hbce-grid hbce-grid--2" style="margin-top:14px;">
+
+            <div class="hbce-card">
+              <div class="hbce-mono">CLASSIC AI</div>
+              <h3>Email-first access</h3>
+              <pre><code>email
+→ password
+→ payment
+→ generic account
+→ access to model</code></pre>
+              <p class="hbce-muted">
+                This model grants access to a model, but it does not by itself create an operational identity chain
+                with IPR, EVT, OPC, audit state and responsibility continuity.
+              </p>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">HBCE / JOKER-C2</div>
+              <h3>Verified IPR access</h3>
+              <pre><code>registration
+→ document evidence
+→ national identifier reference
+→ private verification package
+→ IPR Card
+→ operational certificate
+→ governed AI runtime</code></pre>
+              <p class="hbce-muted">
+                This model is intended for controlled workflows where access must remain attributable, auditable,
+                policy-bound and fail-closed.
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <section class="hbce-section">
+
+        <h2>Onboarding sequence</h2>
+
+        <div class="hbce-grid hbce-grid--3">
+
+          <div class="hbce-card">
+            <div class="hbce-mono">STEP 01</div>
+            <h3>Registration</h3>
+            <p class="hbce-muted">
+              The subject starts with basic account data: email, phone, password or passkey, country, language and
+              subject type.
+            </p>
+            <p class="hbce-muted">
+              Subject types may include natural person, legal entity, operator, company, institution, professional
+              or researcher.
+            </p>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">STEP 02</div>
+            <h3>Identity evidence</h3>
+            <p class="hbce-muted">
+              The private verification layer may request an accepted identity-document category such as identity card,
+              CIE, passport, driving license or residence permit where applicable.
+            </p>
+            <p class="hbce-muted">
+              For European use, the neutral wording is <strong>national tax identifier / national identification number</strong>.
+            </p>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">STEP 03</div>
+            <h3>Verification package</h3>
+            <p class="hbce-muted">
+              A controlled evidence package may include document metadata, private review notes, selfie, short video or
+              liveness check in future scoped implementations.
+            </p>
+            <p class="hbce-muted">
+              Sensitive identity material must remain private or controlled. It must not be published in the public registry.
+            </p>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">STEP 04</div>
+            <h3>IPR_PENDING</h3>
+            <p class="hbce-muted">
+              Until verification is completed, the record remains provisional. It can exist as a pending operational
+              state, but it must not grant full governed runtime access.
+            </p>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">STEP 05</div>
+            <h3>Review and activation</h3>
+            <p class="hbce-muted">
+              A verified subject can move from IPR_PENDING to IPR_ACTIVE only after review, policy validation and
+              controlled activation.
+            </p>
+            <p class="hbce-muted">
+              Activation can generate an EVT event and an OPC proof reference.
+            </p>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">STEP 06</div>
+            <h3>IPR Card and access</h3>
+            <p class="hbce-muted">
+              The user receives an IPR Card and an operational certificate reference. JOKER-C2 access is allowed only
+              where the IPR state and policy conditions permit it.
+            </p>
+          </div>
+
+        </div>
+
+      </section>
+
+      <section class="hbce-section">
+
+        <div class="hbce-card">
+          <div class="hbce-mono">STATE MACHINE</div>
+          <h2>IPR is a stateful operational identity record</h2>
+
+          <p class="hbce-muted">
+            Onboarding must not be treated as a single static form. It is a state transition process. Each state has
+            consequences for verification, access, audit and runtime permission.
+          </p>
+
+          <pre><code>IPR_DRAFT
+→ registration started but not submitted
+
+IPR_PENDING
+→ evidence submitted and waiting for review
+
+IPR_REVIEW_REQUIRED
+→ verification requires correction, escalation or human review
+
+IPR_ACTIVE
+→ operational identity verified inside HBCE
+
+IPR_SUSPENDED
+→ temporary restriction due to policy, risk or review condition
+
+IPR_REVOKED
+→ no longer valid for operational access
+
+IPR_EXPIRED
+→ validity period ended and renewal is required</code></pre>
+
+        </div>
+
+      </section>
+
+      <section class="hbce-section">
+
+        <div class="hbce-card">
+          <div class="hbce-mono">ACCESS CONTROL</div>
+          <h2>JOKER-C2 access depends on IPR state</h2>
+
+          <p class="hbce-muted">
+            The runtime access rule is fail-closed. Missing, provisional, suspended, revoked or expired identity states
+            must not produce full runtime access.
+          </p>
+
+          <pre><code>NO_IPR
+→ ACCESS_DENIED
+
+IPR_DRAFT
+→ ACCESS_DENIED
+
+IPR_PENDING
+→ ACCESS_DENIED / REVIEW_REQUIRED
+
+IPR_REVIEW_REQUIRED
+→ ACCESS_DENIED / HUMAN_REVIEW_REQUIRED
+
+IPR_ACTIVE
+→ ACCESS_ALLOWED
+
+IPR_SUSPENDED
+→ ACCESS_DENIED
+
+IPR_REVOKED
+→ ACCESS_DENIED
+
+IPR_EXPIRED
+→ ACCESS_DENIED / RENEWAL_REQUIRED</code></pre>
+
+          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+            <a class="hbce-btn hbce-btn--primary" href="../joker-c2/">Open JOKER-C2 access model</a>
+            <a class="hbce-btn" href="../security/">Open Security</a>
+            <a class="hbce-btn" href="../governance/">Open Governance</a>
+          </div>
+        </div>
+
+      </section>
+
+      <section class="hbce-section">
+
+        <h2>Verification levels</h2>
+
+        <div class="hbce-grid hbce-grid--2">
+
+          <div class="hbce-card">
+            <div class="hbce-mono">L0</div>
+            <h3>Technical R&amp;D reference</h3>
+            <p class="hbce-muted">
+              Local or technical reference used for internal tests, demonstrations, hash-oriented attribution or
+              non-production workflows.
+            </p>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">L1</div>
+            <h3>Basic account verification</h3>
+            <p class="hbce-muted">
+              Account and contact-level checks, such as email or phone verification. This does not by itself create
+              document-verified operational identity.
+            </p>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">L2</div>
+            <h3>Document-based private verification</h3>
+            <p class="hbce-muted">
+              Private review of accepted identity-document evidence and controlled linkage to a national tax identifier
+              or national identification number where applicable.
+            </p>
+          </div>
+
+          <div class="hbce-card">
+            <div class="hbce-mono">L3</div>
+            <h3>Enhanced operational verification</h3>
+            <p class="hbce-muted">
+              Enhanced private verification with document evidence, national identifier reference, photo, short video,
+              liveness or manual review in a separately scoped implementation.
+            </p>
+          </div>
+
+        </div>
+
+      </section>
+
+      <section class="hbce-section">
+
+        <div class="hbce-card">
+          <div class="hbce-mono">IPR CARD ISSUANCE</div>
+          <h2>The output of onboarding is an operational access key</h2>
+
+          <p class="hbce-muted">
+            After successful verification, the platform may issue an IPR Card. The IPR Card is the user-visible
+            operational identity card inside HBCE. It can be represented as a PDF certificate, JSON credential,
+            QR verification reference or digital badge in future controlled implementations.
+          </p>
+
+          <div class="hbce-grid hbce-grid--2" style="margin-top:14px;">
+
+            <div class="hbce-card">
+              <div class="hbce-mono">RECOMMENDED FIELDS</div>
+              <pre><code>IPR-ID
+Subject label
+Subject type
+Country
+Verification level
+Document verified: yes / no
+National identifier verified: yes / no
+Issuer: HERMETICUM B.C.E. S.r.l.
+Activation EVT
+OPC receipt
+Public hash reference
+QR verification reference
+Issued at
+Expires at
+Status</code></pre>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">PROOF OUTPUTS</div>
+              <pre><code>IPR record
+→ IPR Card
+→ operational certificate
+→ activation EVT
+→ OPC receipt
+→ minimized public proof reference
+→ deterministic verification</code></pre>
+            </div>
+
+          </div>
+
+          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+            <a class="hbce-btn hbce-btn--primary" href="../ipr-card/">Open IPR Card</a>
+            <a class="hbce-btn" href="../verify/">Verify public proof</a>
+            <a class="hbce-btn" href="../registry/">Open Registry</a>
+          </div>
+
+        </div>
+
+      </section>
+
+      <section class="hbce-section">
+
+        <div class="hbce-card">
+          <div class="hbce-mono">PUBLIC / PRIVATE SEPARATION</div>
+          <h2>Private identity evidence must not become public registry content</h2>
+
+          <p class="hbce-muted">
+            The onboarding model separates the private verification layer from the public proof layer. Public proof
+            exists to verify the presence of a minimized proof reference, not to expose identity documents or personal
+            evidence.
+          </p>
+
+          <div class="hbce-grid hbce-grid--2" style="margin-top:14px;">
+
+            <div class="hbce-card">
+              <div class="hbce-mono">PRIVATE OR CONTROLLED</div>
+              <ul class="hbce-muted">
+                <li>Tax code where applicable</li>
+                <li>National tax identifier</li>
+                <li>National identification number</li>
+                <li>Identity document number</li>
+                <li>Passport or driving-license number</li>
+                <li>Identity document scan</li>
+                <li>Selfie or portrait image</li>
+                <li>Short video or liveness evidence</li>
+                <li>Private evidence package</li>
+                <li>Manual verification notes</li>
+              </ul>
+            </div>
+
+            <div class="hbce-card">
+              <div class="hbce-mono">PUBLIC MINIMIZED PROOF</div>
+              <ul class="hbce-muted">
+                <li>IPR reference</li>
+                <li>Verification level</li>
+                <li>Public status</li>
+                <li>Proof scope</li>
+                <li><code>payload_sha256</code></li>
+                <li>EVT reference</li>
+                <li>OPC reference</li>
+                <li>Timestamp</li>
+                <li>Public non-sensitive label</li>
+                <li>Revocation or suspension state where applicable</li>
+              </ul>
+            </div>
+
+          </div>
+
+          <pre><code>private verification
+→ private evidence package
+→ hash-oriented proof reference
+→ minimized registry entry
+→ deterministic verification</code></pre>
+
+        </div>
+
+      </section>
+
+      <section class="hbce-section">
+
+        <div class="hbce-card">
+          <div class="hbce-mono">LEGAL AND REGULATORY BOUNDARY</div>
+          <h2>IPR Card is operational, not official state identity</h2>
+
+          <p class="hbce-muted">
+            IPR Card is a digital operational card issued within the HERMETICUM B.C.E. environment. It does not replace
+            an identity card, passport, CIE, SPID, EUDI Wallet or qualified eIDAS certificate, unless future integrations
+            with recognized identity or trust-service systems are separately established.
+          </p>
+
+          <p class="hbce-muted">
+            HBCE does not issue official European identity. HBCE issues a verifiable operational identity reference
+            that may be connected to official European identity systems in future compliant integrations.
+          </p>
+
+          <p class="hbce-muted">
+            Any real production onboarding, document verification, liveness detection, biometric comparison, customer
+            identity workflow, enterprise deployment or institutional integration requires separate legal, privacy,
+            cybersecurity, compliance and operational review.
+          </p>
+
+          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+            <a class="hbce-btn hbce-btn--primary" href="../legal/">Open Legal</a>
+            <a class="hbce-btn" href="../privacy/">Open Privacy</a>
+            <a class="hbce-btn" href="../claims/">Open Claims</a>
+            <a class="hbce-btn" href="../terms/">Open Terms</a>
+          </div>
+
+        </div>
+
+      </section>
+
+      <section class="hbce-section">
+
+        <div class="hbce-card">
+          <div class="hbce-mono">ONBOARDING OUTPUT</div>
+          <h2>The endpoint is governed AI access</h2>
+
+          <p class="hbce-muted">
+            The onboarding flow is not an isolated identity form. It is the access threshold for the HBCE operational
+            ecosystem. Once an IPR is verified and active, the subject can be connected to controlled workflows such as
+            IPR AI Audit Trail and JOKER-C2, where operations may be classified, governed, traced and reviewed.
+          </p>
+
+          <pre><code>HBCE Platform
+→ IPR Onboarding Gateway
+→ IPR Card
+→ operational certificate
+→ JOKER-C2 Access Gate
+→ AI Operational Runtime
+→ EVT / OPC / audit continuity</code></pre>
+
+          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+            <a class="hbce-btn hbce-btn--primary" href="../joker-c2/">Open JOKER-C2</a>
+            <a class="hbce-btn" href="../matrix-audit-trail/">Open IPR AI Audit Trail</a>
+            <a class="hbce-btn" href="../verify-pack/">Open Verify Pack</a>
+          </div>
+
+        </div>
+
+      </section>
+
+      <footer class="hbce-footer">
+
+        <div class="hbce-footer__row">
+
+          <div class="hbce-muted">
+            HERMETICUM B.C.E. S.r.l. — IPR Onboarding Gateway · GDPR-min · hash-oriented · fail-closed
+          </div>
+
+          <div class="hbce-footer__links">
+            <a href="../privacy/">Privacy</a>
+            <a href="../terms/">Terms</a>
+            <a href="../security/">Security</a>
+            <a href="../compliance/">Compliance</a>
+            <a href="../governance/">Governance</a>
+            <a href="../status/">Status</a>
+          </div>
+
+        </div>
+
+      </footer>
+
+    </main>
   </div>
 </body>
 </html>
