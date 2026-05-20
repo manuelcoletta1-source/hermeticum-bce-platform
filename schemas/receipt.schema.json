@@ -1,162 +1,410 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/schemas/receipt.schema.json",
-  "title": "HBCE Receipt — Privacy-Minimal v2",
-  "description": "Schema for a privacy-minimal HBCE receipt. The schema is designed for EU-first, audit-first, hash-only, fail-closed, no-public-data-custody workflows. It forbids raw personal identifiers, identity documents, secrets, credentials, private keys, production logs, and sensitive operational payloads.",
+  "title": "HBCE OPC Receipt — Privacy-Minimal Operational Proof Schema v3",
+  "description": "Privacy-minimal schema for HBCE OPC receipts. An OPC receipt links IPR, IPR Card, EVT, operation state, decision state, risk state, policy state, payload hash, output hash, event hash, receipt hash, chain hash, registry reference and verification state. It is an operational proof artifact, not legal certification, official identity issuance, eIDAS qualification, regulated KYC/AML status or public authority validation.",
   "type": "object",
   "additionalProperties": false,
+  "allOf": [
+    {
+      "$ref": "#/$defs/noForbiddenKeys"
+    }
+  ],
   "required": [
     "proto",
     "kind",
     "version",
+    "receipt_id",
+    "receipt_type",
     "issued_at",
+    "issuer",
+    "ipr_id",
+    "subject_label",
+    "verification_level",
+    "ipr_status",
+    "operation_type",
+    "decision_state",
+    "risk_level",
+    "policy_state",
     "payload_sha256",
-    "payload",
-    "signature"
+    "event_hash",
+    "receipt_sha256",
+    "verification_state",
+    "public_payload_policy",
+    "boundary"
   ],
   "properties": {
     "proto": {
       "type": "string",
-      "const": "HBCE-RECEIPT"
+      "const": "HBCE-OPC-RECEIPT-v3"
     },
     "kind": {
       "type": "string",
       "enum": [
+        "OPC_OPERATIONAL_PROOF_RECEIPT",
         "IPR_PUBLIC_PROOF_RECEIPT",
+        "IPR_CARD_PUBLIC_PROOF_RECEIPT",
+        "EVT_LINKED_OPC_RECEIPT",
         "AI_DECISION_RECEIPT",
-        "OPERATOR_PUBLIC_PROOF_RECEIPT",
+        "JOKER_C2_ACCESS_DECISION_RECEIPT",
+        "IPR_AI_AUDIT_TRAIL_RECEIPT",
         "REGISTRY_PUBLIC_PROOF_RECEIPT",
         "AUDIT_EVENT_RECEIPT"
       ]
     },
     "version": {
       "type": "string",
-      "const": "v2"
+      "const": "v3"
+    },
+    "receipt_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^OPC-[0-9A-Z:\\-_.]+$",
+      "description": "Public OPC receipt identifier."
+    },
+    "receipt_type": {
+      "type": "string",
+      "enum": [
+        "IPR_RECEIPT",
+        "IPR_CARD_RECEIPT",
+        "EVT_RECEIPT",
+        "JOKER_C2_ACCESS_RECEIPT",
+        "AI_OPERATION_RECEIPT",
+        "AI_OUTPUT_RECEIPT",
+        "HUMAN_VALIDATION_RECEIPT",
+        "IPR_AI_AUDIT_TRAIL_RECEIPT",
+        "REGISTRY_REFERENCE_RECEIPT",
+        "EVIDENCE_PACK_RECEIPT",
+        "AUDIT_REPORT_RECEIPT"
+      ]
     },
     "issued_at": {
       "type": "string",
       "format": "date-time"
     },
-    "payload_sha256": {
-      "type": "string",
-      "pattern": "^[a-f0-9]{64}$",
-      "description": "SHA-256 commitment for the canonical payload or controlled proof artifact."
-    },
-    "payload": {
+    "issuer": {
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "subject_label",
-        "record_scope",
-        "purpose",
-        "policy",
-        "issued_at",
-        "proof_sha256"
+        "issuer_label",
+        "organization_label",
+        "seal",
+        "issuer_role"
       ],
       "properties": {
-        "subject_label": {
-          "type": "string",
-          "minLength": 3,
-          "maxLength": 96,
-          "pattern": "^[A-Z0-9_\\-:.]+$",
-          "description": "Public minimized subject label. Must not contain names, tax codes, emails, phone numbers, document numbers, or private identifiers."
-        },
-        "record_scope": {
+        "issuer_label": {
           "type": "string",
           "minLength": 3,
           "maxLength": 128,
-          "pattern": "^[A-Z0-9_\\-:.]+$"
+          "pattern": "^[A-Z0-9_\\-:.]+$",
+          "description": "Public minimized issuer label. Must not contain raw personal identifiers."
         },
-        "purpose": {
+        "organization_label": {
           "type": "string",
-          "minLength": 3,
-          "maxLength": 240
+          "const": "HERMETICUM_BCE_SRL"
         },
-        "policy": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "EU_FIRST",
-            "GDPR_MIN",
-            "HASH_ONLY",
-            "FAIL_CLOSED",
-            "AUDIT_APPEND_ONLY",
-            "NO_PUBLIC_DATA_CUSTODY"
-          ],
-          "properties": {
-            "EU_FIRST": {
-              "type": "boolean",
-              "const": true
-            },
-            "UE_FIRST": {
-              "type": "boolean",
-              "const": true
-            },
-            "GDPR_MIN": {
-              "type": "boolean",
-              "const": true
-            },
-            "HASH_ONLY": {
-              "type": "boolean",
-              "const": true
-            },
-            "FAIL_CLOSED": {
-              "type": "boolean",
-              "const": true
-            },
-            "AUDIT_APPEND_ONLY": {
-              "type": "boolean",
-              "const": true
-            },
-            "NO_PUBLIC_DATA_CUSTODY": {
-              "type": "boolean",
-              "const": true
-            }
-          }
+        "seal": {
+          "type": "string",
+          "const": "HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA"
         },
-        "consent_scope": {
+        "issuer_role": {
           "type": "string",
           "enum": [
-            "AI_ACCOUNTABILITY",
-            "PROOF_OF_EXISTENCE",
-            "AUDIT_TRAIL",
-            "PUBLIC_PROOF_COMMITMENT",
-            "OPERATIONAL_IDENTITY_RESEARCH"
+            "RND_OPERATOR",
+            "IPR_ISSUER_REFERENCE",
+            "HBCE_PLATFORM_OPERATOR",
+            "OPC_RECEIPT_ISSUER",
+            "JOKER_C2_RUNTIME_REFERENCE",
+            "NOT_APPLICABLE"
+          ]
+        }
+      }
+    },
+    "ipr_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[A-Z0-9_\\-:.]+$",
+      "description": "Public IPR reference. Must not contain raw personal identifiers, tax codes, national identifiers or document numbers."
+    },
+    "ipr_card_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[A-Z0-9_\\-:.]+$",
+      "description": "Optional public IPR Card reference. It is an operational access-object reference, not an official identity document number."
+    },
+    "evt_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^(EVT-[0-9A-Z:\\-_.]+|NOT_APPLICABLE)$",
+      "description": "Optional EVT event reference linked to this receipt."
+    },
+    "opc_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^(OPC-[0-9A-Z:\\-_.]+|NOT_APPLICABLE)$",
+      "description": "Optional OPC reference. Usually equal or linked to receipt_id."
+    },
+    "subject_label": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[A-Z0-9_\\-:.]+$",
+      "description": "Public minimized subject label. Must not contain names, emails, phone numbers, tax codes, national identifiers, document numbers, identity documents or private identifiers."
+    },
+    "subject_type": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "NATURAL_PERSON_REFERENCE",
+        "LEGAL_ENTITY_REFERENCE",
+        "OPERATOR_REFERENCE",
+        "COMPANY_REFERENCE",
+        "INSTITUTION_REFERENCE",
+        "PROFESSIONAL_REFERENCE",
+        "RESEARCHER_REFERENCE",
+        "AI_SYSTEM_REFERENCE",
+        "NODE_REFERENCE",
+        "PROCESS_REFERENCE",
+        "DOCUMENT_WORKFLOW_REFERENCE",
+        "SYSTEM_REFERENCE",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "operator_label": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[A-Z0-9_\\-:.]+$",
+      "description": "Optional public minimized operator label. Must not contain raw personal identifiers."
+    },
+    "verification_level": {
+      "type": "string",
+      "enum": [
+        "L0",
+        "L1",
+        "L2",
+        "L3",
+        "IPR_BASE_NOT_VERIFIED",
+        "IPR_VERIFIED_PRIVATE_CHECK",
+        "IPR_PROFESSIONAL_PILOT",
+        "RND_ONLY",
+        "NOT_APPLICABLE"
+      ],
+      "description": "Public minimized verification-level label. It does not create legal identity, regulated KYC/AML compliance, eIDAS qualification, public authority approval or certification by itself."
+    },
+    "ipr_status": {
+      "type": "string",
+      "enum": [
+        "IPR_DRAFT",
+        "IPR_PENDING",
+        "IPR_REVIEW_REQUIRED",
+        "IPR_ACTIVE",
+        "IPR_SUSPENDED",
+        "IPR_REVOKED",
+        "IPR_EXPIRED",
+        "NOT_APPLICABLE"
+      ],
+      "description": "Operational IPR state at the time of receipt issuance."
+    },
+    "card_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "PENDING",
+        "ACTIVE",
+        "REVIEW_REQUIRED",
+        "SUSPENDED",
+        "REVOKED",
+        "EXPIRED",
+        "NOT_APPLICABLE"
+      ],
+      "description": "Optional IPR Card state. IPR Card is operational, not official identity."
+    },
+    "operation_type": {
+      "type": "string",
+      "enum": [
+        "ONBOARDING",
+        "IPR_CREATION",
+        "IPR_ACTIVATION",
+        "IPR_CARD_ISSUANCE",
+        "JOKER_C2_ACCESS_DECISION",
+        "AI_DOCUMENT_ANALYSIS",
+        "AI_RESPONSE",
+        "HUMAN_VALIDATION",
+        "EVIDENCE_PACK",
+        "REGISTRY_UPDATE",
+        "VERIFY_CHECK",
+        "AUDIT_REPORT",
+        "SECURITY_NOTICE",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "decision_state": {
+      "type": "string",
+      "enum": [
+        "ALLOW",
+        "DENY",
+        "REVIEW_REQUIRED",
+        "HUMAN_REVIEW_REQUIRED",
+        "ACCESS_ALLOWED",
+        "ACCESS_DENIED",
+        "RENEWAL_REQUIRED",
+        "BLOCK",
+        "AUDIT_READY",
+        "NOT_APPLICABLE"
+      ],
+      "description": "Public decision state. It does not create legal authorization or production approval by itself."
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL",
+        "REVIEW_REQUIRED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "policy_state": {
+      "type": "string",
+      "enum": [
+        "PASS",
+        "FAIL",
+        "REVIEW_REQUIRED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "human_review": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "NOT_REQUIRED",
+            "REQUIRED",
+            "APPROVED",
+            "REJECTED",
+            "ESCALATED",
+            "NOT_APPLICABLE"
           ]
         },
-        "issued_at": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "proof_sha256": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
-        },
-        "context_sha256": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
-        },
-        "note": {
+        "reviewer_label": {
           "type": [
             "string",
             "null"
           ],
-          "maxLength": 512
+          "minLength": 3,
+          "maxLength": 128,
+          "pattern": "^[A-Z0-9_\\-:.]+$",
+          "description": "Public minimized reviewer label only. Must not contain names, emails or private identifiers."
         }
       }
     },
-    "signature": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "scheme"
+    "payload_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Primary hash-oriented commitment for the controlled payload or event material. The payload itself must remain outside the public layer if it contains private or sensitive material."
+    },
+    "output_sha256": {
+      "type": [
+        "string",
+        "null"
       ],
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Optional output hash. The underlying output must not expose private prompts, private outputs, client files or sensitive data in public records."
+    },
+    "event_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Hash of the associated EVT or event payload."
+    },
+    "receipt_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Hash commitment for the canonical receipt."
+    },
+    "chain_hash": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Optional chain hash linking this receipt to previous operational state."
+    },
+    "registry_reference": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[A-Z0-9_\\-:.]+$",
+      "description": "Optional public registry reference."
+    },
+    "verification_state": {
+      "type": "string",
+      "enum": [
+        "PUBLIC_REFERENCE_PRESENT",
+        "NO_PUBLIC_RECORD",
+        "HASH_MATCH",
+        "HASH_MISMATCH",
+        "VALID",
+        "INVALID",
+        "NON_OPERATIONAL",
+        "REVIEW_REQUIRED",
+        "FAIL_CLOSED",
+        "NOT_APPLICABLE"
+      ],
+      "description": "Technical verification state. This does not create legal certification by itself."
+    },
+    "public_payload_policy": {
+      "type": "string",
+      "const": "HASH_ORIENTED_REFERENCE_ONLY"
+    },
+    "signature": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
       "properties": {
         "scheme": {
           "type": "string",
           "enum": [
             "NONE",
-            "ED25519"
+            "ED25519",
+            "REFERENCE_ONLY"
           ]
         },
         "kid": {
@@ -173,11 +421,12 @@
           ],
           "maxLength": 5000
         },
-        "public_key_jwk": {
+        "public_key_reference": {
           "type": [
-            "object",
+            "string",
             "null"
-          ]
+          ],
+          "maxLength": 240
         },
         "note": {
           "type": [
@@ -208,13 +457,15 @@
               "BTC_TXID",
               "ETH_TX",
               "IPFS_CID",
-              "RFC3161"
+              "RFC3161",
+              "GIT_COMMIT",
+              "PUBLIC_REGISTRY_REFERENCE"
             ]
           },
           "ref": {
             "type": "string",
             "minLength": 8,
-            "maxLength": 200
+            "maxLength": 240
           },
           "at": {
             "type": [
@@ -232,100 +483,194 @@
           }
         }
       }
+    },
+    "boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "private_verification_separation",
+        "public_proof_minimization",
+        "no_public_data_custody",
+        "no_public_tax_code_custody",
+        "no_public_national_identifier_custody",
+        "no_public_document_number_custody",
+        "no_public_identity_document_custody",
+        "no_public_biometric_custody",
+        "no_private_key_custody",
+        "no_regulated_certification_claim",
+        "no_public_authority_claim",
+        "no_official_identity_issuance_claim",
+        "no_eidas_qualification_claim",
+        "no_kyc_aml_provider_claim",
+        "no_automatic_joker_c2_access_claim",
+        "fail_closed"
+      ],
+      "properties": {
+        "private_verification_separation": {
+          "type": "boolean",
+          "const": true
+        },
+        "public_proof_minimization": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_public_data_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_public_tax_code_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_public_national_identifier_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_public_document_number_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_public_identity_document_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_public_biometric_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_private_key_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_regulated_certification_claim": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_public_authority_claim": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_official_identity_issuance_claim": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_eidas_qualification_claim": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_kyc_aml_provider_claim": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_automatic_joker_c2_access_claim": {
+          "type": "boolean",
+          "const": true
+        },
+        "fail_closed": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "note": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 600,
+      "description": "Public-safe note only. Must not contain personal data, tax codes, national identifiers, document numbers, secrets, private evidence, raw prompts, raw outputs or client files."
     }
   },
-  "not": {
-    "anyOf": [
-      {
-        "required": [
-          "name"
-        ]
+  "$defs": {
+    "forbiddenPublicFieldNames": {
+      "enum": [
+        "name",
+        "nickname",
+        "email",
+        "phone",
+        "telephone",
+        "address",
+        "birth_date",
+        "date_of_birth",
+        "place_of_birth",
+        "territory",
+        "raw_identifier",
+        "national_identifier",
+        "national_identification_number",
+        "national_tax_identifier",
+        "tax_identifier",
+        "tax_code",
+        "fiscal_code",
+        "codice_fiscale",
+        "document_number",
+        "identity_document_number",
+        "identity_card_number",
+        "cie_number",
+        "passport_number",
+        "driving_license_number",
+        "residence_permit_number",
+        "identity_document",
+        "regulated_identity_document",
+        "identity_document_scan",
+        "document_scan",
+        "passport_scan",
+        "driving_license_scan",
+        "portrait_image",
+        "selfie",
+        "liveness_video",
+        "video_verification",
+        "biometric_payload",
+        "private_evidence",
+        "private_evidence_package",
+        "manual_review_notes",
+        "personal_payload",
+        "personal_data",
+        "api_key",
+        "token",
+        "password",
+        "secret",
+        "private_key",
+        "credential",
+        "production_log",
+        "private_communication",
+        "sensitive_operational_payload",
+        "financial_asset",
+        "confidential_payload",
+        "client_file",
+        "raw_prompt",
+        "raw_output",
+        "internal_endpoint",
+        "private_ip",
+        "internal_hostname",
+        "database_url",
+        "admin_url",
+        "ssh_key"
+      ]
+    },
+    "noForbiddenKeys": {
+      "if": {
+        "type": "object"
       },
-      {
-        "required": [
-          "nickname"
-        ]
+      "then": {
+        "propertyNames": {
+          "not": {
+            "$ref": "#/$defs/forbiddenPublicFieldNames"
+          }
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/noForbiddenKeys"
+        }
       },
-      {
-        "required": [
-          "territory"
-        ]
-      },
-      {
-        "required": [
-          "raw_identifier"
-        ]
-      },
-      {
-        "required": [
-          "tax_code"
-        ]
-      },
-      {
-        "required": [
-          "fiscal_code"
-        ]
-      },
-      {
-        "required": [
-          "identity_document"
-        ]
-      },
-      {
-        "required": [
-          "private_evidence"
-        ]
-      },
-      {
-        "required": [
-          "personal_payload"
-        ]
-      },
-      {
-        "required": [
-          "api_key"
-        ]
-      },
-      {
-        "required": [
-          "token"
-        ]
-      },
-      {
-        "required": [
-          "password"
-        ]
-      },
-      {
-        "required": [
-          "secret"
-        ]
-      },
-      {
-        "required": [
-          "private_key"
-        ]
-      },
-      {
-        "required": [
-          "credential"
-        ]
-      },
-      {
-        "required": [
-          "production_log"
-        ]
-      },
-      {
-        "required": [
-          "private_communication"
-        ]
-      },
-      {
-        "required": [
-          "sensitive_operational_payload"
-        ]
+      "else": {
+        "if": {
+          "type": "array"
+        },
+        "then": {
+          "items": {
+            "$ref": "#/$defs/noForbiddenKeys"
+          }
+        }
       }
-    ]
+    }
   }
 }
