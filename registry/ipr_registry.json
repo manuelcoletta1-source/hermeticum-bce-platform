@@ -7,16 +7,18 @@
   "issuer": {
     "hallmark": "HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA",
     "legal": "HERMETICUM B.C.E. S.r.l.",
-    "symbol": "🜏"
+    "label": "HERMETICUM_BCE_SRL"
   },
   "jurisdiction": "EU_REFERENCE_FRAMEWORK",
   "status": "RND_ACTIVE",
   "current_scope": {
     "primary_product": "IPR",
+    "primary_access_object": "IPR_CARD",
     "primary_use": "IPR_AI_AUDIT_TRAIL_MVP",
-    "purpose": "Public minimized IPR registry reference for R&D documentation, hash-oriented proof commitments, audit-trail continuity, IPR Base references, IPR Verified public proof references and deterministic verification review.",
-    "public_position": "This registry is an R&D proof-reference surface. It is not a public authority identity registry, not a civil identity registry, not a regulated certification register, not an eIDAS qualified trust service, not a regulated KYC/AML provider, not a custodial identity service, and not a production compliance framework by itself.",
-    "operational_boundary": "Public IPR entries are minimized proof references. They do not expose tax codes, document numbers, identity documents, regulated identity material, raw personal identifiers, credentials, secrets, private keys, production logs, raw AI prompts, raw AI outputs, client files, private evidence or sensitive operational payloads."
+    "runtime_demonstrator": "JOKER-C2",
+    "purpose": "Public minimized IPR registry reference for R&D documentation, hash-oriented proof commitments, IPR Base references, IPR Verified public proof references, IPR Card public references, activation EVT references, OPC receipt references, audit-trail continuity and deterministic verification review.",
+    "public_position": "This registry is an R&D proof-reference surface. It is not a public authority identity registry, not a civil identity registry, not a regulated certification register, not an eIDAS qualified trust service, not a regulated KYC/AML provider, not a custodial identity service, not a banking service and not a production compliance framework by itself.",
+    "operational_boundary": "Public IPR entries are minimized proof references. They do not expose tax codes, national identifiers, document numbers, identity documents, regulated identity material, raw personal identifiers, credentials, secrets, private keys, production logs, raw AI prompts, raw AI outputs, client files, private evidence or sensitive operational payloads."
   },
   "ipr_profiles": {
     "IPR_BASE": {
@@ -25,11 +27,15 @@
     },
     "IPR_VERIFIED": {
       "verification_level": "IPR_VERIFIED_PRIVATE_CHECK",
-      "interpretation": "Private verification profile. Tax-code and valid identity-document evidence may be used only in a controlled private layer. The public registry stores only minimized proof references."
+      "interpretation": "Private verification profile. Identity evidence and national identifier evidence may be used only in a controlled private layer. The public registry stores only minimized proof references."
     },
     "IPR_PROFESSIONAL": {
       "verification_level": "IPR_PROFESSIONAL_PILOT",
       "interpretation": "Future professional or business/audit workflow profile based on IPR Verified. It remains pilot-positioned and does not create regulated certification by itself."
+    },
+    "IPR_CARD": {
+      "verification_level": "L2",
+      "interpretation": "Operational access-object reference inside HBCE. It is not an identity card, passport, CIE, SPID, EUDI Wallet, qualified eIDAS certificate or banking card."
     }
   },
   "policy": [
@@ -43,44 +49,76 @@
     "GDPR_MIN",
     "NO_PUBLIC_DATA_CUSTODY",
     "NO_PUBLIC_TAX_CODE_CUSTODY",
+    "NO_PUBLIC_NATIONAL_IDENTIFIER_CUSTODY",
     "NO_PUBLIC_DOCUMENT_NUMBER_CUSTODY",
     "NO_PUBLIC_IDENTITY_DOCUMENT_CUSTODY",
+    "NO_PUBLIC_BIOMETRIC_CUSTODY",
     "NO_PRIVATE_KEY_CUSTODY",
     "NO_FINANCIAL_CUSTODY",
+    "NO_BANKING_OR_FINANCIAL_SERVICE_CLAIM",
     "NO_REGULATED_CERTIFICATION_CLAIM",
     "NO_PUBLIC_AUTHORITY_CLAIM",
+    "NO_OFFICIAL_IDENTITY_ISSUANCE_CLAIM",
     "NO_EIDAS_QUALIFICATION_CLAIM",
-    "NO_KYC_AML_PROVIDER_CLAIM"
+    "NO_KYC_AML_PROVIDER_CLAIM",
+    "NO_AUTOMATIC_JOKER_C2_ACCESS_CLAIM"
   ],
   "rules": {
     "public_data": "MINIMIZED_PUBLIC_METADATA",
     "write_mode": "MANUAL_APPEND_ONLY",
     "verification": "DETERMINISTIC_SHA256_MATCH",
     "failure_mode": "FAIL_CLOSED",
-    "empty_entries": "NO_PUBLIC_PROOF",
-    "private_evidence_policy": "PRIVATE_EVIDENCE_OUTSIDE_PUBLIC_REGISTRY",
-    "private_verification_policy": "TAX_CODE_AND_VALID_IDENTITY_DOCUMENT_EVIDENCE_MAY_EXIST_ONLY_IN_PRIVATE_VERIFICATION_LAYER",
-    "sensitive_preimage_policy": "NO_RAW_PERSONAL_IDENTIFIER_HASHES_IN_PUBLIC_REGISTRY",
+    "empty_entries": "NO_PUBLIC_IPR_PROOF",
+    "private_evidence_policy": "PRIVATE_EVIDENCE_OUTSIDE_PUBLIC_IPR_REGISTRY",
+    "private_verification_policy": "IDENTITY_EVIDENCE_AND_NATIONAL_IDENTIFIER_EVIDENCE_MAY_EXIST_ONLY_IN_PRIVATE_VERIFICATION_LAYER",
+    "sensitive_preimage_policy": "NO_RAW_PERSONAL_IDENTIFIER_HASHES_IN_PUBLIC_IPR_REGISTRY",
     "accepted_verification_levels": [
+      "L0",
+      "L1",
+      "L2",
+      "L3",
       "IPR_BASE_NOT_VERIFIED",
       "IPR_VERIFIED_PRIVATE_CHECK",
       "IPR_PROFESSIONAL_PILOT",
       "RND_ONLY",
       "NOT_APPLICABLE"
     ],
-    "public_ipr_interpretation": "A public IPR entry proves only that a public proof reference exists. It does not certify legal identity, civil identity, public authority approval, regulated KYC/AML compliance, eIDAS qualification, cybersecurity assurance, institutional mandate, operational activation, or production authorization.",
-    "production_interpretation": "R&D and public proof entries must not be interpreted as regulated certification, public authority approval, legal identity certification, regulated KYC/AML compliance, production compliance validity, cybersecurity assurance, or operational authorization unless independently supported by a lawful production framework."
+    "accepted_ipr_statuses": [
+      "IPR_DRAFT",
+      "IPR_PENDING",
+      "IPR_REVIEW_REQUIRED",
+      "IPR_ACTIVE",
+      "IPR_SUSPENDED",
+      "IPR_REVOKED",
+      "IPR_EXPIRED",
+      "NOT_APPLICABLE"
+    ],
+    "accepted_card_statuses": [
+      "PENDING",
+      "ACTIVE",
+      "REVIEW_REQUIRED",
+      "SUSPENDED",
+      "REVOKED",
+      "EXPIRED",
+      "NOT_APPLICABLE"
+    ],
+    "public_ipr_interpretation": "A public IPR entry proves only that a public proof reference exists. It does not certify legal identity, civil identity, public authority approval, regulated KYC/AML compliance, eIDAS qualification, cybersecurity assurance, institutional mandate, operational activation, JOKER-C2 access or production authorization.",
+    "production_interpretation": "R&D and public proof entries must not be interpreted as regulated certification, public authority approval, legal identity certification, regulated KYC/AML compliance, production compliance validity, cybersecurity assurance or operational authorization unless independently supported by a lawful production framework."
   },
-  "privacy_note": "This public IPR registry must not store tax codes, fiscal codes, document numbers, identity documents, identity document scans, passport numbers, driving license numbers, biometric material, private identity evidence, raw personal identifiers, credentials, secrets, private keys, production logs, raw AI prompts, raw AI outputs, client files, regulated identity documents, financial assets, confidential payloads, or sensitive operational material. Public IPR records must be represented only through minimized metadata and hash-oriented public proof commitments.",
+  "privacy_note": "This public IPR registry must not store tax codes, fiscal codes, national identifiers, document numbers, identity documents, identity document scans, passport numbers, driving license numbers, biometric material, private identity evidence, raw personal identifiers, credentials, secrets, private keys, production logs, raw AI prompts, raw AI outputs, client files, regulated identity documents, financial assets, confidential payloads or sensitive operational material. Public IPR records must be represented only through minimized metadata and hash-oriented public proof commitments.",
   "created_at": "2026-02-07T00:00:00.000Z",
-  "last_update": "2026-05-09T00:00:00+02:00",
+  "last_update": "2026-05-20T00:00:00+02:00",
   "registry_prev_hash": "",
-  "empty_registry_interpretation": "An empty entries array means no public IPR proof entries are currently available in this registry file. It does not certify absence of activity, validity, authorization, identity status, compliance status, security status, or operational activation by itself.",
+  "empty_registry_interpretation": "An empty entries array means no public IPR proof entries are currently available in this registry file. It does not certify absence of activity, validity, authorization, identity status, compliance status, security status, operational activation or JOKER-C2 access by itself.",
   "schema": {
     "entry_required": [
-      "ipr_label",
+      "ipr_id",
       "ipr_profile",
+      "subject_label",
+      "subject_type",
       "verification_level",
+      "ipr_status",
+      "proof_scope",
       "payload_sha256",
       "timestamp",
       "status",
@@ -88,21 +126,36 @@
       "boundary"
     ],
     "entry_optional": [
-      "record_scope",
+      "ipr_card_id",
+      "card_status",
+      "activation_evt",
+      "opc_receipt",
+      "public_hash_reference",
+      "qr_verification_reference",
+      "issued_at",
+      "expires_at",
       "entity_type",
+      "record_scope",
       "proof_kind",
       "evt_id",
       "opc_id",
-      "source_hint",
+      "source_route",
       "note"
     ],
     "constraints": {
-      "ipr_label": "Public minimal label only; must not contain names, tax codes, emails, phone numbers, document numbers, identity documents, private evidence, secrets, credentials, client data, or internal endpoints.",
-      "ipr_profile": "IPR_BASE | IPR_VERIFIED | IPR_PROFESSIONAL",
-      "verification_level": "IPR_BASE_NOT_VERIFIED | IPR_VERIFIED_PRIVATE_CHECK | IPR_PROFESSIONAL_PILOT | RND_ONLY | NOT_APPLICABLE",
+      "ipr_id": "Public IPR reference only; must not contain names, tax codes, national identifiers, document numbers, identity documents or private identifiers.",
+      "ipr_card_id": "Public IPR Card reference only; must not contain official identity document numbers or private identifiers.",
+      "ipr_profile": "IPR_BASE | IPR_VERIFIED | IPR_PROFESSIONAL | IPR_OPERATOR | IPR_ENTITY | IPR_AI | IPR_NODE | IPR_PROCESS | IPR_DOCUMENT_WORKFLOW",
+      "subject_type": "NATURAL_PERSON_REFERENCE | LEGAL_ENTITY_REFERENCE | OPERATOR_REFERENCE | COMPANY_REFERENCE | INSTITUTION_REFERENCE | PROFESSIONAL_REFERENCE | RESEARCHER_REFERENCE | AI_SYSTEM_REFERENCE | NODE_REFERENCE | PROCESS_REFERENCE | DOCUMENT_WORKFLOW_REFERENCE | SYSTEM_REFERENCE | NOT_APPLICABLE",
+      "verification_level": "L0 | L1 | L2 | L3 | IPR_BASE_NOT_VERIFIED | IPR_VERIFIED_PRIVATE_CHECK | IPR_PROFESSIONAL_PILOT | RND_ONLY | NOT_APPLICABLE",
+      "ipr_status": "IPR_DRAFT | IPR_PENDING | IPR_REVIEW_REQUIRED | IPR_ACTIVE | IPR_SUSPENDED | IPR_REVOKED | IPR_EXPIRED | NOT_APPLICABLE",
+      "card_status": "PENDING | ACTIVE | REVIEW_REQUIRED | SUSPENDED | REVOKED | EXPIRED | NOT_APPLICABLE",
       "payload_sha256": "64-character lowercase hexadecimal SHA-256 digest",
+      "public_hash_reference": "64-character lowercase hexadecimal SHA-256 digest",
       "timestamp": "ISO 8601 / RFC 3339 parseable timestamp with timezone when available",
-      "status": "ACTIVE | REVOKED | SUSPENDED | RND_ONLY | RETAINED | PRIVATE_REVIEW_REQUIRED | FAIL_CLOSED"
+      "status": "ACTIVE | PENDING | REVIEW_REQUIRED | SUSPENDED | REVOKED | EXPIRED | RND_ONLY | RETAINED | PRIVATE_REVIEW_REQUIRED | FAIL_CLOSED",
+      "subject_label": "Public minimal label; must not contain private evidence, raw sensitive identifiers, tax codes, national identifiers, document numbers, raw AI prompts, raw AI outputs, client files, secrets, credentials or internal endpoints",
+      "proof_scope": "Public high-level proof scope only"
     },
     "forbidden_public_fields": [
       "private_key",
@@ -112,6 +165,10 @@
       "secret",
       "credential",
       "raw_identifier",
+      "national_identifier",
+      "national_identification_number",
+      "national_tax_identifier",
+      "tax_identifier",
       "tax_code",
       "fiscal_code",
       "codice_fiscale",
@@ -121,15 +178,21 @@
       "cie_number",
       "passport_number",
       "driving_license_number",
+      "residence_permit_number",
       "identity_document",
       "regulated_identity_document",
       "identity_document_scan",
+      "document_scan",
       "passport_scan",
       "driving_license_scan",
       "portrait_image",
       "selfie",
+      "liveness_video",
+      "video_verification",
       "biometric_payload",
       "private_evidence",
+      "private_evidence_package",
+      "manual_review_notes",
       "personal_payload",
       "personal_data",
       "raw_prompt",
@@ -155,7 +218,7 @@
     "non_operational_result": "NON_OPERATIONAL",
     "rnd_result": "RND_REFERENCE_ONLY",
     "fail_closed_rule": "Missing, malformed, ambiguous, placeholder-based, forbidden-field-based or inconsistent registry state must not produce VALID.",
-    "production_rule": "RND_ONLY, RETAINED, IPR_BASE_NOT_VERIFIED, IPR_VERIFIED_PRIVATE_CHECK and IPR_PROFESSIONAL_PILOT statuses must not be interpreted as regulated certification, public authority approval, production compliance validity, cybersecurity assurance, legal identity certification, KYC/AML compliance, or operational authorization by themselves."
+    "production_rule": "RND_ONLY, RETAINED, IPR_BASE_NOT_VERIFIED, IPR_VERIFIED_PRIVATE_CHECK, IPR_PROFESSIONAL_PILOT and IPR_CARD public states must not be interpreted as regulated certification, public authority approval, production compliance validity, cybersecurity assurance, legal identity certification, KYC/AML compliance, eIDAS qualification, operational authorization or JOKER-C2 access by themselves."
   },
   "entries": []
 }
