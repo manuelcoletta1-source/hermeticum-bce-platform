@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/schemas/ipr.schema.json",
-  "title": "HBCE IPR Package — Public Proof Schema v3",
-  "description": "Schema for a privacy-minimal IPR public proof package. It supports IPR Base, IPR Verified and IPR Professional pilot references while enforcing public proof minimization. Private identity verification evidence such as tax codes, document numbers, identity documents, scans, biometric material and private evidence must remain outside the public layer.",
+  "title": "HBCE IPR — Identity Primary Record Public Proof Schema v3",
+  "description": "Privacy-minimal public schema for an HBCE IPR — Identity Primary Record. IPR is the base operational identity and proof record that may connect to IPR Card, activation EVT, OPC receipt, public hash reference and governed access boundaries. Private identity verification evidence such as tax codes, national identifiers, document numbers, identity documents, scans, selfies, liveness videos, biometric material, private evidence, credentials, private keys, raw prompts, raw outputs and client files must remain outside the public layer.",
   "type": "object",
   "additionalProperties": false,
   "allOf": [
@@ -14,79 +14,294 @@
     "proto",
     "kind",
     "version",
-    "issuer_label",
-    "seal",
-    "issued_at",
-    "ipr_profile",
-    "verification_level",
+    "ipr_id",
+    "entity_type",
+    "subject_type",
     "subject_label",
-    "purpose",
+    "issuer",
+    "ipr_profile",
+    "ipr_status",
+    "verification_level",
+    "created_at",
+    "updated_at",
+    "proof_scope",
     "policy",
     "private_verification",
     "public_proof",
-    "context",
+    "boundary",
     "audit"
   ],
   "properties": {
     "proto": {
       "type": "string",
-      "const": "HBCE-IPR-PACKAGE"
+      "const": "HBCE-IPR-v3"
     },
     "kind": {
       "type": "string",
-      "const": "IPR_PUBLIC_PROOF_PACKAGE"
+      "enum": [
+        "IPR_PUBLIC_PROOF_PACKAGE",
+        "IPR_BASE_PUBLIC_REFERENCE",
+        "IPR_VERIFIED_PUBLIC_REFERENCE",
+        "IPR_PROFESSIONAL_PUBLIC_REFERENCE",
+        "IPR_CARD_LINKED_PUBLIC_REFERENCE",
+        "JOKER_C2_ACCESS_BOUNDARY_REFERENCE",
+        "IPR_AI_AUDIT_TRAIL_REFERENCE"
+      ]
     },
     "version": {
       "type": "string",
       "const": "v3"
     },
-    "issuer_label": {
+    "ipr_id": {
       "type": "string",
       "minLength": 3,
-      "maxLength": 96,
+      "maxLength": 128,
       "pattern": "^[A-Z0-9_\\-:.]+$",
-      "description": "Public minimized issuer label. Must not contain names, tax codes, emails, phone numbers, document numbers, identity documents or private identifiers."
+      "description": "Public IPR identifier. Must not contain raw personal identifiers, tax codes, document numbers or private identifiers."
     },
-    "seal": {
+    "entity_type": {
       "type": "string",
-      "const": "HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA"
+      "enum": [
+        "IPR",
+        "IPR_BASE",
+        "IPR_VERIFIED",
+        "IPR_PROFESSIONAL",
+        "IPR_OPERATOR",
+        "IPR_ENTITY",
+        "IPR_AI",
+        "IPR_NODE",
+        "IPR_PROCESS",
+        "IPR_DOCUMENT_WORKFLOW"
+      ]
     },
-    "issued_at": {
+    "subject_type": {
       "type": "string",
-      "format": "date-time"
+      "enum": [
+        "NATURAL_PERSON_REFERENCE",
+        "LEGAL_ENTITY_REFERENCE",
+        "OPERATOR_REFERENCE",
+        "COMPANY_REFERENCE",
+        "INSTITUTION_REFERENCE",
+        "PROFESSIONAL_REFERENCE",
+        "RESEARCHER_REFERENCE",
+        "AI_SYSTEM_REFERENCE",
+        "NODE_REFERENCE",
+        "PROCESS_REFERENCE",
+        "DOCUMENT_WORKFLOW_REFERENCE",
+        "SYSTEM_REFERENCE",
+        "NOT_APPLICABLE"
+      ],
+      "description": "Public minimized subject type. This does not create civil identity status or official identity issuance."
+    },
+    "subject_label": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[A-Z0-9_\\-:.]+$",
+      "description": "Public minimized subject label. Must not contain names, emails, phone numbers, tax codes, national identifiers, document numbers, identity documents or private identifiers."
+    },
+    "issuer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issuer_label",
+        "organization_label",
+        "seal",
+        "issuer_role"
+      ],
+      "properties": {
+        "issuer_label": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 128,
+          "pattern": "^[A-Z0-9_\\-:.]+$"
+        },
+        "organization_label": {
+          "type": "string",
+          "const": "HERMETICUM_BCE_SRL"
+        },
+        "seal": {
+          "type": "string",
+          "const": "HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA"
+        },
+        "issuer_role": {
+          "type": "string",
+          "enum": [
+            "RND_OPERATOR",
+            "IPR_ISSUER_REFERENCE",
+            "HBCE_PLATFORM_OPERATOR",
+            "NOT_APPLICABLE"
+          ]
+        }
+      }
     },
     "ipr_profile": {
       "type": "string",
       "enum": [
         "IPR_BASE",
         "IPR_VERIFIED",
-        "IPR_PROFESSIONAL"
+        "IPR_PROFESSIONAL",
+        "IPR_OPERATOR",
+        "IPR_ENTITY",
+        "IPR_AI",
+        "IPR_NODE",
+        "IPR_PROCESS",
+        "IPR_DOCUMENT_WORKFLOW"
       ],
-      "description": "Product profile. IPR_BASE is a technical R&D record. IPR_VERIFIED indicates that a private verification workflow exists outside the public layer. IPR_PROFESSIONAL is a pilot/business/audit profile based on IPR_VERIFIED."
+      "description": "IPR product profile. This field does not create legal identity, regulated certification or public authority validation."
+    },
+    "ipr_status": {
+      "type": "string",
+      "enum": [
+        "IPR_DRAFT",
+        "IPR_PENDING",
+        "IPR_REVIEW_REQUIRED",
+        "IPR_ACTIVE",
+        "IPR_SUSPENDED",
+        "IPR_REVOKED",
+        "IPR_EXPIRED"
+      ],
+      "description": "Operational IPR state. IPR_ACTIVE is an access condition only where policy, risk, proof and scope allow it."
+    },
+    "status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "ACTIVE",
+        "PENDING",
+        "REVIEW_REQUIRED",
+        "SUSPENDED",
+        "REVOKED",
+        "EXPIRED",
+        "RND_ONLY",
+        "RETAINED",
+        "SUPERSEDED",
+        "INVALID",
+        "PRIVATE_REVIEW_REQUIRED",
+        "FAIL_CLOSED",
+        "AUDIT_READY",
+        "NOT_APPLICABLE"
+      ],
+      "description": "Backward-compatible public status field."
     },
     "verification_level": {
       "type": "string",
       "enum": [
+        "L0",
+        "L1",
+        "L2",
+        "L3",
         "IPR_BASE_NOT_VERIFIED",
         "IPR_VERIFIED_PRIVATE_CHECK",
-        "IPR_PROFESSIONAL_PILOT"
+        "IPR_PROFESSIONAL_PILOT",
+        "RND_ONLY",
+        "NOT_APPLICABLE"
       ],
-      "description": "Public verification-level label. This is a minimized public status indicator, not legal identity certification, regulated KYC/AML status, eIDAS qualification or public authority approval."
+      "description": "Public minimized verification-level label. It does not create legal identity, regulated KYC/AML compliance, eIDAS qualification, public authority approval or certification by itself."
     },
-    "subject_label": {
+    "created_at": {
       "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "issued_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "activation_evt": {
+      "type": [
+        "string",
+        "null"
+      ],
       "minLength": 3,
-      "maxLength": 96,
+      "maxLength": 128,
+      "pattern": "^(EVT-[0-9A-Z:\\-_.]+|NOT_APPLICABLE)$",
+      "description": "Optional activation EVT reference."
+    },
+    "opc_receipt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^(OPC-[0-9A-Z:\\-_.]+|NOT_APPLICABLE)$",
+      "description": "Optional OPC receipt reference."
+    },
+    "ipr_card_reference": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 3,
+      "maxLength": 128,
       "pattern": "^[A-Z0-9_\\-:.]+$",
-      "description": "Public minimized subject label. Must not contain names, tax codes, emails, phone numbers, document numbers, identity documents or private identifiers."
+      "description": "Optional IPR Card public reference. This is an operational access-object reference, not an official identity document number."
+    },
+    "public_hash_reference": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-f0-9]{64}$"
     },
     "payload_sha256": {
-      "type": "string",
+      "type": [
+        "string",
+        "null"
+      ],
       "pattern": "^[a-f0-9]{64}$",
       "description": "Optional top-level public hash commitment for the canonical package or controlled proof artifact."
     },
-    "purpose": {
+    "qr_verification_reference": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "maxLength": 240,
+      "pattern": "^[A-Za-z0-9_./:#?=&%\\-]+$",
+      "description": "Optional QR verification reference or route. It must not embed private identity data."
+    },
+    "proof_scope": {
       "type": "string",
+      "enum": [
+        "IPR_BASE_RND_REFERENCE",
+        "IPR_VERIFIED_PRIVATE_CHECK_REFERENCE",
+        "IPR_PROFESSIONAL_PILOT_REFERENCE",
+        "IPR_CARD_OPERATIONAL_REFERENCE",
+        "IPR_CARD_STATUS_REFERENCE",
+        "JOKER_C2_ACCESS_BOUNDARY_REFERENCE",
+        "IPR_AI_AUDIT_TRAIL_REFERENCE",
+        "EVT_CONTINUITY_REFERENCE",
+        "OPC_PROOF_REFERENCE",
+        "EVIDENCE_PACK_REFERENCE",
+        "REGISTRY_V3_REFERENCE",
+        "HBCE_RND_REFERENCE",
+        "INTERNAL_SELF_PILOT"
+      ]
+    },
+    "purpose": {
+      "type": [
+        "string",
+        "null"
+      ],
       "minLength": 3,
       "maxLength": 240
     },
@@ -101,14 +316,19 @@
         "HASH_ORIENTED",
         "FAIL_CLOSED",
         "AUDIT_APPEND_ONLY",
+        "VERIFIED_IPR_ACCESS_MODEL",
         "NO_PUBLIC_DATA_CUSTODY",
         "NO_PUBLIC_TAX_CODE_CUSTODY",
+        "NO_PUBLIC_NATIONAL_IDENTIFIER_CUSTODY",
         "NO_PUBLIC_DOCUMENT_NUMBER_CUSTODY",
         "NO_PUBLIC_IDENTITY_DOCUMENT_CUSTODY",
+        "NO_PUBLIC_BIOMETRIC_CUSTODY",
         "NO_REGULATED_CERTIFICATION_CLAIM",
         "NO_PUBLIC_AUTHORITY_CLAIM",
+        "NO_OFFICIAL_IDENTITY_ISSUANCE_CLAIM",
         "NO_EIDAS_QUALIFICATION_CLAIM",
-        "NO_KYC_AML_PROVIDER_CLAIM"
+        "NO_KYC_AML_PROVIDER_CLAIM",
+        "NO_AUTOMATIC_JOKER_C2_ACCESS_CLAIM"
       ],
       "properties": {
         "EU_FIRST": {
@@ -139,11 +359,19 @@
           "type": "boolean",
           "const": true
         },
+        "VERIFIED_IPR_ACCESS_MODEL": {
+          "type": "boolean",
+          "const": true
+        },
         "NO_PUBLIC_DATA_CUSTODY": {
           "type": "boolean",
           "const": true
         },
         "NO_PUBLIC_TAX_CODE_CUSTODY": {
+          "type": "boolean",
+          "const": true
+        },
+        "NO_PUBLIC_NATIONAL_IDENTIFIER_CUSTODY": {
           "type": "boolean",
           "const": true
         },
@@ -155,11 +383,19 @@
           "type": "boolean",
           "const": true
         },
+        "NO_PUBLIC_BIOMETRIC_CUSTODY": {
+          "type": "boolean",
+          "const": true
+        },
         "NO_REGULATED_CERTIFICATION_CLAIM": {
           "type": "boolean",
           "const": true
         },
         "NO_PUBLIC_AUTHORITY_CLAIM": {
+          "type": "boolean",
+          "const": true
+        },
+        "NO_OFFICIAL_IDENTITY_ISSUANCE_CLAIM": {
           "type": "boolean",
           "const": true
         },
@@ -170,6 +406,10 @@
         "NO_KYC_AML_PROVIDER_CLAIM": {
           "type": "boolean",
           "const": true
+        },
+        "NO_AUTOMATIC_JOKER_C2_ACCESS_CLAIM": {
+          "type": "boolean",
+          "const": true
         }
       }
     },
@@ -177,7 +417,6 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "required_for_profile",
         "private_layer_only",
         "public_evidence_allowed",
         "allowed_private_evidence_categories",
@@ -187,12 +426,13 @@
       "properties": {
         "required_for_profile": {
           "type": "array",
-          "minItems": 1,
           "items": {
             "type": "string",
             "enum": [
               "IPR_VERIFIED",
-              "IPR_PROFESSIONAL"
+              "IPR_PROFESSIONAL",
+              "IPR_OPERATOR",
+              "IPR_ENTITY"
             ]
           },
           "uniqueItems": true
@@ -207,18 +447,24 @@
         },
         "allowed_private_evidence_categories": {
           "type": "array",
-          "minItems": 3,
           "items": {
             "type": "string",
             "enum": [
               "TAX_CODE",
+              "NATIONAL_TAX_IDENTIFIER",
+              "NATIONAL_IDENTIFICATION_NUMBER",
               "IDENTITY_CARD_OR_CIE",
               "PASSPORT",
-              "DRIVING_LICENSE"
+              "DRIVING_LICENSE",
+              "RESIDENCE_PERMIT_WHERE_APPLICABLE",
+              "SELFIE_OR_PORTRAIT_IMAGE",
+              "SHORT_VIDEO_OR_LIVENESS_EVIDENCE",
+              "PRIVATE_EVIDENCE_PACKAGE",
+              "MANUAL_REVIEW_NOTES"
             ]
           },
           "uniqueItems": true,
-          "description": "Private evidence category labels only. This field must never contain actual tax codes, document numbers, document images or personal payloads."
+          "description": "Private evidence category labels only. This field must never contain actual tax codes, national identifiers, document numbers, images, biometric payloads or personal data."
         },
         "public_forbidden_fields": {
           "type": "array",
@@ -227,6 +473,9 @@
             "type": "string",
             "enum": [
               "tax_code",
+              "national_identifier",
+              "national_tax_identifier",
+              "national_identification_number",
               "fiscal_code",
               "codice_fiscale",
               "document_number",
@@ -235,14 +484,20 @@
               "cie_number",
               "passport_number",
               "driving_license_number",
+              "residence_permit_number",
               "identity_document",
               "identity_document_scan",
               "portrait_image",
+              "selfie",
+              "liveness_video",
+              "video_verification",
               "biometric_payload",
               "raw_identifier",
               "personal_data",
               "personal_payload",
-              "private_evidence"
+              "private_evidence",
+              "private_evidence_package",
+              "manual_review_notes"
             ]
           },
           "uniqueItems": true
@@ -250,7 +505,7 @@
         "public_statement": {
           "type": "string",
           "minLength": 20,
-          "maxLength": 360,
+          "maxLength": 480,
           "description": "Human-readable public statement. Must state that private identity evidence remains outside the public layer."
         }
       }
@@ -272,9 +527,13 @@
             "IPR_BASE_PUBLIC_REFERENCE",
             "IPR_VERIFIED_PUBLIC_REFERENCE",
             "IPR_PROFESSIONAL_PUBLIC_REFERENCE",
+            "IPR_CARD_PUBLIC_REFERENCE",
+            "IPR_CARD_STATUS_PUBLIC_REFERENCE",
+            "JOKER_C2_ACCESS_BOUNDARY_REFERENCE",
             "IPR_AI_AUDIT_TRAIL_REFERENCE",
             "EVT_REFERENCE",
-            "OPC_REFERENCE"
+            "OPC_REFERENCE",
+            "EVIDENCE_PACK_REFERENCE"
           ]
         },
         "payload_sha256": {
@@ -284,7 +543,7 @@
         "proof_scope": {
           "type": "string",
           "minLength": 3,
-          "maxLength": 160
+          "maxLength": 180
         },
         "registry_visibility": {
           "type": "string",
@@ -304,8 +563,8 @@
             "null"
           ],
           "minLength": 3,
-          "maxLength": 96,
-          "pattern": "^[A-Z0-9_\\-:.]+$"
+          "maxLength": 128,
+          "pattern": "^(EVT-[0-9A-Z:\\-_.]+|NOT_APPLICABLE)$"
         },
         "opc_id": {
           "type": [
@@ -313,51 +572,63 @@
             "null"
           ],
           "minLength": 3,
-          "maxLength": 96,
-          "pattern": "^[A-Z0-9_\\-:.]+$"
-        }
-      }
-    },
-    "consent": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "scope",
-        "duration_days",
-        "acknowledged"
-      ],
-      "properties": {
-        "scope": {
-          "type": "string",
-          "enum": [
-            "AI_ACCOUNTABILITY",
-            "PROOF_OF_EXISTENCE",
-            "AUDIT_TRAIL",
-            "PUBLIC_PROOF_COMMITMENT",
-            "OPERATIONAL_IDENTITY_RESEARCH",
-            "IPR_VERIFIED_PRIVATE_CHECK"
-          ]
+          "maxLength": 128,
+          "pattern": "^(OPC-[0-9A-Z:\\-_.]+|NOT_APPLICABLE)$"
         },
-        "duration_days": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 3650
-        },
-        "note": {
+        "registry_entry_id": {
           "type": [
             "string",
             "null"
           ],
-          "maxLength": 280
+          "minLength": 3,
+          "maxLength": 128,
+          "pattern": "^[A-Z0-9_\\-:.]+$"
+        }
+      }
+    },
+    "access_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "joker_c2_access_model",
+        "requires_active_ipr_where_applicable",
+        "requires_policy_pass",
+        "requires_risk_acceptability",
+        "requires_scope_approval",
+        "automatic_access_granted"
+      ],
+      "properties": {
+        "joker_c2_access_model": {
+          "type": "string",
+          "const": "VERIFIED_OPERATIONAL_IDENTITY_REQUIRED_WHERE_APPLICABLE"
         },
-        "acknowledged": {
+        "requires_active_ipr_where_applicable": {
           "type": "boolean",
           "const": true
+        },
+        "requires_policy_pass": {
+          "type": "boolean",
+          "const": true
+        },
+        "requires_risk_acceptability": {
+          "type": "boolean",
+          "const": true
+        },
+        "requires_scope_approval": {
+          "type": "boolean",
+          "const": true
+        },
+        "automatic_access_granted": {
+          "type": "boolean",
+          "const": false
         }
       }
     },
     "context": {
-      "type": "object",
+      "type": [
+        "object",
+        "null"
+      ],
       "additionalProperties": false,
       "required": [
         "kind",
@@ -372,7 +643,8 @@
             "COARSE_GEO_COMMITMENT",
             "INSTITUTIONAL_CONTEXT_COMMITMENT",
             "RESEARCH_CONTEXT_COMMITMENT",
-            "IPR_VERIFICATION_CONTEXT_COMMITMENT"
+            "IPR_VERIFICATION_CONTEXT_COMMITMENT",
+            "JOKER_C2_ACCESS_CONTEXT_COMMITMENT"
           ]
         },
         "context_sha256": {
@@ -391,10 +663,100 @@
               "institutional_context",
               "research_context",
               "verification_level",
-              "proof_scope"
+              "proof_scope",
+              "ipr_status",
+              "card_status"
             ]
           },
           "uniqueItems": true
+        }
+      }
+    },
+    "boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "private_verification_separation",
+        "public_proof_minimization",
+        "no_public_data_custody",
+        "no_public_tax_code_custody",
+        "no_public_national_identifier_custody",
+        "no_public_document_number_custody",
+        "no_public_identity_document_custody",
+        "no_public_biometric_custody",
+        "no_private_key_custody",
+        "no_regulated_certification_claim",
+        "no_public_authority_claim",
+        "no_official_identity_issuance_claim",
+        "no_eidas_qualification_claim",
+        "no_kyc_aml_provider_claim",
+        "no_automatic_joker_c2_access_claim",
+        "fail_closed"
+      ],
+      "properties": {
+        "private_verification_separation": {
+          "type": "boolean",
+          "const": true
+        },
+        "public_proof_minimization": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_public_data_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_public_tax_code_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_public_national_identifier_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_public_document_number_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_public_identity_document_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_public_biometric_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_private_key_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_regulated_certification_claim": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_public_authority_claim": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_official_identity_issuance_claim": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_eidas_qualification_claim": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_kyc_aml_provider_claim": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_automatic_joker_c2_access_claim": {
+          "type": "boolean",
+          "const": true
+        },
+        "fail_closed": {
+          "type": "boolean",
+          "const": true
         }
       }
     },
@@ -403,7 +765,8 @@
         "string",
         "null"
       ],
-      "maxLength": 2000
+      "maxLength": 1200,
+      "description": "Public-safe note only. Must not contain personal data, tax codes, national identifiers, document numbers, secrets, private evidence, raw prompts, raw outputs or client files."
     },
     "audit": {
       "type": "array",
@@ -421,7 +784,7 @@
           "evt": {
             "type": "string",
             "minLength": 3,
-            "maxLength": 64,
+            "maxLength": 128,
             "pattern": "^[A-Z0-9_\\-:.]+$"
           },
           "at": {
@@ -449,11 +812,17 @@
         "nickname",
         "email",
         "phone",
+        "telephone",
         "address",
         "birth_date",
         "date_of_birth",
+        "place_of_birth",
         "territory",
         "raw_identifier",
+        "national_identifier",
+        "national_identification_number",
+        "national_tax_identifier",
+        "tax_identifier",
         "tax_code",
         "fiscal_code",
         "codice_fiscale",
@@ -463,12 +832,21 @@
         "cie_number",
         "passport_number",
         "driving_license_number",
+        "residence_permit_number",
         "identity_document",
         "regulated_identity_document",
         "identity_document_scan",
+        "document_scan",
+        "passport_scan",
+        "driving_license_scan",
         "portrait_image",
+        "selfie",
+        "liveness_video",
+        "video_verification",
         "biometric_payload",
         "private_evidence",
+        "private_evidence_package",
+        "manual_review_notes",
         "personal_payload",
         "personal_data",
         "api_key",
@@ -483,7 +861,13 @@
         "confidential_payload",
         "client_file",
         "raw_prompt",
-        "raw_output"
+        "raw_output",
+        "internal_endpoint",
+        "private_ip",
+        "internal_hostname",
+        "database_url",
+        "admin_url",
+        "ssh_key"
       ]
     },
     "noForbiddenKeys": {
@@ -494,6 +878,19 @@
         "propertyNames": {
           "not": {
             "$ref": "#/$defs/forbiddenPublicFieldNames"
+          }
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/noForbiddenKeys"
+        }
+      },
+      "else": {
+        "if": {
+          "type": "array"
+        },
+        "then": {
+          "items": {
+            "$ref": "#/$defs/noForbiddenKeys"
           }
         }
       }
