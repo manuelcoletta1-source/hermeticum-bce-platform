@@ -4,11 +4,17 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>Registry Append — IPR Public Proof Tool</title>
-  <meta name="description" content="R&D append-only tool to prepare minimized public registry entries for HBCE registry v3 and IPR AI Audit Trail. Hash-only, fail-closed, privacy-minimal, no public data custody." />
+  <title>Registry Append — Public Proof Reference Builder</title>
+
+  <meta
+    name="description"
+    content="R&D local builder to prepare minimized public proof references for HBCE registry v3. Supports IPR, IPR Card, EVT, OPC, IPR AI Audit Trail and JOKER-C2 access references. Does not write automatically, certify identity, certify compliance or grant runtime access."
+  />
 
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#0b0f14" />
+
+  <link rel="canonical" href="https://manuelcoletta1-source.github.io/hermeticum-bce-platform/registry/append/" />
 
   <link rel="stylesheet" href="/hermeticum-bce-platform/assets/hbce.css" />
   <script defer src="/hermeticum-bce-platform/assets/hbce-ui.js"></script>
@@ -54,13 +60,15 @@
         <div class="hbce-header__row">
           <div class="hbce-brand">
             <div class="hbce-mono">HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA</div>
-            <div class="hbce-muted">HERMETICUM B.C.E. S.r.l. · IPR public proof registry tooling</div>
+            <div class="hbce-muted">HERMETICUM B.C.E. S.r.l. · registry append public proof builder</div>
           </div>
 
           <nav class="hbce-nav" aria-label="Primary">
             <a class="hbce-nav__link" href="/hermeticum-bce-platform/">Home</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/onboarding/">Onboarding</a>
             <a class="hbce-nav__link" href="/hermeticum-bce-platform/ipr/">IPR</a>
-            <a class="hbce-nav__link" href="/hermeticum-bce-platform/matrix-audit-trail/">IPR AI Audit Trail</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/ipr-card/">IPR Card</a>
+            <a class="hbce-nav__link" href="/hermeticum-bce-platform/joker-c2/">JOKER-C2</a>
             <a class="hbce-nav__link is-active" aria-current="page" href="/hermeticum-bce-platform/registry/">Registry</a>
             <a class="hbce-nav__link" href="/hermeticum-bce-platform/verify/">Verify</a>
             <a class="hbce-nav__link" href="/hermeticum-bce-platform/claims/">Claims</a>
@@ -69,13 +77,21 @@
       </header>
 
       <section class="hbce-section hbce-hero">
-        <div class="hbce-hero__kicker">APPEND TOOL · REGISTRY v3 · IPR PUBLIC PROOF · HASH-ONLY · FAIL-CLOSED</div>
+        <div class="hbce-hero__kicker">
+          APPEND TOOL · REGISTRY v3 · IPR · IPR CARD · EVT · OPC · JOKER-C2 · FAIL-CLOSED
+        </div>
 
-        <h1 class="hbce-hero__title">Append entry generator</h1>
+        <h1 class="hbce-hero__title">
+          Append prepares a public proof reference.
+        </h1>
 
         <p class="hbce-hero__lead">
-          This tool prepares a minimized public registry entry for manual append into the HBCE public registry.
-          It does <strong>not</strong> write to the registry automatically because GitHub Pages is a static public layer.
+          This tool prepares a minimized public registry entry for manual append into <code>registry/registry.json</code>.
+          It does <strong>not</strong> write automatically to the registry because GitHub Pages is a static public layer.
+          <br /><br />
+          Append prepares a public proof reference. It does not certify identity, certify compliance, authorize
+          production use, issue official identity, create eIDAS qualification, create regulated KYC / AML status or
+          grant JOKER-C2 runtime access.
           <br /><br />
           The tool reads the public registry index and blocks deterministically:
           <strong>if payload_sha256 is already present → DUPLICATE_BLOCK</strong>.
@@ -84,9 +100,8 @@
         <div class="hbce-card" style="margin-top:14px;">
           <div class="hbce-mono">R&amp;D BOUNDARY</div>
           <p class="hbce-muted" style="margin-bottom:0;">
-            This page supports IPR-first R&amp;D registry workflows, including IPR AI Audit Trail public proof references.
-            A generated entry is not a legal certificate, not public authority approval, not regulated compliance,
-            not cybersecurity assurance, and not production authorization.
+            This page supports IPR-first R&amp;D registry workflows for IPR, IPR Card, EVT, OPC,
+            IPR AI Audit Trail and JOKER-C2 access-boundary references. A generated entry is a manual-review candidate only.
           </p>
         </div>
       </section>
@@ -101,9 +116,8 @@
             <input type="file" id="hbce-entry-file" accept=".json,application/json" />
 
             <p class="hbce-muted">
-              The entry must contain minimized public fields only:
-              <code>payload_sha256</code>, <code>timestamp</code>, <code>subject_label</code>,
-              <code>entity_type</code>, and <code>status</code>.
+              The entry must contain minimized public fields only. Private evidence, identity documents,
+              tax codes, national identifiers, credentials, private prompts, private outputs and client files are forbidden.
             </p>
 
             <div class="hbce-rowbtn">
@@ -116,60 +130,128 @@
             <div class="hbce-mono">INPUT B</div>
             <h2>Prepare manual minimized entry</h2>
 
-            <label class="hbce-muted" for="hbce-entity-type">Entity type — required</label>
+            <label class="hbce-muted" for="hbce-entity-type">entity_type — required</label>
             <select class="hbce-field" id="hbce-entity-type">
-              <option value="PUBLIC_IDENTITY_COMMITMENT">PUBLIC_IDENTITY_COMMITMENT</option>
-              <option value="PUBLIC_OPERATOR_COMMITMENT">PUBLIC_OPERATOR_COMMITMENT</option>
-              <option value="PUBLIC_CONTINUITY_REFERENCE">PUBLIC_CONTINUITY_REFERENCE</option>
-              <option value="PUBLIC_CONTINUITY_CERTIFICATE">PUBLIC_CONTINUITY_CERTIFICATE</option>
-              <option value="PUBLIC_NODE_COMMITMENT">PUBLIC_NODE_COMMITMENT</option>
-              <option value="PUBLIC_EVENT_COMMITMENT">PUBLIC_EVENT_COMMITMENT</option>
-              <option value="HBCE_PUBLIC_PROOF">HBCE_PUBLIC_PROOF</option>
-              <option value="IPR_PUBLIC_PROOF">IPR_PUBLIC_PROOF</option>
-              <option value="IPR_BASE_REFERENCE">IPR_BASE_REFERENCE</option>
-              <option value="IPR_VERIFIED_REFERENCE">IPR_VERIFIED_REFERENCE</option>
-              <option value="IPR_PROFESSIONAL_REFERENCE">IPR_PROFESSIONAL_REFERENCE</option>
-              <option value="IPR_VERIFICATION_REFERENCE">IPR_VERIFICATION_REFERENCE</option>
-              <option value="IPR_PRIVATE_VERIFICATION_REFERENCE">IPR_PRIVATE_VERIFICATION_REFERENCE</option>
-              <option value="IPR_PUBLIC_PROOF_REFERENCE">IPR_PUBLIC_PROOF_REFERENCE</option>
-              <option value="IPR_EVIDENCE_PACK_REFERENCE">IPR_EVIDENCE_PACK_REFERENCE</option>
-              <option value="IPR_VERIFICATION_RESULT_REFERENCE">IPR_VERIFICATION_RESULT_REFERENCE</option>
-              <option value="IPR_AI_AUDIT_REFERENCE">IPR_AI_AUDIT_REFERENCE</option>
-              <option value="IPR_AI_AUDIT_TRAIL_REFERENCE">IPR_AI_AUDIT_TRAIL_REFERENCE</option>
-              <option value="IPR_POLICY_CHECK_REFERENCE">IPR_POLICY_CHECK_REFERENCE</option>
-              <option value="IPR_HUMAN_VALIDATION_REFERENCE">IPR_HUMAN_VALIDATION_REFERENCE</option>
-              <option value="IPR_DOCUMENT_HASH_REFERENCE">IPR_DOCUMENT_HASH_REFERENCE</option>
-              <option value="IPR_GOVERNANCE_DECISION_REFERENCE">IPR_GOVERNANCE_DECISION_REFERENCE</option>
-              <option value="IPR_EVT_REFERENCE">IPR_EVT_REFERENCE</option>
-              <option value="IPR_OPC_REFERENCE">IPR_OPC_REFERENCE</option>
-              <option value="JOKER_C2_RUNTIME_REFERENCE">JOKER_C2_RUNTIME_REFERENCE</option>
-              <option value="HBCE_GOVERNANCE_REFERENCE">HBCE_GOVERNANCE_REFERENCE</option>
-              <option value="HBCE_REGISTRY_REFERENCE">HBCE_REGISTRY_REFERENCE</option>
-              <option value="HBCE_VERIFY_REFERENCE">HBCE_VERIFY_REFERENCE</option>
+              <option value="IPR">IPR</option>
+              <option value="IPR_BASE">IPR_BASE</option>
+              <option value="IPR_VERIFIED">IPR_VERIFIED</option>
+              <option value="IPR_PROFESSIONAL">IPR_PROFESSIONAL</option>
+              <option value="IPR_CARD">IPR_CARD</option>
+              <option value="EVT">EVT</option>
+              <option value="OPC">OPC</option>
+              <option value="EVIDENCE_PACK">EVIDENCE_PACK</option>
+              <option value="AI_AUDIT_TRAIL">AI_AUDIT_TRAIL</option>
+              <option value="JOKER_C2_ACCESS_REFERENCE">JOKER_C2_ACCESS_REFERENCE</option>
+              <option value="NODE">NODE</option>
+              <option value="OPERATOR">OPERATOR</option>
+              <option value="SYSTEM">SYSTEM</option>
+              <option value="ORGANIZATION">ORGANIZATION</option>
+              <option value="PROCESS">PROCESS</option>
             </select>
 
-            <label class="hbce-muted" for="hbce-subject-label" style="display:block;margin-top:10px;">Subject label — required, public/minimized</label>
+            <label class="hbce-muted" for="hbce-kind" style="display:block;margin-top:10px;">kind — required</label>
+            <select class="hbce-field" id="hbce-kind">
+              <option value="HBCE_PUBLIC_PROOF_RND_REFERENCE">HBCE_PUBLIC_PROOF_RND_REFERENCE</option>
+              <option value="IPR_PUBLIC_PROOF_RND_REFERENCE">IPR_PUBLIC_PROOF_RND_REFERENCE</option>
+              <option value="IPR_BASE_PUBLIC_REFERENCE">IPR_BASE_PUBLIC_REFERENCE</option>
+              <option value="IPR_VERIFIED_PUBLIC_REFERENCE">IPR_VERIFIED_PUBLIC_REFERENCE</option>
+              <option value="IPR_PROFESSIONAL_PUBLIC_REFERENCE">IPR_PROFESSIONAL_PUBLIC_REFERENCE</option>
+              <option value="IPR_CARD_PUBLIC_REFERENCE">IPR_CARD_PUBLIC_REFERENCE</option>
+              <option value="IPR_CARD_STATUS_PUBLIC_REFERENCE">IPR_CARD_STATUS_PUBLIC_REFERENCE</option>
+              <option value="EVT_PUBLIC_REFERENCE">EVT_PUBLIC_REFERENCE</option>
+              <option value="OPC_PUBLIC_REFERENCE">OPC_PUBLIC_REFERENCE</option>
+              <option value="EVIDENCE_PACK_PUBLIC_REFERENCE">EVIDENCE_PACK_PUBLIC_REFERENCE</option>
+              <option value="IPR_AI_AUDIT_TRAIL_PUBLIC_REFERENCE">IPR_AI_AUDIT_TRAIL_PUBLIC_REFERENCE</option>
+              <option value="JOKER_C2_ACCESS_PUBLIC_REFERENCE">JOKER_C2_ACCESS_PUBLIC_REFERENCE</option>
+            </select>
+
+            <label class="hbce-muted" for="hbce-subject-label" style="display:block;margin-top:10px;">subject_label — required, public/minimized</label>
             <input class="hbce-field" id="hbce-subject-label" placeholder="HBCE_PUBLIC_REFERENCE_001" />
 
-            <label class="hbce-muted" for="hbce-record-scope" style="display:block;margin-top:10px;">Record scope — optional</label>
-            <input class="hbce-field" id="hbce-record-scope" placeholder="IPR_AI_AUDIT_TRAIL_MVP" />
+            <label class="hbce-muted" for="hbce-subject-type" style="display:block;margin-top:10px;">subject_type — required</label>
+            <select class="hbce-field" id="hbce-subject-type">
+              <option value="NATURAL_PERSON_REFERENCE">NATURAL_PERSON_REFERENCE</option>
+              <option value="LEGAL_ENTITY_REFERENCE">LEGAL_ENTITY_REFERENCE</option>
+              <option value="OPERATOR_REFERENCE">OPERATOR_REFERENCE</option>
+              <option value="COMPANY_REFERENCE">COMPANY_REFERENCE</option>
+              <option value="INSTITUTION_REFERENCE">INSTITUTION_REFERENCE</option>
+              <option value="PROFESSIONAL_REFERENCE">PROFESSIONAL_REFERENCE</option>
+              <option value="RESEARCHER_REFERENCE">RESEARCHER_REFERENCE</option>
+              <option value="AI_SYSTEM_REFERENCE">AI_SYSTEM_REFERENCE</option>
+              <option value="NODE_REFERENCE">NODE_REFERENCE</option>
+              <option value="PROCESS_REFERENCE">PROCESS_REFERENCE</option>
+              <option value="DOCUMENT_WORKFLOW_REFERENCE">DOCUMENT_WORKFLOW_REFERENCE</option>
+              <option value="SYSTEM_REFERENCE">SYSTEM_REFERENCE</option>
+              <option value="NOT_APPLICABLE">NOT_APPLICABLE</option>
+            </select>
+
+            <label class="hbce-muted" for="hbce-proof-scope" style="display:block;margin-top:10px;">proof_scope — required</label>
+            <select class="hbce-field" id="hbce-proof-scope">
+              <option value="IPR_BASE_RND_REFERENCE">IPR_BASE_RND_REFERENCE</option>
+              <option value="IPR_VERIFIED_PRIVATE_CHECK_REFERENCE">IPR_VERIFIED_PRIVATE_CHECK_REFERENCE</option>
+              <option value="IPR_PROFESSIONAL_PILOT_REFERENCE">IPR_PROFESSIONAL_PILOT_REFERENCE</option>
+              <option value="IPR_CARD_OPERATIONAL_REFERENCE">IPR_CARD_OPERATIONAL_REFERENCE</option>
+              <option value="IPR_CARD_STATUS_REFERENCE">IPR_CARD_STATUS_REFERENCE</option>
+              <option value="JOKER_C2_ACCESS_REFERENCE">JOKER_C2_ACCESS_REFERENCE</option>
+              <option value="IPR_AI_AUDIT_TRAIL_MVP">IPR_AI_AUDIT_TRAIL_MVP</option>
+              <option value="EVT_CONTINUITY_REFERENCE">EVT_CONTINUITY_REFERENCE</option>
+              <option value="OPC_PROOF_REFERENCE">OPC_PROOF_REFERENCE</option>
+              <option value="EVIDENCE_PACK_REFERENCE">EVIDENCE_PACK_REFERENCE</option>
+              <option value="REGISTRY_V3_REFERENCE">REGISTRY_V3_REFERENCE</option>
+              <option value="HBCE_RND_REFERENCE">HBCE_RND_REFERENCE</option>
+              <option value="INTERNAL_SELF_PILOT">INTERNAL_SELF_PILOT</option>
+            </select>
 
             <label class="hbce-muted" for="hbce-sha" style="display:block;margin-top:10px;">payload_sha256 — required, 64 lowercase hex</label>
             <input class="hbce-field" id="hbce-sha" placeholder="64-character sha256" />
 
             <label class="hbce-muted" for="hbce-ts" style="display:block;margin-top:10px;">timestamp — required, ISO 8601</label>
-            <input class="hbce-field" id="hbce-ts" placeholder="2026-05-07T15:30:00+02:00" />
+            <input class="hbce-field" id="hbce-ts" placeholder="2026-05-20T00:00:00+02:00" />
+
+            <label class="hbce-muted" for="hbce-verification-level" style="display:block;margin-top:10px;">verification_level — required</label>
+            <select class="hbce-field" id="hbce-verification-level">
+              <option value="RND_ONLY">RND_ONLY</option>
+              <option value="L0">L0</option>
+              <option value="L1">L1</option>
+              <option value="L2">L2</option>
+              <option value="L3">L3</option>
+              <option value="IPR_BASE_NOT_VERIFIED">IPR_BASE_NOT_VERIFIED</option>
+              <option value="IPR_VERIFIED_PRIVATE_CHECK">IPR_VERIFIED_PRIVATE_CHECK</option>
+              <option value="IPR_PROFESSIONAL_PILOT">IPR_PROFESSIONAL_PILOT</option>
+              <option value="NOT_APPLICABLE">NOT_APPLICABLE</option>
+            </select>
 
             <label class="hbce-muted" for="hbce-status" style="display:block;margin-top:10px;">status — required</label>
             <select class="hbce-field" id="hbce-status">
               <option value="RND_ONLY">RND_ONLY</option>
-              <option value="RETAINED">RETAINED</option>
               <option value="ACTIVE">ACTIVE</option>
+              <option value="PENDING">PENDING</option>
+              <option value="REVIEW_REQUIRED">REVIEW_REQUIRED</option>
               <option value="SUSPENDED">SUSPENDED</option>
               <option value="REVOKED">REVOKED</option>
+              <option value="EXPIRED">EXPIRED</option>
+              <option value="RETAINED">RETAINED</option>
+              <option value="SUPERSEDED">SUPERSEDED</option>
+              <option value="INVALID">INVALID</option>
+              <option value="PRIVATE_REVIEW_REQUIRED">PRIVATE_REVIEW_REQUIRED</option>
+              <option value="FAIL_CLOSED">FAIL_CLOSED</option>
+              <option value="PUBLIC_REFERENCE_PRESENT">PUBLIC_REFERENCE_PRESENT</option>
+              <option value="AUDIT_READY">AUDIT_READY</option>
             </select>
 
-            <label class="hbce-muted" for="hbce-note" style="display:block;margin-top:10px;">Note — optional, public/minimized</label>
+            <label class="hbce-muted" for="hbce-ipr-id" style="display:block;margin-top:10px;">ipr_id — optional</label>
+            <input class="hbce-field" id="hbce-ipr-id" placeholder="IPR-BASE-HBCE-001" />
+
+            <label class="hbce-muted" for="hbce-ipr-card-id" style="display:block;margin-top:10px;">ipr_card_id — optional</label>
+            <input class="hbce-field" id="hbce-ipr-card-id" placeholder="IPR-CARD-HBCE-RND-001" />
+
+            <label class="hbce-muted" for="hbce-evt-id" style="display:block;margin-top:10px;">evt_id / activation_evt — optional</label>
+            <input class="hbce-field" id="hbce-evt-id" placeholder="EVT-20260520-IPR-CARD-RND-001" />
+
+            <label class="hbce-muted" for="hbce-opc-id" style="display:block;margin-top:10px;">opc_id / opc_receipt — optional</label>
+            <input class="hbce-field" id="hbce-opc-id" placeholder="OPC-20260520-IPR-CARD-RND-001" />
+
+            <label class="hbce-muted" for="hbce-note" style="display:block;margin-top:10px;">note — optional, public/minimized</label>
             <input class="hbce-field" id="hbce-note" placeholder="Minimized public proof reference; private evidence outside public registry" />
 
             <div class="hbce-rowbtn">
@@ -179,7 +261,7 @@
             <p class="hbce-muted">
               Matching uses only <code>payload_sha256</code>.
               Do not enter raw personal identifiers, identity documents, secrets, credentials, private evidence,
-              raw AI prompts, raw AI outputs, client files, or sensitive payloads.
+              raw AI prompts, raw AI outputs, client files or sensitive payloads.
             </p>
           </article>
 
@@ -193,7 +275,7 @@
             <div class="hbce-mono">PUBLIC REGISTRY SOURCE</div>
             <h2>Registry v3</h2>
 
-            <ul class="hbce-list">
+            <ul class="hbce-muted">
               <li><strong>Registry URL:</strong> <code id="hbce-reg-url">/hermeticum-bce-platform/registry/registry.json</code></li>
               <li><strong>Status:</strong> <span id="hbce-reg-status">—</span></li>
               <li><strong>Entries:</strong> <span id="hbce-reg-count">—</span></li>
@@ -208,7 +290,7 @@
             </div>
 
             <p class="hbce-muted">
-              Fail-closed: if the registry is unreachable, invalid, ambiguous, or non-v3, append preparation is blocked.
+              Fail-closed: if the registry is unreachable, invalid, ambiguous or non-v3, append preparation is blocked.
             </p>
           </article>
 
@@ -227,8 +309,8 @@
           <h2>Object to append into registry entries[]</h2>
 
           <p class="hbce-muted">
-            If result = OK, the generated JSON block can be manually appended to <code>registry/registry.json</code>.
-            This tool never modifies the registry directly.
+            If result = OK, the generated JSON block can be manually appended to <code>registry/registry.json</code>
+            after review. This tool never modifies the registry directly.
           </p>
 
           <div class="hbce-card" style="background:rgba(0,0,0,.18)">
@@ -252,7 +334,12 @@
           <div class="hbce-card" style="margin-top:12px;">
             <pre class="hbce-mono">FORBIDDEN PUBLIC DATA
 - raw personal identifiers
+- tax codes or fiscal codes
+- national identifiers
+- document numbers
 - identity documents
+- identity scans
+- biometric material
 - private evidence
 - personal payloads
 - API keys or tokens
@@ -267,6 +354,31 @@
         </div>
       </section>
 
+      <section class="hbce-section">
+        <div class="hbce-card">
+          <h2>Append non-claims</h2>
+          <p class="hbce-muted">
+            A generated registry entry is only a manual-review candidate.
+            It does not certify identity, certify compliance, create official identity, create eIDAS qualification,
+            create public authority approval, authorize production use or grant JOKER-C2 runtime access.
+          </p>
+
+          <div class="hbce-card" style="margin-top:12px;">
+            <pre class="hbce-mono">REGISTRY_APPEND_BOUNDARY
+- local builder only
+- manual append candidate only
+- public proof reference only
+- no identity certification
+- no compliance certification
+- no public authority approval
+- no eIDAS qualification
+- no production authorization
+- no automatic JOKER-C2 access
+- no public data custody</pre>
+          </div>
+        </div>
+      </section>
+
       <footer class="hbce-footer">
         <div class="hbce-footer__row">
           <div class="hbce-muted">
@@ -275,7 +387,8 @@
           <div class="hbce-footer__links">
             <a href="/hermeticum-bce-platform/">Home</a>
             <a href="/hermeticum-bce-platform/ipr/">IPR</a>
-            <a href="/hermeticum-bce-platform/matrix-audit-trail/">IPR AI Audit Trail</a>
+            <a href="/hermeticum-bce-platform/ipr-card/">IPR Card</a>
+            <a href="/hermeticum-bce-platform/joker-c2/">JOKER-C2</a>
             <a href="/hermeticum-bce-platform/registry/">Registry</a>
             <a href="/hermeticum-bce-platform/verify/">Verify</a>
             <a href="/hermeticum-bce-platform/claims/">Claims</a>
@@ -299,19 +412,79 @@
     "MINIMIZED_PUBLIC_METADATA"
   ]);
 
+  const ACCEPTED_MODES = new Set([
+    "APPEND_ONLY_PUBLIC_REGISTRY",
+    "APPEND_ONLY_PUBLIC_RND_REGISTRY"
+  ]);
+
   const ACCEPTED_STATUSES = new Set([
     "ACTIVE",
+    "PENDING",
+    "REVIEW_REQUIRED",
     "SUSPENDED",
     "REVOKED",
+    "EXPIRED",
     "RND_ONLY",
-    "RETAINED"
+    "RETAINED",
+    "SUPERSEDED",
+    "INVALID",
+    "PRIVATE_REVIEW_REQUIRED",
+    "FAIL_CLOSED",
+    "PUBLIC_REFERENCE_PRESENT",
+    "AUDIT_READY"
+  ]);
+
+  const ACCEPTED_VERIFICATION_LEVELS = new Set([
+    "L0",
+    "L1",
+    "L2",
+    "L3",
+    "IPR_BASE_NOT_VERIFIED",
+    "IPR_VERIFIED_PRIVATE_CHECK",
+    "IPR_PROFESSIONAL_PILOT",
+    "RND_ONLY",
+    "NOT_APPLICABLE"
   ]);
 
   const FORBIDDEN_FIELDS = [
+    "name",
+    "nickname",
+    "email",
+    "phone",
+    "telephone",
+    "address",
+    "birth_date",
+    "date_of_birth",
+    "place_of_birth",
     "raw_identifier",
+    "national_identifier",
+    "national_identification_number",
+    "national_tax_identifier",
+    "tax_identifier",
+    "tax_code",
+    "fiscal_code",
+    "codice_fiscale",
+    "document_number",
+    "identity_document_number",
+    "identity_card_number",
+    "cie_number",
+    "passport_number",
+    "driving_license_number",
+    "residence_permit_number",
     "identity_document",
     "regulated_identity_document",
+    "identity_document_scan",
+    "document_scan",
+    "passport_scan",
+    "driving_license_scan",
+    "portrait_image",
+    "selfie",
+    "liveness_video",
+    "video_verification",
+    "biometric_payload",
     "private_evidence",
+    "private_evidence_package",
+    "manual_review_notes",
     "personal_payload",
     "personal_data",
     "api_key",
@@ -375,7 +548,11 @@
   }
 
   function isSafePublicLabel(value){
-    return /^[A-Z0-9_\-:.]{3,160}$/.test(normalizeString(value));
+    return /^[A-Z0-9_\-:.]{3,180}$/.test(normalizeString(value));
+  }
+
+  function isSafeRoute(value){
+    return /^[A-Za-z0-9_./:\-]+$/.test(normalizeString(value));
   }
 
   function hasForbiddenField(object){
@@ -410,6 +587,7 @@
   function validateRegistryJson(json){
     if (!json || typeof json !== "object") return "REGISTRY_INVALID_OBJECT";
     if (json.proto !== EXPECTED_PROTO) return "REGISTRY_PROTO_MISMATCH";
+    if (!ACCEPTED_MODES.has(normalizeString(json.mode))) return "REGISTRY_MODE_MISMATCH";
     if (!Array.isArray(json.entries)) return "REGISTRY_ENTRIES_MISSING";
 
     if (!json.rules || typeof json.rules !== "object") return "REGISTRY_RULES_MISSING";
@@ -483,16 +661,38 @@
     if (forbidden) return "ENTRY_FORBIDDEN_FIELD_" + forbidden;
 
     if (!isNonEmptyString(entry.entity_type)) return "ENTRY_MISSING_ENTITY_TYPE";
+    if (!isNonEmptyString(entry.kind)) return "ENTRY_MISSING_KIND";
     if (!isNonEmptyString(entry.subject_label)) return "ENTRY_MISSING_SUBJECT_LABEL";
     if (!isSafePublicLabel(entry.subject_label)) return "ENTRY_INVALID_SUBJECT_LABEL";
+    if (!isNonEmptyString(entry.subject_type)) return "ENTRY_MISSING_SUBJECT_TYPE";
+    if (!isNonEmptyString(entry.proof_scope)) return "ENTRY_MISSING_PROOF_SCOPE";
+    if (!ACCEPTED_VERIFICATION_LEVELS.has(String(entry.verification_level || ""))) return "ENTRY_INVALID_VERIFICATION_LEVEL";
     if (!isHex64Lower(String(entry.payload_sha256 || ""))) return "ENTRY_INVALID_PAYLOAD_SHA256";
     if (!isIsoLikeTimestamp(entry.timestamp)) return "ENTRY_INVALID_TIMESTAMP";
-
     if (!ACCEPTED_STATUSES.has(String(entry.status || ""))) return "ENTRY_INVALID_STATUS";
+    if (entry.public_payload_policy !== "HASH_ORIENTED_REFERENCE_ONLY") return "ENTRY_INVALID_PUBLIC_PAYLOAD_POLICY";
 
-    if (entry.record_scope && !isSafePublicLabel(entry.record_scope)) {
-      return "ENTRY_INVALID_RECORD_SCOPE";
+    const optionalLabels = [
+      ["ipr_id", entry.ipr_id],
+      ["ipr_card_id", entry.ipr_card_id],
+      ["evt_id", entry.evt_id],
+      ["activation_evt", entry.activation_evt],
+      ["opc_id", entry.opc_id],
+      ["opc_receipt", entry.opc_receipt],
+      ["record_scope", entry.record_scope]
+    ];
+
+    for (const [label, value] of optionalLabels) {
+      if (isNonEmptyString(value) && !isSafePublicLabel(value)) {
+        return "ENTRY_INVALID_" + label.toUpperCase();
+      }
     }
+
+    if (isNonEmptyString(entry.source_route) && !isSafeRoute(entry.source_route)) {
+      return "ENTRY_INVALID_SOURCE_ROUTE";
+    }
+
+    if (!entry.boundary || typeof entry.boundary !== "object") return "ENTRY_MISSING_BOUNDARY";
 
     return null;
   }
@@ -511,23 +711,69 @@
 
   function buildEntryFromInputs(){
     const entityType = normalizeString($("hbce-entity-type").value);
+    const kind = normalizeString($("hbce-kind").value);
     const subjectLabel = normalizeString($("hbce-subject-label").value);
-    const recordScope = normalizeString($("hbce-record-scope").value);
+    const subjectType = normalizeString($("hbce-subject-type").value);
+    const proofScope = normalizeString($("hbce-proof-scope").value);
+    const verificationLevel = normalizeString($("hbce-verification-level").value);
     const sha = normalizeString($("hbce-sha").value).toLowerCase();
     const timestamp = normalizeString($("hbce-ts").value);
     const status = normalizeString($("hbce-status").value);
+    const iprId = normalizeString($("hbce-ipr-id").value);
+    const iprCardId = normalizeString($("hbce-ipr-card-id").value);
+    const evtId = normalizeString($("hbce-evt-id").value);
+    const opcId = normalizeString($("hbce-opc-id").value);
     const note = normalizeString($("hbce-note").value);
 
     const entry = {
+      proto: "HBCE-REGISTRY-v3",
+      kind,
+      version: "v3",
       entity_type: entityType,
       subject_label: subjectLabel,
+      subject_type: subjectType,
+      proof_scope: proofScope,
+      verification_level: verificationLevel,
       payload_sha256: sha,
+      public_hash_reference: sha,
       timestamp,
       status,
-      public_payload_policy: "HASH_ONLY"
+      public_payload_policy: "HASH_ORIENTED_REFERENCE_ONLY",
+      boundary: {
+        scope: proofScope,
+        private_verification_separation: true,
+        public_proof_minimization: true,
+        no_public_data_custody: true,
+        no_public_tax_code_custody: true,
+        no_public_national_identifier_custody: true,
+        no_public_document_number_custody: true,
+        no_public_identity_document_custody: true,
+        no_public_biometric_custody: true,
+        no_private_key_custody: true,
+        no_banking_or_financial_service_claim: true,
+        no_regulated_certification_claim: true,
+        no_public_authority_claim: true,
+        no_official_identity_issuance_claim: true,
+        no_eidas_qualification_claim: true,
+        no_kyc_aml_provider_claim: true,
+        no_automatic_joker_c2_access_claim: true,
+        fail_closed: true
+      }
     };
 
-    if (recordScope) entry.record_scope = recordScope;
+    if (iprId) entry.ipr_id = iprId;
+    if (iprCardId) entry.ipr_card_id = iprCardId;
+
+    if (evtId) {
+      entry.evt_id = evtId;
+      entry.activation_evt = evtId;
+    }
+
+    if (opcId) {
+      entry.opc_id = opcId;
+      entry.opc_receipt = opcId;
+    }
+
     if (note) entry.note = note;
 
     const validationError = validateEntry(entry);
@@ -656,22 +902,7 @@
       });
     }
 
-    loadedEntry = {
-      entity_type: normalizeString(source.entity_type),
-      subject_label: normalizeString(source.subject_label),
-      payload_sha256: normalizeString(source.payload_sha256).toLowerCase(),
-      timestamp: normalizeString(source.timestamp),
-      status: normalizeString(source.status),
-      public_payload_policy: "HASH_ONLY"
-    };
-
-    if (isNonEmptyString(source.record_scope)) {
-      loadedEntry.record_scope = normalizeString(source.record_scope);
-    }
-
-    if (isNonEmptyString(source.note)) {
-      loadedEntry.note = normalizeString(source.note);
-    }
+    loadedEntry = source;
 
     out({ result: "OK", reason: "ENTRY_LOADED", entry: loadedEntry });
     setDisabled("hbce-check", false);
