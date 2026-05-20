@@ -8,7 +8,7 @@
 
   <meta
     name="description"
-    content="Verify is the HBCE public proof reference gateway for IPR, IPR Card, activation EVT, OPC receipt and minimized registry references. It checks hash-oriented public proof references and fail-closed states without verifying private identity evidence or issuing official identity."
+    content="Verify is the HBCE public proof reference gateway for IPR, IPR Card, activation EVT, OPC receipt and minimized registry references. It checks hash-oriented public proof references and fail-closed states without verifying private identity evidence, issuing official identity or granting JOKER-C2 access by itself."
   />
 
   <meta name="robots" content="index,follow" />
@@ -86,6 +86,7 @@
           <nav class="hbce-nav" aria-label="Primary">
             <a class="hbce-nav__link" href="../">Home</a>
             <a class="hbce-nav__link" href="../onboarding/">Onboarding</a>
+            <a class="hbce-nav__link" href="https://hbce-ipr-onboarding-app.vercel.app/" target="_blank" rel="noopener noreferrer">App</a>
             <a class="hbce-nav__link" href="../ipr/">IPR</a>
             <a class="hbce-nav__link" href="../ipr-card/">IPR Card</a>
             <a class="hbce-nav__link" href="../joker-c2/">JOKER-C2</a>
@@ -99,7 +100,7 @@
       <section class="hbce-section hbce-hero">
 
         <div class="hbce-hero__kicker">
-          VERIFY · IPR · IPR CARD · EVT · OPC · PUBLIC HASH REFERENCE · FAIL-CLOSED
+          VERIFY · IPR CARD · REGISTRY · EVT · OPC · PUBLIC HASH REFERENCE · FAIL-CLOSED
         </div>
 
         <h1 class="hbce-hero__title">
@@ -110,6 +111,8 @@
           <strong>Verify</strong> is the HBCE public proof reference gateway for IPR records, IPR Card references,
           activation EVT records, OPC receipts and hash-oriented registry evidence.
           <br /><br />
+          In the new Platform architecture, verification sits after the operational chain:
+          <strong>IPR Onboarding App → IPR Card → public proof → Registry → Verify</strong>.
           This page checks technical proof references. It does not verify identity documents, tax codes, national
           identifiers, selfies, liveness videos or private evidence packages. Those belong to the private verification
           layer and must not be inserted into public verification fields.
@@ -132,6 +135,14 @@
         <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
           <a class="hbce-btn hbce-btn--primary" href="#registry-verify">Registry verify</a>
           <a class="hbce-btn" href="#technical-verify">Technical verify</a>
+          <a
+            class="hbce-btn"
+            href="https://hbce-ipr-onboarding-app.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Launch IPR App
+          </a>
           <a class="hbce-btn" href="../registry/">Open Registry</a>
           <a class="hbce-btn" href="../verify-pack/">Verify Pack</a>
           <a class="hbce-btn" href="../claims/">Claims</a>
@@ -164,6 +175,50 @@
           <p class="hbce-muted">
             If the proof is missing, malformed, ambiguous, forbidden or inconsistent, the correct behavior is fail-closed.
           </p>
+        </div>
+
+      </section>
+
+      <section class="hbce-section">
+
+        <div class="hbce-card">
+          <div class="hbce-mono">POSITION IN THE PLATFORM</div>
+          <h2>Verify is the public reconstruction layer.</h2>
+
+          <p class="hbce-muted">
+            Verification is not onboarding, not activation and not access authorization. It checks whether a public or
+            local proof reference matches. The identity workflow belongs to the IPR Onboarding App. The card represents
+            the operational identity state. Registry exposes minimized public proof. Verify checks the public reference.
+          </p>
+
+          <pre><code>IPR Onboarding App
+→ private identity evidence and review
+
+IPR Card
+→ operational access key and public proof pointer
+
+Registry
+→ minimized public proof references
+
+Verify
+→ deterministic proof check and fail-closed result
+
+JOKER-C2
+→ access only where IPR state and policy allow it</code></pre>
+
+          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+            <a
+              class="hbce-btn hbce-btn--primary"
+              href="https://hbce-ipr-onboarding-app.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Launch IPR Onboarding App
+            </a>
+            <a class="hbce-btn" href="../ipr-card/">Open IPR Card</a>
+            <a class="hbce-btn" href="../registry/">Open Registry</a>
+            <a class="hbce-btn" href="../joker-c2/">Open JOKER-C2</a>
+          </div>
         </div>
 
       </section>
@@ -282,7 +337,7 @@
 
         <div class="hbce-card">
           <div class="hbce-mono">POSITION IN THE IPR FLOW</div>
-          <h2>Verify is the reconstruction layer.</h2>
+          <h2>Verify checks references. It does not activate identities.</h2>
 
           <p class="hbce-muted">
             Verification is not activation. Verification checks whether a public or local proof reference matches.
@@ -476,16 +531,39 @@ JOKER-C2
 
         <div class="hbce-card">
           <div class="hbce-mono">NEXT OPERATIONAL PATH</div>
-          <h2>From proof check to operational review</h2>
+          <h2>From onboarding to public proof verification</h2>
 
           <p class="hbce-muted">
-            Use Create to prepare an IPR record, Activate to review and move toward IPR_ACTIVE, Registry to expose
-            minimized proof references, Verify Pack to review package evidence and Verify to check public proof references.
-            JOKER-C2 access remains separate and depends on active IPR state and policy.
+            Use the IPR Onboarding App to represent the identity workflow, IPR Card to represent the operational access
+            key, Registry to expose minimized proof references, Verify Pack to review package evidence and Verify to
+            check public proof references. JOKER-C2 access remains separate and depends on active IPR state and policy.
           </p>
 
+          <pre><code>IPR Onboarding App
+→ private verification workflow
+
+IPR Card
+→ operational identity and access reference
+
+Registry
+→ minimized public proof reference
+
+Verify
+→ deterministic public proof check
+
+JOKER-C2
+→ governed AI access where allowed</code></pre>
+
           <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
-            <a class="hbce-btn hbce-btn--primary" href="../create/">Create IPR</a>
+            <a
+              class="hbce-btn hbce-btn--primary"
+              href="https://hbce-ipr-onboarding-app.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Launch IPR Onboarding App
+            </a>
+            <a class="hbce-btn" href="../create/">Create IPR</a>
             <a class="hbce-btn" href="../activate/">Activate IPR</a>
             <a class="hbce-btn" href="../ipr-card/">IPR Card</a>
             <a class="hbce-btn" href="../registry/">Registry</a>
@@ -505,13 +583,16 @@ JOKER-C2
           </div>
 
           <div class="hbce-footer__links">
+            <a href="../">Home</a>
             <a href="../onboarding/">Onboarding</a>
+            <a href="https://hbce-ipr-onboarding-app.vercel.app/" target="_blank" rel="noopener noreferrer">App</a>
             <a href="../ipr/">IPR</a>
             <a href="../ipr-card/">IPR Card</a>
             <a href="../activate/">Activate</a>
             <a href="../registry/">Registry</a>
             <a href="../verify-pack/">Verify Pack</a>
             <a href="../claims/">Claims</a>
+            <a href="../tools/link-audit/">Link Audit</a>
           </div>
 
         </div>
