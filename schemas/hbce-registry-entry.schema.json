@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/schemas/hbce-registry-entry.schema.json",
   "title": "HBCE Registry Entry — Public Proof Reference v3",
-  "description": "Privacy-minimal public registry entry schema for HBCE / IPR / IPR Verified / EVT / OPC proof references. The public registry may expose minimized proof metadata and verification_level values, but must never expose tax codes, document numbers, identity documents, scans, biometric material, private evidence, secrets or sensitive operational payloads.",
+  "description": "Privacy-minimal public registry entry schema for HBCE Platform, IPR, IPR Card, EVT, OPC and public proof references. The public registry may expose minimized proof metadata, public status, verification level, payload_sha256, activation EVT and OPC references, but must never expose tax codes, national identifiers, document numbers, identity documents, scans, biometric material, private evidence, secrets, credentials, raw prompts, raw outputs, client files or sensitive operational payloads.",
   "type": "object",
   "additionalProperties": false,
   "allOf": [
@@ -16,7 +16,8 @@
     "version",
     "entity_type",
     "subject_label",
-    "record_scope",
+    "subject_type",
+    "proof_scope",
     "verification_level",
     "payload_sha256",
     "timestamp",
@@ -37,9 +38,13 @@
         "IPR_BASE_PUBLIC_REFERENCE",
         "IPR_VERIFIED_PUBLIC_REFERENCE",
         "IPR_PROFESSIONAL_PUBLIC_REFERENCE",
+        "IPR_CARD_PUBLIC_REFERENCE",
+        "IPR_CARD_STATUS_PUBLIC_REFERENCE",
         "EVT_PUBLIC_REFERENCE",
         "OPC_PUBLIC_REFERENCE",
-        "IPR_AI_AUDIT_TRAIL_PUBLIC_REFERENCE"
+        "EVIDENCE_PACK_PUBLIC_REFERENCE",
+        "IPR_AI_AUDIT_TRAIL_PUBLIC_REFERENCE",
+        "JOKER_C2_ACCESS_PUBLIC_REFERENCE"
       ]
     },
     "version": {
@@ -53,21 +58,64 @@
         "IPR_BASE",
         "IPR_VERIFIED",
         "IPR_PROFESSIONAL",
+        "IPR_CARD",
         "EVT",
         "OPC",
         "EVIDENCE_PACK",
         "AI_AUDIT_TRAIL",
+        "JOKER_C2_ACCESS_REFERENCE",
         "NODE",
         "OPERATOR",
-        "SYSTEM"
+        "SYSTEM",
+        "ORGANIZATION",
+        "PROCESS"
       ]
+    },
+    "ipr_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[A-Z0-9_\\-:.]+$",
+      "description": "Public IPR reference. Must not contain raw personal identifiers, tax codes, document numbers or private identifiers."
+    },
+    "ipr_card_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[A-Z0-9_\\-:.]+$",
+      "description": "Public IPR Card reference. It is an operational access-object reference, not an official identity document number."
     },
     "subject_label": {
       "type": "string",
       "minLength": 3,
       "maxLength": 128,
       "pattern": "^[A-Z0-9_\\-:.]+$",
-      "description": "Public minimized subject label. Must not contain names, emails, phone numbers, tax codes, document numbers, identity documents or private identifiers."
+      "description": "Public minimized subject label. Must not contain names, emails, phone numbers, tax codes, national identifiers, document numbers, identity documents or private identifiers."
+    },
+    "subject_type": {
+      "type": "string",
+      "enum": [
+        "NATURAL_PERSON_REFERENCE",
+        "LEGAL_ENTITY_REFERENCE",
+        "OPERATOR_REFERENCE",
+        "COMPANY_REFERENCE",
+        "INSTITUTION_REFERENCE",
+        "PROFESSIONAL_REFERENCE",
+        "RESEARCHER_REFERENCE",
+        "AI_SYSTEM_REFERENCE",
+        "NODE_REFERENCE",
+        "PROCESS_REFERENCE",
+        "DOCUMENT_WORKFLOW_REFERENCE",
+        "SYSTEM_REFERENCE",
+        "NOT_APPLICABLE"
+      ],
+      "description": "Public minimized subject category. This is not a civil identity category and does not create official identity."
     },
     "operator_label": {
       "type": [
@@ -80,11 +128,18 @@
       "description": "Optional minimized operator label. Must not contain raw personal identifiers."
     },
     "record_scope": {
-      "type": "string",
+      "type": [
+        "string",
+        "null"
+      ],
       "enum": [
+        null,
         "IPR_BASE_RND_REFERENCE",
         "IPR_VERIFIED_PRIVATE_CHECK_REFERENCE",
         "IPR_PROFESSIONAL_PILOT_REFERENCE",
+        "IPR_CARD_OPERATIONAL_REFERENCE",
+        "IPR_CARD_STATUS_REFERENCE",
+        "JOKER_C2_ACCESS_REFERENCE",
         "IPR_AI_AUDIT_TRAIL_MVP",
         "EVT_CONTINUITY_REFERENCE",
         "OPC_PROOF_REFERENCE",
@@ -92,11 +147,35 @@
         "REGISTRY_V3_REFERENCE",
         "HBCE_RND_REFERENCE",
         "INTERNAL_SELF_PILOT"
-      ]
+      ],
+      "description": "Backward-compatible scope field. Prefer proof_scope for new entries."
+    },
+    "proof_scope": {
+      "type": "string",
+      "enum": [
+        "IPR_BASE_RND_REFERENCE",
+        "IPR_VERIFIED_PRIVATE_CHECK_REFERENCE",
+        "IPR_PROFESSIONAL_PILOT_REFERENCE",
+        "IPR_CARD_OPERATIONAL_REFERENCE",
+        "IPR_CARD_STATUS_REFERENCE",
+        "JOKER_C2_ACCESS_REFERENCE",
+        "IPR_AI_AUDIT_TRAIL_MVP",
+        "EVT_CONTINUITY_REFERENCE",
+        "OPC_PROOF_REFERENCE",
+        "EVIDENCE_PACK_REFERENCE",
+        "REGISTRY_V3_REFERENCE",
+        "HBCE_RND_REFERENCE",
+        "INTERNAL_SELF_PILOT"
+      ],
+      "description": "Public proof scope. It identifies what kind of public proof reference is being registered."
     },
     "verification_level": {
       "type": "string",
       "enum": [
+        "L0",
+        "L1",
+        "L2",
+        "L3",
         "IPR_BASE_NOT_VERIFIED",
         "IPR_VERIFIED_PRIVATE_CHECK",
         "IPR_PROFESSIONAL_PILOT",
@@ -105,39 +184,103 @@
       ],
       "description": "Public minimized verification-level label. It does not create legal identity, regulated KYC/AML compliance, eIDAS qualification, public authority approval or certification by itself."
     },
-    "payload_sha256": {
-      "type": "string",
-      "pattern": "^[a-f0-9]{64}$",
-      "description": "Hash-oriented proof reference. The underlying payload must remain outside the public layer if it contains private or sensitive material."
-    },
-    "timestamp": {
-      "type": "string",
-      "format": "date-time"
-    },
     "status": {
       "type": "string",
       "enum": [
         "ACTIVE",
-        "RND_ONLY",
-        "RETAINED",
+        "PENDING",
+        "REVIEW_REQUIRED",
         "SUSPENDED",
         "REVOKED",
+        "EXPIRED",
+        "RND_ONLY",
+        "RETAINED",
         "SUPERSEDED",
         "INVALID",
         "PRIVATE_REVIEW_REQUIRED",
-        "FAIL_CLOSED"
-      ]
+        "FAIL_CLOSED",
+        "PUBLIC_REFERENCE_PRESENT",
+        "AUDIT_READY"
+      ],
+      "description": "Public lifecycle state of the proof reference. This does not grant JOKER-C2 access by itself."
     },
-    "public_payload_policy": {
+    "ipr_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "IPR_DRAFT",
+        "IPR_PENDING",
+        "IPR_REVIEW_REQUIRED",
+        "IPR_ACTIVE",
+        "IPR_SUSPENDED",
+        "IPR_REVOKED",
+        "IPR_EXPIRED",
+        "NOT_APPLICABLE"
+      ],
+      "description": "Optional public IPR state. Active status must be interpreted with policy, risk and scope checks."
+    },
+    "card_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "PENDING",
+        "ACTIVE",
+        "REVIEW_REQUIRED",
+        "SUSPENDED",
+        "REVOKED",
+        "EXPIRED",
+        "NOT_APPLICABLE"
+      ],
+      "description": "Optional public IPR Card state. IPR Card is operational, not official identity."
+    },
+    "payload_sha256": {
       "type": "string",
-      "const": "HASH_ORIENTED_REFERENCE_ONLY"
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Primary hash-oriented proof reference. The underlying payload must remain outside the public layer if it contains private or sensitive material."
+    },
+    "public_hash_reference": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Optional public hash reference. If present, it must be a lowercase SHA-256 value and must not expose the private payload."
+    },
+    "activation_evt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^(EVT-[0-9A-Z:\\-_.]+|NOT_APPLICABLE)$",
+      "description": "Optional activation EVT reference for IPR or IPR Card activation."
     },
     "evt_id": {
       "type": [
         "string",
         "null"
       ],
-      "pattern": "^(EVT-[0-9]{4,}|EVT-[A-Z0-9\\-]{4,96})$"
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^(EVT-[0-9A-Z:\\-_.]+|NOT_APPLICABLE)$",
+      "description": "Optional EVT reference."
+    },
+    "opc_receipt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^(OPC-[0-9A-Z:\\-_.]+|NOT_APPLICABLE)$",
+      "description": "Optional OPC receipt reference."
     },
     "opc_id": {
       "type": [
@@ -145,8 +288,9 @@
         "null"
       ],
       "minLength": 3,
-      "maxLength": 96,
-      "pattern": "^[A-Z0-9_\\-:.]+$"
+      "maxLength": 128,
+      "pattern": "^(OPC-[0-9A-Z:\\-_.]+|NOT_APPLICABLE)$",
+      "description": "Optional OPC reference."
     },
     "proof_id": {
       "type": [
@@ -166,6 +310,40 @@
       "maxLength": 128,
       "pattern": "^[A-Z0-9_\\-:.]+$"
     },
+    "qr_verification_reference": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "maxLength": 240,
+      "pattern": "^[A-Za-z0-9_./:#?=&%\\-]+$",
+      "description": "Optional QR verification reference or route. It must point only to a public or controlled proof-reference surface and must not embed private identity data."
+    },
+    "issued_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "Optional issue timestamp for an operational reference or IPR Card."
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "Optional expiration timestamp for an operational reference or IPR Card."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "public_payload_policy": {
+      "type": "string",
+      "const": "HASH_ORIENTED_REFERENCE_ONLY"
+    },
     "source_route": {
       "type": [
         "string",
@@ -181,7 +359,7 @@
         "null"
       ],
       "maxLength": 600,
-      "description": "Short public-safe note only. Must not contain personal data, tax codes, document numbers, secrets or private evidence."
+      "description": "Short public-safe note only. Must not contain personal data, tax codes, national identifiers, document numbers, secrets, private prompts, private outputs, client files or private evidence."
     },
     "boundary": {
       "type": "object",
@@ -192,13 +370,18 @@
         "public_proof_minimization",
         "no_public_data_custody",
         "no_public_tax_code_custody",
+        "no_public_national_identifier_custody",
         "no_public_document_number_custody",
         "no_public_identity_document_custody",
+        "no_public_biometric_custody",
         "no_private_key_custody",
+        "no_banking_or_financial_service_claim",
         "no_regulated_certification_claim",
         "no_public_authority_claim",
+        "no_official_identity_issuance_claim",
         "no_eidas_qualification_claim",
         "no_kyc_aml_provider_claim",
+        "no_automatic_joker_c2_access_claim",
         "fail_closed"
       ],
       "properties": {
@@ -209,6 +392,9 @@
             "IPR_BASE_RND_REFERENCE",
             "IPR_VERIFIED_PRIVATE_CHECK_REFERENCE",
             "IPR_PROFESSIONAL_PILOT_REFERENCE",
+            "IPR_CARD_OPERATIONAL_REFERENCE",
+            "IPR_CARD_STATUS_REFERENCE",
+            "JOKER_C2_ACCESS_REFERENCE",
             "IPR_AI_AUDIT_TRAIL_REFERENCE",
             "EVT_REFERENCE",
             "OPC_REFERENCE",
@@ -231,6 +417,10 @@
           "type": "boolean",
           "const": true
         },
+        "no_public_national_identifier_custody": {
+          "type": "boolean",
+          "const": true
+        },
         "no_public_document_number_custody": {
           "type": "boolean",
           "const": true
@@ -239,7 +429,15 @@
           "type": "boolean",
           "const": true
         },
+        "no_public_biometric_custody": {
+          "type": "boolean",
+          "const": true
+        },
         "no_private_key_custody": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_banking_or_financial_service_claim": {
           "type": "boolean",
           "const": true
         },
@@ -251,11 +449,19 @@
           "type": "boolean",
           "const": true
         },
+        "no_official_identity_issuance_claim": {
+          "type": "boolean",
+          "const": true
+        },
         "no_eidas_qualification_claim": {
           "type": "boolean",
           "const": true
         },
         "no_kyc_aml_provider_claim": {
+          "type": "boolean",
+          "const": true
+        },
+        "no_automatic_joker_c2_access_claim": {
           "type": "boolean",
           "const": true
         },
@@ -273,13 +479,19 @@
         "nickname",
         "email",
         "phone",
+        "telephone",
         "address",
         "birth_date",
         "date_of_birth",
+        "place_of_birth",
         "street_address",
         "precise_location",
         "territory",
         "raw_identifier",
+        "national_identifier",
+        "national_identification_number",
+        "national_tax_identifier",
+        "tax_identifier",
         "tax_code",
         "fiscal_code",
         "codice_fiscale",
@@ -289,15 +501,21 @@
         "cie_number",
         "passport_number",
         "driving_license_number",
+        "residence_permit_number",
         "identity_document",
         "regulated_identity_document",
         "identity_document_scan",
+        "document_scan",
         "passport_scan",
         "driving_license_scan",
         "portrait_image",
         "selfie",
+        "liveness_video",
+        "video_verification",
         "biometric_payload",
         "private_evidence",
+        "private_evidence_package",
+        "manual_review_notes",
         "personal_payload",
         "personal_data",
         "api_key",
