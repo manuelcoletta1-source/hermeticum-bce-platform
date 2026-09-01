@@ -564,6 +564,104 @@ REVOKE
 
 Historical records must not be overwritten or retrodated.
 
+
+### 8.1 EXECUTION identity, version and genealogy
+
+For `HBCE_CORE_EXECUTION`, `execution_id` identifies one logical
+execution attempt across its append-only lifecycle.
+
+A lifecycle revision MUST NOT receive a new `execution_id` merely
+because the execution state, evidence or downstream references changed.
+
+`execution_version` identifies the canonical revision of that execution
+attempt.
+
+The first canonical revision MUST use:
+
+`execution_version = 1`
+
+Every subsequent canonical revision of the same execution attempt MUST
+preserve the same `execution_id` and increment `execution_version`
+by exactly one.
+
+Therefore, for a successor revision:
+
+`successor.execution_id = predecessor.execution_id`
+
+and:
+
+`successor.execution_version = predecessor.execution_version + 1`
+
+A previously emitted canonical execution revision MUST NOT be mutated,
+replaced in place, retrodated or silently re-hashed.
+
+A new version is required whenever canonical execution content changes,
+including lifecycle state, execution evidence or later references such
+as EVT, OPC, OUTCOME or CONSEQUENCE.
+
+A later revision MAY preserve the same lifecycle state as its immediate
+predecessor when the revision only appends evidence or references.
+Accordingly, `genealogy.previous_state` and `genealogy.new_state` MAY be
+equal when no lifecycle state transition occurred.
+
+For `execution_version = 1`:
+
+`genealogy.derived_from = null`
+
+`genealogy.previous_state = null`
+
+`genealogy.new_state = state`
+
+and:
+
+`genealogy.hash = authorization_sha256`
+
+For every `execution_version > 1`:
+
+`genealogy.derived_from = execution_id`
+
+`genealogy.previous_state = predecessor.state`
+
+`genealogy.new_state = state`
+
+and:
+
+`genealogy.hash = predecessor.payload_sha256`
+
+The exact predecessor of a non-genesis execution revision is therefore
+identified by the conjunction of:
+
+`execution_id`
+
+`execution_version - 1`
+
+and:
+
+`genealogy.hash`
+
+`genealogy.derived_from` by itself MUST NOT be interpreted as a complete
+version locator.
+
+For an execution genesis revision, `genealogy.hash` anchors the execution
+lineage to the exact canonical authorization payload through
+`authorization_sha256`.
+
+For a non-genesis revision, `genealogy.hash` anchors the revision to the
+exact immediately preceding canonical execution payload.
+
+This execution-specific genealogy hash scope MUST NOT be silently
+replaced by EVT, OPC, registry, legacy or domain-specific hashing
+semantics.
+
+`execution_id` MUST NOT be synthesized by renaming or reusing
+`operation_id`, `mission_id`, ledger sequence identifiers or unrelated
+runtime identifiers.
+
+The permitted lifecycle transition graph is defined separately from
+identity and version continuity. Identity/version rules in this section
+therefore do not, by themselves, authorize a particular state transition.
+
+
 ## 9. Revocation propagation
 
 Revocation must be explicit and reconstructible.
