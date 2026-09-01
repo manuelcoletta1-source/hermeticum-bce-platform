@@ -661,6 +661,125 @@ The permitted lifecycle transition graph is defined separately from
 identity and version continuity. Identity/version rules in this section
 therefore do not, by themselves, authorize a particular state transition.
 
+### 8.2 EXECUTION lifecycle transition graph
+
+The canonical `HBCE_CORE_EXECUTION` lifecycle uses a fail-closed
+transition graph.
+
+The permitted cross-state transitions are exactly:
+
+`PENDING -> BLOCKED`
+
+`PENDING -> EXECUTING`
+
+`EXECUTING -> EXECUTED`
+
+`EXECUTING -> FAILED`
+
+`EXECUTING -> ABORTED`
+
+No other cross-state transition is authorized by this version of the
+Platform Core Data Model.
+
+A revision MAY preserve the same lifecycle state as its predecessor only
+when the revision appends evidence, references or other canonical content
+without changing the lifecycle state. Such a same-state revision is a
+version update and MUST NOT be interpreted as an additional lifecycle
+transition.
+
+`PENDING -> BLOCKED` represents an execution attempt that is prevented
+from starting. A `BLOCKED` revision MUST preserve
+`authorization_consumption.state = NOT_CONSUMED`, MUST preserve
+`started_at = null`, and MUST contain a precheck decision that blocks
+execution. Once an execution attempt is `BLOCKED`, this version of the
+canonical lifecycle does not permit that same execution attempt to later
+enter `EXECUTING`. A later attempt requires a distinct `execution_id`.
+
+`PENDING -> EXECUTING` is the only permitted transition that starts an
+execution attempt. It is permitted only when all required prechecks and
+bindings pass and the exact authorization has been atomically consumed.
+
+The first canonical successor that represents successful authorization
+consumption and execution start MUST therefore use:
+
+`state = EXECUTING`
+
+`authorization_consumption.state = CONSUMED`
+
+`authorization_consumption.atomic = true`
+
+a non-null `authorization_consumption.consumption_event_ref`
+
+a positive `authorization_consumption.consumption_index`
+
+a non-null `authorization_consumption.consumed_at`
+
+and a non-null `started_at`.
+
+Authorization consumption MUST occur before execution start. Therefore:
+
+`authorization_consumption.consumed_at <= started_at`
+
+The predecessor `PENDING` revision MUST remain immutable and MUST continue
+to represent the historical pre-consumption state.
+
+For the canonical successor created by `PENDING -> EXECUTING`,
+genealogy MUST satisfy the rules in section 8.1, including:
+
+`successor.execution_id = predecessor.execution_id`
+
+`successor.execution_version = predecessor.execution_version + 1`
+
+`successor.genealogy.derived_from = predecessor.execution_id`
+
+`successor.genealogy.previous_state = PENDING`
+
+`successor.genealogy.new_state = EXECUTING`
+
+`successor.genealogy.hash = predecessor.payload_sha256`
+
+The authorization-consumption evidence bound into the successor MUST refer
+to the same `execution_id`, authorization identity, authorization version,
+authorization payload hash, replay key, action digest, request digest and
+IOSPACE binding already committed by the predecessor execution and its
+canonical authorization.
+
+A mismatch between consumption evidence and the predecessor execution MUST
+fail closed and MUST NOT produce an `EXECUTING` successor.
+
+Direct transitions from `PENDING` to `EXECUTED`, `FAILED` or `ABORTED`
+are prohibited.
+
+After an execution attempt enters `EXECUTING`, exactly the following
+cross-state terminal transitions are permitted:
+
+`EXECUTING -> EXECUTED`
+
+`EXECUTING -> FAILED`
+
+`EXECUTING -> ABORTED`
+
+`EXECUTED`, `FAILED`, `ABORTED` and `BLOCKED` are terminal lifecycle
+states for the same logical execution attempt under this version of the
+model. They MAY receive same-state append-only revisions for later
+evidence or references, but they MUST NOT transition to a different
+lifecycle state.
+
+`UNKNOWN` is fail-closed. `UNKNOWN` MUST NOT authorize execution start,
+authorization consumption or a transition into `EXECUTING`. This version
+defines no cross-state transition to or from `UNKNOWN`. Same-state
+`UNKNOWN` revisions MAY append evidence that preserves the unresolved
+state.
+
+The lifecycle graph does not make execution equivalent to success,
+OUTCOME or CONSEQUENCE. In particular, `EXECUTED` means only that the
+execution attempt completed. OUTCOME and CONSEQUENCE remain separately
+represented and evaluated objects.
+
+The lifecycle transition contract does not authorize retroactive mutation,
+state rewriting, authorization re-consumption, execution-id synthesis or
+silent substitution of EVT, OPC, registry or legacy semantics.
+
 
 ## 9. Revocation propagation
 
