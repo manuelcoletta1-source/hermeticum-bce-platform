@@ -602,6 +602,85 @@ A hash proves correspondence with a referenced payload when correctly verified.
 
 A hash does not independently prove the truth, legality or correctness of the underlying claim.
 
+### Platform Core canonical payload hash profile
+
+The canonical Platform Core payload commitment profile is:
+
+`HBCE-PLATFORM-CORE-PAYLOAD-SHA256-v1`
+
+This profile applies to the canonical Platform Core objects that contain
+the required top-level `payload_sha256` field:
+
+- MANDATE;
+- CAPABILITY;
+- AUTHORITY;
+- AUTHORIZATION;
+- EXECUTION;
+- OUTCOME;
+- CONSEQUENCE;
+- MATRIX STATE;
+- FEEDBACK.
+
+The profile defines the object commitment as follows.
+
+1. The hash preimage is the complete canonical JSON object being committed,
+   with only that object's own top-level `payload_sha256` member omitted.
+
+2. No other field may be removed, synthesized, defaulted, inferred,
+   trimmed, normalized or rewritten merely for hashing.
+
+3. Object member names are recursively ordered lexicographically before
+   serialization.
+
+4. Array order is preserved exactly.
+
+5. JSON scalar values are preserved according to their schema-valid JSON
+   representation.
+
+6. The canonical representation is serialized as compact deterministic
+   JSON without insignificant whitespace.
+
+7. The canonical JSON string is encoded as UTF-8 bytes.
+
+8. SHA-256 is computed over those UTF-8 bytes.
+
+9. The resulting digest is represented as exactly 64 lowercase hexadecimal
+   characters.
+
+10. The top-level `payload_sha256` field of the final object is populated
+    with that 64-character lowercase hexadecimal digest. The field does
+    not use a `sha256:` prefix.
+
+11. Verification removes only the final object's own top-level
+    `payload_sha256`, rebuilds the canonical preimage using this same
+    profile, recomputes SHA-256 and requires exact digest equality.
+
+12. A missing, malformed, ambiguous or non-reproducible preimage must fail
+    closed.
+
+The `payload_sha256` member is therefore not part of its own hash preimage.
+This avoids a self-referential digest definition.
+
+This profile does not automatically define the semantics of other hash
+members contained inside a Platform Core object. In particular,
+dependency commitments, action/request digests, replay keys,
+genealogy hashes, evidence hashes and other referenced digests retain
+their own declared scope.
+
+Implementations must not silently substitute EVT, OPC, registry,
+domain-adapter or legacy hashing semantics for this Platform Core
+profile, even where those implementations currently produce equivalent
+bytes for a particular JSON value.
+
+The final object, including its computed `payload_sha256`, must still
+pass its canonical Platform Core JSON Schema before it may be returned
+or consumed as a canonical object.
+
+The digest proves deterministic correspondence with the committed
+canonical payload. It does not independently establish truth, legality,
+authorization legitimacy, regulated certification or execution success.
+
+
 ## 11. Existing schema compatibility
 
 The following existing schemas remain independently canonical within their current scopes:
