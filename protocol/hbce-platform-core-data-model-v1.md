@@ -450,6 +450,48 @@ NeuroLoop may implement or support feedback processing.
 
 FEEDBACK must never retroactively alter historical events or evidence.
 
+### 5.17 EVIDENCE SET
+
+EVIDENCE SET represents a bounded canonical aggregation of references and control-verification state required to reconstruct an evidence case without collapsing evidence, authority, result, external confirmation and interpretation into one semantic field.
+
+EVIDENCE SET must support at least:
+
+- evidence set reference;
+- evidence set version;
+- case reference;
+- domain classification;
+- target representation;
+- owner subject reference;
+- exact authority reference;
+- exact authority version;
+- authority payload digest;
+- lifecycle state;
+- evidence state and evidence reference;
+- control references;
+- observation references;
+- result reference;
+- artifact references;
+- external confirmation references;
+- event references;
+- EVT and OPC references where applicable;
+- creation and finalization timestamps;
+- append-only genealogy;
+- canonical payload digest.
+
+The canonical lifecycle vocabulary for EVIDENCE SET is:
+
+`OPEN`
+
+`CLOSED`
+
+EVIDENCE SET lifecycle state is distinct from the assessment result referenced by the Evidence Set. A `CLOSED` Evidence Set does not itself mean `PASS`, and an assessment result must not be reinterpreted as the Evidence Set lifecycle state.
+
+External confirmation must remain distinguishable from the canonical HBCE assessment result. An external confirmation does not silently replace, create or modify that result.
+
+EVIDENCE SET does not itself create AUTHORITY, AUTHORIZATION, EXECUTION, OUTCOME, legal truth, regulated certification or public authority approval.
+
+Domain-specific semantics belong in adapters or referenced domain records. A canonical EVIDENCE SET must not acquire domain-specific Core fields merely because a particular case uses them.
+
 ## 6. Universal Act Model
 
 A governed HBCE act must be reconstructible through the following minimum semantic dimensions:
@@ -781,6 +823,90 @@ state rewriting, authorization re-consumption, execution-id synthesis or
 silent substitution of EVT, OPC, registry or legacy semantics.
 
 
+### 8.3 EVIDENCE SET identity, version and genealogy
+
+For `HBCE_CORE_EVIDENCE_SET`, `evidence_set_id` identifies one logical Evidence Set across its append-only lifecycle.
+
+A canonical lifecycle revision MUST NOT receive a new `evidence_set_id` merely because evidence, references or lifecycle state changed.
+
+`evidence_set_version` identifies the canonical revision of that Evidence Set.
+
+The first canonical revision MUST use:
+
+`evidence_set_version = 1`
+
+Every subsequent canonical revision MUST preserve the same `evidence_set_id` and increment `evidence_set_version` by exactly one.
+
+Therefore:
+
+`successor.evidence_set_id = predecessor.evidence_set_id`
+
+and:
+
+`successor.evidence_set_version = predecessor.evidence_set_version + 1`
+
+A previously emitted canonical Evidence Set revision MUST NOT be mutated, replaced in place, retrodated or silently re-hashed.
+
+A later revision MAY preserve the same lifecycle state when it only appends evidence or references.
+
+The permitted lifecycle relations are:
+
+`OPEN -> OPEN`
+
+`OPEN -> CLOSED`
+
+`CLOSED -> CLOSED`
+
+`CLOSED -> OPEN` is forbidden.
+
+For every canonical revision:
+
+`genealogy.new_state = state`
+
+For `evidence_set_version = 1`:
+
+`genealogy.derived_from = null`
+
+`genealogy.previous_state = null`
+
+`genealogy.new_state = OPEN`
+
+and:
+
+`genealogy.hash = authority_sha256`
+
+For every `evidence_set_version > 1`:
+
+`genealogy.derived_from = evidence_set_id`
+
+`genealogy.previous_state = predecessor.state`
+
+`genealogy.new_state = state`
+
+and:
+
+`genealogy.hash = predecessor.payload_sha256`
+
+The exact predecessor of a non-genesis Evidence Set revision is identified by the conjunction of:
+
+`evidence_set_id`
+
+`evidence_set_version - 1`
+
+and:
+
+`genealogy.hash`
+
+`genealogy.derived_from` by itself MUST NOT be interpreted as a complete version locator.
+
+For a genesis Evidence Set revision, `genealogy.hash` anchors the lineage to the exact canonical AUTHORITY revision identified by `authority_ref`, `authority_version` and `authority_sha256`.
+
+For a non-genesis Evidence Set revision, `genealogy.hash` anchors the revision to the exact immediately preceding canonical Evidence Set payload.
+
+This Evidence Set-specific genealogy hash scope MUST NOT be silently replaced by EVT, OPC, registry, legacy or domain-specific hashing semantics.
+
+A `CLOSED -> CLOSED` revision may append evidence or references, but it MUST NOT silently rewrite the finalized assessment result. Exact cross-revision result immutability, predecessor resolution, version increment, authority binding and genealogy hash equality require runtime validation.
+
 ## 9. Revocation propagation
 
 Revocation must be explicit and reconstructible.
@@ -836,7 +962,8 @@ the required top-level `payload_sha256` field:
 - OUTCOME;
 - CONSEQUENCE;
 - MATRIX STATE;
-- FEEDBACK.
+- FEEDBACK;
+- EVIDENCE SET.
 
 The profile defines the object commitment as follows.
 
@@ -985,6 +1112,8 @@ CONSEQUENCE: CANONICAL SCHEMA IMPLEMENTED / STRUCTURALLY VERIFIED / CROSS-OBJECT
 MATRIX STATE: CANONICAL SCHEMA IMPLEMENTED / STRUCTURALLY VERIFIED / CANONICAL STATE ENGINE AND STATE-TRANSITION RUNTIME VALIDATION NOT IMPLEMENTED
 
 FEEDBACK: CANONICAL SCHEMA IMPLEMENTED / STRUCTURALLY VERIFIED / FEEDBACK PROCESSING AND INFLUENCE RUNTIME NOT IMPLEMENTED
+
+EVIDENCE SET: CANONICAL SCHEMA IMPLEMENTED / STRUCTURALLY VERIFIED / LIFECYCLE STATE MACHINE STRUCTURALLY ENFORCED / CROSS-REVISION AND PERSISTENCE RUNTIME NOT IMPLEMENTED
 
 The canonical schemas above define representation and structural constraints. Their presence does not claim that the HBCE Platform Core runtime, cross-object validator, authorization-consumption engine, MATRIX state engine or FEEDBACK influence processor is implemented.
 
