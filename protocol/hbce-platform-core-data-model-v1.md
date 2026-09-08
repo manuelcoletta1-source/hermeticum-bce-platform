@@ -945,6 +945,112 @@ A hash proves correspondence with a referenced payload when correctly verified.
 
 A hash does not independently prove the truth, legality or correctness of the underlying claim.
 
+### 10.1 Runtime reference resolution and durable backing boundary
+
+A canonical reference is not self-proving merely because it is present
+inside a canonical Platform Core object.
+
+When a runtime operation requires an outbound reference to resolve, the
+implementation MUST establish the existence of the exact referenced
+identity through an appropriate server-side durable backing source.
+
+Identifier syntax, prefix validity, fixture occurrence, presence inside
+an EVIDENCE SET row, or presence in a public proof registry MUST NOT by
+itself be treated as sufficient production reference resolution.
+
+Canonical AUTHORITY remains a canonical Platform Core object and MUST
+remain separate from generic reference-registry infrastructure.
+
+The exact canonical AUTHORITY revision bound to an EVIDENCE SET is:
+
+`authority_ref = authority.authority_id`
+
+`authority_version = authority.authority_version`
+
+`authority_sha256 = authority.payload_sha256`
+
+A runtime that resolves this binding MUST resolve the exact durable
+canonical AUTHORITY revision and MUST verify its canonical identity,
+version and payload commitment. Missing, unavailable, malformed or
+mismatched AUTHORITY material MUST fail closed.
+
+A generic typed reference registry MAY be implemented as Platform Core
+runtime trust and persistence infrastructure for outbound references
+that do not have another independently queryable durable backing source
+with an exactly compatible identity.
+
+Such a generic runtime registry is not itself the referenced canonical
+object and does not create an additional Platform Core canonical object
+kind.
+
+Its minimum lookup identity is the exact conjunction of:
+
+`reference_type`
+
+and:
+
+`reference`
+
+The generic reference types consumed by EVIDENCE SET are:
+
+`EVIDENCE`
+
+`CONTROL`
+
+`OBSERVATION`
+
+`RESULT`
+
+`ARTIFACT`
+
+`EXTERNAL_CONFIRMATION`
+
+`EVENT`
+
+`EVT`
+
+`OPC`
+
+A durable generic reference registration MUST carry a stable
+content/provenance commitment sufficient to prevent unrelated material
+from being accepted under the same typed reference.
+
+Generic reference persistence MUST be append-only. An exact duplicate
+MAY be treated as an idempotent replay. A conflicting duplicate MUST
+fail closed. Existing registrations MUST NOT be silently updated or
+deleted.
+
+Reference resolution MUST require exact type and exact reference
+identity. Unsupported, missing, ambiguous, conflicting or unavailable
+references MUST remain unresolved and MUST fail closed wherever
+resolution is required.
+
+Where an existing canonical or domain-specific durable repository
+already exposes an exactly compatible reference identity, a production
+resolver MAY use that repository directly instead of duplicating the
+record in the generic registry.
+
+Reference types MUST NOT be silently aliased. In particular, EVIDENCE
+is not RESULT, EVT is not EVENT, and OPC is not generic evidence merely
+because those records may participate in the same evidence case.
+
+The existing HBCE public REGISTRY remains a distinct public
+proof-reference scope. A public registry match proves only the meaning
+defined by that registry's own specification and MUST NOT automatically
+be treated as production resolution of a Platform Core typed reference.
+
+Any future binding between public REGISTRY material and a production
+Platform Core reference resolver requires an explicit compatibility
+profile proving exact reference identity and commitment semantics.
+
+An EVIDENCE SET MUST NOT use its own persisted row as proof that its
+outbound references exist. The Evidence Set remains a consumer of
+independently resolved AUTHORITY and typed reference backing.
+
+This runtime reference-resolution infrastructure does not alter the ten
+canonical Platform Core schema kinds and does not modify the canonical
+payload hash profile.
+
 ### Platform Core canonical payload hash profile
 
 The canonical Platform Core payload commitment profile is:
