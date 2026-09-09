@@ -279,6 +279,127 @@ AUTHORITY must be versioned.
 
 A stale or revoked authority must not support a new AUTHORIZATION.
 
+#### Authority revision and genealogy runtime semantics
+
+Canonical AUTHORITY revision semantics are relational runtime invariants
+in addition to JSON Schema validity.
+
+For every canonical AUTHORITY revision:
+
+`state = genealogy.new_state`
+
+must hold exactly.
+
+For `authority_version = 1`, the revision is the genesis revision of that
+`authority_id` and:
+
+`genealogy.derived_from = null`
+
+`genealogy.previous_state = null`
+
+must hold.
+
+A production genesis AUTHORITY intended to provide durable operational
+authority MUST bind its identifiable controlled authority source through
+a non-null `authority_source.source_sha256`.
+
+For that production genesis revision:
+
+`genealogy.hash = authority_source.source_sha256`
+
+must hold exactly.
+
+The source commitment remains a commitment to the controlled authority
+source artifact. It is not a public-authority claim and MUST NOT be
+substituted by an unrelated IPR, EVT, OPC, registry or domain hash.
+
+For every `authority_version > 1`, the exact immediately preceding
+canonical AUTHORITY revision is required and:
+
+`authority_id = predecessor.authority_id`
+
+`authority_version = predecessor.authority_version + 1`
+
+`genealogy.derived_from = predecessor.authority_id`
+
+`genealogy.previous_state = predecessor.state`
+
+`genealogy.new_state = state`
+
+`genealogy.hash = predecessor.payload_sha256`
+
+must hold exactly.
+
+The exact predecessor of a non-genesis AUTHORITY revision is identified
+by the conjunction of:
+
+`authority_id`
+
+`authority_version - 1`
+
+and:
+
+`genealogy.hash`
+
+`genealogy.derived_from` by itself MUST NOT be interpreted as a complete
+version locator.
+
+The optional `supersedes` member is not the version-genealogy predecessor
+locator and MUST NOT replace the predecessor identity, version or payload
+commitment rules above.
+
+Authority construction and production backing resolution remain separate
+concerns.
+
+A canonical AUTHORITY builder MAY remain a pure deterministic constructor
+that enforces canonical Authority object, revision, genealogy and payload
+hash invariants without database access.
+
+Before an AUTHORITY revision is treated by a production runtime as valid
+operational authority for new AUTHORIZATION, its required outbound
+dependencies MUST resolve through appropriate server-side durable backing.
+
+At minimum, the runtime MUST establish exact Mandate identity and version
+for:
+
+`mandate_ref`
+
+`mandate_version`
+
+and exact Capability identity and version for:
+
+`capability_ref`
+
+`capability_version`.
+
+Cross-object bundle equality or identifier syntax alone is not sufficient
+production durable resolution.
+
+The controlled `authority_source.source_ref` MUST refer to an identifiable
+source appropriate to its declared `source_type`.
+
+Where `authority_source.source_sha256` is present, the production source
+resolver MUST verify exact commitment correspondence with the controlled
+source material.
+
+For a production genesis AUTHORITY, `authority_source.source_sha256` is
+required by the runtime rule above.
+
+An unavailable, malformed, ambiguous or mismatched Authority source,
+Mandate or Capability dependency MUST fail closed for production use.
+
+The existing revocation-propagation rule remains authoritative: a Mandate
+that is revoked, expired or superseded MUST NOT allow dependent AUTHORITY
+to be silently treated as valid for new authorization.
+
+This amendment does not define additional Capability lifecycle propagation.
+No Capability lifecycle rule may be inferred merely from the existence of
+`capability_ref` or `capability_version`.
+
+Historical canonical Authority revisions remain historical records and
+MUST NOT be deleted merely because a prerequisite or later Authority state
+changes.
+
 ### 5.7 AUTHORIZATION
 
 AUTHORIZATION represents the specific approval permitting a defined action under a valid AUTHORITY.
