@@ -234,6 +234,75 @@ MANDATE establishes delegated relationship.
 
 MANDATE does not itself authorize every individual action.
 
+#### Mandate revision and genealogy runtime semantics
+
+Canonical MANDATE revision semantics are relational runtime invariants in addition to JSON Schema validity.
+
+For every canonical MANDATE revision:
+
+`state = genealogy.new_state`
+
+must hold exactly.
+
+For `mandate_version = 1`, the revision is the genesis revision of that `mandate_id` and:
+
+`genealogy.derived_from = null`
+
+`genealogy.previous_state = null`
+
+must hold.
+
+A production genesis MANDATE intended to provide durable delegation for production use MUST bind its identifiable controlled issuing source through a non-null `issuing_source.source_sha256`.
+
+For that production genesis revision:
+
+`genealogy.hash = issuing_source.source_sha256`
+
+must hold exactly.
+
+The issuing-source commitment remains a commitment to the controlled artifact or material that issued or established the MANDATE. It is distinct from the canonical MANDATE `payload_sha256` and MUST NOT be silently substituted by an unrelated IPR, EVT, OPC, registry, domain or other commitment.
+
+The issuing-source commitment does not by itself establish legal validity, public-authority approval, regulated certification or truth of the underlying mandate claim.
+
+For every `mandate_version > 1`, the exact immediately preceding canonical MANDATE revision is required and:
+
+`successor.mandate_id = predecessor.mandate_id`
+
+`successor.mandate_version = predecessor.mandate_version + 1`
+
+`successor.genealogy.derived_from = predecessor.mandate_id`
+
+`successor.genealogy.previous_state = predecessor.state`
+
+`successor.genealogy.new_state = successor.state`
+
+`successor.genealogy.hash = predecessor.payload_sha256`
+
+must hold exactly.
+
+The version increment is mathematically exact. An implementation whose numeric representation cannot preserve an exact integer increment MUST fail closed rather than silently round or reinterpret the version.
+
+The exact predecessor of a non-genesis MANDATE revision is identified by the conjunction of:
+
+`mandate_id`
+
+`mandate_version - 1`
+
+and exact predecessor payload commitment correspondence through:
+
+`successor.genealogy.hash = predecessor.payload_sha256`.
+
+`genealogy.derived_from` by itself MUST NOT be interpreted as a complete version locator.
+
+The optional `supersedes` member is not the MANDATE revision predecessor locator and MUST NOT replace the predecessor identity, version or payload commitment rules above.
+
+The existing revocation-propagation rule remains authoritative. A MANDATE that is revoked, expired or superseded MUST NOT be silently treated as valid support for dependent AUTHORITY or AUTHORIZATION for new production use.
+
+These revision rules do not define an additional lifecycle transition graph and do not imply that `principal_ref`, `actor_ref`, `scope`, `constraints` or `issuing_source` must remain byte-identical across revisions. Any such continuity restriction requires a separate explicit normative rule.
+
+Mandate construction and durable production backing remain separate concerns. Canonical construction may remain deterministic and database-independent, while production use MUST resolve the required durable canonical MANDATE revision and any controlled source material through the appropriate server-side backing.
+
+
 ### 5.5 CAPABILITY
 
 CAPABILITY represents an operation class that an ACTOR or component is technically or logically able to perform.
