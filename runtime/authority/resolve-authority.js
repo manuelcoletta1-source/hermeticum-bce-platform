@@ -127,9 +127,37 @@ function resolveAuthority(input) {
   }
 
   /*
-   * Capability lifecycle propagation is not yet frozen.
-   * Never infer ACTIVE capability => valid authority here.
+   * HBCE-SF-045 human-accepted Capability lifecycle propagation.
+   *
+   * ACTIVE means only that Capability may continue to subsequent
+   * Authority checks. It never means Authority VALID, Authorization,
+   * Execution or Dispatch.
+   *
+   * LIMITED remains fail-closed until its full semantics are frozen.
+   * A Capability lifecycle failure classifies Authority resolution
+   * as INVALID; it does not rewrite Authority lifecycle state.
    */
+  if (capability.state !== 'ACTIVE') {
+    return resolution(
+      RESULT.INVALID,
+      capability.state === 'LIMITED'
+        ? 'CAPABILITY_LIMITED_SEMANTICS_DEFERRED'
+        : 'CAPABILITY_STATE_INVALID'
+    );
+  }
+
+  if (
+    capability.evidence_state !== 'PRESENT' ||
+    typeof capability.evidence_reference !== 'string' ||
+    capability.evidence_reference.length === 0
+  ) {
+    return resolution(
+      RESULT.INVALID,
+      capability.evidence_state === 'NOT_APPLICABLE'
+        ? 'CAPABILITY_EVIDENCE_NOT_APPLICABLE_REQUIRES_JUSTIFICATION'
+        : 'CAPABILITY_EVIDENCE_INVALID'
+    );
+  }
 
   if (
     !authority.scope ||

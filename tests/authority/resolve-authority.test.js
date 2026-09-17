@@ -43,7 +43,9 @@ function baseFixture() {
     capability: {
       capability_id: 'CAP-TEST-001',
       capability_version: 1,
-      state: 'ACTIVE'
+      state: 'ACTIVE',
+      evidence_state: 'PRESENT',
+      evidence_reference: 'EVT-CAP-001'
     },
     request: {
       action_class: 'READ',
@@ -196,4 +198,151 @@ console.log(`VECTOR_FAIL=${vectors.length - passed}`);
 
 if (passed !== vectors.length) {
   process.exit(1);
+}
+
+/*
+ * HBCE-SF-045 human-accepted Capability lifecycle propagation.
+ * These vectors must not enable positive Authority VALID emission.
+ */
+{
+  const base = baseFixture();
+
+  const vectors = [
+    ['TV-CAP-001 ACTIVE+PRESENT+EXACT_BINDING=>CONTINUE_FAIL_CLOSED',
+      {},
+      'INVALID',
+      'POSITIVE_AUTHORITY_RESOLUTION_DEFERRED'],
+
+    ['TV-CAP-002 REVOKED=>INVALID',
+      { state: 'REVOKED' },
+      'INVALID',
+      'CAPABILITY_STATE_INVALID'],
+
+    ['TV-CAP-003 EXPIRED=>INVALID',
+      { state: 'EXPIRED' },
+      'INVALID',
+      'CAPABILITY_STATE_INVALID'],
+
+    ['TV-CAP-004 SUPERSEDED=>INVALID',
+      { state: 'SUPERSEDED' },
+      'INVALID',
+      'CAPABILITY_STATE_INVALID'],
+
+    ['TV-CAP-005 DRAFT=>INVALID',
+      { state: 'DRAFT' },
+      'INVALID',
+      'CAPABILITY_STATE_INVALID'],
+
+    ['TV-CAP-006 PENDING=>INVALID',
+      { state: 'PENDING' },
+      'INVALID',
+      'CAPABILITY_STATE_INVALID'],
+
+    ['TV-CAP-007 SUSPENDED=>INVALID',
+      { state: 'SUSPENDED' },
+      'INVALID',
+      'CAPABILITY_STATE_INVALID'],
+
+    ['TV-CAP-008 CONTESTED=>INVALID',
+      { state: 'CONTESTED' },
+      'INVALID',
+      'CAPABILITY_STATE_INVALID'],
+
+    ['TV-CAP-009 COMPROMISED=>INVALID',
+      { state: 'COMPROMISED' },
+      'INVALID',
+      'CAPABILITY_STATE_INVALID'],
+
+    ['TV-CAP-010 UNKNOWN=>INVALID',
+      { state: 'UNKNOWN' },
+      'INVALID',
+      'CAPABILITY_STATE_INVALID'],
+
+    ['TV-CAP-011 LIMITED=>INVALID_FAIL_CLOSED',
+      { state: 'LIMITED' },
+      'INVALID',
+      'CAPABILITY_LIMITED_SEMANTICS_DEFERRED'],
+
+    ['TV-CAP-012 EVIDENCE_MISSING=>INVALID',
+      { evidence_state: 'MISSING' },
+      'INVALID',
+      'CAPABILITY_EVIDENCE_INVALID'],
+
+    ['TV-CAP-013 EVIDENCE_UNKNOWN=>INVALID',
+      { evidence_state: 'UNKNOWN' },
+      'INVALID',
+      'CAPABILITY_EVIDENCE_INVALID'],
+
+    ['TV-CAP-014 EVIDENCE_NOT_APPLICABLE_WITHOUT_JUSTIFICATION=>INVALID',
+      { evidence_state: 'NOT_APPLICABLE' },
+      'INVALID',
+      'CAPABILITY_EVIDENCE_NOT_APPLICABLE_REQUIRES_JUSTIFICATION']
+  ];
+
+  let capPass = 0;
+
+  for (const [name, patch, expectedState, expectedReason] of vectors) {
+    const context = baseFixture();
+    context.capability = {
+      ...context.capability,
+      ...patch
+    };
+
+    const actual = resolveAuthority(context);
+
+    if (
+      actual.state !== expectedState ||
+      actual.reason !== expectedReason
+    ) {
+      console.error(
+        `FAIL ${name} expected=${expectedState}/${expectedReason} actual=${actual.state}/${actual.reason}`
+      );
+      process.exit(1);
+    }
+
+    console.log(`PASS ${name}`);
+    capPass += 1;
+  }
+
+  const activeContext = baseFixture();
+  const activeSnapshot = JSON.stringify(activeContext.capability);
+  const activeResult = resolveAuthority(activeContext);
+
+  if (activeResult.state === 'VALID') {
+    console.error('FAIL TV-CAP-015 ACTIVE_MUST_NOT_ENABLE_VALID');
+    process.exit(1);
+  }
+  console.log('PASS TV-CAP-015 ACTIVE_MUST_NOT_ENABLE_VALID');
+  capPass += 1;
+
+  if (
+    Object.prototype.hasOwnProperty.call(activeResult, 'authorization') ||
+    Object.prototype.hasOwnProperty.call(activeResult, 'authorized')
+  ) {
+    console.error('FAIL TV-CAP-016 ACTIVE_DOES_NOT_EMIT_AUTHORIZATION');
+    process.exit(1);
+  }
+  console.log('PASS TV-CAP-016 ACTIVE_DOES_NOT_EMIT_AUTHORIZATION');
+  capPass += 1;
+
+  if (
+    Object.prototype.hasOwnProperty.call(activeResult, 'dispatch') ||
+    Object.prototype.hasOwnProperty.call(activeResult, 'dispatched')
+  ) {
+    console.error('FAIL TV-CAP-017 ACTIVE_DOES_NOT_EMIT_DISPATCH');
+    process.exit(1);
+  }
+  console.log('PASS TV-CAP-017 ACTIVE_DOES_NOT_EMIT_DISPATCH');
+  capPass += 1;
+
+  if (JSON.stringify(activeContext.capability) !== activeSnapshot) {
+    console.error('FAIL TV-CAP-018 CAPABILITY_INPUT_NOT_MUTATED');
+    process.exit(1);
+  }
+  console.log('PASS TV-CAP-018 CAPABILITY_INPUT_NOT_MUTATED');
+  capPass += 1;
+
+  console.log(`CAP_VECTOR_COUNT=${capPass}`);
+  console.log(`CAP_VECTOR_PASS=${capPass}`);
+  console.log('CAP_VECTOR_FAIL=0');
 }
