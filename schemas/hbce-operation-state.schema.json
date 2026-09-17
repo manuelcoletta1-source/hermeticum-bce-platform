@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/schemas/hbce-operation-state.schema.json",
+  "title": "HBCE Operation State Schema v1",
+  "description": "Canonical HBCE Platform Core global operation lifecycle state. This contract identifies the lifecycle position of a governed operation. It is distinct from Authority state, Authorization state, Execution state, Evidence Set state and MATRIX state. State membership does not itself authorize or execute a transition.",
+  "type": "object",
+  "required": [
+    "proto",
+    "kind",
+    "version",
+    "protocol_version",
+    "operation_id",
+    "state",
+    "state_class",
+    "terminal",
+    "transition_required",
+    "boundary"
+  ],
+  "properties": {
+    "proto": {
+      "type": "string",
+      "const": "HBCE-OPERATION-STATE-v1"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "HBCE_CORE_OPERATION_STATE"
+      ]
+    },
+    "version": {
+      "type": "string",
+      "const": "v1"
+    },
+    "protocol_version": {
+      "type": "string",
+      "const": "HBCE_PROTOCOL_V1",
+      "description": "Unsupported required protocol versions must be rejected."
+    },
+    "operation_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "state": {
+      "$ref": "#/$defs/operationState"
+    },
+    "state_class": {
+      "type": "string",
+      "enum": [
+        "PROGRESSIVE",
+        "TERMINAL",
+        "ALTERNATIVE"
+      ]
+    },
+    "terminal": {
+      "type": "boolean"
+    },
+    "transition_required": {
+      "type": "boolean",
+      "const": true,
+      "description": "Movement into another operation state requires an explicit StateTransition contract. State mutation by implication is forbidden."
+    },
+    "boundary": {
+      "type": "object",
+      "required": [
+        "global_operation_state_only",
+        "not_authority_state",
+        "not_authorization_state",
+        "not_execution_state",
+        "not_matrix_state",
+        "state_is_not_transition",
+        "unknown_state_rejected"
+      ],
+      "properties": {
+        "global_operation_state_only": {
+          "type": "boolean",
+          "const": true
+        },
+        "not_authority_state": {
+          "type": "boolean",
+          "const": true
+        },
+        "not_authorization_state": {
+          "type": "boolean",
+          "const": true
+        },
+        "not_execution_state": {
+          "type": "boolean",
+          "const": true
+        },
+        "not_matrix_state": {
+          "type": "boolean",
+          "const": true
+        },
+        "state_is_not_transition": {
+          "type": "boolean",
+          "const": true
+        },
+        "unknown_state_rejected": {
+          "type": "boolean",
+          "const": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "enum": [
+              "CREATED",
+              "IDENTIFIED",
+              "AUTHORITY_RESOLVED",
+              "POLICY_EVALUATED",
+              "AUTHORIZATION_RESOLVED",
+              "READY",
+              "DISPATCHED",
+              "EXECUTED",
+              "OBSERVED",
+              "EVIDENCED"
+            ]
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "state_class": {
+            "const": "PROGRESSIVE"
+          },
+          "terminal": {
+            "const": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "enum": [
+              "STATE_COMMITTED",
+              "CLOSED_DENIED",
+              "FAILED",
+              "CANCELLED"
+            ]
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "state_class": {
+            "const": "TERMINAL"
+          },
+          "terminal": {
+            "const": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "CORRECTED"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "state_class": {
+            "const": "ALTERNATIVE"
+          },
+          "terminal": {
+            "const": false
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "operationState": {
+      "title": "HBCE Canonical Operation State",
+      "description": "Canonical scalar vocabulary for the HBCE global governed operation lifecycle. Unknown values are rejected by enumeration.",
+      "type": "string",
+      "enum": [
+        "CREATED",
+        "IDENTIFIED",
+        "AUTHORITY_RESOLVED",
+        "POLICY_EVALUATED",
+        "AUTHORIZATION_RESOLVED",
+        "READY",
+        "DISPATCHED",
+        "EXECUTED",
+        "OBSERVED",
+        "EVIDENCED",
+        "STATE_COMMITTED",
+        "CLOSED_DENIED",
+        "FAILED",
+        "CANCELLED",
+        "CORRECTED"
+      ]
+    }
+  }
+}
