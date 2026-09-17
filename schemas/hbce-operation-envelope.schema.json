@@ -1,0 +1,487 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/schemas/hbce-operation-envelope.schema.json",
+  "title": "HBCE Operation Envelope Schema v1",
+  "description": "Canonical HBCE Platform Core envelope providing one stable operation identity across identity, authority, policy, authorization, execution, evidence and state processing. The envelope correlates governed records; it does not itself grant authority, authorize execution, imply policy approval, prove execution success or permit dispatch.",
+  "type": "object",
+  "required": [
+    "proto",
+    "kind",
+    "version",
+    "operation_id",
+    "protocol_version",
+    "identity_binding",
+    "authority_binding",
+    "policy_binding",
+    "authorization_binding",
+    "execution_binding",
+    "evidence_binding",
+    "state",
+    "created_at",
+    "updated_at",
+    "payload_sha256",
+    "append_only",
+    "genealogy",
+    "boundary"
+  ],
+  "properties": {
+    "proto": {
+      "type": "string",
+      "const": "HBCE-OPERATION-ENVELOPE-v1"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "HBCE_CORE_OPERATION_ENVELOPE"
+      ]
+    },
+    "version": {
+      "type": "string",
+      "const": "v1"
+    },
+    "operation_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "description": "Canonical identifier shared by every critical record belonging to the same governed operation."
+    },
+    "protocol_version": {
+      "type": "string",
+      "const": "HBCE_PROTOCOL_V1",
+      "description": "Required operational protocol version. Implementations must reject unsupported required protocol versions rather than silently downgrade or accept them."
+    },
+    "identity_binding": {
+      "type": "object",
+      "required": [
+        "identity_ref",
+        "verification_state"
+      ],
+      "properties": {
+        "identity_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "ipr_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 512
+        },
+        "verification_state": {
+          "type": "string",
+          "enum": [
+            "VERIFIED",
+            "PENDING",
+            "REJECTED",
+            "REVOKED",
+            "SUSPENDED",
+            "EXPIRED",
+            "UNKNOWN"
+          ]
+        },
+        "evidence_reference": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 512
+        }
+      },
+      "additionalProperties": false,
+      "description": "Identity correlation only. A verified identity does not constitute valid operational authority."
+    },
+    "authority_binding": {
+      "type": "object",
+      "required": [
+        "authority_ref",
+        "authority_version",
+        "state"
+      ],
+      "properties": {
+        "authority_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 512
+        },
+        "authority_version": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 128
+        },
+        "authority_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "UNRESOLVED",
+            "VALID",
+            "INVALID",
+            "EXPIRED",
+            "REVOKED",
+            "OUT_OF_SCOPE",
+            "MISSING"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "description": "Explicit authority correlation. Identity validity must never be interpreted as authority validity."
+    },
+    "policy_binding": {
+      "type": "object",
+      "required": [
+        "decision"
+      ],
+      "properties": {
+        "policy_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 512
+        },
+        "decision_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 512
+        },
+        "decision": {
+          "type": "string",
+          "enum": [
+            "UNEVALUATED",
+            "ALLOW",
+            "DENY",
+            "REQUIRE_AUTHORIZATION",
+            "REQUIRE_PROOF"
+          ]
+        },
+        "evidence_reference": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 512
+        }
+      },
+      "additionalProperties": false,
+      "description": "Policy decision correlation only. ALLOW is not execution and DENY must never permit dispatch."
+    },
+    "authorization_binding": {
+      "type": "object",
+      "required": [
+        "state"
+      ],
+      "properties": {
+        "authorization_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 512
+        },
+        "authorization_version": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 128
+        },
+        "authorization_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "UNRESOLVED",
+            "VALID",
+            "INVALID",
+            "EXPIRED",
+            "REVOKED",
+            "CONSUMED",
+            "MISSING"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "description": "Explicit authorization correlation. AI analysis or proposal must never satisfy this binding implicitly."
+    },
+    "execution_binding": {
+      "type": "object",
+      "required": [
+        "state"
+      ],
+      "properties": {
+        "execution_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 512
+        },
+        "execution_version": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 128
+        },
+        "execution_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "NOT_DISPATCHED",
+            "DISPATCHED",
+            "EXECUTING",
+            "EXECUTED",
+            "FAILED",
+            "CANCELLED",
+            "BLOCKED"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "evidence_binding": {
+      "type": "object",
+      "required": [
+        "state",
+        "references"
+      ],
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": [
+            "NONE",
+            "PARTIAL",
+            "COMPLETE",
+            "INVALID",
+            "INTEGRITY_FAILURE"
+          ]
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "CREATED",
+        "IDENTIFIED",
+        "AUTHORITY_RESOLVED",
+        "POLICY_EVALUATED",
+        "AUTHORIZATION_RESOLVED",
+        "READY",
+        "DISPATCHED",
+        "EXECUTED",
+        "OBSERVED",
+        "EVIDENCED",
+        "STATE_COMMITTED",
+        "CLOSED_DENIED",
+        "FAILED",
+        "CANCELLED",
+        "CORRECTED"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "payload_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "append_only": {
+      "type": "boolean",
+      "const": true
+    },
+    "genealogy": {
+      "type": "object",
+      "required": [
+        "previous_operation_version_ref",
+        "supersedes"
+      ],
+      "properties": {
+        "previous_operation_version_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 512
+        },
+        "supersedes": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 512
+        }
+      },
+      "additionalProperties": false,
+      "description": "Historical lineage. Committed history must not be silently rewritten."
+    },
+    "boundary": {
+      "type": "object",
+      "required": [
+        "identity_is_not_authority",
+        "policy_allow_is_not_execution",
+        "ai_output_is_not_authorization",
+        "deny_prevents_dispatch",
+        "history_is_non_destructive"
+      ],
+      "properties": {
+        "identity_is_not_authority": {
+          "type": "boolean",
+          "const": true
+        },
+        "policy_allow_is_not_execution": {
+          "type": "boolean",
+          "const": true
+        },
+        "ai_output_is_not_authorization": {
+          "type": "boolean",
+          "const": true
+        },
+        "deny_prevents_dispatch": {
+          "type": "boolean",
+          "const": true
+        },
+        "history_is_non_destructive": {
+          "type": "boolean",
+          "const": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "policy_binding": {
+            "properties": {
+              "decision": {
+                "const": "DENY"
+              }
+            },
+            "required": [
+              "decision"
+            ]
+          }
+        },
+        "required": [
+          "policy_binding"
+        ]
+      },
+      "then": {
+        "properties": {
+          "execution_binding": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "NOT_DISPATCHED",
+                  "BLOCKED"
+                ]
+              }
+            }
+          },
+          "state": {
+            "enum": [
+              "POLICY_EVALUATED",
+              "CLOSED_DENIED",
+              "FAILED",
+              "CANCELLED",
+              "CORRECTED"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "authority_binding": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "INVALID",
+                  "EXPIRED",
+                  "REVOKED",
+                  "OUT_OF_SCOPE",
+                  "MISSING"
+                ]
+              }
+            },
+            "required": [
+              "state"
+            ]
+          }
+        },
+        "required": [
+          "authority_binding"
+        ]
+      },
+      "then": {
+        "properties": {
+          "execution_binding": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "NOT_DISPATCHED",
+                  "BLOCKED"
+                ]
+              }
+            }
+          },
+          "state": {
+            "not": {
+              "enum": [
+                "READY",
+                "DISPATCHED",
+                "EXECUTED",
+                "OBSERVED",
+                "EVIDENCED",
+                "STATE_COMMITTED"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}
