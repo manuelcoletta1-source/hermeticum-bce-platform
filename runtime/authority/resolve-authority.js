@@ -1,0 +1,201 @@
+'use strict';
+
+const RESULT = Object.freeze({
+  VALID: 'VALID',
+  INVALID: 'INVALID',
+  EXPIRED: 'EXPIRED',
+  REVOKED: 'REVOKED',
+  OUT_OF_SCOPE: 'OUT_OF_SCOPE',
+  MISSING: 'MISSING'
+});
+
+function resolution(state, reason) {
+  return Object.freeze({
+    state,
+    reason
+  });
+}
+
+function hasOwnArray(object, field) {
+  return (
+    object &&
+    typeof object === 'object' &&
+    Array.isArray(object[field])
+  );
+}
+
+function hasUnresolvedAuthorityDependencies(authority) {
+  const scope = authority.scope;
+  const limits = authority.limits;
+
+  if (!scope || !limits) {
+    return true;
+  }
+
+  if (
+    !hasOwnArray(scope, 'constraint_refs') ||
+    !hasOwnArray(limits, 'policy_refs') ||
+    !hasOwnArray(limits, 'quantitative_limit_refs') ||
+    !hasOwnArray(limits, 'condition_refs')
+  ) {
+    return true;
+  }
+
+  return (
+    scope.constraint_refs.length > 0 ||
+    limits.policy_refs.length > 0 ||
+    limits.quantitative_limit_refs.length > 0 ||
+    limits.condition_refs.length > 0
+  );
+}
+
+function resolveAuthority(input) {
+  const context = input && typeof input === 'object' ? input : {};
+  const authority = context.authority;
+  const mandate = context.mandate;
+  const capability = context.capability;
+  const request =
+    context.request && typeof context.request === 'object'
+      ? context.request
+      : {};
+
+  if (!authority || typeof authority !== 'object') {
+    return resolution(RESULT.MISSING, 'AUTHORITY_MISSING');
+  }
+
+  if (authority.state === 'REVOKED') {
+    return resolution(RESULT.REVOKED, 'AUTHORITY_REVOKED');
+  }
+
+  if (authority.state === 'EXPIRED') {
+    return resolution(RESULT.EXPIRED, 'AUTHORITY_EXPIRED');
+  }
+
+  if (authority.state !== 'ACTIVE') {
+    return resolution(RESULT.INVALID, 'AUTHORITY_STATE_NOT_USABLE');
+  }
+
+  if (
+    authority.evidence_state === 'MISSING' ||
+    authority.evidence_state === 'UNKNOWN' ||
+    authority.evidence_state !== 'PRESENT' ||
+    typeof authority.evidence_reference !== 'string' ||
+    authority.evidence_reference.length === 0
+  ) {
+    return resolution(RESULT.INVALID, 'AUTHORITY_EVIDENCE_INVALID');
+  }
+
+  if (!mandate || typeof mandate !== 'object') {
+    return resolution(RESULT.INVALID, 'MANDATE_MISSING');
+  }
+
+  if (
+    mandate.mandate_id !== authority.mandate_ref ||
+    mandate.mandate_version !== authority.mandate_version
+  ) {
+    return resolution(RESULT.INVALID, 'MANDATE_BINDING_MISMATCH');
+  }
+
+  if (
+    mandate.state === 'REVOKED' ||
+    mandate.state === 'EXPIRED' ||
+    mandate.state === 'SUPERSEDED'
+  ) {
+    return resolution(RESULT.INVALID, 'MANDATE_NOT_USABLE');
+  }
+
+  if (mandate.state !== 'ACTIVE') {
+    return resolution(RESULT.INVALID, 'MANDATE_STATE_NOT_USABLE');
+  }
+
+  if (
+    mandate.actor_ref !== authority.actor_ref ||
+    mandate.principal_ref !== authority.principal_ref
+  ) {
+    return resolution(RESULT.INVALID, 'ACTOR_PRINCIPAL_MISMATCH');
+  }
+
+  if (!capability || typeof capability !== 'object') {
+    return resolution(RESULT.INVALID, 'CAPABILITY_MISSING');
+  }
+
+  if (
+    capability.capability_id !== authority.capability_ref ||
+    capability.capability_version !== authority.capability_version
+  ) {
+    return resolution(RESULT.INVALID, 'CAPABILITY_BINDING_MISMATCH');
+  }
+
+  /*
+   * Capability lifecycle propagation is not yet frozen.
+   * Never infer ACTIVE capability => valid authority here.
+   */
+
+  if (
+    !authority.scope ||
+    !Array.isArray(authority.scope.action_classes) ||
+    authority.scope.action_classes.length === 0
+  ) {
+    return resolution(RESULT.INVALID, 'AUTHORITY_SCOPE_INVALID');
+  }
+
+  if (
+    typeof request.action_class !== 'string' ||
+    !authority.scope.action_classes.includes(request.action_class)
+  ) {
+    return resolution(RESULT.OUT_OF_SCOPE, 'ACTION_CLASS_OUT_OF_SCOPE');
+  }
+
+  if (
+    Array.isArray(authority.scope.target_refs) &&
+    authority.scope.target_refs.length > 0 &&
+    (
+      typeof request.target_ref !== 'string' ||
+      !authority.scope.target_refs.includes(request.target_ref)
+    )
+  ) {
+    return resolution(RESULT.OUT_OF_SCOPE, 'TARGET_OUT_OF_SCOPE');
+  }
+
+  if (
+    Array.isArray(authority.scope.iospace_refs) &&
+    authority.scope.iospace_refs.length > 0 &&
+    (
+      typeof request.iospace_ref !== 'string' ||
+      !authority.scope.iospace_refs.includes(request.iospace_ref)
+    )
+  ) {
+    return resolution(RESULT.OUT_OF_SCOPE, 'IOSPACE_OUT_OF_SCOPE');
+  }
+
+  if (hasUnresolvedAuthorityDependencies(authority)) {
+    return resolution(
+      RESULT.INVALID,
+      'UNRESOLVED_REQUIRED_AUTHORITY_DEPENDENCY'
+    );
+  }
+
+  /*
+   * Positive authority resolution remains intentionally fail-closed.
+   *
+   * Deferred semantics:
+   * - capability lifecycle propagation
+   * - canonical purpose representation
+   * - temporal boundary inclusivity
+   * - domain constraint evaluation
+   * - quantitative limit evaluation
+   * - policy limit evaluation
+   * - condition evaluation
+   *
+   * Therefore this kernel MUST NOT emit VALID yet.
+   */
+  return resolution(
+    RESULT.INVALID,
+    'POSITIVE_AUTHORITY_RESOLUTION_DEFERRED'
+  );
+}
+
+module.exports = Object.freeze({
+  RESULT,
+  resolveAuthority
+});

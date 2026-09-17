@@ -1,0 +1,93 @@
+{
+  "proto": "HBCE-EVIDENCE-v1",
+  "kind": "HBCE_P0_RUNTIME_VALIDATION_EVIDENCE",
+  "version": "v1",
+  "evidence_id": "HBCE-SF-041-AUTHORITY-RUNTIME-EVIDENCE",
+  "hbce_id": "HBCE-003",
+  "property": "DETERMINISTIC_SCOPE_BOUND_AUTHORITY_RESOLUTION",
+  "contract": "resolveAuthority",
+  "invariants": [
+    "INV-001",
+    "INV-002",
+    "INV-003"
+  ],
+  "baseline": {
+    "git_head": "b3e80ffbc65fd90e121530b8e28ac8eac164c17c",
+    "runtime_file": "runtime/authority/resolve-authority.js",
+    "runtime_sha256": "d822e6435bd2cf546fc8cfe05f5c1a2891737665707a7016a56e64034d6bce9e",
+    "test_file": "tests/authority/resolve-authority.test.js",
+    "test_sha256": "961b680d7859010dd8f243f46b588f67e5159461cb2a8cb1b751567d208a69bd"
+  },
+  "validation": {
+    "sf_039_base_vectors": {
+      "count": 18,
+      "pass": 18,
+      "fail": 0
+    },
+    "sf_040_adversarial_vectors": {
+      "count": 29,
+      "pass": 29,
+      "fail": 0
+    },
+    "behavioral_vector_total": {
+      "count": 47,
+      "pass": 47,
+      "fail": 0
+    },
+    "sf_040_static_checks": {
+      "count": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    "result_domain": [
+      "VALID",
+      "INVALID",
+      "EXPIRED",
+      "REVOKED",
+      "OUT_OF_SCOPE",
+      "MISSING"
+    ]
+  },
+  "runtime_boundary": {
+    "identity_is_not_authority": true,
+    "authority_valid_does_not_authorize": true,
+    "authority_valid_does_not_dispatch": true,
+    "authorization_side_effect": false,
+    "dispatch_side_effect": false,
+    "operation_state_mutation": false,
+    "input_mutation": false,
+    "external_dependency_count": 0,
+    "positive_valid_emission": "DEFERRED"
+  },
+  "fail_closed": {
+    "missing_authority": "MISSING",
+    "revoked_authority": "REVOKED",
+    "expired_authority": "EXPIRED",
+    "scope_mismatch": "OUT_OF_SCOPE",
+    "invalid_dependency": "INVALID",
+    "unresolved_required_semantics": "INVALID"
+  },
+  "deferred_semantics": [
+    "CAPABILITY_LIFECYCLE_PROPAGATION",
+    "PURPOSE_CANONICAL_REPRESENTATION",
+    "VALID_FROM_BOUNDARY_INCLUSIVITY",
+    "VALID_UNTIL_BOUNDARY_INCLUSIVITY",
+    "LIMITED_STATE_FULL_SEMANTICS",
+    "DOMAIN_ADAPTER_CONSTRAINT_EVALUATION",
+    "QUANTITATIVE_LIMIT_EVALUATION",
+    "POLICY_LIMIT_EVALUATION",
+    "CONDITION_REF_EVALUATION"
+  ],
+  "release_blocker_alignment": {
+    "identity_can_bypass_authority": false,
+    "revocation_does_not_block": false,
+    "valid_authority_bypasses_authorization": false,
+    "authority_validity_with_unresolved_dependency": false
+  },
+  "technical_state": "PASS",
+  "human_acceptance": {
+    "state": "PENDING",
+    "consumed": false
+  },
+  "append_only": true
+}
