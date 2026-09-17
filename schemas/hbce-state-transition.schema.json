@@ -1,0 +1,447 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/schemas/hbce-state-transition.schema.json",
+  "title": "HBCE State Transition Schema v1",
+  "description": "Canonical HBCE Platform Core contract for one committed global operation-state transition. The object binds an operation to an immutable predecessor version and payload digest, an explicitly authorized previous-state/next-state edge, evidence, append-only genealogy and protocol boundary. A denied transition attempt, same-state revision, execution revision or MATRIX state is not a StateTransition.",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "operationState": {
+      "type": "string",
+      "enum": [
+        "CREATED",
+        "IDENTIFIED",
+        "AUTHORITY_RESOLVED",
+        "POLICY_EVALUATED",
+        "AUTHORIZATION_RESOLVED",
+        "READY",
+        "DISPATCHED",
+        "EXECUTED",
+        "OBSERVED",
+        "EVIDENCED",
+        "STATE_COMMITTED",
+        "CLOSED_DENIED",
+        "FAILED",
+        "CANCELLED",
+        "CORRECTED"
+      ]
+    }
+  },
+  "required": [
+    "proto",
+    "kind",
+    "version",
+    "protocol_version",
+    "transition_id",
+    "operation_id",
+    "transition_type",
+    "previous_state",
+    "next_state",
+    "predecessor_operation_version",
+    "predecessor_payload_sha256",
+    "evidence_reference",
+    "transitioned_at",
+    "payload_sha256",
+    "append_only",
+    "genealogy",
+    "boundary"
+  ],
+  "properties": {
+    "proto": {
+      "type": "string",
+      "const": "HBCE-STATE-TRANSITION-v1"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "HBCE_CORE_STATE_TRANSITION"
+      ]
+    },
+    "version": {
+      "type": "string",
+      "const": "v1"
+    },
+    "protocol_version": {
+      "type": "string",
+      "const": "HBCE_PROTOCOL_V1"
+    },
+    "transition_id": {
+      "type": "string",
+      "pattern": "^TRN-[0-9A-Z:\\-_.]+$",
+      "minLength": 5,
+      "maxLength": 128
+    },
+    "operation_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "transition_type": {
+      "type": "string",
+      "enum": [
+        "NORMAL",
+        "DENIAL"
+      ]
+    },
+    "previous_state": {
+      "$ref": "#/$defs/operationState"
+    },
+    "next_state": {
+      "$ref": "#/$defs/operationState"
+    },
+    "predecessor_operation_version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Exact immutable predecessor OperationEnvelope version."
+    },
+    "predecessor_payload_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 commitment to the exact predecessor OperationEnvelope payload."
+    },
+    "evidence_reference": {
+      "type": "string",
+      "pattern": "^[A-Z0-9_:\\-.]+$",
+      "minLength": 3,
+      "maxLength": 160,
+      "description": "Controlled minimized reference to evidence supporting the committed transition."
+    },
+    "transitioned_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "payload_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "append_only": {
+      "type": "boolean",
+      "const": true
+    },
+    "genealogy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "derived_from",
+        "previous_state",
+        "new_state",
+        "cause",
+        "evidence_reference",
+        "timestamp",
+        "hash"
+      ],
+      "properties": {
+        "derived_from": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+          "minLength": 1,
+          "maxLength": 256,
+          "description": "Logical operation identifier from which this transition is derived."
+        },
+        "previous_state": {
+          "$ref": "#/$defs/operationState"
+        },
+        "new_state": {
+          "$ref": "#/$defs/operationState"
+        },
+        "cause": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 240
+        },
+        "evidence_reference": {
+          "type": "string",
+          "pattern": "^[A-Z0-9_:\\-.]+$",
+          "minLength": 3,
+          "maxLength": 160
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Genealogy anchor digest. For this contract it represents the exact predecessor OperationEnvelope payload SHA-256; cross-field equality requires runtime validation."
+        }
+      }
+    },
+    "boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "global_operation_transition_only",
+        "committed_transition_only",
+        "same_state_revision_is_not_transition",
+        "denied_attempt_is_not_transition",
+        "execution_revision_is_not_transition",
+        "matrix_state_is_not_transition",
+        "predecessor_rewrite_forbidden",
+        "unknown_edge_rejected",
+        "evidence_correlation_required",
+        "reverse_reconstruction_required"
+      ],
+      "properties": {
+        "global_operation_transition_only": {
+          "type": "boolean",
+          "const": true
+        },
+        "committed_transition_only": {
+          "type": "boolean",
+          "const": true
+        },
+        "same_state_revision_is_not_transition": {
+          "type": "boolean",
+          "const": true
+        },
+        "denied_attempt_is_not_transition": {
+          "type": "boolean",
+          "const": true
+        },
+        "execution_revision_is_not_transition": {
+          "type": "boolean",
+          "const": true
+        },
+        "matrix_state_is_not_transition": {
+          "type": "boolean",
+          "const": true
+        },
+        "predecessor_rewrite_forbidden": {
+          "type": "boolean",
+          "const": true
+        },
+        "unknown_edge_rejected": {
+          "type": "boolean",
+          "const": true
+        },
+        "evidence_correlation_required": {
+          "type": "boolean",
+          "const": true
+        },
+        "reverse_reconstruction_required": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "previous_state": {
+          "const": "CREATED"
+        },
+        "next_state": {
+          "const": "IDENTIFIED"
+        },
+        "transition_type": {
+          "const": "NORMAL"
+        }
+      },
+      "required": [
+        "previous_state",
+        "next_state",
+        "transition_type"
+      ]
+    },
+    {
+      "properties": {
+        "previous_state": {
+          "const": "IDENTIFIED"
+        },
+        "next_state": {
+          "const": "AUTHORITY_RESOLVED"
+        },
+        "transition_type": {
+          "const": "NORMAL"
+        }
+      },
+      "required": [
+        "previous_state",
+        "next_state",
+        "transition_type"
+      ]
+    },
+    {
+      "properties": {
+        "previous_state": {
+          "const": "AUTHORITY_RESOLVED"
+        },
+        "next_state": {
+          "const": "POLICY_EVALUATED"
+        },
+        "transition_type": {
+          "const": "NORMAL"
+        }
+      },
+      "required": [
+        "previous_state",
+        "next_state",
+        "transition_type"
+      ]
+    },
+    {
+      "properties": {
+        "previous_state": {
+          "const": "POLICY_EVALUATED"
+        },
+        "next_state": {
+          "const": "AUTHORIZATION_RESOLVED"
+        },
+        "transition_type": {
+          "const": "NORMAL"
+        }
+      },
+      "required": [
+        "previous_state",
+        "next_state",
+        "transition_type"
+      ]
+    },
+    {
+      "properties": {
+        "previous_state": {
+          "const": "AUTHORIZATION_RESOLVED"
+        },
+        "next_state": {
+          "const": "READY"
+        },
+        "transition_type": {
+          "const": "NORMAL"
+        }
+      },
+      "required": [
+        "previous_state",
+        "next_state",
+        "transition_type"
+      ]
+    },
+    {
+      "properties": {
+        "previous_state": {
+          "const": "READY"
+        },
+        "next_state": {
+          "const": "DISPATCHED"
+        },
+        "transition_type": {
+          "const": "NORMAL"
+        }
+      },
+      "required": [
+        "previous_state",
+        "next_state",
+        "transition_type"
+      ]
+    },
+    {
+      "properties": {
+        "previous_state": {
+          "const": "DISPATCHED"
+        },
+        "next_state": {
+          "const": "EXECUTED"
+        },
+        "transition_type": {
+          "const": "NORMAL"
+        }
+      },
+      "required": [
+        "previous_state",
+        "next_state",
+        "transition_type"
+      ]
+    },
+    {
+      "properties": {
+        "previous_state": {
+          "const": "EXECUTED"
+        },
+        "next_state": {
+          "const": "OBSERVED"
+        },
+        "transition_type": {
+          "const": "NORMAL"
+        }
+      },
+      "required": [
+        "previous_state",
+        "next_state",
+        "transition_type"
+      ]
+    },
+    {
+      "properties": {
+        "previous_state": {
+          "const": "OBSERVED"
+        },
+        "next_state": {
+          "const": "EVIDENCED"
+        },
+        "transition_type": {
+          "const": "NORMAL"
+        }
+      },
+      "required": [
+        "previous_state",
+        "next_state",
+        "transition_type"
+      ]
+    },
+    {
+      "properties": {
+        "previous_state": {
+          "const": "EVIDENCED"
+        },
+        "next_state": {
+          "const": "STATE_COMMITTED"
+        },
+        "transition_type": {
+          "const": "NORMAL"
+        }
+      },
+      "required": [
+        "previous_state",
+        "next_state",
+        "transition_type"
+      ]
+    },
+    {
+      "properties": {
+        "previous_state": {
+          "const": "POLICY_EVALUATED"
+        },
+        "next_state": {
+          "const": "CLOSED_DENIED"
+        },
+        "transition_type": {
+          "const": "DENIAL"
+        }
+      },
+      "required": [
+        "previous_state",
+        "next_state",
+        "transition_type"
+      ]
+    },
+    {
+      "properties": {
+        "previous_state": {
+          "const": "AUTHORIZATION_RESOLVED"
+        },
+        "next_state": {
+          "const": "CLOSED_DENIED"
+        },
+        "transition_type": {
+          "const": "DENIAL"
+        }
+      },
+      "required": [
+        "previous_state",
+        "next_state",
+        "transition_type"
+      ]
+    }
+  ]
+}
