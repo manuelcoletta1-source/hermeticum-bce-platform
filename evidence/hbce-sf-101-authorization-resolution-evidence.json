@@ -1,0 +1,60 @@
+{
+  "evidence_id": "HBCE-SF-101-AUTHORIZATION-RESOLUTION",
+  "hbce_id": "HBCE-004",
+  "property": "AUTHORIZATION_RESOLUTION_FAIL_CLOSED",
+  "base_head": "f19e485dfca55a1038ab754742e048cb75573b63",
+  "branch": "p003/evidence-kernel-domain-model",
+  "affected_invariants": [
+    "INV-004 POLICY_DECISION_IS_NOT_ENFORCEMENT"
+  ],
+  "contract": {
+    "policy_deny": {
+      "state": "DENIED",
+      "reason": "POLICY_DENIED"
+    },
+    "policy_unevaluated": {
+      "state": "UNRESOLVED",
+      "reason": "POLICY_NOT_RESOLVED"
+    },
+    "missing_malformed_unknown_policy_decision": {
+      "state": "UNRESOLVED",
+      "reason": "POLICY_DECISION_INVALID"
+    },
+    "authorized_state": "NOT_IMPLEMENTED",
+    "canonical_authorization_artifact": "NOT_EMITTED",
+    "input_mutation": "NONE",
+    "pep_side_effect": "NONE",
+    "dispatch_side_effect": "NONE",
+    "execution_side_effect": "NONE"
+  },
+  "artifacts": {
+    "runtime": {
+      "path": "runtime/authorization/resolve-authorization.js",
+      "sha256": "72ffbbfedbabff02110f4ac845e029c21cf0d2c84253f3a3a021edae74d1e31d"
+    },
+    "test": {
+      "path": "tests/authorization/resolve-authorization.test.js",
+      "sha256": "32991ea18be653b66b1b9370df40a0d9a4724d1ba8715ee1aa1b4d55aab07983"
+    }
+  },
+  "verification": {
+    "authority": "41/41 PASS",
+    "capability": "26/26 PASS",
+    "opc": "10/10 PASS",
+    "authorization_resolution": "10/10 PASS",
+    "total": "87/87 PASS",
+    "git_diff_check": "PASS"
+  },
+  "deferred": [
+    "CANONICAL_AUTHORIZATION_ISSUANCE",
+    "AUTHORIZED_POSITIVE_PATH",
+    "AUTHORIZATION_BINDING_MAPPING",
+    "AUTHORIZATION_TEMPORAL_VALIDATION",
+    "AUTHORIZATION_REPLAY_ENFORCEMENT",
+    "PEP_ENFORCEMENT",
+    "END_TO_END_DENY_PREVENTS_DISPATCH"
+  ],
+  "human_acceptance": "PENDING",
+  "commit_state": "NOT_COMMITTED",
+  "push_state": "NOT_PUSHED"
+}
