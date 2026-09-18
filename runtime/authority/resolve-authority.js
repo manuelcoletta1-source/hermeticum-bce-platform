@@ -281,22 +281,18 @@ function resolveAuthority(input) {
   }
 
   /*
-   * Positive authority resolution remains intentionally fail-closed.
+   * Positive authority resolution is permitted only after every preceding
+   * fail-closed guard succeeds and no required authority dependency remains
+   * unresolved. Non-empty constraint, quantitative-limit, policy, or
+   * condition references remain fail-closed until their evaluators exist.
+   * Canonical purpose semantics remain deferred.
    *
-   * Deferred semantics:
-   * - capability lifecycle propagation
-   * - canonical purpose representation
-   * - temporal boundary inclusivity
-   * - domain constraint evaluation
-   * - quantitative limit evaluation
-   * - policy limit evaluation
-   * - condition evaluation
-   *
-   * Therefore this kernel MUST NOT emit VALID yet.
+   * AUTHORITY_VALID is authority resolution only. It does not emit
+   * Authorization, Dispatch, or Execution.
    */
   return resolution(
-    RESULT.INVALID,
-    'POSITIVE_AUTHORITY_RESOLUTION_DEFERRED'
+    RESULT.VALID,
+    'AUTHORITY_VALID'
   );
 }
 

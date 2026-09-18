@@ -196,8 +196,8 @@ test('TV-AUTH-TIME-002 AT_VALID_FROM=>CONTINUE_FAIL_CLOSED', () => {
   x.authority.valid_from = '2026-09-17T12:00:00Z';
   x.currentTime = '2026-09-17T12:00:00Z';
   const r = resolveAuthority(x);
-  assert.equal(r.state, RESULT.INVALID);
-  assert.equal(r.reason, 'POSITIVE_AUTHORITY_RESOLUTION_DEFERRED');
+  assert.equal(r.state, RESULT.VALID);
+  assert.equal(r.reason, 'AUTHORITY_VALID');
 });
 
 test('TV-AUTH-TIME-003 AT_VALID_UNTIL=>EXPIRED', () => {
@@ -223,8 +223,8 @@ test('TV-AUTH-TIME-005 NULL_VALID_UNTIL=>NO_TEMPORAL_EXPIRY', () => {
   x.authority.valid_until = null;
   x.currentTime = '2030-01-19T15:30:00Z';
   const r = resolveAuthority(x);
-  assert.equal(r.state, RESULT.INVALID);
-  assert.equal(r.reason, 'POSITIVE_AUTHORITY_RESOLUTION_DEFERRED');
+  assert.equal(r.state, RESULT.VALID);
+  assert.equal(r.reason, 'AUTHORITY_VALID');
 });
 
 test('TV-AUTH-TIME-006 MISSING_CURRENT_TIME=>INVALID', () => {
@@ -343,8 +343,8 @@ test('TV-AUTH-MANDATE-TIME-007 NULL_VALID_UNTIL=>NO_TEMPORAL_EXPIRY', () => {
   const x = baseFixture();
   x.mandate.valid_until = null;
   const r = resolveAuthority(x);
-  assert.equal(r.state, RESULT.INVALID);
-  assert.equal(r.reason, 'POSITIVE_AUTHORITY_RESOLUTION_DEFERRED');
+  assert.equal(r.state, RESULT.VALID);
+  assert.equal(r.reason, 'AUTHORITY_VALID');
 });
 
 test('TV-AUTH-MANDATE-TIME-008 MALFORMED_VALID_UNTIL_PRECEDES_NOT_YET_VALID=>INVALID', () => {
@@ -357,11 +357,11 @@ test('TV-AUTH-MANDATE-TIME-008 MALFORMED_VALID_UNTIL_PRECEDES_NOT_YET_VALID=>INV
   assert.equal(r.reason, 'MANDATE_VALID_UNTIL_INVALID');
 });
 
-test('TV-AUTH-015 POSITIVE_CASE_REMAINS_FAIL_CLOSED', () => {
+test('TV-AUTH-015 POSITIVE_AUTHORITY_RESOLUTION=>VALID', () => {
   const x = baseFixture();
   const r = resolveAuthority(x);
-  assert.equal(r.state, RESULT.INVALID);
-  assert.equal(r.reason, 'POSITIVE_AUTHORITY_RESOLUTION_DEFERRED');
+  assert.equal(r.state, RESULT.VALID);
+  assert.equal(r.reason, 'AUTHORITY_VALID');
 });
 
 test('TV-AUTH-016 NO_AUTHORIZATION_SIDE_EFFECT', () => {
@@ -415,8 +415,8 @@ if (passed !== vectors.length) {
   const vectors = [
     ['TV-CAP-001 ACTIVE+PRESENT+EXACT_BINDING=>CONTINUE_FAIL_CLOSED',
       {},
-      'INVALID',
-      'POSITIVE_AUTHORITY_RESOLUTION_DEFERRED'],
+      'VALID',
+      'AUTHORITY_VALID'],
 
     ['TV-CAP-002 REVOKED=>INVALID',
       { state: 'REVOKED' },
@@ -504,7 +504,7 @@ if (passed !== vectors.length) {
 
     ['TV-CAP-TIME-006 VALID_UNTIL_EQUALS_VALID_FROM=>INVALID', { valid_from: '2026-09-18T13:00:00Z', valid_until: '2026-09-18T13:00:00Z' }, 'INVALID', 'CAPABILITY_TEMPORAL_INCONSISTENCY'],
 
-    ['TV-CAP-TIME-007 NULL_VALID_UNTIL=>NO_TEMPORAL_EXPIRY', { valid_until: null }, 'INVALID', 'POSITIVE_AUTHORITY_RESOLUTION_DEFERRED'],
+    ['TV-CAP-TIME-007 NULL_VALID_UNTIL=>NO_TEMPORAL_EXPIRY', { valid_until: null }, 'VALID', 'AUTHORITY_VALID'],
 
     ['TV-CAP-TIME-008 MALFORMED_VALID_UNTIL_PRECEDES_NOT_YET_VALID=>INVALID', { valid_from: '2026-09-18T13:00:00Z', valid_until: 'not-a-date' }, 'INVALID', 'CAPABILITY_VALID_UNTIL_INVALID']
   ];
@@ -538,11 +538,11 @@ if (passed !== vectors.length) {
   const activeSnapshot = JSON.stringify(activeContext.capability);
   const activeResult = resolveAuthority(activeContext);
 
-  if (activeResult.state === 'VALID') {
-    console.error('FAIL TV-CAP-015 ACTIVE_MUST_NOT_ENABLE_VALID');
+  if (activeResult.state !== 'VALID' || activeResult.reason !== 'AUTHORITY_VALID') {
+    console.error('FAIL TV-CAP-015 COMPLETE_VALID_CONTEXT=>AUTHORITY_VALID');
     process.exit(1);
   }
-  console.log('PASS TV-CAP-015 ACTIVE_MUST_NOT_ENABLE_VALID');
+  console.log('PASS TV-CAP-015 COMPLETE_VALID_CONTEXT=>AUTHORITY_VALID');
   capPass += 1;
 
   if (
