@@ -1,0 +1,94 @@
+{
+  "artifacts": [
+    {
+      "path": "runtime/authority/resolve-authority.js",
+      "sha256": "df13282bd2bf5b6c2e53d1c5a272917c4e661d572661e7ca4d80f8a1635a303b"
+    },
+    {
+      "path": "tests/authority/resolve-authority.test.js",
+      "sha256": "74f7417613e99aecc5a9bfa671fcacd1684e8f87b6c9b169435848702e8f4b2f"
+    }
+  ],
+  "baseline_head": "b37f060b47edbc9d071e4580c089509797ca0c49",
+  "commit_state": "NOT_COMMITTED",
+  "deferred": [
+    "STRICT_RFC3339_DATE_TIME_VALIDATION",
+    "MANDATE_TEMPORAL_PROPAGATION",
+    "CAPABILITY_TEMPORAL_PROPAGATION",
+    "PURPOSE_SEMANTICS",
+    "LIMITED_SEMANTICS",
+    "POSITIVE_AUTHORITY_VALID_EMISSION",
+    "JSON_SCHEMA_RUNTIME_VALIDATION"
+  ],
+  "diff": {
+    "deletions": 1,
+    "files_changed": 2,
+    "insertions": 149
+  },
+  "evidence_id": "HBCE-SF-057-AUTHORITY-TEMPORAL-WINDOW",
+  "hbce_id": "HBCE-003",
+  "human_acceptance": "PENDING",
+  "implementation_note": "Date.parse provides current runtime parsing and is not claimed as strict RFC3339/JSON-Schema date-time validation.",
+  "property": "AUTHORITY_TEMPORAL_WINDOW_FAIL_CLOSED",
+  "push_state": "NOT_PUSHED",
+  "repository": "R2_PLATFORM_CORE",
+  "semantic_freeze": {
+    "at_or_after_valid_until": "EXPIRED_AUTHORITY_TEMPORALLY_EXPIRED",
+    "before_valid_from": "INVALID_AUTHORITY_NOT_YET_VALID",
+    "current_time": "REQUIRED_AND_PARSEABLE",
+    "invalid_valid_from": "INVALID",
+    "invalid_valid_until": "INVALID",
+    "null_valid_until": "NO_UPPER_TEMPORAL_EXPIRY_REPRESENTED",
+    "valid_from": "INCLUSIVE",
+    "valid_until": "EXCLUSIVE_WHEN_NON_NULL",
+    "valid_until_lte_valid_from": "INVALID_AUTHORITY_TEMPORAL_INCONSISTENCY",
+    "validation_precedence": [
+      "CURRENT_TIME_REQUIRED",
+      "CURRENT_TIME_INVALID",
+      "AUTHORITY_VALID_FROM_INVALID",
+      "AUTHORITY_VALID_UNTIL_INVALID",
+      "AUTHORITY_TEMPORAL_INCONSISTENCY",
+      "AUTHORITY_NOT_YET_VALID",
+      "AUTHORITY_TEMPORALLY_EXPIRED"
+    ],
+    "window": "[valid_from, valid_until)"
+  },
+  "verification": {
+    "authority_vectors": {
+      "count": 33,
+      "fail": 0,
+      "pass": 33
+    },
+    "capability_vectors": {
+      "count": 18,
+      "fail": 0,
+      "pass": 18
+    },
+    "git_diff_check": "PASS",
+    "positive_authority_valid_emission": "DEFERRED_FAIL_CLOSED",
+    "runtime_side_effects": {
+      "authorization": "NONE",
+      "dispatch": "NONE",
+      "input_mutation": "NONE"
+    },
+    "temporal_vectors": [
+      "TV-AUTH-TIME-001",
+      "TV-AUTH-TIME-002",
+      "TV-AUTH-TIME-003",
+      "TV-AUTH-TIME-004",
+      "TV-AUTH-TIME-005",
+      "TV-AUTH-TIME-006",
+      "TV-AUTH-TIME-007",
+      "TV-AUTH-TIME-008",
+      "TV-AUTH-TIME-009",
+      "TV-AUTH-TIME-010",
+      "TV-AUTH-TIME-011",
+      "TV-AUTH-TIME-012"
+    ],
+    "total_vectors": {
+      "count": 51,
+      "fail": 0,
+      "pass": 51
+    }
+  }
+}

@@ -19,6 +19,8 @@ function baseFixture() {
       capability_ref: 'CAP-TEST-001',
       capability_version: 1,
       state: 'ACTIVE',
+      valid_from: '2026-01-19T15:30:00Z',
+      valid_until: null,
       evidence_state: 'PRESENT',
       evidence_reference: 'EVT-AUTH-001',
       scope: {
@@ -38,12 +40,16 @@ function baseFixture() {
       mandate_version: 1,
       principal_ref: 'PRINCIPAL-001',
       actor_ref: 'ACTOR-001',
-      state: 'ACTIVE'
+      state: 'ACTIVE',
+      valid_from: '2026-01-19T15:30:00Z',
+      valid_until: null
     },
     capability: {
       capability_id: 'CAP-TEST-001',
       capability_version: 1,
       state: 'ACTIVE',
+      valid_from: '2026-01-19T15:30:00Z',
+      valid_until: null,
       evidence_state: 'PRESENT',
       evidence_reference: 'EVT-CAP-001'
     },
@@ -174,6 +180,111 @@ test('TV-AUTH-021 UNRESOLVED_CONDITION=>INVALID', () => {
   const r = resolveAuthority(x);
   assert.equal(r.state, RESULT.INVALID);
   assert.equal(r.reason, 'UNRESOLVED_REQUIRED_AUTHORITY_DEPENDENCY');
+});
+
+test('TV-AUTH-TIME-001 BEFORE_VALID_FROM=>INVALID', () => {
+  const x = baseFixture();
+  x.authority.valid_from = '2026-09-18T12:00:00Z';
+  x.currentTime = '2026-09-17T12:00:00Z';
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'AUTHORITY_NOT_YET_VALID');
+});
+
+test('TV-AUTH-TIME-002 AT_VALID_FROM=>CONTINUE_FAIL_CLOSED', () => {
+  const x = baseFixture();
+  x.authority.valid_from = '2026-09-17T12:00:00Z';
+  x.currentTime = '2026-09-17T12:00:00Z';
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'POSITIVE_AUTHORITY_RESOLUTION_DEFERRED');
+});
+
+test('TV-AUTH-TIME-003 AT_VALID_UNTIL=>EXPIRED', () => {
+  const x = baseFixture();
+  x.authority.valid_until = '2026-09-17T12:00:00Z';
+  x.currentTime = '2026-09-17T12:00:00Z';
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.EXPIRED);
+  assert.equal(r.reason, 'AUTHORITY_TEMPORALLY_EXPIRED');
+});
+
+test('TV-AUTH-TIME-004 AFTER_VALID_UNTIL=>EXPIRED', () => {
+  const x = baseFixture();
+  x.authority.valid_until = '2026-09-17T11:59:59Z';
+  x.currentTime = '2026-09-17T12:00:00Z';
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.EXPIRED);
+  assert.equal(r.reason, 'AUTHORITY_TEMPORALLY_EXPIRED');
+});
+
+test('TV-AUTH-TIME-005 NULL_VALID_UNTIL=>NO_TEMPORAL_EXPIRY', () => {
+  const x = baseFixture();
+  x.authority.valid_until = null;
+  x.currentTime = '2030-01-19T15:30:00Z';
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'POSITIVE_AUTHORITY_RESOLUTION_DEFERRED');
+});
+
+test('TV-AUTH-TIME-006 MISSING_CURRENT_TIME=>INVALID', () => {
+  const x = baseFixture();
+  delete x.currentTime;
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'CURRENT_TIME_REQUIRED');
+});
+
+test('TV-AUTH-TIME-007 MALFORMED_CURRENT_TIME=>INVALID', () => {
+  const x = baseFixture();
+  x.currentTime = 'not-a-date';
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'CURRENT_TIME_INVALID');
+});
+
+test('TV-AUTH-TIME-008 MALFORMED_VALID_FROM=>INVALID', () => {
+  const x = baseFixture();
+  x.authority.valid_from = 'not-a-date';
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'AUTHORITY_VALID_FROM_INVALID');
+});
+
+test('TV-AUTH-TIME-009 MALFORMED_VALID_UNTIL=>INVALID', () => {
+  const x = baseFixture();
+  x.authority.valid_until = 'not-a-date';
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'AUTHORITY_VALID_UNTIL_INVALID');
+});
+
+test('TV-AUTH-TIME-010 VALID_UNTIL_BEFORE_VALID_FROM=>INVALID', () => {
+  const x = baseFixture();
+  x.authority.valid_from = '2026-09-18T12:00:00Z';
+  x.authority.valid_until = '2026-09-17T12:00:00Z';
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'AUTHORITY_TEMPORAL_INCONSISTENCY');
+});
+
+test('TV-AUTH-TIME-011 VALID_UNTIL_EQUALS_VALID_FROM=>INVALID', () => {
+  const x = baseFixture();
+  x.authority.valid_from = '2026-09-17T12:00:00Z';
+  x.authority.valid_until = '2026-09-17T12:00:00Z';
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'AUTHORITY_TEMPORAL_INCONSISTENCY');
+});
+
+test('TV-AUTH-TIME-012 MALFORMED_VALID_UNTIL_PRECEDES_NOT_YET_VALID=>INVALID', () => {
+  const x = baseFixture();
+  x.authority.valid_from = '2026-09-18T12:00:00Z';
+  x.authority.valid_until = 'not-a-date';
+  x.currentTime = '2026-09-17T12:00:00Z';
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'AUTHORITY_VALID_UNTIL_INVALID');
 });
 
 test('TV-AUTH-015 POSITIVE_CASE_REMAINS_FAIL_CLOSED', () => {

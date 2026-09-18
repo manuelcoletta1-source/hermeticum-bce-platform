@@ -54,6 +54,7 @@ function resolveAuthority(input) {
   const authority = context.authority;
   const mandate = context.mandate;
   const capability = context.capability;
+  const currentTime = context.currentTime;
   const request =
     context.request && typeof context.request === 'object'
       ? context.request
@@ -73,6 +74,42 @@ function resolveAuthority(input) {
 
   if (authority.state !== 'ACTIVE') {
     return resolution(RESULT.INVALID, 'AUTHORITY_STATE_NOT_USABLE');
+  }
+
+  if (typeof currentTime !== 'string' || currentTime.length === 0) {
+    return resolution(RESULT.INVALID, 'CURRENT_TIME_REQUIRED');
+  }
+
+  if (Number.isNaN(Date.parse(currentTime))) {
+    return resolution(RESULT.INVALID, 'CURRENT_TIME_INVALID');
+  }
+
+  if (typeof authority.valid_from !== 'string' || authority.valid_from.length === 0 || Number.isNaN(Date.parse(authority.valid_from))) {
+    return resolution(RESULT.INVALID, 'AUTHORITY_VALID_FROM_INVALID');
+  }
+
+  if (authority.valid_until !== null && (typeof authority.valid_until !== 'string' || authority.valid_until.length === 0 || Number.isNaN(Date.parse(authority.valid_until)))) {
+    return resolution(RESULT.INVALID, 'AUTHORITY_VALID_UNTIL_INVALID');
+  }
+
+  if (authority.valid_until !== null && Date.parse(authority.valid_until) <= Date.parse(authority.valid_from)) {
+    return resolution(RESULT.INVALID, 'AUTHORITY_TEMPORAL_INCONSISTENCY');
+  }
+
+  if (
+    typeof authority.valid_from === 'string' &&
+    typeof currentTime === 'string' &&
+    Date.parse(currentTime) < Date.parse(authority.valid_from)
+  ) {
+    return resolution(RESULT.INVALID, 'AUTHORITY_NOT_YET_VALID');
+  }
+
+  if (
+    typeof authority.valid_until === 'string' &&
+    typeof currentTime === 'string' &&
+    Date.parse(currentTime) >= Date.parse(authority.valid_until)
+  ) {
+    return resolution(RESULT.EXPIRED, 'AUTHORITY_TEMPORALLY_EXPIRED');
   }
 
   if (
