@@ -1,0 +1,71 @@
+{
+  "evidence_id": "HBCE-SF-116-POLICY-EVALUATION-IDENTITY-BOUNDARY",
+  "hbce_id": "HBCE-004",
+  "property": "POLICY_EVALUATION_IDENTITY_REQUIRED_FOR_ALLOW",
+  "base_head": "e65184e02fa9a9b1befb3f9b51d1ee8c70514910",
+  "branch": "p003/evidence-kernel-domain-model",
+  "affected_invariants": [
+    "INV-004 POLICY_DECISION_IS_NOT_ENFORCEMENT"
+  ],
+  "contract": {
+    "positive_authority_state": "VALID",
+    "positive_policy_evaluation_state": "SATISFIED",
+    "policy_evaluation_identity_required": true,
+    "policy_evaluation_version_required": true,
+    "policy_evaluation_payload_sha256_required": true,
+    "policy_binding_required": true,
+    "request_binding_required": true,
+    "accepted_result": {
+      "decision": "ALLOW",
+      "reason": "POLICY_SATISFIED"
+    },
+    "anonymous_policy_evaluation_result": {
+      "decision": "UNEVALUATED",
+      "reason": "POLICY_EVALUATION_DEFERRED"
+    },
+    "authorization_side_effect": "NONE",
+    "pep_side_effect": "NONE",
+    "dispatch_side_effect": "NONE",
+    "execution_side_effect": "NONE"
+  },
+  "verification": {
+    "authority": "41/41 PASS",
+    "capability": "26/26 PASS",
+    "opc": "17/17 PASS",
+    "authorization_resolution": "11/11 PASS",
+    "total": "95/95 PASS",
+    "diff_check": "PASS"
+  },
+  "artifacts": {
+    "runtime": {
+      "path": "runtime/opc/evaluate-policy.js",
+      "sha256": "26f0a548c890f88c2a6b890e1956a31ad3d9c5fee45db738dd850ce8a9ad6911"
+    },
+    "test": {
+      "path": "tests/opc/evaluate-policy.test.js",
+      "sha256": "b6db9a1b1f981449636af10e19d97076aeeb8d2c6ca64b3a2f770d07e4c42b57"
+    }
+  },
+  "limitations": [
+    "POLICY_EVALUATION_PAYLOAD_SHA256_IS_FORMAT_VALIDATED_NOT_RECOMPUTED",
+    "POLICY_SHA256_IS_FORMAT_VALIDATED_NOT_RECOMPUTED",
+    "REQUEST_SHA256_IS_FORMAT_VALIDATED_NOT_CROSS_BOUND",
+    "POLICY_EVALUATION_PROVENANCE_IS_NOT_VERIFIED"
+  ],
+  "deferred": [
+    "CANONICAL_POLICY_EVALUATION_SCHEMA",
+    "POLICY_EVALUATION_PROVENANCE_TRUST",
+    "POLICY_EVALUATION_PAYLOAD_RECOMPUTATION",
+    "POLICY_PAYLOAD_CRYPTOGRAPHIC_VERIFICATION",
+    "REQUEST_DIGEST_CROSS_BINDING",
+    "MACHINE_EVALUABLE_POLICY_SET",
+    "CANONICAL_AUTHORIZATION_ISSUANCE",
+    "AUTHORIZED_POSITIVE_PATH",
+    "PEP_ENFORCEMENT",
+    "END_TO_END_DENY_PREVENTS_DISPATCH"
+  ],
+  "human_acceptance": "PENDING",
+  "commit_state": "NOT_COMMITTED",
+  "push_state": "NOT_PUSHED",
+  "snapshot_semantics": "IMMUTABLE_PRE_ACCEPTANCE"
+}

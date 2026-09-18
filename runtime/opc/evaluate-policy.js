@@ -31,6 +31,12 @@ function evaluatePolicy(input) {
   if (
     policyEvaluation != null &&
     typeof policyEvaluation === 'object' &&
+    typeof policyEvaluation.policy_evaluation_id === 'string' &&
+    policyEvaluation.policy_evaluation_id.length > 0 &&
+    Number.isInteger(policyEvaluation.policy_evaluation_version) &&
+    policyEvaluation.policy_evaluation_version >= 1 &&
+    typeof policyEvaluation.payload_sha256 === 'string' &&
+    sha256Pattern.test(policyEvaluation.payload_sha256) &&
     policyEvaluation.state === 'SATISFIED' &&
     typeof policyEvaluation.policy_ref === 'string' &&
     policyEvaluation.policy_ref.length > 0 &&
