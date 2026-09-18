@@ -152,6 +152,30 @@ test('TV-AUTH-014 UNRESOLVED_LIMIT=>INVALID', () => {
   assert.equal(r.reason, 'UNRESOLVED_REQUIRED_AUTHORITY_DEPENDENCY');
 });
 
+test('TV-AUTH-019 UNRESOLVED_CONSTRAINT=>INVALID', () => {
+  const x = baseFixture();
+  x.authority.scope.constraint_refs = ['CONSTRAINT-001'];
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'UNRESOLVED_REQUIRED_AUTHORITY_DEPENDENCY');
+});
+
+test('TV-AUTH-020 UNRESOLVED_QUANTITATIVE_LIMIT=>INVALID', () => {
+  const x = baseFixture();
+  x.authority.limits.quantitative_limit_refs = ['QUANT-LIMIT-001'];
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'UNRESOLVED_REQUIRED_AUTHORITY_DEPENDENCY');
+});
+
+test('TV-AUTH-021 UNRESOLVED_CONDITION=>INVALID', () => {
+  const x = baseFixture();
+  x.authority.limits.condition_refs = ['CONDITION-001'];
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'UNRESOLVED_REQUIRED_AUTHORITY_DEPENDENCY');
+});
+
 test('TV-AUTH-015 POSITIVE_CASE_REMAINS_FAIL_CLOSED', () => {
   const x = baseFixture();
   const r = resolveAuthority(x);
