@@ -1,0 +1,55 @@
+{
+  "evidence_id": "HBCE-SF-096-OPC-AUTHORITY-GATE",
+  "hbce_id": "HBCE-004",
+  "property": "OPC_AUTHORITY_GATE_FAIL_CLOSED",
+  "base_head": "7387e952393a9aef1bdc1203f23923ff1af38343",
+  "branch": "p003/evidence-kernel-domain-model",
+  "affected_invariants": [
+    "INV-004 POLICY_DECISION_IS_NOT_ENFORCEMENT"
+  ],
+  "contract": {
+    "input": "AuthorityResolution { state, reason }",
+    "non_valid_authority": {
+      "decision": "DENY",
+      "reason": "AUTHORITY_NOT_VALID"
+    },
+    "valid_authority": {
+      "decision": "UNEVALUATED",
+      "reason": "POLICY_EVALUATION_DEFERRED"
+    },
+    "unknown_or_malformed_input": "DENY_FAIL_CLOSED",
+    "input_mutation": "NONE",
+    "authorization_side_effect": "NONE",
+    "dispatch_side_effect": "NONE",
+    "execution_side_effect": "NONE"
+  },
+  "artifacts": {
+    "runtime": {
+      "path": "runtime/opc/evaluate-policy.js",
+      "sha256": "5c3ac074bc1701cac1faa99d7106f6377d498f49828bdaac951af6bd29621136"
+    },
+    "test": {
+      "path": "tests/opc/evaluate-policy.test.js",
+      "sha256": "d40f3558f610ad3fc6d9a3fbf9eeeca1eefb53503f207f342611a1ffb9a44426"
+    }
+  },
+  "verification": {
+    "authority": "41/41 PASS",
+    "capability": "26/26 PASS",
+    "opc": "10/10 PASS",
+    "total": "77/77 PASS",
+    "git_diff_check": "PASS"
+  },
+  "deferred": [
+    "MACHINE_EVALUABLE_POLICY_SET",
+    "POSITIVE_POLICY_ALLOW",
+    "REQUIRE_AUTHORIZATION_SEMANTICS",
+    "REQUIRE_PROOF_SEMANTICS",
+    "AUTHORIZATION_ISSUANCE",
+    "PEP_ENFORCEMENT",
+    "END_TO_END_DENY_PREVENTS_DISPATCH"
+  ],
+  "human_acceptance": "PENDING",
+  "commit_state": "NOT_COMMITTED",
+  "push_state": "NOT_PUSHED"
+}
