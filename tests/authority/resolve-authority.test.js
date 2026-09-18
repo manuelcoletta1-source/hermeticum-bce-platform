@@ -287,6 +287,76 @@ test('TV-AUTH-TIME-012 MALFORMED_VALID_UNTIL_PRECEDES_NOT_YET_VALID=>INVALID', (
   assert.equal(r.reason, 'AUTHORITY_VALID_UNTIL_INVALID');
 });
 
+test('TV-AUTH-MANDATE-TIME-001 BEFORE_MANDATE_VALID_FROM=>INVALID', () => {
+  const x = baseFixture();
+  x.mandate.valid_from = '2026-09-18T12:00:00Z';
+  x.currentTime = '2026-09-17T12:00:00Z';
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'MANDATE_NOT_YET_VALID');
+});
+
+test('TV-AUTH-MANDATE-TIME-002 AT_MANDATE_VALID_UNTIL=>INVALID', () => {
+  const x = baseFixture();
+  x.mandate.valid_until = '2026-09-17T12:00:00Z';
+  x.currentTime = '2026-09-17T12:00:00Z';
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'MANDATE_TEMPORALLY_EXPIRED');
+});
+
+test('TV-AUTH-MANDATE-TIME-003 MALFORMED_MANDATE_VALID_FROM=>INVALID', () => {
+  const x = baseFixture();
+  x.mandate.valid_from = 'not-a-date';
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'MANDATE_VALID_FROM_INVALID');
+});
+
+test('TV-AUTH-MANDATE-TIME-004 MALFORMED_MANDATE_VALID_UNTIL=>INVALID', () => {
+  const x = baseFixture();
+  x.mandate.valid_until = 'not-a-date';
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'MANDATE_VALID_UNTIL_INVALID');
+});
+
+test('TV-AUTH-MANDATE-TIME-005 VALID_UNTIL_BEFORE_VALID_FROM=>INVALID', () => {
+  const x = baseFixture();
+  x.mandate.valid_from = '2026-09-18T12:00:00Z';
+  x.mandate.valid_until = '2026-09-17T12:00:00Z';
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'MANDATE_TEMPORAL_INCONSISTENCY');
+});
+
+test('TV-AUTH-MANDATE-TIME-006 VALID_UNTIL_EQUALS_VALID_FROM=>INVALID', () => {
+  const x = baseFixture();
+  x.mandate.valid_from = '2026-09-17T12:00:00Z';
+  x.mandate.valid_until = '2026-09-17T12:00:00Z';
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'MANDATE_TEMPORAL_INCONSISTENCY');
+});
+
+test('TV-AUTH-MANDATE-TIME-007 NULL_VALID_UNTIL=>NO_TEMPORAL_EXPIRY', () => {
+  const x = baseFixture();
+  x.mandate.valid_until = null;
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'POSITIVE_AUTHORITY_RESOLUTION_DEFERRED');
+});
+
+test('TV-AUTH-MANDATE-TIME-008 MALFORMED_VALID_UNTIL_PRECEDES_NOT_YET_VALID=>INVALID', () => {
+  const x = baseFixture();
+  x.mandate.valid_from = '2026-09-18T12:00:00Z';
+  x.mandate.valid_until = 'not-a-date';
+  x.currentTime = '2026-09-17T12:00:00Z';
+  const r = resolveAuthority(x);
+  assert.equal(r.state, RESULT.INVALID);
+  assert.equal(r.reason, 'MANDATE_VALID_UNTIL_INVALID');
+});
+
 test('TV-AUTH-015 POSITIVE_CASE_REMAINS_FAIL_CLOSED', () => {
   const x = baseFixture();
   const r = resolveAuthority(x);

@@ -145,6 +145,26 @@ function resolveAuthority(input) {
     return resolution(RESULT.INVALID, 'MANDATE_STATE_NOT_USABLE');
   }
 
+  if (typeof mandate.valid_from !== 'string' || mandate.valid_from.length === 0 || Number.isNaN(Date.parse(mandate.valid_from))) {
+    return resolution(RESULT.INVALID, 'MANDATE_VALID_FROM_INVALID');
+  }
+
+  if (mandate.valid_until !== null && (typeof mandate.valid_until !== 'string' || mandate.valid_until.length === 0 || Number.isNaN(Date.parse(mandate.valid_until)))) {
+    return resolution(RESULT.INVALID, 'MANDATE_VALID_UNTIL_INVALID');
+  }
+
+  if (mandate.valid_until !== null && Date.parse(mandate.valid_until) <= Date.parse(mandate.valid_from)) {
+    return resolution(RESULT.INVALID, 'MANDATE_TEMPORAL_INCONSISTENCY');
+  }
+
+  if (typeof mandate.valid_from === 'string' && Date.parse(currentTime) < Date.parse(mandate.valid_from)) {
+    return resolution(RESULT.INVALID, 'MANDATE_NOT_YET_VALID');
+  }
+
+  if (typeof mandate.valid_until === 'string' && Date.parse(currentTime) >= Date.parse(mandate.valid_until)) {
+    return resolution(RESULT.INVALID, 'MANDATE_TEMPORALLY_EXPIRED');
+  }
+
   if (
     mandate.actor_ref !== authority.actor_ref ||
     mandate.principal_ref !== authority.principal_ref
