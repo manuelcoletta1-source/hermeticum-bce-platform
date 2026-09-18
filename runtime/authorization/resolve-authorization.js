@@ -40,6 +40,13 @@ function resolveAuthorization(input) {
     );
   }
 
+  if (policyDecision.decision === 'ALLOW') {
+    return resolution(
+      STATE.UNRESOLVED,
+      'POSITIVE_AUTHORIZATION_DEFERRED'
+    );
+  }
+
   return resolution(
     STATE.UNRESOLVED,
     'POLICY_DECISION_INVALID'

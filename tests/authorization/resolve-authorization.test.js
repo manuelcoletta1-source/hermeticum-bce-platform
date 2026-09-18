@@ -76,4 +76,21 @@ assert.equal(Object.hasOwn(resolveAuthorization({
 console.log("PASS AZN-010 NO_AUTHORIZATION_ARTIFACT_SIDE_EFFECT");
 passed += 1;
 
-console.log(`AUTHORIZATION_RESOLUTION=${passed}/10 PASS`);
+const allowResult = resolveAuthorization({
+  policyDecision: {
+    decision: "ALLOW",
+    reason: "POLICY_SATISFIED"
+  }
+});
+
+assert.deepEqual(allowResult, {
+  state: "UNRESOLVED",
+  reason: "POSITIVE_AUTHORIZATION_DEFERRED"
+});
+
+assert.equal(STATE.AUTHORIZED, undefined);
+
+console.log("PASS AZN-011 POLICY_ALLOW_DOES_NOT_AUTHORIZE");
+passed += 1;
+
+console.log(`AUTHORIZATION_RESOLUTION=${passed}/11 PASS`);

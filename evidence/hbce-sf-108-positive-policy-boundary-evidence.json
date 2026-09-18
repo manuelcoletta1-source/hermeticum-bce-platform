@@ -1,0 +1,73 @@
+{
+  "evidence_id": "HBCE-SF-108-POSITIVE-POLICY-BOUNDARY",
+  "hbce_id": "HBCE-004",
+  "property": "POSITIVE_POLICY_BOUNDARY_FAIL_CLOSED",
+  "base_head": "11e639c88062a7279f1d0ba564bd52e5f294ee7c",
+  "branch": "p003/evidence-kernel-domain-model",
+  "affected_invariants": [
+    "INV-004 POLICY_DECISION_IS_NOT_ENFORCEMENT"
+  ],
+  "contract": {
+    "non_valid_authority": {
+      "decision": "DENY",
+      "reason": "AUTHORITY_NOT_VALID"
+    },
+    "valid_authority_without_accepted_policy_evaluation": {
+      "decision": "UNEVALUATED",
+      "reason": "POLICY_EVALUATION_DEFERRED"
+    },
+    "valid_authority_with_satisfied_policy_evaluation": {
+      "decision": "ALLOW",
+      "reason": "POLICY_SATISFIED"
+    },
+    "policy_allow_authorization_boundary": {
+      "state": "UNRESOLVED",
+      "reason": "POSITIVE_AUTHORIZATION_DEFERRED"
+    },
+    "canonical_authorization_artifact": "NONE",
+    "pep_side_effect": "NONE",
+    "dispatch_side_effect": "NONE",
+    "execution_side_effect": "NONE"
+  },
+  "positive_policy_evaluation_minimum": {
+    "state": "SATISFIED",
+    "policy_ref": "NON_EMPTY_STRING",
+    "policy_version": "INTEGER_GTE_1",
+    "policy_sha256": "LOWERCASE_HEX_64",
+    "request_sha256": "LOWERCASE_HEX_64"
+  },
+  "fingerprints": {
+    "runtime_opc_evaluate_policy_js": "dc2321770011c4eaa2640968a016ed947094670892985a32b12d93fb2676091c",
+    "tests_opc_evaluate_policy_test_js": "780ff2b6d3d707406da9bca4befc66ece7c91416be675b8f618513802bfe310c",
+    "runtime_authorization_resolve_authorization_js": "dd9e216fa2f4c762f6ef62644c88eef3dc3023a95ad8ed87f29c213d4b1b77c9",
+    "tests_authorization_resolve_authorization_test_js": "411f792f3583a3397e6c9645bfe4c73f404bd0eaa90022608a218c30d42db3ba"
+  },
+  "verification": {
+    "authority": "41/41 PASS",
+    "capability": "26/26 PASS",
+    "opc": "16/16 PASS",
+    "authorization_resolution": "11/11 PASS",
+    "total": "94/94 PASS",
+    "diff_check": "PASS"
+  },
+  "deferred": [
+    "CANONICAL_POLICY_EVALUATION_ARTIFACT",
+    "POLICY_EVALUATION_PROVENANCE_TRUST",
+    "POLICY_PAYLOAD_CRYPTOGRAPHIC_VERIFICATION",
+    "REQUEST_DIGEST_CROSS_BINDING",
+    "MACHINE_EVALUABLE_POLICY_SET",
+    "CANONICAL_AUTHORIZATION_ISSUANCE",
+    "AUTHORIZED_POSITIVE_PATH",
+    "PEP_ENFORCEMENT",
+    "END_TO_END_DENY_PREVENTS_DISPATCH"
+  ],
+  "limitations": [
+    "POLICY_EVALUATION_IS_CALLER_SUPPLIED",
+    "POLICY_SHA256_IS_FORMAT_VALIDATED_NOT_RECOMPUTED",
+    "REQUEST_SHA256_IS_FORMAT_VALIDATED_NOT_CROSS_BOUND"
+  ],
+  "human_acceptance": "PENDING",
+  "commit_state": "NOT_COMMITTED",
+  "push_state": "NOT_PUSHED",
+  "snapshot_semantics": "IMMUTABLE_PRE_ACCEPTANCE"
+}
