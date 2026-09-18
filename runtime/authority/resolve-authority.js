@@ -216,6 +216,26 @@ function resolveAuthority(input) {
     );
   }
 
+  if (typeof capability.valid_from !== 'string' || capability.valid_from.length === 0 || Number.isNaN(Date.parse(capability.valid_from))) {
+    return resolution(RESULT.INVALID, 'CAPABILITY_VALID_FROM_INVALID');
+  }
+
+  if (capability.valid_until !== null && (typeof capability.valid_until !== 'string' || capability.valid_until.length === 0 || Number.isNaN(Date.parse(capability.valid_until)))) {
+    return resolution(RESULT.INVALID, 'CAPABILITY_VALID_UNTIL_INVALID');
+  }
+
+  if (capability.valid_until !== null && Date.parse(capability.valid_until) <= Date.parse(capability.valid_from)) {
+    return resolution(RESULT.INVALID, 'CAPABILITY_TEMPORAL_INCONSISTENCY');
+  }
+
+  if (typeof capability.valid_from === 'string' && Date.parse(currentTime) < Date.parse(capability.valid_from)) {
+    return resolution(RESULT.INVALID, 'CAPABILITY_NOT_YET_VALID');
+  }
+
+  if (typeof capability.valid_until === 'string' && Date.parse(currentTime) >= Date.parse(capability.valid_until)) {
+    return resolution(RESULT.INVALID, 'CAPABILITY_TEMPORALLY_EXPIRED');
+  }
+
   if (
     !authority.scope ||
     !Array.isArray(authority.scope.action_classes) ||
