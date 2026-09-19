@@ -411,8 +411,8 @@ function validatePolicyEvaluation(policyEvaluation) {
   }
 
   return result(
-    STATE.INVALID,
-    'POLICY_EVALUATION_CANONICAL_VALIDATION_DEFERRED'
+    STATE.VALID,
+    'POLICY_EVALUATION_CANONICAL_STRUCTURE_VALID'
   );
 }
 

@@ -794,4 +794,27 @@ for (const [policyEvaluation, reason] of genealogyVectors) {
   passed += 1;
 }
 
+const sf071CompleteGenesis = {
+  ...genealogyBase,
+  genealogy: {
+    derived_from: null,
+    previous_state: null,
+    new_state: "FAIL",
+    cause: "INITIAL_EVALUATION",
+    evidence_reference: null,
+    timestamp: "2026-09-19T10:00:00+02:00",
+    hash: "a".repeat(64)
+  }
+};
+
+assert.deepEqual(
+  validatePolicyEvaluation(sf071CompleteGenesis),
+  {
+    state: STATE.VALID,
+    reason: "POLICY_EVALUATION_CANONICAL_STRUCTURE_VALID"
+  }
+);
+
+console.log("PASS SF_071_COMPLETE_GENESIS_REACHES_FINAL_GATE");
+
 console.log(`POLICY_EVALUATION_VALIDATOR=${passed}/${vectors.length + authorityBindingVectors.length + policyBindingVectors.length + actionBindingVectors.length + 1 + canonicalIdentityVectors.length + canonicalStateVectors.length + evaluatedAtVectors.length + evidenceStateVectors.length + evidenceReferenceVectors.length + passEvidenceVectors.length + payloadSha256Vectors.length + appendOnlyVectors.length + genealogyRequiredVectors.length + genealogyAdditionalPropertyVectors.length + genealogyDerivedFromVectors.length + genealogyPreviousStateVectors.length + genealogyNewStateVectors.length + genealogyCauseVectors.length + genealogyEvidenceReferenceVectors.length + genealogyTimestampVectors.length + genealogyHashVectors.length + genealogyStateConsistencyVectors.length + genealogyGenesisDerivedFromVectors.length + genealogyGenesisPreviousStateVectors.length + genealogyRevisionDerivedFromVectors.length + genealogyRevisionPreviousStateVectors.length + genealogySelfReferenceVectors.length + genealogyVectors.length} PASS`);
