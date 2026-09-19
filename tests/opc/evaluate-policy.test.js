@@ -111,11 +111,11 @@ const positivePolicyInput = {
 const positivePolicyResult = evaluatePolicy(positivePolicyInput);
 
 assert.deepEqual(positivePolicyResult, {
-  decision: "ALLOW",
-  reason: "POLICY_SATISFIED"
+  decision: DECISION.UNEVALUATED,
+  reason: "POLICY_EVALUATION_DEFERRED"
 });
 
-console.log("PASS OPC-POLICY-001 VALID+SATISFIED=>ALLOW");
+console.log("PASS OPC-POLICY-001 LEGACY_SATISFIED=>UNEVALUATED");
 passed += 1;
 
 const invalidPositivePolicies = [

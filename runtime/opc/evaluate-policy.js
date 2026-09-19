@@ -1,5 +1,10 @@
 'use strict';
 
+const {
+  STATE: POLICY_VALIDATION_STATE,
+  validatePolicyEvaluation
+} = require('../policy/validate-policy-evaluation');
+
 const DECISION = Object.freeze({
   UNEVALUATED: 'UNEVALUATED',
   DENY: 'DENY',
@@ -25,34 +30,22 @@ function evaluatePolicy(input) {
     return decision(DECISION.DENY, 'AUTHORITY_NOT_VALID');
   }
 
-  const policyEvaluation = context.policyEvaluation;
-  const sha256Pattern = /^[a-f0-9]{64}$/;
+  const policyValidation = validatePolicyEvaluation(
+    context.policyEvaluation
+  );
 
-  if (
-    policyEvaluation != null &&
-    typeof policyEvaluation === 'object' &&
-    typeof policyEvaluation.policy_evaluation_id === 'string' &&
-    policyEvaluation.policy_evaluation_id.length > 0 &&
-    Number.isInteger(policyEvaluation.policy_evaluation_version) &&
-    policyEvaluation.policy_evaluation_version >= 1 &&
-    typeof policyEvaluation.payload_sha256 === 'string' &&
-    sha256Pattern.test(policyEvaluation.payload_sha256) &&
-    policyEvaluation.state === 'SATISFIED' &&
-    typeof policyEvaluation.policy_ref === 'string' &&
-    policyEvaluation.policy_ref.length > 0 &&
-    Number.isInteger(policyEvaluation.policy_version) &&
-    policyEvaluation.policy_version >= 1 &&
-    typeof policyEvaluation.policy_sha256 === 'string' &&
-    sha256Pattern.test(policyEvaluation.policy_sha256) &&
-    typeof policyEvaluation.request_sha256 === 'string' &&
-    sha256Pattern.test(policyEvaluation.request_sha256)
-  ) {
+  if (policyValidation.state !== POLICY_VALIDATION_STATE.VALID) {
     return decision(
-      DECISION.ALLOW,
-      'POLICY_SATISFIED'
+      DECISION.UNEVALUATED,
+      'POLICY_EVALUATION_DEFERRED'
     );
   }
 
+  /*
+   * Canonical structural validity alone cannot authorize execution.
+   * Positive policy decisions remain fail-closed until the
+   * authority, policy and action bindings are verified.
+   */
   return decision(
     DECISION.UNEVALUATED,
     'POLICY_EVALUATION_DEFERRED'
