@@ -1,7 +1,7 @@
 # HBCE P003 SF Component Status Map
 
 **Branch:** `p003/evidence-kernel-domain-model`
-**HEAD:** `674828f docs(p003): add evidence kernel status`
+**Reference commit:** `674828f docs(p003): add evidence kernel status`
 **Status date:** 2026-09-20
 **Status class:** R&D component map / evidence kernel / not L3 / not production
 

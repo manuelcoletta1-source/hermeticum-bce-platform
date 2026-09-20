@@ -2,7 +2,7 @@
 
 **Branch:** `p003/evidence-kernel-domain-model`
 **Remote:** `origin/p003/evidence-kernel-domain-model`
-**HEAD:** `e3b2560 HBCE-SF-009: add experimental envelope ingress persistence design`
+**Reference commit:** `e3b2560 HBCE-SF-009: add experimental envelope ingress persistence design`
 **Status date:** 2026-09-20
 **Status class:** R&D evidence kernel / experimental persistence design / not L3 / not production
 
