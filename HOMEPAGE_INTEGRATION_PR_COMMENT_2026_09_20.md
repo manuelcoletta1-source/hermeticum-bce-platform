@@ -10,7 +10,7 @@ Branch:
 
 Current HEAD:
 
-- `984f212 feat(homepage): integrate IPR operational entry points`
+- `57e0dd6 docs(homepage): add integration PR comment`
 
 Base:
 
@@ -19,13 +19,14 @@ Base:
 
 ## Scope
 
-This patch changes only:
+This patch changes:
 
 - `index.html`
+- `HOMEPAGE_INTEGRATION_PR_COMMENT_2026_09_20.md`
 
-Patch size:
+Patch size observed locally:
 
-- 43 insertions
+- 157 insertions
 - 5 deletions
 
 ## What changed
@@ -77,8 +78,8 @@ The target routes exist in `origin/main`:
 Read-only verification confirmed:
 
 - branch is based on `origin/main`;
-- there is one commit over `origin/main`;
-- only `index.html` changed;
+- there are two commits over `origin/main`;
+- `index.html` and this PR comment document changed;
 - `git diff --check origin/main...HEAD` emitted no errors;
 - required markers are present in `index.html`.
 
