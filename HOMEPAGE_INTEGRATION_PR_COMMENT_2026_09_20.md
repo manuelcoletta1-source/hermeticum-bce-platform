@@ -8,9 +8,9 @@ Branch:
 
 - `p003/homepage-operational-trust-ipr-integration`
 
-Current HEAD:
+Current pushed head:
 
-- `57e0dd6 docs(homepage): add integration PR comment`
+- latest pushed head on `p003/homepage-operational-trust-ipr-integration`
 
 Base:
 
@@ -78,7 +78,7 @@ The target routes exist in `origin/main`:
 Read-only verification confirmed:
 
 - branch is based on `origin/main`;
-- there are two commits over `origin/main`;
+- there are three commits over `origin/main`;
 - `index.html` and this PR comment document changed;
 - `git diff --check origin/main...HEAD` emitted no errors;
 - required markers are present in `index.html`.
