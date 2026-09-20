@@ -1,0 +1,59 @@
+{
+  "evidence_id": "HBCE-SF-069-MANDATE-TEMPORAL-PROPAGATION",
+  "hbce_id": "HBCE-003",
+  "property": "MANDATE_TEMPORAL_PROPAGATION_FAIL_CLOSED",
+  "repository": "R2_PLATFORM_CORE",
+  "base_head": "ad17f03aa2e98dd58050858d130ef47e4de82896",
+  "temporal_window": "[valid_from, valid_until)",
+  "artifacts": {
+    "runtime": {
+      "path": "runtime/authority/resolve-authority.js",
+      "sha256": "5c10d211d9b0e90978c658578cc545167865d62c8812126ec5750395a4883f91"
+    },
+    "tests": {
+      "path": "tests/authority/resolve-authority.test.js",
+      "sha256": "054a96fa2b0d3b5d025b651f5452112646006f0f73650b3f974ae3cd29d6136b"
+    }
+  },
+  "verification": {
+    "authority_tests": "41/41 PASS",
+    "capability_tests": "18/18 PASS",
+    "total": "59/59 PASS",
+    "git_diff_check": "PASS",
+    "runtime_diff_scope": "MANDATE_TEMPORAL_GUARDS_ONLY"
+  },
+  "mandate_temporal_vectors": [
+    "TV-AUTH-MANDATE-TIME-001 BEFORE_MANDATE_VALID_FROM=>INVALID",
+    "TV-AUTH-MANDATE-TIME-002 AT_MANDATE_VALID_UNTIL=>INVALID",
+    "TV-AUTH-MANDATE-TIME-003 MALFORMED_MANDATE_VALID_FROM=>INVALID",
+    "TV-AUTH-MANDATE-TIME-004 MALFORMED_MANDATE_VALID_UNTIL=>INVALID",
+    "TV-AUTH-MANDATE-TIME-005 VALID_UNTIL_BEFORE_VALID_FROM=>INVALID",
+    "TV-AUTH-MANDATE-TIME-006 VALID_UNTIL_EQUALS_VALID_FROM=>INVALID",
+    "TV-AUTH-MANDATE-TIME-007 NULL_VALID_UNTIL=>NO_TEMPORAL_EXPIRY",
+    "TV-AUTH-MANDATE-TIME-008 MALFORMED_VALID_UNTIL_PRECEDES_NOT_YET_VALID=>INVALID"
+  ],
+  "precedence": [
+    "MANDATE_VALID_FROM_INVALID",
+    "MANDATE_VALID_UNTIL_INVALID",
+    "MANDATE_TEMPORAL_INCONSISTENCY",
+    "MANDATE_NOT_YET_VALID",
+    "MANDATE_TEMPORALLY_EXPIRED"
+  ],
+  "runtime_side_effects": {
+    "authorization": "NONE",
+    "dispatch": "NONE",
+    "input_mutation": "NONE"
+  },
+  "positive_authority_valid_emission": "DEFERRED_FAIL_CLOSED",
+  "deferred": [
+    "STRICT_RFC3339_DATE_TIME_VALIDATION",
+    "CAPABILITY_TEMPORAL_PROPAGATION",
+    "PURPOSE_SEMANTICS",
+    "LIMITED_SEMANTICS",
+    "POSITIVE_AUTHORITY_VALID_EMISSION",
+    "JSON_SCHEMA_RUNTIME_VALIDATION"
+  ],
+  "human_acceptance": "PENDING",
+  "commit_state": "NOT_COMMITTED",
+  "push_state": "NOT_PUSHED"
+}

@@ -1,0 +1,60 @@
+{
+  "evidence_id": "HBCE-SF-017",
+  "hbce_id": "HBCE-001",
+  "property": "EXPLICIT_OPERATION_LIFECYCLE",
+  "contract": "OperationState",
+  "repository_domain": "R2_PLATFORM_CORE",
+  "protocol_version": "HBCE_PROTOCOL_V1",
+  "invariants": [
+    "INV-010_STATE_TRANSITIONS_ARE_EXPLICIT",
+    "INV-011_PROTOCOL_VERSION_FAILS_CLOSED"
+  ],
+  "artifact": {
+    "path": "schemas/hbce-operation-state.schema.json",
+    "sha256": "9d61f075967cd792417509fd8d9f0024e519131bb0db407520121aa243a71a98"
+  },
+  "dependency": {
+    "path": "schemas/hbce-operation-envelope.schema.json",
+    "sha256": "835cce68865d0cc41bdee96fe49e378b2a264cbcbafd14e3e7276ad9b771424e",
+    "state_vocabulary_match": true,
+    "dependency_mutated": false
+  },
+  "canonical_state_model": {
+    "state_count": 15,
+    "canonical_definition": "#/$defs/operationState",
+    "root_state_reference": "#/$defs/operationState",
+    "progressive_count": 10,
+    "terminal_count": 4,
+    "alternative_count": 1,
+    "unknown_state_rejected": true,
+    "explicit_transition_required": true
+  },
+  "validation": {
+    "source_gate": "HBCE-SF-016",
+    "semantic_model": "PASS",
+    "test_vector_count": 13,
+    "test_vector_pass": 13,
+    "test_vector_fail": 0,
+    "negative_state_vectors": "PASS",
+    "domain_separation": "PASS",
+    "inv_010": "PASS",
+    "envelope_divergence": false,
+    "json_schema_meta_validation": "PENDING_VALIDATOR_AVAILABILITY",
+    "runtime_ref_validation": "NOT_EXECUTED"
+  },
+  "known_limitations": [
+    "HBCEOperationEnvelope still contains an inline copy of the 15-state vocabulary.",
+    "Cross-schema canonical reference has not yet been introduced.",
+    "JSON Schema Draft 2020-12 meta-validation has not been executed because no compatible local validator was discovered.",
+    "Runtime JSON Schema reference validation has not been executed."
+  ],
+  "governance": {
+    "technical_state": "PASS",
+    "human_acceptance_required": true,
+    "human_acceptance": "PENDING",
+    "commit_authorized": false,
+    "network_used": false,
+    "build_executed": false,
+    "deploy_executed": false
+  }
+}

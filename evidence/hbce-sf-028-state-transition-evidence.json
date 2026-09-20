@@ -1,0 +1,154 @@
+{
+  "artifacts": {
+    "operation_envelope": {
+      "path": "schemas/hbce-operation-envelope.schema.json",
+      "sha256": "835cce68865d0cc41bdee96fe49e378b2a264cbcbafd14e3e7276ad9b771424e"
+    },
+    "operation_state": {
+      "path": "schemas/hbce-operation-state.schema.json",
+      "sha256": "9d61f075967cd792417509fd8d9f0024e519131bb0db407520121aa243a71a98"
+    },
+    "state_transition": {
+      "path": "schemas/hbce-state-transition.schema.json",
+      "sha256": "9a90a10bbf87c5486bb10f34b430252426940db4be5fd5ab46aaabdd9aadcce2"
+    }
+  },
+  "authority": {
+    "human_acceptance_consumed": false,
+    "human_acceptance_required": true,
+    "technical_validation": "PASS"
+  },
+  "contract": "StateTransition",
+  "deferred": [
+    "FAILED_GRAPH",
+    "CANCELLED_GRAPH",
+    "CORRECTED_GRAPH",
+    "REVOCATION_TRANSITION_TYPE",
+    "COMPENSATION_TRANSITION_TYPE",
+    "RECOVERY_TRANSITION_TYPE",
+    "SUPERSESSION_TRANSITION_TYPE",
+    "MATRIX_BINDING"
+  ],
+  "evidence_id": "HBCE-SF-028",
+  "frozen_graph": {
+    "edge_count": 12,
+    "edges": [
+      {
+        "next_state": "POLICY_EVALUATED",
+        "previous_state": "AUTHORITY_RESOLVED",
+        "transition_type": "NORMAL"
+      },
+      {
+        "next_state": "CLOSED_DENIED",
+        "previous_state": "AUTHORIZATION_RESOLVED",
+        "transition_type": "DENIAL"
+      },
+      {
+        "next_state": "READY",
+        "previous_state": "AUTHORIZATION_RESOLVED",
+        "transition_type": "NORMAL"
+      },
+      {
+        "next_state": "IDENTIFIED",
+        "previous_state": "CREATED",
+        "transition_type": "NORMAL"
+      },
+      {
+        "next_state": "EXECUTED",
+        "previous_state": "DISPATCHED",
+        "transition_type": "NORMAL"
+      },
+      {
+        "next_state": "STATE_COMMITTED",
+        "previous_state": "EVIDENCED",
+        "transition_type": "NORMAL"
+      },
+      {
+        "next_state": "OBSERVED",
+        "previous_state": "EXECUTED",
+        "transition_type": "NORMAL"
+      },
+      {
+        "next_state": "AUTHORITY_RESOLVED",
+        "previous_state": "IDENTIFIED",
+        "transition_type": "NORMAL"
+      },
+      {
+        "next_state": "EVIDENCED",
+        "previous_state": "OBSERVED",
+        "transition_type": "NORMAL"
+      },
+      {
+        "next_state": "AUTHORIZATION_RESOLVED",
+        "previous_state": "POLICY_EVALUATED",
+        "transition_type": "NORMAL"
+      },
+      {
+        "next_state": "CLOSED_DENIED",
+        "previous_state": "POLICY_EVALUATED",
+        "transition_type": "DENIAL"
+      },
+      {
+        "next_state": "DISPATCHED",
+        "previous_state": "READY",
+        "transition_type": "NORMAL"
+      }
+    ],
+    "transition_types": [
+      "NORMAL",
+      "DENIAL"
+    ]
+  },
+  "generated_at": "2026-09-17T18:50:12.481114+00:00",
+  "hbce_id": "HBCE-001",
+  "human_acceptance": "PENDING",
+  "known_limitations": {
+    "external_schema_ref_strategy": "NOT_INTRODUCED",
+    "json_schema_meta_validation": "PENDING_VALIDATOR_AVAILABILITY",
+    "json_schema_runtime_validation": "NOT_EXECUTED",
+    "operation_state_enum_duplication": "STATICALLY_MATCHED_CURRENTLY",
+    "runtime_cross_field_validation": "NOT_EXECUTED"
+  },
+  "property": "EXPLICIT_RECONSTRUCTABLE_STATE_TRANSITION",
+  "protocol_version": "HBCE_PROTOCOL_V1",
+  "reconstruction_boundary": {
+    "append_only_required": true,
+    "evidence_reference_required": true,
+    "next_state_required": true,
+    "operation_id_continuity_required": true,
+    "predecessor_operation_version_required": true,
+    "predecessor_payload_sha256_required": true,
+    "previous_state_required": true,
+    "transition_identity_required": true,
+    "transition_timestamp_required": true
+  },
+  "runtime_requirements_not_yet_executed": [
+    "genealogy.derived_from == operation_id",
+    "genealogy.previous_state == previous_state",
+    "genealogy.new_state == next_state",
+    "genealogy.evidence_reference == evidence_reference",
+    "genealogy.timestamp == transitioned_at",
+    "genealogy.hash == predecessor_payload_sha256",
+    "predecessor_operation_version resolves exact predecessor",
+    "predecessor operation_id == operation_id"
+  ],
+  "technical_state": "PASS",
+  "validation": {
+    "deferred_edge_rejection": "PASS",
+    "edge_type_binding": "PASS",
+    "frozen_edge_set": "PASS",
+    "inv_009": "STATIC_PASS",
+    "inv_010": "SEMANTIC_PASS",
+    "inv_012": "STATIC_PASS",
+    "negative_edge_vectors": "PASS",
+    "positive_edge_vectors": "PASS",
+    "reconstruction_static_model": "PASS",
+    "self_transition_rejection": "PASS",
+    "semantic_vector_count": 38,
+    "semantic_vector_fail": 0,
+    "semantic_vector_pass": 38,
+    "terminal_outgoing_rejection": "PASS",
+    "unknown_edge_fail_closed": "PASS"
+  },
+  "validation_gate": "HBCE-SF-027"
+}

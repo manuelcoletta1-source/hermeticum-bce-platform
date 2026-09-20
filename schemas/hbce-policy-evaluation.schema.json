@@ -1,0 +1,499 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HBCE Platform Core Policy Evaluation Schema v1",
+  "description": "Canonical append-only representation of a policy evaluation bound to exact authority, policy, action and request commitments. A Policy Evaluation is not Authority, Authorization, Enforcement, Dispatch or Execution.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "proto",
+    "kind",
+    "version",
+    "policy_evaluation_id",
+    "policy_evaluation_version",
+    "authority_ref",
+    "authority_version",
+    "authority_sha256",
+    "policy_ref",
+    "policy_version",
+    "policy_sha256",
+    "action_binding",
+    "state",
+    "evaluated_at",
+    "evidence_state",
+    "evidence_reference",
+    "payload_sha256",
+    "append_only",
+    "genealogy",
+    "boundary"
+  ],
+  "properties": {
+    "proto": {
+      "type": "string",
+      "const": "HBCE-POLICY-EVALUATION-v1"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "HBCE_CORE_POLICY_EVALUATION"
+      ]
+    },
+    "version": {
+      "type": "string",
+      "const": "v1"
+    },
+    "policy_evaluation_id": {
+      "type": "string",
+      "pattern": "^PEV-[0-9A-Z:\\-_.]+$",
+      "minLength": 5,
+      "maxLength": 128
+    },
+    "policy_evaluation_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "authority_ref": {
+      "type": "string",
+      "pattern": "^AUT-[0-9A-Z:\\-_.]+$",
+      "minLength": 5,
+      "maxLength": 128,
+      "description": "Exact canonical authority identifier evaluated for this policy evaluation."
+    },
+    "authority_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "authority_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "policy_ref": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 160
+    },
+    "policy_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "policy_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "action_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action_class",
+        "target_ref",
+        "action_sha256",
+        "request_sha256"
+      ],
+      "properties": {
+        "action_class": {
+          "type": "string",
+          "pattern": "^[A-Z0-9_\\-:.]+$",
+          "minLength": 3,
+          "maxLength": 128,
+          "description": "Controlled class of the exact requested action."
+        },
+        "target_ref": {
+          "type": "string",
+          "pattern": "^[A-Z0-9_\\-:.]+$",
+          "minLength": 3,
+          "maxLength": 160,
+          "description": "Controlled reference to the exact target of the requested action."
+        },
+        "action_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Hash commitment to the canonical action payload."
+        },
+        "request_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Hash commitment to the canonical request envelope evaluated for this policy evaluation."
+        }
+      }
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "PASS",
+        "FAIL",
+        "REVIEW_REQUIRED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "evaluated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "evidence_state": {
+      "type": "string",
+      "enum": [
+        "PRESENT",
+        "MISSING",
+        "NOT_APPLICABLE",
+        "UNKNOWN"
+      ]
+    },
+    "evidence_reference": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[A-Z0-9_:\\-.]+$",
+      "minLength": 3,
+      "maxLength": 160
+    },
+    "payload_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Canonical object commitment under the applicable HBCE Platform Core payload hashing profile."
+    },
+    "append_only": {
+      "type": "boolean",
+      "const": true
+    },
+    "genealogy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "derived_from",
+        "previous_state",
+        "new_state",
+        "cause",
+        "evidence_reference",
+        "timestamp",
+        "hash"
+      ],
+      "properties": {
+        "derived_from": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^PEV-[0-9A-Z:\\-_.]+$",
+          "minLength": 5,
+          "maxLength": 128
+        },
+        "previous_state": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            null,
+            "PASS",
+            "FAIL",
+            "REVIEW_REQUIRED",
+            "NOT_APPLICABLE"
+          ]
+        },
+        "new_state": {
+          "type": "string",
+          "enum": [
+            "PASS",
+            "FAIL",
+            "REVIEW_REQUIRED",
+            "NOT_APPLICABLE"
+          ]
+        },
+        "cause": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 240
+        },
+        "evidence_reference": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[A-Z0-9_:\\-.]+$",
+          "minLength": 3,
+          "maxLength": 160
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Genealogy anchor digest. For policy_evaluation_version > 1 it MUST equal the exact immediately preceding Policy Evaluation payload_sha256; cross-revision equality requires canonical runtime validation. Genesis anchor semantics for policy_evaluation_version = 1 are deferred."
+        }
+      }
+    },
+    "boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "data_minimization",
+        "reference_over_raw_evidence",
+        "policy_evaluation_not_authority",
+        "policy_evaluation_not_authorization",
+        "policy_evaluation_not_enforcement",
+        "policy_evaluation_not_dispatch",
+        "policy_evaluation_not_execution",
+        "authority_binding_required",
+        "policy_binding_required",
+        "action_digest_binding_required",
+        "request_digest_binding_required",
+        "pass_requires_present_evidence",
+        "unknown_evidence_not_pass",
+        "append_only_genealogy",
+        "fail_closed",
+        "policy_evaluation_not_policy_decision",
+        "no_regulated_certification_claim",
+        "no_public_authority_claim"
+      ],
+      "properties": {
+        "data_minimization": {
+          "type": "boolean",
+          "const": true
+        },
+        "reference_over_raw_evidence": {
+          "type": "boolean",
+          "const": true
+        },
+        "policy_evaluation_not_authority": {
+          "type": "boolean",
+          "const": true
+        },
+        "policy_evaluation_not_authorization": {
+          "type": "boolean",
+          "const": true
+        },
+        "policy_evaluation_not_enforcement": {
+          "type": "boolean",
+          "const": true
+        },
+        "policy_evaluation_not_dispatch": {
+          "type": "boolean",
+          "const": true
+        },
+        "policy_evaluation_not_execution": {
+          "type": "boolean",
+          "const": true
+        },
+        "authority_binding_required": {
+          "type": "boolean",
+          "const": true
+        },
+        "policy_binding_required": {
+          "type": "boolean",
+          "const": true
+        },
+        "action_digest_binding_required": {
+          "type": "boolean",
+          "const": true
+        },
+        "request_digest_binding_required": {
+          "type": "boolean",
+          "const": true
+        },
+        "pass_requires_present_evidence": {
+          "type": "boolean",
+          "const": true
+        },
+        "unknown_evidence_not_pass": {
+          "type": "boolean",
+          "const": true
+        },
+        "append_only_genealogy": {
+          "type": "boolean",
+          "const": true
+        },
+        "fail_closed": {
+          "type": "boolean",
+          "const": true
+        },
+        "policy_evaluation_not_policy_decision": {
+          "const": true
+        },
+        "no_regulated_certification_claim": {
+          "const": true
+        },
+        "no_public_authority_claim": {
+          "const": true
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "PASS"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidence_state": {
+            "const": "PRESENT"
+          },
+          "evidence_reference": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "policy_evaluation_version": {
+            "const": 1
+          }
+        },
+        "required": [
+          "policy_evaluation_version"
+        ]
+      },
+      "then": {
+        "properties": {
+          "genealogy": {
+            "properties": {
+              "derived_from": {
+                "const": null
+              },
+              "previous_state": {
+                "const": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "policy_evaluation_version": {
+            "type": "integer",
+            "minimum": 2
+          }
+        },
+        "required": [
+          "policy_evaluation_version"
+        ]
+      },
+      "then": {
+        "properties": {
+          "genealogy": {
+            "properties": {
+              "derived_from": {
+                "type": "string",
+                "pattern": "^PEV-[0-9A-Z:\\-_.]+$"
+              },
+              "previous_state": {
+                "type": "string",
+                "enum": [
+                  "PASS",
+                  "FAIL",
+                  "REVIEW_REQUIRED",
+                  "NOT_APPLICABLE"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "PASS"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "genealogy": {
+            "properties": {
+              "new_state": {
+                "const": "PASS"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "FAIL"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "genealogy": {
+            "properties": {
+              "new_state": {
+                "const": "FAIL"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "REVIEW_REQUIRED"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "genealogy": {
+            "properties": {
+              "new_state": {
+                "const": "REVIEW_REQUIRED"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "NOT_APPLICABLE"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "genealogy": {
+            "properties": {
+              "new_state": {
+                "const": "NOT_APPLICABLE"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
