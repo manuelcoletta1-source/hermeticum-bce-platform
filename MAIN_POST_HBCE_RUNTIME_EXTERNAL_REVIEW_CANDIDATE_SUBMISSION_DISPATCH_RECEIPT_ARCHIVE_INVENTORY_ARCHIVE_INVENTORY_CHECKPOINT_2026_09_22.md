@@ -1,0 +1,312 @@
+# MAIN POST HBCE Runtime External Review Candidate Submission Dispatch Receipt Archive Inventory Archive Inventory Checkpoint
+
+Date: 2026-09-22
+Branch: main
+Remote: origin/main
+Checkpoint status: PREPARED_FOR_COMMIT
+
+## Canonical commits
+
+- Main checkpoint base before PR #88: `cf3f82a7bf2f153163871c579d2ed217bc893ce4`
+- PR #88 feature commit: `a82b27d519cd71c3f8cfb89ae285b3f38753f8ac`
+- PR #88 merge commit / current main: `e3cd1c2e4b2341b19ec3fdd873684131d6969317`
+
+## PR #88
+
+- Number: #88
+- Title: `feat(runtime): add external review candidate submission dispatch receipt archive inventory archive inventory`
+- State: MERGED
+
+## Added runtime layer
+
+Runtime file:
+
+`runtime/external-review/create-external-review-candidate-submission-dispatch-receipt-archive-inventory-archive-inventory.js`
+
+Runtime SHA-256:
+
+`659cdabd712794c6960c08de9cbd2da1fd5894f2939afa67389a0f0c30bef1c0`
+
+Runtime line count:
+
+~~~text
+380 runtime/external-review/create-external-review-candidate-submission-dispatch-receipt-archive-inventory-archive-inventory.js
+~~~
+
+Test file:
+
+`tests/external-review/create-external-review-candidate-submission-dispatch-receipt-archive-inventory-archive-inventory.test.js`
+
+Test SHA-256:
+
+`f294d7e221992efa30a7bf5365fa36b14b1441b81c06273f9729159ff197b52c`
+
+Test line count:
+
+~~~text
+309 tests/external-review/create-external-review-candidate-submission-dispatch-receipt-archive-inventory-archive-inventory.test.js
+~~~
+
+## Layer role
+
+This checkpoint records the internal Submission Dispatch Receipt Archive Inventory Archive Inventory layer.
+
+The layer consumes the internal Submission Dispatch Receipt Archive Inventory Archive and produces deterministic inventory items over archive references.
+
+This is an internal technical archive inventory archive inventory only.
+
+It does not create external archive storage.
+It does not create external storage.
+It does not create an external receipt.
+It does not create an external acknowledgement.
+It does not create an external acceptance.
+It does not create an external transmission.
+It does not create external submission dispatch.
+It does not create external review execution.
+It does not create external review opinion.
+It does not create external review report.
+It does not create legal certification.
+It does not create eIDAS qualification.
+It does not create OPC ALLOW.
+It does not prove Deployment Success.
+It does not prove production deployment.
+It does not mutate any public registry.
+It does not mutate any external trust registry.
+
+## Added symbols
+
+- `SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_INVENTORY_STATE`
+- `SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_INVENTORY_PROTO`
+- `SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_INVENTORY_KIND`
+- `SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_INVENTORY_SCOPE`
+- `SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_INVENTORY_COMPONENTS`
+- `createExternalReviewCandidateSubmissionDispatchReceiptArchiveInventoryArchiveInventory`
+
+## Chain state after PR #88
+
+~~~text
+Receipt Candidate
+-> Receipt Package
+-> Receipt Manifest
+-> Receipt Index
+-> Receipt Register
+-> Receipt Ledger
+-> Receipt Seal
+-> Receipt Closure
+-> Receipt Archive
+-> Receipt Archive Inventory
+-> Receipt Archive Inventory Register
+-> Receipt Archive Inventory Ledger
+-> Receipt Archive Inventory Seal
+-> Receipt Archive Inventory Closure
+-> Receipt Archive Inventory Archive
+-> Receipt Archive Inventory Archive Inventory
+~~~
+
+## Canonical hash fields preserved
+
+~~~text
+submission_dispatch_receipt_archive_inventory_archive_inventory_sha256
+submission_dispatch_receipt_archive_inventory_archive_sha256
+submission_dispatch_receipt_archive_inventory_closure_sha256
+submission_dispatch_receipt_archive_inventory_seal_sha256
+submission_dispatch_receipt_archive_inventory_ledger_sha256
+submission_dispatch_receipt_archive_inventory_register_sha256
+submission_dispatch_receipt_archive_inventory_sha256
+submission_dispatch_receipt_archive_sha256
+submission_dispatch_receipt_closure_sha256
+submission_dispatch_receipt_seal_sha256
+submission_dispatch_receipt_ledger_sha256
+submission_dispatch_receipt_register_sha256
+submission_dispatch_receipt_index_sha256
+submission_dispatch_receipt_manifest_sha256
+submission_dispatch_receipt_package_sha256
+submission_dispatch_receipt_candidate_sha256
+submission_dispatch_envelope_sha256
+submission_dispatch_packet_sha256
+submission_dispatch_candidate_sha256
+submission_manifest_sha256
+submission_package_sha256
+submission_candidate_sha256
+reviewer_selection_sha256
+review_package_sha256
+audit_index_sha256
+audit_manifest_sha256
+audit_package_sha256
+matrix_binding_sha256
+evidence_sha256
+candidate_input_sha256
+validation_output_sha256
+~~~
+
+## Inventory components
+
+Expected inventory component count:
+
+~~~text
+29
+~~~
+
+Expected inventory item count:
+
+~~~text
+29
+~~~
+
+## Boundary state
+
+Expected preserved boundary:
+
+~~~text
+submission_dispatch_receipt_archive_inventory_archive_inventory_boundary_state: PRESERVED
+submission_dispatch_receipt_archive_inventory_archive_boundary_state: PRESERVED
+submission_dispatch_receipt_archive_inventory_closure_boundary_state: PRESERVED
+submission_dispatch_receipt_archive_inventory_seal_boundary_state: PRESERVED
+submission_dispatch_receipt_archive_inventory_ledger_boundary_state: PRESERVED
+submission_dispatch_receipt_archive_inventory_register_boundary_state: PRESERVED
+submission_dispatch_receipt_archive_inventory_boundary_state: PRESERVED
+~~~
+
+Expected blocked boundary under forbidden claims:
+
+~~~text
+submission_dispatch_receipt_archive_inventory_archive_boundary_state: BLOCKED
+submission_dispatch_receipt_archive_inventory_archive_inventory_boundary_state: BLOCKED
+~~~
+
+## Explicit false runtime effects
+
+~~~text
+external_reviewer_appointed: false
+external_review_execution_created: false
+external_review_opinion_created: false
+external_review_report_created: false
+external_review_submission_created: false
+external_review_publication_created: false
+external_submission_dispatched: false
+external_submission_transmitted: false
+external_submission_accepted: false
+external_submission_acknowledged: false
+external_submission_receipt_created: false
+external_submission_receipt_acknowledged: false
+external_archive_storage_created: false
+legal_certification_created: false
+eidas_qualification_created: false
+opc_allow_created: false
+deployment_success_proven: false
+production_deployment_proven: false
+public_registry_mutated: false
+external_trust_registry_mutated: false
+~~~
+
+## Local verification summary
+
+Observed locally on main after PR #88 merge:
+
+- Submission Dispatch Receipt Archive Inventory Archive Inventory: 10/10 PASS
+- Upstream External Review chain including Receipt Archive Inventory Archive Inventory: 331 PASS
+- Authority + Capability + Authorization: 78 PASS
+- OPC: 21 PASS
+- Policy: 81 PASS
+
+Total observed: 511 PASS
+
+`git diff --check`: PASS
+
+## Verification anchors
+
+~~~text
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_INVENTORY_INVENTORIED_FROM_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_INVENTORY_INVENTORIED_FROM_ARCHIVE_BODY
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_INVENTORY_HUMAN_PENDING_INVENTORIED
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_INVENTORY_BOUNDARY_BLOCKED_INVENTORIED
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_INVENTORY_ID_INVALID
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_INVENTORY_GENERATED_AT_INVALID
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_INVENTORY_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_INVALID
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_INVENTORY_COMPONENTS
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_INVENTORY_SCOPE_FALSE
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_INVENTORY_RUNTIME_EFFECTS_FALSE
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_ARCHIVED_FROM_RECEIPT_ARCHIVE_INVENTORY_CLOSURE
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_ARCHIVED_FROM_CLOSURE_BODY
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_HUMAN_PENDING_ARCHIVED
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_BOUNDARY_BLOCKED_ARCHIVED
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_ID_INVALID
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_GENERATED_AT_INVALID
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_CLOSURE_INVALID
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_COMPONENTS
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_SCOPE_FALSE
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_RUNTIME_EFFECTS_FALSE
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_CLOSURE_CLOSED_FROM_RECEIPT_ARCHIVE_INVENTORY_SEAL
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_CLOSURE_CLOSED_FROM_SEAL_BODY
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_CLOSURE_HUMAN_PENDING_CLOSED
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_CLOSURE_BOUNDARY_BLOCKED_CLOSED
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_CLOSURE_ID_INVALID
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_CLOSURE_GENERATED_AT_INVALID
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_CLOSURE_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_SEAL_INVALID
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_CLOSURE_COMPONENTS
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_CLOSURE_SCOPE_FALSE
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_CLOSURE_RUNTIME_EFFECTS_FALSE
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_SEAL_SEALED_FROM_RECEIPT_ARCHIVE_INVENTORY_LEDGER
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_SEAL_SEALED_FROM_LEDGER_BODY
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_SEAL_HUMAN_PENDING_SEALED
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_SEAL_BOUNDARY_BLOCKED_SEALED
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_SEAL_ID_INVALID
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_SEAL_GENERATED_AT_INVALID
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_SEAL_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_LEDGER_INVALID
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_SEAL_COMPONENTS
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_SEAL_SCOPE_FALSE
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_SEAL_RUNTIME_EFFECTS_FALSE
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_LEDGER_LEDGERED_FROM_RECEIPT_ARCHIVE_INVENTORY_REGISTER
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_LEDGER_LEDGERED_FROM_REGISTER_BODY
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_LEDGER_HUMAN_PENDING_LEDGERED
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_LEDGER_BOUNDARY_BLOCKED_LEDGERED
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_LEDGER_ID_INVALID
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_LEDGER_GENERATED_AT_INVALID
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_LEDGER_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_REGISTER_INVALID
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_LEDGER_COMPONENTS
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_LEDGER_SCOPE_FALSE
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_LEDGER_RUNTIME_EFFECTS_FALSE
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_REGISTER_REGISTERED_FROM_RECEIPT_ARCHIVE_INVENTORY
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_REGISTER_REGISTERED_FROM_INVENTORY_BODY
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_REGISTER_HUMAN_PENDING_REGISTERED
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_REGISTER_BOUNDARY_BLOCKED_REGISTERED
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_REGISTER_ID_INVALID
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_REGISTER_GENERATED_AT_INVALID
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_REGISTER_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_INVALID
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_REGISTER_COMPONENTS
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_REGISTER_SCOPE_FALSE
+PASS RPECRC_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_REGISTER_RUNTIME_EFFECTS_FALSE
+PASS RPECRC_VALID_READY
+PASS RPECRC_VALID_READY_WITH_LIMITATIONS
+VECTOR_COUNT=41
+CAP_VECTOR_COUNT=26
+AUTHORIZATION_RESOLUTION=11/11 PASS
+OPC_AUTHORITY_GATE=17/17 PASS
+POLICY_EVALUATION_VALIDATOR=52/52 PASS
+POLICY_EVALUATION_GENEALOGY=11/11 PASS
+SF_072A_PAYLOAD_VECTORS=18/18 PASS
+~~~
+
+## Repository status at checkpoint preparation
+
+~~~text
+## main...origin/main
+?? MAIN_POST_HBCE_RUNTIME_EXTERNAL_REVIEW_CANDIDATE_SUBMISSION_DISPATCH_RECEIPT_ARCHIVE_INVENTORY_ARCHIVE_INVENTORY_CHECKPOINT_2026_09_22.md
+~~~
+
+## Recent main log
+
+~~~text
+e3cd1c2 (HEAD -> main, origin/main, origin/HEAD) Merge pull request #88 from manuelcoletta1-source/hbce/runtime-external-review-candidate-submission-dispatch-receipt-archive-inventory-archive-inventory
+a82b27d (hbce/runtime-external-review-candidate-submission-dispatch-receipt-archive-inventory-archive-inventory) feat(runtime): add external review candidate submission dispatch receipt archive inventory archive inventory
+cf3f82a docs(main): record post HBCE runtime external review candidate submission dispatch receipt archive inventory archive checkpoint
+ec33e6c Merge pull request #87 from manuelcoletta1-source/hbce/runtime-external-review-candidate-submission-dispatch-receipt-archive-inventory-archive
+41ad005 feat(runtime): add external review candidate submission dispatch receipt archive inventory archive
+62ec9b1 docs(main): record post HBCE runtime external review candidate submission dispatch receipt archive inventory closure checkpoint
+3f5d5f6 Merge pull request #86 from manuelcoletta1-source/hbce/runtime-external-review-candidate-submission-dispatch-receipt-archive-inventory-closure
+5ceb801 feat(runtime): add external review candidate submission dispatch receipt archive inventory closure
+3682822 docs(main): record post HBCE runtime external review candidate submission dispatch receipt archive inventory seal checkpoint
+e3f0e35 Merge pull request #85 from manuelcoletta1-source/hbce/runtime-external-review-candidate-submission-dispatch-receipt-archive-inventory-seal
+3dd0c31 feat(runtime): add external review candidate submission dispatch receipt archive inventory seal
+82a80ef docs(main): record post HBCE runtime external review candidate submission dispatch receipt archive inventory ledger checkpoint
+~~~
