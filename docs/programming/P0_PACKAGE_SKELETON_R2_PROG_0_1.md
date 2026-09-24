@@ -40,12 +40,12 @@ This skeleton prepares the platform repository for the P0 implementation path:
 
 This commit does not claim:
 
-- runtime implementation
-- production readiness
-- regulatory certification
-- legal opinion
-- verifier completeness
-- AI agent safety
-- banking pilot readiness
+- no runtime implementation
+- no production readiness
+- no regulatory certification
+- no legal opinion
+- no verifier completeness
+- no AI agent safety claim
+- no banking pilot readiness claim
 
 It only creates the P0 implementation skeleton.
