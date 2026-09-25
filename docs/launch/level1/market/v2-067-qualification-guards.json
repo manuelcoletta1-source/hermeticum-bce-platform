@@ -1,0 +1,277 @@
+{
+  "proto": "HBCE-P0-MARKET-V2-067-QUALIFICATION-GUARDS-v1",
+  "kind": "HBCE_P0_MARKET_V2_067_QUALIFICATION_GUARDS",
+  "document_code": "HBCE-B2B-L1-MATRIX-PROG-2027-0001",
+  "specification_baseline": "V2.9 - 25 September 2026",
+  "issue_id": "V2-067",
+  "priority": "P0-MARKET",
+  "depends_on": [
+    "V2-066"
+  ],
+  "market_gate": "G3C_LEAD_REGISTRY_READY",
+  "repository_baseline_commit": "c00aac2fcd9b8b60eb3cf9a55683b92c46bd7191",
+  "source_github_lead_registry_ref": "docs/launch/level1/market/v2-066-github-lead-registry.json",
+  "source_github_lead_registry_revision_hash": "sha256:c5c1f49c7bfb5ba8fa5ac03f84b1a70deefec8c631278b3a636ecf87d85b0653",
+  "status": "INITIALIZED_NOT_READY",
+  "readiness_status": "BLOCKED",
+  "gate_claimed": false,
+  "g3c_ready": false,
+  "qualification_guards_initialized": true,
+  "qualified_leads_allowed": false,
+  "outreach_ready_allowed": false,
+  "transition_model": {
+    "DISCOVERED": [
+      "TECHNICALLY_RELEVANT",
+      "PARKED",
+      "CLOSED"
+    ],
+    "TECHNICALLY_RELEVANT": [
+      "ORG_VERIFIED",
+      "PARKED",
+      "CLOSED"
+    ],
+    "ORG_VERIFIED": [
+      "ROLE_IDENTIFIED",
+      "PARKED",
+      "CLOSED"
+    ],
+    "ROLE_IDENTIFIED": [
+      "QUALIFIED",
+      "PARKED",
+      "CLOSED"
+    ],
+    "QUALIFIED": [
+      "OUTREACH_READY",
+      "PARKED",
+      "CLOSED"
+    ],
+    "OUTREACH_READY": [
+      "CONTACTED",
+      "PARKED",
+      "CLOSED"
+    ],
+    "CONTACTED": [
+      "DISCOVERY",
+      "PARKED",
+      "CLOSED"
+    ],
+    "DISCOVERY": [
+      "PILOT_CANDIDATE",
+      "PARKED",
+      "CLOSED"
+    ],
+    "PILOT_CANDIDATE": [
+      "PARKED",
+      "CLOSED"
+    ]
+  },
+  "guard_requirements": [
+    {
+      "target_state": "TECHNICALLY_RELEVANT",
+      "requires": [
+        "source_ref",
+        "observed_at_or_last_reviewed",
+        "technical_fit.rationale"
+      ],
+      "denies": [
+        "missing source lineage",
+        "technical label without evidence"
+      ]
+    },
+    {
+      "target_state": "ORG_VERIFIED",
+      "requires": [
+        "organization_state == ORG_VERIFIED",
+        "verified organization evidence"
+      ],
+      "denies": [
+        "repository found only",
+        "GitHub owner type User",
+        "unverified org relation"
+      ]
+    },
+    {
+      "target_state": "ROLE_IDENTIFIED",
+      "requires": [
+        "target role class",
+        "role-to-organization relation evidence"
+      ],
+      "denies": [
+        "contributor treated as buyer",
+        "person without verified role"
+      ]
+    },
+    {
+      "target_state": "QUALIFIED",
+      "requires": [
+        "buyer_problem_evidence",
+        "relationship_hypothesis == BUYER_CANDIDATE or PARTNER_CANDIDATE",
+        "freshness current or revalidated"
+      ],
+      "denies": [
+        "technical relevance only",
+        "competitor/peer only",
+        "use-case signal only",
+        "stale record"
+      ]
+    },
+    {
+      "target_state": "OUTREACH_READY",
+      "requires": [
+        "QUALIFIED state",
+        "target role",
+        "allowed claim set",
+        "message draft",
+        "Manuel human approval",
+        "legal channel",
+        "do_not_contact == false"
+      ],
+      "denies": [
+        "missing target role",
+        "unsupported public claim",
+        "no human approval",
+        "do_not_contact true"
+      ]
+    },
+    {
+      "target_state": "CONTACTED",
+      "requires": [
+        "OUTREACH_READY state",
+        "message_ref_or_hash",
+        "recipient_role",
+        "sent_at",
+        "channel",
+        "approval_ref"
+      ],
+      "denies": [
+        "contact before approval",
+        "personal email from commit metadata"
+      ]
+    }
+  ],
+  "forbidden_shortcuts": [
+    {
+      "shortcut": "TECHNICALLY_RELEVANT_TO_OUTREACH_READY",
+      "result": "PIPELINE_BLOCKED"
+    },
+    {
+      "shortcut": "REPOSITORY_FOUND_TO_ORG_VERIFIED",
+      "result": "QUALIFICATION_DENIED"
+    },
+    {
+      "shortcut": "USER_OWNER_TO_ORG_VERIFIED",
+      "result": "QUALIFICATION_DENIED"
+    },
+    {
+      "shortcut": "TECHNICAL_SIMILARITY_TO_BUYER_FIT",
+      "result": "QUALIFICATION_DENIED"
+    },
+    {
+      "shortcut": "QUALIFIED_WITHOUT_BUYER_PROBLEM_EVIDENCE",
+      "result": "QUALIFICATION_DENIED"
+    },
+    {
+      "shortcut": "OUTREACH_READY_WITHOUT_TARGET_ROLE",
+      "result": "PIPELINE_BLOCKED"
+    },
+    {
+      "shortcut": "OUTREACH_WITHOUT_HUMAN_APPROVAL",
+      "result": "PIPELINE_BLOCKED"
+    },
+    {
+      "shortcut": "COMMIT_EMAIL_TO_CONTACT_ROUTE",
+      "result": "PRIVACY_POLICY_BLOCK"
+    }
+  ],
+  "evaluation_of_existing_registry": [
+    {
+      "lead_id": "GH-0001",
+      "source_ref": "https://github.com/frumu-ai/tandem",
+      "current_pipeline_state": "TECHNICALLY_RELEVANT",
+      "organization_state": "UNKNOWN",
+      "relationship_hypothesis": "COMPETITOR_OR_PEER",
+      "contact_role_state": "NOT_IDENTIFIED",
+      "buyer_problem_evidence_present": false,
+      "qualification_result": "QUALIFICATION_DENIED",
+      "outreach_result": "PIPELINE_BLOCKED",
+      "reason_codes": [
+        "ORG_NOT_VERIFIED",
+        "ROLE_NOT_IDENTIFIED",
+        "BUYER_PROBLEM_EVIDENCE_MISSING",
+        "HUMAN_APPROVAL_MISSING"
+      ]
+    },
+    {
+      "lead_id": "GH-0002",
+      "source_ref": "https://github.com/preloop/preloop",
+      "current_pipeline_state": "TECHNICALLY_RELEVANT",
+      "organization_state": "UNKNOWN",
+      "relationship_hypothesis": "COMPETITOR_OR_PEER",
+      "contact_role_state": "NOT_IDENTIFIED",
+      "buyer_problem_evidence_present": false,
+      "qualification_result": "QUALIFICATION_DENIED",
+      "outreach_result": "PIPELINE_BLOCKED",
+      "reason_codes": [
+        "ORG_NOT_VERIFIED",
+        "ROLE_NOT_IDENTIFIED",
+        "BUYER_PROBLEM_EVIDENCE_MISSING",
+        "HUMAN_APPROVAL_MISSING"
+      ]
+    },
+    {
+      "lead_id": "GH-0003",
+      "source_ref": "https://github.com/banlang/ai-assisted-credit-underwriting-governance",
+      "current_pipeline_state": "TECHNICALLY_RELEVANT",
+      "organization_state": "USER_ONLY",
+      "relationship_hypothesis": "USE_CASE_SIGNAL",
+      "contact_role_state": "NOT_IDENTIFIED",
+      "buyer_problem_evidence_present": false,
+      "qualification_result": "QUALIFICATION_DENIED",
+      "outreach_result": "PIPELINE_BLOCKED",
+      "reason_codes": [
+        "ORG_NOT_VERIFIED",
+        "ROLE_NOT_IDENTIFIED",
+        "BUYER_PROBLEM_EVIDENCE_MISSING",
+        "HUMAN_APPROVAL_MISSING"
+      ]
+    }
+  ],
+  "t146_t150_controls": [
+    {
+      "test_id": "T146",
+      "stimulus": "GitHub owner type User marked ORG_VERIFIED",
+      "expected_result": "QUALIFICATION_DENIED"
+    },
+    {
+      "test_id": "T147",
+      "stimulus": "Technical similarity classified buyer without relationship analysis",
+      "expected_result": "QUALIFICATION_DENIED"
+    },
+    {
+      "test_id": "T148",
+      "stimulus": "QUALIFIED without buyer_problem_evidence",
+      "expected_result": "QUALIFICATION_DENIED"
+    },
+    {
+      "test_id": "T149",
+      "stimulus": "OUTREACH_READY without target role",
+      "expected_result": "PIPELINE_BLOCKED"
+    },
+    {
+      "test_id": "T150",
+      "stimulus": "Personal email from commit metadata used as contact route",
+      "expected_result": "PRIVACY_POLICY_BLOCK"
+    }
+  ],
+  "non_claims": {
+    "g3c_lead_registry_ready": false,
+    "qualified_lead": false,
+    "outreach_ready": false,
+    "contacted": false,
+    "buyer_interest": false,
+    "customer_or_client_existence": false,
+    "pilot_candidate": false,
+    "pilot_readiness": false
+  },
+  "revision_hash": "sha256:4bf1812b2476fa800808849b4020c135c2f67df6052916976188621ca28dd1b2"
+}
