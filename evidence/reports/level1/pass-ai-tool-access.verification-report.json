@@ -1,0 +1,57 @@
+{
+  "proto": "HBCE-P0-VERIFICATION-REPORT-v1",
+  "kind": "HBCE_P0_VERIFICATION_REPORT",
+  "version": "v1",
+  "verifier": {
+    "name": "hbce-verifier-cli",
+    "profile": "P0_EVIDENCE_BUNDLE",
+    "completeness": "SKELETON_P0",
+    "verifies": [
+      "evidence_bundle_shape",
+      "manifest_hash",
+      "evidence_bundle_hash",
+      "policy_decision_hash",
+      "target_receipt_hash",
+      "request_policy_receipt_binding"
+    ],
+    "does_not_claim": [
+      "legal_certification",
+      "regulatory_compliance",
+      "physical_truth",
+      "production_readiness"
+    ]
+  },
+  "input": {
+    "bundle_path": "/home/manuelcoletta1/hermeticum-bce-platform/evidence/samples/level1/pass-ai-tool-access.json"
+  },
+  "result": "PASS",
+  "reason": "EVIDENCE_BUNDLE_VALID",
+  "bundle_id": "BUNDLE-L1-PASS-AI-TOOL-001",
+  "action_id": "ACTION-L1-AI-TOOL-001",
+  "manifest_hash": "sha256:1ee48294dd0e95f73f447775a82255f7c0b82a5bea5993a0b1fa9c0c917c47c1",
+  "evidence_bundle_hash": "sha256:e452489b44dc3c1ede9f522b0ace84c4a1a0ed667552782c72730479bbd0a613",
+  "target_receipt_count": 1,
+  "checks": [
+    {
+      "check_id": "BUNDLE_INTEGRITY",
+      "result": "PASS",
+      "reason": "EvidenceBundle hash and manifest hash verified."
+    },
+    {
+      "check_id": "POLICY_RECEIPT_BINDING",
+      "result": "PASS",
+      "reason": "Request, policy decision and target receipt bindings verified."
+    },
+    {
+      "check_id": "BOUNDARY_NO_OVERCLAIM",
+      "result": "PASS",
+      "reason": "Bundle does not certify compliance, legal liability or physical truth."
+    }
+  ],
+  "boundary": {
+    "certifies_compliance": false,
+    "proves_legal_liability": false,
+    "proves_physical_truth": false,
+    "production_certified": false
+  }
+}

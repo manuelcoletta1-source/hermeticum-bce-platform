@@ -1,0 +1,57 @@
+{
+  "proto": "HBCE-P0-VERIFICATION-REPORT-v1",
+  "kind": "HBCE_P0_VERIFICATION_REPORT",
+  "version": "v1",
+  "verifier": {
+    "name": "hbce-verifier-cli",
+    "profile": "P0_EVIDENCE_BUNDLE",
+    "completeness": "SKELETON_P0",
+    "verifies": [
+      "evidence_bundle_shape",
+      "manifest_hash",
+      "evidence_bundle_hash",
+      "policy_decision_hash",
+      "target_receipt_hash",
+      "request_policy_receipt_binding"
+    ],
+    "does_not_claim": [
+      "legal_certification",
+      "regulatory_compliance",
+      "physical_truth",
+      "production_readiness"
+    ]
+  },
+  "input": {
+    "bundle_path": "/home/manuelcoletta1/hermeticum-bce-platform/evidence/samples/level1/pass-bank-cyber-dual-control.json"
+  },
+  "result": "PASS",
+  "reason": "EVIDENCE_BUNDLE_VALID",
+  "bundle_id": "BUNDLE-L1-PASS-BANK-001",
+  "action_id": "ACTION-L1-BANK-CRITICAL-001",
+  "manifest_hash": "sha256:d2dce1f63d87225afcd35b79955aebd4323a083c9d1cab6d1f9849ce5bd46d3d",
+  "evidence_bundle_hash": "sha256:df2169e90c2598ea63853051fa591f2b02a7ae59a762ba0d3901f00ece26bb11",
+  "target_receipt_count": 1,
+  "checks": [
+    {
+      "check_id": "BUNDLE_INTEGRITY",
+      "result": "PASS",
+      "reason": "EvidenceBundle hash and manifest hash verified."
+    },
+    {
+      "check_id": "POLICY_RECEIPT_BINDING",
+      "result": "PASS",
+      "reason": "Request, policy decision and target receipt bindings verified."
+    },
+    {
+      "check_id": "BOUNDARY_NO_OVERCLAIM",
+      "result": "PASS",
+      "reason": "Bundle does not certify compliance, legal liability or physical truth."
+    }
+  ],
+  "boundary": {
+    "certifies_compliance": false,
+    "proves_legal_liability": false,
+    "proves_physical_truth": false,
+    "production_certified": false
+  }
+}
