@@ -33,4 +33,27 @@ P0 invariant:
 
 `VALID_LOGIN != VALID_AUTHORITY`
 `PERMISSION != MISSION`
-`AI_OUTPUT != AUTHORITY`
+`AI_OUTPUT != AUTHORITY`\n
+
+## PROG-010 P0 PolicyDecision Level 1 model
+
+Status: implemented as a deterministic Level 1 policy decision object.
+
+Implemented behavior:
+
+- supports ALLOW, DENY, SAFE_HOLD and DUAL_CONTROL_REQUIRED
+- records policy_version, input_facts_hash, rule_ids, denial_reasons and required_controls
+- hashes the policy decision deterministically
+- verifies policy decision hash
+- binds policy decision to request_hash
+- preserves the boundary between policy decision and authorization
+- never creates dispatch
+- never performs physical execution
+
+Boundary:
+
+- PolicyDecision is not Authorization.
+- PolicyDecision does not authorize execution by itself.
+- PolicyDecision does not replace separate authority validation.
+- PolicyDecision does not create dispatch.
+- PolicyDecision does not prove legal compliance.
