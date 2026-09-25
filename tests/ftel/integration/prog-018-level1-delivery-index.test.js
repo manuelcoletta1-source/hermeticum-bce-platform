@@ -55,11 +55,21 @@ const deliveryMd = readText(deliveryMdPath);
 const launchReadme = readText(launchReadmePath);
 const deliveryIndex = readJson(deliveryJsonPath);
 
-assert.equal(deliveryIndex.proto, 'HBCE-P0-LEVEL1-DELIVERY-INDEX-v1');
+assert.equal(deliveryIndex.proto, 'HBCE-P0-LEVEL1-DELIVERY-INDEX-v2_3');
 assert.equal(deliveryIndex.kind, 'HBCE_P0_LEVEL1_DELIVERY_INDEX');
-assert.equal(deliveryIndex.canonical_planning_reference, 'HBCE-B2B-L1-PROG-2027-0001 R1.1');
+assert.equal(deliveryIndex.canonical_planning_reference, 'HBCE-B2B-L1-PROG-2027-0001');
+assert.equal(deliveryIndex.specification_baseline, 'V2.3 - 25 September 2026');
 assert.equal(deliveryIndex.launch_target, '19 January 2027');
-assert.equal(deliveryIndex.scope, 'B2B_ONLY');
+assert.equal(deliveryIndex.scope, 'B2B_CONTROLLED_ONLY');
+
+assert.equal(deliveryIndex.current_classification.evidence_profile, 'L1_DEMO');
+assert.equal(deliveryIndex.current_classification.package_status, 'DEMO_ONLY_EXPORT_PACKAGE');
+assert.equal(deliveryIndex.current_classification.technical_gate_status, 'NOT_ASSESSED');
+assert.equal(deliveryIndex.current_classification.pilot_status, 'NOT_PILOT_READY');
+assert.equal(deliveryIndex.current_classification.production_status, 'NOT_PRODUCTION_READY');
+assert.equal(deliveryIndex.current_classification.real_dispatch_status, 'BLOCKED_UNTIL_G5');
+assert.equal(deliveryIndex.current_classification.runtime_pricing_logic, 'ABSENT');
+assert.equal(deliveryIndex.current_classification.procurement_offer, 'ABSENT');
 
 const bodyForHash = { ...deliveryIndex };
 delete bodyForHash.delivery_index_hash;
@@ -81,6 +91,7 @@ const requiredPaths = [
   'docs/launch/level1/README.md',
   'docs/launch/level1/pricing-and-qualification.md',
   'docs/launch/level1/delivery-index.md',
+  'docs/launch/level1/delivery-index.json',
   'evidence/demo/level1/README.md',
   'evidence/demo/level1/level1-demo-manifest.json',
   'evidence/demo/level1/ai-tool-access.transcript.json',
@@ -121,8 +132,17 @@ const sampleReports = listJsonFilesRecursive('evidence/reports/level1');
 assert.equal(sampleBundles.length >= 8, true);
 assert.equal(sampleReports.length >= 8, true);
 
+assert.equal(deliveryIndex.v2_3_alignment.spec_pdf_attests_gate, false);
+assert.equal(deliveryIndex.v2_3_alignment.repository_commit_and_tests_required, true);
+assert.equal(deliveryIndex.v2_3_alignment.l1_demo_can_be_shown_before_pilot, true);
+assert.equal(deliveryIndex.v2_3_alignment.pilot_requires_g5_before_real_dispatch, true);
+assert.equal(deliveryIndex.v2_3_alignment.g2_claimed_by_this_package, false);
+assert.equal(deliveryIndex.v2_3_alignment.g5_claimed_by_this_package, false);
+assert.equal(deliveryIndex.v2_3_alignment.g6_claimed_by_this_package, false);
+assert.equal(deliveryIndex.v2_3_alignment.g7_claimed_by_this_package, false);
+
 assert.equal(deliveryIndex.boundary.b2b_only, true);
-assert.equal(deliveryIndex.boundary.pilot_candidate, true);
+assert.equal(deliveryIndex.boundary.pilot_candidate_preparation_material, true);
 assert.equal(deliveryIndex.boundary.demo_only_for_demo_artifacts, true);
 assert.equal(deliveryIndex.boundary.defence_offer, false);
 assert.equal(deliveryIndex.boundary.classified_systems_offer, false);
@@ -134,30 +154,38 @@ assert.equal(deliveryIndex.boundary.production_readiness_claim, false);
 assert.equal(deliveryIndex.boundary.runtime_pricing_logic, false);
 assert.equal(deliveryIndex.boundary.quotation_generator, false);
 assert.equal(deliveryIndex.boundary.procurement_offer_generator, false);
+assert.equal(deliveryIndex.boundary.g2_validation_record, false);
+assert.equal(deliveryIndex.boundary.g5_pilot_start_authorization, false);
 
-assert.match(deliveryMd, /HBCE Level 1 - Delivery Index/);
+assert.match(deliveryMd, /Specification baseline: V2\.3 - 25 September 2026/);
+assert.match(deliveryMd, /L1_DEMO/);
+assert.match(deliveryMd, /DEMO_ONLY export package/);
+assert.match(deliveryMd, /NOT_ASSESSED/);
+assert.match(deliveryMd, /NOT_PILOT_READY/);
+assert.match(deliveryMd, /BLOCKED_UNTIL_G5/);
 assert.match(deliveryMd, /Reviewer Start Here/);
 assert.match(deliveryMd, /Delivery Artifacts/);
 assert.match(deliveryMd, /Minimum Review Checklist/);
-assert.match(deliveryMd, /docs\/launch\/level1\/pricing-and-qualification\.md/);
-assert.match(deliveryMd, /evidence\/demo\/level1\/level1-demo-manifest\.json/);
-assert.match(deliveryMd, /evidence\/samples\/level1\//);
-assert.match(deliveryMd, /evidence\/reports\/level1\//);
-assert.match(deliveryMd, /apps\/hbce-verifier-cli\/README\.md/);
-assert.match(deliveryMd, /not a quotation/);
+assert.match(deliveryMd, /V2\.3 Alignment Notes/);
 assert.match(deliveryMd, /not a procurement offer/);
 assert.match(deliveryMd, /not a compliance certification/);
 assert.match(deliveryMd, /not a legal opinion/);
-assert.match(deliveryMd, /not a production service-level agreement/);
+assert.match(deliveryMd, /G2 validation record/);
+assert.match(deliveryMd, /G5 pilot-start authorization/);
 
 assert.match(launchReadme, /delivery-index\.md/);
 assert.match(launchReadme, /delivery-index\.json/);
-assert.match(launchReadme, /no delivery index procurement offer/);
+assert.match(launchReadme, /L1_DEMO \/ DEMO_ONLY/);
+assert.match(launchReadme, /gate status NOT_ASSESSED/);
+assert.match(launchReadme, /pilot status NOT_PILOT_READY/);
+assert.match(launchReadme, /real dispatch blocked until G5/);
 
-console.log('PASS PROG-018-DELIVERY-INDEX-DOCS-EXIST');
-console.log('PASS PROG-018-DELIVERY-INDEX-HASH-IS-STABLE');
-console.log('PASS PROG-018-DELIVERY-INDEX-LINKS-LAUNCH-DOCS');
-console.log('PASS PROG-018-DELIVERY-INDEX-LINKS-DEMO-EXPORTS');
-console.log('PASS PROG-018-DELIVERY-INDEX-LINKS-SAMPLE-BUNDLES');
-console.log('PASS PROG-018-DELIVERY-INDEX-LINKS-VERIFIER');
-console.log('PASS PROG-018-DELIVERY-INDEX-BOUNDARY-IS-EXPLICIT');
+console.log('PASS PROG-018-V23-DELIVERY-INDEX-DOCS-EXIST');
+console.log('PASS PROG-018-V23-DELIVERY-INDEX-HASH-IS-STABLE');
+console.log('PASS PROG-018-V23-DELIVERY-INDEX-CLASSIFIES-L1-DEMO');
+console.log('PASS PROG-018-V23-DELIVERY-INDEX-BLOCKS-PILOT-CLAIM');
+console.log('PASS PROG-018-V23-DELIVERY-INDEX-LINKS-LAUNCH-DOCS');
+console.log('PASS PROG-018-V23-DELIVERY-INDEX-LINKS-DEMO-EXPORTS');
+console.log('PASS PROG-018-V23-DELIVERY-INDEX-LINKS-SAMPLE-BUNDLES');
+console.log('PASS PROG-018-V23-DELIVERY-INDEX-LINKS-VERIFIER');
+console.log('PASS PROG-018-V23-DELIVERY-INDEX-BOUNDARY-IS-EXPLICIT');
