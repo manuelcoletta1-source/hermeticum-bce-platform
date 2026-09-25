@@ -1,0 +1,242 @@
+{
+  "proto": "HBCE-P0-EVIDENCE-BUNDLE-v1",
+  "kind": "HBCE_P0_EVIDENCE_BUNDLE",
+  "version": "v1",
+  "bundle_id": "BUNDLE-DEMO-L1-BANK-CYBER-CRITICAL-001",
+  "action_id": "ACTION-L1-BANK-CRITICAL-DEMO-001",
+  "created_at": "2026-09-25T15:13:00.000Z",
+  "schema_set": [
+    {
+      "schema_id": "hbce.request_envelope",
+      "schema_version": "v1",
+      "schema_hash": "sha256:f48b0511912bb445d90f97a9e9c69665bc99dee3cdb511b8df4cea667960f560"
+    },
+    {
+      "schema_id": "hbce.policy_decision",
+      "schema_version": "v1",
+      "schema_hash": "sha256:fc293853d434af65adbfcd3428a64a1b1f1369330d1a3eff5077d00ec8dfe56f"
+    },
+    {
+      "schema_id": "hbce.target_receipt",
+      "schema_version": "v1",
+      "schema_hash": "sha256:8cbfddf4c2959edcfab008d4c1a8711bfce9e160a3f0b4dfd496bd79e53fb1c7"
+    },
+    {
+      "schema_id": "hbce.evidence_bundle",
+      "schema_version": "v1",
+      "schema_hash": "sha256:4e0cbe82c875d7f5fb4ab67df6615e75627b9335a0da3c0949d3fc870f2f806e"
+    },
+    {
+      "schema_id": "hbce.bank_cyber_demo",
+      "schema_version": "v1",
+      "schema_hash": "sha256:34c18be5af9264af9c76c9de9289aae44afdcb28f364b7f16ac1a7d0b83dc6d5"
+    }
+  ],
+  "request_envelope": {
+    "schema_version": "hbce.p0.request-envelope.v1",
+    "request_id": "REQ-L1-BANK-CRITICAL-DEMO-001",
+    "idempotency_key": "IDEM-L1-BANK-CRITICAL-DEMO-001",
+    "created_at": "2026-09-25T15:10:00.000Z",
+    "actor_ref": {
+      "actor_id": "ACTOR-L1-RISK-OPERATOR-DEMO-001",
+      "actor_type": "human",
+      "session_id": "SESSION-L1-BANK-CRITICAL-DEMO-001"
+    },
+    "authority_ref": {
+      "authority_id": "AUT-L1-BANK-CRITICAL-DEMO-001",
+      "authority_version": "1",
+      "authority_hash": "sha256:0e85604a481269699f522e3dc07d7d5200a0952fc4b9aa8dcbce887bf65e6edd"
+    },
+    "action_binding": {
+      "action_id": "ACTION-L1-BANK-CRITICAL-DEMO-001",
+      "action_class": "BANK_CRITICAL_ACTION",
+      "action_version": "v1",
+      "action_hash": "sha256:187ea204f133e466401a3808c6a5aaca45ea19bb5bc9abc4fabcd4df60ec790a"
+    },
+    "target_ref": {
+      "target_id": "TARGET-L1-MOCK-BANK-RISK-ENGINE-001",
+      "target_type": "mock_bank_risk_engine"
+    },
+    "request_payload_hash": "sha256:76b80408fd9cc3323876af35fe9530a0e7fe9368d18d782454e12d2841cbbe67",
+    "schema_hash": "sha256:3009667457e7e9f29b0c2e386acf1f89479970b773ae1897c95fae651624d99f",
+    "request_hash": "sha256:43b070e3a3a95f2e4d7c38eb31b3477dccf5d3e115abecb75a745f4e9394cab8"
+  },
+  "policy_decision": {
+    "proto": "HBCE-P0-POLICY-DECISION-v1",
+    "kind": "HBCE_P0_POLICY_DECISION",
+    "version": "v1",
+    "decision_id": "POLDEC-DEMO-L1-BANK-CYBER-CRITICAL-001",
+    "action_id": "ACTION-L1-BANK-CRITICAL-DEMO-001",
+    "policy_version": "POLICY-L1-BANK-CYBER-DEMO-2026-09-25",
+    "evaluated_at": "2026-09-25T15:11:00.000Z",
+    "request_hash": "sha256:43b070e3a3a95f2e4d7c38eb31b3477dccf5d3e115abecb75a745f4e9394cab8",
+    "input_facts_hash": "sha256:eac4f481cf6d92dec38e2588297df3cd17a07d49c95c711cba0b8d3c2baeb367",
+    "decision": "DUAL_CONTROL_REQUIRED",
+    "rule_ids": [
+      "BANK_CRITICAL_ACTION_REQUIRES_DUAL_CONTROL",
+      "RISK_CLASS_HIGH_REQUIRES_PRECOMMIT",
+      "TARGET_RECEIPT_REQUIRED",
+      "REVOCATION_CHECK_REQUIRED"
+    ],
+    "denial_reasons": [],
+    "required_controls": [
+      "DUAL_CONTROL",
+      "PRECOMMIT",
+      "TARGET_RECEIPT",
+      "REVOCATION_CHECK"
+    ],
+    "policy_semantics": {
+      "policy_decision_is_authorization": false,
+      "policy_decision_authorizes_execution": false,
+      "requires_separate_authorization": true,
+      "requires_precommit_before_execution": true
+    },
+    "dispatch_created": false,
+    "physical_execution_performed": false,
+    "policy_decision_hash": "sha256:e7608e37b549f93baf23335fe2d7add23c096c5a95a24e25842cb385bbe3021f"
+  },
+  "critical_action": {
+    "proto": "HBCE-P0-CRITICAL-ACTION-v1",
+    "kind": "HBCE_P0_CRITICAL_ACTION",
+    "action_id": "ACTION-L1-BANK-CRITICAL-DEMO-001",
+    "state": "PRECOMMITTED",
+    "request_hash": "sha256:43b070e3a3a95f2e4d7c38eb31b3477dccf5d3e115abecb75a745f4e9394cab8",
+    "policy_decision_hash": "sha256:e7608e37b549f93baf23335fe2d7add23c096c5a95a24e25842cb385bbe3021f",
+    "dual_control_hash": "sha256:5a2241ffb9bcee88b5d102676b2f86e4734ed3bced3fc0d7ae9d4def9c52d2d9",
+    "dual_control_required": true,
+    "dual_control_observed": true,
+    "precommit_hash": "sha256:2234a9dccd4a27c10282b85f3b4c138e9abc42bad60f3511fa042234c4785e37",
+    "dispatch_created": false,
+    "physical_execution_performed": false,
+    "demo_only": true,
+    "critical_action_hash": "sha256:a22b26c93d7d6cc0a6e2f6208ddf4d04215da59d5a83f3fc843f9167ff880448"
+  },
+  "event_chain": {
+    "proto": "HBCE-P0-EVENT-CHAIN-v1",
+    "kind": "HBCE_P0_EVENT_CHAIN",
+    "chain_id": "CHAIN-DEMO-L1-BANK-CYBER-CRITICAL-001",
+    "action_id": "ACTION-L1-BANK-CRITICAL-DEMO-001",
+    "events": [
+      {
+        "event_id": "EVT-DEMO-L1-BANK-CYBER-CRITICAL-001-0001",
+        "event_type": "REQUEST_RECORDED",
+        "sequence_number": 1,
+        "previous_event_hash": null,
+        "payload_hash": "sha256:43b070e3a3a95f2e4d7c38eb31b3477dccf5d3e115abecb75a745f4e9394cab8",
+        "emitted_at": "2026-09-25T15:11:10.000Z",
+        "dispatch_created": false,
+        "physical_execution_performed": false,
+        "event_hash": "sha256:15148e138327158016c47676e0711177a22a23b4a7d397cecd755221d5fda147"
+      },
+      {
+        "event_id": "EVT-DEMO-L1-BANK-CYBER-CRITICAL-001-0002",
+        "event_type": "DUAL_CONTROL_RECORDED",
+        "sequence_number": 2,
+        "previous_event_hash": "sha256:15148e138327158016c47676e0711177a22a23b4a7d397cecd755221d5fda147",
+        "payload_hash": "sha256:5a2241ffb9bcee88b5d102676b2f86e4734ed3bced3fc0d7ae9d4def9c52d2d9",
+        "emitted_at": "2026-09-25T15:11:20.000Z",
+        "dispatch_created": false,
+        "physical_execution_performed": false,
+        "event_hash": "sha256:4a014df4b064ee282e557c7f2e7adc73628f4a221de9953d15f48f9881b2330b"
+      },
+      {
+        "event_id": "EVT-DEMO-L1-BANK-CYBER-CRITICAL-001-0003",
+        "event_type": "PRECOMMIT_RECORDED",
+        "sequence_number": 3,
+        "previous_event_hash": "sha256:4a014df4b064ee282e557c7f2e7adc73628f4a221de9953d15f48f9881b2330b",
+        "payload_hash": "sha256:2234a9dccd4a27c10282b85f3b4c138e9abc42bad60f3511fa042234c4785e37",
+        "emitted_at": "2026-09-25T15:11:30.000Z",
+        "dispatch_created": false,
+        "physical_execution_performed": false,
+        "event_hash": "sha256:6246cfd10b45f1b6153665539a6f6c763bcd98a16d0e4f9f5e268fe25aba46ac"
+      }
+    ],
+    "event_head_hash": "sha256:6246cfd10b45f1b6153665539a6f6c763bcd98a16d0e4f9f5e268fe25aba46ac",
+    "dispatch_created": false,
+    "physical_execution_performed": false,
+    "event_chain_hash": "sha256:58a2690dcfeabe63d3a2b0c4da420e0d5b51b9c1d6f8092b7bafbde6b0991c62"
+  },
+  "target_receipts": [
+    {
+      "proto": "HBCE-P0-TARGET-RECEIPT-v1",
+      "kind": "HBCE_P0_TARGET_RECEIPT",
+      "version": "v1",
+      "receipt_id": "RCPT-DEMO-L1-BANK-CYBER-CRITICAL-001",
+      "receipt_state": "RECORDED",
+      "received_at": "2026-09-25T15:12:00.000Z",
+      "request_hash": "sha256:43b070e3a3a95f2e4d7c38eb31b3477dccf5d3e115abecb75a745f4e9394cab8",
+      "critical_action_hash": "sha256:a22b26c93d7d6cc0a6e2f6208ddf4d04215da59d5a83f3fc843f9167ff880448",
+      "precommit_hash": "sha256:2234a9dccd4a27c10282b85f3b4c138e9abc42bad60f3511fa042234c4785e37",
+      "event_chain_hash": "sha256:58a2690dcfeabe63d3a2b0c4da420e0d5b51b9c1d6f8092b7bafbde6b0991c62",
+      "event_head_hash": "sha256:6246cfd10b45f1b6153665539a6f6c763bcd98a16d0e4f9f5e268fe25aba46ac",
+      "target_ref": {
+        "target_id": "TARGET-L1-MOCK-BANK-RISK-ENGINE-001",
+        "target_type": "mock_bank_risk_engine"
+      },
+      "receiver_ref": null,
+      "target_status": "ACKNOWLEDGED",
+      "target_observation_hash": "sha256:ef5111bbb5cb083ddb5acb149aee999e72ae893e952386dfc1ffdf27ab0edbc7",
+      "raw_receipt_hash": "sha256:f32de3cea25f88f940c503b8e139682fad1531170b458843ea65336b4ee2f31a",
+      "receipt_semantics": {
+        "receipt_is_evidence": true,
+        "receipt_proves_physical_effect": false,
+        "receipt_authorizes_execution": false
+      },
+      "dispatch_created": false,
+      "physical_execution_performed": false,
+      "physical_effect_proven": false,
+      "target_receipt_hash": "sha256:9c7eb9549fb2cc46404f49458a891a5f2c60dfef1842d25aae27c5eff9b3d939"
+    }
+  ],
+  "verification_profile": {
+    "profile_id": "LEVEL1-B2B-BANK-CYBER-CRITICAL-DEMO",
+    "profile_version": "v1",
+    "result_policy": "PASS_FAIL_WARN",
+    "requires_verifier_cli": true
+  },
+  "redaction_profile": {
+    "profile_id": "DEMO-MINIMAL",
+    "profile_version": "v1",
+    "mode": "hashes_and_operational_identifiers_only"
+  },
+  "manifest": {
+    "bundle_id": "BUNDLE-DEMO-L1-BANK-CYBER-CRITICAL-001",
+    "action_id": "ACTION-L1-BANK-CRITICAL-DEMO-001",
+    "created_at": "2026-09-25T15:13:00.000Z",
+    "request_hash": "sha256:43b070e3a3a95f2e4d7c38eb31b3477dccf5d3e115abecb75a745f4e9394cab8",
+    "policy_decision_hash": "sha256:e7608e37b549f93baf23335fe2d7add23c096c5a95a24e25842cb385bbe3021f",
+    "critical_action_hash": "sha256:a22b26c93d7d6cc0a6e2f6208ddf4d04215da59d5a83f3fc843f9167ff880448",
+    "precommit_hash": "sha256:2234a9dccd4a27c10282b85f3b4c138e9abc42bad60f3511fa042234c4785e37",
+    "event_chain_hash": "sha256:58a2690dcfeabe63d3a2b0c4da420e0d5b51b9c1d6f8092b7bafbde6b0991c62",
+    "event_head_hash": "sha256:6246cfd10b45f1b6153665539a6f6c763bcd98a16d0e4f9f5e268fe25aba46ac",
+    "target_receipt_hashes": [
+      "sha256:9c7eb9549fb2cc46404f49458a891a5f2c60dfef1842d25aae27c5eff9b3d939"
+    ],
+    "object_counts": {
+      "events": 3,
+      "receipts": 1
+    },
+    "schema_set_hash": "sha256:72213a1afccb0ebafcac4eb5ee7c58df4406361dc683d77aff5ef449318882d0",
+    "verification_profile_hash": "sha256:f8782cf7b84e9260cbe450d340e0e4c9da1a5758f8b75ad46fa2fcb983eeb532",
+    "redaction_profile_hash": "sha256:068ace79a58d474912c3d3d66345fd8c11dd758b7b1834807e141c2856ea9b1f"
+  },
+  "verification_summary": {
+    "result": "UNVERIFIED_EXPORT",
+    "reason": "EXPORTED_NOT_YET_VERIFIED_BY_CLI",
+    "verifier_required": true
+  },
+  "bundle_semantics": {
+    "evidence_bundle_is_portable": true,
+    "evidence_bundle_supports_verification": true,
+    "evidence_bundle_certifies_compliance": false,
+    "evidence_bundle_proves_legal_liability": false,
+    "evidence_bundle_proves_physical_truth": false
+  },
+  "commercial_semantics": {
+    "contains_pricing_logic": false,
+    "contains_quotation": false,
+    "contains_procurement_offer": false
+  },
+  "manifest_hash": "sha256:790045e9425c175c57cd876af672e57114310b9ae5f43b24d57dd02b69486d3a",
+  "evidence_bundle_hash": "sha256:61a9b402383798482da0c5635a020314ebc54633921ceb39ea2dd65451d957b2"
+}
