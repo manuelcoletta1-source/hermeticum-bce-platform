@@ -1,0 +1,358 @@
+{
+  "proto": "HBCE-P0-V2-055-MATRIX-REGISTRY-v1",
+  "kind": "HBCE_P0_V2_055_MATRIX_REGISTRY",
+  "document_code": "HBCE-B2B-L1-JC2-MATRIX-PROG-2027-0001",
+  "specification_baseline": "V2.8 - 25 September 2026",
+  "issue_id": "V2-055",
+  "priority": "P0",
+  "repository_baseline_commit": "1e55101d1ba1b71a1baddb2d6fc26dedd89872c2",
+  "status": "INITIALIZED_BLOCKED",
+  "readiness_status": "BLOCKED",
+  "gate_claimed": false,
+  "g0_ready": false,
+  "g1_ready": false,
+  "g2_ready": false,
+  "g5_ready": false,
+  "purpose": "Initialize the Level 1 MATRIX registry that maps claim -> requirement -> gate -> test -> owner -> evidence -> descope.",
+  "mandatory_test_range": "T113-T140",
+  "mandatory_tests": [
+    "T113",
+    "T114",
+    "T115",
+    "T116",
+    "T117",
+    "T118",
+    "T119",
+    "T120",
+    "T121",
+    "T122",
+    "T123",
+    "T124",
+    "T125",
+    "T126",
+    "T127",
+    "T128",
+    "T129",
+    "T130",
+    "T131",
+    "T132",
+    "T133",
+    "T134",
+    "T135",
+    "T136",
+    "T137",
+    "T138",
+    "T139",
+    "T140"
+  ],
+  "status_semantics": {
+    "PROVEN": "Test/evidence satisfy claim for build/profile/scope.",
+    "NOT_PROVEN": "Evidence missing or insufficient.",
+    "BLOCKED": "Active P0 blocker; claim unusable in pilot.",
+    "DEFERRED": "Outside Minimum Pilot Slice with rationale and future milestone.",
+    "DEMO_ONLY": "Demonstrable in declared environment, not pilot claim.",
+    "UNOWNED": "Owner is missing or not nominatively assigned."
+  },
+  "claim_rows": [
+    {
+      "matrix_row_id": "MR-V2-055-001",
+      "claim_id": "CLAIM-JC2-ACTIVATION-ALIAS",
+      "claim_text": "JOKER-C2 can be activated and can expose approved alias/help behavior before authentication.",
+      "priority": "P0",
+      "requirement_refs": [
+        "PilotSliceProfile.activation_alias",
+        "PreAuthSessionPolicy.allowed_pre_auth_actions"
+      ],
+      "gate": "G1",
+      "test_refs": [
+        "T91-T112",
+        "T113",
+        "T114"
+      ],
+      "owner_ref": "DA_NOMINARE",
+      "owner_status": "DA_NOMINARE",
+      "evidence_refs": [],
+      "blockers": [
+        "OWNER_NOT_NOMINATED",
+        "V2_8_PREAUTH_TESTS_NOT_IMPLEMENTED"
+      ],
+      "fallback_descope": "DEMO_ONLY public activation/help; no operational proposal.",
+      "status": "BLOCKED"
+    },
+    {
+      "matrix_row_id": "MR-V2-055-002",
+      "claim_id": "CLAIM-PREAUTH-BOUNDARY",
+      "claim_text": "PRE_AUTH cannot generate operational proposals, private queries, authority evaluation, target interaction or dispatch.",
+      "priority": "P0",
+      "requirement_refs": [
+        "PreAuthSessionPolicy",
+        "SessionAuthenticationTransition"
+      ],
+      "gate": "G1",
+      "test_refs": [
+        "T113",
+        "T114",
+        "T115",
+        "T116",
+        "T117",
+        "T118"
+      ],
+      "owner_ref": "DA_NOMINARE",
+      "owner_status": "DA_NOMINARE",
+      "evidence_refs": [],
+      "blockers": [
+        "OWNER_NOT_NOMINATED",
+        "PREAUTH_POLICY_NOT_IMPLEMENTED",
+        "T113_T118_NOT_IMPLEMENTED"
+      ],
+      "fallback_descope": "No operational proposal in PRE_AUTH; public demo/help only.",
+      "status": "BLOCKED"
+    },
+    {
+      "matrix_row_id": "MR-V2-055-003",
+      "claim_id": "CLAIM-PROPOSAL-CONFIRMATION",
+      "claim_text": "Authenticated principal can receive an OperationProposal and ConfirmationView without making JOKER-C2 an authority.",
+      "priority": "P0",
+      "requirement_refs": [
+        "SessionAuthenticationTransition",
+        "OperationProposal",
+        "ConfirmationView",
+        "HumanConfirmation"
+      ],
+      "gate": "G1",
+      "test_refs": [
+        "T115",
+        "T116",
+        "T117",
+        "T118"
+      ],
+      "owner_ref": "DA_NOMINARE",
+      "owner_status": "DA_NOMINARE",
+      "evidence_refs": [],
+      "blockers": [
+        "OWNER_NOT_NOMINATED",
+        "AUTH_TRANSITION_NOT_IMPLEMENTED",
+        "CONFIRMATION_VIEW_NOT_IMPLEMENTED"
+      ],
+      "fallback_descope": "DEMO_ONLY explanation of intended proposal/confirmation flow.",
+      "status": "BLOCKED"
+    },
+    {
+      "matrix_row_id": "MR-V2-055-004",
+      "claim_id": "CLAIM-CORE-GOVERNANCE",
+      "claim_text": "HBCE Core applies authority, policy, confirmation, precommit, dispatch governance and evidence.",
+      "priority": "P0",
+      "requirement_refs": [
+        "Authority",
+        "PolicyDecision",
+        "CriticalActionFSM",
+        "PreCommit",
+        "EvidenceBundle"
+      ],
+      "gate": "G2",
+      "test_refs": [
+        "T01-T90",
+        "T137",
+        "T138",
+        "T139",
+        "T140"
+      ],
+      "owner_ref": "DA_NOMINARE",
+      "owner_status": "DA_NOMINARE",
+      "evidence_refs": [
+        "tests/ftel/prog-005-policy-binding.test.js",
+        "tests/ftel/state-machine/prog-006-critical-action-fsm.test.js",
+        "tests/ftel/integration/prog-011-evidence-bundle-exporter.test.js"
+      ],
+      "blockers": [
+        "OWNER_NOT_NOMINATED",
+        "MATRIX_COMPLETENESS_NOT_IMPLEMENTED",
+        "PILOT_PROFILE_NOT_VALIDATED"
+      ],
+      "fallback_descope": "L1_DEMO evidence only; no pilot governance claim.",
+      "status": "BLOCKED"
+    },
+    {
+      "matrix_row_id": "MR-V2-055-005",
+      "claim_id": "CLAIM-OFFLINE-VERIFIER",
+      "claim_text": "Verifier can evaluate exported evidence offline for the selected profile.",
+      "priority": "P0",
+      "requirement_refs": [
+        "VerifierCLI",
+        "VerificationReport",
+        "MatrixRow",
+        "profile_id"
+      ],
+      "gate": "G1",
+      "test_refs": [
+        "T01-T90",
+        "T137",
+        "T138",
+        "T139",
+        "T140"
+      ],
+      "owner_ref": "DA_NOMINARE",
+      "owner_status": "DA_NOMINARE",
+      "evidence_refs": [
+        "apps/hbce-verifier-cli",
+        "tests/ftel/integration/prog-012-verifier-cli-skeleton.test.js"
+      ],
+      "blockers": [
+        "OWNER_NOT_NOMINATED",
+        "MATRIX_COMPLETENESS_NOT_IMPLEMENTED",
+        "V2_8_DIMENSIONS_NOT_FULLY_IMPLEMENTED"
+      ],
+      "fallback_descope": "Offline CLI remains DEMO_ONLY/P0 skeleton until V2.8 MatrixRow evaluation exists.",
+      "status": "BLOCKED"
+    },
+    {
+      "matrix_row_id": "MR-V2-055-006",
+      "claim_id": "CLAIM-CONTROLLED-TARGET-MUTABLE-ACTION",
+      "claim_text": "One controlled target and one mutable action can be executed with recovery and evidence controls.",
+      "priority": "P0_PILOT",
+      "requirement_refs": [
+        "TargetControlCapability",
+        "NonIdempotentRecoveryPolicy",
+        "Receipt",
+        "Reconcile"
+      ],
+      "gate": "G5",
+      "test_refs": [
+        "T132",
+        "T133",
+        "T134",
+        "T135",
+        "T136"
+      ],
+      "owner_ref": "DA_NOMINARE",
+      "owner_status": "DA_NOMINARE",
+      "evidence_refs": [],
+      "blockers": [
+        "OWNER_NOT_NOMINATED",
+        "TARGET_NOT_SELECTED",
+        "NON_IDEMPOTENT_RECOVERY_NOT_IMPLEMENTED",
+        "G4_NOT_READY",
+        "G5_NOT_READY"
+      ],
+      "fallback_descope": "Mock target only; no real dispatch.",
+      "status": "BLOCKED"
+    },
+    {
+      "matrix_row_id": "MR-V2-055-007",
+      "claim_id": "CLAIM-WITNESS-W1-W2",
+      "claim_text": "Witness W1/W2 is applied when proof-before-effect or authority/precommit-before-effect is claimed.",
+      "priority": "CONDITIONAL_P0",
+      "requirement_refs": [
+        "WitnessRequirementPolicy",
+        "WitnessDeposit",
+        "profile_claim_set"
+      ],
+      "gate": "G4",
+      "test_refs": [
+        "T119",
+        "T120",
+        "T121",
+        "T122",
+        "T123"
+      ],
+      "owner_ref": "DA_NOMINARE",
+      "owner_status": "DA_NOMINARE",
+      "evidence_refs": [],
+      "blockers": [
+        "G4_WITNESS_LEVEL_NOT_SELECTED",
+        "WITNESS_POLICY_NOT_IMPLEMENTED"
+      ],
+      "fallback_descope": "Select W0 and remove proof-before-effect claim.",
+      "status": "DEFERRED"
+    },
+    {
+      "matrix_row_id": "MR-V2-055-008",
+      "claim_id": "CLAIM-REVIEWER-CRITICAL-PATH",
+      "claim_text": "G2/G5 require eligible reviewer readiness with candidate, backup, deadline and evidence handoff.",
+      "priority": "P0_ORG",
+      "requirement_refs": [
+        "ReviewerReadinessRecord",
+        "EligibilityRecord",
+        "ReviewDossier"
+      ],
+      "gate": "G2",
+      "test_refs": [
+        "T124",
+        "T125",
+        "T126",
+        "T127"
+      ],
+      "owner_ref": "DA_NOMINARE",
+      "owner_status": "DA_NOMINARE",
+      "evidence_refs": [],
+      "blockers": [
+        "REVIEWER_NOT_NOMINATED",
+        "BACKUP_NOT_NOMINATED",
+        "ELIGIBILITY_NOT_VALIDATED"
+      ],
+      "fallback_descope": "DEMO_ONLY or ScheduleChangeRecord.",
+      "status": "BLOCKED"
+    },
+    {
+      "matrix_row_id": "MR-V2-055-009",
+      "claim_id": "CLAIM-NORMATIVE-DEPENDENCY-MATRIX",
+      "claim_text": "V2.8 inherited/extended/superseded dependencies are pinned by source version/hash and local delta.",
+      "priority": "P0",
+      "requirement_refs": [
+        "NormativeDependencyEntry",
+        "ChangeImpactRecord"
+      ],
+      "gate": "G0",
+      "test_refs": [
+        "T128",
+        "T129",
+        "T130",
+        "T131"
+      ],
+      "owner_ref": "DA_NOMINARE",
+      "owner_status": "DA_NOMINARE",
+      "evidence_refs": [],
+      "blockers": [
+        "NORMATIVE_DEPENDENCY_MATRIX_NOT_IMPLEMENTED"
+      ],
+      "fallback_descope": "No inherited normative claim until dependency entry is pinned.",
+      "status": "BLOCKED"
+    },
+    {
+      "matrix_row_id": "MR-V2-055-010",
+      "claim_id": "CLAIM-MATRIX-COMPLETENESS",
+      "claim_text": "Unowned, untested, unevidenced or blocker rows fail readiness even if other tests pass.",
+      "priority": "P0",
+      "requirement_refs": [
+        "MatrixRow",
+        "PilotSliceProfile",
+        "ReadinessComputation"
+      ],
+      "gate": "G2",
+      "test_refs": [
+        "T137",
+        "T138",
+        "T139",
+        "T140"
+      ],
+      "owner_ref": "DA_NOMINARE",
+      "owner_status": "DA_NOMINARE",
+      "evidence_refs": [],
+      "blockers": [
+        "MATRIX_COMPLETENESS_VERIFIER_NOT_IMPLEMENTED"
+      ],
+      "fallback_descope": "Keep claims NOT_PROVEN/BLOCKED; do not market as pilot-ready.",
+      "status": "BLOCKED"
+    }
+  ],
+  "non_claims": {
+    "g0_spec_capacity_ready": false,
+    "g1_demo_ready": false,
+    "g2_pilot_candidate": false,
+    "g5_pilot_start_ready": false,
+    "real_pilot_ready": false,
+    "production_ready": false,
+    "all_matrix_rows_proven": false
+  },
+  "registry_hash": "sha256:ef5389ce53d6813d73c62e4b872f66828f3f29fd76b5fc5d59d95a96f5ce4493"
+}
