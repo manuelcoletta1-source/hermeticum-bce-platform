@@ -1,0 +1,57 @@
+{
+  "proto": "HBCE-P0-VERIFICATION-REPORT-v1",
+  "kind": "HBCE_P0_VERIFICATION_REPORT",
+  "version": "v1",
+  "verifier": {
+    "name": "hbce-verifier-cli",
+    "profile": "P0_EVIDENCE_BUNDLE",
+    "completeness": "SKELETON_P0",
+    "verifies": [
+      "evidence_bundle_shape",
+      "manifest_hash",
+      "evidence_bundle_hash",
+      "policy_decision_hash",
+      "target_receipt_hash",
+      "request_policy_receipt_binding"
+    ],
+    "does_not_claim": [
+      "legal_certification",
+      "regulatory_compliance",
+      "physical_truth",
+      "production_readiness"
+    ]
+  },
+  "input": {
+    "bundle_path": "/home/manuelcoletta1/hermeticum-bce-platform/evidence/samples/level1/pass-cloud-guarded-change.json"
+  },
+  "result": "PASS",
+  "reason": "EVIDENCE_BUNDLE_VALID",
+  "bundle_id": "BUNDLE-L1-PASS-CLOUD-001",
+  "action_id": "ACTION-L1-CLOUD-GUARD-001",
+  "manifest_hash": "sha256:56df28b7fa01c18bd5c97316e6ace99276a9563a2b8f6f5b3c99c429edd38e0b",
+  "evidence_bundle_hash": "sha256:d79fdc2431a2eacb13397672e5f16477b4943a11c92def77ab1c32e2db645037",
+  "target_receipt_count": 1,
+  "checks": [
+    {
+      "check_id": "BUNDLE_INTEGRITY",
+      "result": "PASS",
+      "reason": "EvidenceBundle hash and manifest hash verified."
+    },
+    {
+      "check_id": "POLICY_RECEIPT_BINDING",
+      "result": "PASS",
+      "reason": "Request, policy decision and target receipt bindings verified."
+    },
+    {
+      "check_id": "BOUNDARY_NO_OVERCLAIM",
+      "result": "PASS",
+      "reason": "Bundle does not certify compliance, legal liability or physical truth."
+    }
+  ],
+  "boundary": {
+    "certifies_compliance": false,
+    "proves_legal_liability": false,
+    "proves_physical_truth": false,
+    "production_certified": false
+  }
+}
