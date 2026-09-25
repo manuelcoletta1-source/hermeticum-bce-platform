@@ -1,0 +1,290 @@
+{
+  "proto": "HBCE-P0-V2-8-DESIGN-BASELINE-ALIGNMENT-v1",
+  "kind": "HBCE_P0_V2_8_DESIGN_BASELINE_ALIGNMENT",
+  "document_code": "HBCE-B2B-L1-JC2-MATRIX-PROG-2027-0001",
+  "specification_baseline": "V2.8 - 25 September 2026",
+  "design_baseline": true,
+  "execution_hardening_release": true,
+  "source_sha256": "c8d281ad6d397d5a1f48cfb8ef99c23d7a61e6844951cfac341f519b4c8b111e",
+  "repository": "manuelcoletta1-source/hermeticum-bce-platform",
+  "repository_baseline_commit": "93260bdc8e0304c73b129f3a1e73523edf97169e",
+  "status": "IN_PROGRESS",
+  "gate_claimed": false,
+  "pilot_ready_claimed": false,
+  "g0_ready": false,
+  "g1_ready": false,
+  "g2_ready": false,
+  "g5_ready": false,
+  "pdf_attests_gate": false,
+  "next_revision_rule": "V2.9 only as evidence-driven revision or approved C2/C3 change-impact outcome.",
+  "freeze_rule": "No further theory-only refactor. Change requires implementation evidence or trust-model change.",
+  "agent_boundary": {
+    "joker_c2": "AI_AGENT_GOVERNED",
+    "hbce_core_retains": [
+      "authority",
+      "policy",
+      "dispatch",
+      "evidence"
+    ],
+    "joker_c2_is_authority": false,
+    "personalization_changes_trust": false
+  },
+  "critical_invariants": [
+    "NO_AUTHENTICATED_PRINCIPAL_NO_OPERATIONAL_PROPOSAL",
+    "NO_ELIGIBLE_REVIEWER_NO_REAL_PILOT",
+    "NO_REQUIRED_WITNESS_NO_DISPATCH"
+  ],
+  "execution_hardening_objects": [
+    "PreAuthSessionPolicy",
+    "SessionAuthenticationTransition",
+    "WitnessRequirementPolicy",
+    "PilotSliceProfile",
+    "ReviewerReadinessRecord",
+    "NormativeDependencyEntry",
+    "NonIdempotentRecoveryPolicy",
+    "MatrixRow"
+  ],
+  "v2_8_adr_register": [
+    {
+      "id": "ADR-039",
+      "status": "PROPOSED_V2_8",
+      "decision": "Minimum Pilot Slice is the critical path."
+    },
+    {
+      "id": "ADR-040",
+      "status": "PROPOSED_V2_8",
+      "decision": "PRE_AUTH sessions cannot generate operational proposals, private queries or target interactions."
+    },
+    {
+      "id": "ADR-041",
+      "status": "PROPOSED_V2_8",
+      "decision": "WitnessRequirementPolicy selects W0, W1 or W2 at G4."
+    },
+    {
+      "id": "ADR-042",
+      "status": "PROPOSED_V2_8",
+      "decision": "Reviewer G2 is a calendar dependency; unresolved reviewer leads to DEMO_ONLY or schedule change."
+    },
+    {
+      "id": "ADR-043",
+      "status": "PROPOSED_V2_8",
+      "decision": "Normative Dependency Matrix tracks inherited, extended and superseded source sections."
+    },
+    {
+      "id": "ADR-044",
+      "status": "PROPOSED_V2_8",
+      "decision": "Non-idempotent targets forbid automatic retry after uncertainty."
+    }
+  ],
+  "v2_8_backlog": [
+    {
+      "id": "V2-055",
+      "priority": "P0",
+      "scope": "PilotSliceProfile + MATRIX registry",
+      "done_when": "Every P0 claim has gate/test/owner/evidence/descope."
+    },
+    {
+      "id": "V2-056",
+      "priority": "P0",
+      "scope": "PreAuthSessionPolicy",
+      "done_when": "T113-T118 pass; default deny; prospective authentication transition."
+    },
+    {
+      "id": "V2-057",
+      "priority": "P0_CONDITIONAL",
+      "scope": "WitnessRequirementPolicy",
+      "done_when": "T119-T123 pass; W0/W1/W2 selected at G4."
+    },
+    {
+      "id": "V2-058",
+      "priority": "P0_ORG",
+      "scope": "Reviewer Critical Path",
+      "done_when": "T124-T127 pass; candidate, backup, deadline and eligibility recorded."
+    },
+    {
+      "id": "V2-059",
+      "priority": "P0",
+      "scope": "Normative Dependency Matrix",
+      "done_when": "T128-T131 pass; source version/hash and local delta pinned."
+    },
+    {
+      "id": "V2-060",
+      "priority": "P0_TARGET",
+      "scope": "NonIdempotentRecoveryPolicy",
+      "done_when": "T132-T136 pass; no automatic retry after uncertainty."
+    },
+    {
+      "id": "V2-061",
+      "priority": "P0",
+      "scope": "Matrix completeness verifier",
+      "done_when": "T137-T140 pass; unowned, untested or unevidenced rows block readiness."
+    }
+  ],
+  "mandatory_test_ranges": [
+    {
+      "range": "T01-T90",
+      "source": "Core V2.6"
+    },
+    {
+      "range": "T91-T112",
+      "source": "JOKER-C2 V2.7"
+    },
+    {
+      "range": "T113-T140",
+      "source": "Execution hardening V2.8"
+    }
+  ],
+  "minimum_pilot_slice": [
+    {
+      "capability": "JOKER activation + alias",
+      "status": "P0"
+    },
+    {
+      "capability": "PRE_AUTH boundary + authentication transition",
+      "status": "P0"
+    },
+    {
+      "capability": "Turn commitments",
+      "status": "P0"
+    },
+    {
+      "capability": "Proposal + ConfirmationView + human confirmation",
+      "status": "P0"
+    },
+    {
+      "capability": "Core authority/policy/precommit/dispatch/evidence",
+      "status": "P0"
+    },
+    {
+      "capability": "Offline verifier",
+      "status": "P0"
+    },
+    {
+      "capability": "One controlled target + one mutable action",
+      "status": "P0_PILOT"
+    },
+    {
+      "capability": "Witness W1/W2",
+      "status": "CONDITIONAL_P0"
+    },
+    {
+      "capability": "Commercial cutover automation",
+      "status": "P1_OR_P0_FOR_LAUNCH_CONTINUITY"
+    },
+    {
+      "capability": "Voice/multilingual/advanced avatar",
+      "status": "P1_P2"
+    },
+    {
+      "capability": "Multi-system / robotics / advanced anchors",
+      "status": "OUT_OF_CRITICAL_PATH"
+    }
+  ],
+  "gate_extension": {
+    "g0": "PilotSliceProfile, dependency matrix, owners, reviewer candidate+backup, buffer and W0/W1/W2 decision owner.",
+    "g1": "Minimum demo slice + PRE_AUTH boundary + JOKER activation/alias/turn commitments + offline CLI.",
+    "g2": "Mandatory MatrixRows PROVEN; reviewer VALIDATED; normative dependencies pinned; target recovery proven.",
+    "g3": "Buyer artifacts show slice claim set, limits, evidence and deferred scope.",
+    "g4": "Customer scope fixes auth boundary, witness level, target idempotency, data/custody, alias/provider and cutover.",
+    "g5": "G2+G4; reviewer readiness current; IPR-PILOT ACTIVE; time TRUSTED; required witness/recovery available.",
+    "g6": "Acceptance pack with final MatrixRows; blocker/UNKNOWN and risk acceptance remain separate.",
+    "g7": "Production review readiness.",
+    "g8": "Commercial access readiness."
+  },
+  "matrix_status_semantics": {
+    "PROVEN": "Test/evidence satisfy claim for build/profile/scope.",
+    "NOT_PROVEN": "Evidence missing or insufficient.",
+    "BLOCKED": "Active P0 blocker; claim unusable in pilot.",
+    "DEFERRED": "Outside Minimum Pilot Slice with rationale and future milestone.",
+    "DEMO_ONLY": "Demonstrable in declared environment, not pilot claim."
+  },
+  "component_inventory": [
+    {
+      "id": "canonical-json",
+      "path": "packages/hbce-core/canonical-json.js",
+      "status": "TESTED_LOCAL_P0",
+      "limitation": "V2.8 still requires full JCS/RFC8785 interoperability evidence for pilot profiles."
+    },
+    {
+      "id": "schema-registry",
+      "path": "packages/hbce-schemas",
+      "status": "TESTED_LOCAL_P0",
+      "limitation": "V2.8 objects and MATRIX schemas are not fully implemented yet."
+    },
+    {
+      "id": "request-envelope",
+      "path": "packages/hbce-api-contract",
+      "status": "TESTED_LOCAL_P0",
+      "limitation": "V2.8 PreAuthSessionPolicy and SessionAuthenticationTransition are not implemented yet."
+    },
+    {
+      "id": "policy-binding",
+      "path": "packages/hbce-policy",
+      "status": "TESTED_LOCAL_P0",
+      "limitation": "Policy binding does not create authority or dispatch."
+    },
+    {
+      "id": "critical-action-fsm",
+      "path": "packages/hbce-ftel/p0-critical-action-fsm.js",
+      "status": "TESTED_LOCAL_P0",
+      "limitation": "V2.8 witness gate and non-idempotent recovery are not implemented yet."
+    },
+    {
+      "id": "event-chain",
+      "path": "packages/hbce-events",
+      "status": "TESTED_LOCAL_P0",
+      "limitation": "Independent witness/custody integration not implemented yet."
+    },
+    {
+      "id": "revocation",
+      "path": "packages/hbce-trust",
+      "status": "TESTED_LOCAL_P0",
+      "limitation": "V2.8 target recovery and no-retry policy remain to implement."
+    },
+    {
+      "id": "target-receipt",
+      "path": "packages/hbce-targets",
+      "status": "TESTED_LOCAL_P0",
+      "limitation": "Current receipts are demo/mock; pilot signing/trust remains incomplete."
+    },
+    {
+      "id": "evidence-bundle",
+      "path": "packages/hbce-evidence",
+      "status": "TESTED_LOCAL_P0",
+      "limitation": "V2.8 MatrixRow evidence binding and multidimensional verification remain incomplete."
+    },
+    {
+      "id": "verifier-cli",
+      "path": "apps/hbce-verifier-cli",
+      "status": "TESTED_LOCAL_P0",
+      "limitation": "V2.8 T113-T140 readiness and MatrixRow evaluation not implemented yet."
+    },
+    {
+      "id": "demo-adapters",
+      "path": "apps/hbce-demo",
+      "status": "DEMO_VALIDATED_LOCAL",
+      "limitation": "Demo-only; no real target dispatch."
+    },
+    {
+      "id": "level1-delivery-index",
+      "path": "docs/launch/level1/delivery-index.json",
+      "status": "TESTED_LOCAL_P0",
+      "limitation": "V2.3-aligned delivery index remains valid as demo package index, but V2.8 governs execution hardening from this record onward."
+    }
+  ],
+  "non_claims": {
+    "g0_spec_capacity_ready": false,
+    "g1_demo_ready": false,
+    "g2_pilot_candidate": false,
+    "g5_pilot_start_ready": false,
+    "real_pilot": false,
+    "production_ready": false,
+    "compliance_certification": false,
+    "legal_liability_proof": false,
+    "physical_truth_proof": false,
+    "independent_review_completed": false,
+    "required_witness_available": false,
+    "customer_scope_ready": false
+  },
+  "record_hash": "sha256:02f6b65bffb28615a76cd9ba4fb3101016d20ab56e350cb96ef8cc78d6d2c700"
+}
