@@ -4,6 +4,8 @@ This folder contains B2B Level 1 launch-pack documentation for the 19 January 20
 
 Current documents:
 
+- `delivery-index.md`: human-readable delivery index for the Level 1 review package.
+- `delivery-index.json`: machine-readable delivery index for the Level 1 review package.
 - `pricing-and-qualification.md`: pilot pricing bands, buyer qualification rules, included/excluded scope and prohibited claims.
 
 Boundary:
@@ -17,3 +19,4 @@ Boundary:
 - no physical truth proof
 - no production readiness claim
 - no runtime pricing logic
+- no delivery index procurement offer
