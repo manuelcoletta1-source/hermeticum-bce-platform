@@ -1,0 +1,226 @@
+{
+  "proto": "HBCE-B2B-L1-V3-4-R1-PRODUCER-REGISTRY-BASELINE-v1",
+  "kind": "HBCE_B2B_L1_V3_4_R1_PRODUCER_REGISTRY_BASELINE",
+  "document_code": "HBCE-B2B-L1-MATRIX-PROG-2027-0001",
+  "specification_baseline": "V3.4-R1 - Controlled Corrective Revision - 26 September 2026",
+  "issue_id": "PROG-032",
+  "priority": "V3.4-R1-BUILD-ASSURANCE",
+  "repository_baseline_commit": "af883b7ac461dca04c784170a79b6024f8871178",
+  "release_target": "2027-01-19",
+  "product": "JOKER-C2 LAYER MATRIX / B2B Level 1",
+  "category": "Human-Governed AI Agent Infrastructure",
+  "status": "INITIALIZED_NOT_OPERATIONAL",
+  "readiness_status": "BLOCKED",
+  "gate_claimed": false,
+  "v3_4_r1_scope_boundary": {
+    "expands_commercial_scope": false,
+    "introduces_new_capability": false,
+    "introduces_pilot_access": false,
+    "corrective_revision_only": true,
+    "implementation_required_next": true
+  },
+  "producer_binding_rule": {
+    "rule_id": "PRODUCER_BINDING_RULE_V3_4_R1",
+    "statement": "A transition is valid only if producer_id is registered for the target namespace or transition in the referenced Producer Registry version.",
+    "no_registered_producer_result": "PRODUCER_NOT_REGISTERED",
+    "unauthorized_transition_result": "TRANSITION_DENIED",
+    "requesting_action_is_not_state_mutation": true,
+    "transverse_acceptance_test": "T217"
+  },
+  "producer_registry_version": "V3.4-R1-PRODUCER-REGISTRY-BASELINE-001",
+  "producer_count": 7,
+  "registered_producers": [
+    {
+      "producer_id": "PRODUCER::HBCE_CORE",
+      "namespace_domain": [
+        "OPERATIONAL"
+      ],
+      "allowed_mutations": [
+        "authorization_result",
+        "OPERATIONAL::APPROVAL_REQUIRED",
+        "OPERATIONAL::ALLOWED",
+        "OPERATIONAL::BLOCKED",
+        "new_authorization_evaluation",
+        "dispatch_governance"
+      ],
+      "hard_prohibitions": [
+        "ASSURANCE::PROVEN",
+        "GATE::*",
+        "CONTRACT::*"
+      ]
+    },
+    {
+      "producer_id": "PRODUCER::TARGET_OUTCOME_LOGIC",
+      "namespace_domain": [
+        "OPERATIONAL"
+      ],
+      "allowed_mutations": [
+        "OPERATIONAL::DISPATCHED_TO_EXECUTED",
+        "OPERATIONAL::DISPATCHED_TO_FAILED"
+      ],
+      "hard_prohibitions": [
+        "runtime_authorization",
+        "recovery_approval",
+        "ASSURANCE::*"
+      ]
+    },
+    {
+      "producer_id": "PRODUCER::QUALIFIED_VERIFIER",
+      "namespace_domain": [
+        "ASSURANCE"
+      ],
+      "allowed_mutations": [
+        "ASSURANCE::UNDER_VALIDATION",
+        "ASSURANCE::PROVEN",
+        "ASSURANCE::INVALIDATED",
+        "revalidation_new_context"
+      ],
+      "hard_prohibitions": [
+        "runtime_authority",
+        "CONTRACT::*"
+      ]
+    },
+    {
+      "producer_id": "PRODUCER::GATE_EVALUATOR",
+      "namespace_domain": [
+        "GATE"
+      ],
+      "allowed_mutations": [
+        "GATE::NOT_EVALUATED",
+        "GATE::PASS",
+        "GATE::FAIL",
+        "GATE::BLOCKED",
+        "new_gate_evaluation_after_remediation"
+      ],
+      "hard_prohibitions": [
+        "OPERATIONAL::ALLOWED",
+        "ASSURANCE::*"
+      ]
+    },
+    {
+      "producer_id": "PRODUCER::BUILD_CHANGE_CONTROL",
+      "namespace_domain": [
+        "IMPLEMENTATION"
+      ],
+      "allowed_mutations": [
+        "IMPLEMENTATION::PROPOSED",
+        "IMPLEMENTATION::IMPLEMENTED",
+        "IMPLEMENTATION::DEPRECATED"
+      ],
+      "hard_prohibitions": [
+        "assurance_promotion",
+        "runtime_permission"
+      ]
+    },
+    {
+      "producer_id": "PRODUCER::CONTRACT_CONTROL",
+      "namespace_domain": [
+        "CONTRACT"
+      ],
+      "allowed_mutations": [
+        "CONTRACT::DRAFT",
+        "CONTRACT::DEFINED",
+        "CONTRACT::BASELINED",
+        "CONTRACT::RELEASED",
+        "CONTRACT::RETIRED",
+        "new_contract_version_from_retired"
+      ],
+      "hard_prohibitions": [
+        "implementation_implication",
+        "runtime_permission"
+      ]
+    },
+    {
+      "producer_id": "PRODUCER::SCHEMA_REGISTRY",
+      "namespace_domain": [
+        "COMBINATION"
+      ],
+      "allowed_mutations": [
+        "COMBINATION::VALID",
+        "COMBINATION::CONDITIONAL",
+        "COMBINATION::INVALID",
+        "COMBINATION::N_A_BY_CONSTRUCTION",
+        "COMBINATION::VALID_HISTORICAL",
+        "COMBINATION::VALID_HISTORICAL_NO_ASSURANCE",
+        "schema_version_consistency"
+      ],
+      "hard_prohibitions": [
+        "runtime_state_mutation"
+      ]
+    }
+  ],
+  "trust_boundary_required_producers": [
+    "PRODUCER::HBCE_CORE",
+    "PRODUCER::TARGET_OUTCOME_LOGIC",
+    "PRODUCER::QUALIFIED_VERIFIER",
+    "PRODUCER::GATE_EVALUATOR",
+    "PRODUCER::BUILD_CHANGE_CONTROL",
+    "PRODUCER::CONTRACT_CONTROL",
+    "PRODUCER::SCHEMA_REGISTRY"
+  ],
+  "namespace_owner_map": {
+    "IMPLEMENTATION": "PRODUCER::BUILD_CHANGE_CONTROL",
+    "ASSURANCE": "PRODUCER::QUALIFIED_VERIFIER",
+    "OPERATIONAL": [
+      "PRODUCER::HBCE_CORE",
+      "PRODUCER::TARGET_OUTCOME_LOGIC"
+    ],
+    "GATE": "PRODUCER::GATE_EVALUATOR",
+    "CONTRACT": "PRODUCER::CONTRACT_CONTROL",
+    "COMBINATION": "PRODUCER::SCHEMA_REGISTRY"
+  },
+  "negative_transition_fixtures": [
+    {
+      "fixture_id": "T217-A",
+      "stimulus": "Unregistered producer attempts OPERATIONAL::ALLOWED",
+      "expected_result": "PRODUCER_NOT_REGISTERED"
+    },
+    {
+      "fixture_id": "T217-B",
+      "stimulus": "PRODUCER::GATE_EVALUATOR attempts OPERATIONAL::ALLOWED",
+      "expected_result": "TRANSITION_DENIED"
+    },
+    {
+      "fixture_id": "T217-C",
+      "stimulus": "PRODUCER::HBCE_CORE attempts ASSURANCE::PROVEN",
+      "expected_result": "TRANSITION_DENIED"
+    },
+    {
+      "fixture_id": "T217-D",
+      "stimulus": "PRODUCER::CONTRACT_CONTROL attempts IMPLEMENTATION::IMPLEMENTED",
+      "expected_result": "TRANSITION_DENIED"
+    },
+    {
+      "fixture_id": "T217-E",
+      "stimulus": "Actor requests recovery and is treated as mutation producer",
+      "expected_result": "TRANSITION_DENIED"
+    }
+  ],
+  "next_required_programs": [
+    {
+      "issue_id": "PROG-033",
+      "title": "T217 Producer Binding Enforcement",
+      "status": "PENDING"
+    },
+    {
+      "issue_id": "PROG-034",
+      "title": "T218-T222 Recovery Coverage Harness",
+      "status": "PENDING"
+    },
+    {
+      "issue_id": "PROG-035",
+      "title": "T223-T225 Meta-Type And Contract Producer Consistency",
+      "status": "PENDING"
+    }
+  ],
+  "non_claims": {
+    "production_ready": false,
+    "release_candidate_ready": false,
+    "g9_market_ingression_operational": false,
+    "pilot_access_available": false,
+    "customer_acceptance": false,
+    "producer_enforcement_runtime_complete": false,
+    "recovery_harness_complete": false
+  },
+  "revision_hash": "sha256:fc0541689353acc718184484e39906b8d96d9914b102131ff3d27e125d6c6787"
+}
