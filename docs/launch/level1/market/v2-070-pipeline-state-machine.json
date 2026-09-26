@@ -1,0 +1,346 @@
+{
+  "proto": "HBCE-P0-MARKET-V2-070-PIPELINE-STATE-MACHINE-v1",
+  "kind": "HBCE_P0_MARKET_V2_070_PIPELINE_STATE_MACHINE",
+  "document_code": "HBCE-B2B-L1-MATRIX-PROG-2027-0001",
+  "specification_baseline": "V2.9 - 25 September 2026",
+  "issue_id": "V2-070",
+  "priority": "P0-MARKET",
+  "depends_on": [
+    "V2-066",
+    "V2-067",
+    "V2-068",
+    "V2-069"
+  ],
+  "market_gate": "G9_MARKET_INGRESSION_OPERATIONAL",
+  "repository_baseline_commit": "28a2acfe2aaf5262a66ac151f9a43ce61e50691d",
+  "source_github_lead_registry_ref": "docs/launch/level1/market/v2-066-github-lead-registry.json",
+  "source_github_lead_registry_revision_hash": "sha256:c5c1f49c7bfb5ba8fa5ac03f84b1a70deefec8c631278b3a636ecf87d85b0653",
+  "source_qualification_guards_ref": "docs/launch/level1/market/v2-067-qualification-guards.json",
+  "source_qualification_guards_revision_hash": "sha256:4bf1812b2476fa800808849b4020c135c2f67df6052916976188621ca28dd1b2",
+  "source_interlocutor_mapping_ref": "docs/launch/level1/market/v2-068-interlocutor-mapping.json",
+  "source_interlocutor_mapping_revision_hash": "sha256:458a31cebf05569329eee0ccc2bc31544647def839f4709198d46f223860c847",
+  "source_outreach_claim_guard_ref": "docs/launch/level1/market/v2-069-outreach-claim-guard.json",
+  "source_outreach_claim_guard_revision_hash": "sha256:06cef3e4b1896d9b363cd2a33bfca4cc266bb2a6b538342ef6bab033fc832359",
+  "status": "INITIALIZED_NOT_READY",
+  "readiness_status": "BLOCKED",
+  "gate_claimed": false,
+  "g9_ready": false,
+  "pipeline_state_machine_initialized": true,
+  "transition_guarding_enabled": true,
+  "audit_history_required": true,
+  "opt_out_enforced": true,
+  "external_effects_require_human_approval": true,
+  "market_metrics_modify_technical_verdicts": false,
+  "states": [
+    "DISCOVERED",
+    "TECHNICALLY_RELEVANT",
+    "ORG_VERIFIED",
+    "ROLE_IDENTIFIED",
+    "QUALIFIED",
+    "OUTREACH_READY",
+    "CONTACTED",
+    "DISCOVERY",
+    "PILOT_CANDIDATE",
+    "PARKED",
+    "CLOSED",
+    "DO_NOT_CONTACT"
+  ],
+  "transitions": [
+    {
+      "from": "DISCOVERED",
+      "to": "TECHNICALLY_RELEVANT",
+      "requires": [
+        "source_ref",
+        "public_source_registered",
+        "technical_signal_rationale"
+      ],
+      "audit_event_required": true,
+      "external_effect": false
+    },
+    {
+      "from": "TECHNICALLY_RELEVANT",
+      "to": "ORG_VERIFIED",
+      "requires": [
+        "verified_organization_evidence",
+        "owner_type_not_user_only"
+      ],
+      "audit_event_required": true,
+      "external_effect": false
+    },
+    {
+      "from": "ORG_VERIFIED",
+      "to": "ROLE_IDENTIFIED",
+      "requires": [
+        "target_role_class",
+        "role_to_organization_evidence"
+      ],
+      "audit_event_required": true,
+      "external_effect": false
+    },
+    {
+      "from": "ROLE_IDENTIFIED",
+      "to": "QUALIFIED",
+      "requires": [
+        "buyer_problem_evidence",
+        "fit_hypothesis",
+        "freshness_valid"
+      ],
+      "audit_event_required": true,
+      "external_effect": false
+    },
+    {
+      "from": "QUALIFIED",
+      "to": "OUTREACH_READY",
+      "requires": [
+        "LeadEvidenceRecord",
+        "allowed_claim_ids",
+        "message_draft",
+        "Manuel_approval",
+        "legal_channel"
+      ],
+      "audit_event_required": true,
+      "external_effect": false
+    },
+    {
+      "from": "OUTREACH_READY",
+      "to": "CONTACTED",
+      "requires": [
+        "MessageRef_or_hash",
+        "recipient_role",
+        "sent_at",
+        "channel",
+        "approval_ref"
+      ],
+      "audit_event_required": true,
+      "external_effect": true
+    },
+    {
+      "from": "CONTACTED",
+      "to": "DISCOVERY",
+      "requires": [
+        "real_interaction",
+        "dated_notes",
+        "provenance"
+      ],
+      "audit_event_required": true,
+      "external_effect": true
+    },
+    {
+      "from": "DISCOVERY",
+      "to": "PILOT_CANDIDATE",
+      "requires": [
+        "problem_statement",
+        "target_system",
+        "authority_model",
+        "evidence_need",
+        "constraints",
+        "sponsor_or_owner_state"
+      ],
+      "audit_event_required": true,
+      "external_effect": false
+    },
+    {
+      "from": "PILOT_CANDIDATE",
+      "to": "PARKED",
+      "requires": [
+        "reason_code",
+        "date"
+      ],
+      "audit_event_required": true,
+      "external_effect": false
+    },
+    {
+      "from": "PILOT_CANDIDATE",
+      "to": "CLOSED",
+      "requires": [
+        "reason_code",
+        "date"
+      ],
+      "audit_event_required": true,
+      "external_effect": false
+    }
+  ],
+  "universal_transitions": [
+    {
+      "from": "ANY",
+      "to": "PARKED",
+      "requires": [
+        "reason_code",
+        "date",
+        "optional_reactivation_condition"
+      ],
+      "audit_event_required": true,
+      "external_effect": false
+    },
+    {
+      "from": "ANY",
+      "to": "CLOSED",
+      "requires": [
+        "reason_code",
+        "date"
+      ],
+      "audit_event_required": true,
+      "external_effect": false
+    },
+    {
+      "from": "ANY",
+      "to": "DO_NOT_CONTACT",
+      "requires": [
+        "opt_out_or_policy_restriction",
+        "source",
+        "observed_at"
+      ],
+      "audit_event_required": true,
+      "external_effect": false,
+      "terminal_contact_block": true
+    }
+  ],
+  "reason_codes": [
+    "APPROVAL_REF_MISSING",
+    "AUDIT_HISTORY_REQUIRED",
+    "BUYER_PROBLEM_UNPROVEN",
+    "CLAIM_NOT_ALLOWED",
+    "CONTACT_ROLE_MISSING",
+    "DO_NOT_CONTACT",
+    "DO_NOT_CONTACT_BLOCK",
+    "HUMAN_APPROVAL_REQUIRED",
+    "LEAD_SOURCE_INVALID",
+    "LEAD_STALE",
+    "MARKET_TECHNICAL_BOUNDARY_VIOLATION",
+    "MESSAGE_REF_MISSING",
+    "ORG_NOT_VERIFIED",
+    "REAL_INTERACTION_REQUIRED",
+    "REVALIDATION_REQUIRED",
+    "SNAPSHOT_INVALID",
+    "SOURCE_UNAVAILABLE",
+    "TRANSITION_NOT_ALLOWED"
+  ],
+  "audit_event_contract": {
+    "event_id": "required stable id",
+    "lead_id": "required",
+    "from_state": "required",
+    "to_state": "required",
+    "requested_at": "required timestamp",
+    "requested_by": "required actor",
+    "reason_code": "required",
+    "evidence_refs": "required array",
+    "approval_ref": "required for states with external effects or outreach readiness",
+    "message_ref_or_hash": "required for CONTACTED",
+    "previous_event_hash": "required except first event",
+    "event_hash": "required canonical digest"
+  },
+  "blocked_transition_fixtures": [
+    {
+      "from": "TECHNICALLY_RELEVANT",
+      "to": "OUTREACH_READY",
+      "expected_result": "PIPELINE_BLOCKED",
+      "rationale": "No shortcut from technical signal to outreach readiness."
+    },
+    {
+      "from": "QUALIFIED",
+      "to": "OUTREACH_READY",
+      "expected_result": "PIPELINE_BLOCKED",
+      "rationale": "Missing LeadEvidenceRecord or Manuel approval."
+    },
+    {
+      "from": "OUTREACH_READY",
+      "to": "CONTACTED",
+      "expected_result": "PIPELINE_BLOCKED",
+      "rationale": "Missing approval_ref/message_ref/channel/recipient_role."
+    },
+    {
+      "from": "CONTACTED",
+      "to": "DISCOVERY",
+      "expected_result": "PIPELINE_BLOCKED",
+      "rationale": "Viewed or inferred interest is not real interaction."
+    },
+    {
+      "from": "ANY",
+      "to": "DO_NOT_CONTACT",
+      "expected_result": "DO_NOT_CONTACT_BLOCK",
+      "rationale": "Opt-out blocks all new outreach."
+    },
+    {
+      "from": "ANY",
+      "to": "ANY",
+      "expected_result": "SNAPSHOT_INVALID",
+      "rationale": "Untraceable manual state change without audit history."
+    }
+  ],
+  "t153_t157_t160_controls": [
+    {
+      "test_id": "T153",
+      "stimulus": "CONTACTED without human approval record",
+      "expected_result": "PIPELINE_BLOCKED"
+    },
+    {
+      "test_id": "T155",
+      "stimulus": "Lead stale beyond configured freshness window",
+      "expected_result": "REVALIDATION_REQUIRED"
+    },
+    {
+      "test_id": "T156",
+      "stimulus": "Opt-out received then new outreach attempted",
+      "expected_result": "DO_NOT_CONTACT_BLOCK"
+    },
+    {
+      "test_id": "T157",
+      "stimulus": "Source disappears after observation",
+      "expected_result": "SOURCE_UNAVAILABLE_PRESERVE_PRIOR_OBSERVATION"
+    },
+    {
+      "test_id": "T160",
+      "stimulus": "Market snapshot contains untraceable manual state change",
+      "expected_result": "SNAPSHOT_INVALID"
+    }
+  ],
+  "current_registry_evaluation": [
+    {
+      "lead_id": "GH-0001",
+      "current_state": "TECHNICALLY_RELEVANT",
+      "transition_allowed_to_outreach_ready": false,
+      "transition_allowed_to_contacted": false,
+      "reason_codes": [
+        "ORG_NOT_VERIFIED",
+        "CONTACT_ROLE_MISSING",
+        "BUYER_PROBLEM_UNPROVEN",
+        "HUMAN_APPROVAL_REQUIRED"
+      ]
+    },
+    {
+      "lead_id": "GH-0002",
+      "current_state": "TECHNICALLY_RELEVANT",
+      "transition_allowed_to_outreach_ready": false,
+      "transition_allowed_to_contacted": false,
+      "reason_codes": [
+        "ORG_NOT_VERIFIED",
+        "CONTACT_ROLE_MISSING",
+        "BUYER_PROBLEM_UNPROVEN",
+        "HUMAN_APPROVAL_REQUIRED"
+      ]
+    },
+    {
+      "lead_id": "GH-0003",
+      "current_state": "TECHNICALLY_RELEVANT",
+      "transition_allowed_to_outreach_ready": false,
+      "transition_allowed_to_contacted": false,
+      "reason_codes": [
+        "ORG_NOT_VERIFIED",
+        "CONTACT_ROLE_MISSING",
+        "BUYER_PROBLEM_UNPROVEN",
+        "HUMAN_APPROVAL_REQUIRED"
+      ]
+    }
+  ],
+  "non_claims": {
+    "g9_market_ingression_operational": false,
+    "g3d_outreach_ready": false,
+    "outreach_ready": false,
+    "contacted": false,
+    "discovery_started": false,
+    "pilot_candidate": false,
+    "pilot_readiness": false,
+    "customer_or_client_existence": false
+  },
+  "revision_hash": "sha256:5bc51dbd5ccf5b1befc92b7fae4b16a78cb9daacfda0f7a052c6191abbe1f0f0"
+}
