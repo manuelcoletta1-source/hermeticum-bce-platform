@@ -1,0 +1,174 @@
+{
+  "proto": "HBCE-P0-MARKET-V2-071-MARKET-TECHNICAL-SEPARATION-v1",
+  "kind": "HBCE_P0_MARKET_V2_071_MARKET_TECHNICAL_SEPARATION",
+  "document_code": "HBCE-B2B-L1-MATRIX-PROG-2027-0001",
+  "specification_baseline": "V2.9 - 25 September 2026",
+  "issue_id": "V2-071",
+  "priority": "P0-MARKET",
+  "depends_on": [
+    "V2-063",
+    "V2-067",
+    "V2-069",
+    "V2-070"
+  ],
+  "market_gate": "G9_MARKET_INGRESSION_OPERATIONAL",
+  "repository_baseline_commit": "b12eb680edc5af26e8ef0a6e6fbfbfe179d14825",
+  "source_public_surface_ref": "docs/launch/level1/market/v2-063-public-surface-profile.json",
+  "source_public_surface_revision_hash": "sha256:32b875648ecfe55c5cb8e8f5d4cc5cfbe57fe095ddf19c385b082263b4f1c157",
+  "source_qualification_guards_ref": "docs/launch/level1/market/v2-067-qualification-guards.json",
+  "source_qualification_guards_revision_hash": "sha256:4bf1812b2476fa800808849b4020c135c2f67df6052916976188621ca28dd1b2",
+  "source_outreach_claim_guard_ref": "docs/launch/level1/market/v2-069-outreach-claim-guard.json",
+  "source_outreach_claim_guard_revision_hash": "sha256:06cef3e4b1896d9b363cd2a33bfca4cc266bb2a6b538342ef6bab033fc832359",
+  "source_pipeline_state_machine_ref": "docs/launch/level1/market/v2-070-pipeline-state-machine.json",
+  "source_pipeline_state_machine_revision_hash": "sha256:5bc51dbd5ccf5b1befc92b7fae4b16a78cb9daacfda0f7a052c6191abbe1f0f0",
+  "status": "INITIALIZED_NOT_READY",
+  "readiness_status": "BLOCKED",
+  "gate_claimed": false,
+  "g9_ready": false,
+  "separation_initialized": true,
+  "build_market_state_separation_required": true,
+  "market_signal_can_promote_technical_gate": false,
+  "market_signal_can_modify_profile_satisfied": false,
+  "market_signal_can_override_verifier": false,
+  "technical_failure_restricts_market_claims": true,
+  "commercial_interest_is_not_buyer_authority": true,
+  "contact_is_not_customer_acceptance": true,
+  "discovery_is_not_pilot_readiness": true,
+  "separated_state_domains": {
+    "build_domain": {
+      "governs": [
+        "technical gates",
+        "profiles",
+        "tests",
+        "evidence bundles",
+        "verifier verdicts"
+      ],
+      "promotion_authority": "technical evidence only",
+      "market_input_effect": "none on technical truth"
+    },
+    "market_domain": {
+      "governs": [
+        "public surface",
+        "observation",
+        "lead registry",
+        "qualification",
+        "outreach readiness",
+        "contact/discovery trail"
+      ],
+      "promotion_authority": "market evidence plus human approval",
+      "technical_input_effect": "technical failure restricts allowed claims"
+    }
+  },
+  "forbidden_promotions": [
+    {
+      "signal": "qualified_lead",
+      "forbidden_target": "PROFILE_SATISFIED",
+      "result": "MARKET_TECHNICAL_BOUNDARY_VIOLATION"
+    },
+    {
+      "signal": "outreach_ready",
+      "forbidden_target": "G2_TECHNICAL_GATE",
+      "result": "MARKET_TECHNICAL_BOUNDARY_VIOLATION"
+    },
+    {
+      "signal": "contacted",
+      "forbidden_target": "CUSTOMER_ACCEPTANCE",
+      "result": "CUSTOMER_CLAIM_BLOCKED"
+    },
+    {
+      "signal": "discovery_call",
+      "forbidden_target": "PILOT_READINESS",
+      "result": "PILOT_READY_CLAIM_BLOCKED"
+    },
+    {
+      "signal": "commercial_interest",
+      "forbidden_target": "BUYER_AUTHORITY_CONFIRMED",
+      "result": "BUYER_AUTHORITY_UNPROVEN"
+    }
+  ],
+  "allowed_cross_domain_effects": [
+    {
+      "from": "BUILD",
+      "to": "MARKET",
+      "condition": "technical gate false or unproven",
+      "effect": "restrict allowed claims and require labels",
+      "result": "CLAIM_SET_RESTRICTED"
+    },
+    {
+      "from": "BUILD",
+      "to": "MARKET",
+      "condition": "technical gate proven",
+      "effect": "permit only matching evidence-bound public claim",
+      "result": "CLAIM_SET_LIMITED_TO_EVIDENCE"
+    },
+    {
+      "from": "MARKET",
+      "to": "BUILD",
+      "condition": "buyer problem evidence observed",
+      "effect": "create product feedback item only",
+      "result": "FEEDBACK_RECORDED_NO_TECHNICAL_PROMOTION"
+    },
+    {
+      "from": "MARKET",
+      "to": "BUILD",
+      "condition": "discovery identifies pilot need",
+      "effect": "create candidate requirement only",
+      "result": "REQUIREMENT_CANDIDATE_NOT_GATE"
+    }
+  ],
+  "boundary_verdict_fixtures": [
+    {
+      "fixture_id": "LEAD-QUALIFIED-TO-PROFILE",
+      "stimulus": "Qualified lead attempts to set PROFILE_SATISFIED true.",
+      "expected_result": "MARKET_TECHNICAL_BOUNDARY_VIOLATION"
+    },
+    {
+      "fixture_id": "CONTACTED-TO-CUSTOMER",
+      "stimulus": "CONTACTED state attempts to claim customer/client existence.",
+      "expected_result": "CUSTOMER_CLAIM_BLOCKED"
+    },
+    {
+      "fixture_id": "DISCOVERY-TO-PILOT",
+      "stimulus": "Discovery conversation attempts to claim pilot readiness.",
+      "expected_result": "PILOT_READY_CLAIM_BLOCKED"
+    },
+    {
+      "fixture_id": "TECH-FAIL-TO-CLAIMS",
+      "stimulus": "Technical gate false restricts outbound claim set.",
+      "expected_result": "CLAIM_SET_RESTRICTED"
+    },
+    {
+      "fixture_id": "BUYER-PROBLEM-TO-FEEDBACK",
+      "stimulus": "Market buyer problem creates feedback item without technical promotion.",
+      "expected_result": "FEEDBACK_RECORDED_NO_TECHNICAL_PROMOTION"
+    }
+  ],
+  "t158_t159_t160_controls": [
+    {
+      "test_id": "T158",
+      "stimulus": "Market signal attempts to change technical profile verdict",
+      "expected_result": "MARKET_TECHNICAL_BOUNDARY_VIOLATION"
+    },
+    {
+      "test_id": "T159",
+      "stimulus": "Technical failure exists while outbound public claim remains unrestricted",
+      "expected_result": "CLAIM_SET_RESTRICTED"
+    },
+    {
+      "test_id": "T160",
+      "stimulus": "Market snapshot contains untraceable manual boundary change",
+      "expected_result": "SNAPSHOT_INVALID"
+    }
+  ],
+  "non_claims": {
+    "g9_market_ingression_operational": false,
+    "g3d_outreach_ready": false,
+    "technical_gate_satisfied": false,
+    "profile_satisfied": false,
+    "customer_or_client_existence": false,
+    "pilot_candidate": false,
+    "pilot_readiness": false,
+    "buyer_authority_confirmed": false
+  },
+  "revision_hash": "sha256:457c5300378ae85b8fc11a884e037c6fa88b15aa2ace7103a3733533a61d3d54"
+}
