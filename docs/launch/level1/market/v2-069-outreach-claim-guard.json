@@ -1,0 +1,159 @@
+{
+  "proto": "HBCE-P0-MARKET-V2-069-OUTREACH-CLAIM-GUARD-v1",
+  "kind": "HBCE_P0_MARKET_V2_069_OUTREACH_CLAIM_GUARD",
+  "document_code": "HBCE-B2B-L1-MATRIX-PROG-2027-0001",
+  "specification_baseline": "V2.9 - 25 September 2026",
+  "issue_id": "V2-069",
+  "priority": "P0-MARKET",
+  "depends_on": [
+    "V2-063",
+    "V2-064",
+    "V2-067",
+    "V2-068"
+  ],
+  "market_gate": "G3D_OUTREACH_READY",
+  "repository_baseline_commit": "6caac5bb158eadbebd5aecfed40012d4fd3cee43",
+  "source_public_surface_ref": "docs/launch/level1/market/v2-063-public-surface-profile.json",
+  "source_public_surface_revision_hash": "sha256:32b875648ecfe55c5cb8e8f5d4cc5cfbe57fe095ddf19c385b082263b4f1c157",
+  "source_linkedin_assets_ref": "docs/launch/level1/market/v2-064-linkedin-baseline-assets.json",
+  "source_linkedin_assets_revision_hash": "sha256:b5acb32fbb874ea9ba675aec18bb8e8b6ebdedaec1b8d6b0b1b10c6fe44cd13d",
+  "source_qualification_guards_ref": "docs/launch/level1/market/v2-067-qualification-guards.json",
+  "source_qualification_guards_revision_hash": "sha256:4bf1812b2476fa800808849b4020c135c2f67df6052916976188621ca28dd1b2",
+  "source_interlocutor_mapping_ref": "docs/launch/level1/market/v2-068-interlocutor-mapping.json",
+  "source_interlocutor_mapping_revision_hash": "sha256:458a31cebf05569329eee0ccc2bc31544647def839f4709198d46f223860c847",
+  "status": "INITIALIZED_NOT_READY",
+  "readiness_status": "BLOCKED",
+  "gate_claimed": false,
+  "g3d_ready": false,
+  "outreach_claim_guard_initialized": true,
+  "internal_draft_preparation_allowed": true,
+  "external_contact_permitted": false,
+  "outreach_ready_allowed": false,
+  "contacted_allowed": false,
+  "allowed_claim_source": {
+    "source": "docs/launch/level1/market/v2-063-public-surface-profile.json",
+    "required": true,
+    "allowed_claim_ids": [
+      "PUBLIC-CLAIM-AI-PROPOSES-HUMAN-AUTHORIZES",
+      "PUBLIC-CLAIM-EVIDENCE-BOUND-DEMO-PACKAGE",
+      "PUBLIC-CLAIM-HBCE-GOVERNED-INFRASTRUCTURE",
+      "PUBLIC-CLAIM-JOKER-C2-CONVERSATIONAL-INTERFACE",
+      "PUBLIC-CLAIM-MATRIX-CLAIM-TRACEABILITY"
+    ],
+    "missing_allowed_claim_policy": "OUTREACH_DRAFT_BLOCKED"
+  },
+  "draft_contract": {
+    "draft_id": "required",
+    "target_lead_id": "required",
+    "target_role_class": "required",
+    "allowed_claim_ids_used": "required subset of allowed_claim_source.allowed_claim_ids",
+    "evidence_refs_required": true,
+    "claim_labels_required": [
+      "PROVEN",
+      "UNDER_VALIDATION",
+      "PROPOSED"
+    ],
+    "unsupported_claim_policy": "OUTREACH_DRAFT_BLOCKED",
+    "human_approval_required_before_contact": true,
+    "manual_approval_authority": "Manuel Coletta",
+    "send_operation_in_scope": false
+  },
+  "guard_rules": [
+    {
+      "guard_id": "DRAFT_MUST_USE_ALLOWED_CLAIM_IDS",
+      "failure_result": "OUTREACH_DRAFT_BLOCKED",
+      "rule": "Every outreach draft must derive from allowed_claim_ids."
+    },
+    {
+      "guard_id": "DRAFT_MUST_LABEL_UNPROVEN_CAPABILITIES",
+      "failure_result": "PUBLISH_DENIED_OR_REWRITE_REQUIRED",
+      "rule": "Claims not PROVEN must be labelled UNDER_VALIDATION or PROPOSED."
+    },
+    {
+      "guard_id": "NO_PILOT_READY_CLAIM_WHILE_G2_G5_FALSE",
+      "failure_result": "PUBLISH_DENIED",
+      "rule": "Pilot-ready language is blocked unless applicable technical and pilot gates are true."
+    },
+    {
+      "guard_id": "NO_CUSTOMER_OR_CLIENT_CLAIM_WITHOUT_EVIDENCE",
+      "failure_result": "CLAIM_NOT_ALLOWED",
+      "rule": "Customer, client, buyer or pilot claims require explicit evidence and state."
+    },
+    {
+      "guard_id": "NO_OUTREACH_READY_WITHOUT_QUALIFIED_LEAD",
+      "failure_result": "PIPELINE_BLOCKED",
+      "rule": "OUTREACH_READY requires a qualified lead and LeadEvidenceRecord."
+    },
+    {
+      "guard_id": "NO_CONTACT_WITHOUT_HUMAN_APPROVAL",
+      "failure_result": "PIPELINE_BLOCKED",
+      "rule": "CONTACTED requires approval_ref, channel, recipient_role and message_ref_or_hash."
+    },
+    {
+      "guard_id": "NO_PERSONAL_COMMIT_EMAIL_ROUTE",
+      "failure_result": "PRIVACY_POLICY_BLOCK",
+      "rule": "Commit metadata email cannot be used as contact route."
+    },
+    {
+      "guard_id": "DO_NOT_CONTACT_OVERRIDES_DRAFT",
+      "failure_result": "DO_NOT_CONTACT_BLOCK",
+      "rule": "Opt-out or policy restriction blocks outreach even if draft is claim-safe."
+    }
+  ],
+  "draft_evaluation_fixtures": [
+    {
+      "draft_id": "DRAFT-001",
+      "stimulus": "Draft has no allowed_claim_ids_used.",
+      "expected_result": "OUTREACH_DRAFT_BLOCKED"
+    },
+    {
+      "draft_id": "DRAFT-002",
+      "stimulus": "Draft includes claim outside current allowed set.",
+      "expected_result": "OUTREACH_DRAFT_BLOCKED"
+    },
+    {
+      "draft_id": "DRAFT-003",
+      "stimulus": "Draft says pilot-ready while G2/G5 are false.",
+      "expected_result": "PUBLISH_DENIED"
+    },
+    {
+      "draft_id": "DRAFT-004",
+      "stimulus": "Draft uses only allowed claims but lead is not qualified and no approval exists.",
+      "expected_result": "INTERNAL_DRAFT_ONLY_CONTACT_BLOCKED"
+    },
+    {
+      "draft_id": "DRAFT-005",
+      "stimulus": "CONTACTED state attempted without approval_ref.",
+      "expected_result": "PIPELINE_BLOCKED"
+    },
+    {
+      "draft_id": "DRAFT-006",
+      "stimulus": "Draft attempts to use personal commit email as contact route.",
+      "expected_result": "PRIVACY_POLICY_BLOCK"
+    }
+  ],
+  "t153_t154_controls": [
+    {
+      "test_id": "T153",
+      "stimulus": "CONTACTED without human approval record",
+      "expected_result": "PIPELINE_BLOCKED"
+    },
+    {
+      "test_id": "T154",
+      "stimulus": "Outreach draft includes claim outside current allowed set",
+      "expected_result": "OUTREACH_DRAFT_BLOCKED"
+    }
+  ],
+  "non_claims": {
+    "g3d_outreach_ready": false,
+    "qualified_lead": false,
+    "lead_evidence_record_complete": false,
+    "outreach_ready": false,
+    "contacted": false,
+    "discovery_started": false,
+    "customer_or_client_existence": false,
+    "pilot_candidate": false,
+    "pilot_readiness": false
+  },
+  "revision_hash": "sha256:06cef3e4b1896d9b363cd2a33bfca4cc266bb2a6b538342ef6bab033fc832359"
+}
