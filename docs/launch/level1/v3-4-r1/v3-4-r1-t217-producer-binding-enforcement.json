@@ -1,0 +1,109 @@
+{
+  "proto": "HBCE-B2B-L1-V3-4-R1-T217-PRODUCER-BINDING-ENFORCEMENT-v1",
+  "kind": "HBCE_B2B_L1_V3_4_R1_T217_PRODUCER_BINDING_ENFORCEMENT",
+  "document_code": "HBCE-B2B-L1-MATRIX-PROG-2027-0001",
+  "specification_baseline": "V3.4-R1 - Controlled Corrective Revision - 26 September 2026",
+  "issue_id": "PROG-033",
+  "acceptance_test": "T217",
+  "priority": "V3.4-R1-BUILD-ASSURANCE",
+  "repository_baseline_commit": "bbec4a985b30f6f3e2da02c276d394bfb3502d52",
+  "source_producer_registry_ref": "docs/launch/level1/v3-4-r1/v3-4-r1-producer-registry-baseline.json",
+  "source_producer_registry_revision_hash": "sha256:fc0541689353acc718184484e39906b8d96d9914b102131ff3d27e125d6c6787",
+  "source_producer_registry_version": "V3.4-R1-PRODUCER-REGISTRY-BASELINE-001",
+  "runtime_module_path": "runtime/producer/validate-producer-binding.js",
+  "verification_test_path": "tests/ftel/integration/prog-033-v3-4-r1-t217-producer-binding-enforcement.test.js",
+  "status": "IMPLEMENTED_TESTED_NOT_RELEASE_READY",
+  "readiness_status": "BLOCKED",
+  "gate_claimed": false,
+  "enforcement_scope": {
+    "validates_registered_producer_id": true,
+    "validates_registry_version_presence": true,
+    "validates_namespace_authorization": true,
+    "validates_allowed_mutation": true,
+    "denies_unregistered_producer": true,
+    "denies_unauthorized_namespace": true,
+    "denies_unauthorized_mutation": true,
+    "treats_action_request_as_non_mutation_producer": true
+  },
+  "expected_results": {
+    "valid_binding": "PRODUCER_BINDING_ALLOWED",
+    "unregistered_producer": "PRODUCER_NOT_REGISTERED",
+    "unauthorized_transition": "TRANSITION_DENIED"
+  },
+  "t217_vectors": [
+    {
+      "vector_id": "T217-POS-001",
+      "producer_id": "PRODUCER::HBCE_CORE",
+      "namespace": "OPERATIONAL",
+      "mutation": "OPERATIONAL::ALLOWED",
+      "expected_result": "PRODUCER_BINDING_ALLOWED"
+    },
+    {
+      "vector_id": "T217-POS-002",
+      "producer_id": "PRODUCER::QUALIFIED_VERIFIER",
+      "namespace": "ASSURANCE",
+      "mutation": "ASSURANCE::PROVEN",
+      "expected_result": "PRODUCER_BINDING_ALLOWED"
+    },
+    {
+      "vector_id": "T217-POS-003",
+      "producer_id": "PRODUCER::SCHEMA_REGISTRY",
+      "namespace": "COMBINATION",
+      "mutation": "COMBINATION::VALID",
+      "expected_result": "PRODUCER_BINDING_ALLOWED"
+    },
+    {
+      "vector_id": "T217-NEG-001",
+      "producer_id": "PRODUCER::UNREGISTERED",
+      "namespace": "OPERATIONAL",
+      "mutation": "OPERATIONAL::ALLOWED",
+      "expected_result": "PRODUCER_NOT_REGISTERED"
+    },
+    {
+      "vector_id": "T217-NEG-002",
+      "producer_id": "PRODUCER::GATE_EVALUATOR",
+      "namespace": "OPERATIONAL",
+      "mutation": "OPERATIONAL::ALLOWED",
+      "expected_result": "TRANSITION_DENIED"
+    },
+    {
+      "vector_id": "T217-NEG-003",
+      "producer_id": "PRODUCER::HBCE_CORE",
+      "namespace": "ASSURANCE",
+      "mutation": "ASSURANCE::PROVEN",
+      "expected_result": "TRANSITION_DENIED"
+    },
+    {
+      "vector_id": "T217-NEG-004",
+      "producer_id": "PRODUCER::CONTRACT_CONTROL",
+      "namespace": "IMPLEMENTATION",
+      "mutation": "IMPLEMENTATION::IMPLEMENTED",
+      "expected_result": "TRANSITION_DENIED"
+    },
+    {
+      "vector_id": "T217-NEG-005",
+      "producer_id": "ACTOR::RECOVERY_REQUESTER",
+      "namespace": "OPERATIONAL",
+      "mutation": "OPERATIONAL::NOT_EVALUATED",
+      "expected_result": "PRODUCER_NOT_REGISTERED"
+    },
+    {
+      "vector_id": "T217-NEG-006",
+      "producer_id": "PRODUCER::TARGET_OUTCOME_LOGIC",
+      "namespace": "OPERATIONAL",
+      "mutation": "OPERATIONAL::ALLOWED",
+      "expected_result": "TRANSITION_DENIED"
+    }
+  ],
+  "non_claims": {
+    "production_ready": false,
+    "release_candidate_ready": false,
+    "full_runtime_authorization_complete": false,
+    "recovery_harness_complete": false,
+    "t218_t222_recovery_complete": false,
+    "t223_t225_meta_type_complete": false,
+    "pilot_access_available": false,
+    "customer_acceptance": false
+  },
+  "revision_hash": "sha256:b33a9fbfd5ffee6b0a78895749bb0478d557217b6b391afc14b1b8ae6bd88869"
+}
