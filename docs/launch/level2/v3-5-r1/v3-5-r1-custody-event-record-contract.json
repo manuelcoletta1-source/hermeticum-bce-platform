@@ -1,0 +1,179 @@
+{
+  "proto": "HBCE-B2G-L2-JC2-V3-5-R1-CUSTODY-EVENT-RECORD-CONTRACT-v1",
+  "kind": "HBCE_B2G_LEVEL2_JOKER_C2_V3_5_R1_CUSTODY_EVENT_RECORD_CONTRACT",
+  "document_code": "HBCE-B2G-L2-JC2-PROG-2027-0001",
+  "specification_baseline": "V3.5-R1 - Forensic Evidence & Verifier Qualification Hardening - 26 September 2026",
+  "issue_id": "PROG-045",
+  "priority": "V3.5-R1-CUSTODY-EVENT-RECORD-CONTRACT",
+  "repository_baseline_commit": "3e9bde68e7e496666a9afb51ac80ec85604701d5",
+  "source_verifier_qualification_contract_ref": "docs/launch/level2/v3-5-r1/v3-5-r1-verifier-qualification-record-contract.json",
+  "source_verifier_qualification_contract_revision_hash": "sha256:304a485f506d4703d87b956f151f7968762f93a60481f6707df07bbd3d905b8f",
+  "source_verifier_qualification_contract_revision_hash_valid": true,
+  "governing_producer": "PRODUCER::EVIDENCE_CUSTODY",
+  "invariant": {
+    "event_hash_binds_event_body": true,
+    "previous_event_hash_binds_append_only_sequence": true,
+    "hash_does_not_prove_identity": true,
+    "hash_does_not_prove_trusted_time": true,
+    "hash_does_not_prove_legal_authenticity": true,
+    "time_source_is_distinct_from_digest": true,
+    "signature_or_seal_claim_requires_actual_reference": true,
+    "broken_custody_limits_claims_without_erasing_artifact": true,
+    "custody_event_does_not_emit_evidentiary_status": true
+  },
+  "contract_fields": [
+    "custody_event_id",
+    "evidence_id",
+    "source_ref",
+    "custodian_ref",
+    "event_type",
+    "event_time",
+    "time_source_ref",
+    "time_assurance",
+    "previous_event_hash",
+    "event_hash",
+    "signature_ref_optional",
+    "seal_ref_optional",
+    "verification_status",
+    "limitations"
+  ],
+  "allowed_event_types": [
+    "ACQUIRE",
+    "TRANSFORM",
+    "ACCESS",
+    "TRANSFER",
+    "EXPORT",
+    "HOLD",
+    "DELETE",
+    "SEAL"
+  ],
+  "allowed_time_assurance": [
+    "UNVERIFIED",
+    "SYSTEM_RECORDED",
+    "SIGNED_SOURCE",
+    "EXTERNAL_TIMESTAMP_REFERENCED"
+  ],
+  "allowed_verification_status": [
+    "VALID",
+    "INCOMPLETE",
+    "BROKEN",
+    "UNVERIFIED_TIME",
+    "INVALID_SEAL"
+  ],
+  "fail_closed_codes": [
+    "CUSTODY_EVENT_INVALID",
+    "CUSTODY_EVENT_ID_INVALID",
+    "CUSTODY_EVENT_TYPE_INVALID",
+    "TIME_PROVENANCE_INCOMPLETE",
+    "TIME_ASSURANCE_INVALID",
+    "CHAIN_OF_CUSTODY_BROKEN",
+    "CUSTODY_VERIFICATION_STATUS_INVALID",
+    "EVIDENCE_INTEGRITY_INVALID",
+    "EVIDENCE_SEAL_INVALID",
+    "UNVERIFIED_TIME",
+    "SIGNATURE_OR_SEAL_CLAIM_UNSUPPORTED"
+  ],
+  "runtime_guard_vectors": [
+    {
+      "vector_id": "B2G-T32",
+      "stimulus": "custody event lacks previous_event_hash",
+      "result": {
+        "valid": false,
+        "code": "CHAIN_OF_CUSTODY_BROKEN",
+        "custody_claim_permitted": false,
+        "evidentiary_promotion_permitted": false,
+        "proves_identity": false,
+        "proves_trusted_time": false,
+        "proves_legal_authenticity": false
+      }
+    },
+    {
+      "vector_id": "B2G-T33",
+      "stimulus": "material timestamp lacks time_source_ref",
+      "result": {
+        "valid": false,
+        "code": "TIME_PROVENANCE_INCOMPLETE",
+        "custody_claim_permitted": false,
+        "evidentiary_promotion_permitted": false,
+        "proves_identity": false,
+        "proves_trusted_time": false,
+        "proves_legal_authenticity": false
+      }
+    },
+    {
+      "vector_id": "B2G-T34",
+      "stimulus": "signed/sealed evidence claimed without signature or seal ref",
+      "result": {
+        "valid": false,
+        "code": "SIGNATURE_OR_SEAL_CLAIM_UNSUPPORTED",
+        "custody_claim_permitted": false,
+        "evidentiary_promotion_permitted": false,
+        "proves_identity": false,
+        "proves_trusted_time": false,
+        "proves_legal_authenticity": false
+      }
+    },
+    {
+      "vector_id": "B2G-T35",
+      "stimulus": "custody seal/hash verification fails",
+      "result": {
+        "valid": false,
+        "code": "EVIDENCE_SEAL_INVALID",
+        "custody_claim_permitted": false,
+        "evidentiary_promotion_permitted": false,
+        "proves_identity": false,
+        "proves_trusted_time": false,
+        "proves_legal_authenticity": false
+      }
+    },
+    {
+      "vector_id": "B2G-POS-002",
+      "stimulus": "valid custody event record",
+      "result": {
+        "valid": true,
+        "code": "CUSTODY_EVENT_VALID",
+        "custody_claim_permitted": true,
+        "evidentiary_promotion_permitted": false,
+        "proves_identity": false,
+        "proves_trusted_time": false,
+        "proves_legal_authenticity": false
+      }
+    }
+  ],
+  "closed_gap": {
+    "gap_id": "L2-GAP-003",
+    "title": "CustodyEventRecord and trusted-time boundary runtime contract missing",
+    "closed_by": "PROG-045",
+    "status": "CLOSED_CONTRACT_AND_VALIDATOR_BASELINE",
+    "custody_runtime_integration_complete": false
+  },
+  "remaining_open_gaps": [
+    "L2-GAP-004",
+    "L2-GAP-005",
+    "L2-GAP-006"
+  ],
+  "readiness_state": {
+    "custody_event_contract_created": true,
+    "custody_event_validator_created": true,
+    "custody_runtime_integration_complete": false,
+    "human_decision_runtime_complete": false,
+    "adapter_provenance_runtime_complete": false,
+    "b2g_t26_t43_harness_complete": false,
+    "b2g_candidate_ready": false,
+    "public_sector_production_ready": false
+  },
+  "next_required_program": "PROG-046-V3-5-R1-HUMAN-DECISION-PROFILE-CONTRACT",
+  "non_claims": {
+    "production_ready": false,
+    "b2g_candidate_ready": false,
+    "public_accreditation": false,
+    "procurement_eligibility": false,
+    "legal_validity": false,
+    "government_endorsement": false,
+    "trusted_time_certification": false,
+    "legal_chain_of_custody": false,
+    "external_validation_complete": false,
+    "level2_runtime_complete": false
+  },
+  "revision_hash": "sha256:9e956b38ece2d74bfa7960595149aabd84185dee2c19c82e2c63d9e9a57574b4"
+}
