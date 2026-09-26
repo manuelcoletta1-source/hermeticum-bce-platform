@@ -1,0 +1,189 @@
+{
+  "proto": "HBCE-P0-MARKET-V2-072-BUYER-FEEDBACK-BRIDGE-v1",
+  "kind": "HBCE_P0_MARKET_V2_072_BUYER_FEEDBACK_BRIDGE",
+  "document_code": "HBCE-B2B-L1-MATRIX-PROG-2027-0001",
+  "specification_baseline": "V2.9 - 25 September 2026",
+  "issue_id": "V2-072",
+  "priority": "P0-MARKET",
+  "depends_on": [
+    "V2-066",
+    "V2-067",
+    "V2-070",
+    "V2-071"
+  ],
+  "market_gate": "G9_MARKET_INGRESSION_OPERATIONAL",
+  "repository_baseline_commit": "d818513b99c1be626d8a84491f1db13c0c7d2e8a",
+  "source_github_lead_registry_ref": "docs/launch/level1/market/v2-066-github-lead-registry.json",
+  "source_github_lead_registry_revision_hash": "sha256:c5c1f49c7bfb5ba8fa5ac03f84b1a70deefec8c631278b3a636ecf87d85b0653",
+  "source_qualification_guards_ref": "docs/launch/level1/market/v2-067-qualification-guards.json",
+  "source_qualification_guards_revision_hash": "sha256:4bf1812b2476fa800808849b4020c135c2f67df6052916976188621ca28dd1b2",
+  "source_pipeline_state_machine_ref": "docs/launch/level1/market/v2-070-pipeline-state-machine.json",
+  "source_pipeline_state_machine_revision_hash": "sha256:5bc51dbd5ccf5b1befc92b7fae4b16a78cb9daacfda0f7a052c6191abbe1f0f0",
+  "source_market_technical_separation_ref": "docs/launch/level1/market/v2-071-market-technical-separation.json",
+  "source_market_technical_separation_revision_hash": "sha256:457c5300378ae85b8fc11a884e037c6fa88b15aa2ace7103a3733533a61d3d54",
+  "status": "INITIALIZED_NOT_READY",
+  "readiness_status": "BLOCKED",
+  "gate_claimed": false,
+  "g9_ready": false,
+  "buyer_feedback_bridge_initialized": true,
+  "feedback_recording_enabled": true,
+  "automatic_product_change_allowed": false,
+  "automatic_technical_gate_promotion_allowed": false,
+  "automatic_profile_satisfied_mutation_allowed": false,
+  "automatic_public_claim_change_allowed": false,
+  "human_triage_required": true,
+  "change_control_required": true,
+  "market_technical_boundary_preserved": true,
+  "feedback_record_contract": {
+    "feedback_id": "required stable id",
+    "source_lead_id": "required",
+    "source_pipeline_state": "required",
+    "source_event_ref": "required",
+    "buyer_problem_statement": "required",
+    "requested_capability_or_constraint": "required",
+    "evidence_refs": "required array",
+    "captured_at": "required timestamp",
+    "captured_by": "required actor",
+    "triage_status": "OBSERVED",
+    "product_backlog_candidate": false,
+    "change_request_candidate": false,
+    "matrix_impact_candidate": false,
+    "public_claim_review_candidate": false
+  },
+  "allowed_feedback_states": [
+    "OBSERVED",
+    "TRIAGED",
+    "BACKLOG_CANDIDATE",
+    "CHANGE_REQUEST_CANDIDATE",
+    "MATRIX_IMPACT_CANDIDATE",
+    "CLAIM_SET_REVIEW_CANDIDATE",
+    "ACCEPTED_FOR_BUILD_REVIEW",
+    "REJECTED",
+    "PARKED"
+  ],
+  "bridge_rules": [
+    {
+      "rule_id": "FEEDBACK_REQUIRES_BUYER_PROBLEM_EVIDENCE",
+      "failure_result": "FEEDBACK_REJECTED",
+      "rule": "Feedback must contain a traceable buyer problem or constraint."
+    },
+    {
+      "rule_id": "NO_FEEDBACK_TO_TECHNICAL_GATE",
+      "failure_result": "MARKET_TECHNICAL_BOUNDARY_VIOLATION",
+      "rule": "Feedback cannot satisfy technical gates."
+    },
+    {
+      "rule_id": "NO_FEEDBACK_TO_PROFILE_SATISFIED",
+      "failure_result": "MARKET_TECHNICAL_BOUNDARY_VIOLATION",
+      "rule": "Feedback cannot set PROFILE_SATISFIED."
+    },
+    {
+      "rule_id": "NO_PRODUCT_CHANGE_WITHOUT_CHANGE_CONTROL",
+      "failure_result": "CHANGE_CONTROL_REQUIRED",
+      "rule": "Feedback cannot mutate product scope without change-control review."
+    },
+    {
+      "rule_id": "NO_PUBLIC_CLAIM_CHANGE_WITHOUT_REVIEW",
+      "failure_result": "CLAIM_SET_REVIEW_REQUIRED",
+      "rule": "Feedback cannot mutate public claims without claim review."
+    },
+    {
+      "rule_id": "NO_REQUIREMENT_ACCEPTANCE_WITHOUT_HUMAN_TRIAGE",
+      "failure_result": "HUMAN_TRIAGE_REQUIRED",
+      "rule": "Feedback cannot become an accepted requirement without human triage."
+    },
+    {
+      "rule_id": "DO_NOT_CONTACT_LIMITS_FEEDBACK_USE",
+      "failure_result": "DO_NOT_CONTACT_BLOCK",
+      "rule": "Opt-out prevents new contact and limits feedback use to existing lawful records."
+    },
+    {
+      "rule_id": "UNTRACEABLE_FEEDBACK_IS_INVALID",
+      "failure_result": "SNAPSHOT_INVALID",
+      "rule": "Feedback without source event or evidence is invalid."
+    }
+  ],
+  "allowed_cross_domain_effects": [
+    {
+      "from": "MARKET_FEEDBACK",
+      "to": "PRODUCT_BACKLOG",
+      "condition": "buyer problem evidence recorded and human triage completed",
+      "effect": "create backlog candidate",
+      "result": "BACKLOG_CANDIDATE_CREATED"
+    },
+    {
+      "from": "MARKET_FEEDBACK",
+      "to": "CHANGE_CONTROL",
+      "condition": "scope, claim, matrix or gate impact suspected",
+      "effect": "create change request candidate",
+      "result": "CHANGE_REQUEST_CANDIDATE_CREATED"
+    },
+    {
+      "from": "MARKET_FEEDBACK",
+      "to": "MATRIX",
+      "condition": "claim/requisite/gate/test impact suspected",
+      "effect": "create matrix impact candidate only",
+      "result": "MATRIX_IMPACT_CANDIDATE_CREATED_NO_GATE_CHANGE"
+    },
+    {
+      "from": "MARKET_FEEDBACK",
+      "to": "PUBLIC_SURFACE",
+      "condition": "buyer language suggests claim change",
+      "effect": "create claim set review candidate only",
+      "result": "CLAIM_SET_REVIEW_REQUIRED"
+    }
+  ],
+  "blocked_feedback_fixtures": [
+    {
+      "fixture_id": "FB-001",
+      "stimulus": "Feedback attempts to set PROFILE_SATISFIED true.",
+      "expected_result": "MARKET_TECHNICAL_BOUNDARY_VIOLATION"
+    },
+    {
+      "fixture_id": "FB-002",
+      "stimulus": "Feedback attempts to mark G9 operational.",
+      "expected_result": "MARKET_TECHNICAL_BOUNDARY_VIOLATION"
+    },
+    {
+      "fixture_id": "FB-003",
+      "stimulus": "Buyer comment attempts to change public claim without review.",
+      "expected_result": "CLAIM_SET_REVIEW_REQUIRED"
+    },
+    {
+      "fixture_id": "FB-004",
+      "stimulus": "Buyer request attempts direct product mutation.",
+      "expected_result": "CHANGE_CONTROL_REQUIRED"
+    },
+    {
+      "fixture_id": "FB-005",
+      "stimulus": "Untraceable feedback without source event.",
+      "expected_result": "SNAPSHOT_INVALID"
+    },
+    {
+      "fixture_id": "FB-006",
+      "stimulus": "Feedback from do-not-contact path attempts new outreach.",
+      "expected_result": "DO_NOT_CONTACT_BLOCK"
+    }
+  ],
+  "current_feedback_queue": {
+    "initialized": true,
+    "total_feedback_records": 0,
+    "backlog_candidates": 0,
+    "change_request_candidates": 0,
+    "matrix_impact_candidates": 0,
+    "claim_set_review_candidates": 0
+  },
+  "non_claims": {
+    "g9_market_ingression_operational": false,
+    "buyer_feedback_bridge_operational": false,
+    "product_backlog_updated": false,
+    "change_request_opened": false,
+    "matrix_row_changed": false,
+    "public_claim_changed": false,
+    "technical_gate_satisfied": false,
+    "profile_satisfied": false,
+    "customer_or_client_existence": false,
+    "pilot_readiness": false
+  },
+  "revision_hash": "sha256:1b5914ede66cd22bb13dc7bf9b51bad7006e86534e8b1c6ab80bcac00ef71aa9"
+}
