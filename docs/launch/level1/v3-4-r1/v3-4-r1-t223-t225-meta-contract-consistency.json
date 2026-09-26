@@ -1,0 +1,130 @@
+{
+  "proto": "HBCE-B2B-L1-V3-4-R1-T223-T225-META-CONTRACT-CONSISTENCY-v1",
+  "kind": "HBCE_B2B_L1_V3_4_R1_T223_T225_META_CONTRACT_CONSISTENCY",
+  "document_code": "HBCE-B2B-L1-MATRIX-PROG-2027-0001",
+  "specification_baseline": "V3.4-R1 - Controlled Corrective Revision - 26 September 2026",
+  "issue_id": "PROG-035",
+  "acceptance_tests": [
+    "T223",
+    "T224",
+    "T225"
+  ],
+  "priority": "V3.4-R1-BUILD-ASSURANCE",
+  "repository_baseline_commit": "47ddedf6e07f41ba6e06511bfe9d06de49c931cd",
+  "source_producer_registry_ref": "docs/launch/level1/v3-4-r1/v3-4-r1-producer-registry-baseline.json",
+  "source_producer_registry_revision_hash": "sha256:fc0541689353acc718184484e39906b8d96d9914b102131ff3d27e125d6c6787",
+  "source_t217_enforcement_ref": "docs/launch/level1/v3-4-r1/v3-4-r1-t217-producer-binding-enforcement.json",
+  "source_t217_enforcement_revision_hash": "sha256:b33a9fbfd5ffee6b0a78895749bb0478d557217b6b391afc14b1b8ae6bd88869",
+  "source_t218_t222_recovery_ref": "docs/launch/level1/v3-4-r1/v3-4-r1-t218-t222-recovery-coverage-harness.json",
+  "source_t218_t222_recovery_revision_hash": "sha256:a0d34de080f0f2c3015a29600620111879d5243b786e7a386feab2b9f1c66fbf",
+  "runtime_module_path": "runtime/schema/validate-meta-type-consistency.js",
+  "verification_test_path": "tests/ftel/integration/prog-035-v3-4-r1-t223-t225-meta-contract-consistency.test.js",
+  "status": "IMPLEMENTED_TESTED_NOT_RELEASE_READY",
+  "readiness_status": "BLOCKED",
+  "gate_claimed": false,
+  "consistency_coverage": [
+    {
+      "test_id": "T223",
+      "stimulus": "Combination classification missing COMBINATION::* namespace or using unregistered value",
+      "required_result": "SCHEMA_CLASSIFICATION_INVALID / TYPE_MISMATCH",
+      "invariant": "COMBINATION classification remains namespace-bound and registry-bound"
+    },
+    {
+      "test_id": "T224",
+      "stimulus": "Nested token NEW_EVALUATION::OPERATIONAL::ALLOWED used as state",
+      "required_result": "TOKEN_SHAPE_INVALID",
+      "invariant": "Evaluation identity lives in fields, not nested state tokens"
+    },
+    {
+      "test_id": "T225",
+      "stimulus": "CONTRACT::* transition produced by producer other than PRODUCER::CONTRACT_CONTROL",
+      "required_result": "CONTRACT_PRODUCER_INVALID / TRANSITION_DENIED",
+      "invariant": "CONTRACT lifecycle remains producer-bound to CONTRACT_CONTROL"
+    }
+  ],
+  "enforcement_scope": {
+    "validates_combination_namespace": true,
+    "validates_combination_registry_value": true,
+    "blocks_nested_state_tokens": true,
+    "separates_state_token_from_evaluation_identity": true,
+    "enforces_contract_control_producer": true,
+    "uses_t217_producer_binding": true,
+    "closes_v3_4_r1_schema_hardening_first_block": true
+  },
+  "non_claims": {
+    "production_ready": false,
+    "release_candidate_ready": false,
+    "full_runtime_authorization_complete": false,
+    "full_recovery_program_complete": false,
+    "pilot_access_available": false,
+    "customer_acceptance": false,
+    "v3_5_required_for_schema_refinement": false
+  },
+  "consistency_vectors": [
+    {
+      "vector_id": "T223-POS-001",
+      "test_id": "T223",
+      "stimulus": "PRODUCER::SCHEMA_REGISTRY classifies Combination Matrix cell as COMBINATION::VALID",
+      "classification": "COMBINATION::VALID",
+      "producer_id": "PRODUCER::SCHEMA_REGISTRY",
+      "expected_result": "SCHEMA_CLASSIFICATION_VALID"
+    },
+    {
+      "vector_id": "T223-NEG-001",
+      "test_id": "T223",
+      "stimulus": "Combination classification uses un-namespaced VALID token",
+      "classification": "VALID",
+      "producer_id": "PRODUCER::SCHEMA_REGISTRY",
+      "expected_result": "SCHEMA_CLASSIFICATION_INVALID"
+    },
+    {
+      "vector_id": "T223-NEG-002",
+      "test_id": "T223",
+      "stimulus": "Combination classification uses unregistered COMBINATION::MAGIC token",
+      "classification": "COMBINATION::MAGIC",
+      "producer_id": "PRODUCER::SCHEMA_REGISTRY",
+      "expected_result": "TYPE_MISMATCH"
+    },
+    {
+      "vector_id": "T224-NEG-001",
+      "test_id": "T224",
+      "stimulus": "Nested token NEW_EVALUATION::OPERATIONAL::ALLOWED used as state",
+      "token": "NEW_EVALUATION::OPERATIONAL::ALLOWED",
+      "expected_result": "TOKEN_SHAPE_INVALID"
+    },
+    {
+      "vector_id": "T224-POS-001",
+      "test_id": "T224",
+      "stimulus": "OPERATIONAL::ALLOWED with evaluation_id and prior_evaluation_ref held as fields",
+      "token": "OPERATIONAL::ALLOWED",
+      "evaluation_id": "eval-new-001",
+      "prior_evaluation_ref": "eval-old-001",
+      "expected_result": "TOKEN_SHAPE_VALID"
+    },
+    {
+      "vector_id": "T225-POS-001",
+      "test_id": "T225",
+      "stimulus": "PRODUCER::CONTRACT_CONTROL produces CONTRACT::RELEASED",
+      "producer_id": "PRODUCER::CONTRACT_CONTROL",
+      "mutation": "CONTRACT::RELEASED",
+      "expected_result": "CONTRACT_TRANSITION_ALLOWED"
+    },
+    {
+      "vector_id": "T225-NEG-001",
+      "test_id": "T225",
+      "stimulus": "PRODUCER::HBCE_CORE attempts CONTRACT::RELEASED",
+      "producer_id": "PRODUCER::HBCE_CORE",
+      "mutation": "CONTRACT::RELEASED",
+      "expected_result": "CONTRACT_PRODUCER_INVALID"
+    },
+    {
+      "vector_id": "T225-NEG-002",
+      "test_id": "T225",
+      "stimulus": "PRODUCER::CONTRACT_CONTROL attempts unregistered CONTRACT::IMPLEMENTED",
+      "producer_id": "PRODUCER::CONTRACT_CONTROL",
+      "mutation": "CONTRACT::IMPLEMENTED",
+      "expected_result": "TRANSITION_DENIED"
+    }
+  ],
+  "revision_hash": "sha256:57aa25c299100647be7215ddd771945709be2b872951406b62fc0f8a54e05ca5"
+}
