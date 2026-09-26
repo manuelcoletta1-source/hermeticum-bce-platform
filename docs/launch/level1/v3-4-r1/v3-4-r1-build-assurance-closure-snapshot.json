@@ -1,0 +1,135 @@
+{
+  "proto": "HBCE-B2B-L1-V3-4-R1-BUILD-ASSURANCE-CLOSURE-SNAPSHOT-v1",
+  "kind": "HBCE_B2B_L1_V3_4_R1_BUILD_ASSURANCE_CLOSURE_SNAPSHOT",
+  "document_code": "HBCE-B2B-L1-MATRIX-PROG-2027-0001",
+  "specification_baseline": "V3.4-R1 - Controlled Corrective Revision - 26 September 2026",
+  "issue_id": "PROG-036",
+  "priority": "V3.4-R1-BUILD-ASSURANCE",
+  "repository_baseline_commit": "6c5dd5139f4ca455cda67b61826b272fd5b1240f",
+  "source_artifacts": [
+    {
+      "issue_id": "PROG-032",
+      "role": "producer_registry_baseline",
+      "path": "docs/launch/level1/v3-4-r1/v3-4-r1-producer-registry-baseline.json",
+      "proto": "HBCE-B2B-L1-V3-4-R1-PRODUCER-REGISTRY-BASELINE-v1",
+      "kind": "HBCE_B2B_L1_V3_4_R1_PRODUCER_REGISTRY_BASELINE",
+      "revision_hash": "sha256:fc0541689353acc718184484e39906b8d96d9914b102131ff3d27e125d6c6787",
+      "status": "INITIALIZED_NOT_OPERATIONAL",
+      "readiness_status": "BLOCKED"
+    },
+    {
+      "issue_id": "PROG-033",
+      "role": "t217_producer_binding_enforcement",
+      "path": "docs/launch/level1/v3-4-r1/v3-4-r1-t217-producer-binding-enforcement.json",
+      "proto": "HBCE-B2B-L1-V3-4-R1-T217-PRODUCER-BINDING-ENFORCEMENT-v1",
+      "kind": "HBCE_B2B_L1_V3_4_R1_T217_PRODUCER_BINDING_ENFORCEMENT",
+      "revision_hash": "sha256:b33a9fbfd5ffee6b0a78895749bb0478d557217b6b391afc14b1b8ae6bd88869",
+      "status": "IMPLEMENTED_TESTED_NOT_RELEASE_READY",
+      "readiness_status": "BLOCKED"
+    },
+    {
+      "issue_id": "PROG-034",
+      "role": "t218_t222_recovery_coverage_harness",
+      "path": "docs/launch/level1/v3-4-r1/v3-4-r1-t218-t222-recovery-coverage-harness.json",
+      "proto": "HBCE-B2B-L1-V3-4-R1-T218-T222-RECOVERY-COVERAGE-HARNESS-v1",
+      "kind": "HBCE_B2B_L1_V3_4_R1_T218_T222_RECOVERY_COVERAGE_HARNESS",
+      "revision_hash": "sha256:a0d34de080f0f2c3015a29600620111879d5243b786e7a386feab2b9f1c66fbf",
+      "status": "IMPLEMENTED_TESTED_NOT_RELEASE_READY",
+      "readiness_status": "BLOCKED"
+    },
+    {
+      "issue_id": "PROG-035",
+      "role": "t223_t225_meta_contract_consistency",
+      "path": "docs/launch/level1/v3-4-r1/v3-4-r1-t223-t225-meta-contract-consistency.json",
+      "proto": "HBCE-B2B-L1-V3-4-R1-T223-T225-META-CONTRACT-CONSISTENCY-v1",
+      "kind": "HBCE_B2B_L1_V3_4_R1_T223_T225_META_CONTRACT_CONSISTENCY",
+      "revision_hash": "sha256:57aa25c299100647be7215ddd771945709be2b872951406b62fc0f8a54e05ca5",
+      "status": "IMPLEMENTED_TESTED_NOT_RELEASE_READY",
+      "readiness_status": "BLOCKED"
+    }
+  ],
+  "acceptance_chain": [
+    {
+      "test_id": "T217",
+      "source_issue_id": "PROG-033",
+      "required_property": "Producer binding enforcement",
+      "runtime_module_path": "runtime/producer/validate-producer-binding.js"
+    },
+    {
+      "test_id": "T218",
+      "source_issue_id": "PROG-034",
+      "required_property": "OPERATIONAL::FAILED recovers through new run/evaluation",
+      "runtime_module_path": "runtime/recovery/validate-recovery-lineage.js"
+    },
+    {
+      "test_id": "T219",
+      "source_issue_id": "PROG-034",
+      "required_property": "GATE::BLOCKED recovers through new gate evaluation",
+      "runtime_module_path": "runtime/recovery/validate-recovery-lineage.js"
+    },
+    {
+      "test_id": "T220",
+      "source_issue_id": "PROG-034",
+      "required_property": "ASSURANCE::INVALIDATED recovers through new validation context",
+      "runtime_module_path": "runtime/recovery/validate-recovery-lineage.js"
+    },
+    {
+      "test_id": "T221",
+      "source_issue_id": "PROG-034",
+      "required_property": "AUTHORITY_UNRESOLVED remains non-retroactive and creates new evaluation",
+      "runtime_module_path": "runtime/recovery/validate-recovery-lineage.js"
+    },
+    {
+      "test_id": "T222",
+      "source_issue_id": "PROG-034",
+      "required_property": "CONTRACT::RETIRED recovers through new contract version",
+      "runtime_module_path": "runtime/recovery/validate-recovery-lineage.js"
+    },
+    {
+      "test_id": "T223",
+      "source_issue_id": "PROG-035",
+      "required_property": "COMBINATION::* namespace and registry-bound classification",
+      "runtime_module_path": "runtime/schema/validate-meta-type-consistency.js"
+    },
+    {
+      "test_id": "T224",
+      "source_issue_id": "PROG-035",
+      "required_property": "Nested state tokens blocked",
+      "runtime_module_path": "runtime/schema/validate-meta-type-consistency.js"
+    },
+    {
+      "test_id": "T225",
+      "source_issue_id": "PROG-035",
+      "required_property": "CONTRACT::* transitions bound to PRODUCER::CONTRACT_CONTROL",
+      "runtime_module_path": "runtime/schema/validate-meta-type-consistency.js"
+    }
+  ],
+  "verification_tests": [
+    "tests/ftel/integration/prog-032-v3-4-r1-producer-registry-baseline.test.js",
+    "tests/ftel/integration/prog-033-v3-4-r1-t217-producer-binding-enforcement.test.js",
+    "tests/ftel/integration/prog-034-v3-4-r1-t218-t222-recovery-coverage-harness.test.js",
+    "tests/ftel/integration/prog-035-v3-4-r1-t223-t225-meta-contract-consistency.test.js",
+    "tests/ftel/integration/prog-036-v3-4-r1-build-assurance-closure-snapshot.test.js"
+  ],
+  "closure_status": {
+    "producer_registry_baseline_present": true,
+    "t217_producer_binding_enforcement_present": true,
+    "t218_t222_recovery_coverage_present": true,
+    "t223_t225_meta_contract_consistency_present": true,
+    "t217_t225_acceptance_chain_present": true,
+    "first_v3_4_r1_schema_hardening_block_closed": true,
+    "downstream_e2e_evidence_required": true,
+    "release_candidate_gate_still_required": true
+  },
+  "non_claims": {
+    "production_ready": false,
+    "release_candidate_ready": false,
+    "pilot_access_available": false,
+    "customer_acceptance": false,
+    "full_runtime_authorization_complete": false,
+    "full_recovery_program_complete": false,
+    "external_validation_complete": false,
+    "v3_5_required_for_schema_refinement": false
+  },
+  "revision_hash": "sha256:19550406afb2434e7c2287240531631a6a2ff5b52aca4b569ebeefcab7982b94"
+}
