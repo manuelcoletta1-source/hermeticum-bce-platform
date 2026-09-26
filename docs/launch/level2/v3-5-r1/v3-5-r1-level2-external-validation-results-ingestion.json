@@ -1,0 +1,223 @@
+{
+  "proto": "HBCE-B2G-L2-JC2-V3-5-R1-LEVEL2-EXTERNAL-VALIDATION-RESULTS-INGESTION-v1",
+  "kind": "HBCE_B2G_LEVEL2_JOKER_C2_V3_5_R1_LEVEL2_EXTERNAL_VALIDATION_RESULTS_INGESTION",
+  "document_code": "HBCE-B2G-L2-JC2-PROG-2027-0001",
+  "specification_baseline": "V3.5-R1 - Forensic Evidence & Verifier Qualification Hardening - 26 September 2026",
+  "issue_id": "PROG-051",
+  "priority": "V3.5-R1-LEVEL2-EXTERNAL-VALIDATION-RESULTS-INGESTION",
+  "repository_baseline_commit": "cb5798be98e6fbafdc1384d4e96d28e1b07d00a6",
+  "source_external_validation_control_ref": "docs/launch/level2/v3-5-r1/v3-5-r1-level2-external-validation-control.json",
+  "source_external_validation_control_revision_hash": "sha256:42ef35148649323b9c536fd8aa0c361f427c65c548f19674623b77b9294ab232",
+  "source_external_validation_control_revision_hash_valid": true,
+  "allowed_result_statuses": [
+    "RECEIVED",
+    "INGESTED_FOR_ASSESSMENT",
+    "REJECTED_INCOMPLETE",
+    "REJECTED_SCOPE_MISMATCH",
+    "REJECTED_UNSUPPORTED_CLAIM",
+    "ASSESSMENT_REQUIRED"
+  ],
+  "allowed_review_outcomes": [
+    "NO_OPINION",
+    "PASS_WITH_LIMITATIONS",
+    "PASS",
+    "FAIL",
+    "INCONCLUSIVE"
+  ],
+  "required_result_sections": [
+    "scope_statement",
+    "method_statement",
+    "evidence_reviewed",
+    "findings",
+    "limitations",
+    "reviewer_attestation"
+  ],
+  "ingestion_semantics": {
+    "result_ingestion_is_not_external_validation_completion": true,
+    "result_ingestion_is_not_b2g_candidate_readiness": true,
+    "pass_with_limitations_requires_followup_gate": true,
+    "pass_result_does_not_create_public_accreditation": true,
+    "pass_result_does_not_create_procurement_eligibility": true,
+    "pass_result_does_not_create_legal_validity": true,
+    "government_endorsement_must_not_be_inferred": true
+  },
+  "result_contract_fields": [
+    "result_id",
+    "result_version",
+    "result_status",
+    "package_id",
+    "package_version",
+    "reviewer_ref",
+    "review_outcome",
+    "result_document_ref",
+    "result_document_hash",
+    "reviewed_scope",
+    "result_sections_present",
+    "limitations",
+    "findings_ref",
+    "reviewer_attestation_ref",
+    "ingested_at",
+    "claims_external_validation_complete",
+    "claims_b2g_candidate_ready",
+    "claims_public_sector_production_ready",
+    "claims_public_accreditation",
+    "claims_procurement_eligibility",
+    "claims_legal_validity",
+    "claims_government_endorsement"
+  ],
+  "fail_closed_codes": [
+    "PACKAGE_EXTERNAL_VALIDATION_PACKAGE_MISSING",
+    "PACKAGE_EXTERNAL_VALIDATION_PACKAGE_ID_INVALID",
+    "EXTERNAL_VALIDATION_RESULT_MISSING",
+    "EXTERNAL_VALIDATION_RESULT_ID_INVALID",
+    "EXTERNAL_VALIDATION_RESULT_STATUS_INVALID",
+    "RESULT_PACKAGE_BINDING_INVALID",
+    "RESULT_REVIEWER_BINDING_INVALID",
+    "REVIEW_OUTCOME_INVALID",
+    "RESULT_DOCUMENT_BINDING_MISSING",
+    "RESULT_SCOPE_MISSING",
+    "RESULT_SCOPE_INCOMPLETE",
+    "RESULT_SECTIONS_MISSING",
+    "RESULT_SECTIONS_INCOMPLETE",
+    "RESULT_FINDINGS_OR_ATTESTATION_MISSING",
+    "RESULT_INGESTION_TIME_MISSING",
+    "EXTERNAL_VALIDATION_COMPLETION_CLAIM_UNSUPPORTED",
+    "B2G_CANDIDATE_CLAIM_UNSUPPORTED",
+    "PUBLIC_SECTOR_PRODUCTION_CLAIM_UNSUPPORTED",
+    "PUBLIC_ACCREDITATION_CLAIM_UNSUPPORTED",
+    "PROCUREMENT_ELIGIBILITY_CLAIM_UNSUPPORTED",
+    "LEGAL_VALIDITY_CLAIM_UNSUPPORTED",
+    "GOVERNMENT_ENDORSEMENT_CLAIM_UNSUPPORTED"
+  ],
+  "runtime_guard_vectors": [
+    {
+      "vector_id": "B2G-EXTVAL-RESULT-T01",
+      "stimulus": "result missing",
+      "result": {
+        "valid": false,
+        "code": "EXTERNAL_VALIDATION_RESULT_MISSING",
+        "result_ingested_for_assessment": false,
+        "external_validation_complete": false,
+        "b2g_candidate_ready": false,
+        "public_sector_production_ready": false,
+        "public_accreditation_confirmed": false,
+        "legal_validity_confirmed": false,
+        "procurement_eligibility_confirmed": false
+      }
+    },
+    {
+      "vector_id": "B2G-EXTVAL-RESULT-T02",
+      "stimulus": "result not bound to accepted package",
+      "result": {
+        "valid": false,
+        "code": "RESULT_PACKAGE_BINDING_INVALID",
+        "result_ingested_for_assessment": false,
+        "external_validation_complete": false,
+        "b2g_candidate_ready": false,
+        "public_sector_production_ready": false,
+        "public_accreditation_confirmed": false,
+        "legal_validity_confirmed": false,
+        "procurement_eligibility_confirmed": false
+      }
+    },
+    {
+      "vector_id": "B2G-EXTVAL-RESULT-T03",
+      "stimulus": "reviewer mismatch",
+      "result": {
+        "valid": false,
+        "code": "RESULT_REVIEWER_BINDING_INVALID",
+        "result_ingested_for_assessment": false,
+        "external_validation_complete": false,
+        "b2g_candidate_ready": false,
+        "public_sector_production_ready": false,
+        "public_accreditation_confirmed": false,
+        "legal_validity_confirmed": false,
+        "procurement_eligibility_confirmed": false
+      }
+    },
+    {
+      "vector_id": "B2G-EXTVAL-RESULT-T04",
+      "stimulus": "result scope incomplete",
+      "result": {
+        "valid": false,
+        "code": "RESULT_SCOPE_INCOMPLETE",
+        "result_ingested_for_assessment": false,
+        "external_validation_complete": false,
+        "b2g_candidate_ready": false,
+        "public_sector_production_ready": false,
+        "public_accreditation_confirmed": false,
+        "legal_validity_confirmed": false,
+        "procurement_eligibility_confirmed": false
+      }
+    },
+    {
+      "vector_id": "B2G-EXTVAL-RESULT-T05",
+      "stimulus": "required result sections incomplete",
+      "result": {
+        "valid": false,
+        "code": "RESULT_SECTIONS_INCOMPLETE",
+        "result_ingested_for_assessment": false,
+        "external_validation_complete": false,
+        "b2g_candidate_ready": false,
+        "public_sector_production_ready": false,
+        "public_accreditation_confirmed": false,
+        "legal_validity_confirmed": false,
+        "procurement_eligibility_confirmed": false
+      }
+    },
+    {
+      "vector_id": "B2G-EXTVAL-RESULT-T06",
+      "stimulus": "unsupported readiness or legal claims",
+      "result": {
+        "valid": false,
+        "code": "EXTERNAL_VALIDATION_COMPLETION_CLAIM_UNSUPPORTED",
+        "result_ingested_for_assessment": false,
+        "external_validation_complete": false,
+        "b2g_candidate_ready": false,
+        "public_sector_production_ready": false,
+        "public_accreditation_confirmed": false,
+        "legal_validity_confirmed": false,
+        "procurement_eligibility_confirmed": false
+      }
+    },
+    {
+      "vector_id": "B2G-EXTVAL-RESULT-POS-001",
+      "stimulus": "complete result ingested for assessment only",
+      "result": {
+        "valid": true,
+        "code": "EXTERNAL_VALIDATION_RESULT_INGESTED_FOR_ASSESSMENT",
+        "result_ingested_for_assessment": true,
+        "external_validation_complete": false,
+        "b2g_candidate_ready": false,
+        "public_sector_production_ready": false,
+        "public_accreditation_confirmed": false,
+        "legal_validity_confirmed": false,
+        "procurement_eligibility_confirmed": false
+      }
+    }
+  ],
+  "readiness_state": {
+    "external_validation_results_ingestion_created": true,
+    "external_validation_result_contract_created": true,
+    "external_validation_result_validator_created": true,
+    "external_validation_result_ingested_for_assessment": true,
+    "external_validation_complete": false,
+    "b2g_candidate_ready": false,
+    "public_sector_production_ready": false,
+    "source_external_validation_control_present": true
+  },
+  "next_required_program": "PROG-052-V3-5-R1-LEVEL2-EXTERNAL-VALIDATION-CLOSURE-GATE",
+  "non_claims": {
+    "production_ready": false,
+    "b2g_candidate_ready": false,
+    "public_accreditation": false,
+    "procurement_eligibility": false,
+    "legal_validity": false,
+    "government_endorsement": false,
+    "public_authority_created": false,
+    "external_validation_complete": false,
+    "level2_runtime_complete": false,
+    "automatic_pilot_promotion": false
+  },
+  "revision_hash": "sha256:4d4c66d2ad355b01b49c54922475a578d13374e0cab2c74790df253511cae9be"
+}
