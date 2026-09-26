@@ -1,0 +1,175 @@
+{
+  "proto": "HBCE-B2G-L2-JC2-V3-5-R1-VERIFIER-QUALIFICATION-RECORD-CONTRACT-v1",
+  "kind": "HBCE_B2G_LEVEL2_JOKER_C2_V3_5_R1_VERIFIER_QUALIFICATION_RECORD_CONTRACT",
+  "document_code": "HBCE-B2G-L2-JC2-PROG-2027-0001",
+  "specification_baseline": "V3.5-R1 - Forensic Evidence & Verifier Qualification Hardening - 26 September 2026",
+  "issue_id": "PROG-044",
+  "priority": "V3.5-R1-VERIFIER-QUALIFICATION-RECORD-CONTRACT",
+  "repository_baseline_commit": "132fa7050cfc24d29a7fb33bae06b0bed0fe3040",
+  "source_level2_producer_registry_ref": "docs/launch/level2/v3-5-r1/v3-5-r1-level2-producer-registry-baseline.json",
+  "source_level2_producer_registry_revision_hash": "sha256:080e0271e661df86a8dda06a3ebff0eee7824ea192504c11956f5bd8b348caac",
+  "source_level2_producer_registry_revision_hash_valid": true,
+  "governing_producer": "PRODUCER::VERIFIER_QUALIFICATION_CONTROL",
+  "assurance_verdict_producer": "PRODUCER::QUALIFIED_VERIFIER",
+  "invariant": {
+    "internal_qualification_is_not_public_accreditation": true,
+    "qualification_record_does_not_emit_assurance_verdict": true,
+    "assurance_proven_requires_active_scope_matched_qualification": true,
+    "no_active_scope_matched_qualification_no_proven": true,
+    "neither_producer_creates_public_authority": true
+  },
+  "contract_fields": [
+    "verifier_id",
+    "record_version",
+    "qualification_class",
+    "qualification_scope",
+    "qualification_basis",
+    "independence_status",
+    "conflict_of_interest_status",
+    "valid_from",
+    "valid_until",
+    "revocation_status",
+    "revocation_ref",
+    "qualification_evidence_ref",
+    "external_accreditation_ref_optional",
+    "jurisdiction_ref_optional"
+  ],
+  "allowed_qualification_classes": [
+    "INTERNAL_TECHNICAL",
+    "CUSTOMER_ACCEPTED",
+    "EXTERNAL_ACCREDITATION_REFERENCED"
+  ],
+  "fail_closed_codes": [
+    "VERIFIER_IDENTITY_INVALID",
+    "QUALIFICATION_CLASS_INVALID",
+    "QUALIFICATION_SCOPE_MISMATCH",
+    "VERIFIER_NOT_QUALIFIED",
+    "QUALIFICATION_NOT_YET_VALID",
+    "QUALIFICATION_EXPIRED",
+    "QUALIFICATION_REVOKED",
+    "QUALIFICATION_INDEPENDENCE_INVALID",
+    "ACCREDITATION_CLAIM_UNSUPPORTED"
+  ],
+  "runtime_guard_vectors": [
+    {
+      "vector_id": "B2G-T26",
+      "stimulus": "missing qualification record",
+      "result": {
+        "valid": false,
+        "code": "VERIFIER_NOT_QUALIFIED",
+        "assurance_verdict_permitted_within_scope": false,
+        "produces_assurance_verdict": false,
+        "creates_public_authority": false,
+        "creates_public_accreditation": false
+      }
+    },
+    {
+      "vector_id": "B2G-T27",
+      "stimulus": "scope mismatch",
+      "result": {
+        "valid": false,
+        "code": "QUALIFICATION_SCOPE_MISMATCH",
+        "assurance_verdict_permitted_within_scope": false,
+        "produces_assurance_verdict": false,
+        "creates_public_authority": false,
+        "creates_public_accreditation": false
+      }
+    },
+    {
+      "vector_id": "B2G-T28",
+      "stimulus": "qualification expired",
+      "result": {
+        "valid": false,
+        "code": "QUALIFICATION_EXPIRED",
+        "assurance_verdict_permitted_within_scope": false,
+        "produces_assurance_verdict": false,
+        "creates_public_authority": false,
+        "creates_public_accreditation": false
+      }
+    },
+    {
+      "vector_id": "B2G-T29",
+      "stimulus": "qualification revoked",
+      "result": {
+        "valid": false,
+        "code": "QUALIFICATION_REVOKED",
+        "assurance_verdict_permitted_within_scope": false,
+        "produces_assurance_verdict": false,
+        "creates_public_authority": false,
+        "creates_public_accreditation": false
+      }
+    },
+    {
+      "vector_id": "B2G-T30",
+      "stimulus": "independence conflict",
+      "result": {
+        "valid": false,
+        "code": "QUALIFICATION_INDEPENDENCE_INVALID",
+        "assurance_verdict_permitted_within_scope": false,
+        "produces_assurance_verdict": false,
+        "creates_public_authority": false,
+        "creates_public_accreditation": false
+      }
+    },
+    {
+      "vector_id": "B2G-T31",
+      "stimulus": "public accreditation unsupported",
+      "result": {
+        "valid": false,
+        "code": "ACCREDITATION_CLAIM_UNSUPPORTED",
+        "assurance_verdict_permitted_within_scope": false,
+        "produces_assurance_verdict": false,
+        "creates_public_authority": false,
+        "creates_public_accreditation": false
+      }
+    },
+    {
+      "vector_id": "B2G-POS-001",
+      "stimulus": "valid internal technical qualification",
+      "result": {
+        "valid": true,
+        "code": "QUALIFICATION_ACTIVE_SCOPE_MATCHED",
+        "assurance_verdict_permitted_within_scope": true,
+        "produces_assurance_verdict": false,
+        "creates_public_authority": false,
+        "creates_public_accreditation": false
+      }
+    }
+  ],
+  "closed_gap": {
+    "gap_id": "L2-GAP-002",
+    "title": "VerifierQualificationRecord runtime contract missing",
+    "closed_by": "PROG-044",
+    "status": "CLOSED_CONTRACT_AND_VALIDATOR_BASELINE",
+    "assurance_transition_integration_complete": false
+  },
+  "remaining_open_gaps": [
+    "L2-GAP-003",
+    "L2-GAP-004",
+    "L2-GAP-005",
+    "L2-GAP-006"
+  ],
+  "readiness_state": {
+    "verifier_qualification_contract_created": true,
+    "verifier_qualification_validator_created": true,
+    "assurance_transition_integration_complete": false,
+    "custody_runtime_complete": false,
+    "human_decision_runtime_complete": false,
+    "adapter_provenance_runtime_complete": false,
+    "b2g_t26_t43_harness_complete": false,
+    "b2g_candidate_ready": false,
+    "public_sector_production_ready": false
+  },
+  "next_required_program": "PROG-045-V3-5-R1-CUSTODY-EVENT-RECORD-CONTRACT",
+  "non_claims": {
+    "production_ready": false,
+    "b2g_candidate_ready": false,
+    "public_accreditation": false,
+    "procurement_eligibility": false,
+    "legal_validity": false,
+    "government_endorsement": false,
+    "external_validation_complete": false,
+    "level2_runtime_complete": false
+  },
+  "revision_hash": "sha256:304a485f506d4703d87b956f151f7968762f93a60481f6707df07bbd3d905b8f"
+}
