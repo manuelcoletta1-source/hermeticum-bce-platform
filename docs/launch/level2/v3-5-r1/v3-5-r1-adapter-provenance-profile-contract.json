@@ -1,0 +1,213 @@
+{
+  "proto": "HBCE-B2G-L2-JC2-V3-5-R1-ADAPTER-PROVENANCE-PROFILE-CONTRACT-v1",
+  "kind": "HBCE_B2G_LEVEL2_JOKER_C2_V3_5_R1_ADAPTER_PROVENANCE_PROFILE_CONTRACT",
+  "document_code": "HBCE-B2G-L2-JC2-PROG-2027-0001",
+  "specification_baseline": "V3.5-R1 - Forensic Evidence & Verifier Qualification Hardening - 26 September 2026",
+  "issue_id": "PROG-047",
+  "priority": "V3.5-R1-ADAPTER-PROVENANCE-PROFILE-CONTRACT",
+  "repository_baseline_commit": "3829833791fda5e6461c9526cf86c27eb92d01b1",
+  "source_human_decision_contract_ref": "docs/launch/level2/v3-5-r1/v3-5-r1-human-decision-profile-contract.json",
+  "source_human_decision_contract_revision_hash": "sha256:6c5aa75ded7fa17359de175cd99af064090f52cac87a64498438e799e723d5b8",
+  "source_human_decision_contract_revision_hash_valid": true,
+  "governing_producer": "PRODUCER::EXPORT_CONTROL",
+  "schema_producer": "PRODUCER::SCHEMA_REGISTRY",
+  "invariant": {
+    "adapter_identity_and_version_are_required": true,
+    "source_system_and_target_namespace_are_required": true,
+    "transformation_method_and_schema_refs_are_required": true,
+    "runtime_build_and_service_refs_are_required": true,
+    "adapter_event_requires_input_and_output_hash_binding": true,
+    "adapter_event_requires_custody_event_ref": true,
+    "adapter_cannot_replace_source_of_truth": true,
+    "adapter_cannot_create_public_authority": true,
+    "adapter_cannot_emit_assurance_or_evidentiary_verdict": true,
+    "export_requires_profile_boundary": true,
+    "redacted_export_requires_redaction_profile": true
+  },
+  "contract_fields": [
+    "adapter_id",
+    "adapter_version",
+    "adapter_class",
+    "source_system_ref",
+    "target_namespace",
+    "allowed_transformation_classes",
+    "transformation_method_ref",
+    "input_schema_ref",
+    "output_schema_ref",
+    "runtime_build_ref",
+    "operator_or_service_ref",
+    "minimization_profile_ref",
+    "export_boundary",
+    "provenance_status",
+    "limitations"
+  ],
+  "event_fields": [
+    "adapter_event_id",
+    "adapter_id",
+    "input_ref",
+    "input_hash",
+    "output_ref",
+    "output_hash",
+    "transformation_class",
+    "transformation_method_ref",
+    "event_time",
+    "custody_event_ref",
+    "redaction_profile_ref_optional",
+    "export_profile_ref_optional",
+    "claims_source_of_truth_replacement",
+    "claims_public_authority"
+  ],
+  "allowed_adapter_classes": [
+    "MODEL_CONNECTOR",
+    "DATA_CONNECTOR",
+    "EVIDENCE_IMPORTER",
+    "EVIDENCE_EXPORTER",
+    "SYSTEM_BRIDGE",
+    "CUSTOM"
+  ],
+  "allowed_transformation_classes": [
+    "NONE",
+    "CANONICALIZE",
+    "REDACT",
+    "FILTER",
+    "EXTRACT",
+    "TRANSLATE",
+    "AGGREGATE"
+  ],
+  "allowed_provenance_statuses": [
+    "COMPLETE",
+    "INCOMPLETE",
+    "UNVERIFIED",
+    "CONFLICTING"
+  ],
+  "allowed_export_boundaries": [
+    "NO_EXPORT",
+    "PROFILE_BOUND_EXPORT",
+    "REDACTED_EXPORT",
+    "BLOCKED_EXPORT"
+  ],
+  "fail_closed_codes": [
+    "ADAPTER_PROFILE_INVALID",
+    "ADAPTER_ID_INVALID",
+    "ADAPTER_CLASS_INVALID",
+    "ADAPTER_SOURCE_TARGET_INVALID",
+    "ADAPTER_TRANSFORMATION_PROFILE_INVALID",
+    "ADAPTER_METHOD_OR_SCHEMA_MISSING",
+    "ADAPTER_RUNTIME_PROVENANCE_INCOMPLETE",
+    "ADAPTER_EXPORT_BOUNDARY_INVALID",
+    "ADAPTER_PROVENANCE_STATUS_INVALID",
+    "ADAPTER_PROVENANCE_INCOMPLETE",
+    "ADAPTER_EVENT_INVALID",
+    "ADAPTER_EVENT_ID_INVALID",
+    "ADAPTER_EVENT_HASH_BINDING_INCOMPLETE",
+    "ADAPTER_TRANSFORMATION_CLASS_INVALID",
+    "ADAPTER_TRANSFORMATION_NOT_ALLOWED",
+    "ADAPTER_TRANSFORMATION_METHOD_MISMATCH",
+    "ADAPTER_EVENT_CUSTODY_INCOMPLETE",
+    "SOURCE_OF_TRUTH_REPLACEMENT_DENIED",
+    "PUBLIC_AUTHORITY_CLAIM_UNSUPPORTED",
+    "EXPORT_BOUNDARY_VIOLATION",
+    "REDACTION_REQUIRED"
+  ],
+  "runtime_guard_vectors": [
+    {
+      "vector_id": "B2G-T40",
+      "stimulus": "adapter profile missing source system",
+      "result": {
+        "valid": false,
+        "code": "ADAPTER_SOURCE_TARGET_INVALID",
+        "adapter_provenance_accepted": false,
+        "canonical_mutation_permitted": false,
+        "source_of_truth_replacement_permitted": false,
+        "public_authority_created": false,
+        "export_permitted": false
+      }
+    },
+    {
+      "vector_id": "B2G-T41",
+      "stimulus": "adapter provenance incomplete",
+      "result": {
+        "valid": false,
+        "code": "ADAPTER_PROVENANCE_INCOMPLETE",
+        "adapter_provenance_accepted": false,
+        "canonical_mutation_permitted": false,
+        "source_of_truth_replacement_permitted": false,
+        "public_authority_created": false,
+        "export_permitted": false
+      }
+    },
+    {
+      "vector_id": "B2G-T42",
+      "stimulus": "adapter attempts unallowed transformation",
+      "result": {
+        "valid": false,
+        "code": "ADAPTER_TRANSFORMATION_NOT_ALLOWED",
+        "adapter_provenance_accepted": false,
+        "canonical_mutation_permitted": false,
+        "source_of_truth_replacement_permitted": false,
+        "public_authority_created": false,
+        "export_permitted": false
+      }
+    },
+    {
+      "vector_id": "B2G-T43",
+      "stimulus": "adapter claims source-of-truth replacement or public authority",
+      "result": {
+        "valid": false,
+        "code": "SOURCE_OF_TRUTH_REPLACEMENT_DENIED",
+        "adapter_provenance_accepted": false,
+        "canonical_mutation_permitted": false,
+        "source_of_truth_replacement_permitted": false,
+        "public_authority_created": false,
+        "export_permitted": false
+      }
+    },
+    {
+      "vector_id": "B2G-POS-004",
+      "stimulus": "valid adapter provenance and transformation event",
+      "result": {
+        "valid": true,
+        "code": "ADAPTER_TRANSFORMATION_VALID",
+        "adapter_provenance_accepted": true,
+        "canonical_mutation_permitted": false,
+        "source_of_truth_replacement_permitted": false,
+        "public_authority_created": false,
+        "export_permitted": true
+      }
+    }
+  ],
+  "closed_gap": {
+    "gap_id": "L2-GAP-005",
+    "title": "AdapterProvenanceProfile runtime contract missing",
+    "closed_by": "PROG-047",
+    "status": "CLOSED_CONTRACT_AND_VALIDATOR_BASELINE",
+    "adapter_provenance_runtime_integration_complete": false
+  },
+  "remaining_open_gaps": [
+    "L2-GAP-006"
+  ],
+  "readiness_state": {
+    "adapter_provenance_profile_contract_created": true,
+    "adapter_provenance_validator_created": true,
+    "adapter_provenance_runtime_integration_complete": false,
+    "b2g_t26_t43_harness_complete": false,
+    "b2g_candidate_ready": false,
+    "public_sector_production_ready": false
+  },
+  "next_required_program": "PROG-048-V3-5-R1-B2G-T26-T43-RUNTIME-HARNESS",
+  "non_claims": {
+    "production_ready": false,
+    "b2g_candidate_ready": false,
+    "public_accreditation": false,
+    "procurement_eligibility": false,
+    "legal_validity": false,
+    "government_endorsement": false,
+    "public_authority_created": false,
+    "source_of_truth_replacement": false,
+    "assurance_verdict_created": false,
+    "evidentiary_verdict_created": false,
+    "external_validation_complete": false,
+    "level2_runtime_complete": false
+  },
+  "revision_hash": "sha256:35c63ce0f222fb732388380f7fdb9da7e3f5ed962fb1dffe36a5398916b6d062"
+}
