@@ -1,0 +1,203 @@
+{
+  "proto": "HBCE-B2G-L2-JC2-V3-5-R1-HUMAN-DECISION-PROFILE-CONTRACT-v1",
+  "kind": "HBCE_B2G_LEVEL2_JOKER_C2_V3_5_R1_HUMAN_DECISION_PROFILE_CONTRACT",
+  "document_code": "HBCE-B2G-L2-JC2-PROG-2027-0001",
+  "specification_baseline": "V3.5-R1 - Forensic Evidence & Verifier Qualification Hardening - 26 September 2026",
+  "issue_id": "PROG-046",
+  "priority": "V3.5-R1-HUMAN-DECISION-PROFILE-CONTRACT",
+  "repository_baseline_commit": "e439281bab43c2137a08f038d586915afd453558",
+  "source_custody_event_contract_ref": "docs/launch/level2/v3-5-r1/v3-5-r1-custody-event-record-contract.json",
+  "source_custody_event_contract_revision_hash": "sha256:9e956b38ece2d74bfa7960595149aabd84185dee2c19c82e2c63d9e9a57574b4",
+  "source_custody_event_contract_revision_hash_valid": true,
+  "governing_producer": "PRODUCER::HBCE_CORE",
+  "invariant": {
+    "human_decision_profile_does_not_create_authority": true,
+    "human_decision_record_does_not_create_mandate": true,
+    "approval_requires_action_digest_binding": true,
+    "timeout_never_auto_approves": true,
+    "stale_decision_never_auto_approves": true,
+    "material_action_change_requires_new_decision": true,
+    "decision_replay_for_changed_action_denied": true,
+    "emergency_profile_does_not_create_public_authority": true,
+    "human_decision_satisfied_is_not_production_readiness": true
+  },
+  "contract_fields": [
+    "human_decision_profile_id",
+    "profile_version",
+    "approval_requirement",
+    "required_actor_refs",
+    "threshold_n",
+    "threshold_m",
+    "delegation_ref_optional",
+    "freshness_ttl_seconds",
+    "material_binding_requirements",
+    "emergency_profile_ref_optional",
+    "reuse_policy"
+  ],
+  "decision_record_fields": [
+    "decision_id",
+    "human_decision_profile_id",
+    "decision_status",
+    "actor_refs",
+    "decision_time",
+    "freshness_status",
+    "action_digest",
+    "authority_ref",
+    "mandate_ref",
+    "policy_version",
+    "scope_ref",
+    "target_ref",
+    "decision_evidence_ref",
+    "replay_of_decision_id_optional",
+    "material_change_after_decision"
+  ],
+  "allowed_approval_requirements": [
+    "NOT_REQUIRED",
+    "REQUIRED_SINGLE",
+    "REQUIRED_MULTI",
+    "REQUIRED_THRESHOLD"
+  ],
+  "allowed_decision_statuses": [
+    "PENDING",
+    "APPROVED",
+    "DENIED",
+    "EXPIRED",
+    "REVOKED"
+  ],
+  "allowed_freshness_statuses": [
+    "FRESH",
+    "STALE",
+    "EXPIRED"
+  ],
+  "required_material_bindings": [
+    "action_digest",
+    "authority_ref",
+    "mandate_ref",
+    "policy_version",
+    "scope_ref",
+    "target_ref"
+  ],
+  "fail_closed_codes": [
+    "HUMAN_DECISION_PROFILE_INVALID",
+    "HUMAN_DECISION_PROFILE_ID_INVALID",
+    "APPROVAL_REQUIREMENT_INVALID",
+    "REQUIRED_ACTORS_INVALID",
+    "THRESHOLD_INVALID",
+    "MATERIAL_BINDING_PROFILE_INVALID",
+    "HUMAN_DECISION_MISSING",
+    "HUMAN_DECISION_ID_INVALID",
+    "HUMAN_DECISION_STATUS_INVALID",
+    "HUMAN_DECISION_NOT_APPROVED",
+    "HUMAN_DECISION_FRESHNESS_INVALID",
+    "HUMAN_DECISION_EXPIRED",
+    "HUMAN_DECISION_EVIDENCE_MISSING",
+    "MATERIAL_CHANGE_REQUIRES_NEW_DECISION",
+    "DECISION_REPLAY_DENIED",
+    "HUMAN_DECISION_BINDING_INCOMPLETE",
+    "ACTION_BINDING_INVALID",
+    "HUMAN_DECISION_ACTOR_INVALID",
+    "HUMAN_DECISION_MULTI_APPROVAL_INCOMPLETE",
+    "HUMAN_DECISION_THRESHOLD_NOT_MET"
+  ],
+  "runtime_guard_vectors": [
+    {
+      "vector_id": "B2G-T36",
+      "stimulus": "required human decision missing",
+      "result": {
+        "valid": false,
+        "code": "HUMAN_DECISION_MISSING",
+        "human_decision_satisfied": false,
+        "operational_allow_permitted": false,
+        "creates_authority": false,
+        "creates_mandate": false,
+        "permits_decision_replay": false
+      }
+    },
+    {
+      "vector_id": "B2G-T37",
+      "stimulus": "required approval timeout / expired freshness",
+      "result": {
+        "valid": false,
+        "code": "HUMAN_DECISION_NOT_APPROVED",
+        "human_decision_satisfied": false,
+        "operational_allow_permitted": false,
+        "creates_authority": false,
+        "creates_mandate": false,
+        "permits_decision_replay": false
+      }
+    },
+    {
+      "vector_id": "B2G-T38",
+      "stimulus": "decision replayed after material action change",
+      "result": {
+        "valid": false,
+        "code": "MATERIAL_CHANGE_REQUIRES_NEW_DECISION",
+        "human_decision_satisfied": false,
+        "operational_allow_permitted": false,
+        "creates_authority": false,
+        "creates_mandate": false,
+        "permits_decision_replay": false
+      }
+    },
+    {
+      "vector_id": "B2G-T39",
+      "stimulus": "decision action digest differs from expected action",
+      "result": {
+        "valid": false,
+        "code": "ACTION_BINDING_INVALID",
+        "human_decision_satisfied": false,
+        "operational_allow_permitted": false,
+        "creates_authority": false,
+        "creates_mandate": false,
+        "permits_decision_replay": false
+      }
+    },
+    {
+      "vector_id": "B2G-POS-003",
+      "stimulus": "valid single human approval bound to action digest",
+      "result": {
+        "valid": true,
+        "code": "HUMAN_DECISION_SATISFIED",
+        "human_decision_satisfied": true,
+        "operational_allow_permitted": false,
+        "creates_authority": false,
+        "creates_mandate": false,
+        "permits_decision_replay": false
+      }
+    }
+  ],
+  "closed_gap": {
+    "gap_id": "L2-GAP-004",
+    "title": "HumanDecisionProfile runtime contract missing",
+    "closed_by": "PROG-046",
+    "status": "CLOSED_CONTRACT_AND_VALIDATOR_BASELINE",
+    "human_decision_runtime_integration_complete": false
+  },
+  "remaining_open_gaps": [
+    "L2-GAP-005",
+    "L2-GAP-006"
+  ],
+  "readiness_state": {
+    "human_decision_profile_contract_created": true,
+    "human_decision_validator_created": true,
+    "human_decision_runtime_integration_complete": false,
+    "adapter_provenance_runtime_complete": false,
+    "b2g_t26_t43_harness_complete": false,
+    "b2g_candidate_ready": false,
+    "public_sector_production_ready": false
+  },
+  "next_required_program": "PROG-047-V3-5-R1-ADAPTER-PROVENANCE-PROFILE-CONTRACT",
+  "non_claims": {
+    "production_ready": false,
+    "b2g_candidate_ready": false,
+    "public_accreditation": false,
+    "procurement_eligibility": false,
+    "legal_validity": false,
+    "government_endorsement": false,
+    "public_authority_created": false,
+    "mandate_created_by_decision_record": false,
+    "external_validation_complete": false,
+    "level2_runtime_complete": false
+  },
+  "revision_hash": "sha256:6c5aa75ded7fa17359de175cd99af064090f52cac87a64498438e799e723d5b8"
+}
