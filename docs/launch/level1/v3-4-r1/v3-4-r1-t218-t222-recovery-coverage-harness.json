@@ -1,0 +1,83 @@
+{
+  "proto": "HBCE-B2B-L1-V3-4-R1-T218-T222-RECOVERY-COVERAGE-HARNESS-v1",
+  "kind": "HBCE_B2B_L1_V3_4_R1_T218_T222_RECOVERY_COVERAGE_HARNESS",
+  "document_code": "HBCE-B2B-L1-MATRIX-PROG-2027-0001",
+  "specification_baseline": "V3.4-R1 - Controlled Corrective Revision - 26 September 2026",
+  "issue_id": "PROG-034",
+  "acceptance_tests": [
+    "T218",
+    "T219",
+    "T220",
+    "T221",
+    "T222"
+  ],
+  "priority": "V3.4-R1-BUILD-ASSURANCE",
+  "repository_baseline_commit": "3dbc7b28902b57e6a22d33e598030492a78153a1",
+  "source_producer_registry_ref": "docs/launch/level1/v3-4-r1/v3-4-r1-producer-registry-baseline.json",
+  "source_producer_registry_revision_hash": "sha256:fc0541689353acc718184484e39906b8d96d9914b102131ff3d27e125d6c6787",
+  "source_t217_enforcement_ref": "docs/launch/level1/v3-4-r1/v3-4-r1-t217-producer-binding-enforcement.json",
+  "source_t217_enforcement_revision_hash": "sha256:b33a9fbfd5ffee6b0a78895749bb0478d557217b6b391afc14b1b8ae6bd88869",
+  "runtime_module_path": "runtime/recovery/validate-recovery-lineage.js",
+  "verification_test_path": "tests/ftel/integration/prog-034-v3-4-r1-t218-t222-recovery-coverage-harness.test.js",
+  "status": "IMPLEMENTED_TESTED_NOT_RELEASE_READY",
+  "readiness_status": "BLOCKED",
+  "gate_claimed": false,
+  "recovery_coverage": [
+    {
+      "test_id": "T218",
+      "source": "OPERATIONAL::FAILED",
+      "required_result": "NEW_RUN_ACCEPTED",
+      "invariant": "PRIOR_FAILED_PRESERVED",
+      "producer": "PRODUCER::HBCE_CORE"
+    },
+    {
+      "test_id": "T219",
+      "source": "GATE::BLOCKED",
+      "required_result": "NEW_GATE_EVALUATION",
+      "invariant": "PRIOR_GATE_BLOCKED_PRESERVED",
+      "producer": "PRODUCER::GATE_EVALUATOR"
+    },
+    {
+      "test_id": "T220",
+      "source": "ASSURANCE::INVALIDATED",
+      "required_result": "ASSURANCE::UNDER_VALIDATION_ON_NEW_CONTEXT",
+      "invariant": "PRIOR_VERDICT_PRESERVED",
+      "producer": "PRODUCER::QUALIFIED_VERIFIER"
+    },
+    {
+      "test_id": "T221",
+      "source": "AUTHORITY_UNRESOLVED::REQUEST_BLOCKED",
+      "required_result": "NEW_EVALUATION::NOT_EVALUATED",
+      "invariant": "NO_RETROACTIVE_AUTHORITY",
+      "producer": "PRODUCER::HBCE_CORE"
+    },
+    {
+      "test_id": "T222",
+      "source": "CONTRACT::RETIRED",
+      "required_result": "NEW_CONTRACT_VERSION::DRAFT_OR_DEFINED",
+      "invariant": "PRIOR_RETIRED_PRESERVED",
+      "producer": "PRODUCER::CONTRACT_CONTROL"
+    }
+  ],
+  "enforcement_scope": {
+    "requires_prior_record": true,
+    "requires_new_object": true,
+    "requires_prior_ref": true,
+    "blocks_prior_rewrite": true,
+    "uses_t217_producer_binding": true,
+    "preserves_terminal_or_blocking_history": true,
+    "does_not_cover_t211_t212_authorization_continuation": true,
+    "does_not_cover_t223_t225_meta_type_consistency": true
+  },
+  "non_claims": {
+    "production_ready": false,
+    "release_candidate_ready": false,
+    "full_runtime_authorization_complete": false,
+    "full_recovery_program_complete": false,
+    "t211_t212_continuation_complete": false,
+    "t223_t225_meta_type_complete": false,
+    "pilot_access_available": false,
+    "customer_acceptance": false
+  },
+  "revision_hash": "sha256:a0d34de080f0f2c3015a29600620111879d5243b786e7a386feab2b9f1c66fbf"
+}
