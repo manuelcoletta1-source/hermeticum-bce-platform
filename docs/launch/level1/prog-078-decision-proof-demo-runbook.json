@@ -1,0 +1,254 @@
+{
+  "proto": "HBCE-L1-PROG-078-DECISION-PROOF-DEMO-RUNBOOK-v1",
+  "kind": "HBCE_LEVEL1_DECISION_PROOF_DEMO_RUNBOOK",
+  "document_code": "HBCE-L1-DECISION-PROOF-DEMO-RUNBOOK-2027-PROG-078",
+  "issue_id": "PROG-078",
+  "priority": "LEVEL1-DECISION-PROOF-DEMO-RUNBOOK",
+  "repository_baseline_commit": "d9c2c0666f934b20fa17843edea1d7de5c10abbb",
+  "source_closure_gate_ref": "docs/launch/level1/prog-077-decision-proof-chain-closure-gate.json",
+  "source_closure_gate_revision_hash": "sha256:65844d4d850575464e22afd8e943c14b899de0a1e997d9341c5484b46268e266",
+  "source_closure_gate_revision_hash_valid": true,
+  "decision_proof_demo_runbook_status": "LEVEL1_DECISION_PROOF_DEMO_RUNBOOK_DEFINED_NOT_READY",
+  "inherited_closure_boundary": {
+    "closure_gate_status": "LEVEL1_DECISION_PROOF_CHAIN_CLOSURE_GATE_BLOCKED",
+    "structural_chain_defined": true,
+    "decision_proof_chain_closed": false,
+    "concrete_demo_case_bound": false,
+    "verifier_replay_executed": false,
+    "verifier_replay_passed": false,
+    "decision_proof_demo_ready": false,
+    "level1_launch_ready": false
+  },
+  "demo_runbook": {
+    "purpose": "Define the Level 1 Decision Proof demo execution runbook required to bind a concrete demo case and drive the chain toward closure.",
+    "runbook_phases": [
+      "DEMO_SCOPE_SELECTION",
+      "AUTHORITY_BOUNDARY_BINDING",
+      "POLICY_EVALUATION_EXECUTION",
+      "ACTION_REQUEST_GENERATION",
+      "ACTION_RECEIPT_CAPTURE",
+      "AUDIT_EVENT_RECORDING",
+      "EVIDENCE_EXPORT_GENERATION",
+      "VERIFIER_REPLAY_EXECUTION",
+      "CLOSURE_GATE_REEVALUATION"
+    ],
+    "required_inputs": [
+      "demo_case_id",
+      "demo_scope",
+      "human_or_organizational_authority",
+      "policy_reference",
+      "target_reference",
+      "action_payload",
+      "receipt_source",
+      "audit_actor",
+      "export_profile",
+      "verifier_profile"
+    ],
+    "required_outputs": [
+      "authority_boundary_record",
+      "policy_evaluation_record",
+      "action_request_record",
+      "action_receipt_record",
+      "audit_event_record",
+      "evidence_export_manifest",
+      "verifier_replay_result",
+      "closure_gate_result"
+    ],
+    "demo_scope_required": true,
+    "authority_binding_required": true,
+    "policy_evaluation_required": true,
+    "action_request_required": true,
+    "action_receipt_required": true,
+    "audit_event_required": true,
+    "evidence_export_required": true,
+    "verifier_replay_required": true,
+    "closure_gate_reevaluation_required": true,
+    "canonical_json_required": true,
+    "sha256_digest_required": true,
+    "ordered_execution_required": true,
+    "manual_human_acceptance_required": true,
+    "runbook_is_not_demo_execution": true,
+    "runbook_is_not_chain_closure": true,
+    "runbook_is_not_effect_proof": true,
+    "runbook_is_not_business_success": true,
+    "runbook_is_not_legal_validity": true,
+    "runbook_is_not_production_readiness": true,
+    "ai_model_demo_authority_allowed": false
+  },
+  "phase_gates": [
+    {
+      "phase": "DEMO_SCOPE_SELECTION",
+      "pass_requires": [
+        "demo_case_id_bound",
+        "demo_scope_bound",
+        "out_of_scope_claims_absent"
+      ],
+      "fail_closed_on": [
+        "missing_demo_case_id",
+        "missing_demo_scope",
+        "unsupported_scope_claim"
+      ]
+    },
+    {
+      "phase": "AUTHORITY_BOUNDARY_BINDING",
+      "pass_requires": [
+        "human_or_organizational_authority_bound",
+        "authority_scope_bound",
+        "revocation_status_checked"
+      ],
+      "fail_closed_on": [
+        "missing_authority",
+        "missing_scope",
+        "revoked_or_unknown_authority"
+      ]
+    },
+    {
+      "phase": "POLICY_EVALUATION_EXECUTION",
+      "pass_requires": [
+        "policy_ref_bound",
+        "policy_digest_bound",
+        "evaluation_result_allow"
+      ],
+      "fail_closed_on": [
+        "missing_policy_digest",
+        "evaluation_block",
+        "evaluation_unknown"
+      ]
+    },
+    {
+      "phase": "ACTION_REQUEST_GENERATION",
+      "pass_requires": [
+        "action_request_created",
+        "request_digest_bound",
+        "idempotency_key_bound"
+      ],
+      "fail_closed_on": [
+        "missing_request_digest",
+        "missing_idempotency_key",
+        "policy_result_not_allow"
+      ]
+    },
+    {
+      "phase": "ACTION_RECEIPT_CAPTURE",
+      "pass_requires": [
+        "receipt_captured",
+        "receipt_digest_bound",
+        "correlation_id_bound"
+      ],
+      "fail_closed_on": [
+        "missing_receipt",
+        "receipt_rejected",
+        "receipt_blocked",
+        "receipt_unknown"
+      ]
+    },
+    {
+      "phase": "AUDIT_EVENT_RECORDING",
+      "pass_requires": [
+        "audit_event_created",
+        "previous_chain_digest_bound",
+        "audit_event_digest_bound"
+      ],
+      "fail_closed_on": [
+        "missing_audit_event",
+        "missing_previous_chain_digest",
+        "broken_audit_chain"
+      ]
+    },
+    {
+      "phase": "EVIDENCE_EXPORT_GENERATION",
+      "pass_requires": [
+        "export_manifest_created",
+        "all_chain_node_digests_bound",
+        "replay_input_ref_bound"
+      ],
+      "fail_closed_on": [
+        "missing_export_manifest",
+        "missing_chain_node_digest",
+        "missing_replay_input_ref"
+      ]
+    },
+    {
+      "phase": "VERIFIER_REPLAY_EXECUTION",
+      "pass_requires": [
+        "replay_executed",
+        "all_digest_matches",
+        "ordered_chain_replay_passed"
+      ],
+      "fail_closed_on": [
+        "replay_not_run",
+        "digest_mismatch",
+        "chain_order_mismatch"
+      ]
+    },
+    {
+      "phase": "CLOSURE_GATE_REEVALUATION",
+      "pass_requires": [
+        "closure_gate_rerun",
+        "concrete_chain_closed",
+        "decision_proof_demo_ready"
+      ],
+      "fail_closed_on": [
+        "closure_gate_not_rerun",
+        "chain_not_closed",
+        "demo_not_ready"
+      ]
+    }
+  ],
+  "fail_closed_codes": [
+    "DEMO_RUNBOOK_MISSING",
+    "DEMO_CASE_ID_MISSING",
+    "DEMO_SCOPE_MISSING",
+    "AUTHORITY_BINDING_MISSING",
+    "POLICY_EVALUATION_NOT_ALLOW",
+    "ACTION_REQUEST_MISSING",
+    "ACTION_RECEIPT_MISSING",
+    "AUDIT_EVENT_MISSING",
+    "EVIDENCE_EXPORT_MANIFEST_MISSING",
+    "VERIFIER_REPLAY_NOT_EXECUTED",
+    "VERIFIER_REPLAY_NOT_PASSED",
+    "CLOSURE_GATE_NOT_RERUN",
+    "DECISION_PROOF_DEMO_NOT_READY",
+    "AI_DEMO_AUTHORITY_CLAIM_BLOCKED"
+  ],
+  "readiness_state": {
+    "decision_proof_demo_runbook_defined": true,
+    "decision_proof_demo_runbook_ready": false,
+    "concrete_demo_case_bound": false,
+    "runbook_executed": false,
+    "authority_boundary_bound": false,
+    "policy_evaluation_executed": false,
+    "action_request_created": false,
+    "action_receipt_captured": false,
+    "audit_event_recorded": false,
+    "evidence_export_generated": false,
+    "verifier_replay_executed": false,
+    "verifier_replay_passed": false,
+    "closure_gate_rerun": false,
+    "decision_proof_chain_closed": false,
+    "decision_proof_demo_ready": false,
+    "level1_launch_ready": false,
+    "level1_client_pack_ready": false,
+    "production_ready": false
+  },
+  "next_required_program": "PROG-079-HBCE-LEVEL1-DECISION-PROOF-DEMO-FIXTURE",
+  "non_claims": {
+    "runbook_executed": false,
+    "concrete_demo_case_bound": false,
+    "verifier_replay_completed": false,
+    "verifier_replay_passed": false,
+    "decision_proof_chain_closed": false,
+    "decision_proof_demo_ready": false,
+    "effect_proven": false,
+    "business_success": false,
+    "legal_validity": false,
+    "public_accreditation": false,
+    "procurement_eligibility": false,
+    "ai_authority": false,
+    "autonomous_authority": false,
+    "level1_launch_ready": false,
+    "level1_client_pack_ready": false,
+    "production_ready": false
+  },
+  "revision_hash": "sha256:02337d4b1ce6d60d2158d6721ca5ef4b9b843637e0839059add2e61357c2bd46"
+}
