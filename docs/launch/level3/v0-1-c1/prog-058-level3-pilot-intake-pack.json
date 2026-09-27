@@ -1,0 +1,147 @@
+{
+  "proto": "HBCE-L3-PROG-058-PILOT-INTAKE-PACK-v1",
+  "kind": "HBCE_LEVEL3_PILOT_INTAKE_PACK",
+  "document_code": "HBCE-L3-C1-PILOT-INTAKE-2027-PROG-058",
+  "issue_id": "PROG-058",
+  "priority": "LEVEL3-PILOT-INTAKE-PACK",
+  "repository_baseline_commit": "d088b6f1bcc85ec5b07c7004827c53f49d05ca8f",
+  "source_tri_level_launch_readiness_map_ref": "docs/launch/portfolio/prog-057-tri-level-launch-readiness-map.json",
+  "source_tri_level_launch_readiness_map_revision_hash": "sha256:8dfc165c1b31164d01051960a977ff0f75531e577e29bbd4821e9fdc5aeed9fe",
+  "source_tri_level_launch_readiness_map_revision_hash_valid": true,
+  "inherited_level3_position": {
+    "source_level_present": true,
+    "source_role": "PILOT_INTAKE_SHADOW_TRACK",
+    "source_operational_status": "PILOT_INTAKE_PACK_REQUIRED",
+    "source_required_pack": "LEVEL3_PILOT_INTAKE_PACK",
+    "source_pilot_ready_claim_allowed": false,
+    "source_physical_deployment_ready_claim_allowed": false
+  },
+  "intake_status": "LEVEL3_PILOT_INTAKE_PACK_CREATED_NOT_PILOT_READY",
+  "required_intake_artifacts": [
+    "pilot_request_dossier",
+    "use_case_boundary_statement",
+    "simulation_environment_manifest",
+    "controller_interface_manifest",
+    "physical_action_envelope",
+    "physical_safety_envelope",
+    "safe_hold_plan",
+    "emergency_stop_plan",
+    "sensor_evidence_plan",
+    "human_authorization_boundary",
+    "no_uncontrolled_physical_actuation_acknowledgement"
+  ],
+  "allowed_intake_phases": [
+    "INTAKE_ONLY",
+    "SCOPE_SCREENING",
+    "SIMULATION_ONLY",
+    "OBSERVER_MODE",
+    "DRY_RUN_NO_ACTUATION",
+    "CONTROLLED_ACTUATION_REQUIRES_NEW_EVIDENCE"
+  ],
+  "intake_pack": {
+    "purpose": "Prepare controlled response path for Level 3 cyber-physical pilot requests without claiming pilot readiness or physical deployment readiness.",
+    "allowed_current_phase": "INTAKE_ONLY",
+    "maximum_current_phase_without_new_evidence": "DRY_RUN_NO_ACTUATION",
+    "controlled_actuation_requires_new_evidence": true,
+    "pilot_ready_by_this_pack": false,
+    "physical_deployment_ready_by_this_pack": false,
+    "simulation_first": true,
+    "observer_mode_first": true,
+    "no_uncontrolled_physical_actuation": true
+  },
+  "request_screening": {
+    "supported_request_classes_for_intake_only": [
+      "robotics_simulation",
+      "warehouse_or_factory_digital_twin",
+      "controller_receipt_observation",
+      "sensor_evidence_chain_design",
+      "safe_hold_and_estop_design",
+      "human_authorized_action_flow_design"
+    ],
+    "rejected_without_new_evidence": [
+      "uncontrolled_physical_actuation",
+      "public_infrastructure_live_control",
+      "safety_critical_live_control",
+      "military_live_control",
+      "medical_live_control",
+      "autonomous_force_or_motion_without_human_authorization"
+    ],
+    "screening_rule": "fail_closed_if_scope_exceeds_simulation_observer_or_dry_run_no_actuation"
+  },
+  "minimum_intake_contracts": {
+    "physical_action_envelope_required": true,
+    "physical_safety_envelope_required": true,
+    "controller_interface_manifest_required": true,
+    "sensor_evidence_plan_required": true,
+    "safe_hold_plan_required": true,
+    "emergency_stop_plan_required": true,
+    "human_authorization_boundary_required": true,
+    "model_authority_disallowed": true,
+    "authority_must_be_external_and_governed": true
+  },
+  "phase_gate_matrix": [
+    {
+      "phase": "INTAKE_ONLY",
+      "permitted_now": true,
+      "requires_new_evidence": false,
+      "physical_actuation_allowed": false
+    },
+    {
+      "phase": "SCOPE_SCREENING",
+      "permitted_now": true,
+      "requires_new_evidence": false,
+      "physical_actuation_allowed": false
+    },
+    {
+      "phase": "SIMULATION_ONLY",
+      "permitted_now": true,
+      "requires_new_evidence": false,
+      "physical_actuation_allowed": false
+    },
+    {
+      "phase": "OBSERVER_MODE",
+      "permitted_now": true,
+      "requires_new_evidence": false,
+      "physical_actuation_allowed": false
+    },
+    {
+      "phase": "DRY_RUN_NO_ACTUATION",
+      "permitted_now": true,
+      "requires_new_evidence": false,
+      "physical_actuation_allowed": false
+    },
+    {
+      "phase": "CONTROLLED_ACTUATION_REQUIRES_NEW_EVIDENCE",
+      "permitted_now": false,
+      "requires_new_evidence": true,
+      "physical_actuation_allowed": false
+    }
+  ],
+  "intake_readiness_state": {
+    "level3_pilot_intake_pack_created": true,
+    "level3_pilot_intake_pack_evaluated": true,
+    "level3_intake_status": "LEVEL3_PILOT_INTAKE_PACK_CREATED_NOT_PILOT_READY",
+    "simulation_first_ready_to_scope": true,
+    "observer_mode_ready_to_scope": true,
+    "dry_run_no_actuation_ready_to_scope": true,
+    "controlled_actuation_ready": false,
+    "pilot_ready": false,
+    "physical_deployment_ready": false,
+    "production_ready": false
+  },
+  "next_required_program": "PROG-059-HBCE-LEVEL3-PHYSICAL-ACTION-ENVELOPE-CONTRACT",
+  "non_claims": {
+    "level3_pilot_ready": false,
+    "level3_physical_deployment_ready": false,
+    "controlled_actuation_ready": false,
+    "production_ready": false,
+    "public_accreditation": false,
+    "procurement_eligibility": false,
+    "legal_validity": false,
+    "government_endorsement": false,
+    "public_authority_created": false,
+    "autonomous_physical_control": false,
+    "automatic_pilot_promotion": false
+  },
+  "revision_hash": "sha256:b14213c0b77bb442fe1352f34c84b3814253df767b1800634af32b6daf9fc51f"
+}
