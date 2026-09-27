@@ -1,0 +1,111 @@
+{
+  "proto": "HBCE-L1-PROG-070-AUTHORITY-BOUNDARY-STATEMENT-v1",
+  "kind": "HBCE_LEVEL1_AUTHORITY_BOUNDARY_STATEMENT",
+  "document_code": "HBCE-L1-AUTHORITY-BOUNDARY-STATEMENT-2027-PROG-070",
+  "issue_id": "PROG-070",
+  "priority": "LEVEL1-AUTHORITY-BOUNDARY-STATEMENT",
+  "repository_baseline_commit": "8ee7be05ad17da1500d26829dd934bad74501733",
+  "source_evidence_chain_manifest_ref": "docs/launch/level1/prog-069-evidence-chain-manifest.json",
+  "source_evidence_chain_manifest_revision_hash": "sha256:6fedd6db6638e5544de7ad74ee964f95d06aba197caff89697f74b40d287b2dc",
+  "source_evidence_chain_manifest_revision_hash_valid": true,
+  "authority_boundary_status": "LEVEL1_AUTHORITY_BOUNDARY_STATEMENT_DEFINED_NOT_READY",
+  "inherited_evidence_boundary": {
+    "evidence_chain_manifest_status": "LEVEL1_EVIDENCE_CHAIN_MANIFEST_DEFINED_NOT_READY",
+    "evidence_chain_manifest_ready": false,
+    "ai_authority_claim_fails_closed": true,
+    "verifier_replay_ready": false
+  },
+  "authority_boundary_statement": {
+    "purpose": "Define the human or organizational authority boundary required before a governed digital action can enter the Level 1 Decision Proof evidence chain.",
+    "required_fields": [
+      "authority_boundary_id",
+      "authority_type",
+      "authority_ref",
+      "organization_ref",
+      "role_ref",
+      "delegation_ref",
+      "scope_ref",
+      "policy_ref",
+      "validity_window",
+      "revocation_ref",
+      "evidence_chain_ref",
+      "non_claims"
+    ],
+    "authority_types_allowed": [
+      "HUMAN",
+      "ORGANIZATIONAL",
+      "DELEGATED_HUMAN",
+      "DELEGATED_ORGANIZATIONAL"
+    ],
+    "human_or_organizational_authority_required": true,
+    "ai_model_authority_allowed": false,
+    "model_output_is_not_authority": true,
+    "missing_authority_boundary_fails_closed": true,
+    "missing_scope_fails_closed": true,
+    "missing_policy_ref_fails_closed": true,
+    "expired_validity_window_fails_closed": true,
+    "revoked_authority_fails_closed": true
+  },
+  "minimal_boundary_template": {
+    "authority_boundary_id": "AUTH-BOUNDARY-TEMPLATE-0001",
+    "authority_type": "HUMAN",
+    "authority_ref": "AUTHORITY::HUMAN_OR_ORGANIZATION_REQUIRED",
+    "organization_ref": "ORGANIZATION::OPTIONAL_OR_REQUIRED_BY_SCOPE",
+    "role_ref": "ROLE::REQUIRED_FOR_ORGANIZATIONAL_SCOPE",
+    "delegation_ref": "DELEGATION::NONE_OR_BOUND",
+    "scope_ref": "SCOPE::LEVEL1_DECISION_PROOF_DEMO",
+    "policy_ref": "POLICY::LEVEL1_POLICY_EVALUATION_REQUIRED",
+    "validity_window": {
+      "starts_at": "TO_BE_BOUND",
+      "ends_at": "TO_BE_BOUND"
+    },
+    "revocation_ref": "REVOCATION::CHECK_REQUIRED",
+    "evidence_chain_ref": "PROG-069-HBCE-LEVEL1-EVIDENCE-CHAIN-MANIFEST",
+    "non_claims": {
+      "legal_validity": false,
+      "public_accreditation": false,
+      "autonomous_authority": false,
+      "ai_authority": false
+    }
+  },
+  "fail_closed_codes": [
+    "AUTHORITY_BOUNDARY_MISSING",
+    "AUTHORITY_TYPE_INVALID",
+    "AUTHORITY_REF_MISSING",
+    "ROLE_OR_ORGANIZATION_REF_REQUIRED",
+    "SCOPE_REF_MISSING",
+    "POLICY_REF_MISSING",
+    "VALIDITY_WINDOW_MISSING",
+    "AUTHORITY_EXPIRED",
+    "AUTHORITY_REVOKED",
+    "AI_AUTHORITY_CLAIM_BLOCKED"
+  ],
+  "readiness_state": {
+    "authority_boundary_statement_defined": true,
+    "authority_boundary_statement_ready": false,
+    "authority_boundary_template_ready": true,
+    "concrete_authority_bound": false,
+    "policy_ref_bound": false,
+    "validity_window_bound": false,
+    "revocation_check_ready": false,
+    "evidence_chain_node_complete": false,
+    "decision_proof_demo_ready": false,
+    "level1_launch_ready": false,
+    "level1_client_pack_ready": false,
+    "production_ready": false
+  },
+  "next_required_program": "PROG-071-HBCE-LEVEL1-POLICY-EVALUATION-RECORD",
+  "non_claims": {
+    "concrete_authority_bound": false,
+    "legal_validity": false,
+    "public_accreditation": false,
+    "procurement_eligibility": false,
+    "ai_authority": false,
+    "autonomous_authority": false,
+    "decision_proof_demo_ready": false,
+    "level1_launch_ready": false,
+    "level1_client_pack_ready": false,
+    "production_ready": false
+  },
+  "revision_hash": "sha256:550265f5e2d4f21a3419304a1d1fb9e3a2a8f06128c05f23733d3a73022f825e"
+}
