@@ -1,0 +1,92 @@
+{
+  "proto": "HBCE-L3-PROG-064-PHYSICAL-EFFECT-EVALUATION-GATE-v1",
+  "kind": "HBCE_LEVEL3_PHYSICAL_EFFECT_EVALUATION_GATE",
+  "document_code": "HBCE-L3-C1-PHYSICAL-EFFECT-GATE-2027-PROG-064",
+  "issue_id": "PROG-064",
+  "priority": "LEVEL3-PHYSICAL-EFFECT-EVALUATION-GATE",
+  "repository_baseline_commit": "f07fc503f8b6635a3b78498fd171cf7aba1ca633",
+  "source_sensor_evidence_contract_ref": "docs/launch/level3/v0-1-c1/prog-063-sensor-evidence-contract.json",
+  "source_sensor_evidence_contract_revision_hash": "sha256:a740a6ded9682893f282e56bf9f7ac0befdcba1bb0dd8d87a4154972b3d0d312",
+  "source_sensor_evidence_contract_revision_hash_valid": true,
+  "gate_result": "LEVEL3_PHYSICAL_EFFECT_EVALUATION_GATE_BLOCKED",
+  "blocking_reasons": [
+    "SENSOR_EVIDENCE_NOT_PHYSICAL_EFFECT_PROOF",
+    "CONTROLLER_RECEIPT_NOT_EFFECT_PROOF",
+    "LIVE_EFFECT_CLAIM_NOT_ALLOWED",
+    "PHYSICAL_ACTUATION_NOT_PERMITTED",
+    "LIVE_SENSOR_EFFECT_PROOF_NOT_READY",
+    "LEVEL3_PILOT_NOT_READY",
+    "PHYSICAL_DEPLOYMENT_NOT_READY",
+    "PRODUCTION_NOT_READY"
+  ],
+  "inherited_sensor_boundary": {
+    "contract_status": "LEVEL3_SENSOR_EVIDENCE_CONTRACT_CREATED_NOT_PHYSICAL_EFFECT_PROOF",
+    "sensor_evidence_is_observation_not_effect_proof": true,
+    "live_sensor_requires_new_evidence": true,
+    "missing_sensor_evidence_blocks_effect_claim": true,
+    "sensor_evidence_as_physical_effect_proof": false,
+    "live_effect_claim_allowed_by_source": false,
+    "physical_actuation_permitted_by_source": false
+  },
+  "evaluation_conditions": {
+    "source_sensor_contract_valid": true,
+    "sensor_evidence_contract_created": true,
+    "sensor_evidence_is_effect_proof": false,
+    "live_sensor_effect_proof_ready": false,
+    "live_effect_claim_allowed": false,
+    "physical_actuation_permitted": false,
+    "level3_pilot_ready": false,
+    "physical_deployment_ready": false,
+    "production_ready": false
+  },
+  "gate_semantics": {
+    "sensor_evidence_is_required_but_not_sufficient": true,
+    "controller_receipt_is_required_but_not_sufficient": true,
+    "physical_action_envelope_is_required_but_not_sufficient": true,
+    "physical_safety_envelope_is_required_but_not_sufficient": true,
+    "safe_hold_estop_contract_is_required_but_not_sufficient": true,
+    "live_effect_claim_requires_new_evidence": true,
+    "physical_effect_proof_requires_separate_positive_evaluation": true,
+    "blocked_gate_does_not_invalidate_intake_pack": true,
+    "blocked_gate_prevents_pilot_ready_promotion": true
+  },
+  "required_for_future_positive_gate": [
+    "qualified_controller_receipt_with_effect_boundary",
+    "qualified_sensor_evidence_with_live_effect_scope",
+    "physical_action_envelope_bound_to_effect_claim",
+    "physical_safety_envelope_bound_to_effect_claim",
+    "safe_hold_estop_state_clearance_with_human_authorization",
+    "separate_effect_evaluation_record",
+    "human_authorized_scope_transition",
+    "new_evidence_trigger"
+  ],
+  "readiness_state": {
+    "physical_effect_evaluation_gate_created": true,
+    "physical_effect_evaluation_gate_evaluated": true,
+    "physical_effect_evaluation_gate_result": "LEVEL3_PHYSICAL_EFFECT_EVALUATION_GATE_BLOCKED",
+    "physical_effect_proven": false,
+    "live_effect_claim_allowed": false,
+    "physical_actuation_permitted": false,
+    "controlled_actuation_ready": false,
+    "level3_pilot_ready": false,
+    "level3_physical_deployment_ready": false,
+    "production_ready": false
+  },
+  "next_required_program": "PROG-065-HBCE-LEVEL3-C1-READINESS-SNAPSHOT",
+  "non_claims": {
+    "physical_effect_proven": false,
+    "live_effect_claim_allowed": false,
+    "physical_actuation_permitted": false,
+    "controlled_actuation_ready": false,
+    "level3_pilot_ready": false,
+    "level3_physical_deployment_ready": false,
+    "production_ready": false,
+    "autonomous_physical_control": false,
+    "public_accreditation": false,
+    "procurement_eligibility": false,
+    "legal_validity": false,
+    "government_endorsement": false,
+    "automatic_pilot_promotion": false
+  },
+  "revision_hash": "sha256:0def26ee4270cfac1654a2a676881c22539637dfe92176e6c1397cb38273fe76"
+}
