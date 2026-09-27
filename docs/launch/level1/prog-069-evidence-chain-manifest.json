@@ -1,0 +1,134 @@
+{
+  "proto": "HBCE-L1-PROG-069-EVIDENCE-CHAIN-MANIFEST-v1",
+  "kind": "HBCE_LEVEL1_EVIDENCE_CHAIN_MANIFEST",
+  "document_code": "HBCE-L1-EVIDENCE-CHAIN-MANIFEST-2027-PROG-069",
+  "issue_id": "PROG-069",
+  "priority": "LEVEL1-EVIDENCE-CHAIN-MANIFEST",
+  "repository_baseline_commit": "de9ffb39bd06ed0b867fedbb44ee927ea4ccf8bd",
+  "source_decision_proof_demo_path_ref": "docs/launch/level1/prog-068-decision-proof-demo-path.json",
+  "source_decision_proof_demo_path_revision_hash": "sha256:970510fba10aed2f8114c5a425e06ed23cfa5d3db8c4c4f90716b190ee78f021",
+  "source_decision_proof_demo_path_revision_hash_valid": true,
+  "evidence_chain_manifest_status": "LEVEL1_EVIDENCE_CHAIN_MANIFEST_DEFINED_NOT_READY",
+  "inherited_demo_boundary": {
+    "demo_path_status": "LEVEL1_DECISION_PROOF_DEMO_PATH_DEFINED_NOT_READY",
+    "decision_proof_demo_path_ready": false,
+    "ai_authority_allowed": false,
+    "human_or_organizational_authority_required": true
+  },
+  "evidence_chain_manifest": {
+    "purpose": "Define the ordered Level 1 evidence chain required by the Decision Proof demo path.",
+    "chain_nodes": [
+      "AUTHORITY_BOUNDARY_STATEMENT",
+      "POLICY_EVALUATION_RECORD",
+      "ACTION_REQUEST_RECORD",
+      "ACTION_RECEIPT_RECORD",
+      "AUDIT_EVENT_RECORD",
+      "EVIDENCE_EXPORT_MANIFEST",
+      "VERIFIER_REPLAY_RESULT"
+    ],
+    "required_bindings": [
+      "canonical_json_binding",
+      "sha256_digest_binding",
+      "authority_ref_binding",
+      "policy_evaluation_ref_binding",
+      "action_request_ref_binding",
+      "action_receipt_ref_binding",
+      "audit_event_ref_binding",
+      "export_manifest_ref_binding",
+      "verifier_replay_ref_binding",
+      "non_claims_binding"
+    ],
+    "ordering_required": true,
+    "canonical_json_required": true,
+    "sha256_digest_required": true,
+    "parent_child_linking_required": true,
+    "verifier_replay_required": true,
+    "missing_node_fails_closed": true,
+    "missing_digest_fails_closed": true,
+    "broken_chain_link_fails_closed": true,
+    "ai_authority_claim_fails_closed": true
+  },
+  "chain_node_requirements": [
+    {
+      "order": 1,
+      "node": "AUTHORITY_BOUNDARY_STATEMENT",
+      "required_digest": true,
+      "required_parent": null
+    },
+    {
+      "order": 2,
+      "node": "POLICY_EVALUATION_RECORD",
+      "required_digest": true,
+      "required_parent": "AUTHORITY_BOUNDARY_STATEMENT"
+    },
+    {
+      "order": 3,
+      "node": "ACTION_REQUEST_RECORD",
+      "required_digest": true,
+      "required_parent": "POLICY_EVALUATION_RECORD"
+    },
+    {
+      "order": 4,
+      "node": "ACTION_RECEIPT_RECORD",
+      "required_digest": true,
+      "required_parent": "ACTION_REQUEST_RECORD"
+    },
+    {
+      "order": 5,
+      "node": "AUDIT_EVENT_RECORD",
+      "required_digest": true,
+      "required_parent": "ACTION_RECEIPT_RECORD"
+    },
+    {
+      "order": 6,
+      "node": "EVIDENCE_EXPORT_MANIFEST",
+      "required_digest": true,
+      "required_parent": "AUDIT_EVENT_RECORD"
+    },
+    {
+      "order": 7,
+      "node": "VERIFIER_REPLAY_RESULT",
+      "required_digest": true,
+      "required_parent": "EVIDENCE_EXPORT_MANIFEST"
+    }
+  ],
+  "fail_closed_codes": [
+    "EVIDENCE_CHAIN_MANIFEST_MISSING",
+    "EVIDENCE_CHAIN_NODE_MISSING",
+    "EVIDENCE_CHAIN_NODE_ORDER_INVALID",
+    "EVIDENCE_CHAIN_NODE_DIGEST_MISSING",
+    "EVIDENCE_CHAIN_PARENT_LINK_MISSING",
+    "EVIDENCE_CHAIN_PARENT_LINK_INVALID",
+    "VERIFIER_REPLAY_RESULT_MISSING",
+    "AI_AUTHORITY_CLAIM_BLOCKED"
+  ],
+  "readiness_state": {
+    "evidence_chain_manifest_defined": true,
+    "evidence_chain_manifest_ready": false,
+    "chain_nodes_complete": false,
+    "chain_digests_complete": false,
+    "parent_child_links_complete": false,
+    "verifier_replay_ready": false,
+    "decision_proof_demo_ready": false,
+    "level1_launch_ready": false,
+    "level1_release_candidate_ready": false,
+    "level1_client_pack_ready": false,
+    "production_ready": false
+  },
+  "next_required_program": "PROG-070-HBCE-LEVEL1-AUTHORITY-BOUNDARY-STATEMENT",
+  "non_claims": {
+    "evidence_chain_complete": false,
+    "verifier_replay_ready": false,
+    "decision_proof_demo_ready": false,
+    "level1_launch_ready": false,
+    "level1_release_candidate_ready": false,
+    "level1_client_pack_ready": false,
+    "legal_validity": false,
+    "public_accreditation": false,
+    "procurement_eligibility": false,
+    "production_ready": false,
+    "ai_authority": false,
+    "autonomous_authority": false
+  },
+  "revision_hash": "sha256:6fedd6db6638e5544de7ad74ee964f95d06aba197caff89697f74b40d287b2dc"
+}
