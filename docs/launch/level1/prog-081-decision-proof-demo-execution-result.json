@@ -1,0 +1,311 @@
+{
+  "proto": "HBCE-L1-PROG-081-DECISION-PROOF-DEMO-EXECUTION-RESULT-v1",
+  "kind": "HBCE_LEVEL1_DECISION_PROOF_DEMO_EXECUTION_RESULT",
+  "document_code": "HBCE-L1-DECISION-PROOF-DEMO-EXECUTION-RESULT-2027-PROG-081",
+  "issue_id": "PROG-081",
+  "priority": "LEVEL1-DECISION-PROOF-DEMO-EXECUTION-RESULT",
+  "repository_baseline_commit": "1b24f72073330375cd3a6d411a332b06cff36d22",
+  "source_execution_harness_ref": "docs/launch/level1/prog-080-decision-proof-demo-execution-harness.json",
+  "source_execution_harness_revision_hash": "sha256:3a9db877e507e1d735550071603e91910d4e479464b03e3e1c196f371bbe5763",
+  "source_execution_harness_revision_hash_valid": true,
+  "source_demo_fixture_ref": "docs/launch/level1/prog-079-decision-proof-demo-fixture.json",
+  "source_demo_fixture_revision_hash": "sha256:f62fd610f8014129683124e9d1c64e725572741e5f161fde0df05c64fac124d1",
+  "source_demo_fixture_revision_hash_valid": true,
+  "decision_proof_demo_execution_result_status": "LEVEL1_DECISION_PROOF_DEMO_EXECUTION_RESULT_CREATED_SYNTHETIC_ONLY",
+  "execution_result_summary": {
+    "synthetic_demo_only": true,
+    "harness_executed": true,
+    "concrete_demo_execution_completed": true,
+    "generated_records": [
+      "authority_boundary_record",
+      "policy_evaluation_record",
+      "action_request_record",
+      "action_receipt_record",
+      "audit_event_record",
+      "evidence_export_manifest",
+      "verifier_replay_result",
+      "closure_gate_result"
+    ],
+    "generated_record_count": 8,
+    "verifier_replay_completed": true,
+    "verifier_replay_result": "PASS",
+    "verifier_replay_passed": true,
+    "synthetic_chain_closed": true,
+    "manual_human_acceptance_required": true,
+    "manual_human_acceptance_status": "PENDING",
+    "decision_proof_demo_ready": false,
+    "level1_launch_ready": false,
+    "production_ready": false
+  },
+  "execution_records": {
+    "run_id": "HBCE-L1-DEMO-EXECUTION-0001",
+    "executed_at": "2027-01-19T15:30:00Z",
+    "correlation_id": "CORR::HBCE-L1-DEMO-EXECUTION-0001",
+    "idempotency_key": "IDEMPOTENCY::HBCE-L1-DEMO-EXECUTION-0001",
+    "authority_boundary_record": {
+      "record_type": "authority_boundary_record",
+      "record_id": "AUTHORITY-BOUNDARY::HBCE-L1-DEMO-0001",
+      "demo_case_id": "HBCE-L1-DEMO-FIXTURE-0001",
+      "authority_type": "SYNTHETIC_HUMAN_OPERATOR",
+      "authority_ref": "DEMO-AUTHORITY::OPERATOR-001",
+      "organization_ref": "DEMO-ORG::HERMETICUM-BCE-L1-FIXTURE",
+      "role_ref": "DEMO-ROLE::AUTHORIZED_REQUESTER",
+      "delegation_ref": "DEMO-DELEGATION::L1-DECISION-PROOF-DEMO",
+      "validity_window": {
+        "starts_at": "2027-01-19T00:00:00Z",
+        "ends_at": "2027-01-19T23:59:59Z"
+      },
+      "revocation_status": "NOT_REVOKED_SYNTHETIC_FIXTURE",
+      "scope_ref": "DEMO_ONLY_DIGITAL_ACTION",
+      "source_fixture_digest": "sha256:1dd63154ee6f5df9eb81033cef131f26e94fc5fa03ee48db717742db0b8236f8",
+      "generated_at": "2027-01-19T15:30:00Z",
+      "non_claims": {
+        "legal_validity": false,
+        "production_authority": false,
+        "ai_authority": false
+      },
+      "digest": "sha256:2705590da076eaad7b9c63c69c0850d60ad768787d8a263b43f11ea18ccbb740"
+    },
+    "policy_evaluation_record": {
+      "record_type": "policy_evaluation_record",
+      "record_id": "POLICY-EVALUATION::HBCE-L1-DEMO-0001",
+      "demo_case_id": "HBCE-L1-DEMO-FIXTURE-0001",
+      "authority_boundary_ref": "AUTHORITY-BOUNDARY::HBCE-L1-DEMO-0001",
+      "authority_boundary_digest": "sha256:2705590da076eaad7b9c63c69c0850d60ad768787d8a263b43f11ea18ccbb740",
+      "policy_ref": "DEMO-POLICY::L1-ALLOW-DEMO-ONLY-DIGITAL-ACTION",
+      "policy_version": "1.0.0",
+      "action_class": "DEMO_ONLY_DIGITAL_ACTION",
+      "target_ref": "DEMO-TARGET::DECISION-PROOF-SINK-001",
+      "evaluation_result": "ALLOW",
+      "evaluation_codes": [
+        "DEMO_POLICY_ALLOW"
+      ],
+      "evaluated_at": "2027-01-19T15:30:00Z",
+      "non_claims": {
+        "legal_validity": false,
+        "business_success": false,
+        "ai_policy_authority": false
+      },
+      "digest": "sha256:c3ae2a2cb822e1919f0e993976a1eb07e819ffe771882e7ed50517b39f58c0fb"
+    },
+    "action_request_record": {
+      "record_type": "action_request_record",
+      "record_id": "ACTION-REQUEST::HBCE-L1-DEMO-0001",
+      "demo_case_id": "HBCE-L1-DEMO-FIXTURE-0001",
+      "policy_evaluation_ref": "POLICY-EVALUATION::HBCE-L1-DEMO-0001",
+      "policy_evaluation_digest": "sha256:c3ae2a2cb822e1919f0e993976a1eb07e819ffe771882e7ed50517b39f58c0fb",
+      "action_class": "DEMO_ONLY_DIGITAL_ACTION",
+      "action_intent": "CREATE_DEMO_DECISION_PROOF_TRACE",
+      "target_ref": "DEMO-TARGET::DECISION-PROOF-SINK-001",
+      "request_payload_ref": "DEMO-PAYLOAD::L1-DECISION-PROOF-0001",
+      "request_payload_value": {
+        "decision_subject": "synthetic_demo_decision",
+        "requested_operation": "record_trace_only",
+        "amount_or_asset": "NONE",
+        "external_effect": "NONE"
+      },
+      "requested_at": "2027-01-19T15:30:00Z",
+      "correlation_id": "CORR::HBCE-L1-DEMO-EXECUTION-0001",
+      "idempotency_key": "IDEMPOTENCY::HBCE-L1-DEMO-EXECUTION-0001",
+      "non_claims": {
+        "execution_completed": false,
+        "effect_proven": false,
+        "ai_action_authority": false
+      },
+      "digest": "sha256:00a6d0fd644b824deb52dae9bb060d9bd75468a6e856e1b260fb30c259c9c360"
+    },
+    "action_receipt_record": {
+      "record_type": "action_receipt_record",
+      "record_id": "ACTION-RECEIPT::HBCE-L1-DEMO-0001",
+      "demo_case_id": "HBCE-L1-DEMO-FIXTURE-0001",
+      "action_request_ref": "ACTION-REQUEST::HBCE-L1-DEMO-0001",
+      "action_request_digest": "sha256:00a6d0fd644b824deb52dae9bb060d9bd75468a6e856e1b260fb30c259c9c360",
+      "receipt_source_ref": "DEMO-RECEIPT-SOURCE::LOCAL-FIXTURE",
+      "receipt_status": "ACCEPTED_FOR_PROCESSING",
+      "received_at": "2027-01-19T15:30:00Z",
+      "correlation_id": "CORR::HBCE-L1-DEMO-EXECUTION-0001",
+      "idempotency_key": "IDEMPOTENCY::HBCE-L1-DEMO-EXECUTION-0001",
+      "non_claims": {
+        "effect_proven": false,
+        "business_success": false,
+        "legal_validity": false,
+        "ai_receipt_authority": false
+      },
+      "digest": "sha256:22d21b23c013883036c1e2439945e9166a505dc84f381ce62de66087e0284573"
+    },
+    "audit_event_record": {
+      "record_type": "audit_event_record",
+      "record_id": "AUDIT-EVENT::HBCE-L1-DEMO-0001",
+      "demo_case_id": "HBCE-L1-DEMO-FIXTURE-0001",
+      "event_type": "DECISION_PROOF_AUDIT_EVENT",
+      "event_result": "RECORDED",
+      "authority_boundary_ref": "AUTHORITY-BOUNDARY::HBCE-L1-DEMO-0001",
+      "authority_boundary_digest": "sha256:2705590da076eaad7b9c63c69c0850d60ad768787d8a263b43f11ea18ccbb740",
+      "policy_evaluation_ref": "POLICY-EVALUATION::HBCE-L1-DEMO-0001",
+      "policy_evaluation_digest": "sha256:c3ae2a2cb822e1919f0e993976a1eb07e819ffe771882e7ed50517b39f58c0fb",
+      "action_request_ref": "ACTION-REQUEST::HBCE-L1-DEMO-0001",
+      "action_request_digest": "sha256:00a6d0fd644b824deb52dae9bb060d9bd75468a6e856e1b260fb30c259c9c360",
+      "action_receipt_ref": "ACTION-RECEIPT::HBCE-L1-DEMO-0001",
+      "action_receipt_digest": "sha256:22d21b23c013883036c1e2439945e9166a505dc84f381ce62de66087e0284573",
+      "actor_ref": "DEMO-AUDIT-ACTOR::JOKER-C2-RUNTIME-TRACE",
+      "event_time": "2027-01-19T15:30:00Z",
+      "correlation_id": "CORR::HBCE-L1-DEMO-EXECUTION-0001",
+      "previous_chain_digest": "sha256:22d21b23c013883036c1e2439945e9166a505dc84f381ce62de66087e0284573",
+      "non_claims": {
+        "effect_proven": false,
+        "business_success": false,
+        "legal_validity": false,
+        "ai_audit_authority": false
+      },
+      "digest": "sha256:b027a7c7c119d6c997d5fa0dc6fadf22784f84e858380b39554aec420eccb5b2"
+    },
+    "evidence_export_manifest": {
+      "record_type": "evidence_export_manifest",
+      "record_id": "EVIDENCE-EXPORT::HBCE-L1-DEMO-0001",
+      "demo_case_id": "HBCE-L1-DEMO-FIXTURE-0001",
+      "export_format": "HBCE_DECISION_PROOF_EXPORT_JSON",
+      "canonicalization_profile": "RFC8785-JCS",
+      "digest_algorithm": "SHA-256",
+      "authority_boundary_digest": "sha256:2705590da076eaad7b9c63c69c0850d60ad768787d8a263b43f11ea18ccbb740",
+      "policy_evaluation_digest": "sha256:c3ae2a2cb822e1919f0e993976a1eb07e819ffe771882e7ed50517b39f58c0fb",
+      "action_request_digest": "sha256:00a6d0fd644b824deb52dae9bb060d9bd75468a6e856e1b260fb30c259c9c360",
+      "action_receipt_digest": "sha256:22d21b23c013883036c1e2439945e9166a505dc84f381ce62de66087e0284573",
+      "audit_event_digest": "sha256:b027a7c7c119d6c997d5fa0dc6fadf22784f84e858380b39554aec420eccb5b2",
+      "verifier_replay_input_ref": "VERIFIER-REPLAY-INPUT::HBCE-L1-DEMO-0001",
+      "generated_at": "2027-01-19T15:30:00Z",
+      "non_claims": {
+        "verifier_replay_completed": false,
+        "effect_proven": false,
+        "legal_validity": false,
+        "ai_export_authority": false
+      },
+      "digest": "sha256:dbfb71dc75d4b7d1bc8c51c4fc2a4992f8e11b64d2349caabef13125e4ca65c2"
+    },
+    "verifier_replay_result": {
+      "record_type": "verifier_replay_result",
+      "record_id": "VERIFIER-REPLAY::HBCE-L1-DEMO-0001",
+      "demo_case_id": "HBCE-L1-DEMO-FIXTURE-0001",
+      "verifier_ref": "DEMO-VERIFIER::L1-LOCAL-REPLAY",
+      "verifier_version": "0.1.0-fixture",
+      "replay_input_ref": "VERIFIER-REPLAY-INPUT::HBCE-L1-DEMO-0001",
+      "evidence_export_manifest_ref": "EVIDENCE-EXPORT::HBCE-L1-DEMO-0001",
+      "evidence_export_manifest_digest": "sha256:dbfb71dc75d4b7d1bc8c51c4fc2a4992f8e11b64d2349caabef13125e4ca65c2",
+      "replay_started_at": "2027-01-19T15:30:00Z",
+      "replay_completed_at": "2027-01-19T15:30:00Z",
+      "replay_result": "PASS",
+      "replay_codes": [
+        "ALL_CHAIN_NODE_DIGESTS_MATCH",
+        "ORDERED_CHAIN_REPLAY_PASSED"
+      ],
+      "replayed_chain_nodes": [
+        "authority_boundary_record",
+        "policy_evaluation_record",
+        "action_request_record",
+        "action_receipt_record",
+        "audit_event_record",
+        "evidence_export_manifest"
+      ],
+      "recomputed_digests": [
+        "sha256:2705590da076eaad7b9c63c69c0850d60ad768787d8a263b43f11ea18ccbb740",
+        "sha256:c3ae2a2cb822e1919f0e993976a1eb07e819ffe771882e7ed50517b39f58c0fb",
+        "sha256:00a6d0fd644b824deb52dae9bb060d9bd75468a6e856e1b260fb30c259c9c360",
+        "sha256:22d21b23c013883036c1e2439945e9166a505dc84f381ce62de66087e0284573",
+        "sha256:b027a7c7c119d6c997d5fa0dc6fadf22784f84e858380b39554aec420eccb5b2",
+        "sha256:dbfb71dc75d4b7d1bc8c51c4fc2a4992f8e11b64d2349caabef13125e4ca65c2"
+      ],
+      "mismatch_report": {
+        "mismatch_detected": false,
+        "mismatch_count": 0,
+        "mismatch_refs": []
+      },
+      "non_claims": {
+        "effect_proven": false,
+        "business_success": false,
+        "legal_validity": false,
+        "production_readiness": false,
+        "ai_verifier_authority": false
+      },
+      "digest": "sha256:c7ac4217246b246d70a42f18f587e3523bc13b2ba66558fa634b7b291ee0fdbc"
+    },
+    "closure_gate_result": {
+      "record_type": "closure_gate_result",
+      "record_id": "CLOSURE-GATE::HBCE-L1-DEMO-0001",
+      "demo_case_id": "HBCE-L1-DEMO-FIXTURE-0001",
+      "gate_result": "PASS_SYNTHETIC_DEMO_ONLY",
+      "structural_chain_defined": true,
+      "synthetic_chain_closed": true,
+      "verifier_replay_passed": true,
+      "manual_human_acceptance_required": true,
+      "manual_human_acceptance_status": "PENDING",
+      "decision_proof_demo_ready": false,
+      "level1_launch_ready": false,
+      "production_ready": false,
+      "generated_at": "2027-01-19T15:30:00Z",
+      "non_claims": {
+        "human_accepted": false,
+        "production_ready": false,
+        "legal_validity": false,
+        "external_effect_proven": false,
+        "ai_closure_authority": false
+      },
+      "digest": "sha256:ea0abeed50ccb7880a8ee8b10cfa914a12ce6002312b43621141311c46561438"
+    }
+  },
+  "execution_integrity": {
+    "all_generated_records_have_digest": true,
+    "verifier_replay_digest_match_count": 6,
+    "verifier_replay_mismatch_count": 0,
+    "verifier_replay_ordered_chain_replay_passed": true,
+    "closure_gate_result": "PASS_SYNTHETIC_DEMO_ONLY",
+    "human_acceptance_pending_blocks_demo_ready": true
+  },
+  "fail_closed_codes": [
+    "DEMO_EXECUTION_RESULT_MISSING",
+    "SOURCE_EXECUTION_HARNESS_HASH_INVALID",
+    "SOURCE_DEMO_FIXTURE_HASH_INVALID",
+    "GENERATED_RECORD_DIGEST_MISSING",
+    "VERIFIER_REPLAY_NOT_COMPLETED",
+    "VERIFIER_REPLAY_NOT_PASS",
+    "MISMATCH_REPORT_NOT_ZERO",
+    "HUMAN_ACCEPTANCE_PENDING",
+    "AI_EXECUTION_AUTHORITY_CLAIM_BLOCKED"
+  ],
+  "readiness_state": {
+    "decision_proof_demo_execution_result_created": true,
+    "synthetic_demo_only": true,
+    "harness_executed": true,
+    "concrete_demo_execution_completed": true,
+    "authority_boundary_record_created": true,
+    "policy_evaluation_record_created": true,
+    "action_request_record_created": true,
+    "action_receipt_record_created": true,
+    "audit_event_record_created": true,
+    "evidence_export_manifest_created": true,
+    "verifier_replay_completed": true,
+    "verifier_replay_passed": true,
+    "synthetic_chain_closed": true,
+    "manual_human_acceptance_required": true,
+    "manual_human_acceptance_completed": false,
+    "decision_proof_demo_ready": false,
+    "level1_launch_ready": false,
+    "level1_client_pack_ready": false,
+    "production_ready": false
+  },
+  "next_required_program": "PROG-082-HBCE-LEVEL1-DECISION-PROOF-HUMAN-ACCEPTANCE-RECORD",
+  "non_claims": {
+    "human_accepted": false,
+    "decision_proof_demo_ready": false,
+    "effect_proven": false,
+    "external_side_effect": false,
+    "business_success": false,
+    "legal_validity": false,
+    "public_accreditation": false,
+    "procurement_eligibility": false,
+    "ai_authority": false,
+    "autonomous_authority": false,
+    "level1_launch_ready": false,
+    "level1_client_pack_ready": false,
+    "production_ready": false
+  },
+  "revision_hash": "sha256:89305bb94a88f74f45416db537e8d813066394c03479a1ff29a4100a042138fd"
+}
