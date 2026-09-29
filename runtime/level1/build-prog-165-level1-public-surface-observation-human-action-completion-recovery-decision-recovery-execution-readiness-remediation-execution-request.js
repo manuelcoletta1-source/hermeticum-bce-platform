@@ -1,0 +1,378 @@
+const fs=require("fs"),crypto=require("crypto"),assert=require("assert/strict");
+
+const SRC="docs/launch/level1/prog-164-level1-public-surface-observation-human-action-completion-recovery-decision-recovery-execution-readiness-remediation-plan-validation.json";
+const JSON_OUT="docs/launch/level1/prog-165-level1-public-surface-observation-human-action-completion-recovery-decision-recovery-execution-readiness-remediation-execution-request.json";
+const MD_OUT="docs/launch/level1/prog-165-level1-public-surface-observation-human-action-completion-recovery-decision-recovery-execution-readiness-remediation-execution-request.md";
+const ID="PROG-165-HBCE-LEVEL1-PUBLIC-SURFACE-OBSERVATION-HUMAN-ACTION-COMPLETION-RECOVERY-DECISION-RECOVERY-EXECUTION-READINESS-REMEDIATION-EXECUTION-REQUEST";
+const STATUS="LEVEL1_PUBLIC_SURFACE_OBSERVATION_HUMAN_ACTION_COMPLETION_RECOVERY_DECISION_RECOVERY_EXECUTION_READINESS_REMEDIATION_EXECUTION_REQUEST_CREATED_PENDING_REMEDIATION_EXECUTION_REQUEST_VALIDATION";
+const NEXT="PROG-166-HBCE-LEVEL1-PUBLIC-SURFACE-OBSERVATION-HUMAN-ACTION-COMPLETION-RECOVERY-DECISION-RECOVERY-EXECUTION-READINESS-REMEDIATION-EXECUTION-REQUEST-VALIDATION";
+
+const sha=p=>crypto.createHash("sha256").update(fs.readFileSync(p)).digest("hex");
+const stable=v=>Array.isArray(v)?v.map(stable):v&&typeof v==="object"?Object.fromEntries(Object.keys(v).sort().map(k=>[k,stable(v[k])])):v;
+
+const src=JSON.parse(fs.readFileSync(SRC,"utf8"));
+assert.equal(src.program_number,164);
+assert.equal(src.recovery_execution.execution_closure_proven,true);
+assert.equal(src.recovery_execution.evidence_bundle_validated,true);
+assert.equal(src.recovery_execution.readiness_gate_decision_validated,true);
+assert.equal(src.recovery_execution.readiness_gate_passed,false);
+assert.equal(src.recovery_execution.readiness_remediation_plan_validated,true);
+assert.equal(src.recovery_execution.readiness_remediation_execution_requested,false);
+assert.equal(src.readiness_remediation_plan.validated,true);
+assert.equal(src.readiness_remediation_execution_request.required,true);
+assert.equal(src.readiness_remediation_execution_request.created,false);
+assert.equal(src.readiness.production_ready,false);
+assert.equal(src.authority.ai_authority_allowed,false);
+
+const a={
+  program_id:ID,
+  program_number:165,
+  title:"Level 1 Public Surface Observation Human Action Completion Recovery Decision Recovery Execution Readiness Remediation Execution Request",
+  status:STATUS,
+  level3_axis:{
+    principle:"readiness_remediation_execution_request_created_is_not_validated_request_or_remediation_execution",
+    execution_closure_proven:true,
+    evidence_bundle_validated:true,
+    readiness_gate_decision_validated:true,
+    readiness_gate_decision_outcome:"NO_GO_VALIDATED",
+    readiness_gate_passed:false,
+    readiness_remediation_plan_validated:true,
+    readiness_remediation_execution_request_required:true,
+    readiness_remediation_execution_request_created:true,
+    readiness_remediation_execution_request_validated:false,
+    readiness_remediation_execution_performed:false,
+    launch_readiness_unlocked:false,
+    readiness_unlock_allowed:false,
+    legal_or_certification_effect:false
+  },
+  inherits_from:{
+    program_id:src.program_id,
+    source_path:SRC,
+    source_raw_sha256:sha(SRC),
+    source_canonical_sha256:crypto.createHash("sha256").update(JSON.stringify(stable(src))).digest("hex")
+  },
+  human_decision_response:{
+    received:true,
+    validated:true,
+    authorization_effect:false
+  },
+  human_decision_record:{
+    created:true,
+    recorded:true,
+    validated:true,
+    record_effect:"READINESS_REMEDIATION_EXECUTION_REQUEST_CREATED_PENDING_VALIDATION"
+  },
+  human_decision:{
+    recorded:true,
+    validated:true,
+    selected_recovery_decision_option:"RECOVERY_DECISION_READINESS_REMEDIATION_EXECUTION_REQUEST_CREATED_PENDING_VALIDATION"
+  },
+  recovery_execution_authority_binding_gate:{
+    required:true,
+    defined:true,
+    evaluated:true,
+    passed:true,
+    blocked:false,
+    pass_reason:"RECOVERY_EXECUTION_AUTHORITY_BINDING_COMPLETED"
+  },
+  recovery_execution_authority_binding:{
+    required:true,
+    requested:true,
+    received:true,
+    defined:true,
+    validated:true,
+    bound:true,
+    completed:true,
+    policy_binding_present:true,
+    policy_binding_validated:true,
+    policy_binding_completed:true,
+    target_binding_present:true,
+    target_binding_validated:true,
+    target_binding_completed:true,
+    scope_binding_present:true,
+    scope_binding_validated:true,
+    scope_binding_completed:true,
+    human_authority_binding_present:true,
+    human_authority_binding_validated:true,
+    human_authority_binding_completed:true,
+    binding_effect:"AUTHORITY_BINDING_COMPLETED_FOR_CONTROLLED_COMMIT_PATH"
+  },
+  recovery_execution_precommit_gate:{
+    required:true,
+    defined:true,
+    evaluated:true,
+    passed:true,
+    blocked:false,
+    pass_reason:"AUTHORITY_BINDING_COMPLETED_AND_PRECOMMIT_CONSTRAINTS_SATISFIED",
+    gate_effect:"PRECOMMIT_COMPLETED_REMEDIATION_EXECUTION_REQUEST_CREATED"
+  },
+  recovery_execution_precommit:{
+    prepared:true,
+    committed:true,
+    commit_required:true,
+    precommit_effect:"COMMIT_PATH_COMPLETED_REMEDIATION_EXECUTION_REQUEST_CREATED",
+    does_not_unlock_readiness:true
+  },
+  recovery_execution_commit:{
+    required:true,
+    defined:true,
+    evaluated:true,
+    committed:true,
+    commit_status:"COMMITTED_REMEDIATION_EXECUTION_REQUEST_CREATED_PENDING_VALIDATION",
+    commit_effect:"CONTROLLED_RECOVERY_EXECUTION_COMMIT_WITH_REMEDIATION_EXECUTION_REQUEST",
+    does_not_execute_remediation:true,
+    does_not_unlock_readiness:true
+  },
+  recovery_execution_receipt:{
+    required:true,
+    received:true,
+    validated:true,
+    validation_required:true,
+    validation_performed:true,
+    receipt_status:"VALIDATED",
+    receipt_effect:"VALID_RECEIPT"
+  },
+  recovery_execution_external_effect_evidence:{
+    required:true,
+    received:true,
+    validated:true,
+    validation_required:true,
+    validation_performed:true,
+    evidence_status:"VALIDATED",
+    evidence_effect:"VALIDATED_EXTERNAL_EFFECT"
+  },
+  recovery_execution_physical_effect_evidence:{
+    required:true,
+    received:true,
+    validated:true,
+    validation_required:true,
+    validation_performed:true,
+    evidence_status:"VALIDATED",
+    evidence_effect:"VALIDATED_PHYSICAL_EFFECT_PROOF",
+    does_not_unlock_readiness:true
+  },
+  recovery_execution_completion_record:{
+    required:true,
+    created:true,
+    validated:true,
+    validation_required:true,
+    validation_performed:true,
+    record_status:"VALIDATED",
+    record_effect:"VALIDATED_COMPLETION_RECORD_PROVES_EXECUTION_CLOSURE",
+    does_not_unlock_readiness:true
+  },
+  recovery_execution_evidence_bundle:{
+    required:true,
+    created:true,
+    validated:true,
+    validation_required:true,
+    validation_performed:true,
+    bundle_status:"VALIDATED",
+    bundle_effect:"VALIDATED_EVIDENCE_BUNDLE_NO_READINESS_UNLOCK",
+    append_only_linkage_verified:true,
+    trusted_time_verified:true,
+    does_not_unlock_readiness:true
+  },
+  readiness_gate_request:{
+    required:true,
+    created:true,
+    validated:true,
+    gate_passed:false,
+    validation_required:true,
+    validation_performed:true,
+    request_status:"VALIDATED",
+    request_effect:"READINESS_GATE_REQUEST_VALIDATED_NO_READINESS_UNLOCK",
+    requires_human_review:true,
+    requires_readiness_gate_decision:true,
+    does_not_unlock_readiness:true
+  },
+  readiness_gate_validation:{
+    required:true,
+    performed:true,
+    validated:true,
+    passed:false,
+    validation_status:"VALIDATED",
+    validation_effect:"READINESS_GATE_VALIDATED_NO_READINESS_UNLOCK",
+    does_not_unlock_readiness:true
+  },
+  readiness_gate_decision:{
+    required:true,
+    created:true,
+    validated:true,
+    passed:false,
+    decision_status:"VALIDATED_NO_GO",
+    decision_outcome:"NO_GO_VALIDATED",
+    decision_effect:"VALIDATED_NO_GO_READINESS_GATE_DECISION_NO_READINESS_UNLOCK",
+    requires_remediation_plan:true,
+    does_not_unlock_readiness:true
+  },
+  readiness_gate_decision_validation:{
+    required:true,
+    performed:true,
+    validated:true,
+    passed:false,
+    validation_status:"VALIDATED_NO_GO",
+    validation_effect:"READINESS_GATE_DECISION_VALIDATED_NO_GO_NO_READINESS_UNLOCK",
+    does_not_unlock_readiness:true
+  },
+  readiness_remediation_plan:{
+    required:true,
+    created:true,
+    validated:true,
+    plan_status:"VALIDATED",
+    plan_effect:"VALIDATED_READINESS_REMEDIATION_PLAN_NO_READINESS_UNLOCK",
+    references_validated_no_go_decision:true,
+    references_readiness_gate_validation:true,
+    references_evidence_bundle:true,
+    references_execution_closure:true,
+    contains_required_corrective_actions:true,
+    contains_required_validation_evidence:true,
+    contains_no_readiness_unlock_constraint:true,
+    contains_no_product_claim_constraint:true,
+    contains_no_launch_claim_constraint:true,
+    requires_remediation_execution_request:true,
+    does_not_unlock_readiness:true
+  },
+  readiness_remediation_plan_validation:{
+    required:true,
+    performed:true,
+    validated:true,
+    passed:true,
+    validation_status:"VALIDATED",
+    validation_effect:"READINESS_REMEDIATION_PLAN_VALIDATED_NO_READINESS_UNLOCK",
+    does_not_unlock_readiness:true
+  },
+  readiness_remediation_execution_request:{
+    required:true,
+    created:true,
+    validated:false,
+    authorized:false,
+    request_status:"CREATED_PENDING_REMEDIATION_EXECUTION_REQUEST_VALIDATION",
+    request_scope:"execute_validated_readiness_remediation_plan_without_unlocking_readiness",
+    request_effect:"REMEDIATION_EXECUTION_REQUEST_CREATED_NO_REMEDIATION_EXECUTION_NO_READINESS_UNLOCK",
+    references_validated_remediation_plan:true,
+    references_validated_no_go_decision:true,
+    references_readiness_gate_validation:true,
+    references_evidence_bundle:true,
+    references_execution_closure:true,
+    contains_human_authority_requirement:true,
+    contains_no_readiness_unlock_constraint:true,
+    contains_no_product_claim_constraint:true,
+    contains_no_launch_claim_constraint:true,
+    requires_request_validation:true,
+    requires_execution_authority_binding:true,
+    does_not_execute_remediation:true,
+    does_not_unlock_readiness:true
+  },
+  readiness_remediation_execution_request_validation:{
+    required:true,
+    performed:false,
+    validated:false,
+    authorized:false,
+    validation_status:"PENDING_REMEDIATION_EXECUTION_REQUEST_VALIDATION"
+  },
+  readiness_remediation_execution:{
+    required:true,
+    requested:true,
+    request_validated:false,
+    authorized:false,
+    performed:false,
+    receipt_received:false,
+    execution_status:"PENDING_REMEDIATION_EXECUTION_REQUEST_VALIDATION",
+    does_not_unlock_readiness:true
+  },
+  recovery_execution:{
+    allowed:true,
+    performed:true,
+    performed_as:"CONTROLLED_COMMIT_WITH_REMEDIATION_EXECUTION_REQUEST_PENDING_VALIDATION",
+    receipt_received:true,
+    receipt_validated:true,
+    external_effect_evidence_received:true,
+    external_effect_evidence_validated:true,
+    external_effect_proven:true,
+    physical_effect_evidence_received:true,
+    physical_effect_evidence_validated:true,
+    physical_effect_proven:true,
+    completion_record_created:true,
+    completion_record_validated:true,
+    execution_closure_proven:true,
+    evidence_bundle_created:true,
+    evidence_bundle_validated:true,
+    readiness_gate_request_created:true,
+    readiness_gate_validated:true,
+    readiness_gate_decision_created:true,
+    readiness_gate_decision_validated:true,
+    readiness_gate_passed:false,
+    readiness_remediation_plan_created:true,
+    readiness_remediation_plan_validated:true,
+    readiness_remediation_execution_requested:true,
+    readiness_remediation_execution_request_validated:false,
+    readiness_remediation_execution_performed:false,
+    pending:"READINESS_REMEDIATION_EXECUTION_REQUEST_VALIDATION"
+  },
+  fail_closed:{
+    fail_closed_snapshot_active:true,
+    fail_closed_remains_active:false,
+    no_state_unlock:false,
+    unlock_reason:"CONTROLLED_RECOVERY_EXECUTION_REMEDIATION_EXECUTION_REQUEST_CREATED_PENDING_VALIDATION"
+  },
+  readiness:{
+    external_customer_ready:false,
+    banking_pack_ready:false,
+    level1_launch_ready:false,
+    production_ready:false
+  },
+  authority:{
+    ai_authority_allowed:false,
+    human_authority_required:true,
+    legal_validity_claimed:false,
+    accreditation_claimed:false,
+    procurement_eligibility_claimed:false
+  },
+  constraints:{
+    no_readiness_unlock:true,
+    no_ai_authority:true,
+    no_legal_validity:true,
+    no_accreditation:true,
+    no_procurement_eligibility:true,
+    no_certification_claim:true,
+    no_product_claim:true,
+    no_launch_claim:true,
+    no_readiness_gate_pass_claim:true,
+    no_production_readiness_claim:true,
+    no_remediation_execution_claim:true,
+    no_validated_remediation_execution_request_claim:true
+  },
+  previous_program:"PROG-164",
+  next_required_program:NEXT
+};
+
+assert.equal(a.readiness_remediation_plan.validated,true);
+assert.equal(a.readiness_remediation_execution_request.created,true);
+assert.equal(a.readiness_remediation_execution_request.validated,false);
+assert.equal(a.readiness_remediation_execution_request_validation.performed,false);
+assert.equal(a.readiness_remediation_execution.requested,true);
+assert.equal(a.readiness_remediation_execution.performed,false);
+assert.equal(a.recovery_execution.readiness_remediation_execution_requested,true);
+assert.equal(a.recovery_execution.readiness_remediation_execution_request_validated,false);
+assert.equal(a.recovery_execution.readiness_remediation_execution_performed,false);
+assert.equal(a.recovery_execution.readiness_gate_passed,false);
+assert.equal(a.readiness.production_ready,false);
+assert.equal(a.authority.ai_authority_allowed,false);
+
+fs.writeFileSync(JSON_OUT,JSON.stringify(stable(a),null,2)+"\n");
+fs.writeFileSync(MD_OUT,`# ${a.title}
+
+Program: \`${ID}\`
+
+Status: \`${STATUS}\`
+
+Source: \`${SRC}\`
+
+PROG-165 creates the remediation execution request after a validated readiness remediation plan.
+
+Remediation execution request creation is not request validation, remediation execution, readiness gate pass, launch readiness, legal validity, accreditation, certification, procurement eligibility or product readiness.
+
+Next required program: \`${NEXT}\`
+`);
+console.log("PROG_165_BUILDER_RUN=PASS");
