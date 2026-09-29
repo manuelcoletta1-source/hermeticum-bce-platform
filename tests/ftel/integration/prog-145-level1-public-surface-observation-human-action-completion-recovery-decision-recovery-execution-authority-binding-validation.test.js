@@ -9,7 +9,7 @@ assert.equal(a.human_decision_response.received,true);
 assert.equal(a.human_decision_response.validated,true);
 assert.equal(a.human_decision_response.authorization_effect,false);
 assert.equal(a.human_decision_record.recorded,true);
-assert.equal(a.human_decision_record.validated	true);
+assert.equal(a.human_decision_record.validated,true);
 assert.equal(a.human_decision_record.record_effect,"NO_EXECUTION_AUTHORIZATION");
 assert.equal(a.human_decision.recorded,true);
 assert.equal(a.human_decision.validated,true);
