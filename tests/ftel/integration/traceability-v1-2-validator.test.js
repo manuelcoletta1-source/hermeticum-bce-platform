@@ -1,16 +1,24 @@
+const fs = require("fs");
+const path = require("path");
 const assert = require("assert/strict");
+
+const root = process.cwd();
+
 const {
   validateTraceabilityRecord,
   validateTraceabilityRecordFile
-} = require("../../runtime/traceability/validate-v1-2-traceability-record.js");
+} = require(path.join(root, "runtime/traceability/validate-v1-2-traceability-record.js"));
 
-const validFile = "docs/launch/traceability/prog-174-level1-public-surface-observation-human-action-completion-recovery-decision-recovery-execution-readiness-remediation-execution-receipt.v1-2-trace-binding.json";
+const validFile = path.join(
+  root,
+  "docs/launch/traceability/prog-174-level1-public-surface-observation-human-action-completion-recovery-decision-recovery-execution-readiness-remediation-execution-receipt.v1-2-trace-binding.json"
+);
 
 const validResult = validateTraceabilityRecordFile(validFile);
 assert.equal(validResult.ok, true);
 assert.deepEqual(validResult.reason_codes, ["TRACEABILITY_RECORD_VALID"]);
 
-const base = require("../../docs/launch/traceability/prog-174-level1-public-surface-observation-human-action-completion-recovery-decision-recovery-execution-readiness-remediation-execution-receipt.v1-2-trace-binding.json");
+const base = JSON.parse(fs.readFileSync(validFile, "utf8"));
 
 const missingTrace = {
   ...base,
@@ -34,7 +42,12 @@ const structuralOverclaim = {
 };
 const structuralOverclaimResult = validateTraceabilityRecord(structuralOverclaim);
 assert.equal(structuralOverclaimResult.ok, false);
-assert.ok(structuralOverclaimResult.errors.some((e) => e.includes("non-execution gate cannot claim execution") || e.includes("execution claim requires")));
+assert.ok(
+  structuralOverclaimResult.errors.some((e) =>
+    e.includes("non-execution gate cannot claim execution") ||
+    e.includes("execution claim requires")
+  )
+);
 
 const weakExecutionEvidence = {
   ...base,
