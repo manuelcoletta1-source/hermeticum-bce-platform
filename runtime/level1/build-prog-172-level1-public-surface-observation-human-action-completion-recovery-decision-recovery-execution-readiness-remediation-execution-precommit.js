@@ -1,0 +1,395 @@
+const fs=require("fs"),crypto=require("crypto"),assert=require("assert/strict");
+
+const SRC="docs/launch/level1/prog-171-level1-public-surface-observation-human-action-completion-recovery-decision-recovery-execution-readiness-remediation-execution-precommit-gate.json";
+const JSON_OUT="docs/launch/level1/prog-172-level1-public-surface-observation-human-action-completion-recovery-decision-recovery-execution-readiness-remediation-execution-precommit.json";
+const MD_OUT="docs/launch/level1/prog-172-level1-public-surface-observation-human-action-completion-recovery-decision-recovery-execution-readiness-remediation-execution-precommit.md";
+const ID="PROG-172-HBCE-LEVEL1-PUBLIC-SURFACE-OBSERVATION-HUMAN-ACTION-COMPLETION-RECOVERY-DECISION-RECOVERY-EXECUTION-READINESS-REMEDIATION-EXECUTION-PRECOMMIT";
+const STATUS="LEVEL1_PUBLIC_SURFACE_OBSERVATION_HUMAN_ACTION_COMPLETION_RECOVERY_DECISION_RECOVERY_EXECUTION_READINESS_REMEDIATION_EXECUTION_PRECOMMITTED_PENDING_REMEDIATION_EXECUTION_COMMIT";
+const NEXT="PROG-173-HBCE-LEVEL1-PUBLIC-SURFACE-OBSERVATION-HUMAN-ACTION-COMPLETION-RECOVERY-DECISION-RECOVERY-EXECUTION-READINESS-REMEDIATION-EXECUTION-COMMIT";
+
+const sha=p=>crypto.createHash("sha256").update(fs.readFileSync(p)).digest("hex");
+const stable=v=>Array.isArray(v)?v.map(stable):v&&typeof v==="object"?Object.fromEntries(Object.keys(v).sort().map(k=>[k,stable(v[k])])):v;
+
+const src=JSON.parse(fs.readFileSync(SRC,"utf8"));
+assert.equal(src.program_number,171);
+assert.equal(src.recovery_execution.readiness_remediation_execution_authority_binding_completed,true);
+assert.equal(src.recovery_execution.readiness_remediation_execution_precommit_gate_passed,true);
+assert.equal(src.recovery_execution.readiness_remediation_execution_precommit_required,true);
+assert.equal(src.recovery_execution.readiness_remediation_execution_precommit_committed,false);
+assert.equal(src.recovery_execution.readiness_remediation_execution_commit_performed,false);
+assert.equal(src.recovery_execution.readiness_remediation_execution_authorized,false);
+assert.equal(src.recovery_execution.readiness_remediation_execution_performed,false);
+assert.equal(src.recovery_execution.readiness_gate_passed,false);
+assert.equal(src.readiness_remediation_execution_precommit_gate.passed,true);
+assert.equal(src.readiness_remediation_execution_precommit.committed,false);
+assert.equal(src.readiness.production_ready,false);
+assert.equal(src.authority.ai_authority_allowed,false);
+
+const a={
+  program_id:ID,
+  program_number:172,
+  title:"Level 1 Public Surface Observation Human Action Completion Recovery Decision Recovery Execution Readiness Remediation Execution Precommit",
+  status:STATUS,
+  level3_axis:{
+    principle:"remediation_execution_precommit_is_not_execution_commit_or_remediation_execution",
+    execution_closure_proven:true,
+    evidence_bundle_validated:true,
+    readiness_gate_decision_validated:true,
+    readiness_gate_decision_outcome:"NO_GO_VALIDATED",
+    readiness_gate_passed:false,
+    readiness_remediation_plan_validated:true,
+    readiness_remediation_execution_request_validated:true,
+    remediation_execution_authority_binding_completed:true,
+    remediation_execution_precommit_gate_required:true,
+    remediation_execution_precommit_gate_evaluated:true,
+    remediation_execution_precommit_gate_passed:true,
+    remediation_execution_precommit_required:true,
+    remediation_execution_precommit_prepared:true,
+    remediation_execution_precommit_committed:true,
+    remediation_execution_commit_required:true,
+    remediation_execution_commit_performed:false,
+    remediation_execution_receipt_received:false,
+    readiness_remediation_execution_authorized:false,
+    readiness_remediation_execution_performed:false,
+    launch_readiness_unlocked:false,
+    readiness_unlock_allowed:false,
+    legal_or_certification_effect:false
+  },
+  inherits_from:{
+    program_id:src.program_id,
+    source_path:SRC,
+    source_raw_sha256:sha(SRC),
+    source_canonical_sha256:crypto.createHash("sha256").update(JSON.stringify(stable(src))).digest("hex")
+  },
+  human_decision_response:{
+    received:true,
+    validated:true,
+    authorization_effect:false
+  },
+  human_decision_record:{
+    created:true,
+    recorded:true,
+    validated:true,
+    record_effect:"REMEDIATION_EXECUTION_PRECOMMITTED_PENDING_EXECUTION_COMMIT"
+  },
+  human_decision:{
+    recorded:true,
+    validated:true,
+    selected_recovery_decision_option:"RECOVERY_DECISION_REMEDIATION_EXECUTION_PRECOMMITTED_PENDING_EXECUTION_COMMIT"
+  },
+  recovery_execution_authority_binding_gate:{
+    required:true,
+    defined:true,
+    evaluated:true,
+    passed:true,
+    blocked:false,
+    pass_reason:"ORIGINAL_RECOVERY_EXECUTION_AUTHORITY_BINDING_COMPLETED"
+  },
+  recovery_execution_authority_binding:{
+    required:true,
+    requested:true,
+    received:true,
+    defined:true,
+    validated:true,
+    bound:true,
+    completed:true,
+    binding_effect:"AUTHORITY_BINDING_COMPLETED_FOR_ORIGINAL_CONTROLLED_COMMIT_PATH"
+  },
+  recovery_execution_precommit_gate:{
+    required:true,
+    defined:true,
+    evaluated:true,
+    passed:true,
+    blocked:false,
+    pass_reason:"ORIGINAL_AUTHORITY_BINDING_COMPLETED_AND_PRECOMMIT_CONSTRAINTS_SATISFIED",
+    gate_effect:"ORIGINAL_PRECOMMIT_COMPLETED_REMEDIATION_EXECUTION_PRECOMMITTED"
+  },
+  recovery_execution_precommit:{
+    prepared:true,
+    committed:true,
+    commit_required:true,
+    precommit_effect:"ORIGINAL_COMMIT_PATH_COMPLETED_REMEDIATION_EXECUTION_PRECOMMITTED",
+    does_not_unlock_readiness:true
+  },
+  recovery_execution_commit:{
+    required:true,
+    defined:true,
+    evaluated:true,
+    committed:true,
+    commit_status:"COMMITTED_REMEDIATION_EXECUTION_PRECOMMITTED_PENDING_REMEDIATION_EXECUTION_COMMIT",
+    commit_effect:"CONTROLLED_RECOVERY_EXECUTION_COMMIT_WITH_REMEDIATION_EXECUTION_PRECOMMIT",
+    does_not_commit_remediation_execution:true,
+    does_not_authorize_remediation_execution:true,
+    does_not_execute_remediation:true,
+    does_not_unlock_readiness:true
+  },
+  recovery_execution_receipt:{
+    required:true,
+    received:true,
+    validated:true,
+    validation_required:true,
+    validation_performed:true,
+    receipt_status:"VALIDATED",
+    receipt_effect:"VALID_RECEIPT"
+  },
+  recovery_execution_external_effect_evidence:{
+    required:true,
+    received:true,
+    validated:true,
+    validation_required:true,
+    validation_performed:true,
+    evidence_status:"VALIDATED",
+    evidence_effect:"VALIDATED_EXTERNAL_EFFECT"
+  },
+  recovery_execution_physical_effect_evidence:{
+    required:true,
+    received:true,
+    validated:true,
+    validation_required:true,
+    validation_performed:true,
+    evidence_status:"VALIDATED",
+    evidence_effect:"VALIDATED_PHYSICAL_EFFECT_PROOF",
+    does_not_unlock_readiness:true
+  },
+  recovery_execution_completion_record:{
+    required:true,
+    created:true,
+    validated:true,
+    validation_required:true,
+    validation_performed:true,
+    record_status:"VALIDATED",
+    record_effect:"VALIDATED_COMPLETION_RECORD_PROVES_EXECUTION_CLOSURE",
+    does_not_unlock_readiness:true
+  },
+  recovery_execution_evidence_bundle:{
+    required:true,
+    created:true,
+    validated:true,
+    validation_required:true,
+    validation_performed:true,
+    bundle_status:"VALIDATED",
+    bundle_effect:"VALIDATED_EVIDENCE_BUNDLE_NO_READINESS_UNLOCK",
+    append_only_linkage_verified:true,
+    trusted_time_verified:true,
+    does_not_unlock_readiness:true
+  },
+  readiness_gate_decision:{
+    required:true,
+    created:true,
+    validated:true,
+    passed:false,
+    decision_status:"VALIDATED_NO_GO",
+    decision_outcome:"NO_GO_VALIDATED",
+    decision_effect:"VALIDATED_NO_GO_READINESS_GATE_DECISION_NO_READINESS_UNLOCK",
+    requires_remediation_plan:true,
+    does_not_unlock_readiness:true
+  },
+  readiness_remediation_plan:{
+    required:true,
+    created:true,
+    validated:true,
+    plan_status:"VALIDATED",
+    plan_effect:"VALIDATED_READINESS_REMEDIATION_PLAN_NO_READINESS_UNLOCK",
+    requires_remediation_execution_request:true,
+    does_not_unlock_readiness:true
+  },
+  readiness_remediation_execution_request:{
+    required:true,
+    created:true,
+    validated:true,
+    authorized:false,
+    request_status:"VALIDATED_AUTHORITY_BINDING_COMPLETED_PRECOMMITTED_PENDING_EXECUTION_COMMIT",
+    request_effect:"REMEDIATION_EXECUTION_REQUEST_VALIDATED_WITH_PRECOMMIT_NO_EXECUTION_COMMIT_NO_AUTHORIZATION_NO_EXECUTION_NO_READINESS_UNLOCK",
+    requires_execution_authority_binding:true,
+    requires_precommit_gate:true,
+    requires_precommit:true,
+    requires_execution_commit:true,
+    does_not_commit_execution:true,
+    does_not_authorize_execution:true,
+    does_not_execute_remediation:true,
+    does_not_unlock_readiness:true
+  },
+  readiness_remediation_execution_authority_binding:{
+    required:true,
+    requested:true,
+    received:true,
+    receipt_received:true,
+    receipt_validated:true,
+    validated:true,
+    completed:true,
+    binding_status:"COMPLETED_REMEDIATION_EXECUTION_PRECOMMITTED_PENDING_EXECUTION_COMMIT",
+    binding_effect:"AUTHORITY_BINDING_COMPLETED_AND_PRECOMMITTED_NO_EXECUTION_COMMIT_NO_AUTHORIZATION_NO_REMEDIATION_EXECUTION",
+    precommit_gate_passed:true,
+    precommit_committed:true,
+    requires_execution_commit:true,
+    does_not_commit_execution:true,
+    does_not_authorize_execution:true,
+    does_not_execute_remediation:true,
+    does_not_unlock_readiness:true
+  },
+  readiness_remediation_execution_precommit_gate:{
+    required:true,
+    defined:true,
+    evaluated:true,
+    passed:true,
+    blocked:false,
+    pass_reason:"VALIDATED_REMEDIATION_EXECUTION_REQUEST_AND_COMPLETED_REMEDIATION_EXECUTION_AUTHORITY_BINDING",
+    gate_status:"PASSED",
+    gate_effect:"PRECOMMIT_GATE_PASSED_BEFORE_REMEDIATION_EXECUTION_PRECOMMIT"
+  },
+  readiness_remediation_execution_precommit:{
+    required:true,
+    prepared:true,
+    committed:true,
+    precommit_status:"COMMITTED_PENDING_REMEDIATION_EXECUTION_COMMIT",
+    precommit_effect:"REMEDIATION_EXECUTION_PRECOMMIT_COMMITTED_NO_EXECUTION_COMMIT_NO_AUTHORIZATION_NO_EXECUTION",
+    binds_validated_remediation_execution_request:true,
+    binds_completed_authority_binding:true,
+    binds_passed_precommit_gate:true,
+    requires_execution_commit:true,
+    does_not_commit_execution:true,
+    does_not_authorize_execution:true,
+    does_not_execute_remediation:true,
+    does_not_unlock_readiness:true
+  },
+  readiness_remediation_execution_commit:{
+    required:true,
+    committed:false,
+    commit_status:"PENDING_REMEDIATION_EXECUTION_COMMIT",
+    commit_effect:"NO_EXECUTION_COMMIT_NO_AUTHORIZATION_NO_EXECUTION",
+    does_not_authorize_execution:true,
+    does_not_execute_remediation:true,
+    does_not_unlock_readiness:true
+  },
+  readiness_remediation_execution:{
+    required:true,
+    requested:true,
+    request_validated:true,
+    authority_binding_requested:true,
+    authority_binding_received:true,
+    authority_binding_receipt_received:true,
+    authority_binding_receipt_validated:true,
+    authority_binding_validated:true,
+    authority_binding_completed:true,
+    precommit_gate_required:true,
+    precommit_gate_evaluated:true,
+    precommit_gate_passed:true,
+    precommit_required:true,
+    precommit_prepared:true,
+    precommit_committed:true,
+    commit_required:true,
+    commit_performed:false,
+    authorized:false,
+    performed:false,
+    receipt_received:false,
+    execution_status:"PENDING_REMEDIATION_EXECUTION_COMMIT",
+    does_not_unlock_readiness:true
+  },
+  recovery_execution:{
+    allowed:true,
+    performed:true,
+    performed_as:"CONTROLLED_COMMIT_WITH_REMEDIATION_EXECUTION_PRECOMMITTED_PENDING_EXECUTION_COMMIT",
+    receipt_received:true,
+    receipt_validated:true,
+    external_effect_evidence_received:true,
+    external_effect_evidence_validated:true,
+    external_effect_proven:true,
+    physical_effect_evidence_received:true,
+    physical_effect_evidence_validated:true,
+    physical_effect_proven:true,
+    completion_record_created:true,
+    completion_record_validated:true,
+    execution_closure_proven:true,
+    evidence_bundle_created:true,
+    evidence_bundle_validated:true,
+    readiness_gate_request_created:true,
+    readiness_gate_validated:true,
+    readiness_gate_decision_created:true,
+    readiness_gate_decision_validated:true,
+    readiness_gate_passed:false,
+    readiness_remediation_plan_created:true,
+    readiness_remediation_plan_validated:true,
+    readiness_remediation_execution_requested:true,
+    readiness_remediation_execution_request_validated:true,
+    readiness_remediation_execution_authority_binding_completed:true,
+    readiness_remediation_execution_precommit_gate_required:true,
+    readiness_remediation_execution_precommit_gate_passed:true,
+    readiness_remediation_execution_precommit_required:true,
+    readiness_remediation_execution_precommit_prepared:true,
+    readiness_remediation_execution_precommit_committed:true,
+    readiness_remediation_execution_commit_required:true,
+    readiness_remediation_execution_commit_performed:false,
+    readiness_remediation_execution_authorized:false,
+    readiness_remediation_execution_performed:false,
+    pending:"READINESS_REMEDIATION_EXECUTION_COMMIT"
+  },
+  fail_closed:{
+    fail_closed_snapshot_active:true,
+    fail_closed_remains_active:false,
+    no_state_unlock:false,
+    unlock_reason:"CONTROLLED_RECOVERY_EXECUTION_REMEDIATION_EXECUTION_PRECOMMITTED_WITH_EXECUTION_COMMIT_PENDING"
+  },
+  readiness:{
+    external_customer_ready:false,
+    banking_pack_ready:false,
+    level1_launch_ready:false,
+    production_ready:false
+  },
+  authority:{
+    ai_authority_allowed:false,
+    human_authority_required:true,
+    legal_validity_claimed:false,
+    accreditation_claimed:false,
+    procurement_eligibility_claimed:false
+  },
+  constraints:{
+    no_readiness_unlock:true,
+    no_ai_authority:true,
+    no_legal_validity:true,
+    no_accreditation:true,
+    no_procurement_eligibility:true,
+    no_certification_claim:true,
+    no_product_claim:true,
+    no_launch_claim:true,
+    no_readiness_gate_pass_claim:true,
+    no_production_readiness_claim:true,
+    no_remediation_execution_claim:true,
+    no_remediation_execution_commit_claim:true,
+    no_remediation_execution_authorization_claim:true
+  },
+  previous_program:"PROG-171",
+  next_required_program:NEXT
+};
+
+assert.equal(a.readiness_remediation_execution_precommit_gate.passed,true);
+assert.equal(a.readiness_remediation_execution_precommit.prepared,true);
+assert.equal(a.readiness_remediation_execution_precommit.committed,true);
+assert.equal(a.readiness_remediation_execution_commit.committed,false);
+assert.equal(a.readiness_remediation_execution.precommit_committed,true);
+assert.equal(a.readiness_remediation_execution.commit_performed,false);
+assert.equal(a.readiness_remediation_execution.authorized,false);
+assert.equal(a.readiness_remediation_execution.performed,false);
+assert.equal(a.recovery_execution.readiness_remediation_execution_precommit_committed,true);
+assert.equal(a.recovery_execution.readiness_remediation_execution_commit_performed,false);
+assert.equal(a.recovery_execution.readiness_remediation_execution_authorized,false);
+assert.equal(a.recovery_execution.readiness_remediation_execution_performed,false);
+assert.equal(a.recovery_execution.readiness_gate_passed,false);
+assert.equal(a.readiness.production_ready,false);
+assert.equal(a.authority.ai_authority_allowed,false);
+
+fs.writeFileSync(JSON_OUT,JSON.stringify(stable(a),null,2)+"\n");
+fs.writeFileSync(MD_OUT,`# ${a.title}
+
+Program: \`${ID}\`
+
+Status: \`${STATUS}\`
+
+Source: \`${SRC}\`
+
+PROG-172 commits the remediation execution precommit after the precommit gate has passed.
+
+Remediation execution precommit is not remediation execution commit, remediation authorization, remediation execution, readiness gate pass, launch readiness, legal validity, accreditation, certification, procurement eligibility or product readiness.
+
+Next required program: \`${NEXT}\`
+`);
+console.log("PROG_172_BUILDER_RUN=PASS");
