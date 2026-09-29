@@ -11,6 +11,7 @@ Claim ceiling: this index is navigation metadata. It is not execution evidence, 
 | Program | Requirement | Gate | Gate semantics | Evidence class | Result | Execution claimed | execution_trace_ref | Overclaim check | Source |
 |---|---|---|---|---|---|---|---|---|---|
 | PROG-174 | `L1-PROG-174-REMEDIATION-EXECUTION-RECEIPT-STATE-STRUCTURAL` | `PR310-PREMERGE-GATE` | `structural_validation` | `STRUCTURALLY_VALIDATED` | `PASS` | `false` | `null` | `PASS` | `docs/launch/traceability/prog-174-level1-public-surface-observation-human-action-completion-recovery-decision-recovery-execution-readiness-remediation-execution-receipt.v1-2-trace-binding.json` |
+| PROG-175 | `L1-PROG-175-REMEDIATION-EXECUTION-RECEIPT-VALIDATION-STATE-STRUCTURAL` | `PROG-175-PREMERGE-GATE` | `structural_validation` | `STRUCTURALLY_VALIDATED` | `PASS` | `false` | `null` | `PASS` | `docs/launch/traceability/prog-175-level1-public-surface-observation-human-action-completion-recovery-decision-recovery-execution-readiness-remediation-execution-receipt-validation.v1-2-trace-binding.json` |
 
 ## V1.2 rule
 
@@ -19,3 +20,4 @@ A PASS does not become execution evidence unless the gate semantics declare exec
 ## Current visible status
 
 - PROG-174: `structural_validation` / `STRUCTURALLY_VALIDATED` / execution claimed: `false` / trace required: `false`.
+- PROG-175: `structural_validation` / `STRUCTURALLY_VALIDATED` / execution claimed: `false` / trace required: `false`.
