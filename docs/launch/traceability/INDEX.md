@@ -27,6 +27,7 @@ Claim ceiling: this index is navigation metadata. It is not execution evidence, 
 | PROG-188 | `L1-PROG-188-EXTERNAL-CUSTOMER-READINESS-RECORDED-STATE-STRUCTURAL` | `PROG-188-PREMERGE-GATE` | `structural_validation` | `STRUCTURALLY_VALIDATED` | `PASS` | `false` | `null` | `PASS` | `docs/launch/traceability/prog-188-level1-public-surface-observation-human-action-completion-recovery-decision-recovery-execution-external-customer-readiness-record.v1-2-trace-binding.json` |
 | PROG-189 | `L1-PROG-189-BANKING-PACK-READINESS-RECORDED-STATE-STRUCTURAL` | `PROG-189-PREMERGE-GATE` | `structural_validation` | `STRUCTURALLY_VALIDATED` | `PASS` | `false` | `null` | `PASS` | `docs/launch/traceability/prog-189-level1-public-surface-observation-human-action-completion-recovery-decision-recovery-execution-banking-pack-readiness-record.v1-2-trace-binding.json` |
 | PROG-190 | `L1-PROG-190-EXTERNAL-VALIDATION-PACKAGE-REQUESTED-STATE-STRUCTURAL` | `PROG-190-PREMERGE-GATE` | `structural_validation` | `STRUCTURALLY_VALIDATED` | `PASS` | `false` | `null` | `PASS` | `docs/launch/traceability/prog-190-level1-public-surface-observation-human-action-completion-recovery-decision-recovery-execution-external-validation-package-request.v1-2-trace-binding.json` |
+| PROG-191 | `L1-PROG-191-INDEPENDENT-EXTERNAL-VALIDATION-REVIEW-REGISTERED-STATE-STRUCTURAL` | `PROG-191-PREMERGE-GATE` | `structural_validation` | `STRUCTURALLY_VALIDATED` | `PASS` | `false` | `null` | `PASS` | `docs/launch/traceability/prog-191-level1-public-surface-observation-human-action-completion-recovery-decision-recovery-execution-independent-external-validation-review.v1-2-trace-binding.json` |
 
 ## V1.2 rule
 
@@ -51,3 +52,4 @@ A PASS does not become execution evidence unless the gate semantics declare exec
 - PROG-188: `structural_validation` / `STRUCTURALLY_VALIDATED` / execution claimed: `false` / trace required: `false`.
 - PROG-189: `structural_validation` / `STRUCTURALLY_VALIDATED` / execution claimed: `false` / trace required: `false`.
 - PROG-190: `structural_validation` / `STRUCTURALLY_VALIDATED` / execution claimed: `false` / trace required: `false`.
+- PROG-191: `structural_validation` / `STRUCTURALLY_VALIDATED` / execution claimed: `false` / trace required: `false`.
