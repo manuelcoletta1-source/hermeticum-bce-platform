@@ -648,3 +648,96 @@
     run();
   }
 })();
+
+
+(function hbceBindReviewerIdentityConfirmedState() {
+  function run() {
+    var root = document.querySelector("[data-hbce-traceability-status]");
+    if (!root) return;
+
+    var target = root.querySelector("[data-level1-reviewer-identity-confirmed]");
+    if (!target) return;
+
+    var latestUrl = root.getAttribute("data-level1-latest-url");
+    if (!latestUrl || typeof fetch !== "function") return;
+
+    fetch(latestUrl, { cache: "no-store" })
+      .then(function (response) {
+        return response && response.ok ? response.json() : null;
+      })
+      .then(function (latest) {
+        var readinessExecution = latest && latest.readiness_remediation_execution;
+        if (!readinessExecution) return;
+        target.textContent = String(Boolean(readinessExecution.reviewer_identity_confirmed));
+      })
+      .catch(function () {});
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run);
+  } else {
+    run();
+  }
+})();
+
+
+(function hbceBindReviewerIndependenceVerifiedState() {
+  function run() {
+    var root = document.querySelector("[data-hbce-traceability-status]");
+    if (!root) return;
+
+    var target = root.querySelector("[data-level1-reviewer-independence-verified]");
+    if (!target) return;
+
+    var latestUrl = root.getAttribute("data-level1-latest-url");
+    if (!latestUrl || typeof fetch !== "function") return;
+
+    fetch(latestUrl, { cache: "no-store" })
+      .then(function (response) {
+        return response && response.ok ? response.json() : null;
+      })
+      .then(function (latest) {
+        var readinessExecution = latest && latest.readiness_remediation_execution;
+        if (!readinessExecution) return;
+        target.textContent = String(Boolean(readinessExecution.reviewer_independence_verified));
+      })
+      .catch(function () {});
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run);
+  } else {
+    run();
+  }
+})();
+
+
+(function hbceBindReviewerEvidenceVerificationCompletedState() {
+  function run() {
+    var root = document.querySelector("[data-hbce-traceability-status]");
+    if (!root) return;
+
+    var target = root.querySelector("[data-level1-reviewer-evidence-verification-completed]");
+    if (!target) return;
+
+    var latestUrl = root.getAttribute("data-level1-latest-url");
+    if (!latestUrl || typeof fetch !== "function") return;
+
+    fetch(latestUrl, { cache: "no-store" })
+      .then(function (response) {
+        return response && response.ok ? response.json() : null;
+      })
+      .then(function (latest) {
+        var readinessExecution = latest && latest.readiness_remediation_execution;
+        if (!readinessExecution) return;
+        target.textContent = String(Boolean(readinessExecution.reviewer_evidence_verification_completed));
+      })
+      .catch(function () {});
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run);
+  } else {
+    run();
+  }
+})();
