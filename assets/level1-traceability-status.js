@@ -524,3 +524,65 @@
     run();
   }
 })();
+
+
+(function hbceBindExternalValidationReviewOutcomeRecordedState() {
+  function run() {
+    var root = document.querySelector("[data-hbce-traceability-status]");
+    if (!root) return;
+
+    var target = root.querySelector("[data-level1-external-validation-review-outcome-recorded]");
+    if (!target) return;
+
+    var latestUrl = root.getAttribute("data-level1-latest-url");
+    if (!latestUrl || typeof fetch !== "function") return;
+
+    fetch(latestUrl, { cache: "no-store" })
+      .then(function (response) {
+        return response && response.ok ? response.json() : null;
+      })
+      .then(function (latest) {
+        var readinessExecution = latest && latest.readiness_remediation_execution;
+        if (!readinessExecution) return;
+        target.textContent = String(Boolean(readinessExecution.external_validation_review_outcome_recorded));
+      })
+      .catch(function () {});
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run);
+  } else {
+    run();
+  }
+})();
+
+
+(function hbceBindExternalValidationAcceptedState() {
+  function run() {
+    var root = document.querySelector("[data-hbce-traceability-status]");
+    if (!root) return;
+
+    var target = root.querySelector("[data-level1-external-validation-accepted]");
+    if (!target) return;
+
+    var latestUrl = root.getAttribute("data-level1-latest-url");
+    if (!latestUrl || typeof fetch !== "function") return;
+
+    fetch(latestUrl, { cache: "no-store" })
+      .then(function (response) {
+        return response && response.ok ? response.json() : null;
+      })
+      .then(function (latest) {
+        var readinessExecution = latest && latest.readiness_remediation_execution;
+        if (!readinessExecution) return;
+        target.textContent = String(Boolean(readinessExecution.external_validation_accepted));
+      })
+      .catch(function () {});
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run);
+  } else {
+    run();
+  }
+})();
