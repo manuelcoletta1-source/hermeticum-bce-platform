@@ -4,7 +4,7 @@ Directive: `HBCE-RD-MASTER-2027-0003-V1.2-EXECUTION-TRACE-BINDING-PATCH`
 
 Purpose: make V1.2 gate semantics, evidence class, execution-claim status, trace requirements and overclaim checks visible in one place.
 
-Claim ceiling: this index is navigation metadata. It is not execution evidence, not receipt validation, not external effect validation, not physical effect proof, not readiness gate pass, not launch readiness, not certification and not legal validity.
+Claim ceiling: this index is navigation metadata. It is not execution evidence, not receipt validation, not external effect validation, not physical effect proof, not readiness gate pass, not launch readiness, not product readiness, not certification and not legal validity.
 
 ## Records
 
@@ -21,6 +21,7 @@ Claim ceiling: this index is navigation metadata. It is not execution evidence, 
 | PROG-182 | `L1-PROG-182-READINESS-GATE-REQUEST-VALIDATED-STATE-STRUCTURAL` | `PROG-182-PREMERGE-GATE` | `structural_validation` | `STRUCTURALLY_VALIDATED` | `PASS` | `false` | `null` | `PASS` | `docs/launch/traceability/prog-182-level1-public-surface-observation-human-action-completion-recovery-decision-recovery-execution-readiness-gate-request-validation.v1-2-trace-binding.json` |
 | PROG-183 | `L1-PROG-183-READINESS-GATE-DECISION-RECORDED-STATE-STRUCTURAL` | `PROG-183-PREMERGE-GATE` | `structural_validation` | `STRUCTURALLY_VALIDATED` | `PASS` | `false` | `null` | `PASS` | `docs/launch/traceability/prog-183-level1-public-surface-observation-human-action-completion-recovery-decision-recovery-execution-readiness-gate-decision.v1-2-trace-binding.json` |
 | PROG-184 | `L1-PROG-184-READINESS-GATE-DECISION-VALIDATED-STATE-STRUCTURAL` | `PROG-184-PREMERGE-GATE` | `structural_validation` | `STRUCTURALLY_VALIDATED` | `PASS` | `false` | `null` | `PASS` | `docs/launch/traceability/prog-184-level1-public-surface-observation-human-action-completion-recovery-decision-recovery-execution-readiness-gate-decision-validation.v1-2-trace-binding.json` |
+| PROG-185 | `L1-PROG-185-READINESS-GATE-PASSED-STATE-STRUCTURAL` | `PROG-185-PREMERGE-GATE` | `structural_validation` | `STRUCTURALLY_VALIDATED` | `PASS` | `false` | `null` | `PASS` | `docs/launch/traceability/prog-185-level1-public-surface-observation-human-action-completion-recovery-decision-recovery-execution-readiness-gate-pass.v1-2-trace-binding.json` |
 
 ## V1.2 rule
 
@@ -39,3 +40,4 @@ A PASS does not become execution evidence unless the gate semantics declare exec
 - PROG-182: `structural_validation` / `STRUCTURALLY_VALIDATED` / execution claimed: `false` / trace required: `false`.
 - PROG-183: `structural_validation` / `STRUCTURALLY_VALIDATED` / execution claimed: `false` / trace required: `false`.
 - PROG-184: `structural_validation` / `STRUCTURALLY_VALIDATED` / execution claimed: `false` / trace required: `false`.
+- PROG-185: `structural_validation` / `STRUCTURALLY_VALIDATED` / execution claimed: `false` / trace required: `false`.
