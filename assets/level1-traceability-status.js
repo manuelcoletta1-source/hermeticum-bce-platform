@@ -369,3 +369,34 @@
     run();
   }
 })();
+
+
+(function hbceBindExternalCustomerReadyState() {
+  function run() {
+    var root = document.querySelector("[data-hbce-traceability-status]");
+    if (!root) return;
+
+    var target = root.querySelector("[data-level1-external-customer-ready]");
+    if (!target) return;
+
+    var latestUrl = root.getAttribute("data-level1-latest-url");
+    if (!latestUrl || typeof fetch !== "function") return;
+
+    fetch(latestUrl, { cache: "no-store" })
+      .then(function (response) {
+        return response && response.ok ? response.json() : null;
+      })
+      .then(function (latest) {
+        var readiness = latest && latest.readiness;
+        if (!readiness) return;
+        target.textContent = String(Boolean(readiness.external_customer_ready));
+      })
+      .catch(function () {});
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run);
+  } else {
+    run();
+  }
+})();
