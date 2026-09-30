@@ -24,7 +24,7 @@ assert.equal(trace.claim_ceiling.maximum_claim, "STRUCTURALLY_VALIDATED_READINES
 assert.equal(trace.claim_ceiling.not_execution_evidence, true);
 assert.equal(trace.claim_ceiling.not_external_effect_evidence, false);
 assert.equal(trace.claim_ceiling.not_physical_effect_evidence, false);
-assert.equal(trace.claim_ceiling.not_readiness_gate_pass, false);
+assert.equal(trace.claim_ceiling.not_readiness_gate_pass, true);
 assert.equal(trace.claim_ceiling.not_product_readiness, true);
 assert.equal(trace.claim_ceiling.not_certification, true);
 assert.equal(trace.claim_ceiling.not_legal_validity, true);

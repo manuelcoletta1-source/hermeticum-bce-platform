@@ -42,7 +42,7 @@ assert.equal(r185.evidence_class, "STRUCTURALLY_VALIDATED");
 assert.equal(r185.execution_claimed, false);
 assert.equal(r185.execution_trace_ref, null);
 assert.equal(r185.claim_ceiling.maximum_claim, "STRUCTURALLY_VALIDATED_READINESS_GATE_PASSED_STATE");
-assert.equal(r185.claim_ceiling.not_readiness_gate_pass, false);
+assert.equal(r185.claim_ceiling.not_readiness_gate_pass, true);
 assert.equal(r185.claim_ceiling.not_product_readiness, true);
 assert.equal(r185.claim_ceiling.not_certification, true);
 

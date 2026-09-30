@@ -238,7 +238,7 @@ const trace = {
     not_receipt_validation: true,
     not_external_effect_evidence: false,
     not_physical_effect_evidence: false,
-    not_readiness_gate_pass: false,
+    not_readiness_gate_pass: true,
     not_product_readiness: true,
     not_certification: true,
     not_legal_validity: true,
@@ -299,7 +299,7 @@ function rebuildTraceabilityIndex() {
     index_id: "HBCE-V1-2-LAUNCH-TRACEABILITY-INDEX",
     directive_ref: "HBCE-RD-MASTER-2027-0003-V1.2-EXECUTION-TRACE-BINDING-PATCH",
     purpose: "Human-readable and machine-readable index for V1.2 traceability records. This index is navigation and claim-ceiling metadata, not execution evidence.",
-    index_semantics: "navigation_index_not_gate_pass_not_execution_evidence_not_product_readiness",
+    index_semantics: "navigation_index_not_gate_pass_not_execution_evidence",
     record_count: records.length,
     required_v1_2_fields: [
       "gate_semantics",
