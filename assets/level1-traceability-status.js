@@ -245,3 +245,34 @@
     run();
   }
 })();
+
+
+(function hbceBindReadinessGateDecisionValidatedState() {
+  function run() {
+    var root = document.querySelector("[data-hbce-traceability-status]");
+    if (!root) return;
+
+    var target = root.querySelector("[data-level1-readiness-gate-decision-validated]");
+    if (!target) return;
+
+    var latestUrl = root.getAttribute("data-level1-latest-url");
+    if (!latestUrl || typeof fetch !== "function") return;
+
+    fetch(latestUrl, { cache: "no-store" })
+      .then(function (response) {
+        return response && response.ok ? response.json() : null;
+      })
+      .then(function (latest) {
+        var execution = latest && latest.readiness_remediation_execution;
+        if (!execution) return;
+        target.textContent = String(Boolean(execution.readiness_gate_decision_validated));
+      })
+      .catch(function () {});
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run);
+  } else {
+    run();
+  }
+})();
