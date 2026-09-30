@@ -1,0 +1,72 @@
+{
+  "manifest_id": "HBCE-EG-001-INTEGRATION-MANIFEST",
+  "manifest_version": "V0.1",
+  "control_id": "HBCE-EG-001",
+  "program": "PROG-202",
+  "purpose": "Bind the HBCE-EG-001 runtime chain into one internally verifiable Shared Core integration manifest.",
+  "claim_ceiling": "IMPLEMENTED_AND_STRUCTURALLY_VALIDATED_INTERNAL_R_AND_D_ONLY",
+  "depends_on_programs": [
+    "PROG-197",
+    "PROG-198",
+    "PROG-199",
+    "PROG-200",
+    "PROG-201"
+  ],
+  "runtime_modules": [
+    "runtime/shared-core/hbce-eg-001-state-transition-enforcement.js",
+    "runtime/shared-core/hbce-eg-001-protected-state-mutation-adapter.js",
+    "runtime/shared-core/hbce-eg-001-append-only-transition-log.js",
+    "runtime/shared-core/hbce-eg-001-evidence-invalidation-propagation.js",
+    "runtime/shared-core/hbce-eg-001-effective-state-proof-bundle.js"
+  ],
+  "test_files": [
+    "tests/ftel/integration/prog-197-hbce-eg-001-shared-core-governed-transition-path.test.js",
+    "tests/ftel/integration/prog-198-hbce-eg-001-protected-state-mutation-adapter.test.js",
+    "tests/ftel/integration/prog-199-hbce-eg-001-append-only-transition-log-state-projection.test.js",
+    "tests/ftel/integration/prog-200-hbce-eg-001-evidence-invalidation-propagation.test.js",
+    "tests/ftel/integration/prog-201-hbce-eg-001-effective-state-proof-bundle.test.js"
+  ],
+  "evidence_files": [
+    "docs/shared-core/prog-197-hbce-eg-001-shared-core-governed-transition-path-evidence.json",
+    "docs/shared-core/prog-198-hbce-eg-001-protected-state-mutation-adapter-evidence.json",
+    "docs/shared-core/prog-199-hbce-eg-001-append-only-transition-log-state-projection-evidence.json",
+    "docs/shared-core/prog-200-hbce-eg-001-evidence-invalidation-propagation-evidence.json",
+    "docs/shared-core/prog-201-hbce-eg-001-effective-state-proof-bundle-evidence.json"
+  ],
+  "documents": [
+    "docs/shared-core/hbce-eg-001-state-transition-enforcement.md",
+    "docs/shared-core/hbce-eg-001-protected-state-mutation-adapter.md",
+    "docs/shared-core/hbce-eg-001-append-only-transition-log.md",
+    "docs/shared-core/hbce-eg-001-evidence-invalidation-propagation.md",
+    "docs/shared-core/hbce-eg-001-effective-state-proof-bundle.md"
+  ],
+  "required_boundary_flags": {
+    "external_validation_claimed": false,
+    "legal_validity_claimed": false,
+    "certification_claimed": false,
+    "procurement_eligibility_claimed": false,
+    "level4_claimed": false
+  },
+  "protected_states": [
+    "PASS",
+    "CLOSED",
+    "RELEASE_CLEAN_ELIGIBLE",
+    "EXTERNALLY_VALIDATED",
+    "LEVEL_4_ELIGIBLE"
+  ],
+  "invariants": [
+    "protected_state_not_directly_mutable",
+    "transition_event_lineage_authoritative",
+    "projection_cache_not_authoritative",
+    "history_rewrite_forbidden",
+    "evidence_invalidation_recomputes_effective_state",
+    "effective_state_proof_bundle_digest_bound",
+    "ai_authority_disallowed",
+    "external_validation_not_claimed",
+    "legal_validity_not_claimed",
+    "certification_not_claimed",
+    "procurement_eligibility_not_claimed",
+    "level4_not_claimed"
+  ],
+  "status": "INTERNAL_R_AND_D_INTEGRATION_MANIFEST_PENDING_REVIEW"
+}
