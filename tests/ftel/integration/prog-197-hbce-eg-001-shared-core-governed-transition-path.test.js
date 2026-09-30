@@ -9,7 +9,7 @@ const {
   recomputeAfterInvalidation,
   reconcileProjection,
   replayVerification
-} = require("../../runtime/shared-core/hbce-eg-001-state-transition-enforcement.js");
+} = require(require("path").join(process.cwd(), "runtime/shared-core/hbce-eg-001-state-transition-enforcement.js"));
 
 function baseProjection(state = "PENDING") {
   return {
