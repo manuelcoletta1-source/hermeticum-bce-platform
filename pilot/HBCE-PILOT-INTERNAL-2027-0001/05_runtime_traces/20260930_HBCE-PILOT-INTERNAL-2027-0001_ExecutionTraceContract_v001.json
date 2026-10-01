@@ -1,0 +1,106 @@
+{
+  "artifact_id": "20260930_HBCE-PILOT-INTERNAL-2027-0001_ExecutionTraceContract_v001",
+  "artifact_type": "ExecutionTraceContract",
+  "schema_version": "HBCE-INTERNAL-PILOT-EXECUTION-TRACE-CONTRACT-V0.1",
+  "pilot_id": "HBCE-PILOT-INTERNAL-2027-0001",
+  "subject_ref": "HERMETICUM_INTERNAL_RELEASE_EVIDENCE_WORKFLOW",
+  "producer_ref": "PROG-208",
+  "source_refs": [
+    "PROG-204",
+    "PROG-205",
+    "PROG-206",
+    "PROG-207"
+  ],
+  "created_at": "2026-09-30T21:30:00+02:00",
+  "input_artifacts": {
+    "policy_runtime_binding_path": "pilot/HBCE-PILOT-INTERNAL-2027-0001/02_policies/20260930_HBCE-PILOT-INTERNAL-2027-0001_PolicyRuntimeBinding_v001.json",
+    "policy_runtime_binding_sha256": "427bdcf2c6ad6976aef972e61a8e96a24aa04261b33b66f869ff811430c7770f",
+    "policy_runtime_binding_verified": true
+  },
+  "trace_contract_state": "DEFINED_STRUCTURALLY_VALIDATED",
+  "execution_trace_bound": false,
+  "operational_allowed": false,
+  "customer_external_execution_allowed": false,
+  "required_trace_fields": [
+    "request_id",
+    "authorization_evaluation_id",
+    "action_digest",
+    "dispatch_id",
+    "attempt_id",
+    "target_receipt_id",
+    "execution_trace_ref",
+    "effect_evidence_ref"
+  ],
+  "required_states": [
+    "NOT_DISPATCHED",
+    "DISPATCH_PREPARED",
+    "DISPATCHED",
+    "TARGET_ACKNOWLEDGED",
+    "EXECUTION_OBSERVED",
+    "EXECUTION_UNKNOWN",
+    "EFFECT_OBSERVED",
+    "FAILED"
+  ],
+  "required_correlation_chain": [
+    "request_id",
+    "authorization_evaluation_id",
+    "action_digest",
+    "dispatch_id",
+    "attempt_id",
+    "target_receipt_id",
+    "execution_trace_ref",
+    "effect_evidence_ref"
+  ],
+  "separation_rules": {
+    "authorization_evaluation_is_not_execution": true,
+    "dispatch_record_is_not_target_effect": true,
+    "target_receipt_is_not_physical_effect": true,
+    "execution_trace_is_not_legal_validity": true,
+    "effect_evidence_is_not_universal_truth": true
+  },
+  "fail_closed_rules": {
+    "missing_request_id": "INVALID_TRACE",
+    "missing_authorization_evaluation_id": "INVALID_TRACE",
+    "missing_action_digest": "INVALID_TRACE",
+    "missing_dispatch_id": "INVALID_TRACE",
+    "missing_attempt_id": "INVALID_TRACE",
+    "missing_target_receipt_id": "INVALID_TRACE",
+    "missing_execution_trace_ref": "EXECUTION_NOT_OBSERVED",
+    "missing_effect_evidence_ref": "EFFECT_NOT_OBSERVED",
+    "connector_timeout": "EXECUTION_UNKNOWN",
+    "duplicate_attempt_without_idempotency": "BLOCKED",
+    "target_receipt_without_effect_evidence": "CONSEQUENCE_UNVERIFIED"
+  },
+  "maximum_supported_claim": "TRACE_CONTRACT_DEFINED_STRUCTURALLY_VALIDATED",
+  "prohibited_claims": [
+    "execution_observed",
+    "effect_observed",
+    "customer_execution_allowed",
+    "externally_validated",
+    "legal_reviewed",
+    "commercially_authorized",
+    "level4_eligible"
+  ],
+  "inherited_blockers": {
+    "m1_owner_gate": "BLOCKED",
+    "policy_gate": "DEFINED_PENDING_RUNTIME_BINDING",
+    "execution_trace_not_bound": true,
+    "c16_not_performed": true,
+    "legal_review_not_claimed": true,
+    "human_go_not_bound": true
+  },
+  "claim_boundary": {
+    "trace_contract_defined": true,
+    "structural_validation_only": true,
+    "execution_trace_not_created": true,
+    "dispatch_not_performed": true,
+    "target_receipt_not_created": true,
+    "effect_evidence_not_created": true,
+    "customer_execution_not_enabled": true,
+    "external_validation_not_inferred": true,
+    "legal_review_not_inferred": true,
+    "level4_not_inferred": true
+  },
+  "status": "TRACE_CONTRACT_DEFINED_WITH_FAIL_CLOSED_OPERATIONAL_GATE",
+  "content_sha256": "dff66f4da1e460f36582ff45aad95fbb9d75f568ef3740e9eb3137559561faaa"
+}
