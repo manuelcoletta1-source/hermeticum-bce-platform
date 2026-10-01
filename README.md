@@ -7,7 +7,7 @@ This platform distinguishes three names that must not be collapsed:
 
 - **HERMETICUM B.C.E. S.r.l.** is the company / organizational entity. **B.C.E. = Blindata, Computabile, Evolutiva**. Operational English rendering: **Hardened, Computable, Evolutionary**.
 - **H.B.C.E.** is the operational trust-governance architecture. **H.B.C.E. = Hermeticum Biological Cybernetic Evolution**.
-- **HBCE-* ** is the stable technical compatibility prefix used for repositories, schemas, APIs, tests, evidence records and legacy document IDs.
+- **`HBCE-*`** is the stable technical compatibility prefix used for repositories, schemas, APIs, tests, evidence records and legacy document IDs.
 
 Canonical index: [docs/index/hbce-canonical-nomenclature-index.md](docs/index/hbce-canonical-nomenclature-index.md)
 
