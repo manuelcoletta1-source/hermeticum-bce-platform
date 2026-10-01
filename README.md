@@ -1,5 +1,22 @@
 # HBCE Platform
 
+<!-- HBCE-CANONICAL-NOMENCLATURE-INDEX:START -->
+## Canonical nomenclature
+
+This platform distinguishes three names that must not be collapsed:
+
+- **HERMETICUM B.C.E. S.r.l.** is the company / organizational entity. **B.C.E. = Blindata, Computabile, Evolutiva**. Operational English rendering: **Hardened, Computable, Evolutionary**.
+- **H.B.C.E.** is the operational trust-governance architecture. **H.B.C.E. = Hermeticum Biological Cybernetic Evolution**.
+- **`HBCE-*`** is the stable technical compatibility prefix used for repositories, schemas, APIs, tests, evidence records and legacy document IDs.
+
+Canonical index: [docs/index/hbce-canonical-nomenclature-index.md](docs/index/hbce-canonical-nomenclature-index.md)
+
+Machine-readable index: [matrix/index/hbce-canonical-nomenclature-index.json](matrix/index/hbce-canonical-nomenclature-index.json)
+
+Boundary: names do not create authority, certification, validation, release authorization, dispatch authorization, target receipt or effect evidence by themselves.
+<!-- HBCE-CANONICAL-NOMENCLATURE-INDEX:END -->
+
+
 **HERMETICUM - BLINDATA · COMPUTABILE · EVOLUTIVA**  
 **HERMETICUM B.C.E. S.r.l.**
 
@@ -1360,7 +1377,3 @@ Manuel Coletta
 HBCE Research  
 HERMETICUM B.C.E. S.r.l.  
 Torino, Italy, European Union
-
-
-
-
