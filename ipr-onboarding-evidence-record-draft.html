@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>HBCE IPR Onboarding Evidence Record Draft</title>
+  <meta name="description" content="Public R&D machine-readable draft record for IPR onboarding evidence.">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      background: #0b0f14;
+      color: #edf2f7;
+      line-height: 1.6;
+    }
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 48px 20px 72px;
+    }
+    a {
+      color: #8bd3ff;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #315c3b;
+      background: #102817;
+      color: #a7f3d0;
+      font-weight: 700;
+      letter-spacing: .03em;
+    }
+    .card {
+      border: 1px solid #263241;
+      border-radius: 18px;
+      padding: 22px;
+      background: #111827;
+      margin: 18px 0;
+    }
+    code {
+      background: #1f2937;
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: #dbeafe;
+    }
+    ul {
+      padding-left: 22px;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <p><a href="./">← Back to HBCE Platform</a></p>
+
+  <h1>HBCE IPR Onboarding Evidence Record Draft</h1>
+
+  <p><span class="badge">R&amp;D IDENTITY EVIDENCE RECORD DRAFT</span></p>
+
+  <div class="card">
+    <h2>Purpose</h2>
+    <p>This record draft defines the first reusable machine-readable draft record for IPR onboarding evidence.</p>
+    <p>Basis marker: <code>HBCE_EVIDENCE_OBJECT_SCHEMA_DRAFT_FINAL_AUDIT=1</code>.</p>
+    <p><a href="evidence/ipr/20261002_HBCE_IPR_ONBOARDING_EVIDENCE_RECORD_DRAFT_v001.json">Open IPR Onboarding Evidence Record Draft JSON</a></p>
+    <p><a href="docs/evidence/hbce-ipr-onboarding-evidence-record-draft-v001.md">Open IPR Onboarding Evidence Record Draft documentation</a></p>
+    <p><a href="schemas/evidence/hbce-evidence-object-record-v001.schema.json">Open HBCE Evidence Object Record v001 schema basis</a></p>
+  </div>
+
+  <div class="card">
+    <h2>Record status</h2>
+    <p><code>ACTIVE_IPR_ONBOARDING_EVIDENCE_RECORD_DRAFT</code></p>
+    <p><code>R_AND_D_IDENTITY_EVIDENCE_RECORD_DRAFT</code></p>
+  </div>
+
+  <div class="card">
+    <h2>Record Is</h2>
+    <ul>
+      <li>A public R&amp;D evidence record draft</li>
+      <li>A machine-readable onboarding state evidence model</li>
+      <li>A reusable template for future onboarding state records</li>
+      <li>A non-authorizing record structure</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Record Is Not</h2>
+    <ul>
+      <li>An onboarding implementation</li>
+      <li>An identity provider</li>
+      <li>An access authorization service</li>
+      <li>A certificate issuer</li>
+      <li>A legal certification mechanism</li>
+      <li>A dispatch authorization record</li>
+      <li>A production customer portal</li>
+      <li>A Level 1 pilot readiness claim</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>IPR Status Model</h2>
+    <p>Allowed values: <code>verified</code>, <code>pending</code>, <code>rejected</code>, <code>revoked</code>, <code>suspended</code>, <code>expired</code>.</p>
+    <p>Authorizing values: none.</p>
+    <p>Deny-state values: <code>pending</code>, <code>rejected</code>, <code>revoked</code>, <code>suspended</code>, <code>expired</code>.</p>
+    <p><code>verified</code> is an identity/onboarding state and must not be treated as dispatch authorization by itself.</p>
+  </div>
+
+  <div class="card">
+    <h2>IPR Card Status Model</h2>
+    <p>Allowed values: <code>issued</code>, <code>pending</code>, <code>not_issued</code>, <code>revoked</code>, <code>expired</code>.</p>
+    <p>Authorizing values: none.</p>
+  </div>
+
+  <div class="card">
+    <h2>Certificate Status Model</h2>
+    <p>Allowed values: <code>active</code>, <code>pending</code>, <code>not_created</code>, <code>revoked</code>, <code>expired</code>.</p>
+    <p>Authorizing values: none.</p>
+    <p><code>active</code> is a certificate status and does not independently grant dispatch authorization.</p>
+  </div>
+
+  <div class="card">
+    <h2>Future Evidence Fields To Capture</h2>
+    <ul>
+      <li><code>request_id</code></li>
+      <li><code>subject_ref</code></li>
+      <li><code>tenant_ref</code></li>
+      <li><code>identity_ref</code></li>
+      <li><code>ipr_status</code></li>
+      <li><code>ipr_card_status</code></li>
+      <li><code>certificate_status</code></li>
+      <li><code>reviewer_authority_ref</code></li>
+      <li><code>policy_ref</code></li>
+      <li><code>decision_ref</code></li>
+      <li><code>basis_marker</code></li>
+      <li><code>basis_main_commit</code></li>
+      <li><code>explicit_non_claims</code></li>
+      <li><code>no_execution_boundary</code></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Minimum Record Requirements</h2>
+    <ul>
+      <li>The record must expose onboarding state without granting access authorization.</li>
+      <li>The record must separate identity verification from dispatch authorization.</li>
+      <li>The record must preserve fail-closed handling for pending, rejected, revoked, suspended and expired states.</li>
+      <li>The record must preserve certificate status as non-authorizing by itself.</li>
+      <li>The record must preserve OPC proof as a technical verification receipt, not legal certification.</li>
+      <li>The record must preserve no-dispatch and no-effect boundaries.</li>
+      <li>The record must remain compatible with the HBCE Evidence Object Record v001 schema draft.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Related Objects</h2>
+    <ul>
+      <li><a href="evidence-object-schema-draft.html">HBCE Evidence Object Schema Draft v001</a></li>
+      <li><a href="ipr-onboarding-evidence-bridge.html">HBCE IPR Onboarding Evidence Bridge v001</a></li>
+      <li><a href="evidence-viewer.html">HBCE Evidence Viewer Static Prototype v001</a></li>
+      <li><a href="evidence-registry.html">HBCE Public Evidence Registry v001</a></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Boundary</h2>
+    <p>This record draft does not claim onboarding implementation, identity provider, access authorization service, certificate issuance, legal certification, dispatch authorization, full MATRIX implementation, Level 1 pilot readiness, commercial release authorization, target receipt, execution trace or effect evidence.</p>
+    <p>It does not start onboarding, review onboarding, verify identity, issue an IPR card, issue a certificate, activate a certificate, grant access authorization, mutate an IPR state, authorize dispatch execution, emit a dispatch command, perform dispatch, call an external connector, contact a target system, create a target receipt, bind an execution trace or create effect evidence.</p>
+    <p>It does not create effect evidence.</p>
+  </div>
+
+  <div class="card">
+    <h2>Recommended next steps</h2>
+    <ul>
+      <li><strong>PROG-268:</strong> Evidence Schema Conformance Harness</li>
+      <li><strong>PROG-269:</strong> IPR Onboarding Deny-State Harness</li>
+    </ul>
+  </div>
+</main>
+</body>
+</html>
