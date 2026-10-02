@@ -1,0 +1,178 @@
+{
+  "bridge_id": "HBCE-IPR-ONBOARDING-EVIDENCE-BRIDGE-V001",
+  "artifact_type": "HBCEIPROnboardingEvidenceBridge",
+  "bridge_version": "v001",
+  "generated_at": "2026-10-02T18:52:00+02:00",
+  "repository": "manuelcoletta1-source/hermeticum-bce-platform",
+  "public_site": "https://manuelcoletta1-source.github.io/hermeticum-bce-platform/",
+  "status": "ACTIVE_IPR_ONBOARDING_EVIDENCE_BRIDGE_BASELINE",
+  "classification": "R_AND_D_IDENTITY_EVIDENCE_BRIDGE_BASELINE",
+  "basis_marker": "HBCE_EVIDENCE_VIEWER_STATIC_PROTOTYPE_FINAL_AUDIT=1",
+  "basis_main_commit": "c00b775ada5ed0e9df30df13b1ca1c7e6f1e6873",
+  "purpose": "Define the first bridge between HBCE public evidence objects and IPR onboarding state concepts, without claiming access authorization, dispatch execution, legal certification or production onboarding readiness.",
+  "bridge_goal": "Connect public evidence review to identity ingress and onboarding state semantics so future buyer or internal review can distinguish evidence visibility from access authorization.",
+  "bridge_is": [
+    "A public R&D bridge baseline",
+    "A mapping between evidence objects and IPR onboarding state concepts",
+    "A read-only planning artifact",
+    "A preparation layer for future IPR onboarding evidence records"
+  ],
+  "bridge_is_not": [
+    "An onboarding implementation",
+    "An access authorization service",
+    "A certificate issuer",
+    "A legal certification mechanism",
+    "A dispatch console",
+    "A production customer portal",
+    "A Level 1 pilot readiness claim"
+  ],
+  "ipr_state_model": {
+    "ipr_status_values": [
+      "verified",
+      "pending",
+      "rejected",
+      "revoked",
+      "suspended",
+      "expired"
+    ],
+    "ipr_card_status_values": [
+      "issued",
+      "pending",
+      "not_issued",
+      "revoked",
+      "expired"
+    ],
+    "certificate_status_values": [
+      "active",
+      "pending",
+      "not_created",
+      "revoked",
+      "expired"
+    ],
+    "deny_state_principle": "Any non-conforming onboarding, card or certificate state must be treated as non-authorizing until a governed authority path explicitly resolves it."
+  },
+  "onboarding_surface_candidates": [
+    {
+      "surface": "/api/onboarding/start",
+      "role": "Identity ingress start candidate",
+      "bridge_evidence_need": "Request identity, state transition and review correlation evidence."
+    },
+    {
+      "surface": "/api/onboarding/review",
+      "role": "Onboarding review candidate",
+      "bridge_evidence_need": "Reviewer authority, decision state and non-claim boundary evidence."
+    },
+    {
+      "surface": "/api/ipr/verify",
+      "role": "IPR verification candidate",
+      "bridge_evidence_need": "Verified/pending/rejected/revoked/suspended/expired state evidence."
+    },
+    {
+      "surface": "/api/access/joker-c2",
+      "role": "Governed access candidate",
+      "bridge_evidence_need": "Deny-state and positive authorization predicate evidence."
+    },
+    {
+      "surface": "/api/certificate/status",
+      "role": "Certificate status candidate",
+      "bridge_evidence_need": "active/pending/not_created/revoked/expired evidence."
+    },
+    {
+      "surface": "/api/ipr-card/status",
+      "role": "IPR card status candidate",
+      "bridge_evidence_need": "issued/pending/not_issued/revoked/expired evidence."
+    },
+    {
+      "surface": "/api/opc/proof",
+      "role": "OPC proof candidate",
+      "bridge_evidence_need": "Technical verification receipt evidence without legal certification claim."
+    },
+    {
+      "surface": "/api/revocation",
+      "role": "Revocation candidate",
+      "bridge_evidence_need": "Fail-closed revocation and invalidation propagation evidence."
+    },
+    {
+      "surface": "/api/events",
+      "role": "Event stream candidate",
+      "bridge_evidence_need": "Append-only event correlation evidence."
+    }
+  ],
+  "evidence_viewer_objects_reused": [
+    "HBCE-MATRIX-EG001-COMPLETION-V001",
+    "HBCE-PUBLIC-EVIDENCE-REGISTRY-V001",
+    "HBCE-PUBLIC-EVIDENCE-EXPLAINER-V001",
+    "HBCE-EXECUTIVE-EVIDENCE-PACK-V001",
+    "HBCE-BUYER-EVIDENCE-ONE-PAGER-V001",
+    "HBCE-EVIDENCE-VIEWER-DESIGN-V001",
+    "HBCE-EVIDENCE-VIEWER-STATIC-PROTOTYPE-V001"
+  ],
+  "bridge_records_to_define_next": [
+    "IPRIdentityIngressEvidenceRecord",
+    "IPROnboardingStateEvidenceRecord",
+    "IPRAccessDenyEvidenceRecord",
+    "IPRPositiveAuthorizationPredicateRecord",
+    "IPRRevocationEvidenceRecord",
+    "OPCProofEvidenceBridgeRecord"
+  ],
+  "minimum_bridge_requirements": [
+    "Evidence visibility must not imply access authorization.",
+    "Verified identity state must not imply dispatch authorization.",
+    "OPC proof must remain a technical verification receipt, not a legal certificate.",
+    "Pending, rejected, revoked, suspended and expired states must remain fail-closed for access claims.",
+    "Positive authorization must remain dependent on explicit governed predicates.",
+    "The bridge must preserve no-dispatch and no-effect boundaries.",
+    "The bridge must not imply pilot readiness or commercial release authorization."
+  ],
+  "recommended_review_path": [
+    "Open Evidence Viewer",
+    "Review current public evidence objects",
+    "Open IPR Onboarding Evidence Bridge",
+    "Map onboarding state values to future evidence records",
+    "Separate evidence visibility from access authorization",
+    "Define future IPR evidence schema before implementation"
+  ],
+  "recommended_next_steps": [
+    {
+      "step": "PROG-266",
+      "title": "Evidence Object Schema Draft",
+      "purpose": "Extract reusable schema for evidence viewer and IPR bridge records."
+    },
+    {
+      "step": "PROG-267",
+      "title": "IPR Onboarding Evidence Record Draft",
+      "purpose": "Define the first machine-readable evidence record for onboarding state."
+    }
+  ],
+  "explicit_non_claims": {
+    "does_not_claim_onboarding_implementation": true,
+    "does_not_claim_access_authorization_service": true,
+    "does_not_claim_certificate_issuance": true,
+    "does_not_claim_legal_certification": true,
+    "does_not_claim_full_matrix_implementation": true,
+    "does_not_claim_level1_pilot_ready": true,
+    "does_not_claim_current_c16_validity": true,
+    "does_not_claim_current_external_validation_acceptance": true,
+    "does_not_claim_commercial_release_authorization": true,
+    "does_not_claim_current_level4_eligibility": true,
+    "does_not_claim_dispatch_execution": true,
+    "does_not_claim_target_receipt": true,
+    "does_not_claim_execution_trace": true,
+    "does_not_claim_effect_evidence": true
+  },
+  "no_execution_boundary": {
+    "access_authorization_granted": false,
+    "certificate_issued": false,
+    "ipr_state_mutated": false,
+    "dispatch_execution_authorized": false,
+    "dispatch_command_emitted": false,
+    "dispatch_performed": false,
+    "external_connector_called": false,
+    "target_system_contacted": false,
+    "target_receipt_created": false,
+    "execution_trace_bound": false,
+    "effect_evidence_created": false,
+    "customer_external_execution_allowed": false
+  },
+  "result": "PASS_IPR_ONBOARDING_EVIDENCE_BRIDGE_CREATED"
+}
