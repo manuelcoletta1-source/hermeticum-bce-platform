@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>HBCE Evidence Object Schema Draft</title>
+  <meta name="description" content="Public R&D schema draft baseline for HBCE evidence objects.">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      background: #0b0f14;
+      color: #edf2f7;
+      line-height: 1.6;
+    }
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 48px 20px 72px;
+    }
+    a {
+      color: #8bd3ff;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #315c3b;
+      background: #102817;
+      color: #a7f3d0;
+      font-weight: 700;
+      letter-spacing: .03em;
+    }
+    .card {
+      border: 1px solid #263241;
+      border-radius: 18px;
+      padding: 22px;
+      background: #111827;
+      margin: 18px 0;
+    }
+    code {
+      background: #1f2937;
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: #dbeafe;
+    }
+    ul {
+      padding-left: 22px;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <p><a href="./">← Back to HBCE Platform</a></p>
+
+  <h1>HBCE Evidence Object Schema Draft</h1>
+
+  <p><span class="badge">R&amp;D SCHEMA DRAFT BASELINE</span></p>
+
+  <div class="card">
+    <h2>Purpose</h2>
+    <p>This schema draft defines a reusable structure for HBCE public evidence objects, viewer records and IPR bridge records.</p>
+    <p>Basis marker: <code>HBCE_IPR_ONBOARDING_EVIDENCE_BRIDGE_FINAL_AUDIT=1</code>.</p>
+    <p><a href="evidence/schema/20261002_HBCE_EVIDENCE_OBJECT_SCHEMA_DRAFT_v001.json">Open Evidence Object Schema Draft JSON</a></p>
+    <p><a href="schemas/evidence/hbce-evidence-object-record-v001.schema.json">Open HBCE Evidence Object Record JSON Schema</a></p>
+    <p><a href="docs/evidence/hbce-evidence-object-schema-draft-v001.md">Open Evidence Object Schema Draft documentation</a></p>
+  </div>
+
+  <div class="card">
+    <h2>Schema goal</h2>
+    <p>Standardize the minimum fields required to describe evidence identity, status, provenance, anchors, boundary, non-claims and review path across public HBCE evidence surfaces.</p>
+  </div>
+
+  <div class="card">
+    <h2>Required Evidence Object Fields</h2>
+    <ul>
+      <li><code>object_id</code></li>
+      <li><code>artifact_type</code></li>
+      <li><code>version</code></li>
+      <li><code>status</code></li>
+      <li><code>classification</code></li>
+      <li><code>basis_marker</code></li>
+      <li><code>basis_main_commit</code></li>
+      <li><code>purpose</code></li>
+      <li><code>public_surfaces</code></li>
+      <li><code>release_anchor</code></li>
+      <li><code>explicit_non_claims</code></li>
+      <li><code>no_execution_boundary</code></li>
+      <li><code>recommended_review_path</code></li>
+      <li><code>result</code></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Status Taxonomy</h2>
+    <ul>
+      <li><code>COMPLETE_ON_MAIN</code></li>
+      <li><code>ACTIVE_BASELINE_INDEX</code></li>
+      <li><code>R_AND_D_BASELINE_EXPLAINER</code></li>
+      <li><code>ACTIVE_EXECUTIVE_BASELINE</code></li>
+      <li><code>ACTIVE_BUYER_READABLE_BASELINE</code></li>
+      <li><code>ACTIVE_VIEWER_DESIGN_BASELINE</code></li>
+      <li><code>ACTIVE_STATIC_VIEWER_PROTOTYPE</code></li>
+      <li><code>ACTIVE_IPR_ONBOARDING_EVIDENCE_BRIDGE_BASELINE</code></li>
+      <li><code>ACTIVE_EVIDENCE_OBJECT_SCHEMA_DRAFT</code></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Public Surface Model</h2>
+    <ul>
+      <li><code>page</code> — human-readable public page</li>
+      <li><code>json</code> — machine-readable artifact</li>
+      <li><code>documentation</code> — human-readable technical documentation</li>
+      <li><code>tag</code> — Git tag anchor</li>
+      <li><code>release</code> — GitHub Release anchor</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Anchor Model</h2>
+    <ul>
+      <li><code>basis_marker</code> is required.</li>
+      <li><code>basis_main_commit</code> is required.</li>
+      <li>Tag anchors are required for released baselines.</li>
+      <li>GitHub Release anchors are required for released baselines.</li>
+      <li>Pages readback is required for public surfaces.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Boundary Model</h2>
+    <ul>
+      <li>Explicit non-claims are required.</li>
+      <li>No-execution boundary is required.</li>
+      <li>Effect evidence separation is required.</li>
+      <li>Access authorization separation is required.</li>
+      <li>Legal certification separation is required.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Reused Public Evidence Objects</h2>
+    <ul>
+      <li><a href="matrix-eg001-completion.html">HBCE MATRIX EG-001 T01-T37 Complete v001</a></li>
+      <li><a href="evidence-registry.html">HBCE Public Evidence Registry v001</a></li>
+      <li><a href="evidence-explainer.html">HBCE Public Evidence Explainer v001</a></li>
+      <li><a href="executive-evidence-pack.html">HBCE Executive Evidence Pack v001</a></li>
+      <li><a href="buyer-evidence-one-pager.html">HBCE Buyer-Facing Evidence One-Pager v001</a></li>
+      <li><a href="evidence-viewer-design.html">HBCE Evidence Viewer Design v001</a></li>
+      <li><a href="evidence-viewer.html">HBCE Evidence Viewer Static Prototype v001</a></li>
+      <li><a href="ipr-onboarding-evidence-bridge.html">HBCE IPR Onboarding Evidence Bridge v001</a></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Minimum Schema Requirements</h2>
+    <ul>
+      <li>Every evidence object must declare what it is.</li>
+      <li>Every evidence object must declare what it is not.</li>
+      <li>Every evidence object must expose status and classification.</li>
+      <li>Every evidence object must bind to a basis marker and basis commit.</li>
+      <li>Every released baseline must expose tag and release anchors.</li>
+      <li>Every public surface must preserve explicit non-claims.</li>
+      <li>Every access-related record must separate evidence visibility from access authorization.</li>
+      <li>Every dispatch-related record must preserve no-dispatch and no-effect boundaries.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Boundary</h2>
+    <p>This schema draft does not claim production schema registry, schema certification, legal evidence standard, dynamic verifier, access authorization service, onboarding implementation, certificate issuance, legal certification, full MATRIX implementation, Level 1 pilot readiness, commercial release authorization, dispatch, target receipt, execution trace or effect evidence.</p>
+    <p>It does not enforce a schema registry, perform production validation, grant access authorization, issue a certificate, mutate an IPR state, authorize dispatch execution, emit a dispatch command, perform dispatch, call an external connector, contact a target system, create a target receipt, bind an execution trace or create effect evidence. It does not create effect evidence.</p>
+  </div>
+
+  <div class="card">
+    <h2>Recommended next steps</h2>
+    <ul>
+      <li><strong>PROG-267:</strong> IPR Onboarding Evidence Record Draft</li>
+      <li><strong>PROG-268:</strong> Evidence Schema Conformance Harness</li>
+    </ul>
+  </div>
+</main>
+</body>
+</html>
