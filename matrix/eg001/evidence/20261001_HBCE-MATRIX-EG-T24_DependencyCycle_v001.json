@@ -1,0 +1,138 @@
+{
+  "artifact_id": "20261001_HBCE-MATRIX-EG-T24_DependencyCycle_v001",
+  "artifact_type": "MatrixEGT24DependencyCycleRuntimeEvidence",
+  "schema_version": "HBCE-MATRIX-EG-T24-DEPENDENCY-CYCLE-V0.1",
+  "program_id": "PROG-243",
+  "test_id": "EG-T24",
+  "tenant_id": "HBCE_INTERNAL",
+  "subject_ref": "MATRIX::RELEASE::HBCE-2027-RC-001",
+  "generated_at": "2026-10-01T22:41:00+02:00",
+  "required_result": "REJECT + DEPENDENCY_CYCLE; graph unchanged",
+  "selected_profile": "A1_INTERNAL_CONTROLLED",
+  "baseline_dependency_graph": {
+    "record_type": "DependencyGraph",
+    "tenant_id": "HBCE_INTERNAL",
+    "subject_ref": "MATRIX::RELEASE::HBCE-2027-RC-001",
+    "graph_id": "eg-t24-dependency-graph-v001",
+    "nodes": [
+      "AUTHORITY_PROFILE",
+      "MANDATE_RECORD",
+      "POLICY_BINDING",
+      "EVIDENCE_BUNDLE",
+      "MATRIX_PROJECTION"
+    ],
+    "edges": [
+      {
+        "edge_id": "eg-t24-edge-authority-mandate",
+        "from": "AUTHORITY_PROFILE",
+        "to": "MANDATE_RECORD"
+      },
+      {
+        "edge_id": "eg-t24-edge-mandate-policy",
+        "from": "MANDATE_RECORD",
+        "to": "POLICY_BINDING"
+      },
+      {
+        "edge_id": "eg-t24-edge-policy-evidence",
+        "from": "POLICY_BINDING",
+        "to": "EVIDENCE_BUNDLE"
+      },
+      {
+        "edge_id": "eg-t24-edge-evidence-projection",
+        "from": "EVIDENCE_BUNDLE",
+        "to": "MATRIX_PROJECTION"
+      }
+    ],
+    "graph_digest": "866b0db7c4ccf048010937d990a2486699421140e8109235d7dd5a16e605ca33"
+  },
+  "insertion_request": {
+    "record_type": "DependencyInsertionRequest",
+    "tenant_id": "HBCE_INTERNAL",
+    "subject_ref": "MATRIX::RELEASE::HBCE-2027-RC-001",
+    "request_id": "eg-t24-dependency-cycle-insertion-request-v001",
+    "requested_edge": {
+      "edge_id": "eg-t24-edge-projection-authority-cycle-attempt",
+      "from": "MATRIX_PROJECTION",
+      "to": "AUTHORITY_PROFILE"
+    },
+    "requested_by": "HBCE_INTERNAL_TEST_HARNESS",
+    "requested_at": "2026-10-01T22:40:00+02:00",
+    "request_hash": "72adec534640f38212075cfe8ad90e4c81afe436344e9cf89b121cadfb7484c5"
+  },
+  "rejection_record": {
+    "record_type": "DependencyCycleRejectionRecord",
+    "tenant_id": "HBCE_INTERNAL",
+    "subject_ref": "MATRIX::RELEASE::HBCE-2027-RC-001",
+    "rejection_id": "eg-t24-dependency-cycle-rejection-v001",
+    "request_id": "eg-t24-dependency-cycle-insertion-request-v001",
+    "graph_id": "eg-t24-dependency-graph-v001",
+    "attempted_edge_id": "eg-t24-edge-projection-authority-cycle-attempt",
+    "attempted_from": "MATRIX_PROJECTION",
+    "attempted_to": "AUTHORITY_PROFILE",
+    "dependency_cycle_detected": true,
+    "rejection_result": "REJECT",
+    "rejection_code": "DEPENDENCY_CYCLE",
+    "graph_digest_before": "866b0db7c4ccf048010937d990a2486699421140e8109235d7dd5a16e605ca33",
+    "graph_digest_after": "866b0db7c4ccf048010937d990a2486699421140e8109235d7dd5a16e605ca33",
+    "graph_unchanged": true,
+    "edge_inserted": false,
+    "authoritative_graph_mutated": false,
+    "emitted_at": "2026-10-01T22:41:00+02:00",
+    "rejection_hash": "42a4329e732791001545be0eaeb7dbae1ef0ec177fe8720d71cbe6fce4a1383a"
+  },
+  "graph_digest_before": "866b0db7c4ccf048010937d990a2486699421140e8109235d7dd5a16e605ca33",
+  "graph_digest_after": "866b0db7c4ccf048010937d990a2486699421140e8109235d7dd5a16e605ca33",
+  "dependency_cycle_detected": true,
+  "rejection_result": "REJECT",
+  "rejection_code": "DEPENDENCY_CYCLE",
+  "graph_unchanged": true,
+  "edge_inserted": false,
+  "authoritative_graph_mutated": false,
+  "projection_mutated": false,
+  "duplicate_authoritative_event_emitted": false,
+  "duplicate_effect_evidence_created": false,
+  "dependency_gate": {
+    "require_cycle_detection": true,
+    "require_reject_dependency_cycle": true,
+    "require_graph_unchanged": true,
+    "require_no_second_effect": true,
+    "allow_edge_insert": false,
+    "allow_authoritative_graph_mutation": false,
+    "allow_projection_mutation": false,
+    "allow_dispatch_execution": false,
+    "allow_external_connector_call": false,
+    "allow_target_receipt_creation": false,
+    "allow_effect_evidence_creation": false
+  },
+  "runtime_claims": {
+    "eg_t24_runtime_artifact_created": true,
+    "dependency_cycle_detected": true,
+    "rejection_code_dependency_cycle": true,
+    "graph_unchanged": true,
+    "edge_inserted": false,
+    "authoritative_graph_mutated": false,
+    "matrix_implemented": false,
+    "matrix_l1_pilot_ready": false,
+    "release_clean_eligible_effective": false,
+    "c16_external_validation_completed": false,
+    "external_validation_accepted": false,
+    "legal_review_claimed": false,
+    "commercial_release_authorized": false,
+    "level4_eligible": false,
+    "pilot_execution_started": false
+  },
+  "no_execution_boundary": {
+    "dispatch_execution_authorized": false,
+    "dispatch_command_emitted": false,
+    "dispatch_performed": false,
+    "external_connector_called": false,
+    "target_system_contacted": false,
+    "target_receipt_created": false,
+    "execution_trace_bound": false,
+    "effect_evidence_created": false,
+    "customer_external_execution_allowed": false
+  },
+  "maximum_supported_claim": "EG_T24_DEPENDENCY_INSERTION_CREATING_CYCLE_REJECTS_WITH_DEPENDENCY_CYCLE_AND_LEAVES_GRAPH_UNCHANGED",
+  "status": "PASS",
+  "content_sha256": "1612a39416ce11f72734ad53217ffe010ba95c22754e079058046ee669e9f94e"
+}
