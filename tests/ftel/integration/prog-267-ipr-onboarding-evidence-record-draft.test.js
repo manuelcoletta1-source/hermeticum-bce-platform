@@ -46,7 +46,7 @@ assert.equal(record.ipr_status_model.authorizing_values.length, 0);
 assert.equal(record.ipr_status_model.deny_state_values.length, 5);
 assert.equal(record.ipr_card_status_model.authorizing_values.length, 0);
 assert.equal(record.certificate_status_model.authorizing_values.length, 0);
-assert.equal(record.evidence_fields_to_capture_future.length, 18);
+assert.equal(record.evidence_fields_to_capture_future.length, 19);
 assert.equal(record.related_objects.length, 8);
 assert.equal(record.recommended_next_steps[0].step, "PROG-268");
 assert.equal(record.recommended_next_steps[1].step, "PROG-269");
