@@ -1,0 +1,152 @@
+{
+  "object_id": "HBCE-ACCESS-AUTHORIZATION-DECISION-RECORD-DRAFT-V001",
+  "decision_record_id": "HBCE-ACCESS-AUTHORIZATION-DECISION-RECORD-DRAFT-V001",
+  "artifact_type": "HBCEAccessAuthorizationDecisionRecordDraft",
+  "version": "v001",
+  "status": "ACTIVE_ACCESS_AUTHORIZATION_DECISION_RECORD_DRAFT",
+  "classification": "R_AND_D_ACCESS_AUTHORIZATION_DECISION_RECORD_DRAFT_ONLY",
+  "basis_marker": "HBCE_EVIDENCE_REGISTRY_PUBLIC_INDEX_REFRESH_FINAL_AUDIT=1",
+  "basis_main_commit": "39fe9955a6630397a3e381285d19431acca4fb29",
+  "purpose": "Define the controlled R&D draft structure for recording an explicit ACCESS_AUTHORIZATION decision after predicate evaluation, without granting access, authorizing dispatch, enabling production authorization, starting onboarding, verifying identity, issuing certificates, creating target receipts, creating execution traces, or creating effect evidence.",
+  "public_surfaces": {
+    "page": "access-authorization-decision-record-draft.html",
+    "json": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_DECISION_RECORD_DRAFT_v001.json",
+    "documentation": "docs/evidence/hbce-access-authorization-decision-record-draft-v001.md",
+    "tool": "tools/evidence/validate-access-authorization-decision-record-draft.js"
+  },
+  "release_anchor": {
+    "tag": "hbce-access-authorization-decision-record-draft-v001",
+    "release": "HBCE Access Authorization Decision Record Draft v001",
+    "target_commit": "TO_BE_SET_AFTER_MERGE"
+  },
+  "decision_scope": {
+    "decision_scope": "ACCESS_AUTHORIZATION",
+    "authorization_level": "ACCESS_ONLY",
+    "dispatch_scope": "EXCLUDED",
+    "execution_scope": "EXCLUDED",
+    "effect_scope": "EXCLUDED",
+    "decision_record_mode": "CONTROLLED_R_AND_D_DRAFT_ONLY"
+  },
+  "source_predicate": {
+    "predicate_id": "HBCE-ACCESS-AUTHORIZATION-PREDICATE-DRAFT-V001",
+    "predicate_json": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_PREDICATE_DRAFT_v001.json",
+    "predicate_page": "access-authorization-predicate-draft.html",
+    "expected_marker": "ACCESS_AUTHORIZATION_PREDICATE_DRAFT=PASS"
+  },
+  "source_predicate_evaluation": {
+    "evaluation_harness_id": "HBCE-ACCESS-AUTHORIZATION-PREDICATE-EVALUATION-HARNESS-V001",
+    "evaluation_harness_json": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_PREDICATE_EVALUATION_HARNESS_v001.json",
+    "evaluation_harness_page": "access-authorization-predicate-evaluation-harness.html",
+    "expected_marker": "ACCESS_AUTHORIZATION_PREDICATE_EVALUATION_HARNESS=PASS",
+    "eligible_case_count": 1,
+    "deny_case_count": 6,
+    "unknown_fail_closed_case_count": 2
+  },
+  "required_record_fields": {
+    "decision_record_id": "REQUIRED",
+    "decision_scope": "ACCESS_AUTHORIZATION_REQUIRED",
+    "authorization_level": "ACCESS_ONLY_REQUIRED",
+    "authority_ref": "REQUIRED",
+    "authority_version": "REQUIRED",
+    "authority_sha256": "REQUIRED",
+    "request_ref": "REQUIRED",
+    "request_sha256": "REQUIRED",
+    "subject_ref": "REQUIRED",
+    "ipr_status": "REQUIRED",
+    "ipr_card_status": "REQUIRED",
+    "certificate_status": "REQUIRED",
+    "mandate_ref": "REQUIRED",
+    "mandate_valid": "REQUIRED",
+    "policy_evaluation_ref": "REQUIRED",
+    "policy_evaluation_result": "REQUIRED_PASS_FOR_APPROVAL",
+    "predicate_ref": "REQUIRED",
+    "predicate_result": "REQUIRED",
+    "decision_outcome": "REQUIRED",
+    "decision_timestamp": "REQUIRED",
+    "decision_actor_ref": "REQUIRED",
+    "decision_actor_role": "REQUIRED",
+    "positive_authorization_contract_ref": "REQUIRED_FOR_APPROVAL",
+    "reason_codes": "REQUIRED",
+    "boundary_assertions": "REQUIRED",
+    "no_execution_boundary": "REQUIRED"
+  },
+  "allowed_decision_outcomes": [
+    "ACCESS_AUTHORIZATION_APPROVED_RECORD_ONLY",
+    "ACCESS_AUTHORIZATION_DENIED_RECORD_ONLY",
+    "ACCESS_AUTHORIZATION_UNKNOWN_FAIL_CLOSED_RECORD_ONLY"
+  ],
+  "approval_preconditions": {
+    "predicate_result_must_equal": "ACCESS_AUTHORIZATION_PREDICATE_ELIGIBLE",
+    "policy_evaluation_result_must_equal": "PASS",
+    "decision_scope_must_equal": "ACCESS_AUTHORIZATION",
+    "authorization_level_must_equal": "ACCESS_ONLY",
+    "authority_ref_present": true,
+    "request_binding_present": true,
+    "positive_authorization_contract_present": true,
+    "explicit_decision_actor_present": true,
+    "boundary_assertions_present": true
+  },
+  "fail_closed_conditions": [
+    "MISSING_DECISION_RECORD_ID",
+    "MISSING_OR_NON_ACCESS_DECISION_SCOPE",
+    "MISSING_AUTHORITY_REF",
+    "MISSING_REQUEST_BINDING",
+    "MISSING_SUBJECT_REF",
+    "PREDICATE_RESULT_NOT_ELIGIBLE",
+    "POLICY_EVALUATION_NOT_PASS",
+    "MISSING_POSITIVE_AUTHORIZATION_CONTRACT_FOR_APPROVAL",
+    "MISSING_DECISION_ACTOR",
+    "UNKNOWN_INPUT_PRESENT",
+    "BOUNDARY_ASSERTION_MISSING",
+    "NO_EXECUTION_BOUNDARY_MISSING"
+  ],
+  "result_semantics": {
+    "ACCESS_AUTHORIZATION_APPROVED_RECORD_ONLY": "A controlled record stating that all draft approval preconditions are present for access authorization recording only. It does not itself grant runtime access or authorize dispatch.",
+    "ACCESS_AUTHORIZATION_DENIED_RECORD_ONLY": "A controlled record stating that one or more denial conditions are present.",
+    "ACCESS_AUTHORIZATION_UNKNOWN_FAIL_CLOSED_RECORD_ONLY": "A controlled record stating that at least one required input is unknown or missing and the decision must fail closed."
+  },
+  "expected_cli_marker": "ACCESS_AUTHORIZATION_DECISION_RECORD_DRAFT=PASS",
+  "expected_result": {
+    "decision_record_field_count": 26,
+    "allowed_decision_outcome_count": 3,
+    "fail_closed_condition_count": 12,
+    "result": "PASS_ACCESS_AUTHORIZATION_DECISION_RECORD_DRAFT"
+  },
+  "recommended_next_steps": [
+    {
+      "step": "PROG-276",
+      "title": "Authorization Decision Record Evaluation Harness"
+    },
+    {
+      "step": "PROG-277",
+      "title": "Access Authorization Record Public Index Refresh"
+    }
+  ],
+  "explicit_non_claims": {
+    "does_not_claim_access_granted": true,
+    "does_not_claim_dispatch_authorization": true,
+    "does_not_claim_execution_authorization": true,
+    "does_not_claim_production_authorization_service": true,
+    "does_not_claim_onboarding_execution": true,
+    "does_not_claim_identity_verification": true,
+    "does_not_claim_certificate_issuance": true,
+    "does_not_claim_target_receipt": true,
+    "does_not_claim_execution_trace": true,
+    "does_not_claim_effect_evidence": true,
+    "does_not_claim_legal_certification": true
+  },
+  "no_execution_boundary": {
+    "access_granted": false,
+    "dispatch_execution_authorized": false,
+    "execution_authorized": false,
+    "production_authorization_service_enabled": false,
+    "onboarding_started": false,
+    "identity_verified": false,
+    "certificate_issued": false,
+    "target_receipt_created": false,
+    "execution_trace_created": false,
+    "effect_evidence_created": false,
+    "legal_certification_created": false
+  },
+  "result": "PASS_ACCESS_AUTHORIZATION_DECISION_RECORD_DRAFT_MANIFEST_CREATED"
+}
