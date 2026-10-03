@@ -1,0 +1,168 @@
+{
+  "object_id": "HBCE-ACCESS-AUTHORIZATION-PREDICATE-EVALUATION-HARNESS-V001",
+  "harness_id": "HBCE-ACCESS-AUTHORIZATION-PREDICATE-EVALUATION-HARNESS-V001",
+  "artifact_type": "HBCEAccessAuthorizationPredicateEvaluationHarness",
+  "version": "v001",
+  "status": "ACTIVE_ACCESS_AUTHORIZATION_PREDICATE_EVALUATION_HARNESS",
+  "classification": "R_AND_D_ACCESS_AUTHORIZATION_PREDICATE_EVALUATION_HARNESS_ONLY",
+  "basis_marker": "HBCE_EVIDENCE_REGISTRY_CONSISTENCY_HARNESS_FINAL_AUDIT=1",
+  "basis_main_commit": "9ffe0dc109e9fab420e1aa03ce48c578c918ae02",
+  "predicate_under_evaluation": {
+    "object_id": "HBCE-ACCESS-AUTHORIZATION-PREDICATE-DRAFT-V001",
+    "json": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_PREDICATE_DRAFT_v001.json",
+    "page": "access-authorization-predicate-draft.html",
+    "documentation": "docs/evidence/hbce-access-authorization-predicate-draft-v001.md",
+    "expected_marker": "ACCESS_AUTHORIZATION_PREDICATE_DRAFT=PASS"
+  },
+  "purpose": "Define a local fail-closed evaluation harness for the HBCE access authorization predicate draft across controlled eligible, deny, and unknown cases without granting access, authorizing dispatch, creating execution traces, or creating effect evidence.",
+  "public_surfaces": {
+    "page": "access-authorization-predicate-evaluation-harness.html",
+    "json": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_PREDICATE_EVALUATION_HARNESS_v001.json",
+    "documentation": "docs/evidence/hbce-access-authorization-predicate-evaluation-harness-v001.md",
+    "tool": "tools/evidence/validate-access-authorization-predicate-evaluation-harness.js"
+  },
+  "release_anchor": {
+    "tag": "hbce-access-authorization-predicate-evaluation-harness-v001",
+    "release": "HBCE Access Authorization Predicate Evaluation Harness v001",
+    "target_commit": "TO_BE_SET_AFTER_MERGE"
+  },
+  "evaluation_scope": {
+    "decision_scope": "ACCESS_AUTHORIZATION",
+    "authorization_level": "ACCESS_ONLY",
+    "evaluation_mode": "CONTROLLED_LOCAL_HARNESS_ONLY",
+    "production_authorization_service": false,
+    "grant_access": false,
+    "authorize_dispatch": false,
+    "create_execution_trace": false,
+    "create_effect_evidence": false
+  },
+  "required_positive_input_template": {
+    "ipr_status": "verified",
+    "ipr_card_status": "issued",
+    "certificate_status": "active",
+    "deny_state_absent": true,
+    "mandate_present": true,
+    "mandate_valid": true,
+    "policy_evaluation_result": "PASS",
+    "authorization_record_present": true,
+    "authority_ref_present": true,
+    "request_binding_present": true,
+    "decision_scope_explicit": true,
+    "positive_authorization_contract_present": true
+  },
+  "evaluation_cases": [
+    {
+      "case_id": "CASE-001-ALL-REQUIRED-INPUTS-SATISFIED",
+      "input_patch": {},
+      "expected_result": "ACCESS_AUTHORIZATION_PREDICATE_ELIGIBLE",
+      "access_granted": false,
+      "dispatch_authorized": false,
+      "effect_evidence_created": false
+    },
+    {
+      "case_id": "CASE-002-IPR-STATUS-REVOKED",
+      "input_patch": { "ipr_status": "revoked" },
+      "expected_result": "ACCESS_AUTHORIZATION_PREDICATE_DENY",
+      "access_granted": false,
+      "dispatch_authorized": false,
+      "effect_evidence_created": false
+    },
+    {
+      "case_id": "CASE-003-IPR-CARD-NOT-ISSUED",
+      "input_patch": { "ipr_card_status": "not_issued" },
+      "expected_result": "ACCESS_AUTHORIZATION_PREDICATE_DENY",
+      "access_granted": false,
+      "dispatch_authorized": false,
+      "effect_evidence_created": false
+    },
+    {
+      "case_id": "CASE-004-CERTIFICATE-EXPIRED",
+      "input_patch": { "certificate_status": "expired" },
+      "expected_result": "ACCESS_AUTHORIZATION_PREDICATE_DENY",
+      "access_granted": false,
+      "dispatch_authorized": false,
+      "effect_evidence_created": false
+    },
+    {
+      "case_id": "CASE-005-MANDATE-MISSING",
+      "input_patch": { "mandate_present": false },
+      "expected_result": "ACCESS_AUTHORIZATION_PREDICATE_DENY",
+      "access_granted": false,
+      "dispatch_authorized": false,
+      "effect_evidence_created": false
+    },
+    {
+      "case_id": "CASE-006-POLICY-FAIL",
+      "input_patch": { "policy_evaluation_result": "FAIL" },
+      "expected_result": "ACCESS_AUTHORIZATION_PREDICATE_DENY",
+      "access_granted": false,
+      "dispatch_authorized": false,
+      "effect_evidence_created": false
+    },
+    {
+      "case_id": "CASE-007-AUTHORIZATION-RECORD-MISSING",
+      "input_patch": { "authorization_record_present": false },
+      "expected_result": "ACCESS_AUTHORIZATION_PREDICATE_DENY",
+      "access_granted": false,
+      "dispatch_authorized": false,
+      "effect_evidence_created": false
+    },
+    {
+      "case_id": "CASE-008-MANDATE-VALID-UNKNOWN",
+      "input_patch": { "mandate_valid": "UNKNOWN" },
+      "expected_result": "ACCESS_AUTHORIZATION_PREDICATE_UNKNOWN_FAIL_CLOSED",
+      "access_granted": false,
+      "dispatch_authorized": false,
+      "effect_evidence_created": false
+    },
+    {
+      "case_id": "CASE-009-POSITIVE-AUTHORIZATION-CONTRACT-UNKNOWN",
+      "input_patch": { "positive_authorization_contract_present": "UNKNOWN" },
+      "expected_result": "ACCESS_AUTHORIZATION_PREDICATE_UNKNOWN_FAIL_CLOSED",
+      "access_granted": false,
+      "dispatch_authorized": false,
+      "effect_evidence_created": false
+    }
+  ],
+  "expected_cli_marker": "ACCESS_AUTHORIZATION_PREDICATE_EVALUATION_HARNESS=PASS",
+  "expected_result": {
+    "evaluation_case_count": 9,
+    "eligible_case_count": 1,
+    "deny_case_count": 6,
+    "unknown_fail_closed_case_count": 2,
+    "result": "PASS_ACCESS_AUTHORIZATION_PREDICATE_EVALUATION_HARNESS_DRAFT"
+  },
+  "recommended_next_steps": [
+    {
+      "step": "PROG-274",
+      "title": "Evidence Registry Public Index Refresh"
+    },
+    {
+      "step": "PROG-275",
+      "title": "Access Authorization Decision Record Draft"
+    }
+  ],
+  "explicit_non_claims": {
+    "does_not_claim_access_granted": true,
+    "does_not_claim_dispatch_authorization": true,
+    "does_not_claim_production_authorization_service": true,
+    "does_not_claim_onboarding_execution": true,
+    "does_not_claim_identity_verification": true,
+    "does_not_claim_certificate_issuance": true,
+    "does_not_claim_target_receipt": true,
+    "does_not_claim_execution_trace": true,
+    "does_not_claim_effect_evidence": true
+  },
+  "no_execution_boundary": {
+    "access_granted": false,
+    "dispatch_execution_authorized": false,
+    "production_authorization_service_enabled": false,
+    "onboarding_started": false,
+    "identity_verified": false,
+    "certificate_issued": false,
+    "target_receipt_created": false,
+    "execution_trace_created": false,
+    "effect_evidence_created": false
+  },
+  "result": "PASS_ACCESS_AUTHORIZATION_PREDICATE_EVALUATION_HARNESS_MANIFEST_CREATED"
+}
