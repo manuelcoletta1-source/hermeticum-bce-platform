@@ -1,0 +1,147 @@
+{
+  "object_id": "HBCE-EVIDENCE-REGISTRY-CONSISTENCY-HARNESS-V001",
+  "harness_id": "HBCE-EVIDENCE-REGISTRY-CONSISTENCY-HARNESS-V001",
+  "artifact_type": "HBCEEvidenceRegistryConsistencyHarness",
+  "version": "v001",
+  "status": "ACTIVE_EVIDENCE_REGISTRY_CONSISTENCY_HARNESS",
+  "classification": "R_AND_D_EVIDENCE_REGISTRY_CONSISTENCY_HARNESS_ONLY",
+  "basis_marker": "HBCE_ACCESS_AUTHORIZATION_PREDICATE_DRAFT_FINAL_AUDIT=1",
+  "basis_main_commit": "1fb9eeb77fc6a5c21c8924df7017cffa566321be",
+  "purpose": "Define a local fail-closed consistency harness for HBCE public evidence registry surfaces and evidence objects without promoting the registry to production, granting access, authorizing dispatch, creating execution traces, or creating effect evidence.",
+  "public_surfaces": {
+    "page": "evidence-registry-consistency-harness.html",
+    "json": "evidence/registry/20261003_HBCE_EVIDENCE_REGISTRY_CONSISTENCY_HARNESS_v001.json",
+    "documentation": "docs/evidence/hbce-evidence-registry-consistency-harness-v001.md",
+    "tool": "tools/evidence/validate-evidence-registry-consistency-harness.js"
+  },
+  "release_anchor": {
+    "tag": "hbce-evidence-registry-consistency-harness-v001",
+    "release": "HBCE Evidence Registry Consistency Harness v001",
+    "target_commit": "TO_BE_SET_AFTER_MERGE"
+  },
+  "registry_consistency_scope": {
+    "registry_mode": "CONSISTENCY_HARNESS_ONLY",
+    "production_registry": false,
+    "rewrite_existing_registry": false,
+    "rewrite_history": false,
+    "change_existing_urls": false,
+    "grant_access": false,
+    "authorize_dispatch": false,
+    "create_effect_evidence": false
+  },
+  "controlled_inputs": [
+    {
+      "object_id": "HBCE-EVIDENCE-OBJECT-SCHEMA-DRAFT-V001",
+      "json": "schemas/evidence/hbce-evidence-object-record-v001.schema.json",
+      "page": "evidence-object-schema-draft.html",
+      "documentation": "docs/evidence/hbce-evidence-object-schema-draft-v001.md",
+      "expected_marker": "EVIDENCE_OBJECT_SCHEMA_DRAFT=PASS",
+      "bucket": "evidence/schema"
+    },
+    {
+      "object_id": "HBCE-IPR-ONBOARDING-EVIDENCE-RECORD-DRAFT-V001",
+      "json": "evidence/ipr/20261002_HBCE_IPR_ONBOARDING_EVIDENCE_RECORD_DRAFT_v001.json",
+      "page": "ipr-onboarding-evidence-record-draft.html",
+      "documentation": "docs/evidence/hbce-ipr-onboarding-evidence-record-draft-v001.md",
+      "expected_marker": "IPR_ONBOARDING_EVIDENCE_RECORD_DRAFT=PASS",
+      "bucket": "evidence/ipr"
+    },
+    {
+      "object_id": "HBCE-EVIDENCE-SCHEMA-CONFORMANCE-HARNESS-V001",
+      "json": "evidence/schema/20261002_HBCE_EVIDENCE_SCHEMA_CONFORMANCE_HARNESS_v001.json",
+      "page": "evidence-schema-conformance-harness.html",
+      "documentation": "docs/evidence/hbce-evidence-schema-conformance-harness-v001.md",
+      "expected_marker": "EVIDENCE_SCHEMA_CONFORMANCE_HARNESS=PASS",
+      "bucket": "evidence/schema"
+    },
+    {
+      "object_id": "HBCE-IPR-ONBOARDING-DENY-STATE-HARNESS-V001",
+      "json": "evidence/ipr/20261003_HBCE_IPR_ONBOARDING_DENY_STATE_HARNESS_v001.json",
+      "page": "ipr-onboarding-deny-state-harness.html",
+      "documentation": "docs/evidence/hbce-ipr-onboarding-deny-state-harness-v001.md",
+      "expected_marker": "IPR_ONBOARDING_DENY_STATE_HARNESS=PASS",
+      "bucket": "evidence/ipr"
+    },
+    {
+      "object_id": "HBCE-EVIDENCE-OBJECT-MIGRATION-MAP-V001",
+      "json": "evidence/migration/20261003_HBCE_EVIDENCE_OBJECT_MIGRATION_MAP_v001.json",
+      "page": "evidence-object-migration-map.html",
+      "documentation": "docs/evidence/hbce-evidence-object-migration-map-v001.md",
+      "expected_marker": "EVIDENCE_OBJECT_MIGRATION_MAP=PASS",
+      "bucket": "evidence/migration"
+    },
+    {
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-PREDICATE-DRAFT-V001",
+      "json": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_PREDICATE_DRAFT_v001.json",
+      "page": "access-authorization-predicate-draft.html",
+      "documentation": "docs/evidence/hbce-access-authorization-predicate-draft-v001.md",
+      "expected_marker": "ACCESS_AUTHORIZATION_PREDICATE_DRAFT=PASS",
+      "bucket": "evidence/authorization"
+    }
+  ],
+  "consistency_checks": [
+    "each controlled input path exists locally",
+    "each controlled input JSON is parseable when JSON is applicable",
+    "each controlled input page exists locally",
+    "each controlled input documentation exists locally",
+    "each controlled input expected marker is declared in the registry harness",
+    "embedded marker presence is reported but not required for historical artifacts",
+    "object identifiers are unique",
+    "public surface links are resolvable by local file path",
+    "registry harness does not grant access",
+    "registry harness does not authorize dispatch",
+    "registry harness does not create execution traces",
+    "registry harness does not create effect evidence"
+  ],
+  "expected_cli_marker": "EVIDENCE_REGISTRY_CONSISTENCY_HARNESS=PASS",
+  "expected_result": {
+    "controlled_input_count": 6,
+    "result": "PASS_EVIDENCE_REGISTRY_CONSISTENCY_HARNESS_DRAFT"
+  },
+  "recommended_next_steps": [
+    {
+      "step": "PROG-273",
+      "title": "Access Authorization Predicate Evaluation Harness"
+    },
+    {
+      "step": "PROG-274",
+      "title": "Evidence Registry Public Index Refresh"
+    }
+  ],
+  "explicit_non_claims": {
+    "does_not_claim_production_registry": true,
+    "does_not_claim_registry_rewrite": true,
+    "does_not_claim_schema_upgrade": true,
+    "does_not_claim_access_granted": true,
+    "does_not_claim_dispatch_authorization": true,
+    "does_not_claim_onboarding_execution": true,
+    "does_not_claim_identity_verification": true,
+    "does_not_claim_certificate_issuance": true,
+    "does_not_claim_target_receipt": true,
+    "does_not_claim_execution_trace": true,
+    "does_not_claim_effect_evidence": true
+  },
+  "no_execution_boundary": {
+    "production_registry_enabled": false,
+    "registry_rewritten": false,
+    "history_rewritten": false,
+    "existing_urls_changed": false,
+    "schema_upgraded": false,
+    "access_granted": false,
+    "dispatch_execution_authorized": false,
+    "onboarding_started": false,
+    "identity_verified": false,
+    "certificate_issued": false,
+    "target_receipt_created": false,
+    "execution_trace_created": false,
+    "effect_evidence_created": false
+  },
+  "result": "PASS_EVIDENCE_REGISTRY_CONSISTENCY_HARNESS_MANIFEST_CREATED",
+  "marker_embedding_policy": {
+    "registry_declared_expected_markers": true,
+    "historical_artifact_marker_embedding_required": false,
+    "embedded_marker_presence_reported": true,
+    "legacy_artifact_rewrite_required": false,
+    "reason": "Historical evidence artifacts are not rewritten only to embed later registry harness markers. The harness validates declared marker consistency, file presence, JSON parseability, unique object identifiers, public surface paths, and fail-closed no-execution boundaries."
+  }
+}
