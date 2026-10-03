@@ -1,0 +1,196 @@
+{
+  "object_id": "HBCE-AUTHORIZATION-DECISION-RECORD-EVALUATION-HARNESS-V001",
+  "harness_id": "HBCE-AUTHORIZATION-DECISION-RECORD-EVALUATION-HARNESS-V001",
+  "artifact_type": "HBCEAuthorizationDecisionRecordEvaluationHarness",
+  "version": "v001",
+  "status": "ACTIVE_AUTHORIZATION_DECISION_RECORD_EVALUATION_HARNESS",
+  "classification": "R_AND_D_AUTHORIZATION_DECISION_RECORD_EVALUATION_HARNESS_ONLY",
+  "basis_marker": "HBCE_ACCESS_AUTHORIZATION_DECISION_RECORD_DRAFT_FINAL_AUDIT=1",
+  "basis_main_commit": "7906ccdcb6a55cddd6dac38a3251997194da69bd",
+  "purpose": "Define a controlled local R&D evaluation harness for the HBCE Access Authorization Decision Record Draft. The harness evaluates record-only decision outcomes without granting access, authorizing dispatch, authorizing execution, enabling a production authorization service, starting onboarding, verifying identity, issuing certificates, creating target receipts, creating execution traces, creating effect evidence, or creating legal certification.",
+  "public_surfaces": {
+    "page": "authorization-decision-record-evaluation-harness.html",
+    "json": "evidence/authorization/20261003_HBCE_AUTHORIZATION_DECISION_RECORD_EVALUATION_HARNESS_v001.json",
+    "documentation": "docs/evidence/hbce-authorization-decision-record-evaluation-harness-v001.md",
+    "tool": "tools/evidence/validate-authorization-decision-record-evaluation-harness.js"
+  },
+  "release_anchor": {
+    "tag": "hbce-authorization-decision-record-evaluation-harness-v001",
+    "release": "HBCE Authorization Decision Record Evaluation Harness v001",
+    "target_commit": "TO_BE_SET_AFTER_MERGE"
+  },
+  "decision_record_under_evaluation": {
+    "decision_record_id": "HBCE-ACCESS-AUTHORIZATION-DECISION-RECORD-DRAFT-V001",
+    "decision_record_json": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_DECISION_RECORD_DRAFT_v001.json",
+    "decision_record_page": "access-authorization-decision-record-draft.html",
+    "expected_marker": "ACCESS_AUTHORIZATION_DECISION_RECORD_DRAFT=PASS"
+  },
+  "source_predicate": {
+    "predicate_id": "HBCE-ACCESS-AUTHORIZATION-PREDICATE-DRAFT-V001",
+    "predicate_json": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_PREDICATE_DRAFT_v001.json",
+    "predicate_page": "access-authorization-predicate-draft.html",
+    "expected_marker": "ACCESS_AUTHORIZATION_PREDICATE_DRAFT=PASS"
+  },
+  "source_predicate_evaluation": {
+    "evaluation_harness_id": "HBCE-ACCESS-AUTHORIZATION-PREDICATE-EVALUATION-HARNESS-V001",
+    "evaluation_harness_json": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_PREDICATE_EVALUATION_HARNESS_v001.json",
+    "evaluation_harness_page": "access-authorization-predicate-evaluation-harness.html",
+    "expected_marker": "ACCESS_AUTHORIZATION_PREDICATE_EVALUATION_HARNESS=PASS"
+  },
+  "evaluation_scope": {
+    "decision_scope": "ACCESS_AUTHORIZATION",
+    "authorization_level": "ACCESS_ONLY",
+    "evaluation_mode": "CONTROLLED_LOCAL_HARNESS_ONLY",
+    "production_authorization_service": false,
+    "grant_access": false,
+    "authorize_dispatch": false,
+    "authorize_execution": false,
+    "create_execution_trace": false,
+    "create_effect_evidence": false,
+    "create_legal_certification": false
+  },
+  "positive_input_template": {
+    "decision_record_id_present": true,
+    "decision_scope": "ACCESS_AUTHORIZATION",
+    "authorization_level": "ACCESS_ONLY",
+    "authority_ref_present": true,
+    "authority_version_present": true,
+    "authority_sha256_present": true,
+    "request_ref_present": true,
+    "request_sha256_present": true,
+    "subject_ref_present": true,
+    "ipr_status": "verified",
+    "ipr_card_status": "issued",
+    "certificate_status": "active",
+    "mandate_ref_present": true,
+    "mandate_valid": true,
+    "policy_evaluation_ref_present": true,
+    "policy_evaluation_result": "PASS",
+    "predicate_ref_present": true,
+    "predicate_result": "ACCESS_AUTHORIZATION_PREDICATE_ELIGIBLE",
+    "decision_timestamp_present": true,
+    "decision_actor_ref_present": true,
+    "decision_actor_role_present": true,
+    "positive_authorization_contract_ref_present": true,
+    "reason_codes_present": true,
+    "boundary_assertions_present": true,
+    "no_execution_boundary_present": true
+  },
+  "evaluation_cases": [
+    {
+      "case_id": "CASE-001-ALL-APPROVAL-PRECONDITIONS-SATISFIED",
+      "description": "All required approval preconditions are present. The harness may produce an approved record-only outcome, but no access is granted and no dispatch or execution is authorized.",
+      "input_patch": {},
+      "expected_decision_outcome": "ACCESS_AUTHORIZATION_APPROVED_RECORD_ONLY"
+    },
+    {
+      "case_id": "CASE-002-PREDICATE-DENY",
+      "description": "The predicate result is not eligible.",
+      "input_patch": {
+        "predicate_result": "ACCESS_AUTHORIZATION_PREDICATE_DENY"
+      },
+      "expected_decision_outcome": "ACCESS_AUTHORIZATION_DENIED_RECORD_ONLY"
+    },
+    {
+      "case_id": "CASE-003-POLICY-FAIL",
+      "description": "The policy evaluation result is FAIL.",
+      "input_patch": {
+        "policy_evaluation_result": "FAIL"
+      },
+      "expected_decision_outcome": "ACCESS_AUTHORIZATION_DENIED_RECORD_ONLY"
+    },
+    {
+      "case_id": "CASE-004-AUTHORITY-REF-MISSING",
+      "description": "The authority reference is missing.",
+      "input_patch": {
+        "authority_ref_present": false
+      },
+      "expected_decision_outcome": "ACCESS_AUTHORIZATION_DENIED_RECORD_ONLY"
+    },
+    {
+      "case_id": "CASE-005-REQUEST-BINDING-MISSING",
+      "description": "The request binding is missing.",
+      "input_patch": {
+        "request_ref_present": false
+      },
+      "expected_decision_outcome": "ACCESS_AUTHORIZATION_DENIED_RECORD_ONLY"
+    },
+    {
+      "case_id": "CASE-006-POSITIVE-AUTHORIZATION-CONTRACT-MISSING",
+      "description": "The positive authorization contract reference is missing.",
+      "input_patch": {
+        "positive_authorization_contract_ref_present": false
+      },
+      "expected_decision_outcome": "ACCESS_AUTHORIZATION_DENIED_RECORD_ONLY"
+    },
+    {
+      "case_id": "CASE-007-DECISION-ACTOR-MISSING",
+      "description": "The explicit decision actor reference is missing.",
+      "input_patch": {
+        "decision_actor_ref_present": false
+      },
+      "expected_decision_outcome": "ACCESS_AUTHORIZATION_DENIED_RECORD_ONLY"
+    },
+    {
+      "case_id": "CASE-008-MANDATE-VALID-UNKNOWN",
+      "description": "Mandate validity is UNKNOWN and must fail closed.",
+      "input_patch": {
+        "mandate_valid": "UNKNOWN"
+      },
+      "expected_decision_outcome": "ACCESS_AUTHORIZATION_UNKNOWN_FAIL_CLOSED_RECORD_ONLY"
+    },
+    {
+      "case_id": "CASE-009-PREDICATE-RESULT-UNKNOWN",
+      "description": "Predicate result is UNKNOWN and must fail closed.",
+      "input_patch": {
+        "predicate_result": "UNKNOWN"
+      },
+      "expected_decision_outcome": "ACCESS_AUTHORIZATION_UNKNOWN_FAIL_CLOSED_RECORD_ONLY"
+    }
+  ],
+  "expected_cli_marker": "AUTHORIZATION_DECISION_RECORD_EVALUATION_HARNESS=PASS",
+  "expected_result": {
+    "evaluation_case_count": 9,
+    "approved_record_only_case_count": 1,
+    "denied_record_only_case_count": 6,
+    "unknown_fail_closed_record_only_case_count": 2,
+    "result": "PASS_AUTHORIZATION_DECISION_RECORD_EVALUATION_HARNESS_DRAFT"
+  },
+  "recommended_next_steps": [
+    {
+      "step": "PROG-277",
+      "title": "Access Authorization Record Public Index Refresh"
+    },
+    {
+      "step": "PROG-278",
+      "title": "Runtime Access Gate Draft"
+    }
+  ],
+  "explicit_non_claims": {
+    "does_not_claim_access_granted": true,
+    "does_not_claim_dispatch_authorization": true,
+    "does_not_claim_execution_authorization": true,
+    "does_not_claim_production_authorization_service": true,
+    "does_not_claim_onboarding_execution": true,
+    "does_not_claim_identity_verification": true,
+    "does_not_claim_certificate_issuance": true,
+    "does_not_claim_target_receipt": true,
+    "does_not_claim_execution_trace": true,
+    "does_not_claim_effect_evidence": true,
+    "does_not_claim_legal_certification": true
+  },
+  "no_execution_boundary": {
+    "access_granted": false,
+    "dispatch_execution_authorized": false,
+    "execution_authorized": false,
+    "production_authorization_service_enabled": false,
+    "onboarding_started": false,
+    "identity_verified": false,
+    "certificate_issued": false,
+    "target_receipt_created": false,
+    "execution_trace_created": false,
+    "effect_evidence_created": false,
+    "legal_certification_created": false
+  },
+  "result": "PASS_AUTHORIZATION_DECISION_RECORD_EVALUATION_HARNESS_MANIFEST_CREATED"
+}
