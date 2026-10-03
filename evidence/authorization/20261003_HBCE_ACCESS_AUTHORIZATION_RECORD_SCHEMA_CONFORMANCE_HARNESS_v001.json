@@ -1,0 +1,197 @@
+{
+  "object_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-SCHEMA-CONFORMANCE-HARNESS-V001",
+  "record_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-SCHEMA-CONFORMANCE-HARNESS-V001",
+  "harness_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-SCHEMA-CONFORMANCE-HARNESS-V001",
+  "artifact_type": "HBCEAccessAuthorizationRecordSchemaConformanceHarness",
+  "version": "v001",
+  "status": "ACTIVE_ACCESS_AUTHORIZATION_RECORD_SCHEMA_CONFORMANCE_HARNESS",
+  "classification": "R_AND_D_ACCESS_AUTHORIZATION_RECORD_SCHEMA_CONFORMANCE_HARNESS_ONLY",
+  "basis_marker": "HBCE_ACCESS_AUTHORIZATION_RECORD_SCHEMA_HARDENING_FINAL_AUDIT=1",
+  "basis_main_commit": "d0597a5ef1564612b3fb03346e4a2b889a732240",
+  "decision_scope": "ACCESS_AUTHORIZATION",
+  "authorization_level": "ACCESS_ONLY",
+  "harness_mode": "CONTROLLED_SCHEMA_CONFORMANCE_HARNESS_ONLY",
+  "schema_file": "schemas/evidence/hbce-access-authorization-record-hardened.schema.v001.json",
+  "schema_hardening_manifest": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_RECORD_SCHEMA_HARDENING_v001.json",
+  "purpose": "Define a controlled conformance harness for the hardened HBCE access authorization record schema. The harness specifies positive and negative cases for required fields, additional properties, allowed outcomes, ACCESS_AUTHORIZATION scope, ACCESS_ONLY level, record-only boundary, explicit non-claims, and no-execution constraints without enabling runtime authorization or granting access.",
+  "source_chain": [
+    {
+      "sequence": 1,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-SCHEMA-HARDENING-V001",
+      "source_type": "ACCESS_AUTHORIZATION_RECORD_SCHEMA_HARDENING",
+      "path": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_RECORD_SCHEMA_HARDENING_v001.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_RECORD_SCHEMA_HARDENING=PASS"
+    },
+    {
+      "sequence": 2,
+      "object_id": "hbce-access-authorization-record-hardened.schema.v001.json",
+      "source_type": "HARDENED_SCHEMA",
+      "path": "schemas/evidence/hbce-access-authorization-record-hardened.schema.v001.json",
+      "expected_text": "HBCE Access Authorization Record Hardened Schema v001"
+    },
+    {
+      "sequence": 3,
+      "object_id": "HBCE-RUNTIME-ACCESS-GATE-DRAFT-V001",
+      "source_type": "RUNTIME_ACCESS_GATE_DRAFT",
+      "path": "evidence/authorization/20261003_HBCE_RUNTIME_ACCESS_GATE_DRAFT_v001.json",
+      "expected_marker": "RUNTIME_ACCESS_GATE_DRAFT=PASS"
+    },
+    {
+      "sequence": 4,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-DECISION-RECORD-DRAFT-V001",
+      "source_type": "ACCESS_AUTHORIZATION_DECISION_RECORD_DRAFT",
+      "path": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_DECISION_RECORD_DRAFT_v001.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_DECISION_RECORD_DRAFT=PASS"
+    }
+  ],
+  "allowed_decision_outcomes": [
+    "ACCESS_AUTHORIZATION_APPROVED_RECORD_ONLY",
+    "ACCESS_AUTHORIZATION_DENIED_RECORD_ONLY",
+    "ACCESS_AUTHORIZATION_UNKNOWN_FAIL_CLOSED_RECORD_ONLY",
+    "RUNTIME_ACCESS_GATE_ALLOW_RECORD_ONLY",
+    "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY",
+    "RUNTIME_ACCESS_GATE_UNKNOWN_FAIL_CLOSED_RECORD_ONLY",
+    "SCHEMA_HARDENING_RECORD_ONLY"
+  ],
+  "conformance_cases": [
+    {
+      "case_id": "CASE-001-VALID-SCHEMA-HARDENING-RECORD",
+      "case_type": "POSITIVE",
+      "mutation": "NONE",
+      "expected_conformance": "PASS",
+      "expected_reason": "Baseline schema hardening record contains required fields, allowed outcome, valid scope, valid access-only level, explicit non-claims, and no-execution boundary."
+    },
+    {
+      "case_id": "CASE-002-VALID-UNKNOWN-FAIL-CLOSED-RECORD",
+      "case_type": "POSITIVE",
+      "mutation": "SET_DECISION_OUTCOME_TO_ACCESS_AUTHORIZATION_UNKNOWN_FAIL_CLOSED_RECORD_ONLY",
+      "expected_conformance": "PASS",
+      "expected_reason": "UNKNOWN fail-closed record-only authorization outcome remains an allowed and explicit schema-conformant state."
+    },
+    {
+      "case_id": "CASE-003-MISSING-REQUIRED-FIELD",
+      "case_type": "NEGATIVE",
+      "mutation": "REMOVE_BASIS_MARKER",
+      "expected_conformance": "FAIL",
+      "expected_reason": "Required fields cannot be absent."
+    },
+    {
+      "case_id": "CASE-004-ADDITIONAL-PROPERTY",
+      "case_type": "NEGATIVE",
+      "mutation": "ADD_UNDECLARED_PROPERTY",
+      "expected_conformance": "FAIL",
+      "expected_reason": "The hardened schema rejects additional undeclared properties."
+    },
+    {
+      "case_id": "CASE-005-INVALID-DECISION-SCOPE",
+      "case_type": "NEGATIVE",
+      "mutation": "SET_DECISION_SCOPE_TO_EXECUTION_AUTHORIZATION",
+      "expected_conformance": "FAIL",
+      "expected_reason": "decision_scope must remain ACCESS_AUTHORIZATION."
+    },
+    {
+      "case_id": "CASE-006-INVALID-AUTHORIZATION-LEVEL",
+      "case_type": "NEGATIVE",
+      "mutation": "SET_AUTHORIZATION_LEVEL_TO_EXECUTION",
+      "expected_conformance": "FAIL",
+      "expected_reason": "authorization_level must remain ACCESS_ONLY."
+    },
+    {
+      "case_id": "CASE-007-ILLEGAL-DECISION-OUTCOME",
+      "case_type": "NEGATIVE",
+      "mutation": "SET_DECISION_OUTCOME_TO_ACCESS_GRANTED",
+      "expected_conformance": "FAIL",
+      "expected_reason": "Only enumerated record-only outcomes are allowed."
+    },
+    {
+      "case_id": "CASE-008-ACCESS-GRANTED-TRUE",
+      "case_type": "NEGATIVE",
+      "mutation": "SET_RECORD_BOUNDARY_ACCESS_GRANTED_TRUE",
+      "expected_conformance": "FAIL",
+      "expected_reason": "Schema conformance must preserve access_granted=false."
+    },
+    {
+      "case_id": "CASE-009-DISPATCH-AUTHORIZED-TRUE",
+      "case_type": "NEGATIVE",
+      "mutation": "SET_RECORD_BOUNDARY_DISPATCH_AUTHORIZED_TRUE",
+      "expected_conformance": "FAIL",
+      "expected_reason": "Schema conformance must preserve dispatch_authorized=false."
+    },
+    {
+      "case_id": "CASE-010-EXECUTION-AUTHORIZED-TRUE",
+      "case_type": "NEGATIVE",
+      "mutation": "SET_RECORD_BOUNDARY_EXECUTION_AUTHORIZED_TRUE",
+      "expected_conformance": "FAIL",
+      "expected_reason": "Schema conformance must preserve execution_authorized=false."
+    },
+    {
+      "case_id": "CASE-011-NON-CLAIM-FALSE",
+      "case_type": "NEGATIVE",
+      "mutation": "SET_DOES_NOT_CLAIM_ACCESS_GRANTED_FALSE",
+      "expected_conformance": "FAIL",
+      "expected_reason": "Explicit non-claims must remain true."
+    },
+    {
+      "case_id": "CASE-012-NO-EXECUTION-BOUNDARY-TRUE",
+      "case_type": "NEGATIVE",
+      "mutation": "SET_NO_EXECUTION_BOUNDARY_EFFECT_EVIDENCE_CREATED_TRUE",
+      "expected_conformance": "FAIL",
+      "expected_reason": "No-execution boundary fields must remain false."
+    }
+  ],
+  "record_boundary": {
+    "record_only": true,
+    "runtime_gate_implemented": false,
+    "runtime_gate_enabled": false,
+    "production_authorization_service_enabled": false,
+    "access_granted": false,
+    "dispatch_authorized": false,
+    "execution_authorized": false,
+    "execution_trace_created": false,
+    "effect_evidence_created": false,
+    "legal_certification_created": false
+  },
+  "explicit_non_claims": {
+    "does_not_claim_runtime_gate_implemented": true,
+    "does_not_claim_runtime_gate_enabled": true,
+    "does_not_claim_access_granted": true,
+    "does_not_claim_dispatch_authorization": true,
+    "does_not_claim_execution_authorization": true,
+    "does_not_claim_production_authorization_service": true,
+    "does_not_claim_onboarding_execution": true,
+    "does_not_claim_identity_verification": true,
+    "does_not_claim_certificate_issuance": true,
+    "does_not_claim_target_receipt": true,
+    "does_not_claim_execution_trace": true,
+    "does_not_claim_effect_evidence": true,
+    "does_not_claim_legal_certification": true
+  },
+  "no_execution_boundary": {
+    "runtime_gate_implemented": false,
+    "runtime_gate_enabled": false,
+    "access_granted": false,
+    "dispatch_execution_authorized": false,
+    "execution_authorized": false,
+    "production_authorization_service_enabled": false,
+    "onboarding_started": false,
+    "identity_verified": false,
+    "certificate_issued": false,
+    "target_receipt_created": false,
+    "execution_trace_created": false,
+    "effect_evidence_created": false,
+    "legal_certification_created": false
+  },
+  "expected_cli_marker": "ACCESS_AUTHORIZATION_RECORD_SCHEMA_CONFORMANCE_HARNESS=PASS",
+  "expected_result": {
+    "required_field_count": 20,
+    "allowed_decision_outcome_count": 7,
+    "conformance_case_count": 12,
+    "positive_case_count": 2,
+    "negative_case_count": 10,
+    "required_non_claim_count": 13,
+    "required_no_execution_boundary_count": 13,
+    "source_chain_entry_count": 4,
+    "result": "PASS_ACCESS_AUTHORIZATION_RECORD_SCHEMA_CONFORMANCE_HARNESS"
+  },
+  "result": "PASS_ACCESS_AUTHORIZATION_RECORD_SCHEMA_CONFORMANCE_HARNESS_CREATED"
+}
