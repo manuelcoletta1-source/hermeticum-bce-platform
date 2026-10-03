@@ -1,0 +1,198 @@
+{
+  "object_id": "HBCE-RUNTIME-ACCESS-GATE-DRAFT-V001",
+  "gate_id": "HBCE-RUNTIME-ACCESS-GATE-DRAFT-V001",
+  "artifact_type": "HBCERuntimeAccessGateDraft",
+  "version": "v001",
+  "status": "ACTIVE_RUNTIME_ACCESS_GATE_DRAFT",
+  "classification": "R_AND_D_RUNTIME_ACCESS_GATE_DRAFT_ONLY",
+  "basis_marker": "HBCE_ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_REFRESH_FINAL_AUDIT=1",
+  "basis_main_commit": "b8caaa2892b6387244ae2eecf06bbd363d9b210a",
+  "decision_scope": "ACCESS_AUTHORIZATION",
+  "authorization_level": "ACCESS_ONLY",
+  "gate_mode": "CONTROLLED_DRAFT_RECORD_ONLY",
+  "purpose": "Define a non-production runtime access gate draft that binds runtime access gate outcomes to the existing HBCE access authorization record chain without granting real access, authorizing dispatch, authorizing execution, enabling a production authorization service, creating execution traces, creating effect evidence, or creating legal certification.",
+  "source_chain": [
+    {
+      "sequence": 1,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-PREDICATE-DRAFT-V001",
+      "source_type": "ACCESS_AUTHORIZATION_PREDICATE_DRAFT",
+      "json": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_PREDICATE_DRAFT_v001.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_PREDICATE_DRAFT=PASS"
+    },
+    {
+      "sequence": 2,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-PREDICATE-EVALUATION-HARNESS-V001",
+      "source_type": "ACCESS_AUTHORIZATION_PREDICATE_EVALUATION_HARNESS",
+      "json": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_PREDICATE_EVALUATION_HARNESS_v001.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_PREDICATE_EVALUATION_HARNESS=PASS"
+    },
+    {
+      "sequence": 3,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-DECISION-RECORD-DRAFT-V001",
+      "source_type": "ACCESS_AUTHORIZATION_DECISION_RECORD_DRAFT",
+      "json": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_DECISION_RECORD_DRAFT_v001.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_DECISION_RECORD_DRAFT=PASS"
+    },
+    {
+      "sequence": 4,
+      "object_id": "HBCE-AUTHORIZATION-DECISION-RECORD-EVALUATION-HARNESS-V001",
+      "source_type": "AUTHORIZATION_DECISION_RECORD_EVALUATION_HARNESS",
+      "json": "evidence/authorization/20261003_HBCE_AUTHORIZATION_DECISION_RECORD_EVALUATION_HARNESS_v001.json",
+      "expected_marker": "AUTHORIZATION_DECISION_RECORD_EVALUATION_HARNESS=PASS"
+    },
+    {
+      "sequence": 5,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-PUBLIC-INDEX-V001",
+      "source_type": "ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX",
+      "json": "evidence/registry/20261003_HBCE_ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_v001.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX=PASS"
+    },
+    {
+      "sequence": 6,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-PUBLIC-INDEX-REFRESH-V001",
+      "source_type": "ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_REFRESH",
+      "json": "evidence/registry/20261003_HBCE_ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_REFRESH_v001.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_REFRESH=PASS"
+    }
+  ],
+  "gate_inputs": {
+    "request_binding_required": true,
+    "authority_ref_required": true,
+    "policy_evaluation_required": true,
+    "access_authorization_predicate_required": true,
+    "access_authorization_decision_record_required": true,
+    "positive_authorization_contract_required_for_allow": true,
+    "decision_actor_required": true,
+    "decision_scope_required": "ACCESS_AUTHORIZATION",
+    "authorization_level_required": "ACCESS_ONLY"
+  },
+  "gate_outcomes": [
+    {
+      "outcome": "RUNTIME_ACCESS_GATE_ALLOW_RECORD_ONLY",
+      "meaning": "All declared preconditions are satisfied and a record-only gate allow result may be written as draft evidence.",
+      "access_granted": false,
+      "dispatch_authorized": false,
+      "execution_authorized": false,
+      "production_authorization_service_enabled": false
+    },
+    {
+      "outcome": "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY",
+      "meaning": "One or more required denial conditions are present and a record-only gate deny result may be written as draft evidence.",
+      "access_granted": false,
+      "dispatch_authorized": false,
+      "execution_authorized": false,
+      "production_authorization_service_enabled": false
+    },
+    {
+      "outcome": "RUNTIME_ACCESS_GATE_UNKNOWN_FAIL_CLOSED_RECORD_ONLY",
+      "meaning": "One or more required inputs are unknown, missing, stale, unverifiable, or outside declared scope; the gate fails closed and writes only a draft record.",
+      "access_granted": false,
+      "dispatch_authorized": false,
+      "execution_authorized": false,
+      "production_authorization_service_enabled": false
+    }
+  ],
+  "gate_rules": [
+    {
+      "rule_id": "RAG-001",
+      "name": "scope-binding-required",
+      "condition": "decision_scope must equal ACCESS_AUTHORIZATION and authorization_level must equal ACCESS_ONLY",
+      "on_failure": "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY"
+    },
+    {
+      "rule_id": "RAG-002",
+      "name": "request-binding-required",
+      "condition": "request binding must be present and bound to the access authorization decision record",
+      "on_failure": "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY"
+    },
+    {
+      "rule_id": "RAG-003",
+      "name": "authority-required",
+      "condition": "authority reference must be present and verifiable inside the decision record boundary",
+      "on_failure": "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY"
+    },
+    {
+      "rule_id": "RAG-004",
+      "name": "policy-required",
+      "condition": "policy evaluation must be present and non-failing inside the decision record boundary",
+      "on_failure": "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY"
+    },
+    {
+      "rule_id": "RAG-005",
+      "name": "predicate-required",
+      "condition": "access authorization predicate result must be present and PASS",
+      "on_failure": "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY"
+    },
+    {
+      "rule_id": "RAG-006",
+      "name": "positive-contract-required-for-allow",
+      "condition": "positive authorization contract must be present before any allow record may be produced",
+      "on_failure": "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY"
+    },
+    {
+      "rule_id": "RAG-007",
+      "name": "unknown-fails-closed",
+      "condition": "unknown, missing, stale, unverifiable, or out-of-scope input forces UNKNOWN fail-closed",
+      "on_failure": "RUNTIME_ACCESS_GATE_UNKNOWN_FAIL_CLOSED_RECORD_ONLY"
+    },
+    {
+      "rule_id": "RAG-008",
+      "name": "allow-is-record-only",
+      "condition": "allow outcome is limited to draft record semantics and never grants runtime access in this artifact",
+      "on_failure": "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY"
+    }
+  ],
+  "precedence": [
+    "RUNTIME_ACCESS_GATE_UNKNOWN_FAIL_CLOSED_RECORD_ONLY",
+    "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY",
+    "RUNTIME_ACCESS_GATE_ALLOW_RECORD_ONLY"
+  ],
+  "runtime_activation": {
+    "runtime_gate_implemented": false,
+    "runtime_gate_enabled": false,
+    "production_authorization_service_enabled": false,
+    "access_grant_capability_enabled": false,
+    "dispatch_capability_enabled": false,
+    "execution_capability_enabled": false,
+    "target_system_integration_enabled": false,
+    "customer_environment_enabled": false
+  },
+  "expected_cli_marker": "RUNTIME_ACCESS_GATE_DRAFT=PASS",
+  "expected_result": {
+    "source_chain_entry_count": 6,
+    "gate_rule_count": 8,
+    "gate_outcome_count": 3,
+    "result": "PASS_RUNTIME_ACCESS_GATE_DRAFT"
+  },
+  "explicit_non_claims": {
+    "does_not_claim_runtime_gate_implemented": true,
+    "does_not_claim_runtime_gate_enabled": true,
+    "does_not_claim_access_granted": true,
+    "does_not_claim_dispatch_authorization": true,
+    "does_not_claim_execution_authorization": true,
+    "does_not_claim_production_authorization_service": true,
+    "does_not_claim_onboarding_execution": true,
+    "does_not_claim_identity_verification": true,
+    "does_not_claim_certificate_issuance": true,
+    "does_not_claim_target_receipt": true,
+    "does_not_claim_execution_trace": true,
+    "does_not_claim_effect_evidence": true,
+    "does_not_claim_legal_certification": true
+  },
+  "no_execution_boundary": {
+    "runtime_gate_implemented": false,
+    "runtime_gate_enabled": false,
+    "access_granted": false,
+    "dispatch_execution_authorized": false,
+    "execution_authorized": false,
+    "production_authorization_service_enabled": false,
+    "onboarding_started": false,
+    "identity_verified": false,
+    "certificate_issued": false,
+    "target_receipt_created": false,
+    "execution_trace_created": false,
+    "effect_evidence_created": false,
+    "legal_certification_created": false
+  },
+  "result": "PASS_RUNTIME_ACCESS_GATE_DRAFT_CREATED"
+}
