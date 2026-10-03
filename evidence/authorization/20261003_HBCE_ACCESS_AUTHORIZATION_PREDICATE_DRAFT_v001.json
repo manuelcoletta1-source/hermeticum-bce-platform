@@ -1,0 +1,99 @@
+{
+  "object_id": "HBCE-ACCESS-AUTHORIZATION-PREDICATE-DRAFT-V001",
+  "predicate_id": "HBCE-ACCESS-AUTHORIZATION-PREDICATE-DRAFT-V001",
+  "artifact_type": "HBCEAccessAuthorizationPredicateDraft",
+  "version": "v001",
+  "status": "ACTIVE_ACCESS_AUTHORIZATION_PREDICATE_DRAFT",
+  "classification": "R_AND_D_ACCESS_AUTHORIZATION_PREDICATE_DRAFT_ONLY",
+  "basis_marker": "HBCE_EVIDENCE_OBJECT_MIGRATION_MAP_FINAL_AUDIT=1",
+  "basis_main_commit": "cbcf8b22a21e3f2e6b89d2b6f726f7ed093498e5",
+  "purpose": "Define a draft fail-closed access authorization predicate for HBCE IPR onboarding states without granting access, dispatch authorization, onboarding execution, certificate issuance, target receipt, execution trace, or effect evidence.",
+  "public_surfaces": {
+    "page": "access-authorization-predicate-draft.html",
+    "json": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_PREDICATE_DRAFT_v001.json",
+    "documentation": "docs/evidence/hbce-access-authorization-predicate-draft-v001.md",
+    "tool": "tools/evidence/validate-access-authorization-predicate-draft.js"
+  },
+  "release_anchor": {
+    "tag": "hbce-access-authorization-predicate-draft-v001",
+    "release": "HBCE Access Authorization Predicate Draft v001",
+    "target_commit": "TO_BE_SET_AFTER_MERGE"
+  },
+  "predicate_scope": {
+    "decision_scope": "ACCESS_AUTHORIZATION",
+    "authorization_level": "ACCESS_ONLY",
+    "dispatch_scope": "EXCLUDED",
+    "execution_scope": "EXCLUDED",
+    "effect_evidence_scope": "EXCLUDED"
+  },
+  "required_inputs": {
+    "ipr_status": "verified",
+    "ipr_card_status": "issued",
+    "certificate_status": "active",
+    "deny_state_absent": true,
+    "mandate_present": true,
+    "mandate_valid": true,
+    "policy_evaluation_result": "PASS",
+    "authorization_record_present": true,
+    "authority_ref_present": true,
+    "request_binding_present": true,
+    "decision_scope_explicit": true,
+    "positive_authorization_contract_present": true
+  },
+  "necessary_but_not_sufficient": [
+    "ipr_status:verified",
+    "ipr_card_status:issued",
+    "certificate_status:active"
+  ],
+  "fail_closed_conditions": [
+    "ipr_status in pending,rejected,revoked,suspended,expired",
+    "ipr_card_status in pending,not_issued,revoked,expired",
+    "certificate_status in pending,not_created,revoked,expired",
+    "mandate_present is false",
+    "mandate_valid is false",
+    "policy_evaluation_result is not PASS",
+    "authorization_record_present is false",
+    "authority_ref_present is false",
+    "request_binding_present is false",
+    "decision_scope_explicit is false",
+    "positive_authorization_contract_present is false",
+    "predicate input is missing",
+    "predicate input is UNKNOWN"
+  ],
+  "predicate_result_semantics": {
+    "all_required_inputs_satisfied": "ACCESS_AUTHORIZATION_PREDICATE_ELIGIBLE",
+    "any_required_input_failed": "ACCESS_AUTHORIZATION_PREDICATE_DENY",
+    "any_required_input_unknown": "ACCESS_AUTHORIZATION_PREDICATE_UNKNOWN_FAIL_CLOSED",
+    "eligible_does_not_mean_access_granted": true,
+    "eligible_does_not_mean_dispatch_authorized": true,
+    "eligible_requires_separate_recorded_authorization_decision": true
+  },
+  "expected_cli_marker": "ACCESS_AUTHORIZATION_PREDICATE_DRAFT=PASS",
+  "recommended_next_steps": [
+    { "step": "PROG-272", "title": "Evidence Registry Consistency Harness" },
+    { "step": "PROG-273", "title": "Access Authorization Predicate Evaluation Harness" }
+  ],
+  "explicit_non_claims": {
+    "does_not_claim_access_granted": true,
+    "does_not_claim_dispatch_authorization": true,
+    "does_not_claim_onboarding_implementation": true,
+    "does_not_claim_identity_verification": true,
+    "does_not_claim_certificate_issuance": true,
+    "does_not_claim_target_receipt": true,
+    "does_not_claim_execution_trace": true,
+    "does_not_claim_effect_evidence": true,
+    "does_not_claim_production_authorization_service": true
+  },
+  "no_execution_boundary": {
+    "access_granted": false,
+    "dispatch_execution_authorized": false,
+    "onboarding_started": false,
+    "identity_verified": false,
+    "certificate_issued": false,
+    "target_receipt_created": false,
+    "execution_trace_created": false,
+    "effect_evidence_created": false,
+    "production_authorization_service_enabled": false
+  },
+  "result": "PASS_ACCESS_AUTHORIZATION_PREDICATE_DRAFT_MANIFEST_CREATED"
+}
