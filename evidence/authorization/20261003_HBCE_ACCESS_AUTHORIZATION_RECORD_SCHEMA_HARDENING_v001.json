@@ -1,0 +1,153 @@
+{
+  "object_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-SCHEMA-HARDENING-V001",
+  "record_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-SCHEMA-HARDENING-V001",
+  "schema_hardening_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-SCHEMA-HARDENING-V001",
+  "artifact_type": "HBCEAccessAuthorizationRecordSchemaHardening",
+  "version": "v001",
+  "status": "ACTIVE_ACCESS_AUTHORIZATION_RECORD_SCHEMA_HARDENING",
+  "classification": "R_AND_D_ACCESS_AUTHORIZATION_RECORD_SCHEMA_HARDENING_ONLY",
+  "basis_marker": "HBCE_RUNTIME_ACCESS_GATE_DRAFT_FINAL_AUDIT=1",
+  "basis_main_commit": "25f3d7b3d4c38661d71973dce4d77c9fea50052d",
+  "decision_scope": "ACCESS_AUTHORIZATION",
+  "authorization_level": "ACCESS_ONLY",
+  "record_mode": "CONTROLLED_SCHEMA_HARDENING_ONLY",
+  "decision_outcome": "SCHEMA_HARDENING_RECORD_ONLY",
+  "schema_file": "schemas/evidence/hbce-access-authorization-record-hardened.schema.v001.json",
+  "purpose": "Harden the HBCE access authorization record shape by fixing required fields, allowed record-only outcomes, required bindings, explicit non-claims, no-execution boundaries, and schema hardening constraints without enabling runtime authorization or granting access.",
+  "source_chain": [
+    {
+      "sequence": 1,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-DECISION-RECORD-DRAFT-V001",
+      "source_type": "ACCESS_AUTHORIZATION_DECISION_RECORD_DRAFT",
+      "json": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_DECISION_RECORD_DRAFT_v001.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_DECISION_RECORD_DRAFT=PASS"
+    },
+    {
+      "sequence": 2,
+      "object_id": "HBCE-AUTHORIZATION-DECISION-RECORD-EVALUATION-HARNESS-V001",
+      "source_type": "AUTHORIZATION_DECISION_RECORD_EVALUATION_HARNESS",
+      "json": "evidence/authorization/20261003_HBCE_AUTHORIZATION_DECISION_RECORD_EVALUATION_HARNESS_v001.json",
+      "expected_marker": "AUTHORIZATION_DECISION_RECORD_EVALUATION_HARNESS=PASS"
+    },
+    {
+      "sequence": 3,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-PUBLIC-INDEX-V001",
+      "source_type": "ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX",
+      "json": "evidence/registry/20261003_HBCE_ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_v001.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX=PASS"
+    },
+    {
+      "sequence": 4,
+      "object_id": "HBCE-RUNTIME-ACCESS-GATE-DRAFT-V001",
+      "source_type": "RUNTIME_ACCESS_GATE_DRAFT",
+      "json": "evidence/authorization/20261003_HBCE_RUNTIME_ACCESS_GATE_DRAFT_v001.json",
+      "expected_marker": "RUNTIME_ACCESS_GATE_DRAFT=PASS"
+    }
+  ],
+  "allowed_decision_outcomes": [
+    "ACCESS_AUTHORIZATION_APPROVED_RECORD_ONLY",
+    "ACCESS_AUTHORIZATION_DENIED_RECORD_ONLY",
+    "ACCESS_AUTHORIZATION_UNKNOWN_FAIL_CLOSED_RECORD_ONLY",
+    "RUNTIME_ACCESS_GATE_ALLOW_RECORD_ONLY",
+    "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY",
+    "RUNTIME_ACCESS_GATE_UNKNOWN_FAIL_CLOSED_RECORD_ONLY",
+    "SCHEMA_HARDENING_RECORD_ONLY"
+  ],
+  "required_bindings": {
+    "request_binding_required": true,
+    "authority_ref_required": true,
+    "policy_evaluation_required": true,
+    "access_authorization_predicate_required": true,
+    "access_authorization_decision_record_required": true,
+    "positive_authorization_contract_required_for_allow": true,
+    "runtime_gate_required_for_runtime_record": true,
+    "decision_actor_required": true,
+    "decision_scope_required": "ACCESS_AUTHORIZATION",
+    "authorization_level_required": "ACCESS_ONLY"
+  },
+  "record_boundary": {
+    "record_only": true,
+    "runtime_gate_implemented": false,
+    "runtime_gate_enabled": false,
+    "production_authorization_service_enabled": false,
+    "access_granted": false,
+    "dispatch_authorized": false,
+    "execution_authorized": false,
+    "execution_trace_created": false,
+    "effect_evidence_created": false,
+    "legal_certification_created": false
+  },
+  "explicit_non_claims": {
+    "does_not_claim_runtime_gate_implemented": true,
+    "does_not_claim_runtime_gate_enabled": true,
+    "does_not_claim_access_granted": true,
+    "does_not_claim_dispatch_authorization": true,
+    "does_not_claim_execution_authorization": true,
+    "does_not_claim_production_authorization_service": true,
+    "does_not_claim_onboarding_execution": true,
+    "does_not_claim_identity_verification": true,
+    "does_not_claim_certificate_issuance": true,
+    "does_not_claim_target_receipt": true,
+    "does_not_claim_execution_trace": true,
+    "does_not_claim_effect_evidence": true,
+    "does_not_claim_legal_certification": true
+  },
+  "no_execution_boundary": {
+    "runtime_gate_implemented": false,
+    "runtime_gate_enabled": false,
+    "access_granted": false,
+    "dispatch_execution_authorized": false,
+    "execution_authorized": false,
+    "production_authorization_service_enabled": false,
+    "onboarding_started": false,
+    "identity_verified": false,
+    "certificate_issued": false,
+    "target_receipt_created": false,
+    "execution_trace_created": false,
+    "effect_evidence_created": false,
+    "legal_certification_created": false
+  },
+  "schema_hardening_controls": [
+    {
+      "control_id": "AAR-SH-001",
+      "name": "required-fields-fixed",
+      "requirement": "Access authorization records must include the hardened required field set."
+    },
+    {
+      "control_id": "AAR-SH-002",
+      "name": "outcomes-enumerated",
+      "requirement": "Decision outcomes must be one of the declared record-only outcomes."
+    },
+    {
+      "control_id": "AAR-SH-003",
+      "name": "access-only-scope",
+      "requirement": "decision_scope must be ACCESS_AUTHORIZATION and authorization_level must be ACCESS_ONLY."
+    },
+    {
+      "control_id": "AAR-SH-004",
+      "name": "record-only-boundary",
+      "requirement": "The record boundary must preserve no access grant, no dispatch, no execution, no effect evidence, and no legal certification."
+    },
+    {
+      "control_id": "AAR-SH-005",
+      "name": "non-claims-explicit",
+      "requirement": "The record must explicitly state non-claims for runtime gate implementation, access grant, dispatch, execution, production authorization service, effect evidence, and legal certification."
+    },
+    {
+      "control_id": "AAR-SH-006",
+      "name": "unknown-fail-closed-preserved",
+      "requirement": "Unknown or unverifiable authorization state must remain expressible as UNKNOWN fail-closed record-only outcome."
+    }
+  ],
+  "expected_cli_marker": "ACCESS_AUTHORIZATION_RECORD_SCHEMA_HARDENING=PASS",
+  "expected_result": {
+    "required_field_count": 20,
+    "allowed_decision_outcome_count": 7,
+    "required_non_claim_count": 13,
+    "required_no_execution_boundary_count": 13,
+    "schema_hardening_control_count": 6,
+    "source_chain_entry_count": 4,
+    "result": "PASS_ACCESS_AUTHORIZATION_RECORD_SCHEMA_HARDENING"
+  },
+  "result": "PASS_ACCESS_AUTHORIZATION_RECORD_SCHEMA_HARDENING_CREATED"
+}
