@@ -1,0 +1,317 @@
+{
+  "object_id": "HBCE-RUNTIME-ACCESS-GATE-EVALUATION-HARNESS-V001",
+  "record_id": "HBCE-RUNTIME-ACCESS-GATE-EVALUATION-HARNESS-V001",
+  "harness_id": "HBCE-RUNTIME-ACCESS-GATE-EVALUATION-HARNESS-V001",
+  "artifact_type": "HBCERuntimeAccessGateEvaluationHarness",
+  "version": "v001",
+  "status": "ACTIVE_RUNTIME_ACCESS_GATE_EVALUATION_HARNESS",
+  "classification": "R_AND_D_RUNTIME_ACCESS_GATE_EVALUATION_HARNESS_ONLY",
+  "basis_marker": "HBCE_ACCESS_AUTHORIZATION_RECORD_SCHEMA_CONFORMANCE_HARNESS_FINAL_AUDIT=1",
+  "basis_main_commit": "e7b3f87481051a003635366ca117f25ae40de3bb",
+  "decision_scope": "ACCESS_AUTHORIZATION",
+  "authorization_level": "ACCESS_ONLY",
+  "harness_mode": "CONTROLLED_RUNTIME_ACCESS_GATE_EVALUATION_HARNESS_ONLY",
+  "runtime_gate_draft": "evidence/authorization/20261003_HBCE_RUNTIME_ACCESS_GATE_DRAFT_v001.json",
+  "schema_conformance_harness": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_RECORD_SCHEMA_CONFORMANCE_HARNESS_v001.json",
+  "purpose": "Define a controlled record-only evaluation harness for the HBCE Runtime Access Gate Draft. The harness evaluates allow, deny, and unknown fail-closed outcomes under explicit ACCESS_AUTHORIZATION and ACCESS_ONLY constraints without implementing or enabling a runtime gate and without granting access, dispatch, execution, effect evidence, or legal certification.",
+  "source_chain": [
+    {
+      "sequence": 1,
+      "object_id": "HBCE-RUNTIME-ACCESS-GATE-DRAFT-V001",
+      "source_type": "RUNTIME_ACCESS_GATE_DRAFT",
+      "path": "evidence/authorization/20261003_HBCE_RUNTIME_ACCESS_GATE_DRAFT_v001.json",
+      "expected_marker": "RUNTIME_ACCESS_GATE_DRAFT=PASS"
+    },
+    {
+      "sequence": 2,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-SCHEMA-CONFORMANCE-HARNESS-V001",
+      "source_type": "ACCESS_AUTHORIZATION_RECORD_SCHEMA_CONFORMANCE_HARNESS",
+      "path": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_RECORD_SCHEMA_CONFORMANCE_HARNESS_v001.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_RECORD_SCHEMA_CONFORMANCE_HARNESS=PASS"
+    },
+    {
+      "sequence": 3,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-SCHEMA-HARDENING-V001",
+      "source_type": "ACCESS_AUTHORIZATION_RECORD_SCHEMA_HARDENING",
+      "path": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_RECORD_SCHEMA_HARDENING_v001.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_RECORD_SCHEMA_HARDENING=PASS"
+    },
+    {
+      "sequence": 4,
+      "object_id": "HBCE-AUTHORIZATION-DECISION-RECORD-EVALUATION-HARNESS-V001",
+      "source_type": "AUTHORIZATION_DECISION_RECORD_EVALUATION_HARNESS",
+      "path": "evidence/authorization/20261003_HBCE_AUTHORIZATION_DECISION_RECORD_EVALUATION_HARNESS_v001.json",
+      "expected_marker": "AUTHORIZATION_DECISION_RECORD_EVALUATION_HARNESS=PASS"
+    }
+  ],
+  "gate_inputs_required": [
+    "request_binding",
+    "authority_ref",
+    "policy_evaluation",
+    "access_authorization_predicate",
+    "access_authorization_decision_record",
+    "positive_authorization_contract_for_allow",
+    "decision_actor",
+    "scope_binding"
+  ],
+  "allowed_gate_outcomes": [
+    "RUNTIME_ACCESS_GATE_ALLOW_RECORD_ONLY",
+    "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY",
+    "RUNTIME_ACCESS_GATE_UNKNOWN_FAIL_CLOSED_RECORD_ONLY"
+  ],
+  "gate_precedence": [
+    "RUNTIME_ACCESS_GATE_UNKNOWN_FAIL_CLOSED_RECORD_ONLY",
+    "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY",
+    "RUNTIME_ACCESS_GATE_ALLOW_RECORD_ONLY"
+  ],
+  "evaluation_cases": [
+    {
+      "case_id": "CASE-001-ALL-GATE-PRECONDITIONS-SATISFIED",
+      "case_type": "POSITIVE_ALLOW",
+      "input_state": {
+        "scope_binding": "PASS",
+        "request_binding": "PASS",
+        "authority_ref": "PASS",
+        "policy_evaluation": "PASS",
+        "access_authorization_predicate": "PASS",
+        "access_authorization_decision_record": "PASS",
+        "positive_authorization_contract_for_allow": "PRESENT",
+        "decision_actor": "PRESENT"
+      },
+      "expected_gate_outcome": "RUNTIME_ACCESS_GATE_ALLOW_RECORD_ONLY",
+      "expected_reason": "All gate preconditions are satisfied and allow remains record-only."
+    },
+    {
+      "case_id": "CASE-002-SCOPE-BINDING-INVALID",
+      "case_type": "NEGATIVE_DENY",
+      "input_state": {
+        "scope_binding": "FAIL",
+        "request_binding": "PASS",
+        "authority_ref": "PASS",
+        "policy_evaluation": "PASS",
+        "access_authorization_predicate": "PASS",
+        "access_authorization_decision_record": "PASS",
+        "positive_authorization_contract_for_allow": "PRESENT",
+        "decision_actor": "PRESENT"
+      },
+      "expected_gate_outcome": "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY",
+      "expected_reason": "Gate requires ACCESS_AUTHORIZATION and ACCESS_ONLY binding."
+    },
+    {
+      "case_id": "CASE-003-REQUEST-BINDING-MISSING",
+      "case_type": "NEGATIVE_DENY",
+      "input_state": {
+        "scope_binding": "PASS",
+        "request_binding": "MISSING",
+        "authority_ref": "PASS",
+        "policy_evaluation": "PASS",
+        "access_authorization_predicate": "PASS",
+        "access_authorization_decision_record": "PASS",
+        "positive_authorization_contract_for_allow": "PRESENT",
+        "decision_actor": "PRESENT"
+      },
+      "expected_gate_outcome": "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY",
+      "expected_reason": "A missing request binding cannot produce an allow record."
+    },
+    {
+      "case_id": "CASE-004-AUTHORITY-REF-INVALID",
+      "case_type": "NEGATIVE_DENY",
+      "input_state": {
+        "scope_binding": "PASS",
+        "request_binding": "PASS",
+        "authority_ref": "FAIL",
+        "policy_evaluation": "PASS",
+        "access_authorization_predicate": "PASS",
+        "access_authorization_decision_record": "PASS",
+        "positive_authorization_contract_for_allow": "PRESENT",
+        "decision_actor": "PRESENT"
+      },
+      "expected_gate_outcome": "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY",
+      "expected_reason": "Invalid authority reference denies access authorization."
+    },
+    {
+      "case_id": "CASE-005-POLICY-EVALUATION-DENY",
+      "case_type": "NEGATIVE_DENY",
+      "input_state": {
+        "scope_binding": "PASS",
+        "request_binding": "PASS",
+        "authority_ref": "PASS",
+        "policy_evaluation": "DENY",
+        "access_authorization_predicate": "PASS",
+        "access_authorization_decision_record": "PASS",
+        "positive_authorization_contract_for_allow": "PRESENT",
+        "decision_actor": "PRESENT"
+      },
+      "expected_gate_outcome": "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY",
+      "expected_reason": "Policy denial produces a deny record."
+    },
+    {
+      "case_id": "CASE-006-PREDICATE-DENY",
+      "case_type": "NEGATIVE_DENY",
+      "input_state": {
+        "scope_binding": "PASS",
+        "request_binding": "PASS",
+        "authority_ref": "PASS",
+        "policy_evaluation": "PASS",
+        "access_authorization_predicate": "DENY",
+        "access_authorization_decision_record": "PASS",
+        "positive_authorization_contract_for_allow": "PRESENT",
+        "decision_actor": "PRESENT"
+      },
+      "expected_gate_outcome": "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY",
+      "expected_reason": "Predicate denial produces a deny record."
+    },
+    {
+      "case_id": "CASE-007-DECISION-RECORD-DENY",
+      "case_type": "NEGATIVE_DENY",
+      "input_state": {
+        "scope_binding": "PASS",
+        "request_binding": "PASS",
+        "authority_ref": "PASS",
+        "policy_evaluation": "PASS",
+        "access_authorization_predicate": "PASS",
+        "access_authorization_decision_record": "DENY",
+        "positive_authorization_contract_for_allow": "PRESENT",
+        "decision_actor": "PRESENT"
+      },
+      "expected_gate_outcome": "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY",
+      "expected_reason": "A deny decision record cannot produce a gate allow record."
+    },
+    {
+      "case_id": "CASE-008-POSITIVE-AUTHORIZATION-CONTRACT-MISSING",
+      "case_type": "NEGATIVE_DENY",
+      "input_state": {
+        "scope_binding": "PASS",
+        "request_binding": "PASS",
+        "authority_ref": "PASS",
+        "policy_evaluation": "PASS",
+        "access_authorization_predicate": "PASS",
+        "access_authorization_decision_record": "PASS",
+        "positive_authorization_contract_for_allow": "MISSING",
+        "decision_actor": "PRESENT"
+      },
+      "expected_gate_outcome": "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY",
+      "expected_reason": "Allow requires a positive authorization contract."
+    },
+    {
+      "case_id": "CASE-009-DECISION-ACTOR-MISSING",
+      "case_type": "NEGATIVE_DENY",
+      "input_state": {
+        "scope_binding": "PASS",
+        "request_binding": "PASS",
+        "authority_ref": "PASS",
+        "policy_evaluation": "PASS",
+        "access_authorization_predicate": "PASS",
+        "access_authorization_decision_record": "PASS",
+        "positive_authorization_contract_for_allow": "PRESENT",
+        "decision_actor": "MISSING"
+      },
+      "expected_gate_outcome": "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY",
+      "expected_reason": "Missing decision actor denies the record."
+    },
+    {
+      "case_id": "CASE-010-AUTHORITY-REF-UNKNOWN",
+      "case_type": "UNKNOWN_FAIL_CLOSED",
+      "input_state": {
+        "scope_binding": "PASS",
+        "request_binding": "PASS",
+        "authority_ref": "UNKNOWN",
+        "policy_evaluation": "PASS",
+        "access_authorization_predicate": "PASS",
+        "access_authorization_decision_record": "PASS",
+        "positive_authorization_contract_for_allow": "PRESENT",
+        "decision_actor": "PRESENT"
+      },
+      "expected_gate_outcome": "RUNTIME_ACCESS_GATE_UNKNOWN_FAIL_CLOSED_RECORD_ONLY",
+      "expected_reason": "Unknown authority state fails closed."
+    },
+    {
+      "case_id": "CASE-011-PREDICATE-UNKNOWN",
+      "case_type": "UNKNOWN_FAIL_CLOSED",
+      "input_state": {
+        "scope_binding": "PASS",
+        "request_binding": "PASS",
+        "authority_ref": "PASS",
+        "policy_evaluation": "PASS",
+        "access_authorization_predicate": "UNKNOWN",
+        "access_authorization_decision_record": "PASS",
+        "positive_authorization_contract_for_allow": "PRESENT",
+        "decision_actor": "PRESENT"
+      },
+      "expected_gate_outcome": "RUNTIME_ACCESS_GATE_UNKNOWN_FAIL_CLOSED_RECORD_ONLY",
+      "expected_reason": "Unknown predicate state fails closed."
+    },
+    {
+      "case_id": "CASE-012-UNKNOWN-PRECEDENCE-OVER-DENY",
+      "case_type": "UNKNOWN_FAIL_CLOSED",
+      "input_state": {
+        "scope_binding": "PASS",
+        "request_binding": "PASS",
+        "authority_ref": "UNKNOWN",
+        "policy_evaluation": "DENY",
+        "access_authorization_predicate": "PASS",
+        "access_authorization_decision_record": "PASS",
+        "positive_authorization_contract_for_allow": "PRESENT",
+        "decision_actor": "PRESENT"
+      },
+      "expected_gate_outcome": "RUNTIME_ACCESS_GATE_UNKNOWN_FAIL_CLOSED_RECORD_ONLY",
+      "expected_reason": "UNKNOWN fail-closed has precedence over DENY."
+    }
+  ],
+  "record_boundary": {
+    "record_only": true,
+    "runtime_gate_implemented": false,
+    "runtime_gate_enabled": false,
+    "production_authorization_service_enabled": false,
+    "access_granted": false,
+    "dispatch_authorized": false,
+    "execution_authorized": false,
+    "execution_trace_created": false,
+    "effect_evidence_created": false,
+    "legal_certification_created": false
+  },
+  "explicit_non_claims": {
+    "does_not_claim_runtime_gate_implemented": true,
+    "does_not_claim_runtime_gate_enabled": true,
+    "does_not_claim_access_granted": true,
+    "does_not_claim_dispatch_authorization": true,
+    "does_not_claim_execution_authorization": true,
+    "does_not_claim_production_authorization_service": true,
+    "does_not_claim_onboarding_execution": true,
+    "does_not_claim_identity_verification": true,
+    "does_not_claim_certificate_issuance": true,
+    "does_not_claim_target_receipt": true,
+    "does_not_claim_execution_trace": true,
+    "does_not_claim_effect_evidence": true,
+    "does_not_claim_legal_certification": true
+  },
+  "no_execution_boundary": {
+    "runtime_gate_implemented": false,
+    "runtime_gate_enabled": false,
+    "access_granted": false,
+    "dispatch_execution_authorized": false,
+    "execution_authorized": false,
+    "production_authorization_service_enabled": false,
+    "onboarding_started": false,
+    "identity_verified": false,
+    "certificate_issued": false,
+    "target_receipt_created": false,
+    "execution_trace_created": false,
+    "effect_evidence_created": false,
+    "legal_certification_created": false
+  },
+  "expected_cli_marker": "RUNTIME_ACCESS_GATE_EVALUATION_HARNESS=PASS",
+  "expected_result": {
+    "gate_input_count": 8,
+    "allowed_gate_outcome_count": 3,
+    "evaluation_case_count": 12,
+    "allow_case_count": 1,
+    "deny_case_count": 8,
+    "unknown_fail_closed_case_count": 3,
+    "required_non_claim_count": 13,
+    "required_no_execution_boundary_count": 13,
+    "source_chain_entry_count": 4,
+    "result": "PASS_RUNTIME_ACCESS_GATE_EVALUATION_HARNESS"
+  },
+  "result": "PASS_RUNTIME_ACCESS_GATE_EVALUATION_HARNESS_CREATED"
+}
