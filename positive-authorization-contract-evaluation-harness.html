@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>HBCE Positive Authorization Contract Evaluation Harness v001</title>
+</head>
+<body>
+<main>
+  <p><a href="./">Back to HBCE Platform</a></p>
+  <h1>HBCE Positive Authorization Contract Evaluation Harness v001</h1>
+  <p>R&amp;D POSITIVE AUTHORIZATION CONTRACT EVALUATION HARNESS ONLY</p>
+  <p><code>HBCE_POSITIVE_AUTHORIZATION_CONTRACT_DRAFT_FINAL_AUDIT=1</code></p>
+  <p><code>ACTIVE_POSITIVE_AUTHORIZATION_CONTRACT_EVALUATION_HARNESS</code></p>
+  <p><code>HBCE-POSITIVE-AUTHORIZATION-CONTRACT-EVALUATION-HARNESS-V001</code></p>
+  <p><code>POSITIVE_AUTHORIZATION_CONTRACT_EVALUATION_HARNESS=PASS</code></p>
+  <p>Decision scope: ACCESS_AUTHORIZATION.</p>
+  <p>Authorization level: ACCESS_ONLY.</p>
+  <p>Harness mode: POSITIVE_AUTHORIZATION_CONTRACT_EVALUATION_RECORD_ONLY.</p>
+  <p>Contract under test: HBCE-POSITIVE-AUTHORIZATION-CONTRACT-DRAFT-V001.</p>
+  <p>Contract state under test: NOT_IMPLEMENTED_NOT_ISSUED_NOT_EXECUTABLE.</p>
+  <p>Source chain entry count: 10.</p>
+  <p>Contract binding count: 12.</p>
+  <p>Positive condition count: 13.</p>
+  <p>Failure precedence count: 4.</p>
+  <p>Allowed contract outcome count: 3.</p>
+  <p>Evaluation case count: 17.</p>
+  <p>Satisfied case count: 1.</p>
+  <p>Denied case count: 8.</p>
+  <p>Unknown fail-closed case count: 8.</p>
+  <p>Required explicit non-claim count: 14.</p>
+  <p>Required no-execution boundary count: 14.</p>
+
+  <h2>Source chain</h2>
+  <ol>
+    <li>HBCE-POSITIVE-AUTHORIZATION-CONTRACT-DRAFT-V001</li>
+    <li>HBCE-RUNTIME-ACCESS-GATE-INTEGRATION-BOUNDARY-DRAFT-V001</li>
+    <li>HBCE-ACCESS-AUTHORIZATION-RECORD-PUBLIC-INDEX-V002</li>
+    <li>HBCE-RUNTIME-ACCESS-GATE-EVALUATION-HARNESS-V001</li>
+    <li>HBCE-RUNTIME-ACCESS-GATE-DRAFT-V001</li>
+    <li>HBCE-ACCESS-AUTHORIZATION-DECISION-RECORD-DRAFT-V001</li>
+    <li>HBCE-AUTHORIZATION-DECISION-RECORD-EVALUATION-HARNESS-V001</li>
+    <li>HBCE-ACCESS-AUTHORIZATION-PREDICATE-DRAFT-V001</li>
+    <li>HBCE-ACCESS-AUTHORIZATION-PREDICATE-EVALUATION-HARNESS-V001</li>
+    <li>HBCE-ACCESS-AUTHORIZATION-RECORD-SCHEMA-CONFORMANCE-HARNESS-V001</li>
+  </ol>
+
+  <h2>Contract bindings</h2>
+  <ol>
+    <li>decision_scope_binding</li>
+    <li>authorization_level_binding</li>
+    <li>request_binding</li>
+    <li>authority_ref_binding</li>
+    <li>policy_evaluation_binding</li>
+    <li>access_authorization_predicate_binding</li>
+    <li>access_authorization_decision_record_binding</li>
+    <li>decision_actor_binding</li>
+    <li>scope_binding</li>
+    <li>boundary_state_binding</li>
+    <li>unknown_fail_closed_binding</li>
+    <li>no_execution_boundary_binding</li>
+  </ol>
+
+  <h2>Positive conditions</h2>
+  <ol>
+    <li>PAC-001-DECISION-SCOPE-ACCESS-AUTHORIZATION</li>
+    <li>PAC-002-AUTHORIZATION-LEVEL-ACCESS-ONLY</li>
+    <li>PAC-003-REQUEST-BINDING-VALID</li>
+    <li>PAC-004-AUTHORITY-REF-VALID</li>
+    <li>PAC-005-POLICY-EVALUATION-APPROVES</li>
+    <li>PAC-006-PREDICATE-SATISFIED</li>
+    <li>PAC-007-DECISION-RECORD-APPROVED-RECORD-ONLY</li>
+    <li>PAC-008-DECISION-ACTOR-BOUND</li>
+    <li>PAC-009-SCOPE-BINDING-VALID</li>
+    <li>PAC-010-NO-UNKNOWN</li>
+    <li>PAC-011-NO-DENY</li>
+    <li>PAC-012-BOUNDARY-RULES-SATISFIED</li>
+    <li>PAC-013-NO-EXECUTION-BOUNDARY-PRESERVED</li>
+  </ol>
+
+  <h2>Failure precedence</h2>
+  <ol>
+    <li>UNKNOWN_FAIL_CLOSED</li>
+    <li>DENY</li>
+    <li>NO_POSITIVE_CONTRACT</li>
+    <li>ALLOW_RECORD_ONLY</li>
+  </ol>
+
+  <h2>Allowed contract outcomes</h2>
+  <ol>
+    <li>POSITIVE_AUTHORIZATION_CONTRACT_SATISFIED_RECORD_ONLY</li>
+    <li>POSITIVE_AUTHORIZATION_CONTRACT_DENIED_RECORD_ONLY</li>
+    <li>POSITIVE_AUTHORIZATION_CONTRACT_UNKNOWN_FAIL_CLOSED_RECORD_ONLY</li>
+  </ol>
+
+  <h2>Evaluation cases</h2>
+  <ol>
+    <li>PAC-EVAL-001-ALL-CONDITIONS-PASS → POSITIVE_AUTHORIZATION_CONTRACT_SATISFIED_RECORD_ONLY</li>
+    <li>PAC-EVAL-002-DECISION-SCOPE-MISSING → POSITIVE_AUTHORIZATION_CONTRACT_UNKNOWN_FAIL_CLOSED_RECORD_ONLY</li>
+    <li>PAC-EVAL-003-AUTHORIZATION-LEVEL-MISMATCH → POSITIVE_AUTHORIZATION_CONTRACT_DENIED_RECORD_ONLY</li>
+    <li>PAC-EVAL-004-REQUEST-BINDING-MISSING → POSITIVE_AUTHORIZATION_CONTRACT_UNKNOWN_FAIL_CLOSED_RECORD_ONLY</li>
+    <li>PAC-EVAL-005-AUTHORITY-REF-INVALID → POSITIVE_AUTHORIZATION_CONTRACT_DENIED_RECORD_ONLY</li>
+    <li>PAC-EVAL-006-POLICY-EVALUATION-DENIED → POSITIVE_AUTHORIZATION_CONTRACT_DENIED_RECORD_ONLY</li>
+    <li>PAC-EVAL-007-POLICY-EVALUATION-UNKNOWN → POSITIVE_AUTHORIZATION_CONTRACT_UNKNOWN_FAIL_CLOSED_RECORD_ONLY</li>
+    <li>PAC-EVAL-008-PREDICATE-DENIED → POSITIVE_AUTHORIZATION_CONTRACT_DENIED_RECORD_ONLY</li>
+    <li>PAC-EVAL-009-PREDICATE-UNKNOWN → POSITIVE_AUTHORIZATION_CONTRACT_UNKNOWN_FAIL_CLOSED_RECORD_ONLY</li>
+    <li>PAC-EVAL-010-DECISION-RECORD-DENIED → POSITIVE_AUTHORIZATION_CONTRACT_DENIED_RECORD_ONLY</li>
+    <li>PAC-EVAL-011-DECISION-RECORD-UNKNOWN → POSITIVE_AUTHORIZATION_CONTRACT_UNKNOWN_FAIL_CLOSED_RECORD_ONLY</li>
+    <li>PAC-EVAL-012-DECISION-ACTOR-MISSING → POSITIVE_AUTHORIZATION_CONTRACT_UNKNOWN_FAIL_CLOSED_RECORD_ONLY</li>
+    <li>PAC-EVAL-013-SCOPE-MISMATCH → POSITIVE_AUTHORIZATION_CONTRACT_DENIED_RECORD_ONLY</li>
+    <li>PAC-EVAL-014-BOUNDARY-RULES-VIOLATED → POSITIVE_AUTHORIZATION_CONTRACT_DENIED_RECORD_ONLY</li>
+    <li>PAC-EVAL-015-NO-EXECUTION-BOUNDARY-BROKEN → POSITIVE_AUTHORIZATION_CONTRACT_DENIED_RECORD_ONLY</li>
+    <li>PAC-EVAL-016-UNKNOWN-TAKES-PRECEDENCE-OVER-DENY → POSITIVE_AUTHORIZATION_CONTRACT_UNKNOWN_FAIL_CLOSED_RECORD_ONLY</li>
+    <li>PAC-EVAL-017-NO-POSITIVE-CONTRACT → POSITIVE_AUTHORIZATION_CONTRACT_UNKNOWN_FAIL_CLOSED_RECORD_ONLY</li>
+  </ol>
+
+  <h2>Boundary</h2>
+  <p>This harness does not implement a runtime gate.</p>
+  <p>This harness does not enable a runtime gate.</p>
+  <p>This harness does not issue a positive authorization contract.</p>
+  <p>This harness does not grant access.</p>
+  <p>This harness does not authorize dispatch.</p>
+  <p>This harness does not authorize execution.</p>
+  <p>This harness does not enable a production authorization service.</p>
+  <p>This harness does not start onboarding.</p>
+  <p>This harness does not verify identity.</p>
+  <p>This harness does not issue certificates.</p>
+  <p>This harness does not create target receipts.</p>
+  <p>This harness does not create execution traces.</p>
+  <p>This harness does not create effect evidence.</p>
+  <p>This harness does not create legal certification.</p>
+
+  <p><a href="evidence/authorization/20261004_HBCE_POSITIVE_AUTHORIZATION_CONTRACT_EVALUATION_HARNESS_v001.json">Open positive authorization contract evaluation harness JSON</a></p>
+  <p><a href="tools/evidence/validate-positive-authorization-contract-evaluation-harness.js">Open validator</a></p>
+  <p><a href="docs/evidence/hbce-positive-authorization-contract-evaluation-harness-v001.md">Open documentation</a></p>
+</main>
+</body>
+</html>
