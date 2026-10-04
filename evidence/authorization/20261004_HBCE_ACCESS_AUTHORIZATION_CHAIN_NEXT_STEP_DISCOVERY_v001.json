@@ -1,0 +1,223 @@
+{
+  "object_id": "HBCE-ACCESS-AUTHORIZATION-CHAIN-NEXT-STEP-DISCOVERY-V001",
+  "record_id": "HBCE-ACCESS-AUTHORIZATION-CHAIN-NEXT-STEP-DISCOVERY-V001",
+  "artifact_type": "HBCEAccessAuthorizationChainNextStepDiscovery",
+  "version": "v001",
+  "status": "ACTIVE_ACCESS_AUTHORIZATION_CHAIN_NEXT_STEP_DISCOVERY",
+  "classification": "R_AND_D_CHAIN_DISCOVERY_ONLY",
+  "created_at": "2026-10-04T17:34:19+00:00",
+  "basis_marker": "HBCE_ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_REFRESH_V003_FINAL_AUDIT=1",
+  "basis_main_commit": "4fdea0ef183df25fc6b1f8048b8e208e45897ff3",
+  "basis_public_index": "HBCE-ACCESS-AUTHORIZATION-RECORD-PUBLIC-INDEX-V003",
+  "basis_public_index_refresh": "HBCE-ACCESS-AUTHORIZATION-RECORD-PUBLIC-INDEX-REFRESH-V003",
+  "decision_scope": "ACCESS_AUTHORIZATION",
+  "authorization_level": "ACCESS_ONLY",
+  "discovery_scope": "ACCESS_AUTHORIZATION_CHAIN_NEXT_STEP_DISCOVERY",
+  "chain_tip": {
+    "object_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-PUBLIC-INDEX-REFRESH-V003",
+    "status": "ACTIVE_ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_REFRESH",
+    "indexed_object_count": 11,
+    "added_object_count": 3,
+    "basis_marker": "HBCE_POSITIVE_AUTHORIZATION_CONTRACT_EVALUATION_HARNESS_FINAL_AUDIT=1",
+    "expected_marker": "ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_REFRESH_V003=PASS"
+  },
+  "current_chain_summary": {
+    "public_index_object_count": 11,
+    "public_index_added_object_count": 3,
+    "predicate_record_count": 2,
+    "decision_record_count": 2,
+    "runtime_gate_record_count": 3,
+    "schema_record_count": 2,
+    "positive_authorization_contract_record_count": 2,
+    "positive_authorization_contract_evaluation_case_count": 17,
+    "positive_authorization_contract_satisfied_case_count": 1,
+    "positive_authorization_contract_denied_case_count": 8,
+    "positive_authorization_contract_unknown_fail_closed_case_count": 8
+  },
+  "discovered_gap_count": 6,
+  "discovered_gaps": [
+    {
+      "gap_id": "GAP-001-REQUEST-BINDING-NOT-YET-RECORDED",
+      "severity": "BLOCKING_FOR_FUTURE_POSITIVE_CONTRACT_EVALUATION",
+      "description": "A canonical access authorization request binding record is not yet present in the public chain."
+    },
+    {
+      "gap_id": "GAP-002-AUTHORITY-REFERENCE-BINDING-NOT-YET-RECORDED",
+      "severity": "REQUIRED_AFTER_REQUEST_BINDING",
+      "description": "Authority reference binding is required by the positive authorization contract but not yet represented as a standalone record."
+    },
+    {
+      "gap_id": "GAP-003-POLICY-EVALUATION-BINDING-NOT-YET-RECORDED",
+      "severity": "REQUIRED_AFTER_AUTHORITY_REFERENCE_BINDING",
+      "description": "Policy evaluation binding is required but must follow normalized request and authority binding."
+    },
+    {
+      "gap_id": "GAP-004-SCOPE-BINDING-NOT-YET-RECORDED",
+      "severity": "REQUIRED_BEFORE_RUNTIME_ALLOW_PATH",
+      "description": "Authorization scope binding is not yet a standalone record."
+    },
+    {
+      "gap_id": "GAP-005-DECISION-ACTOR-BINDING-NOT-YET-RECORDED",
+      "severity": "REQUIRED_BEFORE_RUNTIME_ALLOW_PATH",
+      "description": "Decision actor binding is not yet a standalone record."
+    },
+    {
+      "gap_id": "GAP-006-RUNTIME-IMPLEMENTATION-REMAINS-OUT-OF-SCOPE",
+      "severity": "BOUNDARY_PRESERVATION_REQUIRED",
+      "description": "Runtime gate implementation and enablement remain explicitly out of scope."
+    }
+  ],
+  "candidate_next_step_count": 5,
+  "candidate_next_steps": [
+    {
+      "candidate_id": "PROG-288-ACCESS-AUTHORIZATION-REQUEST-BINDING-DRAFT",
+      "candidate_object_id": "HBCE-ACCESS-AUTHORIZATION-REQUEST-BINDING-DRAFT-V001",
+      "candidate_type": "request_binding_record",
+      "priority": 1,
+      "recommended": true,
+      "reason": "The positive authorization contract defines request_binding as a required contract binding, but the repository does not yet expose a canonical request binding record for future access authorization evaluation.",
+      "allowed_scope": "R_AND_D_RECORD_ONLY",
+      "must_preserve": [
+        "no_runtime_gate_implementation",
+        "no_runtime_gate_enablement",
+        "no_positive_authorization_contract_issuance",
+        "no_access_grant",
+        "no_dispatch_authorization",
+        "no_execution_authorization",
+        "no_legal_certification"
+      ]
+    },
+    {
+      "candidate_id": "PROG-289-AUTHORITY-REFERENCE-BINDING-DRAFT",
+      "candidate_object_id": "HBCE-AUTHORITY-REFERENCE-BINDING-DRAFT-V001",
+      "candidate_type": "authority_reference_binding_record",
+      "priority": 2,
+      "recommended": false,
+      "reason": "Authority reference binding is required by the positive authorization contract, but should follow the canonical request binding so that authority is bound to a specific request structure.",
+      "allowed_scope": "R_AND_D_RECORD_ONLY"
+    },
+    {
+      "candidate_id": "PROG-290-POLICY-EVALUATION-BINDING-DRAFT",
+      "candidate_object_id": "HBCE-POLICY-EVALUATION-BINDING-DRAFT-V001",
+      "candidate_type": "policy_evaluation_binding_record",
+      "priority": 3,
+      "recommended": false,
+      "reason": "Policy evaluation binding is required, but should not be defined before the request and authority reference records are normalized.",
+      "allowed_scope": "R_AND_D_RECORD_ONLY"
+    },
+    {
+      "candidate_id": "PROG-291-SCOPE-BINDING-DRAFT",
+      "candidate_object_id": "HBCE-AUTHORIZATION-SCOPE-BINDING-DRAFT-V001",
+      "candidate_type": "scope_binding_record",
+      "priority": 4,
+      "recommended": false,
+      "reason": "Scope binding is necessary for future authorization, but should be derived after request shape and authority reference shape are explicit.",
+      "allowed_scope": "R_AND_D_RECORD_ONLY"
+    },
+    {
+      "candidate_id": "PROG-292-DECISION-ACTOR-BINDING-DRAFT",
+      "candidate_object_id": "HBCE-DECISION-ACTOR-BINDING-DRAFT-V001",
+      "candidate_type": "decision_actor_binding_record",
+      "priority": 5,
+      "recommended": false,
+      "reason": "Decision actor binding is required by the contract, but should follow request, authority, policy, and scope binding normalization.",
+      "allowed_scope": "R_AND_D_RECORD_ONLY"
+    }
+  ],
+  "recommended_next_step": {
+    "program": "PROG-288",
+    "title": "HBCE Access Authorization Request Binding Draft v001",
+    "object_id": "HBCE-ACCESS-AUTHORIZATION-REQUEST-BINDING-DRAFT-V001",
+    "reason": "The request binding is the lowest-risk next missing primitive required by the Positive Authorization Contract. It can be produced as record-only evidence without enabling runtime access, dispatch, execution, or legal certification."
+  },
+  "explicit_non_claims": {
+    "does_not_claim_runtime_gate_implemented": true,
+    "does_not_claim_runtime_gate_enabled": true,
+    "does_not_claim_positive_authorization_contract_issued": true,
+    "does_not_claim_access_granted": true,
+    "does_not_claim_dispatch_authorization": true,
+    "does_not_claim_execution_authorization": true,
+    "does_not_claim_production_authorization_service": true,
+    "does_not_claim_onboarding_execution": true,
+    "does_not_claim_identity_verification": true,
+    "does_not_claim_certificate_issuance": true,
+    "does_not_claim_target_receipt": true,
+    "does_not_claim_execution_trace": true,
+    "does_not_claim_effect_evidence": true,
+    "does_not_claim_legal_certification": true
+  },
+  "no_execution_boundary": {
+    "runtime_gate_implemented": false,
+    "runtime_gate_enabled": false,
+    "positive_authorization_contract_issued": false,
+    "access_granted": false,
+    "dispatch_authorized": false,
+    "execution_authorized": false,
+    "production_authorization_service_enabled": false,
+    "onboarding_started": false,
+    "identity_verified": false,
+    "certificate_issued": false,
+    "target_receipt_created": false,
+    "execution_trace_created": false,
+    "effect_evidence_created": false,
+    "legal_certification_created": false
+  },
+  "expected_cli_marker": "ACCESS_AUTHORIZATION_CHAIN_NEXT_STEP_DISCOVERY=PASS",
+  "expected_result": {
+    "candidate_next_step_count": 5,
+    "discovered_gap_count": 6,
+    "recommended_next_program": "PROG-288",
+    "recommended_next_object_id": "HBCE-ACCESS-AUTHORIZATION-REQUEST-BINDING-DRAFT-V001",
+    "required_non_claim_count": 14,
+    "required_no_execution_boundary_count": 14,
+    "runtime_gate_implemented": false,
+    "runtime_gate_enabled": false,
+    "positive_authorization_contract_issued": false,
+    "access_granted": false,
+    "dispatch_authorized": false,
+    "execution_authorized": false,
+    "effect_evidence_created": false,
+    "legal_certification_created": false,
+    "result": "PASS_ACCESS_AUTHORIZATION_CHAIN_NEXT_STEP_DISCOVERY",
+    "discovery_source_chain_entry_count": 5
+  },
+  "result": "PASS_ACCESS_AUTHORIZATION_CHAIN_NEXT_STEP_DISCOVERY_CREATED",
+  "discovery_source_chain_entry_count": 5,
+  "discovery_source_chain": [
+    {
+      "sequence": 1,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-PUBLIC-INDEX-V003",
+      "path": "evidence/registry/20261004_HBCE_ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_v003.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_V003=PASS",
+      "role": "current_public_index_basis"
+    },
+    {
+      "sequence": 2,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-PUBLIC-INDEX-REFRESH-V003",
+      "path": "evidence/registry/20261004_HBCE_ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_REFRESH_v003.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_REFRESH_V003=PASS",
+      "role": "current_chain_tip"
+    },
+    {
+      "sequence": 3,
+      "object_id": "HBCE-RUNTIME-ACCESS-GATE-INTEGRATION-BOUNDARY-DRAFT-V001",
+      "path": "evidence/authorization/20261004_HBCE_RUNTIME_ACCESS_GATE_INTEGRATION_BOUNDARY_DRAFT_v001.json",
+      "expected_marker": "RUNTIME_ACCESS_GATE_INTEGRATION_BOUNDARY_DRAFT=PASS",
+      "role": "runtime_boundary_basis"
+    },
+    {
+      "sequence": 4,
+      "object_id": "HBCE-POSITIVE-AUTHORIZATION-CONTRACT-DRAFT-V001",
+      "path": "evidence/authorization/20261004_HBCE_POSITIVE_AUTHORIZATION_CONTRACT_DRAFT_v001.json",
+      "expected_marker": "POSITIVE_AUTHORIZATION_CONTRACT_DRAFT=PASS",
+      "role": "positive_contract_basis"
+    },
+    {
+      "sequence": 5,
+      "object_id": "HBCE-POSITIVE-AUTHORIZATION-CONTRACT-EVALUATION-HARNESS-V001",
+      "path": "evidence/authorization/20261004_HBCE_POSITIVE_AUTHORIZATION_CONTRACT_EVALUATION_HARNESS_v001.json",
+      "expected_marker": "POSITIVE_AUTHORIZATION_CONTRACT_EVALUATION_HARNESS=PASS",
+      "role": "positive_contract_evaluation_basis"
+    }
+  ]
+}
