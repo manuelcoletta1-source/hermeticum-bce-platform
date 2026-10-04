@@ -1,0 +1,184 @@
+{
+  "object_id": "HBCE-RUNTIME-ACCESS-GATE-INTEGRATION-BOUNDARY-DRAFT-V001",
+  "record_id": "HBCE-RUNTIME-ACCESS-GATE-INTEGRATION-BOUNDARY-DRAFT-V001",
+  "artifact_type": "HBCERuntimeAccessGateIntegrationBoundaryDraft",
+  "version": "v001",
+  "status": "ACTIVE_RUNTIME_ACCESS_GATE_INTEGRATION_BOUNDARY_DRAFT",
+  "classification": "R_AND_D_RUNTIME_ACCESS_GATE_INTEGRATION_BOUNDARY_DRAFT_ONLY",
+  "basis_marker": "HBCE_ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_REFRESH_V002_FINAL_AUDIT=1",
+  "basis_main_commit": "fdf0b36d394168289474fdda30308f3347b456df",
+  "decision_scope": "ACCESS_AUTHORIZATION",
+  "authorization_level": "ACCESS_ONLY",
+  "integration_mode": "BOUNDARY_DRAFT_ONLY",
+  "runtime_integration_state": "NOT_IMPLEMENTED_NOT_ENABLED",
+  "source_chain_entry_count": 6,
+  "source_chain": [
+    {
+      "sequence": 1,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-PUBLIC-INDEX-REFRESH-V002",
+      "path": "evidence/registry/20261004_HBCE_ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_REFRESH_v002.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_REFRESH_V002=PASS"
+    },
+    {
+      "sequence": 2,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-PUBLIC-INDEX-V002",
+      "path": "evidence/registry/20261004_HBCE_ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_v002.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_V002=PASS"
+    },
+    {
+      "sequence": 3,
+      "object_id": "HBCE-RUNTIME-ACCESS-GATE-DRAFT-V001",
+      "path": "evidence/authorization/20261003_HBCE_RUNTIME_ACCESS_GATE_DRAFT_v001.json",
+      "expected_marker": "RUNTIME_ACCESS_GATE_DRAFT=PASS"
+    },
+    {
+      "sequence": 4,
+      "object_id": "HBCE-RUNTIME-ACCESS-GATE-EVALUATION-HARNESS-V001",
+      "path": "evidence/authorization/20261003_HBCE_RUNTIME_ACCESS_GATE_EVALUATION_HARNESS_v001.json",
+      "expected_marker": "RUNTIME_ACCESS_GATE_EVALUATION_HARNESS=PASS"
+    },
+    {
+      "sequence": 5,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-SCHEMA-HARDENING-V001",
+      "path": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_RECORD_SCHEMA_HARDENING_v001.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_RECORD_SCHEMA_HARDENING=PASS"
+    },
+    {
+      "sequence": 6,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-SCHEMA-CONFORMANCE-HARNESS-V001",
+      "path": "evidence/authorization/20261003_HBCE_ACCESS_AUTHORIZATION_RECORD_SCHEMA_CONFORMANCE_HARNESS_v001.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_RECORD_SCHEMA_CONFORMANCE_HARNESS=PASS"
+    }
+  ],
+  "integration_boundary_rule_count": 10,
+  "integration_boundary_rules": [
+    {
+      "rule_id": "IB-001-RECORD-ONLY",
+      "rule": "The integration boundary draft is a record-only R&D artifact.",
+      "required_state": "MUST_NOT_EXECUTE"
+    },
+    {
+      "rule_id": "IB-002-NO-GATE-IMPLEMENTATION",
+      "rule": "The draft must not implement a runtime access gate.",
+      "required_state": "MUST_REMAIN_FALSE"
+    },
+    {
+      "rule_id": "IB-003-NO-GATE-ENABLEMENT",
+      "rule": "The draft must not enable a runtime access gate.",
+      "required_state": "MUST_REMAIN_FALSE"
+    },
+    {
+      "rule_id": "IB-004-NO-ACCESS-GRANT",
+      "rule": "The draft must not grant access.",
+      "required_state": "MUST_REMAIN_FALSE"
+    },
+    {
+      "rule_id": "IB-005-NO-DISPATCH",
+      "rule": "The draft must not authorize dispatch.",
+      "required_state": "MUST_REMAIN_FALSE"
+    },
+    {
+      "rule_id": "IB-006-NO-EXECUTION",
+      "rule": "The draft must not authorize execution.",
+      "required_state": "MUST_REMAIN_FALSE"
+    },
+    {
+      "rule_id": "IB-007-NO-PRODUCTION-AUTH-SERVICE",
+      "rule": "The draft must not enable a production authorization service.",
+      "required_state": "MUST_REMAIN_FALSE"
+    },
+    {
+      "rule_id": "IB-008-POSITIVE-CONTRACT-REQUIRED-FOR-FUTURE-ALLOW",
+      "rule": "Any future allow path must remain impossible without an explicit Positive Authorization Contract bound to scope, actor, request, authority, policy, predicate, and decision record.",
+      "required_state": "FUTURE_CONSTRAINT_ONLY"
+    },
+    {
+      "rule_id": "IB-009-UNKNOWN-FAIL-CLOSED",
+      "rule": "Any unknown integration state must resolve to fail-closed record-only.",
+      "required_state": "FUTURE_CONSTRAINT_ONLY"
+    },
+    {
+      "rule_id": "IB-010-BOUNDARY-PRECEDENCE",
+      "rule": "Boundary precedence must remain UNKNOWN_FAIL_CLOSED before DENY before ALLOW.",
+      "required_state": "FUTURE_CONSTRAINT_ONLY"
+    }
+  ],
+  "future_integration_prerequisite_count": 12,
+  "future_integration_prerequisites": [
+    "explicit_runtime_gate_implementation_plan",
+    "positive_authorization_contract_schema",
+    "request_binding_adapter",
+    "authority_ref_resolver",
+    "policy_evaluation_resolver",
+    "access_authorization_predicate_resolver",
+    "access_authorization_decision_record_resolver",
+    "decision_actor_resolver",
+    "scope_binding_resolver",
+    "unknown_fail_closed_handler",
+    "no_execution_dry_run_mode",
+    "human_go_record_for_runtime_integration"
+  ],
+  "boundary_precedence": [
+    "RUNTIME_ACCESS_GATE_UNKNOWN_FAIL_CLOSED_RECORD_ONLY",
+    "RUNTIME_ACCESS_GATE_DENY_RECORD_ONLY",
+    "RUNTIME_ACCESS_GATE_ALLOW_RECORD_ONLY"
+  ],
+  "required_future_allow_inputs": [
+    "request_binding",
+    "authority_ref",
+    "policy_evaluation",
+    "access_authorization_predicate",
+    "access_authorization_decision_record",
+    "positive_authorization_contract_for_allow",
+    "decision_actor",
+    "scope_binding"
+  ],
+  "explicit_non_claims": {
+    "does_not_claim_runtime_gate_implemented": true,
+    "does_not_claim_runtime_gate_enabled": true,
+    "does_not_claim_access_granted": true,
+    "does_not_claim_dispatch_authorization": true,
+    "does_not_claim_execution_authorization": true,
+    "does_not_claim_production_authorization_service": true,
+    "does_not_claim_onboarding_execution": true,
+    "does_not_claim_identity_verification": true,
+    "does_not_claim_certificate_issuance": true,
+    "does_not_claim_target_receipt": true,
+    "does_not_claim_execution_trace": true,
+    "does_not_claim_effect_evidence": true,
+    "does_not_claim_legal_certification": true
+  },
+  "no_execution_boundary": {
+    "runtime_gate_implemented": false,
+    "runtime_gate_enabled": false,
+    "access_granted": false,
+    "dispatch_execution_authorized": false,
+    "execution_authorized": false,
+    "production_authorization_service_enabled": false,
+    "onboarding_started": false,
+    "identity_verified": false,
+    "certificate_issued": false,
+    "target_receipt_created": false,
+    "execution_trace_created": false,
+    "effect_evidence_created": false,
+    "legal_certification_created": false
+  },
+  "expected_cli_marker": "RUNTIME_ACCESS_GATE_INTEGRATION_BOUNDARY_DRAFT=PASS",
+  "expected_result": {
+    "source_chain_entry_count": 6,
+    "integration_boundary_rule_count": 10,
+    "future_integration_prerequisite_count": 12,
+    "required_future_allow_input_count": 8,
+    "required_non_claim_count": 13,
+    "required_no_execution_boundary_count": 13,
+    "runtime_gate_implemented": false,
+    "runtime_gate_enabled": false,
+    "access_granted": false,
+    "dispatch_authorized": false,
+    "execution_authorized": false,
+    "effect_evidence_created": false,
+    "legal_certification_created": false,
+    "result": "PASS_RUNTIME_ACCESS_GATE_INTEGRATION_BOUNDARY_DRAFT"
+  },
+  "result": "PASS_RUNTIME_ACCESS_GATE_INTEGRATION_BOUNDARY_DRAFT_CREATED"
+}
