@@ -1,0 +1,305 @@
+{
+  "object_id": "HBCE-AUTHORITY-REFERENCE-BINDING-DRAFT-V001",
+  "record_id": "HBCE-AUTHORITY-REFERENCE-BINDING-DRAFT-V001",
+  "artifact_type": "HBCEAuthorityReferenceBindingDraft",
+  "version": "v001",
+  "status": "ACTIVE_AUTHORITY_REFERENCE_BINDING_DRAFT",
+  "classification": "R_AND_D_AUTHORITY_REFERENCE_BINDING_DRAFT_ONLY",
+  "created_at": "2026-10-05T11:15:32+00:00",
+  "basis_marker": "HBCE_ACCESS_AUTHORIZATION_REQUEST_BINDING_DRAFT_FINAL_AUDIT=1",
+  "basis_main_commit": "5b7f430c1f4e2103e013ee6d9ec78b8843cb6ab6",
+  "basis_request_binding": "HBCE-ACCESS-AUTHORIZATION-REQUEST-BINDING-DRAFT-V001",
+  "decision_scope": "ACCESS_AUTHORIZATION",
+  "authorization_level": "ACCESS_ONLY",
+  "binding_scope": "AUTHORITY_REFERENCE_BINDING",
+  "binding_mode": "RECORD_ONLY_NOT_EXECUTABLE",
+  "authority_binding_state": "NOT_IMPLEMENTED_NOT_EXECUTABLE_NOT_BOUND_TO_RUNTIME",
+  "source_chain_entry_count": 7,
+  "source_chain": [
+    {
+      "sequence": 1,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-REQUEST-BINDING-DRAFT-V001",
+      "path": "evidence/authorization/20261004_HBCE_ACCESS_AUTHORIZATION_REQUEST_BINDING_DRAFT_v001.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_REQUEST_BINDING_DRAFT=PASS",
+      "role": "request_binding_basis"
+    },
+    {
+      "sequence": 2,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-CHAIN-NEXT-STEP-DISCOVERY-V001",
+      "path": "evidence/authorization/20261004_HBCE_ACCESS_AUTHORIZATION_CHAIN_NEXT_STEP_DISCOVERY_v001.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_CHAIN_NEXT_STEP_DISCOVERY=PASS",
+      "role": "programmatic_next_step_basis"
+    },
+    {
+      "sequence": 3,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-PUBLIC-INDEX-V003",
+      "path": "evidence/registry/20261004_HBCE_ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_v003.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_V003=PASS",
+      "role": "public_index_basis"
+    },
+    {
+      "sequence": 4,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-PUBLIC-INDEX-REFRESH-V003",
+      "path": "evidence/registry/20261004_HBCE_ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_REFRESH_v003.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_REFRESH_V003=PASS",
+      "role": "public_index_refresh_basis"
+    },
+    {
+      "sequence": 5,
+      "object_id": "HBCE-RUNTIME-ACCESS-GATE-INTEGRATION-BOUNDARY-DRAFT-V001",
+      "path": "evidence/authorization/20261004_HBCE_RUNTIME_ACCESS_GATE_INTEGRATION_BOUNDARY_DRAFT_v001.json",
+      "expected_marker": "RUNTIME_ACCESS_GATE_INTEGRATION_BOUNDARY_DRAFT=PASS",
+      "role": "runtime_boundary_basis"
+    },
+    {
+      "sequence": 6,
+      "object_id": "HBCE-POSITIVE-AUTHORIZATION-CONTRACT-DRAFT-V001",
+      "path": "evidence/authorization/20261004_HBCE_POSITIVE_AUTHORIZATION_CONTRACT_DRAFT_v001.json",
+      "expected_marker": "POSITIVE_AUTHORIZATION_CONTRACT_DRAFT=PASS",
+      "role": "positive_contract_basis"
+    },
+    {
+      "sequence": 7,
+      "object_id": "HBCE-POSITIVE-AUTHORIZATION-CONTRACT-EVALUATION-HARNESS-V001",
+      "path": "evidence/authorization/20261004_HBCE_POSITIVE_AUTHORIZATION_CONTRACT_EVALUATION_HARNESS_v001.json",
+      "expected_marker": "POSITIVE_AUTHORIZATION_CONTRACT_EVALUATION_HARNESS=PASS",
+      "role": "positive_contract_evaluation_basis"
+    }
+  ],
+  "authority_reference_binding_objective": "Define the canonical minimum authority reference shape required before future policy evaluation, scope binding, actor binding, predicate, decision, and positive contract evaluation can be meaningfully bound.",
+  "required_authority_field_count": 14,
+  "required_authority_fields": [
+    {
+      "field": "authority_ref",
+      "required": true,
+      "purpose": "Stable authority reference bound to the request binding.",
+      "binding_rule": "MUST_BE_PRESENT_NON_EMPTY_REFERENCE"
+    },
+    {
+      "field": "authority_type",
+      "required": true,
+      "purpose": "Declared authority class for future resolver evaluation.",
+      "binding_rule": "MUST_BE_PRESENT_ENUM_CANDIDATE"
+    },
+    {
+      "field": "authority_issuer_ref",
+      "required": true,
+      "purpose": "Reference to the issuer or source of authority.",
+      "binding_rule": "MUST_BE_PRESENT_REFERENCE_ONLY"
+    },
+    {
+      "field": "authority_subject_ref",
+      "required": true,
+      "purpose": "Reference to the subject to whom the authority applies.",
+      "binding_rule": "MUST_BE_PRESENT_REFERENCE_ONLY"
+    },
+    {
+      "field": "authority_scope",
+      "required": true,
+      "purpose": "Declared scope of authority, not an authorization grant.",
+      "binding_rule": "MUST_BE_PRESENT_SCOPE_OBJECT"
+    },
+    {
+      "field": "authority_validity",
+      "required": true,
+      "purpose": "Validity window or validity state for future fail-closed evaluation.",
+      "binding_rule": "MUST_BE_PRESENT_VALIDITY_OBJECT"
+    },
+    {
+      "field": "authority_source_ref",
+      "required": true,
+      "purpose": "Reference to source material or system of record.",
+      "binding_rule": "MUST_BE_PRESENT_REFERENCE_ONLY"
+    },
+    {
+      "field": "authority_evidence_ref",
+      "required": true,
+      "purpose": "Reference to evidence supporting the authority reference.",
+      "binding_rule": "MUST_BE_PRESENT_REFERENCE_ONLY"
+    },
+    {
+      "field": "authority_policy_binding_ref",
+      "required": true,
+      "purpose": "Reference to the policy family the authority must be evaluated against.",
+      "binding_rule": "MUST_BE_PRESENT_REFERENCE_ONLY"
+    },
+    {
+      "field": "request_binding_ref",
+      "required": true,
+      "purpose": "Reference to the request binding this authority reference is bound to.",
+      "binding_rule": "MUST_EQUAL_HBCE_ACCESS_AUTHORIZATION_REQUEST_BINDING_DRAFT_V001_OR_SUCCESSOR"
+    },
+    {
+      "field": "request_id",
+      "required": true,
+      "purpose": "Request identifier inherited from the canonical request binding.",
+      "binding_rule": "MUST_MATCH_REQUEST_BINDING_REQUEST_ID"
+    },
+    {
+      "field": "decision_scope",
+      "required": true,
+      "purpose": "Scope marker that prevents reuse outside ACCESS_AUTHORIZATION.",
+      "binding_rule": "MUST_EQUAL_ACCESS_AUTHORIZATION"
+    },
+    {
+      "field": "authorization_level",
+      "required": true,
+      "purpose": "Authorization level marker constrained to ACCESS_ONLY.",
+      "binding_rule": "MUST_EQUAL_ACCESS_ONLY"
+    },
+    {
+      "field": "authority_resolution_state",
+      "required": true,
+      "purpose": "Future resolver state for explicit PASS, DENY, or UNKNOWN fail-closed handling.",
+      "binding_rule": "MUST_BE_DECLARED_AS_FUTURE_RESOLUTION_STATE"
+    }
+  ],
+  "binding_rule_count": 10,
+  "binding_rules": [
+    {
+      "rule_id": "AB-001-RECORD-ONLY",
+      "rule": "The authority reference binding draft is an R&D record-only artifact.",
+      "required_state": "MUST_NOT_EXECUTE"
+    },
+    {
+      "rule_id": "AB-002-NO-AUTHORITY-ASSERTION",
+      "rule": "The draft references authority but must not assert that authority is valid.",
+      "required_state": "REFERENCE_ONLY_NOT_VALIDATION"
+    },
+    {
+      "rule_id": "AB-003-NO-AUTHORIZATION-DECISION",
+      "rule": "The draft must not decide ALLOW, DENY, or UNKNOWN.",
+      "required_state": "NO_DECISION_CREATED"
+    },
+    {
+      "rule_id": "AB-004-NO-RUNTIME-GATE",
+      "rule": "The draft must not implement or enable a runtime access gate.",
+      "required_state": "MUST_REMAIN_FALSE"
+    },
+    {
+      "rule_id": "AB-005-NO-ACCESS-GRANT",
+      "rule": "The draft must not grant access.",
+      "required_state": "MUST_REMAIN_FALSE"
+    },
+    {
+      "rule_id": "AB-006-NO-DISPATCH",
+      "rule": "The draft must not authorize dispatch.",
+      "required_state": "MUST_REMAIN_FALSE"
+    },
+    {
+      "rule_id": "AB-007-NO-EXECUTION",
+      "rule": "The draft must not authorize execution.",
+      "required_state": "MUST_REMAIN_FALSE"
+    },
+    {
+      "rule_id": "AB-008-NO-LEGAL-CERTIFICATION",
+      "rule": "The draft must not create legal certification.",
+      "required_state": "MUST_REMAIN_FALSE"
+    },
+    {
+      "rule_id": "AB-009-FUTURE-VALIDATION-ONLY",
+      "rule": "Future validators may verify authority reference shape, but shape validity alone must not create authorization.",
+      "required_state": "FUTURE_CONSTRAINT_ONLY"
+    },
+    {
+      "rule_id": "AB-010-UNKNOWN-FAIL-CLOSED",
+      "rule": "Missing, malformed, expired, untrusted, or ambiguous authority references must remain fail-closed in future evaluation.",
+      "required_state": "FUTURE_CONSTRAINT_ONLY"
+    }
+  ],
+  "future_resolution_requirement_count": 14,
+  "future_resolution_requirements": [
+    "canonical_authority_ref",
+    "canonical_authority_type",
+    "canonical_authority_issuer_ref",
+    "canonical_authority_subject_ref",
+    "canonical_authority_scope",
+    "canonical_authority_validity",
+    "canonical_authority_source_ref",
+    "canonical_authority_evidence_ref",
+    "canonical_authority_policy_binding_ref",
+    "canonical_request_binding_ref",
+    "canonical_request_id",
+    "canonical_decision_scope",
+    "canonical_authorization_level",
+    "canonical_authority_resolution_state"
+  ],
+  "future_evaluation_precedence": [
+    "MISSING_OR_MALFORMED_AUTHORITY_REFERENCE_FAIL_CLOSED",
+    "AUTHORITY_REFERENCE_EXPIRED_OR_UNTRUSTED_FAIL_CLOSED",
+    "AUTHORITY_SCOPE_MISMATCH_FAIL_CLOSED",
+    "AUTHORITY_REFERENCE_VALID_BUT_NOT_AUTHORIZING",
+    "FUTURE_POLICY_SCOPE_ACTOR_AND_DECISION_EVALUATION_REQUIRED"
+  ],
+  "recommended_next_step": {
+    "program": "PROG-290",
+    "title": "HBCE Policy Evaluation Binding Draft v001",
+    "object_id": "HBCE-POLICY-EVALUATION-BINDING-DRAFT-V001",
+    "reason": "After request and authority reference shapes are explicit, the next missing primitive is policy evaluation binding. Policy evaluation must bind to request and authority references without itself granting access."
+  },
+  "explicit_non_claims": {
+    "does_not_claim_runtime_gate_implemented": true,
+    "does_not_claim_runtime_gate_enabled": true,
+    "does_not_claim_positive_authorization_contract_issued": true,
+    "does_not_claim_authority_validated": true,
+    "does_not_claim_authority_effective": true,
+    "does_not_claim_authorization_decision_created": true,
+    "does_not_claim_request_approved": true,
+    "does_not_claim_access_granted": true,
+    "does_not_claim_dispatch_authorization": true,
+    "does_not_claim_execution_authorization": true,
+    "does_not_claim_production_authorization_service": true,
+    "does_not_claim_onboarding_execution": true,
+    "does_not_claim_identity_verification": true,
+    "does_not_claim_certificate_issuance": true,
+    "does_not_claim_target_receipt": true,
+    "does_not_claim_execution_trace": true,
+    "does_not_claim_effect_evidence": true,
+    "does_not_claim_legal_certification": true
+  },
+  "no_execution_boundary": {
+    "runtime_gate_implemented": false,
+    "runtime_gate_enabled": false,
+    "positive_authorization_contract_issued": false,
+    "authority_validated": false,
+    "authority_effective": false,
+    "authorization_decision_created": false,
+    "request_approved": false,
+    "access_granted": false,
+    "dispatch_authorized": false,
+    "execution_authorized": false,
+    "production_authorization_service_enabled": false,
+    "onboarding_started": false,
+    "identity_verified": false,
+    "certificate_issued": false,
+    "target_receipt_created": false,
+    "execution_trace_created": false,
+    "effect_evidence_created": false,
+    "legal_certification_created": false
+  },
+  "expected_cli_marker": "AUTHORITY_REFERENCE_BINDING_DRAFT=PASS",
+  "expected_result": {
+    "source_chain_entry_count": 7,
+    "required_authority_field_count": 14,
+    "binding_rule_count": 10,
+    "future_resolution_requirement_count": 14,
+    "recommended_next_program": "PROG-290",
+    "recommended_next_object_id": "HBCE-POLICY-EVALUATION-BINDING-DRAFT-V001",
+    "required_non_claim_count": 18,
+    "required_no_execution_boundary_count": 18,
+    "runtime_gate_implemented": false,
+    "runtime_gate_enabled": false,
+    "positive_authorization_contract_issued": false,
+    "authority_validated": false,
+    "authority_effective": false,
+    "authorization_decision_created": false,
+    "request_approved": false,
+    "access_granted": false,
+    "dispatch_authorized": false,
+    "execution_authorized": false,
+    "effect_evidence_created": false,
+    "legal_certification_created": false,
+    "result": "PASS_AUTHORITY_REFERENCE_BINDING_DRAFT"
+  },
+  "result": "PASS_AUTHORITY_REFERENCE_BINDING_DRAFT_CREATED"
+}
