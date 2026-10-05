@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>HBCE Authority Reference Binding Draft v001</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 2rem; line-height: 1.5; max-width: 1100px; }
+    code, pre { background: #f4f4f4; padding: .15rem .3rem; border-radius: .25rem; }
+    pre { padding: 1rem; overflow-x: auto; }
+    section { margin: 2rem 0; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: .5rem; text-align: left; vertical-align: top; }
+    th { background: #f4f4f4; }
+    .status { font-weight: 700; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>HBCE Authority Reference Binding Draft v001</h1>
+
+    <p class="status">Classification: R&amp;D AUTHORITY REFERENCE BINDING DRAFT ONLY</p>
+    <p>This page publishes the PROG-289 authority reference binding draft for the HBCE access authorization chain.</p>
+
+    <section>
+      <h2>Canonical marker</h2>
+      <pre>AUTHORITY_REFERENCE_BINDING_DRAFT=PASS</pre>
+    </section>
+
+    <section>
+      <h2>Record identity</h2>
+      <table>
+        <tr><th>Object ID</th><td>HBCE-AUTHORITY-REFERENCE-BINDING-DRAFT-V001</td></tr>
+        <tr><th>Status</th><td>ACTIVE_AUTHORITY_REFERENCE_BINDING_DRAFT</td></tr>
+        <tr><th>Basis marker</th><td>HBCE_ACCESS_AUTHORIZATION_REQUEST_BINDING_DRAFT_FINAL_AUDIT=1</td></tr>
+        <tr><th>Basis main commit</th><td>5b7f430c1f4e2103e013ee6d9ec78b8843cb6ab6</td></tr>
+        <tr><th>Basis request binding</th><td>HBCE-ACCESS-AUTHORIZATION-REQUEST-BINDING-DRAFT-V001</td></tr>
+        <tr><th>Decision scope</th><td>ACCESS_AUTHORIZATION</td></tr>
+        <tr><th>Authorization level</th><td>ACCESS_ONLY</td></tr>
+        <tr><th>Binding scope</th><td>AUTHORITY_REFERENCE_BINDING</td></tr>
+        <tr><th>Binding mode</th><td>RECORD_ONLY_NOT_EXECUTABLE</td></tr>
+        <tr><th>Authority binding state</th><td>NOT_IMPLEMENTED_NOT_EXECUTABLE_NOT_BOUND_TO_RUNTIME</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>Source chain</h2>
+      <table>
+        <tr><th>#</th><th>Object</th><th>Role</th><th>Expected marker</th></tr>
+        <tr><td>1</td><td>HBCE-ACCESS-AUTHORIZATION-REQUEST-BINDING-DRAFT-V001</td><td>request_binding_basis</td><td>ACCESS_AUTHORIZATION_REQUEST_BINDING_DRAFT=PASS</td></tr>
+        <tr><td>2</td><td>HBCE-ACCESS-AUTHORIZATION-CHAIN-NEXT-STEP-DISCOVERY-V001</td><td>programmatic_next_step_basis</td><td>ACCESS_AUTHORIZATION_CHAIN_NEXT_STEP_DISCOVERY=PASS</td></tr>
+        <tr><td>3</td><td>HBCE-ACCESS-AUTHORIZATION-RECORD-PUBLIC-INDEX-V003</td><td>public_index_basis</td><td>ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_V003=PASS</td></tr>
+        <tr><td>4</td><td>HBCE-ACCESS-AUTHORIZATION-RECORD-PUBLIC-INDEX-REFRESH-V003</td><td>public_index_refresh_basis</td><td>ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_REFRESH_V003=PASS</td></tr>
+        <tr><td>5</td><td>HBCE-RUNTIME-ACCESS-GATE-INTEGRATION-BOUNDARY-DRAFT-V001</td><td>runtime_boundary_basis</td><td>RUNTIME_ACCESS_GATE_INTEGRATION_BOUNDARY_DRAFT=PASS</td></tr>
+        <tr><td>6</td><td>HBCE-POSITIVE-AUTHORIZATION-CONTRACT-DRAFT-V001</td><td>positive_contract_basis</td><td>POSITIVE_AUTHORIZATION_CONTRACT_DRAFT=PASS</td></tr>
+        <tr><td>7</td><td>HBCE-POSITIVE-AUTHORIZATION-CONTRACT-EVALUATION-HARNESS-V001</td><td>positive_contract_evaluation_basis</td><td>POSITIVE_AUTHORIZATION_CONTRACT_EVALUATION_HARNESS=PASS</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>Required authority fields</h2>
+      <p>The draft defines 14 required authority reference fields before future authorization evaluation can be meaningfully bound.</p>
+      <ol>
+        <li><code>authority_ref</code></li>
+        <li><code>authority_type</code></li>
+        <li><code>authority_issuer_ref</code></li>
+        <li><code>authority_subject_ref</code></li>
+        <li><code>authority_scope</code></li>
+        <li><code>authority_validity</code></li>
+        <li><code>authority_source_ref</code></li>
+        <li><code>authority_evidence_ref</code></li>
+        <li><code>authority_policy_binding_ref</code></li>
+        <li><code>request_binding_ref</code></li>
+        <li><code>request_id</code></li>
+        <li><code>decision_scope</code></li>
+        <li><code>authorization_level</code></li>
+        <li><code>authority_resolution_state</code></li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Binding rules</h2>
+      <ul>
+        <li>AB-001-RECORD-ONLY</li>
+        <li>AB-002-NO-AUTHORITY-ASSERTION</li>
+        <li>AB-003-NO-AUTHORIZATION-DECISION</li>
+        <li>AB-004-NO-RUNTIME-GATE</li>
+        <li>AB-005-NO-ACCESS-GRANT</li>
+        <li>AB-006-NO-DISPATCH</li>
+        <li>AB-007-NO-EXECUTION</li>
+        <li>AB-008-NO-LEGAL-CERTIFICATION</li>
+        <li>AB-009-FUTURE-VALIDATION-ONLY</li>
+        <li>AB-010-UNKNOWN-FAIL-CLOSED</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Future evaluation precedence</h2>
+      <ol>
+        <li>MISSING_OR_MALFORMED_AUTHORITY_REFERENCE_FAIL_CLOSED</li>
+        <li>AUTHORITY_REFERENCE_EXPIRED_OR_UNTRUSTED_FAIL_CLOSED</li>
+        <li>AUTHORITY_SCOPE_MISMATCH_FAIL_CLOSED</li>
+        <li>AUTHORITY_REFERENCE_VALID_BUT_NOT_AUTHORIZING</li>
+        <li>FUTURE_POLICY_SCOPE_ACTOR_AND_DECISION_EVALUATION_REQUIRED</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Recommended next step</h2>
+      <table>
+        <tr><th>Program</th><td>PROG-290</td></tr>
+        <tr><th>Title</th><td>HBCE Policy Evaluation Binding Draft v001</td></tr>
+        <tr><th>Object ID</th><td>HBCE-POLICY-EVALUATION-BINDING-DRAFT-V001</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>Explicit non-claims</h2>
+      <p>This authority reference binding draft does not implement a runtime gate, does not enable a runtime gate, does not issue a positive authorization contract, does not validate authority, does not make authority effective, does not create an authorization decision, does not approve a request, does not grant access, does not authorize dispatch, does not authorize execution, does not enable a production authorization service, does not start onboarding, does not verify identity, does not issue certificates, does not create target receipts, does not create execution traces, does not create effect evidence, and does not create legal certification.</p>
+    </section>
+
+    <section>
+      <h2>Public artifacts</h2>
+      <ul>
+        <li><a href="evidence/authorization/20261005_HBCE_AUTHORITY_REFERENCE_BINDING_DRAFT_v001.json">Authority reference binding draft JSON</a></li>
+        <li><a href="tools/evidence/validate-authority-reference-binding-draft.js">Validator</a></li>
+        <li><a href="docs/evidence/hbce-authority-reference-binding-draft-v001.md">Technical document</a></li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
