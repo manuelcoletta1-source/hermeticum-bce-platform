@@ -1,0 +1,286 @@
+{
+  "object_id": "HBCE-ACCESS-AUTHORIZATION-REQUEST-BINDING-DRAFT-V001",
+  "record_id": "HBCE-ACCESS-AUTHORIZATION-REQUEST-BINDING-DRAFT-V001",
+  "artifact_type": "HBCEAccessAuthorizationRequestBindingDraft",
+  "version": "v001",
+  "status": "ACTIVE_ACCESS_AUTHORIZATION_REQUEST_BINDING_DRAFT",
+  "classification": "R_AND_D_REQUEST_BINDING_DRAFT_ONLY",
+  "created_at": "2026-10-05T10:18:00+00:00",
+  "basis_marker": "HBCE_ACCESS_AUTHORIZATION_CHAIN_NEXT_STEP_DISCOVERY_FINAL_AUDIT=1",
+  "basis_main_commit": "a8719a28378b84d88189f2696443f40ea8345f91",
+  "basis_discovery": "HBCE-ACCESS-AUTHORIZATION-CHAIN-NEXT-STEP-DISCOVERY-V001",
+  "decision_scope": "ACCESS_AUTHORIZATION",
+  "authorization_level": "ACCESS_ONLY",
+  "binding_scope": "ACCESS_AUTHORIZATION_REQUEST_BINDING",
+  "binding_mode": "RECORD_ONLY_NOT_EXECUTABLE",
+  "request_binding_state": "NOT_IMPLEMENTED_NOT_EXECUTABLE_NOT_BOUND_TO_RUNTIME",
+  "source_chain_entry_count": 6,
+  "source_chain": [
+    {
+      "sequence": 1,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-CHAIN-NEXT-STEP-DISCOVERY-V001",
+      "path": "evidence/authorization/20261004_HBCE_ACCESS_AUTHORIZATION_CHAIN_NEXT_STEP_DISCOVERY_v001.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_CHAIN_NEXT_STEP_DISCOVERY=PASS",
+      "role": "programmatic_next_step_basis"
+    },
+    {
+      "sequence": 2,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-PUBLIC-INDEX-V003",
+      "path": "evidence/registry/20261004_HBCE_ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_v003.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_V003=PASS",
+      "role": "public_index_basis"
+    },
+    {
+      "sequence": 3,
+      "object_id": "HBCE-ACCESS-AUTHORIZATION-RECORD-PUBLIC-INDEX-REFRESH-V003",
+      "path": "evidence/registry/20261004_HBCE_ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_REFRESH_v003.json",
+      "expected_marker": "ACCESS_AUTHORIZATION_RECORD_PUBLIC_INDEX_REFRESH_V003=PASS",
+      "role": "public_index_refresh_basis"
+    },
+    {
+      "sequence": 4,
+      "object_id": "HBCE-RUNTIME-ACCESS-GATE-INTEGRATION-BOUNDARY-DRAFT-V001",
+      "path": "evidence/authorization/20261004_HBCE_RUNTIME_ACCESS_GATE_INTEGRATION_BOUNDARY_DRAFT_v001.json",
+      "expected_marker": "RUNTIME_ACCESS_GATE_INTEGRATION_BOUNDARY_DRAFT=PASS",
+      "role": "runtime_boundary_basis"
+    },
+    {
+      "sequence": 5,
+      "object_id": "HBCE-POSITIVE-AUTHORIZATION-CONTRACT-DRAFT-V001",
+      "path": "evidence/authorization/20261004_HBCE_POSITIVE_AUTHORIZATION_CONTRACT_DRAFT_v001.json",
+      "expected_marker": "POSITIVE_AUTHORIZATION_CONTRACT_DRAFT=PASS",
+      "role": "positive_contract_basis"
+    },
+    {
+      "sequence": 6,
+      "object_id": "HBCE-POSITIVE-AUTHORIZATION-CONTRACT-EVALUATION-HARNESS-V001",
+      "path": "evidence/authorization/20261004_HBCE_POSITIVE_AUTHORIZATION_CONTRACT_EVALUATION_HARNESS_v001.json",
+      "expected_marker": "POSITIVE_AUTHORIZATION_CONTRACT_EVALUATION_HARNESS=PASS",
+      "role": "positive_contract_evaluation_basis"
+    }
+  ],
+  "request_binding_objective": "Define the canonical minimum request shape required before future authority, policy, scope, actor, predicate, decision, and positive contract evaluation can be meaningfully bound.",
+  "required_request_field_count": 14,
+  "required_request_fields": [
+    {
+      "field": "request_id",
+      "required": true,
+      "purpose": "Stable request identifier for future correlation.",
+      "binding_rule": "MUST_BE_PRESENT_NON_EMPTY_STRING"
+    },
+    {
+      "field": "request_timestamp_utc",
+      "required": true,
+      "purpose": "UTC timestamp for the future request record.",
+      "binding_rule": "MUST_BE_PRESENT_UTC_TIMESTAMP"
+    },
+    {
+      "field": "requester_ref",
+      "required": true,
+      "purpose": "Reference to the entity initiating the request.",
+      "binding_rule": "MUST_BE_PRESENT_REFERENCE_ONLY"
+    },
+    {
+      "field": "subject_ref",
+      "required": true,
+      "purpose": "Reference to the subject affected by the access authorization request.",
+      "binding_rule": "MUST_BE_PRESENT_REFERENCE_ONLY"
+    },
+    {
+      "field": "target_ref",
+      "required": true,
+      "purpose": "Reference to the target resource, service, capability, or boundary.",
+      "binding_rule": "MUST_BE_PRESENT_REFERENCE_ONLY"
+    },
+    {
+      "field": "action_ref",
+      "required": true,
+      "purpose": "Reference to the requested action.",
+      "binding_rule": "MUST_BE_PRESENT_REFERENCE_ONLY"
+    },
+    {
+      "field": "action_class",
+      "required": true,
+      "purpose": "Class of requested action for future policy evaluation.",
+      "binding_rule": "MUST_BE_PRESENT_ENUM_CANDIDATE"
+    },
+    {
+      "field": "requested_scope",
+      "required": true,
+      "purpose": "Declared scope of the access authorization request.",
+      "binding_rule": "MUST_BE_PRESENT_SCOPE_OBJECT"
+    },
+    {
+      "field": "authority_ref",
+      "required": true,
+      "purpose": "Reference to authority basis, not proof of authority by itself.",
+      "binding_rule": "MUST_BE_PRESENT_REFERENCE_ONLY"
+    },
+    {
+      "field": "policy_ref",
+      "required": true,
+      "purpose": "Reference to applicable policy basis, not policy evaluation by itself.",
+      "binding_rule": "MUST_BE_PRESENT_REFERENCE_ONLY"
+    },
+    {
+      "field": "evidence_context_ref",
+      "required": true,
+      "purpose": "Reference to the evidence context used by future evaluation.",
+      "binding_rule": "MUST_BE_PRESENT_REFERENCE_ONLY"
+    },
+    {
+      "field": "decision_scope",
+      "required": true,
+      "purpose": "Scope marker that prevents reuse outside ACCESS_AUTHORIZATION.",
+      "binding_rule": "MUST_EQUAL_ACCESS_AUTHORIZATION"
+    },
+    {
+      "field": "authorization_level",
+      "required": true,
+      "purpose": "Authorization level marker constrained to ACCESS_ONLY.",
+      "binding_rule": "MUST_EQUAL_ACCESS_ONLY"
+    },
+    {
+      "field": "idempotency_key",
+      "required": true,
+      "purpose": "Stable key for future duplicate request detection.",
+      "binding_rule": "MUST_BE_PRESENT_NON_EMPTY_STRING"
+    }
+  ],
+  "binding_rule_count": 9,
+  "binding_rules": [
+    {
+      "rule_id": "RB-001-RECORD-ONLY",
+      "rule": "The request binding draft is an R&D record-only artifact.",
+      "required_state": "MUST_NOT_EXECUTE"
+    },
+    {
+      "rule_id": "RB-002-NO-AUTHORIZATION-DECISION",
+      "rule": "The request binding draft must not decide ALLOW, DENY, or UNKNOWN.",
+      "required_state": "NO_DECISION_CREATED"
+    },
+    {
+      "rule_id": "RB-003-NO-RUNTIME-GATE",
+      "rule": "The request binding draft must not implement or enable a runtime access gate.",
+      "required_state": "MUST_REMAIN_FALSE"
+    },
+    {
+      "rule_id": "RB-004-NO-ACCESS-GRANT",
+      "rule": "The request binding draft must not grant access.",
+      "required_state": "MUST_REMAIN_FALSE"
+    },
+    {
+      "rule_id": "RB-005-NO-DISPATCH",
+      "rule": "The request binding draft must not authorize dispatch.",
+      "required_state": "MUST_REMAIN_FALSE"
+    },
+    {
+      "rule_id": "RB-006-NO-EXECUTION",
+      "rule": "The request binding draft must not authorize execution.",
+      "required_state": "MUST_REMAIN_FALSE"
+    },
+    {
+      "rule_id": "RB-007-NO-LEGAL-CERTIFICATION",
+      "rule": "The request binding draft must not create legal certification.",
+      "required_state": "MUST_REMAIN_FALSE"
+    },
+    {
+      "rule_id": "RB-008-FUTURE-VALIDATION-ONLY",
+      "rule": "Future validators may verify request shape, but shape validity alone must not create authorization.",
+      "required_state": "FUTURE_CONSTRAINT_ONLY"
+    },
+    {
+      "rule_id": "RB-009-UNKNOWN-FAIL-CLOSED",
+      "rule": "Missing, malformed, or ambiguous request fields must remain fail-closed in future evaluation.",
+      "required_state": "FUTURE_CONSTRAINT_ONLY"
+    }
+  ],
+  "future_normalization_requirement_count": 14,
+  "future_normalization_requirements": [
+    "canonical_request_id",
+    "canonical_request_timestamp_utc",
+    "canonical_requester_ref",
+    "canonical_subject_ref",
+    "canonical_target_ref",
+    "canonical_action_ref",
+    "canonical_action_class",
+    "canonical_requested_scope",
+    "canonical_authority_ref",
+    "canonical_policy_ref",
+    "canonical_evidence_context_ref",
+    "canonical_decision_scope",
+    "canonical_authorization_level",
+    "canonical_idempotency_key"
+  ],
+  "future_evaluation_precedence": [
+    "MISSING_OR_MALFORMED_REQUEST_FAIL_CLOSED",
+    "REQUEST_SCOPE_MISMATCH_FAIL_CLOSED",
+    "REQUEST_BINDING_VALID_BUT_NOT_AUTHORIZING",
+    "FUTURE_POLICY_AND_AUTHORITY_EVALUATION_REQUIRED"
+  ],
+  "recommended_next_step": {
+    "program": "PROG-289",
+    "title": "HBCE Authority Reference Binding Draft v001",
+    "object_id": "HBCE-AUTHORITY-REFERENCE-BINDING-DRAFT-V001",
+    "reason": "After request shape is explicit, the next missing primitive is authority reference binding. Authority must bind to the request without itself creating access authorization."
+  },
+  "explicit_non_claims": {
+    "does_not_claim_runtime_gate_implemented": true,
+    "does_not_claim_runtime_gate_enabled": true,
+    "does_not_claim_positive_authorization_contract_issued": true,
+    "does_not_claim_authorization_decision_created": true,
+    "does_not_claim_request_approved": true,
+    "does_not_claim_access_granted": true,
+    "does_not_claim_dispatch_authorization": true,
+    "does_not_claim_execution_authorization": true,
+    "does_not_claim_production_authorization_service": true,
+    "does_not_claim_onboarding_execution": true,
+    "does_not_claim_identity_verification": true,
+    "does_not_claim_certificate_issuance": true,
+    "does_not_claim_target_receipt": true,
+    "does_not_claim_execution_trace": true,
+    "does_not_claim_effect_evidence": true,
+    "does_not_claim_legal_certification": true
+  },
+  "no_execution_boundary": {
+    "runtime_gate_implemented": false,
+    "runtime_gate_enabled": false,
+    "positive_authorization_contract_issued": false,
+    "authorization_decision_created": false,
+    "request_approved": false,
+    "access_granted": false,
+    "dispatch_authorized": false,
+    "execution_authorized": false,
+    "production_authorization_service_enabled": false,
+    "onboarding_started": false,
+    "identity_verified": false,
+    "certificate_issued": false,
+    "target_receipt_created": false,
+    "execution_trace_created": false,
+    "effect_evidence_created": false,
+    "legal_certification_created": false
+  },
+  "expected_cli_marker": "ACCESS_AUTHORIZATION_REQUEST_BINDING_DRAFT=PASS",
+  "expected_result": {
+    "source_chain_entry_count": 6,
+    "required_request_field_count": 14,
+    "binding_rule_count": 9,
+    "future_normalization_requirement_count": 14,
+    "recommended_next_program": "PROG-289",
+    "recommended_next_object_id": "HBCE-AUTHORITY-REFERENCE-BINDING-DRAFT-V001",
+    "required_non_claim_count": 16,
+    "required_no_execution_boundary_count": 16,
+    "runtime_gate_implemented": false,
+    "runtime_gate_enabled": false,
+    "positive_authorization_contract_issued": false,
+    "authorization_decision_created": false,
+    "request_approved": false,
+    "access_granted": false,
+    "dispatch_authorized": false,
+    "execution_authorized": false,
+    "effect_evidence_created": false,
+    "legal_certification_created": false,
+    "result": "PASS_ACCESS_AUTHORIZATION_REQUEST_BINDING_DRAFT"
+  },
+  "result": "PASS_ACCESS_AUTHORIZATION_REQUEST_BINDING_DRAFT_CREATED"
+}
