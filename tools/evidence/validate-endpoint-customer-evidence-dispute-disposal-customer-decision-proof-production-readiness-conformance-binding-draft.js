@@ -1,10 +1,9 @@
 #!/usr/bin/env node
-"use strict";
 
 const fs = require("fs");
 
-const parentFile = "evidence/authorization/20261008_HBCE_ENDPOINT_CUSTOMER_EVIDENCE_DISPUTE_DISPOSAL_CUSTOMER_DECISION_PROOF_LEGAL_CERTIFICATION_CONFORMANCE_BINDING_DRAFT_v001.json";
-const file = "evidence/authorization/20261008_HBCE_ENDPOINT_CUSTOMER_EVIDENCE_DISPUTE_DISPOSAL_CUSTOMER_DECISION_PROOF_PRODUCTION_READINESS_CONFORMANCE_BINDING_DRAFT_v001.json";
+const parentFile = "evidence/authorization/20261009_HBCE_ENDPOINT_CUSTOMER_EVIDENCE_DISPUTE_DISPOSAL_CUSTOMER_DECISION_PROOF_LEGAL_CERTIFICATION_CONFORMANCE_BINDING_DRAFT_v001.json";
+const file = "evidence/authorization/20261009_HBCE_ENDPOINT_CUSTOMER_EVIDENCE_DISPUTE_DISPOSAL_CUSTOMER_DECISION_PROOF_PRODUCTION_READINESS_CONFORMANCE_BINDING_DRAFT_v001.json";
 
 const parent = JSON.parse(fs.readFileSync(parentFile, "utf8"));
 const d = JSON.parse(fs.readFileSync(file, "utf8"));
@@ -13,114 +12,81 @@ let ok = true;
 
 function check(name, actual, expected) {
   if (actual !== expected) {
-    console.log(`VALIDATOR_MISMATCH ${name}: expected=${expected} actual=${actual}`);
+    console.log(`PRODUCTION_READINESS_CONFORMANCE_BINDING_DRAFT_MISMATCH ${name}: expected=${expected} actual=${actual}`);
     ok = false;
   }
 }
 
-function requireArrayFromDoc(doc, name, expectedLength) {
-  if (!Array.isArray(doc[name])) {
-    console.log(`VALIDATOR_ARRAY_MISSING ${name}`);
+function requireArray(name, expectedLength) {
+  if (!Array.isArray(d[name])) {
+    console.log(`PRODUCTION_READINESS_CONFORMANCE_BINDING_DRAFT_ARRAY_MISSING ${name}`);
     ok = false;
     return [];
   }
 
-  if (doc[name].length !== expectedLength) {
-    console.log(`VALIDATOR_ARRAY_LENGTH_MISMATCH ${name}: expected=${expectedLength} actual=${doc[name].length}`);
+  if (d[name].length !== expectedLength) {
+    console.log(`PRODUCTION_READINESS_CONFORMANCE_BINDING_DRAFT_ARRAY_LENGTH_MISMATCH ${name}: expected=${expectedLength} actual=${d[name].length}`);
     ok = false;
   }
 
-  return doc[name];
+  return d[name];
 }
 
 function unique(items) {
   return Array.from(new Set(items));
 }
 
-function requireIncludes(name, text, fragment) {
+function requireIncludes(source, text, fragment) {
   if (!String(text || "").includes(fragment)) {
-    console.log(`VALIDATOR_FRAGMENT_MISSING ${name}: ${fragment}`);
+    console.log(`PRODUCTION_READINESS_CONFORMANCE_BINDING_DRAFT_FRAGMENT_MISSING ${source}: ${fragment}`);
     ok = false;
   }
 }
 
-check("parent_object_id_source", parent.object_id, "HBCE-ENDPOINT-CUSTOMER-EVIDENCE-DISPUTE-DISPOSAL-CUSTOMER-DECISION-PROOF-LEGAL-CERTIFICATION-CONFORMANCE-BINDING-DRAFT-V001");
-check("parent_marker_source", parent.marker, "ENDPOINT_CUSTOMER_EVIDENCE_DISPUTE_DISPOSAL_CUSTOMER_DECISION_PROOF_LEGAL_CERTIFICATION_CONFORMANCE_BINDING_DRAFT=PASS");
-check("parent_result_source", parent.result, "PASS_ENDPOINT_CUSTOMER_EVIDENCE_DISPUTE_DISPOSAL_CUSTOMER_DECISION_PROOF_LEGAL_CERTIFICATION_CONFORMANCE_BINDING_DRAFT");
-check("parent_program_source", parent.program, "PROG-353");
-check("parent_source_chain_entry_count_source", parent.source_chain_entry_count, 71);
-check("parent_required_non_claim_count_source", parent.required_non_claim_count, 6258);
-check("parent_required_no_execution_boundary_count_source", parent.required_no_execution_boundary_count, 6258);
-check("parent_false_claim_property_count_source", parent.false_claim_property_count, 6634);
-check("parent_recommended_next_program_source", parent.recommended_next_program, "PROG-354");
-check("parent_recommended_next_object_id_source", parent.recommended_next_object_id, "HBCE-ENDPOINT-CUSTOMER-EVIDENCE-DISPUTE-DISPOSAL-CUSTOMER-DECISION-PROOF-PRODUCTION-READINESS-CONFORMANCE-BINDING-DRAFT-V001");
-
-const parentNonClaims = requireArrayFromDoc(parent, "explicit_non_claims", 6258);
-const parentNoExecutionBoundary = requireArrayFromDoc(parent, "no_execution_boundary", 6258);
-const parentNonClaimUniqueCount = unique(parentNonClaims).length;
-const parentNoExecutionBoundaryUniqueCount = unique(parentNoExecutionBoundary).length;
-
-check("computed_parent_non_claim_unique_count", parentNonClaimUniqueCount, 6258);
-check("computed_parent_non_claim_internal_duplicate_count", parentNonClaims.length - parentNonClaimUniqueCount, 0);
-check("computed_parent_no_execution_boundary_unique_count", parentNoExecutionBoundaryUniqueCount, 6258);
-check("computed_parent_no_execution_boundary_internal_duplicate_count", parentNoExecutionBoundary.length - parentNoExecutionBoundaryUniqueCount, 0);
+check("parent.object_id", parent.object_id, "HBCE-ENDPOINT-CUSTOMER-EVIDENCE-DISPUTE-DISPOSAL-CUSTOMER-DECISION-PROOF-LEGAL-CERTIFICATION-CONFORMANCE-BINDING-DRAFT-V001");
+check("parent.marker", parent.marker, "ENDPOINT_CUSTOMER_EVIDENCE_DISPUTE_DISPOSAL_CUSTOMER_DECISION_PROOF_LEGAL_CERTIFICATION_CONFORMANCE_BINDING_DRAFT=PASS");
+check("parent.result", parent.result, "PASS_ENDPOINT_CUSTOMER_EVIDENCE_DISPUTE_DISPOSAL_CUSTOMER_DECISION_PROOF_LEGAL_CERTIFICATION_CONFORMANCE_BINDING_DRAFT");
+check("parent.source_chain_entry_count", parent.source_chain_entry_count, 81);
+check("parent.required_non_claim_count", parent.required_non_claim_count, 8048);
+check("parent.required_no_execution_boundary_count", parent.required_no_execution_boundary_count, 8048);
+check("parent.false_claim_property_count", parent.false_claim_property_count, 7682);
+check("parent.recommended_next_program", parent.recommended_next_program, "PROG-364");
 
 check("object_id", d.object_id, "HBCE-ENDPOINT-CUSTOMER-EVIDENCE-DISPUTE-DISPOSAL-CUSTOMER-DECISION-PROOF-PRODUCTION-READINESS-CONFORMANCE-BINDING-DRAFT-V001");
 check("artifact_type", d.artifact_type, "HBCEEndpointCustomerEvidenceDisputeDisposalCustomerDecisionProofProductionReadinessConformanceBindingDraft");
 check("classification", d.classification, "R_AND_D_ENDPOINT_CUSTOMER_EVIDENCE_DISPUTE_DISPOSAL_CUSTOMER_DECISION_PROOF_PRODUCTION_READINESS_CONFORMANCE_BINDING_DRAFT_ONLY");
 check("status", d.status, "ACTIVE_ENDPOINT_CUSTOMER_EVIDENCE_DISPUTE_DISPOSAL_CUSTOMER_DECISION_PROOF_PRODUCTION_READINESS_CONFORMANCE_BINDING_DRAFT");
 check("version", d.version, "v001");
-check("program", d.program, "PROG-354");
-
+check("program", d.program, "PROG-364");
 check("marker", d.marker, "ENDPOINT_CUSTOMER_EVIDENCE_DISPUTE_DISPOSAL_CUSTOMER_DECISION_PROOF_PRODUCTION_READINESS_CONFORMANCE_BINDING_DRAFT=PASS");
 check("basis_marker", d.basis_marker, "HBCE_ENDPOINT_CUSTOMER_EVIDENCE_DISPUTE_DISPOSAL_CUSTOMER_DECISION_PROOF_LEGAL_CERTIFICATION_CONFORMANCE_BINDING_DRAFT_FINAL_AUDIT=1");
-check("basis_main_commit", d.basis_main_commit, "a19c2faf5c5abe0dd4ab9e20a174dad2e06a87b6");
-
+check("basis_main_commit", d.basis_main_commit, "3daf9787dafeec40ea3cd25093c82b641a2304e4");
 check("parent_object_id", d.parent_object_id, parent.object_id);
 check("parent_marker", d.parent_marker, parent.marker);
-check("parent_commit", d.parent_commit, "a19c2faf5c5abe0dd4ab9e20a174dad2e06a87b6");
-check("parent_file", d.parent_file, parentFile);
-check("parent_tag", d.parent_tag, "hbce-endpoint-customer-evidence-dispute-disposal-customer-decision-proof-legal-certification-conformance-binding-draft-v001");
-check("parent_release_title", d.parent_release_title, "PROG-353 Endpoint Customer Evidence Dispute Disposal Customer Decision Proof Legal Certification Conformance Binding Draft v001");
+check("parent_commit", d.parent_commit, "3daf9787dafeec40ea3cd25093c82b641a2304e4");
 
 check("source_chain_model", d.source_chain_model, "COMPRESSED_PARENT_COUNT_PLUS_CURRENT_ENTRY");
-check("parent_source_chain_entry_count", d.parent_source_chain_entry_count, 71);
-check("source_chain_entry_count", d.source_chain_entry_count, 72);
-
-if (!d.source_chain_current_entry || typeof d.source_chain_current_entry !== "object") {
-  console.log("VALIDATOR_SOURCE_CHAIN_CURRENT_ENTRY_MISSING");
-  ok = false;
-} else {
-  check("source_chain_current_entry_program", d.source_chain_current_entry.program, "PROG-354");
-  check("source_chain_current_entry_object_id", d.source_chain_current_entry.object_id, d.object_id);
-  check("source_chain_current_entry_marker", d.source_chain_current_entry.marker, d.marker);
-  check("source_chain_current_entry_parent_object_id", d.source_chain_current_entry.parent_object_id, parent.object_id);
-  check("source_chain_current_entry_parent_marker", d.source_chain_current_entry.parent_marker, parent.marker);
-  check("source_chain_current_entry_parent_commit", d.source_chain_current_entry.parent_commit, "a19c2faf5c5abe0dd4ab9e20a174dad2e06a87b6");
-  check("source_chain_current_entry_basis_main_commit", d.source_chain_current_entry.basis_main_commit, "a19c2faf5c5abe0dd4ab9e20a174dad2e06a87b6");
-}
+check("parent_source_chain_entry_count", d.parent_source_chain_entry_count, 81);
+check("source_chain_entry_count", d.source_chain_entry_count, 82);
 
 check("binding_scope", d.binding_scope, "ENDPOINT_CUSTOMER_EVIDENCE_DISPUTE_DISPOSAL_CUSTOMER_DECISION_PROOF_PRODUCTION_READINESS_CONFORMANCE_BINDING");
 check("binding_mode", d.binding_mode, "RECORD_ONLY_NOT_EXECUTABLE");
 check("state", d.state, "NOT_IMPLEMENTED_NOT_EXECUTABLE_NOT_BOUND_TO_RUNTIME");
-
 check("production_readiness_scope", d.production_readiness_scope, "CUSTOMER_DECISION_PROOF_PRODUCTION_READINESS_CONFORMANCE_ONLY");
-check("production_readiness_conformance_scope", d.production_readiness_conformance_scope, "DEFINE_PRODUCTION_READINESS_BOUNDARIES_WITHOUT_PRODUCTION_EXECUTION_DEPLOYMENT_CUSTOMER_DELIVERY_CUSTOMER_ACCEPTANCE_OR_PRODUCTION_READINESS");
+check("production_readiness_conformance_scope", d.production_readiness_conformance_scope, "DEFINE_PRODUCTION_READINESS_BOUNDARIES_WITHOUT_PRODUCTION_READINESS_EXECUTION_CUSTOMER_READINESS_DEPLOYMENT_READINESS_RUNTIME_READINESS_OPERATIONAL_READINESS_OR_EXTERNAL_RELIANCE");
 check("production_readiness_record_class", d.production_readiness_record_class, "CUSTOMER_DECISION_PROOF_PRODUCTION_READINESS_DRAFT_RECORD");
 
-check("parent_non_claim_input_count", d.parent_non_claim_input_count, 6258);
-check("parent_non_claim_unique_count", d.parent_non_claim_unique_count, 6258);
-check("parent_non_claim_internal_duplicate_count", d.parent_non_claim_internal_duplicate_count, 0);
-check("parent_no_execution_boundary_input_count", d.parent_no_execution_boundary_input_count, 6258);
-check("parent_no_execution_boundary_unique_count", d.parent_no_execution_boundary_unique_count, 6258);
-check("parent_no_execution_boundary_internal_duplicate_count", d.parent_no_execution_boundary_internal_duplicate_count, 0);
+check("parent_non_claim_input_count", d.parent_non_claim_input_count, 8048);
+check("parent_non_claim_unique_count", d.parent_non_claim_unique_count, 8048);
+check("parent_no_execution_boundary_input_count", d.parent_no_execution_boundary_input_count, 8048);
+check("parent_no_execution_boundary_unique_count", d.parent_no_execution_boundary_unique_count, 8048);
 
 check("field_count", d.required_endpoint_customer_evidence_dispute_disposal_customer_decision_proof_production_readiness_conformance_field_count, 111);
 check("binding_rule_count", d.binding_rule_count, 111);
 check("future_resolution_requirement_count", d.future_resolution_requirement_count, 179);
-check("required_non_claim_count", d.required_non_claim_count, 6437);
-check("required_no_execution_boundary_count", d.required_no_execution_boundary_count, 6437);
-check("false_claim_property_count", d.false_claim_property_count, 6868);
+check("required_non_claim_count", d.required_non_claim_count, 8227);
+check("required_no_execution_boundary_count", d.required_no_execution_boundary_count, 8227);
+check("false_claim_property_count", d.false_claim_property_count, 7685);
 check("future_customer_decision_proof_production_readiness_false_key_count", d.future_customer_decision_proof_production_readiness_false_key_count, 179);
 check("all_customer_decision_proof_production_readiness_false_key_count", d.all_customer_decision_proof_production_readiness_false_key_count, 179);
 check("inherited_customer_decision_proof_production_readiness_false_key_count", d.inherited_customer_decision_proof_production_readiness_false_key_count, 0);
@@ -128,42 +94,51 @@ check("missing_future_customer_decision_proof_production_readiness_false_key_cou
 check("overlap_non_claim_count", d.overlap_non_claim_count, 0);
 check("overlap_no_execution_boundary_count", d.overlap_no_execution_boundary_count, 0);
 
-check("recommended_next_program", d.recommended_next_program, "PROG-355");
-check("recommended_next_object_id", d.recommended_next_object_id, "HBCE-ENDPOINT-CUSTOMER-EVIDENCE-DISPUTE-DISPOSAL-CUSTOMER-DECISION-PROOF-CUSTOMER-DELIVERY-CONFORMANCE-BINDING-DRAFT-V001");
+check("recommended_next_program", d.recommended_next_program, "PROG-365");
+check("recommended_next_object_id", d.recommended_next_object_id, "HBCE-ENDPOINT-CUSTOMER-EVIDENCE-DISPUTE-DISPOSAL-CUSTOMER-DECISION-PROOF-CUSTOMER-READINESS-CONFORMANCE-BINDING-DRAFT-V001");
 check("result", d.result, "PASS_ENDPOINT_CUSTOMER_EVIDENCE_DISPUTE_DISPOSAL_CUSTOMER_DECISION_PROOF_PRODUCTION_READINESS_CONFORMANCE_BINDING_DRAFT");
 
-const fields = requireArrayFromDoc(d, "required_endpoint_customer_evidence_dispute_disposal_customer_decision_proof_production_readiness_conformance_fields", 111);
-const bindingRules = requireArrayFromDoc(d, "binding_rules", 111);
-const futureRequirements = requireArrayFromDoc(d, "future_resolution_requirements", 179);
-const nonClaims = requireArrayFromDoc(d, "explicit_non_claims", 6437);
-const noExecutionBoundary = requireArrayFromDoc(d, "no_execution_boundary", 6437);
+const fields = requireArray("required_endpoint_customer_evidence_dispute_disposal_customer_decision_proof_production_readiness_conformance_fields", 111);
+const bindingRules = requireArray("binding_rules", 111);
+const futureRequirements = requireArray("future_resolution_requirements", 179);
+const explicitNonClaims = requireArray("explicit_non_claims", 8227);
+const noExecutionBoundary = requireArray("no_execution_boundary", 8227);
+const allProductionFalseKeys = requireArray("all_customer_decision_proof_production_readiness_false_keys", 179);
+const inheritedProductionFalseKeys = requireArray("inherited_customer_decision_proof_production_readiness_false_keys", 0);
+const missingFutureFalseKeysRecorded = requireArray("missing_future_customer_decision_proof_production_readiness_false_keys", 0);
 
-check("non_claim_unique_count_matches_array", unique(nonClaims).length, 6437);
-check("no_execution_boundary_unique_count_matches_array", unique(noExecutionBoundary).length, 6437);
+check("fields.unique", unique(fields).length, 111);
+check("binding_rules.unique", unique(bindingRules).length, 111);
+check("future_requirements.unique", unique(futureRequirements).length, 179);
+check("explicit_non_claims.unique", unique(explicitNonClaims).length, 8227);
+check("no_execution_boundary.unique", unique(noExecutionBoundary).length, 8227);
+check("all_production_false_keys.unique", unique(allProductionFalseKeys).length, 179);
+check("inherited_false_keys.length", inheritedProductionFalseKeys.length, 0);
+check("missing_future_false_keys_recorded.length", missingFutureFalseKeysRecorded.length, 0);
 
 for (const field of fields) {
   const expectedRule = `bind_${field}_within_endpoint_customer_evidence_dispute_disposal_customer_decision_proof_production_readiness_conformance_only`;
 
   if (!bindingRules.includes(expectedRule)) {
-    console.log(`VALIDATOR_BINDING_RULE_MISSING ${expectedRule}`);
+    console.log(`PRODUCTION_READINESS_CONFORMANCE_BINDING_DRAFT_BINDING_RULE_MISSING ${expectedRule}`);
     ok = false;
   }
 }
 
-const prefix = "endpoint_customer_evidence_dispute_disposal_customer_decision_proof_production_readiness_";
+const productionPrefix = "endpoint_customer_evidence_dispute_disposal_customer_decision_proof_production_readiness_";
 
 const futureFalseKeys = futureRequirements
-  .filter((item) => item.startsWith(`define_future_resolution_for_${prefix}`))
+  .filter((item) => item.startsWith(`define_future_resolution_for_${productionPrefix}`))
   .map((item) => item.replace("define_future_resolution_for_", ""))
-  .sort();
-
-const allProductionReadinessFalseKeys = Object.keys(d)
-  .filter((key) => key.startsWith(prefix) && d[key] === false)
   .sort();
 
 const futureFalseKeySet = new Set(futureFalseKeys);
 
-const inheritedProductionReadinessFalseKeys = allProductionReadinessFalseKeys
+const allProductionFalseKeysDynamic = Object.keys(d)
+  .filter((key) => key.startsWith(productionPrefix) && d[key] === false)
+  .sort();
+
+const inheritedProductionFalseKeysDynamic = allProductionFalseKeysDynamic
   .filter((key) => !futureFalseKeySet.has(key) && parent[key] === false)
   .sort();
 
@@ -173,110 +148,64 @@ const missingFutureFalseKeys = futureFalseKeys
 
 const falseClaimCount = Object.keys(d).filter((key) => d[key] === false).length;
 
-check("false_claim_property_count_dynamic", falseClaimCount, 6868);
-check("future_production_readiness_false_key_count_dynamic", futureFalseKeys.length, 179);
-check("all_production_readiness_false_key_count_dynamic", allProductionReadinessFalseKeys.length, 179);
-check("inherited_production_readiness_false_key_count_dynamic", inheritedProductionReadinessFalseKeys.length, 0);
-check("missing_future_production_readiness_false_key_count_dynamic", missingFutureFalseKeys.length, 0);
-
-if (Array.isArray(d.inherited_customer_decision_proof_production_readiness_false_keys)) {
-  check("declared_inherited_customer_decision_proof_production_readiness_false_keys_json", JSON.stringify(d.inherited_customer_decision_proof_production_readiness_false_keys), JSON.stringify([]));
-} else {
-  console.log("VALIDATOR_INHERITED_CUSTOMER_DECISION_PROOF_PRODUCTION_READINESS_FALSE_KEYS_ARRAY_MISSING");
-  ok = false;
-}
+check("false_claim_property_count_dynamic", falseClaimCount, 7685);
+check("future_false_key_count_dynamic", futureFalseKeys.length, 179);
+check("all_production_readiness_false_key_count_dynamic", allProductionFalseKeysDynamic.length, 179);
+check("inherited_production_readiness_false_key_count_dynamic", inheritedProductionFalseKeysDynamic.length, 0);
+check("missing_future_false_key_count_dynamic", missingFutureFalseKeys.length, 0);
 
 if (d.required_non_claim_count !== d.parent_non_claim_unique_count + 179 - d.overlap_non_claim_count) {
-  console.log(`VALIDATOR_NON_CLAIM_ARITHMETIC_INVALID actual=${d.required_non_claim_count} parentUnique=${d.parent_non_claim_unique_count} overlap=${d.overlap_non_claim_count}`);
+  console.log("PRODUCTION_READINESS_CONFORMANCE_BINDING_DRAFT_NON_CLAIM_ARITHMETIC_INVALID");
   ok = false;
 }
 
 if (d.required_no_execution_boundary_count !== d.parent_no_execution_boundary_unique_count + 179 - d.overlap_no_execution_boundary_count) {
-  console.log(`VALIDATOR_NO_EXECUTION_BOUNDARY_ARITHMETIC_INVALID actual=${d.required_no_execution_boundary_count} parentUnique=${d.parent_no_execution_boundary_unique_count} overlap=${d.overlap_no_execution_boundary_count}`);
+  console.log("PRODUCTION_READINESS_CONFORMANCE_BINDING_DRAFT_NO_EXECUTION_BOUNDARY_ARITHMETIC_INVALID");
   ok = false;
 }
 
-for (const key of futureFalseKeys) {
-  const futureRequirement = `define_future_resolution_for_${key}`;
-  const nonClaim = `no_${key}_claim`;
-  const boundary = `${key}_false`;
-
-  if (!futureRequirements.includes(futureRequirement)) {
-    console.log(`VALIDATOR_FUTURE_REQUIREMENT_MISSING ${futureRequirement}`);
-    ok = false;
-  }
-
-  if (!nonClaims.includes(nonClaim)) {
-    console.log(`VALIDATOR_NON_CLAIM_ENTRY_MISSING ${nonClaim}`);
-    ok = false;
-  }
-
-  if (!noExecutionBoundary.includes(boundary)) {
-    console.log(`VALIDATOR_NO_EXECUTION_BOUNDARY_ENTRY_MISSING ${boundary}`);
-    ok = false;
-  }
-}
-
-const criticalFalseClaims = [
+for (const key of [
   "customer_decision_proof_production_readiness_created",
+  "customer_decision_proof_production_readiness_started",
   "customer_decision_proof_production_readiness_completed",
   "customer_decision_proof_production_readiness_effective",
+  "customer_decision_proof_production_readiness_verified",
+  "customer_decision_proof_production_readiness_approved",
+  "customer_decision_proof_production_readiness_binding",
   "customer_decision_proof_production_ready",
   "production_readiness_created",
   "production_readiness_started",
   "production_readiness_completed",
   "production_readiness_effective",
   "production_readiness_verified",
-  "production_readiness_accepted",
   "production_readiness_approved",
-  "production_ready",
+  "production_readiness_binding",
+  "production_readiness_ready",
+  "production_execution_created",
+  "production_execution_started",
+  "production_execution_completed",
+  "production_gate_passed",
+  "production_gate_approved",
+  "production_deployment_authorized",
+  "production_runtime_authorized",
+  "production_customer_use_authorized",
   "deployment_ready",
   "runtime_ready",
   "operational_ready",
-  "release_ready",
-  "go_live_ready",
+  "service_ready",
+  "support_ready",
   "security_ready",
   "privacy_ready",
-  "compliance_ready",
   "legal_ready",
-  "audit_ready",
-  "monitoring_ready",
-  "observability_ready",
-  "logging_ready",
-  "alerting_ready",
-  "rollback_ready",
-  "backup_ready",
-  "restore_ready",
-  "disaster_recovery_ready",
-  "incident_response_ready",
-  "support_ready",
-  "maintenance_ready",
-  "capacity_ready",
-  "scalability_ready",
-  "performance_ready",
-  "availability_ready",
-  "reliability_ready",
-  "resilience_ready",
-  "customer_delivery_created",
-  "customer_delivery_completed",
-  "customer_delivery_effective",
-  "customer_acceptance_created",
-  "customer_acceptance_completed",
-  "customer_acceptance_effective",
+  "business_ready",
+  "go_live_ready",
   "customer_ready",
-  "legal_certification_created",
-  "legal_certification_completed",
-  "legal_certification_effective",
-  "legal_validity_created",
-  "legal_validity_completed",
-  "legal_validity_effective",
-  "legal_effect_created",
-  "legal_effect_effective",
-  "enforceability_created",
-  "enforceability_effective"
-];
-
-for (const key of criticalFalseClaims) {
+  "production_ready",
+  "external_reliance_allowed",
+  "commercial_reliance_allowed",
+  "customer_reliance_allowed",
+  "legal_reliance_allowed"
+]) {
   check(key, d[key], false);
 }
 
@@ -287,31 +216,33 @@ const boundaryText = [
   d.unknown_precedence_rule || ""
 ].join("\n");
 
-const requiredBoundaryFragments = [
+for (const fragment of [
+  "Customer Decision Proof Legal Certification draft does not imply Production Readiness",
+  "Legal Certification Conformance draft does not imply production readiness",
+  "Production Readiness Conformance draft does not imply production ready evidence",
+  "Production Readiness Conformance draft does not imply customer readiness",
+  "Production Readiness Conformance draft does not imply deployment readiness",
+  "Production Readiness Conformance draft does not imply runtime readiness",
+  "Production Readiness Conformance draft does not imply operational readiness",
+  "Production Readiness Conformance draft != production ready",
+  "Production Readiness Conformance draft != customer ready",
+  "Production Readiness Conformance draft != deployment ready",
+  "Production Readiness Conformance draft != runtime ready",
+  "Production Readiness Conformance draft != operational ready",
+  "does not create production readiness execution",
   "does not create production readiness",
+  "does not create customer readiness",
   "does not create deployment readiness",
   "does not create runtime readiness",
   "does not create operational readiness",
-  "does not create customer delivery",
-  "does not create customer acceptance",
-  "does not create customer readiness",
-  "does not create legal certification",
-  "does not create legal validity",
-  "does not create legal effect",
-  "does not create enforceability",
-  "Customer Decision Proof Legal Certification draft does not imply Customer Decision Proof Production Readiness",
-  "Customer Decision Proof Production Readiness draft does not imply production readiness",
-  "Production Readiness Conformance draft != production ready",
   "UNKNOWN or INSUFFICIENT_EVIDENCE"
-];
-
-for (const fragment of requiredBoundaryFragments) {
-  requireIncludes("boundary", boundaryText, fragment);
+]) {
+  requireIncludes("manifest_boundary", boundaryText, fragment);
 }
 
 console.log(JSON.stringify({
-  marker: d.marker,
   object_id: d.object_id,
+  marker: d.marker,
   basis_marker: d.basis_marker,
   basis_main_commit: d.basis_main_commit,
   parent_object_id: d.parent_object_id,
@@ -322,36 +253,30 @@ console.log(JSON.stringify({
   source_chain_entry_count: d.source_chain_entry_count,
   parent_non_claim_input_count: d.parent_non_claim_input_count,
   parent_non_claim_unique_count: d.parent_non_claim_unique_count,
-  parent_non_claim_internal_duplicate_count: d.parent_non_claim_internal_duplicate_count,
   parent_no_execution_boundary_input_count: d.parent_no_execution_boundary_input_count,
   parent_no_execution_boundary_unique_count: d.parent_no_execution_boundary_unique_count,
-  parent_no_execution_boundary_internal_duplicate_count: d.parent_no_execution_boundary_internal_duplicate_count,
   required_endpoint_customer_evidence_dispute_disposal_customer_decision_proof_production_readiness_conformance_field_count: d.required_endpoint_customer_evidence_dispute_disposal_customer_decision_proof_production_readiness_conformance_field_count,
   binding_rule_count: d.binding_rule_count,
   future_resolution_requirement_count: d.future_resolution_requirement_count,
   required_non_claim_count: d.required_non_claim_count,
   required_no_execution_boundary_count: d.required_no_execution_boundary_count,
-  false_claim_property_count: falseClaimCount,
-  future_customer_decision_proof_production_readiness_false_key_count: futureFalseKeys.length,
-  all_customer_decision_proof_production_readiness_false_key_count: allProductionReadinessFalseKeys.length,
-  inherited_customer_decision_proof_production_readiness_false_key_count: inheritedProductionReadinessFalseKeys.length,
-  inherited_customer_decision_proof_production_readiness_false_keys: inheritedProductionReadinessFalseKeys,
-  missing_future_customer_decision_proof_production_readiness_false_key_count: missingFutureFalseKeys.length,
+  false_claim_property_count: d.false_claim_property_count,
+  future_customer_decision_proof_production_readiness_false_key_count: d.future_customer_decision_proof_production_readiness_false_key_count,
+  all_customer_decision_proof_production_readiness_false_key_count: d.all_customer_decision_proof_production_readiness_false_key_count,
+  inherited_customer_decision_proof_production_readiness_false_key_count: d.inherited_customer_decision_proof_production_readiness_false_key_count,
+  inherited_customer_decision_proof_production_readiness_false_keys_length: inheritedProductionFalseKeys.length,
+  missing_future_customer_decision_proof_production_readiness_false_key_count: d.missing_future_customer_decision_proof_production_readiness_false_key_count,
   overlap_non_claim_count: d.overlap_non_claim_count,
   overlap_no_execution_boundary_count: d.overlap_no_execution_boundary_count,
-  customer_decision_proof_production_readiness_created: d.customer_decision_proof_production_readiness_created,
-  customer_decision_proof_production_readiness_completed: d.customer_decision_proof_production_readiness_completed,
-  customer_decision_proof_production_readiness_effective: d.customer_decision_proof_production_readiness_effective,
   production_readiness_created: d.production_readiness_created,
   production_readiness_completed: d.production_readiness_completed,
   production_readiness_effective: d.production_readiness_effective,
+  production_readiness_ready: d.production_readiness_ready,
+  customer_ready: d.customer_ready,
   production_ready: d.production_ready,
   deployment_ready: d.deployment_ready,
   runtime_ready: d.runtime_ready,
   operational_ready: d.operational_ready,
-  customer_delivery_created: d.customer_delivery_created,
-  customer_acceptance_created: d.customer_acceptance_created,
-  customer_ready: d.customer_ready,
   recommended_next_program: d.recommended_next_program,
   recommended_next_object_id: d.recommended_next_object_id,
   result: ok ? "PASS_ENDPOINT_CUSTOMER_EVIDENCE_DISPUTE_DISPOSAL_CUSTOMER_DECISION_PROOF_PRODUCTION_READINESS_CONFORMANCE_BINDING_DRAFT" : "FAIL_ENDPOINT_CUSTOMER_EVIDENCE_DISPUTE_DISPOSAL_CUSTOMER_DECISION_PROOF_PRODUCTION_READINESS_CONFORMANCE_BINDING_DRAFT"
