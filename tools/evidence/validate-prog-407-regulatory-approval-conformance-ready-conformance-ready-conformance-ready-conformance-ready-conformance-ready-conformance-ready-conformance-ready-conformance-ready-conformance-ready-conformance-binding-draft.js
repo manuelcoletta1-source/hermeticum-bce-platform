@@ -1,0 +1,59 @@
+#!/usr/bin/env node
+const fs = require('fs');
+const crypto = require('crypto');
+
+const manifestPath = process.argv[2];
+if (!manifestPath) {
+  console.error('Usage: validate-prog-407-regulatory-approval-conformance-ready-conformance-ready-conformance-ready-conformance-ready-conformance-ready-conformance-ready-conformance-ready-conformance-ready-conformance-ready-conformance-binding-draft.js <manifest.json>');
+  process.exit(1);
+}
+
+const raw = fs.readFileSync(manifestPath, 'utf8');
+const manifestSha256 = crypto.createHash('sha256').update(raw).digest('hex');
+const d = JSON.parse(raw);
+
+const expected = {
+  object_id: 'HBCE-ENDPOINT-CUSTOMER-EVIDENCE-DISPUTE-DISPOSAL-CUSTOMER-DECISION-PROOF-DEPLOYMENT-INDEPENDENT-ATTESTATION-VERIFIED-REALIZED-BENEFIT-CUSTOMER-ACCEPTANCE-REGULATORY-ACCEPTANCE-REGULATORY-APPROVAL-CONFORMANCE-READY-CONFORMANCE-READY-CONFORMANCE-READY-CONFORMANCE-READY-CONFORMANCE-READY-CONFORMANCE-READY-CONFORMANCE-READY-CONFORMANCE-READY-CONFORMANCE-READY-CONFORMANCE-BINDING-DRAFT-V001',
+  program: 'PROG-407',
+  status: 'ACTIVE_ENDPOINT_CUSTOMER_EVIDENCE_DISPUTE_DISPOSAL_CUSTOMER_DECISION_PROOF_DEPLOYMENT_INDEPENDENT_ATTESTATION_VERIFIED_REALIZED_BENEFIT_CUSTOMER_ACCEPTANCE_REGULATORY_ACCEPTANCE_REGULATORY_APPROVAL_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_BINDING_DRAFT',
+  marker: 'ENDPOINT_CUSTOMER_EVIDENCE_DISPUTE_DISPOSAL_CUSTOMER_DECISION_PROOF_DEPLOYMENT_INDEPENDENT_ATTESTATION_VERIFIED_REALIZED_BENEFIT_CUSTOMER_ACCEPTANCE_REGULATORY_ACCEPTANCE_REGULATORY_APPROVAL_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_BINDING_DRAFT=PASS',
+  result: 'PASS_ENDPOINT_CUSTOMER_EVIDENCE_DISPUTE_DISPOSAL_CUSTOMER_DECISION_PROOF_DEPLOYMENT_INDEPENDENT_ATTESTATION_VERIFIED_REALIZED_BENEFIT_CUSTOMER_ACCEPTANCE_REGULATORY_ACCEPTANCE_REGULATORY_APPROVAL_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_BINDING_DRAFT',
+  parent_program: 'PROG-406',
+  parent_commit: '9392f61b3ee604481998ddb67f905d4a10a0692d',
+  selected_axis: 'REGULATORY_APPROVAL_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY',
+  selected_source_false_key: 'deployment_independent_attestation_verified_realized_benefit_customer_acceptance_regulatory_acceptance_regulatory_approval_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready',
+  selected_source_false_key_role: 'NEW_FALSE_KEY_REQUIRED_IN_PROG407',
+  selected_boundary: 'REGULATORY_APPROVAL_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_DRAFT != REGULATORY_APPROVAL_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY.',
+  source_chain_entry_count: 125,
+  field_count: 152,
+  binding_rule_count: 152,
+  boundary_rule_count: 310,
+  future_resolution_requirement_count: 1861,
+  required_non_claim_count: 37209,
+  required_no_execution_boundary_count: 25998,
+  false_claim_property_count: 14743,
+  false_key_count: 723,
+  new_false_key_count: 18,
+  required_regulatory_approval_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_field_count: 24,
+  regulatory_approval_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready: false,
+  deployment_independent_attestation_verified_realized_benefit_customer_acceptance_regulatory_acceptance_regulatory_approval_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready: false,
+  deployment_independent_attestation_verified_realized_benefit_customer_acceptance_regulatory_acceptance_regulatory_approval_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_conformance_ready_created: false,
+  regulatory_approval_created: false,
+  regulatory_clearance_created: false,
+  customer_acceptance_created: false,
+  customer_approval_created: false,
+  opc_allow: false,
+  matrix_effective_state_updated: false,
+  runtime_deletion_executed: false,
+  data_erasure_executed: false
+};
+
+for (const [key, value] of Object.entries(expected)) {
+  if (d[key] !== value) {
+    throw new Error(`${key} mismatch: expected ${JSON.stringify(value)}, got ${JSON.stringify(d[key])}`);
+  }
+}
+
+const output = { ...d, manifest_sha256: manifestSha256, result_assertion: 'PASS_PROG_407_VALIDATOR_ACTIVE_MANIFEST' };
+console.log(JSON.stringify(output, null, 2));
+console.log('PROG_407_REGULATORY_APPROVAL_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_READY_CONFORMANCE_BINDING_DRAFT_VALIDATOR=PASS');
